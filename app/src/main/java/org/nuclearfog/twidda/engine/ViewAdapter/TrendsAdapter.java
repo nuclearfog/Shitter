@@ -17,11 +17,10 @@ import twitter4j.Trend;
 import twitter4j.Trends;
 
 public class TrendsAdapter extends ArrayAdapter {
-
     private Trend[] list;
     private Context c;
 
-    public TrendsAdapter(Context c, int layout, Trend[] list){
+    public TrendsAdapter(Context c, int layout, Trend[] list) {
         super(c, layout);
         this.list = list;
         this.c = c;
@@ -47,10 +46,8 @@ public class TrendsAdapter extends ArrayAdapter {
             LayoutInflater inf=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.trend, null);
         }
-
         String trendName = list[position].getName();
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);
         return v;
     }
-
 }

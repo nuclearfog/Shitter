@@ -29,7 +29,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     private final String ERR_MSG = "Fehler bei der Verbindung";
 
     private static Twitter twitter;
-    private List<Object> stats;
     private Context context;
     private ListView timeline;
     private TimelineAdapter timelineAdapter;
@@ -38,8 +37,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     public TwitterEngine(Context context, ListView timeline) {
         this.context=context;
         this.timeline = timeline;
-        stats = new ArrayList<>();
-
         if(twitter == null) init();
     }
 
@@ -47,27 +44,21 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     protected Void doInBackground(Integer... args) {
         if(android.os.Debug.isDebuggerConnected())
             android.os.Debug.waitForDebugger();
-
         // twitter.getRateLimitStatus();
 
         try{
             switch(args[0]) {
                 case (0): // Home Timeline
-                    stats.addAll(twitter.getHomeTimeline());
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,twitter.getHomeTimeline());
                     break;
-
                 case(1):  // Trends
-                    stats.addAll(twitter.getAvailableTrends());
                     Trends trend = twitter.getPlaceTrends(1);
                     trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend.getTrends());
                     break;
-
                 case(2):  // Mentions
                     // TODO
                     break;
             }
-
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
         } catch (Exception e){ e.printStackTrace(); }
@@ -80,7 +71,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             timeline.setAdapter(timelineAdapter);
         else if(trendsAdapter != null)
             timeline.setAdapter(trendsAdapter);
-
     }
 
     /**
