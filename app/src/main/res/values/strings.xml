@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Twidda</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_token">Pin eingeben</string>
+    <string name="action_sign_in">Login</string>
+    <string name="error_field_required">This field is required</string>
+
+
+</resources>
