@@ -5,6 +5,7 @@
     <string name="prompt_token">Pin eingeben</string>
     <string name="action_sign_in">Login</string>
     <string name="error_field_required">This field is required</string>
+    <string name="profile_image">profilbild</string>
 
 
 </resources>

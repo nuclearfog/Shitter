@@ -18,7 +18,7 @@ import android.content.SharedPreferences;
 
 import org.nuclearfog.twidda.engine.TwitterEngine;
 
-public class LoginActivity extends AppCompatActivity //Activity
+public class LoginActivity extends Activity //Activity
 {
     private Button linkButton, verifierButon, loginButton;
     private EditText pin;
@@ -93,6 +93,8 @@ public class LoginActivity extends AppCompatActivity //Activity
         tab3.setIndicator("Mention").setContent(R.id.timeline);
         tabhost.addTab(tab3);
 
+        tabhost.setCurrentTab(0);
+
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -117,8 +119,6 @@ public class LoginActivity extends AppCompatActivity //Activity
                 }
             }
         });
-
-        tabhost.setCurrentTab(0);
     }
 
     private boolean loggedIn() {
