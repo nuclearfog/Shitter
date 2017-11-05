@@ -1,12 +1,9 @@
 package org.nuclearfog.twidda;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.TabActivity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,14 +15,14 @@ import android.content.SharedPreferences;
 
 import org.nuclearfog.twidda.engine.TwitterEngine;
 
-public class LoginActivity extends Activity //Activity
+public class MainActivity extends Activity
 {
-    private Button linkButton, verifierButon, loginButton;
+    private Button linkButton, verifierButton, loginButton;
     private EditText pin;
     private Context con;
     private SharedPreferences einstellungen;
     private TabHost tabhost;
-
+    private SwipeRefreshLayout refresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +33,11 @@ public class LoginActivity extends Activity //Activity
             setContentView(R.layout.activity_login);
             pin = (EditText) findViewById(R.id.pin);
             linkButton  = (Button) findViewById(R.id.linkButton);
-            verifierButon = (Button) findViewById(R.id.verifier);
+            verifierButton = (Button) findViewById(R.id.verifier);
             loginButton = (Button) findViewById(R.id.loginButton);
             linkButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){linkTwitter();}});
-            verifierButon.setOnClickListener(new View.OnClickListener() {
+            verifierButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){verifier();}});
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){login();}});
@@ -48,10 +45,6 @@ public class LoginActivity extends Activity //Activity
             login();
         }
     }
-
-
-
-
 
     private void linkTwitter() {
         RegisterAccount account = new RegisterAccount(con);
@@ -62,7 +55,7 @@ public class LoginActivity extends Activity //Activity
         String twitterPin = pin.getText().toString();
         if(!twitterPin.trim().isEmpty()) {
             RegisterAccount account = new RegisterAccount(con);
-            account.setButton(loginButton,verifierButon);
+            account.setButton(loginButton,verifierButton);
             account.execute(twitterPin);
         } else {
             Toast.makeText(con,"PIN eingeben!",Toast.LENGTH_LONG).show();
@@ -91,25 +84,51 @@ public class LoginActivity extends Activity //Activity
         tabhost.addTab(tab3);
 
         tabhost.setCurrentTab(0);
+        tabhost.getCurrentTab();
+
+        setRefreshListener();
+
 
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 switch(tabId) {
                     case "timeline":
-                        ListView timeline = (ListView) findViewById(R.id.timelinelist);
-                        TwitterEngine homeView = new TwitterEngine(getApplicationContext(), timeline);
-                        homeView.execute(0);
+
+
                         break;
 
                     case "trends":
-                        ListView trends = (ListView) findViewById(R.id.timelinelist);
-                        TwitterEngine trendView = new TwitterEngine(getApplicationContext(), trends);
-                        trendView.execute(1);
+
                         break;
 
                     case "mention":
-                        ListView mentions = (ListView) findViewById(R.id.timelinelist);
+
+                        break;
+                }
+            }
+        });
+    }
+
+    private void setRefreshListener() {
+        refresh = (SwipeRefreshLayout) findViewById(R.id.refresh_list);
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                switch(tabhost.getCurrentTab()) {
+                    case(0):
+                        ListView timeline = (ListView) findViewById(R.id.timelinelist);
+                        TwitterEngine homeView = new TwitterEngine(getApplicationContext(), timeline);
+                        homeView.setRefresh(refresh);
+                        homeView.execute(0);
+                        break;
+                    case(1):
+                        ListView trends = (ListView) findViewById(R.id.trendlist);
+                        TwitterEngine trendView = new TwitterEngine(getApplicationContext(), trends);
+                        trendView.execute(1);
+                        break;
+                    case(2):
+                        ListView mentions = (ListView) findViewById(R.id.mentionlist);
                         TwitterEngine mentionView = new TwitterEngine(getApplicationContext(), mentions);
                         mentionView.execute(2);
                         break;

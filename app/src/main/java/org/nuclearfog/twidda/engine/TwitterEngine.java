@@ -2,22 +2,18 @@ package org.nuclearfog.twidda.engine;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import twitter4j.ResponseList;
+
 import twitter4j.Trends;
 import twitter4j.Twitter;
-import twitter4j.Status;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 import android.content.SharedPreferences;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.nuclearfog.twidda.LoginActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
@@ -30,14 +26,18 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
     private static Twitter twitter;
     private Context context;
-    private ListView timeline;
+    private ListView list;
     private TimelineAdapter timelineAdapter;
     private TrendsAdapter trendsAdapter;
+    private SwipeRefreshLayout refresh;
 
-    public TwitterEngine(Context context, ListView timeline) {
+    public TwitterEngine(Context context, ListView list) {
         this.context=context;
-        this.timeline = timeline;
+        this.list = list;
         if(twitter == null) init();
+    }
+    public void setRefresh(SwipeRefreshLayout refresh) {
+        this.refresh=refresh;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             android.os.Debug.waitForDebugger();
         // twitter.getRateLimitStatus();
 
-        try{
+        try {
             switch(args[0]) {
                 case (0): // Home Timeline
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,twitter.getHomeTimeline());
@@ -68,9 +68,10 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     @Override
     protected void onPostExecute(Void v) {
         if(timelineAdapter != null)
-            timeline.setAdapter(timelineAdapter);
+            list.setAdapter(timelineAdapter);
         else if(trendsAdapter != null)
-            timeline.setAdapter(trendsAdapter);
+            list.setAdapter(trendsAdapter);
+        refresh.setRefreshing(false);
     }
 
     /**
