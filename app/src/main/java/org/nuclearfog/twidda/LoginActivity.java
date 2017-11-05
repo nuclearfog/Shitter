@@ -56,7 +56,6 @@ public class LoginActivity extends Activity //Activity
     private void linkTwitter() {
         RegisterAccount account = new RegisterAccount(con);
         account.execute("");
-        // linkButton.setVisibility(Button.INVISIBLE);
     }
 
     private void verifier() {
@@ -73,8 +72,6 @@ public class LoginActivity extends Activity //Activity
     private void login(){
         setTheme(R.style.AppTheme);
         setContentView(R.layout.main_layout);
-
-
         tabhost = (TabHost)findViewById(R.id.tabHost);
         tabhost.setup();
 

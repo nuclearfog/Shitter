@@ -33,11 +33,19 @@
                     android:elevation="1dp"
                     android:orientation="vertical">
 
-                    <ListView
-                        android:id="@+id/timelinelist"
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/timeline_refresh"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="true" android:focusable="true"/>
+                        android:layout_height="wrap_content">
+
+                        <ListView
+                            android:id="@+id/timelinelist"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true" />
+                    </android.support.v4.widget.SwipeRefreshLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
