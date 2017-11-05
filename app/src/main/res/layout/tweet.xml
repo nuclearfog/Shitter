@@ -56,6 +56,7 @@
         android:layout_height="32dp"
         android:layout_weight="1"
         android:addStatesFromChildren="false"
+        android:gravity="right"
         android:orientation="horizontal">
 
         <Button
@@ -71,18 +72,6 @@
             android:ems="10" />
 
         <Button
-            android:id="@+id/favorite"
-            android:layout_width="32dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/star" />
-
-        <TextView
-            android:id="@+id/favorite_number"
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:ems="10" />
-
-        <Button
             android:id="@+id/retweet"
             android:layout_width="32dp"
             android:layout_height="match_parent"
@@ -90,6 +79,18 @@
 
         <TextView
             android:id="@+id/retweet_number"
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:ems="10" />
+
+        <Button
+            android:id="@+id/favorite"
+            android:layout_width="32dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/star" />
+
+        <TextView
+            android:id="@+id/favorite_number"
             android:layout_width="64dp"
             android:layout_height="match_parent"
             android:ems="10" />

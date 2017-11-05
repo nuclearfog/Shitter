@@ -67,16 +67,16 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
     @Override
     protected void onPostExecute(Void v) {
-        if(list.getAdapter()==null) {
-            if(timelineAdapter != null) {
-                list.setAdapter(timelineAdapter);
-                timelineAdapter.notifyDataSetChanged();
-            }
-            else if(trendsAdapter != null) {
-                list.setAdapter(trendsAdapter);
-                trendsAdapter.notifyDataSetChanged();
-            }
+
+        if(timelineAdapter != null) {
+            list.setAdapter(timelineAdapter);
+            timelineAdapter.notifyDataSetChanged();
         }
+        else if(trendsAdapter != null) {
+            list.setAdapter(trendsAdapter);
+            trendsAdapter.notifyDataSetChanged();
+        }
+
         if(refresh != null)
             refresh.setRefreshing(false);
 
