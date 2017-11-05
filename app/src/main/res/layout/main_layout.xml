@@ -17,7 +17,7 @@
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -32,12 +32,14 @@
                     <ListView
                         android:id="@+id/list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"/>
 
                 </android.support.v4.widget.SwipeRefreshLayout>
 
             </FrameLayout>
 
         </LinearLayout>
+
     </TabHost>
+
 </LinearLayout>

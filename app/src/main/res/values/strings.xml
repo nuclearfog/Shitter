@@ -6,4 +6,8 @@
     <string name="action_sign_in">Login</string>
     <string name="error_field_required">This field is required</string>
     <string name="profile_image">profilbild</string>
+    <string name="login">Login</string>
+    <string name="pin">PIN</string>
+    <string name="verifierbutton">Verifizieren</string>
+    <string name="register_link">Link zur Anmeldung</string>
 </resources>

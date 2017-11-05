@@ -50,7 +50,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             switch(args[0]) {
                 case (0): // Home Timeline
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,twitter.getHomeTimeline());
-                    break;
+                break;
                 case(1):  // Trends
                     Trends trend = twitter.getPlaceTrends(1);
                     trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend.getTrends());
@@ -68,13 +68,19 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     @Override
     protected void onPostExecute(Void v) {
         if(list.getAdapter()==null) {
-            if(timelineAdapter != null)
+            if(timelineAdapter != null) {
                 list.setAdapter(timelineAdapter);
-            else if(trendsAdapter != null)
+                timelineAdapter.notifyDataSetChanged();
+            }
+            else if(trendsAdapter != null) {
                 list.setAdapter(trendsAdapter);
+                trendsAdapter.notifyDataSetChanged();
+            }
         }
         if(refresh != null)
             refresh.setRefreshing(false);
+
+
     }
 
     /**
