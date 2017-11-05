@@ -65,8 +65,6 @@ public class MainActivity extends Activity
     }
 
     private void login(){
-
-
         list = (ListView) findViewById(R.id.list);
 
         tabhost = (TabHost)findViewById(R.id.tabhost);
@@ -88,17 +86,14 @@ public class MainActivity extends Activity
         tabhost.addTab(tab3);
 
         tabhost.setCurrentTab(0);
-        tabhost.getCurrentTab();
 
         setRefreshListener();
-
 
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 switch(tabId) {
                     case "timeline":
-
 
                         break;
 
@@ -115,28 +110,23 @@ public class MainActivity extends Activity
     }
 
     private void setRefreshListener() {
-
         refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-            switch(tabhost.getCurrentTab()) {
-
-                case(0):
-
-                    TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
-                    homeView.setRefresh(refresh);
-                    homeView.execute(0);
-                    break;
-                case(1):
-                    TwitterEngine trendView = new TwitterEngine(getApplicationContext(), list);
-                    trendView.execute(1);
-                    break;
-                case(2):
-                    TwitterEngine mentionView = new TwitterEngine(getApplicationContext(), list);
-                    mentionView.execute(2);
-                    break;
-            }
+                TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
+                homeView.setRefresh(refresh);
+                switch(tabhost.getCurrentTab()) {
+                    case(0):
+                        homeView.execute(0);
+                        break;
+                    case(1):
+                        homeView.execute(1);
+                        break;
+                    case(2):
+                        homeView.execute(2);
+                        break;
+                }
             }
         });
     }
