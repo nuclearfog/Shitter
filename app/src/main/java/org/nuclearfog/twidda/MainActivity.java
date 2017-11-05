@@ -23,6 +23,7 @@ public class MainActivity extends Activity
     private SharedPreferences einstellungen;
     private TabHost tabhost;
     private SwipeRefreshLayout refresh;
+    private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class MainActivity extends Activity
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){login();}});
         } else {
+            setContentView(R.layout.main_layout);
             login();
         }
     }
@@ -63,24 +65,26 @@ public class MainActivity extends Activity
     }
 
     private void login(){
-        setTheme(R.style.AppTheme);
-        setContentView(R.layout.main_layout);
-        tabhost = (TabHost)findViewById(R.id.tabHost);
+
+
+        list = (ListView) findViewById(R.id.list);
+
+        tabhost = (TabHost)findViewById(R.id.tabhost);
         tabhost.setup();
 
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
-        tab1.setIndicator("Timeline").setContent(R.id.timeline);
+        tab1.setIndicator("Timeline").setContent(R.id.list);
         tabhost.addTab(tab1);
 
         // Tab #2
         TabSpec tab2 = tabhost.newTabSpec("trends");
-        tab2.setIndicator("Trend").setContent(R.id.timeline);
+        tab2.setIndicator("Trend").setContent(R.id.list);
         tabhost.addTab(tab2);
 
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");
-        tab3.setIndicator("Mention").setContent(R.id.timeline);
+        tab3.setIndicator("Mention").setContent(R.id.list);
         tabhost.addTab(tab3);
 
         tabhost.setCurrentTab(0);
@@ -111,28 +115,28 @@ public class MainActivity extends Activity
     }
 
     private void setRefreshListener() {
-        refresh = (SwipeRefreshLayout) findViewById(R.id.refresh_list);
+
+        refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switch(tabhost.getCurrentTab()) {
-                    case(0):
-                        ListView timeline = (ListView) findViewById(R.id.timelinelist);
-                        TwitterEngine homeView = new TwitterEngine(getApplicationContext(), timeline);
-                        homeView.setRefresh(refresh);
-                        homeView.execute(0);
-                        break;
-                    case(1):
-                        ListView trends = (ListView) findViewById(R.id.trendlist);
-                        TwitterEngine trendView = new TwitterEngine(getApplicationContext(), trends);
-                        trendView.execute(1);
-                        break;
-                    case(2):
-                        ListView mentions = (ListView) findViewById(R.id.mentionlist);
-                        TwitterEngine mentionView = new TwitterEngine(getApplicationContext(), mentions);
-                        mentionView.execute(2);
-                        break;
-                }
+            switch(tabhost.getCurrentTab()) {
+
+                case(0):
+
+                    TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
+                    homeView.setRefresh(refresh);
+                    homeView.execute(0);
+                    break;
+                case(1):
+                    TwitterEngine trendView = new TwitterEngine(getApplicationContext(), list);
+                    trendView.execute(1);
+                    break;
+                case(2):
+                    TwitterEngine mentionView = new TwitterEngine(getApplicationContext(), list);
+                    mentionView.execute(2);
+                    break;
+            }
             }
         });
     }

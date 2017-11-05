@@ -2,86 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/twitterBlau"
-    android:orientation="horizontal">
-
+    android:background="@color/twitterBlau">
 
     <TabHost
-        android:id="@+id/tabHost"
+        android:id="@+id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-
-
-            <LinearLayout
+            <TabWidget
+                android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content" />
 
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/refresh_list"
+                    android:id="@+id/refresh"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
-                   <FrameLayout
-                    android:id="@android:id/tabcontent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:id="@+id/timeline"
+                    <ListView
+                        android:id="@+id/list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ListView
-                            android:id="@+id/timelinelist"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clickable="true"
-                            android:focusable="true" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/trends"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ListView
-                            android:id="@+id/trendlist"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clickable="true"
-                            android:focusable="true" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/mention"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ListView
-                            android:id="@+id/mentionlist"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clickable="true"
-                            android:focusable="true" />
-                    </LinearLayout>
-                </FrameLayout>
+                        android:layout_height="match_parent" />
 
                 </android.support.v4.widget.SwipeRefreshLayout>
 
-            </LinearLayout>
+            </FrameLayout>
 
-
-
+        </LinearLayout>
     </TabHost>
 </LinearLayout>
