@@ -18,6 +18,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
 
+import java.util.List;
+
 public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {
     private final String TWITTER_CONSUMER_KEY = "GrylGIgQK3cDjo9mSTBqF1vwf";
@@ -27,8 +29,8 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     private static Twitter twitter;
     private Context context;
     private ListView list;
-    private TimelineAdapter timelineAdapter;
-    private TrendsAdapter trendsAdapter;
+    private static TimelineAdapter timelineAdapter;
+    private static TrendsAdapter trendsAdapter;
     private SwipeRefreshLayout refresh;
 
     public TwitterEngine(Context context, ListView list) {
@@ -50,10 +52,13 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             switch(args[0]) {
                 case (0): // Home Timeline
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,twitter.getHomeTimeline());
+
+
                 break;
                 case(1):  // Trends
                     Trends trend = twitter.getPlaceTrends(1);
                     trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend.getTrends());
+
                     break;
                 case(2):  // Mentions
                     // TODO
@@ -67,7 +72,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
     @Override
     protected void onPostExecute(Void v) {
-
         if(timelineAdapter != null) {
             list.setAdapter(timelineAdapter);
             timelineAdapter.notifyDataSetChanged();
@@ -76,11 +80,8 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             list.setAdapter(trendsAdapter);
             trendsAdapter.notifyDataSetChanged();
         }
-
         if(refresh != null)
             refresh.setRefreshing(false);
-
-
     }
 
     /**
@@ -96,4 +97,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         AccessToken token = new AccessToken(accessToken,accessTokenSec);
         twitter = new TwitterFactory( builder.build() ).getInstance(token);
     }
+
+
 }

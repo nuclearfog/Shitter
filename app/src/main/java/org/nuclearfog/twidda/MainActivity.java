@@ -93,13 +93,14 @@ public class MainActivity extends Activity
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
+                TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
                 switch(tabId) {
                     case "timeline":
-
+                        homeView.execute(0,1);
                         break;
 
                     case "trends":
-
+                        homeView.execute(1,1);
                         break;
 
                     case "mention":
@@ -115,22 +116,23 @@ public class MainActivity extends Activity
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
-                homeView.setRefresh(refresh);
-                switch(tabhost.getCurrentTab()) {
-                    case(0):
-                        homeView.execute(0);
-                        break;
-                    case(1):
-                        homeView.execute(1);
-                        break;
-                    case(2):
-                        homeView.execute(2);
-                        break;
-                }
+            TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
+            homeView.setRefresh(refresh);
+            switch(tabhost.getCurrentTab()) {
+                case(0):
+                    homeView.execute(0,0);
+                    break;
+                case(1):
+                    homeView.execute(1,0);
+                    break;
+                case(2):
+                    homeView.execute(2,0);
+                    break;
+            }
             }
         });
     }
+
 
     private boolean loggedIn() {
         return einstellungen.getBoolean("login", false);
