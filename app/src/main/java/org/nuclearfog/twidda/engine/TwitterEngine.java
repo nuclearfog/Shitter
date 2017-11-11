@@ -51,8 +51,8 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         try {
             switch(args[0]) {
                 case (0): // Home Timeline
-                    timelineAdapter = new TimelineAdapter(context,R.layout.tweet,twitter.getHomeTimeline());
-
+                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline());
+                    timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
 
                 break;
                 case(1):  // Trends
@@ -97,6 +97,4 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         AccessToken token = new AccessToken(accessToken,accessTokenSec);
         twitter = new TwitterFactory( builder.build() ).getInstance(token);
     }
-
-
 }

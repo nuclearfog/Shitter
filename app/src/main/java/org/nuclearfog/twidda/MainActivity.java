@@ -28,7 +28,6 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setDisplayShowTitleEnabled(false);
         einstellungen = getApplicationContext().getSharedPreferences("settings", 0);
         con = getApplicationContext();
         if( !loggedIn() ) {
@@ -84,8 +83,8 @@ public class MainActivity extends Activity
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setIndicator("Mention").setContent(R.id.list);
-        tabhost.addTab(tab3);
 
+        tabhost.addTab(tab3);
         tabhost.setCurrentTab(0);
 
         setRefreshListener();
