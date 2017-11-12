@@ -10,4 +10,23 @@
     <string name="pin">PIN</string>
     <string name="verifierbutton">Verifizieren</string>
     <string name="register_link">Link zur Anmeldung</string>
+
+
+    <!--Datenbank Konstanten -->
+    <string name="create_table">
+    CREATE TABLE home (
+        tweetID  INTEGER NOT NULL PRIMARY KEY,
+        user     TEXT,
+        time     TEXT,
+        tweet    TEXT,
+        retweet  INTEGER,
+        favorite INTEGER,
+        answers  INTEGER);
+    </string>
+    <string name="datei">timeline.db</string>
+
+
+
 </resources>
+
+

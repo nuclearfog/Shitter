@@ -14,11 +14,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
-
-import java.util.List;
 
 public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {
@@ -51,7 +50,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         try {
             switch(args[0]) {
                 case (0): // Home Timeline
-                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline());
+                    TweetDatabase mTweets = new TweetDatabase(context,twitter.getHomeTimeline());
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
 
                 break;

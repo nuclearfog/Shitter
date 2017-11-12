@@ -39,9 +39,6 @@ public class TrendsAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
-        if(android.os.Debug.isDebuggerConnected())
-            android.os.Debug.waitForDebugger();
-
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.trend, null);
