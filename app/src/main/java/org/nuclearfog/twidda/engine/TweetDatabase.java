@@ -3,27 +3,45 @@ package org.nuclearfog.twidda.engine;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import android.content.Context;
 import twitter4j.Status;
 
 public class TweetDatabase {
 
-    private Context context;
-    private Date now;
-    private int size;
 
+    private Date now;
     private List<String> user,tweet,noRT,noFav,noAns,date;
 
     /**
-     * Daten speichern & aufrufen
-     * @param context MainActivity Context
      * @param stats   Twitter Home
      */
-    public TweetDatabase(Context context, List<Status> stats) {
-        this.context=context;
-        this.size = stats.size();
+    public TweetDatabase(List<Status> stats) {
         initArray();
         fillArray(stats);
+    }
+
+    /**
+     * Set Manually Data using setData()
+     */
+    public TweetDatabase() {
+        initArray();
+    }
+
+    /**
+     * Save Data
+     * @param usr Username
+     * @param tw Tweet
+     * @param rt Number Retweets
+     * @param fav Number Favorites
+     * @param time Tweet Time
+     * @param ans Number Answers
+     */
+    public void setData(String usr,String tw,String rt,String fav,String time,String ans) {
+        user.add(usr);
+        tweet.add(tw);
+        noRT.add(rt);
+        noFav.add(fav);
+        noAns.add(ans);
+        date.add(time);
     }
 
     public String getUsername(int pos) {return user.get(pos);}
@@ -31,8 +49,8 @@ public class TweetDatabase {
     public String getRetweet(int pos){return noRT.get(pos);}
     public String getFavorite(int pos){return noFav.get(pos);}
     public String getDate(int pos){return date.get(pos);}
-    public String getAnswer(int pos){return "";/* TODO */}
-    public int getSize(){return size;}
+    public String getAnswer(int pos){return noAns.get(pos);}
+    public int getSize(){return user.size();}
 
     private String getTweetTime(Date time) {
         int tweetHour = now.getHours() - time.getHours();

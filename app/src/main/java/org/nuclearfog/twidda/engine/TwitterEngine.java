@@ -50,7 +50,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         try {
             switch(args[0]) {
                 case (0): // Home Timeline
-                    TweetDatabase mTweets = new TweetDatabase(context,twitter.getHomeTimeline());
+                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline());
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
 
                 break;
