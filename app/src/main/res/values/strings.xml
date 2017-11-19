@@ -13,8 +13,16 @@
 
 
     <!--Datenbank Konstanten -->
-    <string name="create_table">
-    CREATE TABLE home (
+
+    <string name="user_table">
+    CREATE TABLE user (
+        userID   INT,
+        username TEXT,
+        pbLink   TEXT );
+    </string>
+
+    <string name="tweet_table">
+    CREATE TABLE tweet (
         tweetID  INTEGER NOT NULL PRIMARY KEY,
         user     TEXT,
         time     TEXT,
@@ -23,6 +31,8 @@
         favorite INTEGER,
         answers  INTEGER);
     </string>
+
+
     <string name="datei">timeline.db</string>
 
 

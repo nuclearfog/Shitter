@@ -1,5 +1,13 @@
 package org.nuclearfog.twidda.engine;
 
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
+
+import android.content.SharedPreferences;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.widget.ListView;
+import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 
@@ -9,15 +17,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-import android.content.SharedPreferences;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
-import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
 
 public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {

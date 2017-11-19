@@ -1,17 +1,12 @@
-package org.nuclearfog.twidda.DataBase;
-import  org.nuclearfog.twidda.R;
+package org.nuclearfog.twidda.engine;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import android.content.Context;
-import android.database.sqlite.*;
-
-
-
 import twitter4j.Status;
 
-public class TweetDatabase extends SQLiteOpenHelper {
+public class TweetDatabase {
 
     private Context context;
     private Date now;
@@ -19,47 +14,16 @@ public class TweetDatabase extends SQLiteOpenHelper {
 
     private List<String> user,tweet,noRT,noFav,noAns,date;
 
-
     /**
      * Daten speichern & aufrufen
      * @param context MainActivity Context
      * @param stats   Twitter Home
      */
     public TweetDatabase(Context context, List<Status> stats) {
-        super(context, "Tweetlist", null, 1);
         this.context=context;
+        this.size = stats.size();
         initArray();
         fillArray(stats);
-    }
-
-    /**
-     * Daten aufrufen
-     * @param context MainActivity Context
-     */
-    public TweetDatabase(Context context) {
-        super(context, "Tweetlist", null, 1);
-        this.context=context;
-        initArray();
-
-    }
-
-    @Override
-    public void onOpen(SQLiteDatabase db) {
-        super.onOpen(db);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase mData){
-        String createQuery = context.getString(R.string.create_table);
-        mData.execSQL(createQuery);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase mData, int oldDB, int newDB){
-        mData.execSQL("DROP TABLE IF EXISTS home");
-        mData.execSQL("VACUUM");
-
-        onCreate(mData);
     }
 
     public String getUsername(int pos) {return user.get(pos);}
@@ -93,7 +57,6 @@ public class TweetDatabase extends SQLiteOpenHelper {
     }
 
     private void fillArray(List<Status> stats) {
-        size = stats.size();
         for(short pos = 0; pos < getSize(); pos++) {
             tweet.add( stats.get(pos).getText() );
             noRT.add( Integer.toString(stats.get(pos).getRetweetCount()) );

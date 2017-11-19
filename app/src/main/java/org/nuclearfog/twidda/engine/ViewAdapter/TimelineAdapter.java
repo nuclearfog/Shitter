@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
+import org.nuclearfog.twidda.engine.TweetDatabase;
 
 public class TimelineAdapter extends ArrayAdapter {
     private TweetDatabase mTweets;
