@@ -6,8 +6,6 @@ import java.util.List;
 import twitter4j.Status;
 
 public class TweetDatabase {
-
-
     private Date now;
     private List<String> user,tweet,noRT,noFav,noAns,date;
 

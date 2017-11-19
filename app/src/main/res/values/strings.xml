@@ -16,7 +16,7 @@
 
     <string name="user_table">
     CREATE TABLE user (
-        userID   INT,
+        userID   INTEGER NOT NULL PRIMARY KEY,
         username TEXT,
         pbLink   TEXT );
     </string>

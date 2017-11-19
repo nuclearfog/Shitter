@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.DataBase;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -35,10 +36,20 @@ public class AppDatabase extends SQLiteOpenHelper
         }
     }
 
+    /**
+     *  Store Home-Timeline
+     */
     public void commit(TweetDatabase mTweet) {
 
         SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
         db.beginTransaction();
+
+        for(int pos=0; pos<mTweet.getSize();pos++) {
+           // values.put();
+
+
+        }
 
 
         db.endTransaction();
@@ -48,6 +59,7 @@ public class AppDatabase extends SQLiteOpenHelper
 
 
     }
+
 
     public TweetDatabase read(){
         TweetDatabase mTweet = new TweetDatabase();
