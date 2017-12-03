@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import twitter4j.Status;
+import twitter4j.User;
 
 public class TweetDatabase {
     private Date now;
-    private List<String> user,tweet,noRT,noFav,noAns,date;
+    private List<String> user,tweet,noRT,noFav,noAns,date, pbLink;
+    private List<Long> userId, tweetId;
     private AppDatabase dataHelper;
     private List<Status> stats;
     private Context c;
@@ -42,7 +44,6 @@ public class TweetDatabase {
         dataHelper = AppDatabase.getInstance(c);
         load();
         this.c=c;
-
     }
 
     private void store() {
@@ -51,36 +52,54 @@ public class TweetDatabase {
         ContentValues tl  = new ContentValues();
 
         Status stat;
-        for(int pos = 0;pos < stats.size(); pos++)
-        {
+        User user;
+        for(int pos = 0;pos < stats.size(); pos++) {
             stat = stats.get(pos);
-
+            user = stat.getUser();
             // USER
-            usr.put("userID",stat.getUser().getId() );
-            usr.put("username", stat.getUser().getScreenName());
-            usr.put("pbLink",stat.getUser().getProfileImageURL());
+            usr.put("userID", getUserID(pos));
+            usr.put("username", getUsername(pos));
+            usr.put("pbLink", getPbImg(pos));
 
             // TWEET
-            tl.put("userID",stat.getUser().getId() );
-            tl.put("tweetID", stat.getId());
-            tl.put("time", stat.getCreatedAt().toString());
-            tl.put("tweet", stat.getText());
-            tl.put("retweet", stat.getRetweetCount());
-            tl.put("favorite", stat.getFavoriteCount());
-            tl.put("user", stat.getUser().getId());
+            tl.put("userID", getUserID(pos));
+            tl.put("tweetID", getTweetId(pos));
+            tl.put("time", getDate(pos));
+            tl.put("tweet", getTweet(pos));
+            tl.put("retweet", getRetweet(pos));
+            tl.put("favorite", getFavorite(pos));
         }
         data.insert("user",null, usr);
         data.insert("tweet",null, tl);
+
+
     }
 
     private void load() {
-        SQLiteDatabase data = dataHelper.getReadableDatabase();
-        String col_name[]= new String[] {c.getString(R.string.table_column)};
-        //Cursor tw = data.query("tweet_table", col_name,  ); //TODO
+        SQLiteDatabase data = dataHelper.getReadableDatabase();//TODO
+
+        String col_name[]= new String[]{"tweetID","time","tweet","retweet","favorite","answers","userID"};//
+        Cursor cursor = data.rawQuery("SELECT * FROM tweet_table",null);
 
 
+        while( cursor.moveToNext() ) {
+            int index;
+            index = cursor.getColumnIndex(col_name[1]); // time
+            date.add( cursor.getString(index) );
 
+            index = cursor.getColumnIndex(col_name[2]); // tweet
+            tweet.add( cursor.getString(index) );
 
+            index = cursor.getColumnIndex(col_name[3]); // retweet
+            noRT.add( cursor.getString(index) );
+
+            index = cursor.getColumnIndex(col_name[4]); // favorite
+            noFav.add( cursor.getString(index) );
+
+            index = cursor.getColumnIndex(col_name[5]); // answers
+            noAns.add( cursor.getString(index) );
+        }
+        data.close();
     }
 
     /**
@@ -101,12 +120,15 @@ public class TweetDatabase {
         date.add(time);
     }
 
+    public long getUserID(int pos){return userId.get(pos);}
     public String getUsername(int pos){return user.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
     public String getRetweet(int pos){return noRT.get(pos);}
     public String getFavorite(int pos){return noFav.get(pos);}
     public String getDate(int pos){return date.get(pos);}
     public String getAnswer(int pos){return noAns.get(pos);}
+    public String getPbImg (int pos){return pbLink.get(pos);}
+    public long getTweetId(int pos){return tweetId.get(pos);}
     public int getSize(){return user.size();}
 
     private String getTweetTime(Date time) {
@@ -122,19 +144,23 @@ public class TweetDatabase {
     }
 
     private void initArray() {
-        now   = new Date();
-        user  = new ArrayList<>();
-        tweet = new ArrayList<>();
-        noRT  = new ArrayList<>();
-        noFav = new ArrayList<>();
-        noAns = new ArrayList<>();
-        date  = new ArrayList<>();
+        now    = new Date();
+        user   = new ArrayList<>();
+        tweet  = new ArrayList<>();
+        noRT   = new ArrayList<>();
+        noFav  = new ArrayList<>();
+        noAns  = new ArrayList<>();
+        date   = new ArrayList<>();
+        userId = new ArrayList<>();
+        pbLink = new ArrayList<>();
+        tweetId= new ArrayList<>();
     }
 
     private void fillArray() {
         Status stat;
         for(short pos = 0; pos < getSize(); pos++) {
             stat = stats.get(pos);
+            stat.getId();
             tweet.add( stat.getText() );
             noRT.add( Integer.toString(stat.getRetweetCount()) );
             noFav.add( Integer.toString(stat.getFavoriteCount()) );
@@ -142,6 +168,9 @@ public class TweetDatabase {
             String name = stat.getUser().getScreenName();
             String twUsr = stat.getUser().getName();
             user.add( name +" @"+twUsr );
+            userId.add(stat.getUser().getId());
+            pbLink.add(stat.getUser().getProfileImageURL());
+            tweetId.add(stat.getId());
         }
     }
 }

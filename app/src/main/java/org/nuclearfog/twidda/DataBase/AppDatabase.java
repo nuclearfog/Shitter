@@ -11,7 +11,7 @@ public class AppDatabase extends SQLiteOpenHelper
     private Context c;
 
     private AppDatabase(Context context) {
-        super(context, "twitter",null, 1);
+        super(context, "twitter.sqlite",null, 1);
         c = context;
     }
 
@@ -25,11 +25,9 @@ public class AppDatabase extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion != newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS " + "user");
-            db.execSQL("DROP TABLE IF EXISTS " + "tweet");
-            onCreate(db);
-        }
+        db.execSQL("DROP TABLE IF EXISTS " + "user_table");
+        db.execSQL("DROP TABLE IF EXISTS " + "tweet_table");
+        onCreate(db);
     }
 
     /**
