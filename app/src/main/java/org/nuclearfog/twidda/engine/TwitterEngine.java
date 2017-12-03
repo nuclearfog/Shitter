@@ -54,7 +54,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         try {
             switch(args[0]) {
                 case (0): // Home Timeline
-                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline());
+                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context);
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
 
                 break;
@@ -66,10 +66,15 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 case(2):  // Mentions
                     // TODO
                     break;
+
+                case(3):    // Get TIMELINE
+                    TweetDatabase tweetDeck = new TweetDatabase(context);
+
+                    break;
             }
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){ e.printStackTrace(); }
+        } catch (Exception e){ System.out.println(e.toString()); }
         return null;
     }
 

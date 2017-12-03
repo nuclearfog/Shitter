@@ -95,11 +95,10 @@ public class MainActivity extends Activity
                 TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
                 switch(tabId) {
                     case "timeline":
-                        homeView.execute(0,1);
+                        homeView.execute(3);
                         break;
 
                     case "trends":
-                        homeView.execute(1,1);
                         break;
 
                     case "mention":

@@ -1,28 +1,24 @@
 package org.nuclearfog.twidda.DataBase;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.v7.app.AppCompatActivity;
-
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.engine.TweetDatabase;
-
 
 public class AppDatabase extends SQLiteOpenHelper
 {
     private static AppDatabase mData;
-    private Context context;
+    private Context c;
 
     private AppDatabase(Context context) {
         super(context, "twitter",null, 1);
+        c = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String uQuery = context.getString(R.string.user_table);
-        String tQuery = context.getString(R.string.tweet_table);
+        String uQuery = c.getString(R.string.user_table);
+        String tQuery = c.getString(R.string.tweet_table);
         db.execSQL(uQuery);
         db.execSQL(tQuery);
     }
@@ -37,49 +33,13 @@ public class AppDatabase extends SQLiteOpenHelper
     }
 
     /**
-     *  Store Home-Timeline
-     */
-    public void commit(TweetDatabase mTweet) {
-
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        db.beginTransaction();
-
-        for(int pos=0; pos<mTweet.getSize();pos++) {
-           // values.put();
-
-
-        }
-
-
-        db.endTransaction();
-
-
-
-
-
-    }
-
-
-    public TweetDatabase read(){
-        TweetDatabase mTweet = new TweetDatabase();
-
-
-
-        return mTweet;
-    }
-
-
-
-
-    /**
      * Singleton Method
      * @param context Application Context
      * @return mData Object of this class
      */
     public static synchronized AppDatabase getInstance(Context context) {
         if (mData == null) {
-            mData = new AppDatabase(context.getApplicationContext());
+            mData = new AppDatabase(context);
         }
         return mData;
     }

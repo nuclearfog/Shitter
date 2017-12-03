@@ -15,25 +15,30 @@
     <!--Datenbank Konstanten -->
 
     <string name="user_table">
-    CREATE TABLE user (
+    CREATE TABLE IF NOT EXISTS user (
         userID   INTEGER NOT NULL PRIMARY KEY,
         username TEXT,
         pbLink   TEXT );
     </string>
 
     <string name="tweet_table">
-    CREATE TABLE tweet (
+    CREATE TABLE IF NOT EXISTS tweet (
         tweetID  INTEGER NOT NULL PRIMARY KEY,
-        user     TEXT,
+        user     INTEGER,
         time     TEXT,
         tweet    TEXT,
         retweet  INTEGER,
         favorite INTEGER,
-        answers  INTEGER);
+        answers  INTEGER,
+        FOREIGN  KEY (userID) REFERENCES user_table(userID) );
     </string>
 
+    <string name="table_column">
+        {tweetID,user,time,tweet,retweet,favorite,answers}
+    </string>
 
     <string name="datei">timeline.db</string>
+
 
 
 
