@@ -14,13 +14,15 @@ import java.util.List;
 import twitter4j.Status;
 import twitter4j.User;
 
-public class TweetDatabase {
-    private Date now;
+public class TweetDatabase
+{
+    private AppDatabase dataHelper;
     private List<String> user,tweet,noRT,noFav,noAns,date, pbLink;
     private List<Long> userId, tweetId;
-    private AppDatabase dataHelper;
     private List<Status> stats;
     private Context c;
+    private Date now;
+    private int size = 0;
 
     /**
      * Store Data
@@ -40,8 +42,8 @@ public class TweetDatabase {
      * @param c MainActivity Context
      */
     public TweetDatabase(Context c) {
-        initArray();
         dataHelper = AppDatabase.getInstance(c);
+        initArray();
         load();
         this.c=c;
     }
@@ -54,13 +56,10 @@ public class TweetDatabase {
         Status stat;
         User user;
         for(int pos = 0;pos < stats.size(); pos++) {
-            stat = stats.get(pos);
-            user = stat.getUser();
             // USER
             usr.put("userID", getUserID(pos));
             usr.put("username", getUsername(pos));
             usr.put("pbLink", getPbImg(pos));
-
             // TWEET
             tl.put("userID", getUserID(pos));
             tl.put("tweetID", getTweetId(pos));
@@ -78,26 +77,33 @@ public class TweetDatabase {
     private void load() {
         SQLiteDatabase data = dataHelper.getReadableDatabase();//TODO
 
-        String col_name[]= new String[]{"tweetID","time","tweet","retweet","favorite","answers","userID"};//
-        Cursor cursor = data.rawQuery("SELECT * FROM tweet_table",null);
 
-
+        Cursor cursor = data.rawQuery("SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID",null);
+        cursor.moveToFirst();
         while( cursor.moveToNext() ) {
             int index;
-            index = cursor.getColumnIndex(col_name[1]); // time
+            index = cursor.getColumnIndex("time"); // time
             date.add( cursor.getString(index) );
 
-            index = cursor.getColumnIndex(col_name[2]); // tweet
+            index = cursor.getColumnIndex("tweet"); // tweet
             tweet.add( cursor.getString(index) );
 
-            index = cursor.getColumnIndex(col_name[3]); // retweet
+            index = cursor.getColumnIndex("retweet"); // retweet
             noRT.add( cursor.getString(index) );
 
-            index = cursor.getColumnIndex(col_name[4]); // favorite
+            index = cursor.getColumnIndex("favorite"); // favorite
             noFav.add( cursor.getString(index) );
 
-            index = cursor.getColumnIndex(col_name[5]); // answers
+            index = cursor.getColumnIndex("answers"); // answers
             noAns.add( cursor.getString(index) );
+
+            index = cursor.getColumnIndex("answers"); // user
+            user.add(cursor.getString(index) );
+
+            index = cursor.getColumnIndex("pbLink"); // user
+            pbLink.add(cursor.getString(index) );
+
+            size++;
         }
         data.close();
     }
@@ -121,6 +127,7 @@ public class TweetDatabase {
     }
 
     public long getUserID(int pos){return userId.get(pos);}
+    public long getTweetId(int pos){return tweetId.get(pos);}
     public String getUsername(int pos){return user.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
     public String getRetweet(int pos){return noRT.get(pos);}
@@ -128,8 +135,14 @@ public class TweetDatabase {
     public String getDate(int pos){return date.get(pos);}
     public String getAnswer(int pos){return noAns.get(pos);}
     public String getPbImg (int pos){return pbLink.get(pos);}
-    public long getTweetId(int pos){return tweetId.get(pos);}
-    public int getSize(){return user.size();}
+
+    public int getSize() {
+        if(stats != null) {
+            return stats.size();
+        } else {
+            return size;
+        }
+    }
 
     private String getTweetTime(Date time) {
         int tweetHour = now.getHours() - time.getHours();
@@ -162,6 +175,7 @@ public class TweetDatabase {
             stat = stats.get(pos);
             stat.getId();
             tweet.add( stat.getText() );
+            noAns.add("test");
             noRT.add( Integer.toString(stat.getRetweetCount()) );
             noFav.add( Integer.toString(stat.getFavoriteCount()) );
             date.add( getTweetTime(stat.getCreatedAt()) );
