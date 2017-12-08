@@ -3,8 +3,10 @@ package org.nuclearfog.twidda;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -85,9 +87,11 @@ public class MainActivity extends Activity
         tab3.setIndicator("Mention").setContent(R.id.list);
 
         tabhost.addTab(tab3);
-        tabhost.setCurrentTab(0);
+
 
         setRefreshListener();
+
+        setListViewListener();
 
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -107,6 +111,7 @@ public class MainActivity extends Activity
                 }
             }
         });
+        tabhost.setCurrentTab(0);
     }
 
     private void setRefreshListener() {
@@ -131,6 +136,15 @@ public class MainActivity extends Activity
         });
     }
 
+    private void setListViewListener(){
+        ListView lv = (ListView) findViewById(R.id.list);
+        lv.setOnItemClickListener( new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int pos,long id)
+            {
+                // öffne Tweet aus der Timeline TODO
+            }
+        });
+    }
 
     private boolean loggedIn() {
         return einstellungen.getBoolean("login", false);

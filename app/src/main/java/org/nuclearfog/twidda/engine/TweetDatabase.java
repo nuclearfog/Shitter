@@ -26,7 +26,6 @@ public class TweetDatabase
     private List<Date> newDate;
     private List<Status> stats;
     private Context c;
-    private Date now;
     private int size = 0;
 
     /**
@@ -94,9 +93,9 @@ public class TweetDatabase
             noFav.add( cursor.getString(index) );
             index = cursor.getColumnIndex("answers"); // answers
             noAns.add( cursor.getString(index) );
-            index = cursor.getColumnIndex("answers"); // user
+            index = cursor.getColumnIndex("username"); // user
             user.add(cursor.getString(index) );
-            index = cursor.getColumnIndex("pbLink"); // user
+            index = cursor.getColumnIndex("pbLink"); // image
             pbLink.add(cursor.getString(index) );
             index = cursor.getColumnIndex("userID"); // UserID
             userId.add(cursor.getLong(index) );
@@ -126,6 +125,7 @@ public class TweetDatabase
     }
 
     private String getTweetTime(Date time) {
+        Date now = new Date();
         int tweetHour = now.getHours() - time.getHours();
         int tweetMin  = now.getMinutes() - time.getMinutes();
         int tweetSec  = now.getSeconds() - time.getSeconds();
@@ -145,7 +145,6 @@ public class TweetDatabase
     }
 
     private void initArray() {
-        now    = new Date();
         user   = new ArrayList<>();
         tweet  = new ArrayList<>();
         noRT   = new ArrayList<>();
