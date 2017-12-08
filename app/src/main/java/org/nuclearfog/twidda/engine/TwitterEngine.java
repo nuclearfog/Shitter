@@ -69,6 +69,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
                 case(3):    // Get TIMELINE
                     TweetDatabase tweetDeck = new TweetDatabase(context);
+                    timelineAdapter = new TimelineAdapter(context,R.layout.tweet,tweetDeck);
 
                     break;
             }

@@ -8,17 +8,22 @@ import android.database.sqlite.SQLiteDatabase;
 import org.nuclearfog.twidda.DataBase.AppDatabase;
 import org.nuclearfog.twidda.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import twitter4j.Status;
 import twitter4j.User;
 
 public class TweetDatabase
 {
     private AppDatabase dataHelper;
-    private List<String> user,tweet,noRT,noFav,noAns,date, pbLink;
+    private List<String> user,tweet,noRT,noFav,noAns, pbLink;
     private List<Long> userId, tweetId;
+    private List<Date> newDate;
     private List<Status> stats;
     private Context c;
     private Date now;
@@ -30,11 +35,11 @@ public class TweetDatabase
      */
     public TweetDatabase(List<Status> stats, Context c) {
         this.stats=stats;
+        this.c=c;
         dataHelper = AppDatabase.getInstance(c);
         initArray();
         fillArray();
         store();
-        this.c=c;
     }
 
     /**
@@ -42,20 +47,19 @@ public class TweetDatabase
      * @param c MainActivity Context
      */
     public TweetDatabase(Context c) {
+        this.c=c;
         dataHelper = AppDatabase.getInstance(c);
         initArray();
         load();
-        this.c=c;
     }
 
     private void store() {
         SQLiteDatabase data = dataHelper.getWritableDatabase();
         ContentValues usr = new ContentValues();
         ContentValues tl  = new ContentValues();
-
         Status stat;
         User user;
-        for(int pos = 0;pos < stats.size(); pos++) {
+        for(int pos = stats.size()-1 ;pos >=0; pos--) {
             // USER
             usr.put("userID", getUserID(pos));
             usr.put("username", getUsername(pos));
@@ -63,67 +67,44 @@ public class TweetDatabase
             // TWEET
             tl.put("userID", getUserID(pos));
             tl.put("tweetID", getTweetId(pos));
-            tl.put("time", getDate(pos));
+            tl.put("time", dateToLong(newDate.get(pos)));
             tl.put("tweet", getTweet(pos));
             tl.put("retweet", getRetweet(pos));
             tl.put("favorite", getFavorite(pos));
-        }
-        data.insert("user",null, usr);
-        data.insert("tweet",null, tl);
-
-
-    }
-
-    private void load() {
-        SQLiteDatabase data = dataHelper.getReadableDatabase();//TODO
-
-
-        Cursor cursor = data.rawQuery("SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID",null);
-        cursor.moveToFirst();
-        while( cursor.moveToNext() ) {
-            int index;
-            index = cursor.getColumnIndex("time"); // time
-            date.add( cursor.getString(index) );
-
-            index = cursor.getColumnIndex("tweet"); // tweet
-            tweet.add( cursor.getString(index) );
-
-            index = cursor.getColumnIndex("retweet"); // retweet
-            noRT.add( cursor.getString(index) );
-
-            index = cursor.getColumnIndex("favorite"); // favorite
-            noFav.add( cursor.getString(index) );
-
-            index = cursor.getColumnIndex("answers"); // answers
-            noAns.add( cursor.getString(index) );
-
-            index = cursor.getColumnIndex("answers"); // user
-            user.add(cursor.getString(index) );
-
-            index = cursor.getColumnIndex("pbLink"); // user
-            pbLink.add(cursor.getString(index) );
-
-            size++;
+            data.insert("user",null, usr);
+            data.insert("tweet",null, tl);
         }
         data.close();
     }
 
-    /**
-     * Save Data
-     * @param usr Username
-     * @param tw Tweet
-     * @param rt Number Retweets
-     * @param fav Number Favorites
-     * @param time Tweet Time
-     * @param ans Number Answers
-     */
-    public void setTweet(String usr,String tw,String rt,String fav,String time,String ans) {
-        user.add(usr);
-        tweet.add(tw);
-        noRT.add(rt);
-        noFav.add(fav);
-        noAns.add(ans);
-        date.add(time);
+    private void load() {
+        SQLiteDatabase data = dataHelper.getReadableDatabase();//TODO
+        int index;
+        String SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL);
+        Cursor cursor = data.rawQuery(SQL_GET_HOME,null);
+        cursor.moveToFirst();
+        while( cursor.moveToNext()) {
+            index = cursor.getColumnIndex("time"); // time
+            newDate.add(longToDate(cursor.getLong(index)));
+            index = cursor.getColumnIndex("tweet"); // tweet
+            tweet.add( cursor.getString(index) );
+            index = cursor.getColumnIndex("retweet"); // retweet
+            noRT.add( cursor.getString(index) );
+            index = cursor.getColumnIndex("favorite"); // favorite
+            noFav.add( cursor.getString(index) );
+            index = cursor.getColumnIndex("answers"); // answers
+            noAns.add( cursor.getString(index) );
+            index = cursor.getColumnIndex("answers"); // user
+            user.add(cursor.getString(index) );
+            index = cursor.getColumnIndex("pbLink"); // user
+            pbLink.add(cursor.getString(index) );
+            index = cursor.getColumnIndex("userID"); // UserID
+            userId.add(cursor.getLong(index) );
+            index = cursor.getColumnIndex("tweetID"); // tweetID
+            tweetId.add(cursor.getLong(index) );
+            size++;
+        }
+        data.close();
     }
 
     public long getUserID(int pos){return userId.get(pos);}
@@ -132,7 +113,7 @@ public class TweetDatabase
     public String getTweet(int pos){return tweet.get(pos);}
     public String getRetweet(int pos){return noRT.get(pos);}
     public String getFavorite(int pos){return noFav.get(pos);}
-    public String getDate(int pos){return date.get(pos);}
+    public String getDate(int pos){return getTweetTime(newDate.get(pos));}
     public String getAnswer(int pos){return noAns.get(pos);}
     public String getPbImg (int pos){return pbLink.get(pos);}
 
@@ -156,6 +137,13 @@ public class TweetDatabase
             return "vor "+tweetSec+" sec";
     }
 
+    private Date longToDate(long mills) {
+        return new Date(mills);
+    }
+    private long dateToLong(Date d) {
+        return d.getTime();
+    }
+
     private void initArray() {
         now    = new Date();
         user   = new ArrayList<>();
@@ -163,10 +151,10 @@ public class TweetDatabase
         noRT   = new ArrayList<>();
         noFav  = new ArrayList<>();
         noAns  = new ArrayList<>();
-        date   = new ArrayList<>();
         userId = new ArrayList<>();
         pbLink = new ArrayList<>();
         tweetId= new ArrayList<>();
+        newDate= new ArrayList<>();
     }
 
     private void fillArray() {
@@ -178,7 +166,7 @@ public class TweetDatabase
             noAns.add("test");
             noRT.add( Integer.toString(stat.getRetweetCount()) );
             noFav.add( Integer.toString(stat.getFavoriteCount()) );
-            date.add( getTweetTime(stat.getCreatedAt()) );
+            newDate.add( stat.getCreatedAt() );
             String name = stat.getUser().getScreenName();
             String twUsr = stat.getUser().getName();
             user.add( name +" @"+twUsr );

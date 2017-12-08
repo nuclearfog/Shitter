@@ -43,7 +43,6 @@ public class MainActivity extends Activity
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){login();}});
         } else {
-            setContentView(R.layout.main_layout);
             login();
         }
     }
@@ -65,6 +64,7 @@ public class MainActivity extends Activity
     }
 
     private void login(){
+        setContentView(R.layout.main_layout);
         list = (ListView) findViewById(R.id.list);
 
         tabhost = (TabHost)findViewById(R.id.tabhost);

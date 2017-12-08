@@ -11,12 +11,11 @@
     <string name="verifierbutton">Verifizieren</string>
     <string name="register_link">Link zur Anmeldung</string>
 
-
     <!--Datenbank Konstanten -->
 
     <string name="user_table">
     CREATE TABLE IF NOT EXISTS user (
-        userID   INTEGER NOT NULL PRIMARY KEY,
+        userID   INTEGER PRIMARY KEY,
         scrname  TEXT,
         username TEXT,
         pbLink   TEXT );
@@ -24,14 +23,18 @@
 
     <string name="tweet_table">
     CREATE TABLE IF NOT EXISTS tweet (
-        tweetID  INTEGER NOT NULL PRIMARY KEY,
-        userID   INTEGER,
-        time     DATE,
-        tweet    TEXT,
-        retweet  INTEGER,
-        favorite INTEGER,
-        answers  INTEGER,
-        FOREIGN  KEY (userID) REFERENCES user_table(userID) );
+        tweetID     INTEGER PRIMARY KEY,
+        userID      INTEGER,
+        time        INTEGER,
+        tweet       TEXT,
+        retweet     INTEGER,
+        favorite    INTEGER,
+        answers     INTEGER,
+        FOREIGN     KEY (userID) REFERENCES user_table(userID) );
+    </string>
+
+    <string name="SQL_HOME_TL">
+        "SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID ORDER BY time ASC"
     </string>
 
     <string name="table_column">
@@ -39,9 +42,6 @@
     </string>
 
     <string name="datei">timeline.db</string>
-
-
-
 
 </resources>
 
