@@ -50,9 +50,9 @@ public class TrendDatabase {
     }
 
     private void load(){
-        SQLiteDatabase data = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
         String SQL_TREND = c.getString(R.string.SQL_TRENS);
-        Cursor cursor = data.rawQuery(SQL_TREND,null);
+        Cursor cursor = db.rawQuery(SQL_TREND,null);
         int index;
         if(cursor.moveToFirst()) {
             do {
@@ -65,17 +65,18 @@ public class TrendDatabase {
             } while(cursor.moveToNext());
         }
         cursor.close();
-        data.close();
+        db.close();
     }
 
     private void store(){
-        SQLiteDatabase data = dataHelper.getWritableDatabase();
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+
         ContentValues trend = new ContentValues();
         for(int pos = 0; pos < getSize(); pos++) {
             trend.put("trendpos", getTrendpos(pos));
             trend.put("trendname", getTrendname(pos));
             trend.put("trendlink", getTrendlink(pos));
-            data.insert("trend",null, trend);
+            db.insertWithOnConflict("trend",null, trend,SQLiteDatabase.CONFLICT_REPLACE);
         }
     }
 

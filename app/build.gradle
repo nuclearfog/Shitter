@@ -4,8 +4,8 @@ android {
     compileSdkVersion 24
     defaultConfig {
         applicationId "org.nuclearfog.twidda"
-        minSdkVersion 23
-        targetSdkVersion 23
+        minSdkVersion 16
+        targetSdkVersion 16
         versionCode 1
         versionName "1.0"
 

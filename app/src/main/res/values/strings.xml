@@ -33,7 +33,7 @@
 
     <string name="trend_table">
      CREATE TABLE IF NOT EXISTS trend (
-        trendpos    INTEGER,
+        trendpos    INTEGER PRIMARY KEY,
         trendname   TEXT,
         trendlink   TEXT );
     </string>
@@ -43,7 +43,7 @@
     </string>
 
     <string name="SQL_TRENS">
-        "SELECT * FROM trend ORDER BY trendpos DESC"
+        "SELECT * FROM trend ORDER BY trendpos ASC"
     </string>
 
     <string name="datei">timeline.db</string>

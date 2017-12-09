@@ -53,13 +53,13 @@ public class TweetDatabase
     }
 
     private void store() {
-        SQLiteDatabase data = dataHelper.getWritableDatabase();
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues usr = new ContentValues();
         ContentValues tl  = new ContentValues();
         Status stat;
         User user;
         for(int pos = 0; pos < getSize(); pos++) {
-            // USER TODO UNIQUE
+            // USER
             usr.put("userID", getUserID(pos));
             usr.put("username", getUsername(pos));
             usr.put("pbLink", getPbImg(pos));
@@ -70,17 +70,17 @@ public class TweetDatabase
             tl.put("tweet", getTweet(pos));
             tl.put("retweet", getRetweet(pos));
             tl.put("favorite", getFavorite(pos));
-            data.insert("user",null, usr);
-            data.insert("tweet",null, tl);
+            db.insertWithOnConflict("user",null, usr,SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict("tweet",null, tl,SQLiteDatabase.CONFLICT_REPLACE);
         }
-        data.close();
+        db.close();
     }
 
     private void load() {
-        SQLiteDatabase data = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
         int index;
         String SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL);
-        Cursor cursor = data.rawQuery(SQL_GET_HOME,null);
+        Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         cursor.moveToFirst();
         if(cursor.moveToFirst()) {
             do {
@@ -106,7 +106,7 @@ public class TweetDatabase
             } while(cursor.moveToNext());
         }
         cursor.close();
-        data.close();
+        db.close();
     }
 
     public long getUserID(int pos){return userId.get(pos);}
