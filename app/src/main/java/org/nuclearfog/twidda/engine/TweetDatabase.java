@@ -58,8 +58,8 @@ public class TweetDatabase
         ContentValues tl  = new ContentValues();
         Status stat;
         User user;
-        for(int pos = stats.size()-1 ;pos >=0; pos--) {
-            // USER
+        for(int pos = 0; pos < getSize(); pos++) {
+            // USER TODO UNIQUE
             usr.put("userID", getUserID(pos));
             usr.put("username", getUsername(pos));
             usr.put("pbLink", getPbImg(pos));
@@ -77,32 +77,35 @@ public class TweetDatabase
     }
 
     private void load() {
-        SQLiteDatabase data = dataHelper.getReadableDatabase();//TODO
+        SQLiteDatabase data = dataHelper.getReadableDatabase();
         int index;
         String SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL);
         Cursor cursor = data.rawQuery(SQL_GET_HOME,null);
         cursor.moveToFirst();
-        while( cursor.moveToNext()) {
-            index = cursor.getColumnIndex("time"); // time
-            newDate.add(longToDate(cursor.getLong(index)));
-            index = cursor.getColumnIndex("tweet"); // tweet
-            tweet.add( cursor.getString(index) );
-            index = cursor.getColumnIndex("retweet"); // retweet
-            noRT.add( cursor.getString(index) );
-            index = cursor.getColumnIndex("favorite"); // favorite
-            noFav.add( cursor.getString(index) );
-            index = cursor.getColumnIndex("answers"); // answers
-            noAns.add( cursor.getString(index) );
-            index = cursor.getColumnIndex("username"); // user
-            user.add(cursor.getString(index) );
-            index = cursor.getColumnIndex("pbLink"); // image
-            pbLink.add(cursor.getString(index) );
-            index = cursor.getColumnIndex("userID"); // UserID
-            userId.add(cursor.getLong(index) );
-            index = cursor.getColumnIndex("tweetID"); // tweetID
-            tweetId.add(cursor.getLong(index) );
-            size++;
+        if(cursor.moveToFirst()) {
+            do {
+                index = cursor.getColumnIndex("time"); // time
+                newDate.add(longToDate(cursor.getLong(index)));
+                index = cursor.getColumnIndex("tweet"); // tweet
+                tweet.add( cursor.getString(index) );
+                index = cursor.getColumnIndex("retweet"); // retweet
+                noRT.add( cursor.getString(index) );
+                index = cursor.getColumnIndex("favorite"); // favorite
+                noFav.add( cursor.getString(index) );
+                index = cursor.getColumnIndex("answers"); // answers
+                noAns.add( cursor.getString(index) );
+                index = cursor.getColumnIndex("username"); // user
+                user.add(cursor.getString(index) );
+                index = cursor.getColumnIndex("pbLink"); // image
+                pbLink.add(cursor.getString(index) );
+                index = cursor.getColumnIndex("userID"); // UserID
+                userId.add(cursor.getLong(index) );
+                index = cursor.getColumnIndex("tweetID"); // tweetID
+                tweetId.add(cursor.getLong(index) );
+                size++;
+            } while(cursor.moveToNext());
         }
+        cursor.close();
         data.close();
     }
 

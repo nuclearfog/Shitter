@@ -12,7 +12,6 @@
     <string name="register_link">Link zur Anmeldung</string>
 
     <!--Datenbank Konstanten -->
-
     <string name="user_table">
     CREATE TABLE IF NOT EXISTS user (
         userID   INTEGER PRIMARY KEY,
@@ -32,12 +31,19 @@
         FOREIGN     KEY (userID) REFERENCES user_table(userID) );
     </string>
 
+    <string name="trend_table">
+     CREATE TABLE IF NOT EXISTS trend (
+        trendpos    INTEGER,
+        trendname   TEXT,
+        trendlink   TEXT );
+    </string>
+
     <string name="SQL_HOME_TL">
         "SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID ORDER BY time DESC"
     </string>
 
-    <string name="table_column">
-        {"tweetID","time","tweet","retweet","favorite","answers","userID"}
+    <string name="SQL_TRENS">
+        "SELECT * FROM trend ORDER BY trendpos DESC"
     </string>
 
     <string name="datei">timeline.db</string>

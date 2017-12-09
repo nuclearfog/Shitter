@@ -11,7 +11,6 @@ import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -28,8 +27,8 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     private static Twitter twitter;
     private Context context;
     private ListView list;
-    private static TimelineAdapter timelineAdapter;
-    private static TrendsAdapter trendsAdapter;
+    private TimelineAdapter timelineAdapter;
+    private TrendsAdapter trendsAdapter;
     private SwipeRefreshLayout refresh;
 
     public TwitterEngine(Context context, ListView list) {
@@ -59,8 +58,8 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
                 break;
                 case(1):  // Trends
-                    Trends trend = twitter.getPlaceTrends(1);
-                    trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend.getTrends());
+                    TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
+                    trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend);
 
                     break;
                 case(2):  // Mentions
@@ -70,7 +69,10 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 case(3):    // Get TIMELINE
                     TweetDatabase tweetDeck = new TweetDatabase(context);
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,tweetDeck);
-
+                    break;
+                case(4):    // GET TRENDS
+                    TrendDatabase trendDeck = new TrendDatabase(context);
+                    trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trendDeck);
                     break;
             }
         } catch (TwitterException e) {

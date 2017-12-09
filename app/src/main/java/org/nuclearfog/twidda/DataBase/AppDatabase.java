@@ -17,16 +17,19 @@ public class AppDatabase extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String uQuery = c.getString(R.string.user_table);
-        String tQuery = c.getString(R.string.tweet_table);
+        String uQuery  = c.getString(R.string.user_table);
+        String tQuery  = c.getString(R.string.tweet_table);
+        String trQuery = c.getString(R.string.trend_table);
         db.execSQL(uQuery);
         db.execSQL(tQuery);
+        db.execSQL(trQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + "user_table");
-        db.execSQL("DROP TABLE IF EXISTS " + "tweet_table");
+        db.execSQL("DROP TABLE IF EXISTS " + "user");
+        db.execSQL("DROP TABLE IF EXISTS " + "tweet");
+        db.execSQL("DROP TABLE IF EXISTS " + "trend");
         onCreate(db);
     }
 

@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.engine.ViewAdapter;
 
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.engine.TrendDatabase;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,33 +10,25 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.nuclearfog.twidda.R;
-
-import java.util.List;
-
-import twitter4j.Location;
-import twitter4j.ResponseList;
-import twitter4j.Trend;
-import twitter4j.Trends;
 
 public class TrendsAdapter extends ArrayAdapter {
-    private Trend[] list;
+    private TrendDatabase trend;
     private Context c;
 
-    public TrendsAdapter(Context c, int layout, Trend[] list) {
+    public TrendsAdapter(Context c, int layout, TrendDatabase trend) {
         super(c, layout);
-        this.list = list;
+        this.trend = trend;
         this.c = c;
     }
 
     @Override
     public int getCount() {
-        return list.length;
+        return trend.getSize();
     }
 
     @Override
     public Object getItem(int position) {
-        return list[position];
+        return trend.getTrendname(position);
     }
 
     @Override
@@ -43,7 +38,7 @@ public class TrendsAdapter extends ArrayAdapter {
             LayoutInflater inf=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.trend, null);
         }
-        String trendName = list[position].getName();
+        String trendName = trend.getTrendname(position);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);
         return v;
     }
