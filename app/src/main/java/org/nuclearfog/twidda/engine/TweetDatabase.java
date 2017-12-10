@@ -1,25 +1,19 @@
 package org.nuclearfog.twidda.engine;
 
+import org.nuclearfog.twidda.DataBase.AppDatabase;
+import org.nuclearfog.twidda.R;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.nuclearfog.twidda.DataBase.AppDatabase;
-import org.nuclearfog.twidda.R;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 import twitter4j.Status;
-import twitter4j.User;
 
-public class TweetDatabase
-{
+public class TweetDatabase {
     private AppDatabase dataHelper;
     private List<String> user,tweet,noRT,noFav,noAns, pbLink;
     private List<Long> userId, tweetId;
@@ -56,8 +50,7 @@ public class TweetDatabase
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues usr = new ContentValues();
         ContentValues tl  = new ContentValues();
-        Status stat;
-        User user;
+
         for(int pos = 0; pos < getSize(); pos++) {
             // USER
             usr.put("userID", getUserID(pos));
@@ -66,7 +59,7 @@ public class TweetDatabase
             // TWEET
             tl.put("userID", getUserID(pos));
             tl.put("tweetID", getTweetId(pos));
-            tl.put("time", dateToLong(newDate.get(pos)));
+            tl.put("time", getTime(pos));
             tl.put("tweet", getTweet(pos));
             tl.put("retweet", getRetweet(pos));
             tl.put("favorite", getFavorite(pos));
@@ -81,7 +74,7 @@ public class TweetDatabase
         int index;
         String SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL);
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
-        cursor.moveToFirst();
+
         if(cursor.moveToFirst()) {
             do {
                 index = cursor.getColumnIndex("time"); // time
@@ -116,6 +109,7 @@ public class TweetDatabase
     public String getRetweet(int pos){return noRT.get(pos);}
     public String getFavorite(int pos){return noFav.get(pos);}
     public String getDate(int pos){return getTweetTime(newDate.get(pos));}
+    public long getTime(int pos){return newDate.get(pos).getTime();}
     public String getAnswer(int pos){return noAns.get(pos);}
     public String getPbImg (int pos){return pbLink.get(pos);}
 
@@ -129,10 +123,13 @@ public class TweetDatabase
 
     private String getTweetTime(Date time) {
         Date now = new Date();
+        int tweetDay = now.getDay() - time.getDay();
         int tweetHour = now.getHours() - time.getHours();
         int tweetMin  = now.getMinutes() - time.getMinutes();
         int tweetSec  = now.getSeconds() - time.getSeconds();
-        if (tweetHour > 0)
+        if (tweetDay > 0)
+            return "vor "+tweetDay+" d";
+        else if (tweetHour > 0)
             return "vor "+tweetHour+" h";
         else if(tweetMin > 0)
             return "vor "+tweetMin+" min";
@@ -142,9 +139,6 @@ public class TweetDatabase
 
     private Date longToDate(long mills) {
         return new Date(mills);
-    }
-    private long dateToLong(Date d) {
-        return d.getTime();
     }
 
     private void initArray() {
