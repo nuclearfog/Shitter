@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -67,7 +66,7 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
                 e.putBoolean("login", true);
                 e.putString("accesstoken", accessToken.getToken());
                 e.putString("accesstokensecret", accessToken.getTokenSecret());
-                e.commit();
+                e.apply();
 
                 return true;
             }

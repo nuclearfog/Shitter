@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.engine;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -42,6 +41,7 @@ public class TrendDatabase {
     public String getTrendname(int pos){ return trendName.get(pos); }
     public String getTrendlink(int pos){return trendLink.get(pos);}
     public int getTrendpos(int pos){ return trendpos.get(pos); }
+
     public int getSize(){
         if(trendName != null)
             return trendName.size();

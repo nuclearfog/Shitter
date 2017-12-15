@@ -65,15 +65,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 case(2):  // Mentions
                     // TODO
                     break;
-
-                case(3):    // Get TIMELINE
-                    TweetDatabase tweetDeck = new TweetDatabase(context);
-                    timelineAdapter = new TimelineAdapter(context,R.layout.tweet,tweetDeck);
-                    break;
-                case(4):    // GET TRENDS
-                    TrendDatabase trendDeck = new TrendDatabase(context);
-                    trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trendDeck);
-                    break;
             }
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();

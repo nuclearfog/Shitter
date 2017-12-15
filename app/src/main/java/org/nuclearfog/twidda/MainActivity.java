@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +14,11 @@ import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
+import org.nuclearfog.twidda.engine.TrendDatabase;
+import org.nuclearfog.twidda.engine.TweetDatabase;
 import org.nuclearfog.twidda.engine.TwitterEngine;
+import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
 
 public class MainActivity extends Activity
 {
@@ -24,6 +29,7 @@ public class MainActivity extends Activity
     private TabHost tabhost;
     private SwipeRefreshLayout refresh;
     private ListView list;
+    private String currentTab = "timeline";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,9 @@ public class MainActivity extends Activity
             login();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu m){return false;}
 
     /**
      * Load Preferences
@@ -75,8 +84,8 @@ public class MainActivity extends Activity
     private void login() {
         setContentView(R.layout.main_layout);
         list = (ListView) findViewById(R.id.list);
-        setTabListener();
         setRefreshListener();
+        setTabListener();
     }
 
     /**
@@ -97,24 +106,44 @@ public class MainActivity extends Activity
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setIndicator("Mention").setContent(R.id.list);
         tabhost.addTab(tab3);
-        tabhost.setCurrentTab(0);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
-                switch(tabId) {
+                currentTab = tabId;
+                setTabContent();}});
+        setTabContent();
+    }
+
+
+    /**
+     * Set DB Content
+     * separate THREAD
+     */
+    private void setTabContent() {
+        Thread thread = new Thread(){
+            @Override
+            public void run(){
+                Context c = getApplicationContext();
+                switch(currentTab){
                     case "timeline":
-                        homeView.execute(3);
+                        TweetDatabase tweetDeck = new TweetDatabase(c);
+                        TimelineAdapter tlAdapt = new TimelineAdapter (c,R.layout.tweet,tweetDeck);
+                        list.setAdapter(tlAdapt);
+                        tlAdapt.notifyDataSetChanged();
                         break;
                     case "trends":
-                        homeView.execute(4);
+                        TrendDatabase trendDeck = new TrendDatabase(c);
+                        TrendsAdapter trendAdp = new TrendsAdapter(c,R.layout.tweet,trendDeck);
+                        list.setAdapter(trendAdp);
+                        trendAdp.notifyDataSetChanged();
                         break;
                     case "mention":
-                        homeView.execute(5);
+                        list.setAdapter(null);
                         break;
                 }
             }
-        });
+        };
+        thread.run();
     }
 
     /**
