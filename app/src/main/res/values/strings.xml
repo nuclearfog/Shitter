@@ -10,6 +10,8 @@
     <string name="pin">PIN</string>
     <string name="verifierbutton">Verifizieren</string>
     <string name="register_link">Link zur Anmeldung</string>
+    <string name="profile">Profil</string>
+    <string name="tweet">Tweet</string>
 
     <!--Datenbank Konstanten -->
     <string name="user_table">

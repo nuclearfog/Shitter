@@ -39,10 +39,6 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground( String... twitterPin ) {
-        // DEBUG
-        if(android.os.Debug.isDebuggerConnected())
-            android.os.Debug.waitForDebugger();
-
         if ( twitter == null ) {
             ConfigurationBuilder builder = new ConfigurationBuilder();
             builder.setDebugEnabled(true);
@@ -67,7 +63,6 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
                 e.putString("accesstoken", accessToken.getToken());
                 e.putString("accesstokensecret", accessToken.getTokenSecret());
                 e.apply();
-
                 return true;
             }
         } catch ( TwitterException e ) {
@@ -77,8 +72,6 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
     }
     @Override
     protected void onPostExecute(Boolean result) {
-        if(android.os.Debug.isDebuggerConnected())
-            android.os.Debug.waitForDebugger();
         if( result ) {
             loginButton.setVisibility(Button.VISIBLE);
             verifierButton.setVisibility(Button.INVISIBLE);

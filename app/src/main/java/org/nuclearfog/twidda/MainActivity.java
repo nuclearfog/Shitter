@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,7 +23,7 @@ import org.nuclearfog.twidda.engine.TwitterEngine;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
 
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
 {
     private Button linkButton, verifierButton, loginButton;
     private EditText pin;
@@ -54,7 +57,25 @@ public class MainActivity extends Activity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu m){return false;}
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.buttons, m);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(item.getItemId())
+        {
+            case R.id.action_profile:
+
+                break;
+            case R.id.action_tweet:
+                break;
+
+        }
+        return true;
+    }
 
     /**
      * Load Preferences
@@ -86,6 +107,9 @@ public class MainActivity extends Activity
         list = (ListView) findViewById(R.id.list);
         setRefreshListener();
         setTabListener();
+        Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(tool);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     /**
@@ -114,7 +138,6 @@ public class MainActivity extends Activity
         setTabContent();
     }
 
-
     /**
      * Set DB Content
      * separate THREAD
@@ -123,17 +146,16 @@ public class MainActivity extends Activity
         Thread thread = new Thread(){
             @Override
             public void run(){
-                Context c = getApplicationContext();
                 switch(currentTab){
                     case "timeline":
-                        TweetDatabase tweetDeck = new TweetDatabase(c);
-                        TimelineAdapter tlAdapt = new TimelineAdapter (c,R.layout.tweet,tweetDeck);
+                        TweetDatabase tweetDeck = new TweetDatabase(con);
+                        TimelineAdapter tlAdapt = new TimelineAdapter (con,R.layout.tweet,tweetDeck);
                         list.setAdapter(tlAdapt);
                         tlAdapt.notifyDataSetChanged();
                         break;
                     case "trends":
-                        TrendDatabase trendDeck = new TrendDatabase(c);
-                        TrendsAdapter trendAdp = new TrendsAdapter(c,R.layout.tweet,trendDeck);
+                        TrendDatabase trendDeck = new TrendDatabase(con);
+                        TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.tweet,trendDeck);
                         list.setAdapter(trendAdp);
                         trendAdp.notifyDataSetChanged();
                         break;

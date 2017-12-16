@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Profil -->
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/profile_icon"
+        android:title="@string/profile"
+        app:showAsAction="ifRoom" />
+
+    <!-- Tweet -->
+    <item
+        android:id="@+id/action_tweet"
+        android:title="@string/tweet"
+        app:showAsAction="ifRoom" />
+</menu>
