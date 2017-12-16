@@ -4,14 +4,16 @@
 
     <!-- Profil -->
     <item
+        android:id="@+id/action_tweet"
+        android:icon="@drawable/tweet_icon"
+        android:title="@string/tweet"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_profile"
-        android:icon="@drawable/profile_icon"
+        android:icon="@drawable/ic_user"
         android:title="@string/profile"
         app:showAsAction="ifRoom" />
 
     <!-- Tweet -->
-    <item
-        android:id="@+id/action_tweet"
-        android:title="@string/tweet"
-        app:showAsAction="ifRoom" />
 </menu>

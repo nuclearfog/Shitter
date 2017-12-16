@@ -2,6 +2,8 @@ package org.nuclearfog.twidda;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +24,7 @@ import org.nuclearfog.twidda.engine.TweetDatabase;
 import org.nuclearfog.twidda.engine.TwitterEngine;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
+import org.nuclearfog.twidda.newwindow.Profile;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -56,23 +59,29 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Create Actionbar
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.buttons, m);
         return true;
     }
 
+    /**
+     * Actionbar selection
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(item.getItemId())
         {
             case R.id.action_profile:
-
+                Intent i = new Intent(this, Profile.class);
+                startActivity(i);
                 break;
             case R.id.action_tweet:
                 break;
-
         }
         return true;
     }
