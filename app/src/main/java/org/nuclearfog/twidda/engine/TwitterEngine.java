@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.engine;
 
+import org.nuclearfog.twidda.DataBase.TrendDatabase;
+import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;

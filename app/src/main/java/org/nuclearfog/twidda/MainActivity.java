@@ -17,8 +17,8 @@ import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 import android.content.SharedPreferences;
 
-import org.nuclearfog.twidda.engine.TrendDatabase;
-import org.nuclearfog.twidda.engine.TweetDatabase;
+import org.nuclearfog.twidda.DataBase.TrendDatabase;
+import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.engine.TwitterEngine;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
