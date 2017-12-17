@@ -1,9 +1,7 @@
 package org.nuclearfog.twidda;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +35,9 @@ public class MainActivity extends AppCompatActivity
     private ListView list;
     private String currentTab = "timeline";
 
+    /**
+     * Create Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,9 @@ public class MainActivity extends AppCompatActivity
         {
             case R.id.action_profile:
                 Intent i = new Intent(this, Profile.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("username","home");
+                i.putExtras(bundle);
                 startActivity(i);
                 break;
             case R.id.action_tweet:
@@ -119,6 +123,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setTabContent();
     }
 
     /**
@@ -144,7 +149,6 @@ public class MainActivity extends AppCompatActivity
             public void onTabChanged(String tabId) {
                 currentTab = tabId;
                 setTabContent();}});
-        setTabContent();
     }
 
     /**
@@ -208,5 +212,4 @@ public class MainActivity extends AppCompatActivity
     private boolean loggedIn() {
         return einstellungen.getBoolean("login", false);
     }
-
 }

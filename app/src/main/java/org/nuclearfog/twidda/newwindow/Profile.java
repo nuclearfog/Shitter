@@ -21,15 +21,27 @@ public class Profile extends AppCompatActivity {
     private TextView username, bio,link,following;
     private ImageView profile_img, profile_banner;
     private SwipeRefreshLayout refresh;
+    private String value;
 
 
     @Override
-    public void onCreate(Bundle savedInstance){
+    protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.profile);
+        value = getIntent().getExtras().getString("username");
         initElements();
         initTabs();
         initSwipe();
+
+
+    }
+
+    @Override
+    protected void onDestroy(){
+
+
+
+        super.onDestroy();
     }
 
     @Override
@@ -54,6 +66,9 @@ public class Profile extends AppCompatActivity {
     }
 
 
+    /**
+     * Init Tab Listener
+     */
     private void initTabs(){
         mtab = (TabHost)findViewById(R.id.tabhost);
         mtab.setup();
@@ -63,7 +78,7 @@ public class Profile extends AppCompatActivity {
         mtab.addTab(tab1);
         // Tab #2
         TabHost.TabSpec tab2 = mtab.newTabSpec("favorites");
-        tab1.setIndicator("Favorits").setContent(R.id.home_tl);
+        tab2.setIndicator("Favorits").setContent(R.id.home_tl);
         mtab.addTab(tab2);
         // Listener
         mtab.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
