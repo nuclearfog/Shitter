@@ -13,7 +13,7 @@
     <string name="profile">Profil</string>
     <string name="tweet">Tweet</string>
 
-    <!--Datenbank Konstanten -->
+    <!--Datenbank User Database -->
     <string name="user_table">
     CREATE TABLE IF NOT EXISTS user (
         userID   INTEGER PRIMARY KEY,
@@ -21,6 +21,7 @@
         pbLink   TEXT );
     </string>
 
+    <!-- Home Timeline Database -->
     <string name="tweet_table">
     CREATE TABLE IF NOT EXISTS tweet (
         tweetID     INTEGER PRIMARY KEY,
@@ -33,6 +34,31 @@
         FOREIGN     KEY (userID) REFERENCES user_table(userID) );
     </string>
 
+    <!-- Home Tweets Database-->
+    <string name="home_table">
+    CREATE TABLE IF NOT EXISTS hometweet (
+        tweetID     INTEGER PRIMARY KEY,
+        userID      INTEGER,
+        time        INTEGER,
+        tweet       TEXT,
+        retweet     INTEGER,
+        favorite    INTEGER,
+        answers     INTEGER,
+        FOREIGN     KEY (userID) REFERENCES user_table(userID) );
+    </string>
+
+    <!-- User Database -->
+    <string name="profile_table">
+    CREATE TABLE IF NOT EXISTS user (
+        userID   INTEGER PRIMARY KEY,
+        username TEXT,
+        bio      TEXT,
+        location TEXT,
+        link     TEXT,
+        pbLink   TEXT );
+    </string>
+
+    <!-- Trend Database -->
     <string name="trend_table">
      CREATE TABLE IF NOT EXISTS trend (
         trendpos    INTEGER PRIMARY KEY,
@@ -42,6 +68,10 @@
 
     <string name="SQL_HOME_TL">
         "SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID ORDER BY time DESC"
+    </string>
+
+    <string name="SQL_USER_TL">
+        "SELECT * FROM hometweet INNER JOIN user ON user.userID = hometweet.userID ORDER BY time DESC"
     </string>
 
     <string name="SQL_TRENS">

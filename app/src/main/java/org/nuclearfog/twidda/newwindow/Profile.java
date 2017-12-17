@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.newwindow;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +23,7 @@ public class Profile extends AppCompatActivity {
     private ImageView profile_img, profile_banner;
     private SwipeRefreshLayout refresh;
     private String value;
+    private Context context;
 
 
     @Override
@@ -29,6 +31,7 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile);
         value = getIntent().getExtras().getString("username");
+        context = getApplicationContext();
         initElements();
         initTabs();
         initSwipe();
@@ -67,16 +70,7 @@ public class Profile extends AppCompatActivity {
 
 
     private void loadContent() {
-        switch(value) {
-            case "home":
 
-
-
-
-
-
-                break;
-        }
     }
 
 
@@ -121,7 +115,24 @@ public class Profile extends AppCompatActivity {
         refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh() { }
+            public void onRefresh() {
+
+                getTweets();
+
+
+            }
         });
+    }
+
+    private void getTweets(){
+
+        TwitterEngine twitterEngine = new TwitterEngine(context, homeTl);
+        twitterEngine.setRefresh(refresh);
+        switch(value) {
+            case "home":
+                twitterEngine.execute(3);
+                break;
+        }
+
     }
 }

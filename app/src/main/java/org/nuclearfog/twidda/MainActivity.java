@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
             public void run(){
                 switch(currentTab){
                     case "timeline":
-                        TweetDatabase tweetDeck = new TweetDatabase(con);
+                        TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
                         TimelineAdapter tlAdapt = new TimelineAdapter (con,R.layout.tweet,tweetDeck);
                         list.setAdapter(tlAdapt);
                         tlAdapt.notifyDataSetChanged();

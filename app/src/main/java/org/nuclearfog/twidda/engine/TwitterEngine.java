@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.engine;
 
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
+import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
@@ -18,7 +19,6 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
-
 
 public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {
@@ -42,7 +42,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         this.refresh=refresh;
     }
 
-
     /**
      * @param args modes
      */
@@ -50,12 +49,11 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     protected Void doInBackground(Integer... args) {
         if(android.os.Debug.isDebuggerConnected())
             android.os.Debug.waitForDebugger();
-        // twitter.getRateLimitStatus();
 
         try {
             switch(args[0]) {
                 case (0): // Home Timeline
-                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context);
+                    TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context,TweetDatabase.HOME_TL);
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
 
                 break;
@@ -67,10 +65,14 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 case(2):  // Mentions
                     // TODO
                     break;
+                case(3): // GetUserTimeline
+                    TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(), context,TweetDatabase.USER_TL);
+                    timelineAdapter = new TimelineAdapter(context,R.layout.tweet,hTweets);
+                    break;
             }
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
-        } catch (Exception e){ System.out.println(e.toString()); }
+        } catch (Exception e){ e.printStackTrace(); }
         return null;
     }
 
@@ -78,14 +80,15 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     protected void onPostExecute(Void v) {
         if(timelineAdapter != null) {
             list.setAdapter(timelineAdapter);
-            timelineAdapter.notifyDataSetChanged();
+            //timelineAdapter.notifyDataSetChanged();
         }
         else if(trendsAdapter != null) {
             list.setAdapter(trendsAdapter);
-            trendsAdapter.notifyDataSetChanged();
+            //trendsAdapter.notifyDataSetChanged();
         }
         if(refresh != null)
             refresh.setRefreshing(false);
+        list.setTextFilterEnabled(true);
     }
 
     /**

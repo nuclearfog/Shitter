@@ -67,6 +67,8 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
             }
         } catch ( TwitterException e ) {
             Toast.makeText(context,"Fehler bei der Registrierung",Toast.LENGTH_LONG).show();
+        } catch ( Exception e ) {
+            e.printStackTrace();
         }
         return false;
     }

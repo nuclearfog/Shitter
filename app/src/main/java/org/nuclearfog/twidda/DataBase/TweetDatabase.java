@@ -12,23 +12,30 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import twitter4j.Status;
+import twitter4j.User;
 
 public class TweetDatabase {
+    public static final int HOME_TL = 0;
+    public static final int USER_TL = 1;
+
     private AppDatabase dataHelper;
     private List<String> user,tweet,noRT,noFav,noAns,pbLink;
     private List<Long> userId,tweetId,timeMillis;
     private List<Status> stats;
     private Context c;
     private int size = 0;
+    private int mode = 0;
 
     /**
      * Store & Read Data
      * @param stats   Twitter Home
      */
-    public TweetDatabase(List<Status> stats, Context c) {
+    public TweetDatabase(List<Status> stats, Context c, int mode) {
         this.stats=stats;
         this.c=c;
+        this.mode=mode;
         dataHelper = AppDatabase.getInstance(c);
+
         initArray();
         store();
         load();
@@ -38,8 +45,9 @@ public class TweetDatabase {
      * Read Data
      * @param c MainActivity Context
      */
-    public TweetDatabase(Context c) {
+    public TweetDatabase(Context c, int mode) {
         this.c=c;
+        this.mode=mode;
         dataHelper = AppDatabase.getInstance(c);
         initArray();
         load();
@@ -49,21 +57,30 @@ public class TweetDatabase {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues usr = new ContentValues();
         ContentValues tl  = new ContentValues();
+        String tweetTable;
 
-        for(int pos = 0; pos < getSize(); pos++) {
+        if(mode==HOME_TL)
+            tweetTable = "tweet";  //Switch between Timeline and Home Tweets
+        else
+            tweetTable = "hometweet";
+
+        for(int pos = 0; pos < stats.size(); pos++) {
             // USER
-            usr.put("userID", getUserID(pos));
-            usr.put("username", getUsername(pos));
-            usr.put("pbLink", getPbImg(pos));
+            Status stat = stats.get(pos);
+            User user = stat.getUser();
+
+            usr.put("userID",user.getId());
+            usr.put("username", user.getName());
+            usr.put("pbLink", user.getProfileImageURL());
             // TWEET
-            tl.put("userID", getUserID(pos));
-            tl.put("tweetID", getTweetId(pos));
-            tl.put("time", getTime(pos));
-            tl.put("tweet", getTweet(pos));
-            tl.put("retweet", getRetweet(pos));
-            tl.put("favorite", getFavorite(pos));
+            tl.put("userID", user.getId());
+            tl.put("tweetID", stat.getId());
+            tl.put("time", stat.getCreatedAt().getTime());
+            tl.put("tweet", stat.getText());
+            tl.put("retweet", stat.getRetweetCount());
+            tl.put("favorite", stat.getFavoriteCount());
             db.insertWithOnConflict("user",null, usr,SQLiteDatabase.CONFLICT_IGNORE);
-            db.insertWithOnConflict("tweet",null, tl,SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict(tweetTable,null, tl,SQLiteDatabase.CONFLICT_REPLACE);
         }
         db.close();
     }
@@ -71,7 +88,14 @@ public class TweetDatabase {
     private void load() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         int index;
-        String SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL);
+        size = 0;
+        String SQL_GET_HOME;
+
+        if(mode==HOME_TL)
+            SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL); // Home Tineline
+        else
+            SQL_GET_HOME = c.getString(R.string.SQL_USER_TL); // User Timeline
+
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
 
         if(cursor.moveToFirst()) {
@@ -102,11 +126,9 @@ public class TweetDatabase {
     }
 
     public int getSize() {
-        if(stats != null) {
-            return stats.size();
-        } else {
-            return size;
-        }
+
+        return size;
+
     }
     public long getUserID(int pos){return userId.get(pos);}
     public long getTweetId(int pos){return tweetId.get(pos);}
