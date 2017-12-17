@@ -66,6 +66,20 @@ public class Profile extends AppCompatActivity {
     }
 
 
+    private void loadContent() {
+        switch(value) {
+            case "home":
+
+
+
+
+
+
+                break;
+        }
+    }
+
+
     /**
      * Init Tab Listener
      */
@@ -85,13 +99,6 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onTabChanged(String tabId) { }
         });
-    }
-
-    private void loadContent(){}
-
-    private void initHomeTimeline(){
-
-
     }
 
     /**
@@ -117,5 +124,4 @@ public class Profile extends AppCompatActivity {
             public void onRefresh() { }
         });
     }
-
 }

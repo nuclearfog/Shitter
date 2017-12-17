@@ -9,21 +9,20 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import twitter4j.Status;
 
 public class TweetDatabase {
     private AppDatabase dataHelper;
-    private List<String> user,tweet,noRT,noFav,noAns, pbLink;
-    private List<Long> userId, tweetId;
-    private List<Date> newDate;
+    private List<String> user,tweet,noRT,noFav,noAns,pbLink;
+    private List<Long> userId,tweetId,timeMillis;
     private List<Status> stats;
     private Context c;
     private int size = 0;
 
     /**
-     * Store Data
+     * Store & Read Data
      * @param stats   Twitter Home
      */
     public TweetDatabase(List<Status> stats, Context c) {
@@ -31,8 +30,8 @@ public class TweetDatabase {
         this.c=c;
         dataHelper = AppDatabase.getInstance(c);
         initArray();
-        fillArray();
         store();
+        load();
     }
 
     /**
@@ -63,7 +62,7 @@ public class TweetDatabase {
             tl.put("tweet", getTweet(pos));
             tl.put("retweet", getRetweet(pos));
             tl.put("favorite", getFavorite(pos));
-            db.insertWithOnConflict("user",null, usr,SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict("user",null, usr,SQLiteDatabase.CONFLICT_IGNORE);
             db.insertWithOnConflict("tweet",null, tl,SQLiteDatabase.CONFLICT_REPLACE);
         }
         db.close();
@@ -78,7 +77,7 @@ public class TweetDatabase {
         if(cursor.moveToFirst()) {
             do {
                 index = cursor.getColumnIndex("time"); // time
-                newDate.add(longToDate(cursor.getLong(index)));
+                timeMillis.add(cursor.getLong(index));
                 index = cursor.getColumnIndex("tweet"); // tweet
                 tweet.add( cursor.getString(index) );
                 index = cursor.getColumnIndex("retweet"); // retweet
@@ -102,17 +101,6 @@ public class TweetDatabase {
         db.close();
     }
 
-    public long getUserID(int pos){return userId.get(pos);}
-    public long getTweetId(int pos){return tweetId.get(pos);}
-    public String getUsername(int pos){return user.get(pos);}
-    public String getTweet(int pos){return tweet.get(pos);}
-    public String getRetweet(int pos){return noRT.get(pos);}
-    public String getFavorite(int pos){return noFav.get(pos);}
-    public String getDate(int pos){return getTweetTime(newDate.get(pos));}
-    public long getTime(int pos){return newDate.get(pos).getTime();}
-    public String getAnswer(int pos){return noAns.get(pos);}
-    public String getPbImg (int pos){return pbLink.get(pos);}
-
     public int getSize() {
         if(stats != null) {
             return stats.size();
@@ -120,55 +108,52 @@ public class TweetDatabase {
             return size;
         }
     }
+    public long getUserID(int pos){return userId.get(pos);}
+    public long getTweetId(int pos){return tweetId.get(pos);}
+    public long getTime(int pos){return timeMillis.get(pos);}
+    public String getUsername(int pos){return user.get(pos);}
+    public String getTweet(int pos){return tweet.get(pos);}
+    public String getRetweet(int pos){return noRT.get(pos);}
+    public String getFavorite(int pos){return noFav.get(pos);}
+    public String getDate(int pos){return timeToString(getTime(pos));}
+    public String getAnswer(int pos){return noAns.get(pos);}
+    public String getPbImg (int pos){return pbLink.get(pos);}
 
-    private String getTweetTime(Date time) {
-        Date now = new Date();
-        int tweetDay = now.getDay() - time.getDay();
-        int tweetHour = now.getHours() - time.getHours();
-        int tweetMin  = now.getMinutes() - time.getMinutes();
-        int tweetSec  = now.getSeconds() - time.getSeconds();
-        if (tweetDay > 0)
-            return "vor "+tweetDay+" d";
-        else if (tweetHour > 0)
-            return "vor "+tweetHour+" h";
-        else if(tweetMin > 0)
-            return "vor "+tweetMin+" min";
+    /**
+     * Convert Time to String
+     * @param mills Tweet Time
+     * @return Formatted String
+     */
+    private String timeToString(long mills) {
+        Calendar now = Calendar.getInstance();
+        long diff = now.getTimeInMillis() - mills;
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        long weeks = days / 7;
+
+        if(weeks > 0)
+            return "vor "+weeks+" w";
+        if(days > 0)
+            return "vor "+days+" d";
+        if(hours > 0)
+            return "vor "+hours+" h";
+        if(minutes > 0)
+            return "vor "+minutes+" m";
         else
-            return "vor "+tweetSec+" sec";
-    }
-
-    private Date longToDate(long mills) {
-        return new Date(mills);
+            return "vor "+seconds+" s";
     }
 
     private void initArray() {
-        user   = new ArrayList<>();
-        tweet  = new ArrayList<>();
-        noRT   = new ArrayList<>();
-        noFav  = new ArrayList<>();
-        noAns  = new ArrayList<>();
-        userId = new ArrayList<>();
-        pbLink = new ArrayList<>();
-        tweetId= new ArrayList<>();
-        newDate= new ArrayList<>();
-    }
-
-    private void fillArray() {
-        Status stat;
-        for(short pos = 0; pos < getSize(); pos++) {
-            stat = stats.get(pos);
-            stat.getId();
-            tweet.add( stat.getText() );
-            noAns.add("test");
-            noRT.add( Integer.toString(stat.getRetweetCount()) );
-            noFav.add( Integer.toString(stat.getFavoriteCount()) );
-            newDate.add( stat.getCreatedAt() );
-            String name = stat.getUser().getScreenName();
-            String twUsr = stat.getUser().getName();
-            user.add( name +" @"+twUsr );
-            userId.add(stat.getUser().getId());
-            pbLink.add(stat.getUser().getProfileImageURL());
-            tweetId.add(stat.getId());
-        }
+        user    = new ArrayList<>();
+        tweet   = new ArrayList<>();
+        noRT    = new ArrayList<>();
+        noFav   = new ArrayList<>();
+        noAns   = new ArrayList<>();
+        userId  = new ArrayList<>();
+        pbLink  = new ArrayList<>();
+        tweetId = new ArrayList<>();
+        timeMillis = new ArrayList<>();
     }
 }
