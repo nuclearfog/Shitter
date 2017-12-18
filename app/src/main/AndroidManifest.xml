@@ -21,9 +21,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".newwindow.Profile"
+            android:name=".Window.Profile"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity
+            android:name=".Window.TweetWindow"
+            android:theme="@style/Transparency"
+            android:screenOrientation="portrait">
+        </activity>
+
+
     </application>
 </manifest>

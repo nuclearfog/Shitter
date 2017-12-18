@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.engine.ViewAdapter;
+package org.nuclearfog.twidda.Engine.ViewAdapter;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-
 
 public class TrendsAdapter extends ArrayAdapter {
     private TrendDatabase trend;
@@ -32,11 +31,10 @@ public class TrendsAdapter extends ArrayAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
+    public View getView(int position, View v, ViewGroup parent) {
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.trend, null);
+            v = inf.inflate(R.layout.trend, parent, false);
         }
         String trendName = trend.getTrendname(position);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);

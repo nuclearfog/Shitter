@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
@@ -19,10 +20,12 @@ import android.content.SharedPreferences;
 
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
-import org.nuclearfog.twidda.engine.TwitterEngine;
-import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
-import org.nuclearfog.twidda.newwindow.Profile;
+import org.nuclearfog.twidda.Engine.RegisterAccount;
+import org.nuclearfog.twidda.Engine.TwitterEngine;
+import org.nuclearfog.twidda.Engine.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.Engine.ViewAdapter.TrendsAdapter;
+import org.nuclearfog.twidda.Window.Profile;
+import org.nuclearfog.twidda.Window.TweetWindow;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private SwipeRefreshLayout refresh;
     private ListView list;
     private String currentTab = "timeline";
+    private PopupWindow mPopup;
 
     /**
      * Create Activity
@@ -84,6 +88,8 @@ public class MainActivity extends AppCompatActivity
                 startActivity(i);
                 break;
             case R.id.action_tweet:
+                Intent in = new Intent(this, TweetWindow.class);
+                startActivity(in);
                 break;
         }
         return true;
@@ -155,29 +161,28 @@ public class MainActivity extends AppCompatActivity
      * separate THREAD
      */
     private void setTabContent() {
-        Thread thread = new Thread(){
+        new Thread(){
             @Override
             public void run(){
                 switch(currentTab){
                     case "timeline":
                         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
                         TimelineAdapter tlAdapt = new TimelineAdapter (con,R.layout.tweet,tweetDeck);
+                        tlAdapt.setNotifyOnChange(true);
                         list.setAdapter(tlAdapt);
-                        tlAdapt.notifyDataSetChanged();
                         break;
                     case "trends":
                         TrendDatabase trendDeck = new TrendDatabase(con);
                         TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.tweet,trendDeck);
+                        trendAdp.setNotifyOnChange(true);
                         list.setAdapter(trendAdp);
-                        trendAdp.notifyDataSetChanged();
                         break;
                     case "mention":
                         list.setAdapter(null);
                         break;
                 }
             }
-        };
-        thread.run();
+        }.run();
     }
 
     /**

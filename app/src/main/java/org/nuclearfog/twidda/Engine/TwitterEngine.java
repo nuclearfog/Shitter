@@ -1,11 +1,10 @@
-package org.nuclearfog.twidda.engine;
+package org.nuclearfog.twidda.Engine;
 
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
-import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.engine.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.engine.ViewAdapter.TrendsAdapter;
+import org.nuclearfog.twidda.Engine.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.Engine.ViewAdapter.TrendsAdapter;
 
 import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -78,17 +77,22 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
     @Override
     protected void onPostExecute(Void v) {
-        if(timelineAdapter != null) {
-            list.setAdapter(timelineAdapter);
-            //timelineAdapter.notifyDataSetChanged();
-        }
-        else if(trendsAdapter != null) {
-            list.setAdapter(trendsAdapter);
-            //trendsAdapter.notifyDataSetChanged();
-        }
-        if(refresh != null)
-            refresh.setRefreshing(false);
-        list.setTextFilterEnabled(true);
+        new Thread() {
+            @Override
+            public void run(){
+                if(timelineAdapter != null) {
+                    list.setAdapter(timelineAdapter);
+                    timelineAdapter.notifyDataSetChanged();
+                }
+                else if(trendsAdapter != null) {
+                    list.setAdapter(trendsAdapter);
+                    trendsAdapter.notifyDataSetChanged();
+                }
+                if(refresh != null)
+                    refresh.setRefreshing(false);
+                //list.setTextFilterEnabled(true);
+            }
+        }.run();
     }
 
     /**

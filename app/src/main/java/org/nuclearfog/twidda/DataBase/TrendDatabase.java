@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.nuclearfog.twidda.DataBase.AppDatabase;
 import org.nuclearfog.twidda.R;
 
 import java.util.ArrayList;

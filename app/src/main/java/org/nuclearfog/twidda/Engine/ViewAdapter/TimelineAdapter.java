@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.engine.ViewAdapter;
+package org.nuclearfog.twidda.Engine.ViewAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -26,11 +26,10 @@ public class TimelineAdapter extends ArrayAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = convertView;
+    public View getView(int position, View v, ViewGroup parent) {
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.tweet, null);
+            v = inf.inflate(R.layout.tweet, parent,false);
         }
         ((TextView) v.findViewById(R.id.username)).setText(mTweets.getUsername(position));
         ((TextView) v.findViewById(R.id.tweettext)).setText(mTweets.getTweet(position));

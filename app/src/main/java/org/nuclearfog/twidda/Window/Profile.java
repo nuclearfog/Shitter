@@ -1,10 +1,11 @@
-package org.nuclearfog.twidda.newwindow;
+package org.nuclearfog.twidda.Window;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -13,7 +14,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.engine.TwitterEngine;
+import org.nuclearfog.twidda.Engine.TwitterEngine;
 
 public class Profile extends AppCompatActivity {
 
@@ -30,6 +31,9 @@ public class Profile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
         setContentView(R.layout.profile);
+        Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
+        setSupportActionBar(tool);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         value = getIntent().getExtras().getString("username");
         context = getApplicationContext();
         initElements();
