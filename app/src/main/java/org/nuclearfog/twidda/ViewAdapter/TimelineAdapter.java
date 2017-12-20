@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine.ViewAdapter;
+package org.nuclearfog.twidda.ViewAdapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;

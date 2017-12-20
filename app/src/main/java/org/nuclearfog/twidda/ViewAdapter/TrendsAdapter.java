@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine.ViewAdapter;
+package org.nuclearfog.twidda.ViewAdapter;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.DataBase.TrendDatabase;

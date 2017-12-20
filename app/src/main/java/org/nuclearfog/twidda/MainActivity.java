@@ -21,8 +21,8 @@ import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.Engine.RegisterAccount;
 import org.nuclearfog.twidda.Engine.TwitterEngine;
-import org.nuclearfog.twidda.Engine.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.Engine.ViewAdapter.TrendsAdapter;
+import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
 import org.nuclearfog.twidda.Window.Profile;
 import org.nuclearfog.twidda.Window.TweetWindow;
 

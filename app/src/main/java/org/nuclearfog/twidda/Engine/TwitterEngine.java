@@ -3,10 +3,9 @@ package org.nuclearfog.twidda.Engine;
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.Engine.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.Engine.ViewAdapter.TrendsAdapter;
+import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
 
-import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -15,9 +14,6 @@ import android.os.AsyncTask;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {
@@ -65,10 +61,11 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 case(2):  // Mentions
                     // TODO
                     break;
-                case(3): // GetUserTimeline
+                case(3): // Home Tweets
                     TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(), context,TweetDatabase.USER_TL);
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,hTweets);
                     break;
+
             }
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
