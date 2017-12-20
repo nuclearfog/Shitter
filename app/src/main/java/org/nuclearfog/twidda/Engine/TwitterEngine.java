@@ -21,11 +21,8 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {
-    private final String TWITTER_CONSUMER_KEY = "GrylGIgQK3cDjo9mSTBqF1vwf";
-    private final String TWITTER_CONSUMER_SECRET = "pgaWUlDVS5b7Q6VJQDgBzHKw0mIxJIX0UQBcT1oFJEivsCl5OV";
     private final String ERR_MSG = "Fehler bei der Verbindung";
-
-    private static Twitter twitter;
+    private TwitterStore twitterStore;
     private Context context;
     private ListView list;
     private TimelineAdapter timelineAdapter;
@@ -35,8 +32,10 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     public TwitterEngine(Context context, ListView list) {
         this.context=context;
         this.list = list;
-        if(twitter == null) init();
+        twitterStore = TwitterStore.getInstance(context);
+        twitterStore.init();
     }
+
     public void setRefresh(SwipeRefreshLayout refresh) {
         this.refresh=refresh;
     }
@@ -48,6 +47,8 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
     protected Void doInBackground(Integer... args) {
         if(android.os.Debug.isDebuggerConnected())
             android.os.Debug.waitForDebugger();
+
+        Twitter twitter = twitterStore.getTwitter();
 
         try {
             switch(args[0]) {
@@ -93,19 +94,5 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 //list.setTextFilterEnabled(true);
             }
         }.run();
-    }
-
-    /**
-     * Init Twitter
-     */
-    private void init() {
-        SharedPreferences einstellungen = context.getSharedPreferences("settings", 0);
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
-        builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
-        String accessToken = einstellungen.getString("accesstoken","");
-        String accessTokenSec = einstellungen.getString("accesstokensecret","");
-        AccessToken token = new AccessToken(accessToken,accessTokenSec);
-        twitter = new TwitterFactory( builder.build() ).getInstance(token);
     }
 }

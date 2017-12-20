@@ -22,20 +22,24 @@ public class AppDatabase extends SQLiteOpenHelper
         String trQuery = c.getString(R.string.trend_table);
         String hQuery  = c.getString(R.string.home_table);
         String pQuery  = c.getString(R.string.profile_table);
+        String kQuery  = c.getString(R.string.user_keys);
         db.execSQL(uQuery);
         db.execSQL(tQuery);
         db.execSQL(trQuery);
         db.execSQL(hQuery);
         db.execSQL(pQuery);
+        db.execSQL(kQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + "user");
+        db.execSQL("DROP TABLE IF EXISTS " + "keys");
         db.execSQL("DROP TABLE IF EXISTS " + "tweet");
         db.execSQL("DROP TABLE IF EXISTS " + "trend");
         db.execSQL("DROP TABLE IF EXISTS " + "hometweet");
         db.execSQL("DROP TABLE IF EXISTS " + "profile_table");
+
         onCreate(db);
     }
 

@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
@@ -30,14 +29,12 @@ import org.nuclearfog.twidda.Window.TweetWindow;
 public class MainActivity extends AppCompatActivity
 {
     private Button linkButton, verifierButton, loginButton;
+    private SwipeRefreshLayout refresh;
     private EditText pin;
     private Context con;
-    private SharedPreferences einstellungen;
     private TabHost tabhost;
-    private SwipeRefreshLayout refresh;
     private ListView list;
     private String currentTab = "timeline";
-    private PopupWindow mPopup;
 
     /**
      * Create Activity
@@ -45,9 +42,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        einstellungen = getApplicationContext().getSharedPreferences("settings", 0);
         con = getApplicationContext();
-        if( !loggedIn() ) {
+        SharedPreferences settings = con.getSharedPreferences("settings", 0);
+        if( !(settings.getBoolean("login", false)) ) {
             setContentView(R.layout.activity_login);
             pin = (EditText) findViewById(R.id.pin);
             linkButton  = (Button) findViewById(R.id.linkButton);
@@ -59,9 +56,7 @@ public class MainActivity extends AppCompatActivity
                 @Override public void onClick(View arg0){verifier();}});
             loginButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){login();}});
-        } else {
-            login();
-        }
+        } else { login(); }
     }
 
     /**
@@ -208,12 +203,5 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-    }
-
-    /**
-     * Login Check
-     */
-    private boolean loggedIn() {
-        return einstellungen.getBoolean("login", false);
     }
 }
