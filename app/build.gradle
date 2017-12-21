@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    buildToolsVersion '27.0.2'
     compileSdkVersion 26
     defaultConfig {
         applicationId "org.nuclearfog.twidda"
@@ -18,7 +19,6 @@ android {
             zipAlignEnabled false
         }
     }
-    buildToolsVersion '27.0.2'
 }
 
 dependencies {
