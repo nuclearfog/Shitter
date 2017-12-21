@@ -14,7 +14,6 @@ public class Settings extends AppCompatActivity {
 
     private SharedPreferences settings;
 
-
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
@@ -37,19 +36,5 @@ public class Settings extends AppCompatActivity {
 
         return true;
     }
-
-    /**
-     * Actionbar selection
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch(item.getItemId())
-        {
-        }
-        return true;
-    }
-
-
 
 }

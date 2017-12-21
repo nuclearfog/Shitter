@@ -13,12 +13,13 @@
         android:id="@+id/action_profile"
         android:icon="@drawable/ic_user"
         android:title="@string/profile"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <!--Settings-->
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/setting_icon"
-        android:title="@string/tweet"
+        android:title="@string/settings"
         android:visible="true"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+
 </menu>

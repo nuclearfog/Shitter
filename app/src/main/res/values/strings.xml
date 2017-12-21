@@ -13,6 +13,7 @@
     <string name="profile">Profil</string>
     <string name="tweet">Tweet</string>
     <string name="settings">Einstellungen</string>
+    <string name="back">Back</string>
 
     <!--Datenbank User Database -->
     <string name="user_table">
