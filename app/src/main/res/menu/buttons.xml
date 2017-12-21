@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Profil -->
+    <!--Tweet-->
     <item
         android:id="@+id/action_tweet"
         android:icon="@drawable/tweet_icon"
         android:title="@string/tweet"
         android:visible="true"
         app:showAsAction="always" />
+    <!--Profile-->
     <item
         android:id="@+id/action_profile"
         android:icon="@drawable/ic_user"
         android:title="@string/profile"
-        app:showAsAction="ifRoom" />
-
-    <!-- Tweet -->
+        app:showAsAction="always" />
+    <!--Settings-->
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/setting_icon"
+        android:title="@string/tweet"
+        android:visible="true"
+        app:showAsAction="always" />
 </menu>

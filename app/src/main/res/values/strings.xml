@@ -12,6 +12,7 @@
     <string name="register_link">Link zur Anmeldung</string>
     <string name="profile">Profil</string>
     <string name="tweet">Tweet</string>
+    <string name="settings">Einstellungen</string>
 
     <!--Datenbank User Database -->
     <string name="user_table">
@@ -92,6 +93,7 @@
     </string>
 
     <string name="datei">timeline.db</string>
+    <string name="image">Bilder Laden</string>
 
 </resources>
 

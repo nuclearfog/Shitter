@@ -73,6 +73,9 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         return null;
     }
 
+    /**
+     * Refresh List in a new Thread
+     */
     @Override
     protected void onPostExecute(Void v) {
         new Thread() {
@@ -80,15 +83,14 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             public void run(){
                 if(timelineAdapter != null) {
                     list.setAdapter(timelineAdapter);
-                    timelineAdapter.notifyDataSetChanged();
+                    //timelineAdapter.notifyDataSetChanged();
                 }
                 else if(trendsAdapter != null) {
                     list.setAdapter(trendsAdapter);
-                    trendsAdapter.notifyDataSetChanged();
+                    //trendsAdapter.notifyDataSetChanged();
                 }
                 if(refresh != null)
                     refresh.setRefreshing(false);
-                //list.setTextFilterEnabled(true);
             }
         }.run();
     }

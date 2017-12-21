@@ -9,7 +9,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/launcher_icon"
         android:label="@string/app_name">
         <activity
             android:name=".MainActivity"
@@ -32,6 +32,10 @@
             android:screenOrientation="portrait">
         </activity>
 
-
+        <activity
+            android:name=".Window.Settings"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 </manifest>

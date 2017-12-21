@@ -45,28 +45,28 @@ public class Profile extends AppCompatActivity {
 
     @Override
     protected void onDestroy(){
-
-
-
         super.onDestroy();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.buttons, m);
+        m.findItem(R.id.action_profile).setVisible(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        Intent intent;
         switch(item.getItemId())
         {
-            case R.id.action_profile:
-                Intent i = new Intent(this, Profile.class);
-                startActivity(i);
-                break;
             case R.id.action_tweet:
+                intent = new Intent(this, TweetWindow.class);
+                startActivity(intent);
+                break;
+            case R.id.action_settings:
+                intent = new Intent(this,Settings.class);
+                startActivity(intent);
                 break;
         }
         return true;

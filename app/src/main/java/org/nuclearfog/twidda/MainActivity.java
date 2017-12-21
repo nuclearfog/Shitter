@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.Engine.TwitterEngine;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
 import org.nuclearfog.twidda.Window.Profile;
+import org.nuclearfog.twidda.Window.Settings;
 import org.nuclearfog.twidda.Window.TweetWindow;
 
 public class MainActivity extends AppCompatActivity
@@ -73,18 +74,23 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch(item.getItemId())
         {
             case R.id.action_profile:
-                Intent i = new Intent(this, Profile.class);
+                intent = new Intent(this, Profile.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("username","home");
-                i.putExtras(bundle);
-                startActivity(i);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.action_tweet:
-                Intent in = new Intent(this, TweetWindow.class);
-                startActivity(in);
+                intent = new Intent(this, TweetWindow.class);
+                startActivity(intent);
+                break;
+            case R.id.action_settings:
+                intent = new Intent(this, Settings.class);
+                startActivity(intent);
                 break;
         }
         return true;
@@ -123,7 +129,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setTabContent();
     }
 
     /**
@@ -148,7 +153,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onTabChanged(String tabId) {
                 currentTab = tabId;
-                setTabContent();}});
+                setTabContent();
+            }
+        });
+        setTabContent();
     }
 
     /**
@@ -163,14 +171,14 @@ public class MainActivity extends AppCompatActivity
                     case "timeline":
                         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
                         TimelineAdapter tlAdapt = new TimelineAdapter (con,R.layout.tweet,tweetDeck);
-                        tlAdapt.setNotifyOnChange(true);
                         list.setAdapter(tlAdapt);
+                        tlAdapt.notifyDataSetChanged();
                         break;
                     case "trends":
                         TrendDatabase trendDeck = new TrendDatabase(con);
                         TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.tweet,trendDeck);
-                        trendAdp.setNotifyOnChange(true);
                         list.setAdapter(trendAdp);
+                        trendAdp.notifyDataSetChanged();
                         break;
                     case "mention":
                         list.setAdapter(null);
