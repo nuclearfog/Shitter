@@ -31,11 +31,14 @@ public class MainActivity extends AppCompatActivity
 {
     private Button linkButton, verifierButton, loginButton;
     private SwipeRefreshLayout refresh;
+    private SharedPreferences settings;
     private EditText pin;
     private Context con;
     private TabHost tabhost;
     private ListView list;
+    private Toolbar toolbar;
     private String currentTab = "timeline";
+    private Menu menu;
 
     /**
      * Create Activity
@@ -44,9 +47,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         con = getApplicationContext();
-        SharedPreferences settings = con.getSharedPreferences("settings", 0);
+        settings = con.getSharedPreferences("settings", 0);
         if( !(settings.getBoolean("login", false)) ) {
-            setContentView(R.layout.activity_login);
+            setContentView(R.layout.login);
             pin = (EditText) findViewById(R.id.pin);
             linkButton  = (Button) findViewById(R.id.linkButton);
             verifierButton = (Button) findViewById(R.id.verifier);
@@ -65,7 +68,8 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.buttons, m);
+        toolbar.inflateMenu(R.menu.home);
+        setToolbar();
         return true;
     }
 
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_profile:
                 intent = new Intent(this, Profile.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("username","home");
+                bundle.putLong("userID",settings.getLong("userID", -1));
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -122,12 +126,12 @@ public class MainActivity extends AppCompatActivity
      * Login Handle
      */
     private void login() {
-        setContentView(R.layout.main_layout);
+        setContentView(R.layout.mainpage);
         list = (ListView) findViewById(R.id.list);
         setRefreshListener();
         setTabListener();
-        Toolbar tool = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(tool);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
@@ -152,8 +156,10 @@ public class MainActivity extends AppCompatActivity
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
+                if(refresh.isRefreshing()){ refresh.setRefreshing(false);}
                 currentTab = tabId;
                 setTabContent();
+                setToolbar();
             }
         });
         setTabContent();
@@ -211,5 +217,32 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    /**
+     * Toolbar Items
+     */
+    private void setToolbar() {
+        MenuItem profile = toolbar.getMenu().findItem(R.id.action_profile);
+        MenuItem search = toolbar.getMenu().findItem(R.id.action_search);
+        MenuItem tweet = toolbar.getMenu().findItem(R.id.action_tweet);
+
+        switch(currentTab){
+            case "timeline":
+                profile.setVisible(true);
+                search.setVisible(false);
+                tweet.setVisible(true);
+                break;
+            case "trends":
+                profile.setVisible(false);
+                search.setVisible(true);
+                tweet.setVisible(false);
+                break;
+            case "mention":
+                profile.setVisible(false);
+                search.setVisible(false);
+                tweet.setVisible(false);
+                break;
+        }
     }
 }

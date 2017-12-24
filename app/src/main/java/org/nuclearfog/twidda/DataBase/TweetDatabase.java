@@ -5,6 +5,7 @@ import org.nuclearfog.twidda.R;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -25,6 +26,7 @@ public class TweetDatabase {
     private Context c;
     private int size = 0;
     private int mode = 0;
+    private SharedPreferences settings;
 
     /**
      * Store & Read Data
@@ -35,7 +37,7 @@ public class TweetDatabase {
         this.c=c;
         this.mode=mode;
         dataHelper = AppDatabase.getInstance(c);
-
+        settings = c.getSharedPreferences("settings", 0);
         initArray();
         store();
         load();
@@ -49,6 +51,7 @@ public class TweetDatabase {
         this.c=c;
         this.mode=mode;
         dataHelper = AppDatabase.getInstance(c);
+        settings = c.getSharedPreferences("settings", 0);
         initArray();
         load();
     }
@@ -106,7 +109,7 @@ public class TweetDatabase {
                 tweet.add( cursor.getString(index) );
                 index = cursor.getColumnIndex("retweet"); // retweet
                 noRT.add( cursor.getString(index) );
-                index = cursor.getColumnIndex("favorite"); // favorite
+                index = cursor.getColumnIndex("favorite"); // fav
                 noFav.add( cursor.getString(index) );
                 index = cursor.getColumnIndex("answers"); // answers
                 noAns.add( cursor.getString(index) );
@@ -140,6 +143,9 @@ public class TweetDatabase {
     public String getDate(int pos){return timeToString(getTime(pos));}
     public String getAnswer(int pos){return noAns.get(pos);}
     public String getPbImg (int pos){return pbLink.get(pos);}
+    public boolean loadImages(){
+        return settings.getBoolean("image_load", false);
+    }
 
     /**
      * Convert Time to String

@@ -8,11 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import org.nuclearfog.twidda.Engine.ProfileInformation;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.Engine.TwitterEngine;
 
@@ -23,7 +25,7 @@ public class Profile extends AppCompatActivity {
     private TextView username, bio,link,following;
     private ImageView profile_img, profile_banner;
     private SwipeRefreshLayout refresh;
-    private String value;
+    private long userId;
     private Context context;
 
 
@@ -34,23 +36,18 @@ public class Profile extends AppCompatActivity {
         Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        value = getIntent().getExtras().getString("username");
+        userId = getIntent().getExtras().getLong("userID");
         context = getApplicationContext();
         initElements();
         initTabs();
         initSwipe();
+        loadProfile();
 
-
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.buttons, m);
+        getMenuInflater().inflate(R.menu.home, m);
         m.findItem(R.id.action_profile).setVisible(false);
         return true;
     }
@@ -103,13 +100,8 @@ public class Profile extends AppCompatActivity {
      * Profile Contents
      */
     private void initElements() {
-        homeTl = (ListView) findViewById(R.id.home_tl);
-        username = (TextView) findViewById(R.id.my_username);
-        bio = (TextView) findViewById(R.id.bio);
-        link = (TextView) findViewById(R.id.links);
-        following = (TextView) findViewById(R.id.follow);
-        profile_img = (ImageView) findViewById(R.id.profile_img);
-        profile_banner = (ImageView) findViewById(R.id.banner);
+        ProfileInformation profile = new ProfileInformation(this);
+        profile.execute(userId);
     }
 
     /**
@@ -120,23 +112,23 @@ public class Profile extends AppCompatActivity {
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
                 getTweets();
-
-
             }
         });
     }
 
     private void getTweets(){
-
         TwitterEngine twitterEngine = new TwitterEngine(context, homeTl);
         twitterEngine.setRefresh(refresh);
-        switch(value) {
+        /*switch(value) {
             case "home":
                 twitterEngine.execute(3);
                 break;
-        }
+        }*/
+    }
 
+    private void loadProfile() {
+        ImageView pb = (ImageView) findViewById(R.id.profile_img);
+        ImageView banner = (ImageView) findViewById(R.id.banner);//TODO
     }
 }

@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.DataBase;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -69,7 +70,6 @@ public class TrendDatabase {
 
     private void store(){
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-
         ContentValues trend = new ContentValues();
         for(int pos = 0; pos < getSize(); pos++) {
             trend.put("trendpos", getTrendpos(pos));
@@ -87,6 +87,9 @@ public class TrendDatabase {
     }
 
     private void setup() {
+        SharedPreferences settings = c.getSharedPreferences("settings", 0);
+        SharedPreferences.Editor e = settings.edit();
+        e.putString("location", trends.getLocation().getName()).apply();
         for(Trend trend : trends.getTrends()) {
             trendName.add(trend.getName());
             trendLink.add(trend.getURL());

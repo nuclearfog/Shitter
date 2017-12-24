@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.nuclearfog.twidda.Engine.ImageDownloader;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 
@@ -37,6 +39,11 @@ public class TimelineAdapter extends ArrayAdapter {
         ((TextView) v.findViewById(R.id.retweet_number)).setText(mTweets.getRetweet(position));
         ((TextView) v.findViewById(R.id.favorite_number)).setText(mTweets.getFavorite(position));
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
+        if(mTweets.loadImages()) {
+            ImageView imgView = v.findViewById(R.id.tweetPb);
+            ImageDownloader imgDl = new ImageDownloader(imgView);
+            imgDl.execute(mTweets.getPbImg(position));
+        }
         return v;
     }
 }

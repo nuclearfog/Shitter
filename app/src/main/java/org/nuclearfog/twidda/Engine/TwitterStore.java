@@ -119,6 +119,7 @@ public class TwitterStore {
      * @return Twitter Object
      */
     public Twitter getTwitter(){
+        init();
         return twitter;
     }
 
@@ -139,7 +140,7 @@ public class TwitterStore {
 
     /**
      * Store user id + keys into sqlite database
-     * @param username Screenname of User
+     * @param username Screen name of User
      * @param userId unique User ID
      * @param key1 First Key of Access-token
      * @param key2 Second Key of Access-Token
@@ -161,7 +162,7 @@ public class TwitterStore {
 
     /**
      * Singleton
-     * @param context Main Thread Contet
+     * @param context Main Thread Context
      * @return TwitterStore Instance
      */
     public static TwitterStore getInstance(Context context) {

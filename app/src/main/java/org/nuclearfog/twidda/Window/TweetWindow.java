@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.Window;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,11 +8,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import org.nuclearfog.twidda.Engine.SendStatus;
-import org.nuclearfog.twidda.Engine.TwitterStore;
 import org.nuclearfog.twidda.R;
-
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 
 public class TweetWindow extends AppCompatActivity {
@@ -24,7 +19,7 @@ public class TweetWindow extends AppCompatActivity {
     protected void onCreate(Bundle SavedInstance){
         super.onCreate(SavedInstance);
         getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        setContentView(R.layout.tweet_popup);
+        setContentView(R.layout.tweetwindow);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
 
         Button closeButton = (Button) findViewById(R.id.close);
