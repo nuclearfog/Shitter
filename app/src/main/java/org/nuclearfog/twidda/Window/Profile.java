@@ -20,10 +20,7 @@ import org.nuclearfog.twidda.Engine.TwitterEngine;
 
 public class Profile extends AppCompatActivity {
 
-    private ListView homeTl;
     private TabHost mtab;
-    private TextView username, bio,link,following;
-    private ImageView profile_img, profile_banner;
     private SwipeRefreshLayout refresh;
     private long userId;
     private Context context;
@@ -41,7 +38,6 @@ public class Profile extends AppCompatActivity {
         initElements();
         initTabs();
         initSwipe();
-        loadProfile();
 
     }
 
@@ -103,7 +99,7 @@ public class Profile extends AppCompatActivity {
      * Swipe Refresh Layout
      */
     private void initSwipe(){
-        refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        refresh = (SwipeRefreshLayout) findViewById(R.id.refreshHome);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -113,17 +109,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void getTweets(){
-        TwitterEngine twitterEngine = new TwitterEngine(context, homeTl);
-        twitterEngine.setRefresh(refresh);
-        /*switch(value) {
-            case "home":
-                twitterEngine.execute(3);
-                break;
-        }*/
-    }
-
-    private void loadProfile() {
-        ImageView pb = (ImageView) findViewById(R.id.profile_img);
-        ImageView banner = (ImageView) findViewById(R.id.banner);//TODO
+        TwitterEngine twitterEngine = new TwitterEngine(this);
+        twitterEngine.execute(3L,userId);
     }
 }

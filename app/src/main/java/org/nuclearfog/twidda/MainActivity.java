@@ -29,7 +29,6 @@ import org.nuclearfog.twidda.Window.TweetWindow;
 
 public class MainActivity extends AppCompatActivity
 {
-    private Button linkButton, verifierButton, loginButton;
     private SwipeRefreshLayout refresh;
     private SharedPreferences settings;
     private EditText pin;
@@ -38,7 +37,6 @@ public class MainActivity extends AppCompatActivity
     private ListView list;
     private Toolbar toolbar;
     private String currentTab = "timeline";
-    private Menu menu;
 
     /**
      * Create Activity
@@ -51,9 +49,9 @@ public class MainActivity extends AppCompatActivity
         if( !(settings.getBoolean("login", false)) ) {
             setContentView(R.layout.login);
             pin = (EditText) findViewById(R.id.pin);
-            linkButton  = (Button) findViewById(R.id.linkButton);
-            verifierButton = (Button) findViewById(R.id.verifier);
-            loginButton = (Button) findViewById(R.id.loginButton);
+            Button linkButton  = (Button) findViewById(R.id.linkButton);
+            Button verifierButton = (Button) findViewById(R.id.verifier);
+            Button loginButton = (Button) findViewById(R.id.loginButton);
             linkButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){linkTwitter();}});
             verifierButton.setOnClickListener(new View.OnClickListener() {
@@ -104,7 +102,7 @@ public class MainActivity extends AppCompatActivity
      * Load Preferences
      */
     private void linkTwitter() {
-        RegisterAccount account = new RegisterAccount(con);
+        RegisterAccount account = new RegisterAccount(this);
         account.execute("");
     }
 
@@ -114,8 +112,7 @@ public class MainActivity extends AppCompatActivity
     private void verifier() {
         String twitterPin = pin.getText().toString();
         if(!twitterPin.trim().isEmpty()) {
-            RegisterAccount account = new RegisterAccount(con);
-            account.setButton(loginButton,verifierButton);
+            RegisterAccount account = new RegisterAccount(this);
             account.execute(twitterPin);
         } else {
             Toast.makeText(con,"PIN eingeben!",Toast.LENGTH_LONG).show();
@@ -202,17 +199,16 @@ public class MainActivity extends AppCompatActivity
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TwitterEngine homeView = new TwitterEngine(getApplicationContext(), list);
-                homeView.setRefresh(refresh);
+                TwitterEngine homeView = new TwitterEngine(MainActivity.this);
                 switch(tabhost.getCurrentTab()) {
                     case(0):
-                        homeView.execute(0);
+                        homeView.execute(0L);
                         break;
                     case(1):
-                        homeView.execute(1);
+                        homeView.execute(1L);
                         break;
                     case(2):
-                        homeView.execute(2);
+                        homeView.execute(2L);
                         break;
                 }
             }
@@ -226,7 +222,6 @@ public class MainActivity extends AppCompatActivity
         MenuItem profile = toolbar.getMenu().findItem(R.id.action_profile);
         MenuItem search = toolbar.getMenu().findItem(R.id.action_search);
         MenuItem tweet = toolbar.getMenu().findItem(R.id.action_tweet);
-
         switch(currentTab){
             case "timeline":
                 profile.setVisible(true);

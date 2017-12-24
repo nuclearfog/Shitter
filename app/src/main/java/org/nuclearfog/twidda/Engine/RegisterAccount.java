@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Button;
 import android.widget.Toast;
+
+import org.nuclearfog.twidda.MainActivity;
+import org.nuclearfog.twidda.R;
+
 import twitter4j.TwitterException;
 
 public class RegisterAccount extends AsyncTask<String, Void, Boolean>
@@ -16,9 +20,10 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean>
         this.context = context;
     }
 
-    public void setButton( Button loginButton, Button verifierButton ) {
-        this.loginButton=loginButton;
-        this.verifierButton=verifierButton;
+    @Override
+    protected void onPreExecute() {
+        loginButton = (Button)((MainActivity)context).findViewById(R.id.loginButton);
+        verifierButton  = (Button)((MainActivity)context).findViewById(R.id.verifier);
     }
 
     @Override
@@ -27,7 +32,7 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean>
         mTwitter = TwitterStore.getInstance(context);
         try {
             if( pin.trim().isEmpty() ) {
-                mTwitter.request();   //check
+                mTwitter.request();
             }else {
                 mTwitter.initialize(pin);
                 return true;
