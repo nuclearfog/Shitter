@@ -30,7 +30,6 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
         imgEnabled = settings.getBoolean("image_load",false);
     }
 
-
     @Override
     protected void onPreExecute() {
         txtUser = (TextView) ((Profile)context).findViewById(R.id.profile_username);
@@ -42,7 +41,6 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
         profile = (ImageView)((Profile)context).findViewById(R.id.profile_img);
         banner  = (ImageView)((Profile)context).findViewById(R.id.banner);
     }
-
 
     /**
      * @param args [0] Twitter User ID
@@ -64,7 +62,6 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
         } catch(Exception err){err.printStackTrace();}
         return null;
     }
-
 
     @Override
     protected void onPostExecute(Void v) {

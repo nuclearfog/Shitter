@@ -12,7 +12,6 @@ import twitter4j.TwitterException;
 
 public class RegisterAccount extends AsyncTask<String, Void, Boolean>
 {
-    private TwitterStore mTwitter;
     private Button loginButton, verifierButton;
     private Context context;
 
@@ -29,7 +28,7 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean>
     @Override
     protected Boolean doInBackground( String... twitterPin ) {
         String pin = twitterPin[0];
-        mTwitter = TwitterStore.getInstance(context);
+        TwitterStore mTwitter = TwitterStore.getInstance(context);
         try {
             if( pin.trim().isEmpty() ) {
                 mTwitter.request();

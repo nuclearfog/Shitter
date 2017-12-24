@@ -15,6 +15,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.Engine.ProfileInformation;
+import org.nuclearfog.twidda.Engine.ProfileTweets;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.Engine.TwitterEngine;
 
@@ -109,7 +110,7 @@ public class Profile extends AppCompatActivity {
     }
 
     private void getTweets(){
-        TwitterEngine twitterEngine = new TwitterEngine(this);
-        twitterEngine.execute(3L,userId);
+        ProfileTweets mProfile = new ProfileTweets(this);
+        mProfile.execute(userId);
     }
 }

@@ -22,10 +22,10 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
     private final String ERR_MSG = "Fehler bei der Verbindung";
     private TwitterStore twitterStore;
     private Context context;
-    private ListView list, profileList;
-    private TimelineAdapter timelineAdapter, homeTl;
+    private ListView list;
+    private TimelineAdapter timelineAdapter;
     private TrendsAdapter trendsAdapter;
-    private SwipeRefreshLayout refresh, refreshHome;
+    private SwipeRefreshLayout refresh;
 
     public TwitterEngine(Context context) {
         this.context=context;
@@ -35,21 +35,13 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
 
     @Override
     protected void onPreExecute() {
-
-        if(context.getClass() == MainActivity.class)
-        {
-            refresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.refresh);
-            list = (ListView)((MainActivity)context).findViewById(R.id.list);
-        }else {
-        refreshHome = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.refreshHome);
-        profileList = (ListView)((Profile)context).findViewById(R.id.home_tl);
-        }
+        refresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.refresh);
+        list = (ListView)((MainActivity)context).findViewById(R.id.list);
     }
 
-
     /**
-     * @param args [0] Executing Mode: (0)HomeTL, (1)Trend, (2)Mention, (3)UserTL
-     *             [1] User ID
+     * @param args [0] Executing Mode: (0)HomeTL, (1)Trend, (2)Mention
+     *
      */
     @Override
     protected Void doInBackground(Long... args) {
@@ -65,11 +57,6 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
             }
             else if(args[0]==2) { //TODO
             }
-            else if(args[0]==3) {
-                long userId = args[1];
-                TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL);
-                homeTl = new TimelineAdapter(context,R.layout.tweet,hTweets);
-            }
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
         } catch (Exception e){ e.printStackTrace(); }
@@ -81,23 +68,13 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
      */
     @Override
     protected void onPostExecute(Void v) {
-        new Thread() {
-            @Override
-            public void run(){
-                if(timelineAdapter != null) {
-                    list.setAdapter(timelineAdapter);
-                }
-                else if(trendsAdapter != null) {
-                    list.setAdapter(trendsAdapter);
-                }
-                else if(homeTl != null) {
-                    profileList.setAdapter(homeTl);
-                }
-                if(refresh != null)
-                    refresh.setRefreshing(false);
-                if(refreshHome!= null)
-                    refreshHome.setRefreshing(false);
-            }
-        }.run();
+        if(timelineAdapter != null) {
+            list.setAdapter(timelineAdapter);
+        }
+        else if(trendsAdapter != null) {
+            list.setAdapter(trendsAdapter);
+        }
+        if(refresh != null)
+            refresh.setRefreshing(false);
     }
 }
