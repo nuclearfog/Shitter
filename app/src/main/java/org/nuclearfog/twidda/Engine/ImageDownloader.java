@@ -13,7 +13,7 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
 {
     private ImageView imgView;
 
-    public ImageDownloader( ImageView imgView){
+    public ImageDownloader(ImageView imgView){
         this.imgView = imgView;
     }
 
