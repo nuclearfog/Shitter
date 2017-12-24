@@ -70,11 +70,6 @@ public class Profile extends AppCompatActivity {
     }
 
 
-    private void loadContent() {
-
-    }
-
-
     /**
      * Init Tab Listener
      */

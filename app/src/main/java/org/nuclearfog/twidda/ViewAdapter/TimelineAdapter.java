@@ -22,6 +22,8 @@ public class TimelineAdapter extends ArrayAdapter {
         this.context = context;
     }
 
+    public void setDatabase(TweetDatabase mTweets){this.mTweets=mTweets;}
+
     @Override
     public int getCount() {
         return mTweets.getSize();

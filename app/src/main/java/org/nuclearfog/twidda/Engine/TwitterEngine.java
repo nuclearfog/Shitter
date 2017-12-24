@@ -51,12 +51,10 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 case (0): // Home Timeline
                     TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context,TweetDatabase.HOME_TL);
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
-
-                break;
+                    break;
                 case(1):  // Trends
                     TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
                     trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend);
-
                     break;
                 case(2):  // Mentions
                     // TODO
@@ -65,7 +63,6 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                     TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(), context,TweetDatabase.USER_TL);
                     timelineAdapter = new TimelineAdapter(context,R.layout.tweet,hTweets);
                     break;
-
             }
         } catch (TwitterException e) {
             Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
@@ -83,11 +80,9 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             public void run(){
                 if(timelineAdapter != null) {
                     list.setAdapter(timelineAdapter);
-                    //timelineAdapter.notifyDataSetChanged();
                 }
                 else if(trendsAdapter != null) {
                     list.setAdapter(trendsAdapter);
-                    //trendsAdapter.notifyDataSetChanged();
                 }
                 if(refresh != null)
                     refresh.setRefreshing(false);

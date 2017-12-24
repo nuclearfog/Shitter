@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity
                 switch(currentTab){
                     case "timeline":
                         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
-                        TimelineAdapter tlAdapt = new TimelineAdapter (con,R.layout.tweet,tweetDeck);
+                        TimelineAdapter tlAdapt = new TimelineAdapter (MainActivity.this,R.layout.tweet,tweetDeck);
                         list.setAdapter(tlAdapt);
                         tlAdapt.notifyDataSetChanged();
                         break;
