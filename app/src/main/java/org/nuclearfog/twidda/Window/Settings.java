@@ -36,8 +36,6 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        EditText locationField = (EditText) findViewById(R.id.location_edit);
-        locationField.setText(settings.getString("location",""));
 
     }
 

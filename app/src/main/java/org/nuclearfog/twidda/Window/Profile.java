@@ -8,16 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.TextView;
 
 import org.nuclearfog.twidda.Engine.ProfileInformation;
 import org.nuclearfog.twidda.Engine.ProfileTweets;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.Engine.TwitterEngine;
 
 public class Profile extends AppCompatActivity {
 
@@ -37,8 +32,8 @@ public class Profile extends AppCompatActivity {
         userId = getIntent().getExtras().getLong("userID");
         context = getApplicationContext();
         initElements();
-        initTabs();
-        initSwipe();
+        //initTabs();
+        //initSwipe();
 
     }
 
@@ -70,8 +65,8 @@ public class Profile extends AppCompatActivity {
     /**
      * Init Tab Listener
      */
-    private void initTabs(){
-        mtab = (TabHost)findViewById(R.id.tabhost);
+  /*  private void initTabs(){
+        mtab = (TabHost)findViewById(R.id.profile_tab);
         mtab.setup();
         // Tab #1
         TabHost.TabSpec tab1 = mtab.newTabSpec("tweets");
@@ -86,7 +81,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onTabChanged(String tabId) { }
         });
-    }
+    }*/
 
     /**
      * Profile Contents
@@ -99,7 +94,7 @@ public class Profile extends AppCompatActivity {
     /**
      * Swipe Refresh Layout
      */
-    private void initSwipe(){
+   /* private void initSwipe(){
         refresh = (SwipeRefreshLayout) findViewById(R.id.refreshHome);
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -107,7 +102,7 @@ public class Profile extends AppCompatActivity {
                 getTweets();
             }
         });
-    }
+    }*/
 
     private void getTweets(){
         ProfileTweets mProfile = new ProfileTweets(this);

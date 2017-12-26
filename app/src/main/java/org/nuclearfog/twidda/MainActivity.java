@@ -29,13 +29,15 @@ import org.nuclearfog.twidda.Window.TweetWindow;
 
 public class MainActivity extends AppCompatActivity
 {
-    private SwipeRefreshLayout refresh;
+    private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
+    private ListView timelineList, trendList,mentionList;
     private SharedPreferences settings;
     private EditText pin;
     private Context con;
-    private TabHost tabhost;
-    private ListView list;
     private Toolbar toolbar;
+    private MenuItem profile;
+    private MenuItem search;
+    private MenuItem tweet;
     private String currentTab = "timeline";
 
     /**
@@ -67,7 +69,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         toolbar.inflateMenu(R.menu.home);
-        setToolbar();
+        profile = toolbar.getMenu().findItem(R.id.action_profile);
+        search = toolbar.getMenu().findItem(R.id.action_search);
+        tweet = toolbar.getMenu().findItem(R.id.action_tweet);
         return true;
     }
 
@@ -124,39 +128,49 @@ public class MainActivity extends AppCompatActivity
      */
     private void login() {
         setContentView(R.layout.mainpage);
-        list = (ListView) findViewById(R.id.list);
-        setRefreshListener();
-        setTabListener();
+        timelineList = (ListView) findViewById(R.id.tl_list);
+        trendList = (ListView) findViewById(R.id.tr_list);
+        mentionList = (ListView) findViewById(R.id.m_list);
+        timelineReload = (SwipeRefreshLayout) findViewById(R.id.timeline);
+        trendReload = (SwipeRefreshLayout) findViewById(R.id.trends);
+        mentionReload = (SwipeRefreshLayout) findViewById(R.id.mention);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        setRefreshListener();
+        setTabListener();
     }
 
     /**
      * Set Tab Listener
+     * @see #setTabContent()
      */
     private void setTabListener() {
-        tabhost = (TabHost)findViewById(R.id.tabhost);
+        TabHost tabhost = (TabHost)findViewById(R.id.main_tabhost);
         tabhost.setup();
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
-        tab1.setIndicator("Timeline").setContent(R.id.list);
+        tab1.setContent(R.id.tl_list);
+        tab1.setIndicator("Timeline");
         tabhost.addTab(tab1);
         // Tab #2
         TabSpec tab2 = tabhost.newTabSpec("trends");
-        tab2.setIndicator("Trend").setContent(R.id.list);
+        tab2.setContent(R.id.tr_list);
+        tab2.setIndicator("Trend");
         tabhost.addTab(tab2);
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");
-        tab3.setIndicator("Mention").setContent(R.id.list);
+        tab3.setContent(R.id.m_list);
+        tab3.setIndicator("Mention");
         tabhost.addTab(tab3);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                if(refresh.isRefreshing()){ refresh.setRefreshing(false);}
                 currentTab = tabId;
-                setTabContent();
-                setToolbar();
+                mentionReload.setRefreshing(false);
+                trendReload.setRefreshing(false);
+                timelineReload.setRefreshing(false);
+                setVisibility();
             }
         });
         setTabContent();
@@ -167,26 +181,15 @@ public class MainActivity extends AppCompatActivity
      * separate THREAD
      */
     private void setTabContent() {
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
-                switch(currentTab){
-                    case "timeline":
-                        TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
-                        TimelineAdapter tlAdapt = new TimelineAdapter (MainActivity.this,R.layout.tweet,tweetDeck);
-                        list.setAdapter(tlAdapt);
-                        tlAdapt.notifyDataSetChanged();
-                        break;
-                    case "trends":
-                        TrendDatabase trendDeck = new TrendDatabase(con);
-                        TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.tweet,trendDeck);
-                        list.setAdapter(trendAdp);
-                        trendAdp.notifyDataSetChanged();
-                        break;
-                    case "mention":
-                        list.setAdapter(null);
-                        break;
-                }
+            public void run() {
+                TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
+                TimelineAdapter tlAdapt = new TimelineAdapter (MainActivity.this,R.layout.tweet,tweetDeck);
+                timelineList.setAdapter(tlAdapt);
+                TrendDatabase trendDeck = new TrendDatabase(con);
+                TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.tweet,trendDeck);
+                trendList.setAdapter(trendAdp);
             }
         }.run();
     }
@@ -195,22 +198,25 @@ public class MainActivity extends AppCompatActivity
      * Swipe To Refresh Listener
      */
     private void setRefreshListener() {
-        refresh = (SwipeRefreshLayout) findViewById(R.id.refresh);
-        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        timelineReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 TwitterEngine homeView = new TwitterEngine(MainActivity.this);
-                switch(tabhost.getCurrentTab()) {
-                    case(0):
-                        homeView.execute(0L);
-                        break;
-                    case(1):
-                        homeView.execute(1L);
-                        break;
-                    case(2):
-                        homeView.execute(2L);
-                        break;
-                }
+                homeView.execute(0);
+            }
+        });
+        trendReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                TwitterEngine homeView = new TwitterEngine(MainActivity.this);
+                homeView.execute(1);
+            }
+        });
+        mentionReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                TwitterEngine homeView = new TwitterEngine(MainActivity.this);
+                homeView.execute(2);
             }
         });
     }
@@ -218,25 +224,32 @@ public class MainActivity extends AppCompatActivity
     /**
      * Toolbar Items
      */
-    private void setToolbar() {
-        MenuItem profile = toolbar.getMenu().findItem(R.id.action_profile);
-        MenuItem search = toolbar.getMenu().findItem(R.id.action_search);
-        MenuItem tweet = toolbar.getMenu().findItem(R.id.action_tweet);
+    private void setVisibility() {
         switch(currentTab){
             case "timeline":
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
+                trendReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
+                mentionReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
+                timelineReload.setVisibility(SwipeRefreshLayout.VISIBLE);
+
                 break;
             case "trends":
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
+                timelineReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
+                mentionReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
+                trendReload.setVisibility(SwipeRefreshLayout.VISIBLE);
                 break;
             case "mention":
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);
+                timelineReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
+                trendReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
+                mentionReload.setVisibility(SwipeRefreshLayout.VISIBLE);
                 break;
         }
     }

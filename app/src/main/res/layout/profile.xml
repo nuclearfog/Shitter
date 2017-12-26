@@ -18,14 +18,14 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/banner"
+            android:id="@+id/banner2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:srcCompat="@android:color/holo_red_dark" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="96dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageView
@@ -103,44 +103,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-        <TabHost
-            android:id="@+id/tabhost"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TabWidget
-                    android:id="@android:id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-                <FrameLayout
-                    android:id="@android:id/tabcontent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v4.widget.SwipeRefreshLayout
-                        android:id="@+id/refreshHome"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ListView
-                            android:id="@+id/home_tl"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-
-                    </android.support.v4.widget.SwipeRefreshLayout>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-        </TabHost>
 
     </LinearLayout>
 

@@ -17,15 +17,17 @@ import android.os.AsyncTask;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class TwitterEngine extends AsyncTask<Long, Void, Void>
+public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 {
     private final String ERR_MSG = "Fehler bei der Verbindung";
     private TwitterStore twitterStore;
     private Context context;
-    private ListView list;
+
+    private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
+    private ListView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter;
     private TrendsAdapter trendsAdapter;
-    private SwipeRefreshLayout refresh;
+
 
     public TwitterEngine(Context context) {
         this.context=context;
@@ -35,8 +37,15 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
 
     @Override
     protected void onPreExecute() {
-        refresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.refresh);
-        list = (ListView)((MainActivity)context).findViewById(R.id.list);
+        // Timeline Tab
+        timelineRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.timeline);
+        timelineList = (ListView)((MainActivity)context).findViewById(R.id.tl_list);
+        // Trend Tab
+        trendRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.trends);
+        trendList = (ListView)((MainActivity)context).findViewById(R.id.tr_list);
+        // Mention Tab
+        mentionRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.mention);
+        mentionList = (ListView)((MainActivity)context).findViewById(R.id.m_list);
     }
 
     /**
@@ -44,7 +53,7 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
      *
      */
     @Override
-    protected Void doInBackground(Long... args) {
+    protected Void doInBackground(Integer... args) {
         Twitter twitter = twitterStore.getTwitter();
         try {
             if(args[0]==0) {
@@ -68,13 +77,15 @@ public class TwitterEngine extends AsyncTask<Long, Void, Void>
      */
     @Override
     protected void onPostExecute(Void v) {
-        if(timelineAdapter != null) {
-            list.setAdapter(timelineAdapter);
-        }
-        else if(trendsAdapter != null) {
-            list.setAdapter(trendsAdapter);
-        }
-        if(refresh != null)
-            refresh.setRefreshing(false);
+        if(timelineAdapter != null)
+            timelineList.setAdapter(timelineAdapter);
+        else if(trendsAdapter != null)
+            trendList.setAdapter(trendsAdapter);
+        if(timelineRefresh.isRefreshing())
+            timelineRefresh.setRefreshing(false);
+        else if(mentionRefresh.isRefreshing())
+            mentionRefresh.setRefreshing(false);
+        else if(trendRefresh.isRefreshing())
+            trendRefresh.setRefreshing(false);
     }
 }

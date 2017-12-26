@@ -39,7 +39,7 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
         txtFollowing = (TextView)((Profile)context).findViewById(R.id.following);
         txtFollower = (TextView)((Profile)context).findViewById(R.id.follower);
         profile = (ImageView)((Profile)context).findViewById(R.id.profile_img);
-        banner  = (ImageView)((Profile)context).findViewById(R.id.banner);
+        //banner  = (ImageView)((Profile)context).findViewById(R.id.banner);
     }
 
     /**

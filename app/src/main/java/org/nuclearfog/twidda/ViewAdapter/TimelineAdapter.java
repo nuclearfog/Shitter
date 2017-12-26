@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.ViewAdapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,14 @@ public class TimelineAdapter extends ArrayAdapter {
         this.context = context;
     }
 
-    public void setDatabase(TweetDatabase mTweets){this.mTweets=mTweets;}
-
     @Override
     public int getCount() {
         return mTweets.getSize();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View v, ViewGroup parent) {
+    public View getView(int position, View v,@NonNull ViewGroup parent) {
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.tweet, parent,false);

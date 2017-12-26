@@ -28,8 +28,8 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
 
     @Override
     protected void onPreExecute(){
-        refreshHome = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.refreshHome);
-        profileList = (ListView)((Profile)context).findViewById(R.id.home_tl);
+        //refreshHome = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.refreshHome);
+        //profileList = (ListView)((Profile)context).findViewById(R.id.home_tl);
     }
 
     @Override

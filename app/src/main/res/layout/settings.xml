@@ -17,11 +17,9 @@
         android:layout_height="wrap_content"
         android:text="@string/image" />
 
-    <EditText
-        android:id="@+id/location_edit"
+    <Spinner
+        android:id="@+id/location_list"
         android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
+        android:layout_height="wrap_content"></Spinner>
 
 </LinearLayout>

@@ -112,7 +112,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("favorite"); // fav
                 noFav.add( cursor.getString(index) );
                 index = cursor.getColumnIndex("answers"); // answers
-                noAns.add( cursor.getString(index) );
+                noAns.add(cursor.getString(index));
                 index = cursor.getColumnIndex("username"); // user
                 user.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("pbLink"); // image
@@ -129,9 +129,7 @@ public class TweetDatabase {
     }
 
     public int getSize() {
-
         return size;
-
     }
     public long getUserID(int pos){return userId.get(pos);}
     public long getTweetId(int pos){return tweetId.get(pos);}
