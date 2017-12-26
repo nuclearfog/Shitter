@@ -121,10 +121,10 @@ public class Profile extends AppCompatActivity {
         new Thread(){
             @Override
             public void run(){
-                TweetDatabase mTweet = new TweetDatabase(Profile.this, TweetDatabase.HOME_TL);
+                TweetDatabase mTweet = new TweetDatabase(Profile.this, TweetDatabase.USER_TL, userId);
                 TimelineAdapter tl = new TimelineAdapter(Profile.this,R.layout.tweet,mTweet);
                 homeTweets.setAdapter(tl);
-                TweetDatabase fTweet = new TweetDatabase(Profile.this, TweetDatabase.FAV_TL);
+                TweetDatabase fTweet = new TweetDatabase(Profile.this, TweetDatabase.FAV_TL, userId);
                 TimelineAdapter fl = new TimelineAdapter(Profile.this,R.layout.tweet,fTweet);
                 homeFavorits.setAdapter(fl);
             }

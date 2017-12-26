@@ -51,7 +51,7 @@
 
     <string name="tableHome">
      CREATE TABLE IF NOT EXISTS timeline (
-        tweetID     INTEGER,
+        tweetID     INTEGER UNIQUE,
         FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));
     </string>
 

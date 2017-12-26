@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import org.nuclearfog.twidda.Engine.SendStatus;
 import org.nuclearfog.twidda.R;
 
-
 public class TweetWindow extends AppCompatActivity {
 
     private EditText tweetfield;
@@ -37,7 +36,6 @@ public class TweetWindow extends AppCompatActivity {
                 send();
             }
         });
-
     }
 
     private void send(){
@@ -49,8 +47,6 @@ public class TweetWindow extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
-
 }

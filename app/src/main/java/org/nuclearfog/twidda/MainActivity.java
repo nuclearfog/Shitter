@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity
         new Thread() {
             @Override
             public void run() {
-                TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL);
+                TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
                 TimelineAdapter tlAdapt = new TimelineAdapter (MainActivity.this,R.layout.tweet,tweetDeck);
                 timelineList.setAdapter(tlAdapt);
                 TrendDatabase trendDeck = new TrendDatabase(con);

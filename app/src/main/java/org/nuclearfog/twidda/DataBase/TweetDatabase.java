@@ -47,8 +47,9 @@ public class TweetDatabase {
      * Read Data
      * @param c MainActivity Context
      */
-    public TweetDatabase(Context c, int mode) {
+    public TweetDatabase(Context c, int mode, long userid) {
         this.c=c;
+        this.userid=userid;
         this.mode=mode;
         dataHelper = AppDatabase.getInstance(c);
         settings = c.getSharedPreferences("settings", 0);
@@ -61,7 +62,7 @@ public class TweetDatabase {
         ContentValues user  = new ContentValues();
         ContentValues tweet = new ContentValues();
         ContentValues home  = new ContentValues();
-        ContentValues owner = new ContentValues();
+        ContentValues fav   = new ContentValues();
 
         for(int pos = 0; pos < stats.size(); pos++) {
 
@@ -76,31 +77,31 @@ public class TweetDatabase {
             user.put("location",usr.getLocation());
             user.put("link",usr.getURL());
 
-            tweet.put("userID", usr.getId());
+            tweet.put("userID", usr.getId());  // this one does not work TODO
             tweet.put("tweetID", stat.getId());
             tweet.put("time", stat.getCreatedAt().getTime());
             tweet.put("tweet", stat.getText());
             tweet.put("retweet", stat.getRetweetCount());
             tweet.put("favorite", stat.getFavoriteCount());
+            tweet.put("answers", 0);
 
             home.put("tweetID", stat.getId());
 
-            owner.put("ownerID", userid);
+            fav.put("ownerID", userid);
 
             db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_IGNORE);
-            db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_IGNORE);
 
             if(mode!=USER_TL) {
-                if(mode == HOME_TL){
+                if(mode == HOME_TL) {
                     db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_IGNORE);
                 }
-                else if(mode == FAV_TL){
-                    db.insertWithOnConflict("favorit",null,home,SQLiteDatabase.CONFLICT_REPLACE);
-                    db.insertWithOnConflict("favorit",null,owner,SQLiteDatabase.CONFLICT_REPLACE);
+                else if(mode == FAV_TL) {
+                    db.insertWithOnConflict("favorit",null,home,SQLiteDatabase.CONFLICT_IGNORE);
+                    db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_IGNORE);
                 }
             }
         }
-
         db.close();
     }
 
@@ -110,19 +111,18 @@ public class TweetDatabase {
         size = 0;
         String SQL_GET_HOME=" ";
 
-        if(mode==HOME_TL)
-            SQL_GET_HOME = "SELECT * FROM timeline INNER JOIN tweet " +
-                    "on timeline.tweetID = tweet.tweetID INNER JOIN user ON " +
-                    "tweet.userID = user.userID order by time DESC";
-        else if(mode==FAV_TL)
+        if(mode==HOME_TL) {
+            SQL_GET_HOME = "SELECT * FROM timeline " +
+                    "INNER JOIN tweet ON timeline.tweetID = tweet.tweetID " +
+                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY time DESC";
+        } else if(mode==FAV_TL) {
             SQL_GET_HOME = "SELECT * FROM favorit " +
-                    "INNER JOIN tweet on favorit.tweetID=tweet.tweetID " +
-                    "INNER JOIN user  on tweet.userID=user.userID " +
-                  /*  "WHERE favorit.ownerID="+userid+*/" ORDER BY tweet.time DESC";
-        else if(mode==USER_TL){
-            SQL_GET_HOME = "SELECT * from user INNER JOIN tweet on tweet.userID=user.userID" +
-                    " WHERE user.userID = "+userid+" ORDER BY tweet.time DESC";
-
+                    "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
+                    "INNER JOIN user ON tweet.userID=user.userID " +
+                    /*"WHERE favorit.ownerID = "+userid+*/" ORDER BY tweet.time DESC";
+        } else if(mode==USER_TL) {
+            SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
+                    "WHERE user.userID = "+userid+" ORDER BY tweet.time DESC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -144,7 +144,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("pbLink"); // image
                 pbLink.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("userID"); // UserID
-                userId.add(cursor.getLong(index) );
+                userId.add(cursor.getLong(index) );long integ = cursor.getLong(index);
                 index = cursor.getColumnIndex("tweetID"); // tweetID
                 tweetId.add(cursor.getLong(index) );
                 size++;

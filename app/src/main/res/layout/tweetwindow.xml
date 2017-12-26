@@ -6,7 +6,6 @@
     android:background="@color/tweetwindow"
     android:orientation="vertical">
 
-
     <EditText
         android:id="@+id/tweet_input"
         android:layout_width="match_parent"
