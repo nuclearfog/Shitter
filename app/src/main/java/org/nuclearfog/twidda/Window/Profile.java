@@ -17,7 +17,7 @@ import org.nuclearfog.twidda.R;
 public class Profile extends AppCompatActivity {
 
     private TabHost mtab;
-    private SwipeRefreshLayout refresh;
+    private SwipeRefreshLayout homeReload, favoritReload;
     private long userId;
     private Context context;
 
@@ -32,8 +32,8 @@ public class Profile extends AppCompatActivity {
         userId = getIntent().getExtras().getLong("userID");
         context = getApplicationContext();
         initElements();
-        //initTabs();
-        //initSwipe();
+        initTabs();
+        initSwipe();
 
     }
 
@@ -65,23 +65,23 @@ public class Profile extends AppCompatActivity {
     /**
      * Init Tab Listener
      */
-  /*  private void initTabs(){
+    private void initTabs(){
         mtab = (TabHost)findViewById(R.id.profile_tab);
         mtab.setup();
         // Tab #1
         TabHost.TabSpec tab1 = mtab.newTabSpec("tweets");
-        tab1.setIndicator("Tweets").setContent(R.id.home_tl);
+        tab1.setIndicator("Tweets").setContent(R.id.hometweets);
         mtab.addTab(tab1);
         // Tab #2
         TabHost.TabSpec tab2 = mtab.newTabSpec("favorites");
-        tab2.setIndicator("Favorits").setContent(R.id.home_tl);
+        tab2.setIndicator("Favorits").setContent(R.id.homefavorits);
         mtab.addTab(tab2);
         // Listener
         mtab.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) { }
         });
-    }*/
+    }
 
     /**
      * Profile Contents
@@ -94,18 +94,25 @@ public class Profile extends AppCompatActivity {
     /**
      * Swipe Refresh Layout
      */
-   /* private void initSwipe(){
-        refresh = (SwipeRefreshLayout) findViewById(R.id.refreshHome);
-        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void initSwipe(){
+        homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
+        homeReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getTweets();
             }
         });
-    }*/
+        favoritReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+        favoritReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                favoritReload.setRefreshing(false);//TODO
+            }
+        });
+    }
 
     private void getTweets(){
         ProfileTweets mProfile = new ProfileTweets(this);
-        mProfile.execute(userId);
+        mProfile.execute(userId, 0L);
     }
 }

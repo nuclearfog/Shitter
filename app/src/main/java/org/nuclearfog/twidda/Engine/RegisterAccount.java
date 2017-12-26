@@ -10,9 +10,9 @@ import org.nuclearfog.twidda.R;
 
 import twitter4j.TwitterException;
 
-public class RegisterAccount extends AsyncTask<String, Void, Boolean>
+public class RegisterAccount extends AsyncTask<String, Void, String>
 {
-    private Button loginButton, verifierButton;
+    private Button verifierButton, loginButton;
     private Context context;
 
     public RegisterAccount( Context context ){
@@ -21,12 +21,12 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean>
 
     @Override
     protected void onPreExecute() {
-        loginButton = (Button)((MainActivity)context).findViewById(R.id.loginButton);
         verifierButton  = (Button)((MainActivity)context).findViewById(R.id.verifier);
+        loginButton = (Button)((MainActivity)context).findViewById(R.id.login);
     }
 
     @Override
-    protected Boolean doInBackground( String... twitterPin ) {
+    protected String doInBackground( String... twitterPin ) {
         String pin = twitterPin[0];
         TwitterStore mTwitter = TwitterStore.getInstance(context);
         try {
@@ -34,21 +34,24 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean>
                 mTwitter.request();
             }else {
                 mTwitter.initialize(pin);
-                return true;
+                return "success";
             }
         } catch ( TwitterException e ) {
-            Toast.makeText(context,"Fehler bei der Registrierung",Toast.LENGTH_LONG).show();
+            return e.getMessage();
         } catch ( Exception e ) {
-            e.printStackTrace();
+            return e.getMessage();
         }
-        return false;
+        return " ";
     }
 
     @Override
-    protected void onPostExecute(Boolean result) {
-        if( result ) {
-            loginButton.setVisibility(Button.VISIBLE);
+    protected void onPostExecute(String msg) {
+        if( msg=="success" ) {
             verifierButton.setVisibility(Button.INVISIBLE);
+            loginButton.setVisibility(Button.VISIBLE);
+            loginButton.setBackgroundColor(0xFFFF0000);//todo
+        } else if( !msg.trim().isEmpty() ) {
+            Toast.makeText(context,"Fehler: "+msg,Toast.LENGTH_LONG).show();
         }
     }
 }

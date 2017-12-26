@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -30,62 +31,38 @@
                 android:layout_height="match_parent">
 
 
-                <LinearLayout
-                    android:id="@+id/tab1"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/timeline"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
-                    <android.support.v4.widget.SwipeRefreshLayout
-                        android:id="@+id/timeline"
+                    <ListView
+                        android:id="@+id/tl_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="visible">
+                        android:layout_height="wrap_content" />
+                </android.support.v4.widget.SwipeRefreshLayout>
 
-                        <ListView
-                            android:id="@+id/tl_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </android.support.v4.widget.SwipeRefreshLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab2"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/trends"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
-                    <android.support.v4.widget.SwipeRefreshLayout
-                        android:id="@+id/trends"
+                    <ListView
+                        android:id="@+id/tr_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="invisible">
+                        android:layout_height="match_parent" />
+                </android.support.v4.widget.SwipeRefreshLayout>
 
-                        <ListView
-                            android:id="@+id/tr_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </android.support.v4.widget.SwipeRefreshLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab3"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/mention"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
-                    <android.support.v4.widget.SwipeRefreshLayout
-                        android:id="@+id/mention"
+                    <ListView
+                        android:id="@+id/m_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="invisible">
-
-                        <ListView
-                            android:id="@+id/m_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </android.support.v4.widget.SwipeRefreshLayout>
-                </LinearLayout>
+                        android:layout_height="match_parent" />
+                </android.support.v4.widget.SwipeRefreshLayout>
 
 
             </FrameLayout>

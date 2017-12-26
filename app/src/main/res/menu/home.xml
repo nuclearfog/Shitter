@@ -23,6 +23,7 @@
         android:checkable="false"
         android:icon="@drawable/search"
         android:title="Search"
+        android:visible="false"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
     <item

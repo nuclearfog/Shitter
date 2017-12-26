@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity
     private MenuItem profile;
     private MenuItem search;
     private MenuItem tweet;
-    private String currentTab = "timeline";
 
     /**
      * Create Activity
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity
             pin = (EditText) findViewById(R.id.pin);
             Button linkButton  = (Button) findViewById(R.id.linkButton);
             Button verifierButton = (Button) findViewById(R.id.verifier);
-            Button loginButton = (Button) findViewById(R.id.loginButton);
+            Button loginButton = (Button) findViewById(R.id.login);
             linkButton.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View arg0){linkTwitter();}});
             verifierButton.setOnClickListener(new View.OnClickListener() {
@@ -81,8 +80,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        switch(item.getItemId())
-        {
+        switch(item.getItemId()) {
             case R.id.action_profile:
                 intent = new Intent(this, Profile.class);
                 Bundle bundle = new Bundle();
@@ -150,27 +148,26 @@ public class MainActivity extends AppCompatActivity
         tabhost.setup();
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
-        tab1.setContent(R.id.tl_list);
+        tab1.setContent(R.id.timeline);
         tab1.setIndicator("Timeline");
         tabhost.addTab(tab1);
         // Tab #2
         TabSpec tab2 = tabhost.newTabSpec("trends");
-        tab2.setContent(R.id.tr_list);
+        tab2.setContent(R.id.trends);
         tab2.setIndicator("Trend");
         tabhost.addTab(tab2);
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");
-        tab3.setContent(R.id.m_list);
+        tab3.setContent(R.id.mention);
         tab3.setIndicator("Mention");
         tabhost.addTab(tab3);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                currentTab = tabId;
                 mentionReload.setRefreshing(false);
                 trendReload.setRefreshing(false);
                 timelineReload.setRefreshing(false);
-                setVisibility();
+                setVisibility(tabId);
             }
         });
         setTabContent();
@@ -223,33 +220,24 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Toolbar Items
+     * @param currentTab 3 Tabs "timeline" , "trends" , "mention"
      */
-    private void setVisibility() {
-        switch(currentTab){
+    private void setVisibility(String currentTab) {
+        switch(currentTab) {
             case "timeline":
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
-                trendReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
-                mentionReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
-                timelineReload.setVisibility(SwipeRefreshLayout.VISIBLE);
-
                 break;
             case "trends":
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
-                timelineReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
-                mentionReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
-                trendReload.setVisibility(SwipeRefreshLayout.VISIBLE);
                 break;
             case "mention":
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);
-                timelineReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
-                trendReload.setVisibility(SwipeRefreshLayout.INVISIBLE);
-                mentionReload.setVisibility(SwipeRefreshLayout.VISIBLE);
                 break;
         }
     }

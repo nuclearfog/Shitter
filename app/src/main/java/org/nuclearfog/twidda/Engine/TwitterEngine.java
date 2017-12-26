@@ -6,7 +6,6 @@ import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
-import org.nuclearfog.twidda.Window.Profile;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;

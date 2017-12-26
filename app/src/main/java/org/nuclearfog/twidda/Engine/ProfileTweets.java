@@ -15,10 +15,10 @@ import twitter4j.Twitter;
 public class ProfileTweets extends AsyncTask<Long, Void, Void> {
 
     private Context context;
-    private SwipeRefreshLayout refreshHome;
-    private ListView profileList;
+    private SwipeRefreshLayout tweetsReload, favoritsReload;
+    private ListView profileTweets, profileFavorits;
     private TwitterStore twitterStore;
-    private TimelineAdapter homeTl;
+    private TimelineAdapter homeTl, homeFav;
 
     public ProfileTweets(Context context){
         this.context=context;
@@ -28,24 +28,37 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
 
     @Override
     protected void onPreExecute(){
-        //refreshHome = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.refreshHome);
-        //profileList = (ListView)((Profile)context).findViewById(R.id.home_tl);
+        tweetsReload    = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.hometweets);
+        favoritsReload  = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.homefavorits);
+        profileTweets   = (ListView)((Profile)context).findViewById(R.id.ht_list);
+        profileFavorits = (ListView)((Profile)context).findViewById(R.id.hf_list);
     }
 
     @Override
     protected Void doInBackground(Long... id) {
         try {
-            Twitter twitter = twitterStore.getTwitter();
             long userId = id[0];
-            TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL);
-            homeTl = new TimelineAdapter(context,R.layout.tweet,hTweets);
+            Twitter twitter = twitterStore.getTwitter();
+            if(id[1] == 0) {
+                TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL);
+                homeTl = new TimelineAdapter(context,R.layout.tweet,hTweets);
+            } else if(id[1] == 1) {
+               /* TweetDatabase fTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL);
+                homeFav = new TimelineAdapter(context,R.layout.tweet,fTweets); */
+            }
         } catch(Exception err){err.printStackTrace();}
         return null;
     }
 
     @Override
-    protected void onPostExecute(Void v){
-        profileList.setAdapter(homeTl);
-        refreshHome.setRefreshing(false);
+    protected void onPostExecute(Void v) {
+        if(homeTl != null){
+            profileTweets.setAdapter(homeTl);
+        }
+        else if(homeFav != null){
+            profileFavorits.setAdapter(homeTl);
+        }
+        tweetsReload.setRefreshing(false);
+        favoritsReload.setRefreshing(false);
     }
 }
