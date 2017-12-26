@@ -17,29 +17,25 @@ public class AppDatabase extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String uQuery  = c.getString(R.string.user_table);
-        String tQuery  = c.getString(R.string.tweet_table);
-        String trQuery = c.getString(R.string.trend_table);
-        String hQuery  = c.getString(R.string.home_table);
-        String pQuery  = c.getString(R.string.profile_table);
-        String kQuery  = c.getString(R.string.user_keys);
+        String uQuery  = c.getString(R.string.tableUser);
+        String tQuery  = c.getString(R.string.tableTweet);
+        String trQuery = c.getString(R.string.tableTrend);
+        String hQuery  = c.getString(R.string.tableHome);
+        String fQuery  = c.getString(R.string.tableFavorit);
         db.execSQL(uQuery);
         db.execSQL(tQuery);
         db.execSQL(trQuery);
         db.execSQL(hQuery);
-        db.execSQL(pQuery);
-        db.execSQL(kQuery);
+        db.execSQL(fQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + "user");
-        db.execSQL("DROP TABLE IF EXISTS " + "keys");
         db.execSQL("DROP TABLE IF EXISTS " + "tweet");
+        db.execSQL("DROP TABLE IF EXISTS " + "favorit");
+        db.execSQL("DROP TABLE IF EXISTS " + "timeline");
         db.execSQL("DROP TABLE IF EXISTS " + "trend");
-        db.execSQL("DROP TABLE IF EXISTS " + "hometweet");
-        db.execSQL("DROP TABLE IF EXISTS " + "profile_table");
-
         onCreate(db);
     }
 

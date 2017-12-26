@@ -56,7 +56,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         Twitter twitter = twitterStore.getTwitter();
         try {
             if(args[0]==0) {
-                TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context,TweetDatabase.HOME_TL);
+                TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context,TweetDatabase.HOME_TL,0);
                 timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
             }
             else if(args[0]==1) {

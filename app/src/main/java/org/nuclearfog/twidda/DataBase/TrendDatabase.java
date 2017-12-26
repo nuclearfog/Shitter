@@ -51,7 +51,7 @@ public class TrendDatabase {
 
     private void load(){
         SQLiteDatabase db = dataHelper.getReadableDatabase();
-        String SQL_TREND = c.getString(R.string.SQL_TRENS);
+        String SQL_TREND = "SELECT * FROM trend ORDER BY trendpos ASC";
         Cursor cursor = db.rawQuery(SQL_TREND,null);
         int index;
         if(cursor.moveToFirst()) {

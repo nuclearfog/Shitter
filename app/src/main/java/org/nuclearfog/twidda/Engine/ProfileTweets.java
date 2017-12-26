@@ -40,11 +40,11 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
             long userId = id[0];
             Twitter twitter = twitterStore.getTwitter();
             if(id[1] == 0) {
-                TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL);
+                TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL,userId);
                 homeTl = new TimelineAdapter(context,R.layout.tweet,hTweets);
-            } else if(id[1] == 1) {
-               /* TweetDatabase fTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL);
-                homeFav = new TimelineAdapter(context,R.layout.tweet,fTweets); */
+            } else if(id[1] == 1) { //FAVORITs
+               TweetDatabase fTweets = new TweetDatabase(twitter.getFavorites(userId), context,TweetDatabase.FAV_TL,userId);
+                homeFav = new TimelineAdapter(context,R.layout.tweet,fTweets);
             }
         } catch(Exception err){err.printStackTrace();}
         return null;
@@ -56,7 +56,7 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
             profileTweets.setAdapter(homeTl);
         }
         else if(homeFav != null){
-            profileFavorits.setAdapter(homeTl);
+            profileFavorits.setAdapter(homeFav);
         }
         tweetsReload.setRefreshing(false);
         favoritsReload.setRefreshing(false);

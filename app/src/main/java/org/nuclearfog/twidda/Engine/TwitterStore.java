@@ -1,13 +1,9 @@
 package org.nuclearfog.twidda.Engine;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-
-import org.nuclearfog.twidda.DataBase.AppDatabase;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -22,11 +18,9 @@ import twitter4j.conf.ConfigurationBuilder;
  * NOT RECOMMENDED FOR MAIN-THREAD!
  */
 public class TwitterStore {
-
     private static TwitterStore mTwitter;
     private Twitter twitter;
     private Context context;
-    private AppDatabase mData;
     private SharedPreferences settings;
     private RequestToken reqToken;
     private final String TWITTER_CONSUMER_KEY = "GrylGIgQK3cDjo9mSTBqF1vwf";
@@ -46,7 +40,6 @@ public class TwitterStore {
         Configuration configuration = builder.build();
         TwitterFactory factory = new TwitterFactory(configuration);
         twitter = factory.getInstance();
-        mData = AppDatabase.getInstance(context);
         this.context = context;
     }
 
@@ -74,11 +67,8 @@ public class TwitterStore {
     public void initialize(String twitterPin) throws TwitterException, NullPointerException{
         if(reqToken == null) throw new NullPointerException("empty request token");
         AccessToken accessToken = twitter.getOAuthAccessToken(reqToken,twitterPin);
-        long userId = accessToken.getUserId();
-        String username = accessToken.getScreenName();
         String key1 = accessToken.getToken();
         String key2 = accessToken.getTokenSecret();
-        store(username, userId,key1,key2);
         initKeys(key1, key2);
         saveCurrentUser(key1, key2);
     }
@@ -96,6 +86,7 @@ public class TwitterStore {
         AccessToken token = new AccessToken(key1,key2);
         twitter = new TwitterFactory( builder.build() ).getInstance(token);
     }
+
 
     /**
      * store current user's name & id
@@ -135,28 +126,6 @@ public class TwitterStore {
             key2 = settings.getString("key2", " ");
             initKeys(key1,key2);
         }
-    }
-
-
-    /**
-     * Store user id + keys into sqlite database
-     * @param username Screen name of User
-     * @param userId unique User ID
-     * @param key1 First Key of Access-token
-     * @param key2 Second Key of Access-Token
-     */
-    private void store(String username, long userId, String key1, String key2){
-        SQLiteDatabase db = mData.getWritableDatabase();
-        ContentValues storeValues = new ContentValues();
-        ContentValues usrValues = new ContentValues();
-        usrValues.put("username", username);
-        usrValues.put("userID", userId);
-        storeValues.put("userID", userId);
-        storeValues.put("key1", key1);
-        storeValues.put("key2", key2);
-        db.insertWithOnConflict("user",null,usrValues,SQLiteDatabase.CONFLICT_IGNORE);
-        db.insertWithOnConflict("keys",null,storeValues,SQLiteDatabase.CONFLICT_IGNORE);
-        db.close();
     }
 
 

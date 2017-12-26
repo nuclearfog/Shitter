@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.DataBase;
 
-import org.nuclearfog.twidda.DataBase.AppDatabase;
-import org.nuclearfog.twidda.R;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,7 +14,8 @@ import twitter4j.User;
 
 public class TweetDatabase {
     public static final int HOME_TL = 0;
-    public static final int USER_TL = 1;
+    public static final int FAV_TL  = 1;
+    public static final int USER_TL = 2;
 
     private AppDatabase dataHelper;
     private List<String> user,tweet,noRT,noFav,noAns,pbLink;
@@ -26,15 +24,17 @@ public class TweetDatabase {
     private Context c;
     private int size = 0;
     private int mode = 0;
+    private long userid = 0;
     private SharedPreferences settings;
 
     /**
      * Store & Read Data
      * @param stats   Twitter Home
      */
-    public TweetDatabase(List<Status> stats, Context c, int mode) {
+    public TweetDatabase(List<Status> stats, Context c, int mode,long userid) {
         this.stats=stats;
         this.c=c;
+        this.userid = userid;
         this.mode=mode;
         dataHelper = AppDatabase.getInstance(c);
         settings = c.getSharedPreferences("settings", 0);
@@ -58,33 +58,49 @@ public class TweetDatabase {
 
     private void store() {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        ContentValues usr = new ContentValues();
-        ContentValues tl  = new ContentValues();
-        String tweetTable;
-
-        if(mode==HOME_TL)
-            tweetTable = "tweet";  //Switch between Timeline and Home Tweets
-        else
-            tweetTable = "hometweet";
+        ContentValues user  = new ContentValues();
+        ContentValues tweet = new ContentValues();
+        ContentValues home  = new ContentValues();
+        ContentValues owner = new ContentValues();
 
         for(int pos = 0; pos < stats.size(); pos++) {
-            // USER
-            Status stat = stats.get(pos);
-            User user = stat.getUser();
 
-            usr.put("userID",user.getId());
-            usr.put("username", user.getName());
-            usr.put("pbLink", user.getProfileImageURL());
-            // TWEET
-            tl.put("userID", user.getId());
-            tl.put("tweetID", stat.getId());
-            tl.put("time", stat.getCreatedAt().getTime());
-            tl.put("tweet", stat.getText());
-            tl.put("retweet", stat.getRetweetCount());
-            tl.put("favorite", stat.getFavoriteCount());
-            db.insertWithOnConflict("user",null, usr,SQLiteDatabase.CONFLICT_IGNORE);
-            db.insertWithOnConflict(tweetTable,null, tl,SQLiteDatabase.CONFLICT_REPLACE);
+            Status stat = stats.get(pos);
+            User usr = stat.getUser();
+
+            user.put("userID",usr.getId());
+            user.put("username", usr.getName());
+            user.put("pbLink", usr.getProfileImageURL());
+            user.put("banner", usr.getProfileBannerURL());
+            user.put("bio",usr.getDescription());
+            user.put("location",usr.getLocation());
+            user.put("link",usr.getURL());
+
+            tweet.put("userID", usr.getId());
+            tweet.put("tweetID", stat.getId());
+            tweet.put("time", stat.getCreatedAt().getTime());
+            tweet.put("tweet", stat.getText());
+            tweet.put("retweet", stat.getRetweetCount());
+            tweet.put("favorite", stat.getFavoriteCount());
+
+            home.put("tweetID", stat.getId());
+
+            owner.put("ownerID", userid);
+
+            db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_IGNORE);
+            db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_REPLACE);
+
+            if(mode!=USER_TL) {
+                if(mode == HOME_TL){
+                    db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_IGNORE);
+                }
+                else if(mode == FAV_TL){
+                    db.insertWithOnConflict("favorit",null,home,SQLiteDatabase.CONFLICT_REPLACE);
+                    db.insertWithOnConflict("favorit",null,owner,SQLiteDatabase.CONFLICT_REPLACE);
+                }
+            }
         }
+
         db.close();
     }
 
@@ -92,12 +108,22 @@ public class TweetDatabase {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         int index;
         size = 0;
-        String SQL_GET_HOME;
+        String SQL_GET_HOME=" ";
 
         if(mode==HOME_TL)
-            SQL_GET_HOME = c.getString(R.string.SQL_HOME_TL); // Home Tineline
-        else
-            SQL_GET_HOME = c.getString(R.string.SQL_USER_TL); // User Timeline
+            SQL_GET_HOME = "SELECT * FROM timeline INNER JOIN tweet " +
+                    "on timeline.tweetID = tweet.tweetID INNER JOIN user ON " +
+                    "tweet.userID = user.userID order by time DESC";
+        else if(mode==FAV_TL)
+            SQL_GET_HOME = "SELECT * FROM favorit " +
+                    "INNER JOIN tweet on favorit.tweetID=tweet.tweetID " +
+                    "INNER JOIN user  on tweet.userID=user.userID " +
+                  /*  "WHERE favorit.ownerID="+userid+*/" ORDER BY tweet.time DESC";
+        else if(mode==USER_TL){
+            SQL_GET_HOME = "SELECT * from user INNER JOIN tweet on tweet.userID=user.userID" +
+                    " WHERE user.userID = "+userid+" ORDER BY tweet.time DESC";
+
+        }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
 

@@ -8,16 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TabHost;
 
+import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.Engine.ProfileInformation;
 import org.nuclearfog.twidda.Engine.ProfileTweets;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 
 public class Profile extends AppCompatActivity {
 
     private TabHost mtab;
     private SwipeRefreshLayout homeReload, favoritReload;
+    private ListView homeTweets, homeFavorits;
     private long userId;
     private Context context;
 
@@ -31,10 +35,12 @@ public class Profile extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         userId = getIntent().getExtras().getLong("userID");
         context = getApplicationContext();
+        homeTweets = (ListView)findViewById(R.id.ht_list);
+        homeFavorits = (ListView)findViewById(R.id.hf_list);
         initElements();
         initTabs();
         initSwipe();
-
+        getContent();
     }
 
     @Override
@@ -99,20 +105,36 @@ public class Profile extends AppCompatActivity {
         homeReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getTweets();
+                getTweets(0L);
             }
         });
         favoritReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
         favoritReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                favoritReload.setRefreshing(false);//TODO
+                getTweets(1L);
             }
         });
     }
 
-    private void getTweets(){
+    private void getContent(){
+        new Thread(){
+            @Override
+            public void run(){
+                TweetDatabase mTweet = new TweetDatabase(Profile.this, TweetDatabase.HOME_TL);
+                TimelineAdapter tl = new TimelineAdapter(Profile.this,R.layout.tweet,mTweet);
+                homeTweets.setAdapter(tl);
+                TweetDatabase fTweet = new TweetDatabase(Profile.this, TweetDatabase.FAV_TL);
+                TimelineAdapter fl = new TimelineAdapter(Profile.this,R.layout.tweet,fTweet);
+                homeFavorits.setAdapter(fl);
+            }
+        }.run();
+
+
+    }
+
+    private void getTweets(long mode ){
         ProfileTweets mProfile = new ProfileTweets(this);
-        mProfile.execute(userId, 0L);
+        mProfile.execute(userId, mode);
     }
 }
