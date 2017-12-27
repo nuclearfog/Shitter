@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 public class TrendsAdapter extends ArrayAdapter {
     private TrendDatabase trend;
-    private Context c;
+    private Context context;
 
-    public TrendsAdapter(Context c, int layout, TrendDatabase trend) {
-        super(c, layout);
+    public TrendsAdapter(Context context, int layout, TrendDatabase trend) {
+        super(context, layout);
         this.trend = trend;
-        this.c = c;
+        this.context = context;
     }
 
     @Override
@@ -26,15 +26,10 @@ public class TrendsAdapter extends ArrayAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return trend.getTrendname(position);
-    }
-
-    @Override
     public View getView(int position, View v, ViewGroup parent) {
         if(v == null) {
-            LayoutInflater inf=(LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = inf.inflate(R.layout.trend, parent, false);
+            LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            v = inf.inflate(R.layout.trend, parent,false);
         }
         String trendName = trend.getTrendname(position);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);

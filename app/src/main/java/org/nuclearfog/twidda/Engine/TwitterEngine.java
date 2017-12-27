@@ -61,7 +61,7 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
             }
             else if(args[0]==1) {
                 TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
-                trendsAdapter = new TrendsAdapter(context,R.layout.tweet,trend);
+                trendsAdapter = new TrendsAdapter(context,R.layout.trend,trend);
             }
             else if(args[0]==2) { //TODO
             }

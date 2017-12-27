@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -137,6 +138,8 @@ public class MainActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         setRefreshListener();
         setTabListener();
+        setTabContent();
+        setListViewListener();
     }
 
     /**
@@ -170,7 +173,6 @@ public class MainActivity extends AppCompatActivity
                 setVisibility(tabId);
             }
         });
-        setTabContent();
     }
 
     /**
@@ -178,21 +180,16 @@ public class MainActivity extends AppCompatActivity
      * separate THREAD
      */
     private void setTabContent() {
-        new Thread() {
-            @Override
-            public void run() {
-                TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
-                TimelineAdapter tlAdapt = new TimelineAdapter (MainActivity.this,R.layout.tweet,tweetDeck);
-                timelineList.setAdapter(tlAdapt);
-                TrendDatabase trendDeck = new TrendDatabase(con);
-                TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.tweet,trendDeck);
-                trendList.setAdapter(trendAdp);
-            }
-        }.run();
+        TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
+        TimelineAdapter tlAdapt = new TimelineAdapter(con,R.layout.tweet,tweetDeck);
+        timelineList.setAdapter(tlAdapt);
+        TrendDatabase trendDeck = new TrendDatabase(con);
+        TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.trend,trendDeck);
+        trendList.setAdapter(trendAdp);
     }
 
     /**
-     * Swipe To Refresh Listener
+     * Swipe To Refresh Listener TODO
      */
     private void setRefreshListener() {
         timelineReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -214,6 +211,28 @@ public class MainActivity extends AppCompatActivity
             public void onRefresh() {
                 TwitterEngine homeView = new TwitterEngine(MainActivity.this);
                 homeView.execute(2);
+            }
+        });
+    }
+
+    private void setListViewListener() {
+
+        timelineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("id: "+id+"\nPos: "+position);
+            }
+        });
+        trendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("Trend klick: "+position); //TODO
+            }
+        });
+        mentionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                System.out.println("Mention klick"); //TODO
             }
         });
     }
