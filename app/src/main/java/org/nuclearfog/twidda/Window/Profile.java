@@ -34,7 +34,7 @@ public class Profile extends AppCompatActivity {
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         userId = getIntent().getExtras().getLong("userID");
-        context = getApplicationContext();
+        context = getApplicationContext();System.out.println(userId);//TODO
         homeTweets = (ListView)findViewById(R.id.ht_list);
         homeFavorits = (ListView)findViewById(R.id.hf_list);
         initElements();

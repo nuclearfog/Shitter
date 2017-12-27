@@ -21,23 +21,25 @@ public class TweetDatabase {
     private List<String> user,tweet,noRT,noFav,noAns,pbLink;
     private List<Long> userId,tweetId,timeMillis;
     private List<Status> stats;
-    private Context c;
     private int size = 0;
     private int mode = 0;
-    private long userid = 0;
+    private long CurrentId = 0;
     private SharedPreferences settings;
 
     /**
      * Store & Read Data
-     * @param stats   Twitter Home
+     * @param stats Twitter Status
+     * @param context Current Activity's Context
+     * @param mode which type of data should be stored
+     * @param CurrentId current User ID
+     * @see #HOME_TL#FAV_TL#USER_TL
      */
-    public TweetDatabase(List<Status> stats, Context c, int mode,long userid) {
+    public TweetDatabase(List<Status> stats, Context context, int mode,long CurrentId) {
         this.stats=stats;
-        this.c=c;
-        this.userid = userid;
+        this.CurrentId = CurrentId;
         this.mode=mode;
-        dataHelper = AppDatabase.getInstance(c);
-        settings = c.getSharedPreferences("settings", 0);
+        dataHelper = AppDatabase.getInstance(context);
+        settings = context.getSharedPreferences("settings", 0);
         initArray();
         store();
         load();
@@ -45,14 +47,15 @@ public class TweetDatabase {
 
     /**
      * Read Data
-     * @param c MainActivity Context
+     * @param context MainActivity Context
+     * @param mode which type of data should be loaded
+     * @param CurrentId current User's ID
      */
-    public TweetDatabase(Context c, int mode, long userid) {
-        this.c=c;
-        this.userid=userid;
+    public TweetDatabase(Context context, int mode, long CurrentId) {
+        this.CurrentId=CurrentId;
         this.mode=mode;
-        dataHelper = AppDatabase.getInstance(c);
-        settings = c.getSharedPreferences("settings", 0);
+        dataHelper = AppDatabase.getInstance(context);
+        settings = context.getSharedPreferences("settings", 0);
         initArray();
         load();
     }
@@ -65,7 +68,6 @@ public class TweetDatabase {
         ContentValues fav   = new ContentValues();
 
         for(int pos = 0; pos < stats.size(); pos++) {
-
             Status stat = stats.get(pos);
             User usr = stat.getUser();
 
@@ -77,7 +79,7 @@ public class TweetDatabase {
             user.put("location",usr.getLocation());
             user.put("link",usr.getURL());
 
-            tweet.put("userID", usr.getId());  // this one does not work TODO
+            tweet.put("userID", usr.getId());
             tweet.put("tweetID", stat.getId());
             tweet.put("time", stat.getCreatedAt().getTime());
             tweet.put("tweet", stat.getText());
@@ -86,8 +88,8 @@ public class TweetDatabase {
             tweet.put("answers", 0);
 
             home.put("tweetID", stat.getId());
-
-            fav.put("ownerID", userid);
+            fav.put("tweetID", stat.getId());
+            fav.put("ownerID", CurrentId);
 
             db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_IGNORE);
             db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_IGNORE);
@@ -97,7 +99,6 @@ public class TweetDatabase {
                     db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_IGNORE);
                 }
                 else if(mode == FAV_TL) {
-                    db.insertWithOnConflict("favorit",null,home,SQLiteDatabase.CONFLICT_IGNORE);
                     db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_IGNORE);
                 }
             }
@@ -119,10 +120,10 @@ public class TweetDatabase {
             SQL_GET_HOME = "SELECT * FROM favorit " +
                     "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID " +
-                    /*"WHERE favorit.ownerID = "+userid+*/" ORDER BY tweet.time DESC";
+                    "WHERE favorit.ownerID = "+CurrentId+" ORDER BY tweet.time DESC";
         } else if(mode==USER_TL) {
             SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
-                    "WHERE user.userID = "+userid+" ORDER BY tweet.time DESC";
+                    "WHERE user.userID = "+CurrentId+" ORDER BY tweet.time DESC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -144,7 +145,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("pbLink"); // image
                 pbLink.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("userID"); // UserID
-                userId.add(cursor.getLong(index) );long integ = cursor.getLong(index);
+                userId.add(cursor.getLong(index) );
                 index = cursor.getColumnIndex("tweetID"); // tweetID
                 tweetId.add(cursor.getLong(index) );
                 size++;

@@ -34,6 +34,9 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
         profileFavorits = (ListView)((Profile)context).findViewById(R.id.hf_list);
     }
 
+    /**
+     * @param id UserID[0]  Mode[1]
+     */
     @Override
     protected Void doInBackground(Long... id) {
         try {
@@ -42,7 +45,7 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
             if(id[1] == 0) {
                 TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL,userId);
                 homeTl = new TimelineAdapter(context,R.layout.tweet,hTweets);
-            } else if(id[1] == 1) { //FAVORITs
+            } else if(id[1] == 1) {
                TweetDatabase fTweets = new TweetDatabase(twitter.getFavorites(userId), context,TweetDatabase.FAV_TL,userId);
                 homeFav = new TimelineAdapter(context,R.layout.tweet,fTweets);
             }
