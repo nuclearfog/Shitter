@@ -37,5 +37,9 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".Window.Tweet"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
     </application>
 </manifest>

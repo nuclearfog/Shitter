@@ -73,11 +73,13 @@ public class Profile extends AppCompatActivity {
         mTab.setup();
         // Tab #1
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
-        tab1.setIndicator("Tweets").setContent(R.id.hometweets);
+        tab1.setContent(R.id.hometweets);
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.timeline_icon));
         mTab.addTab(tab1);
         // Tab #2
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
-        tab2.setIndicator("Favorits").setContent(R.id.homefavorits);
+        tab2.setContent(R.id.homefavorits);
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite_icon));
         mTab.addTab(tab2);
         // Listener
         mTab.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
@@ -114,10 +116,10 @@ public class Profile extends AppCompatActivity {
             @Override
             public void run(){
                 TweetDatabase mTweet = new TweetDatabase(Profile.this, TweetDatabase.USER_TL, userId);
-                TimelineAdapter tl = new TimelineAdapter(Profile.this,R.layout.tweet,mTweet);
+                TimelineAdapter tl = new TimelineAdapter(Profile.this,mTweet);
                 homeTweets.setAdapter(tl);
                 TweetDatabase fTweet = new TweetDatabase(Profile.this, TweetDatabase.FAV_TL, userId);
-                TimelineAdapter fl = new TimelineAdapter(Profile.this,R.layout.tweet,fTweet);
+                TimelineAdapter fl = new TimelineAdapter(Profile.this,fTweet);
                 homeFavorits.setAdapter(fl);
             }
         }.run();

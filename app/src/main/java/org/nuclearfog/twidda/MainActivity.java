@@ -9,9 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
@@ -26,6 +31,7 @@ import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
 import org.nuclearfog.twidda.Window.Profile;
 import org.nuclearfog.twidda.Window.Settings;
+import org.nuclearfog.twidda.Window.Tweet;
 import org.nuclearfog.twidda.Window.TweetWindow;
 
 public class MainActivity extends AppCompatActivity
@@ -33,6 +39,8 @@ public class MainActivity extends AppCompatActivity
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private ListView timelineList, trendList,mentionList;
     private SharedPreferences settings;
+    private TweetDatabase tweetDeck;
+    private TrendDatabase trendDeck;
     private EditText pin;
     private Context con;
     private Toolbar toolbar;
@@ -152,17 +160,17 @@ public class MainActivity extends AppCompatActivity
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
-        tab1.setIndicator("Timeline");
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.timeline_icon));
         tabhost.addTab(tab1);
         // Tab #2
         TabSpec tab2 = tabhost.newTabSpec("trends");
         tab2.setContent(R.id.trends);
-        tab2.setIndicator("Trend");
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.trends_icon));
         tabhost.addTab(tab2);
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setContent(R.id.mention);
-        tab3.setIndicator("Mention");
+        tab3.setIndicator("",getResources().getDrawable(R.drawable.mention_icon));
         tabhost.addTab(tab3);
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -180,11 +188,11 @@ public class MainActivity extends AppCompatActivity
      * separate THREAD
      */
     private void setTabContent() {
-        TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
-        TimelineAdapter tlAdapt = new TimelineAdapter(con,R.layout.tweet,tweetDeck);
+        tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
+        trendDeck = new TrendDatabase(con);
+        TimelineAdapter tlAdapt = new TimelineAdapter(con,tweetDeck);
+        TrendsAdapter trendAdp = new TrendsAdapter(con,trendDeck);
         timelineList.setAdapter(tlAdapt);
-        TrendDatabase trendDeck = new TrendDatabase(con);
-        TrendsAdapter trendAdp = new TrendsAdapter(con,R.layout.trend,trendDeck);
         trendList.setAdapter(trendAdp);
     }
 
@@ -216,23 +224,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setListViewListener() {
-
         timelineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("id: "+id+"\nPos: "+position);
+                if(!timelineReload.isRefreshing()) {
+                    int index = timelineList.getPositionForView(view);
+                    long tweetID = tweetDeck.getTweetId(index);
+                    Intent intent = new Intent(con, Tweet.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
         trendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Trend klick: "+position); //TODO
+                System.out.println("1 klick: "+position); //TODO
             }
         });
         mentionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("Mention klick"); //TODO
+                System.out.println("2 klick"+position); //TODO
             }
         });
     }
@@ -260,4 +275,5 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
     }
+
 }

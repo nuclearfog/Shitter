@@ -14,8 +14,8 @@ public class TrendsAdapter extends ArrayAdapter {
     private TrendDatabase trend;
     private Context context;
 
-    public TrendsAdapter(Context context, int layout, TrendDatabase trend) {
-        super(context, layout);
+    public TrendsAdapter(Context context, TrendDatabase trend) {
+        super(context, R.layout.trend);//test
         this.trend = trend;
         this.context = context;
     }

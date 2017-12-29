@@ -16,6 +16,7 @@ public class TweetDatabase {
     public static final int HOME_TL = 0;
     public static final int FAV_TL  = 1;
     public static final int USER_TL = 2;
+    public static final int GET_TWEET = 3;
 
     private AppDatabase dataHelper;
     private List<String> user,tweet,noRT,noFav,noAns,pbLink;
@@ -34,7 +35,7 @@ public class TweetDatabase {
      * @param CurrentId current User ID
      * @see #HOME_TL#FAV_TL#USER_TL
      */
-    public TweetDatabase(List<Status> stats, Context context, int mode,long CurrentId) {
+    public TweetDatabase(List<Status> stats, Context context, final int mode,long CurrentId) {
         this.stats=stats;
         this.CurrentId = CurrentId;
         this.mode=mode;
@@ -49,9 +50,9 @@ public class TweetDatabase {
      * Read Data
      * @param context MainActivity Context
      * @param mode which type of data should be loaded
-     * @param CurrentId current User's ID
+     * @param CurrentId current ID (USER OR TWEET)
      */
-    public TweetDatabase(Context context, int mode, long CurrentId) {
+    public TweetDatabase(Context context, final int mode, long CurrentId) {
         this.CurrentId=CurrentId;
         this.mode=mode;
         dataHelper = AppDatabase.getInstance(context);
@@ -124,6 +125,9 @@ public class TweetDatabase {
         } else if(mode==USER_TL) {
             SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
                     "WHERE user.userID = "+CurrentId+" ORDER BY tweet.time DESC";
+        } else if(mode==GET_TWEET) {
+            SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
+                    "WHERE tweet.tweetID = "+CurrentId+" ORDER BY tweet.time DESC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);

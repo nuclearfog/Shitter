@@ -17,9 +17,10 @@ import org.nuclearfog.twidda.DataBase.TweetDatabase;
 public class TimelineAdapter extends ArrayAdapter {
     private TweetDatabase mTweets;
     private Context context;
+    private ViewGroup p;
 
-    public TimelineAdapter(Context context, int layout, TweetDatabase mTweets) {
-        super(context, layout);
+    public TimelineAdapter(Context context, TweetDatabase mTweets) {
+        super(context, R.layout.tweet);
         this.mTweets = mTweets;
         this.context = context;
     }
@@ -31,6 +32,7 @@ public class TimelineAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View v, ViewGroup parent) {
+        p = parent;
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.tweet, parent,false);
@@ -41,12 +43,20 @@ public class TimelineAdapter extends ArrayAdapter {
         ((TextView) v.findViewById(R.id.retweet_number)).setText(mTweets.getRetweet(position));
         ((TextView) v.findViewById(R.id.favorite_number)).setText(mTweets.getFavorite(position));
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
- /*       ImageView imgView = v.findViewById(R.id.tweetPb);
+        ImageView imgView = v.findViewById(R.id.tweetPb);
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               ((ListView)p).performItemClick(v,0,0);
+            }
+        });
 
         if(mTweets.loadImages()) {
             ImageDownloader imgDl = new ImageDownloader(imgView);
             imgDl.execute(mTweets.getPbImg(position));
-        }*/
+        }
+
         return v;
     }
 }

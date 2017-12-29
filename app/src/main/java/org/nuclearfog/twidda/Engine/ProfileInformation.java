@@ -51,8 +51,8 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
         Twitter twitter = mTwitter.getTwitter();
         try {
             User user = twitter.showUser(args[0]);
-            screenName = user.getScreenName();
-            username = "@"+ user.getName();
+            screenName = '@'+ user.getScreenName();
+            username = user.getName();
             description = user.getDescription();
             location = user.getLocation();
             follower = "Follower: "+ user.getFollowersCount();

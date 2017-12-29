@@ -57,16 +57,17 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
         try {
             if(args[0]==0) {
                 TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context,TweetDatabase.HOME_TL,0);
-                timelineAdapter = new TimelineAdapter(context,R.layout.tweet,mTweets);
+                timelineAdapter = new TimelineAdapter(context,mTweets);
             }
             else if(args[0]==1) {
                 TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
-                trendsAdapter = new TrendsAdapter(context,R.layout.trend,trend);
+                trendsAdapter = new TrendsAdapter(context,trend);
             }
             else if(args[0]==2) { //TODO
+                // twitter.getMentionsTimeline()
             }
         } catch (TwitterException e) {
-            Toast.makeText(context, ERR_MSG, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, ERR_MSG, Toast.LENGTH_LONG).show();
         } catch (Exception e){ e.printStackTrace(); }
         return null;
     }
