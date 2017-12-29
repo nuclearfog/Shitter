@@ -24,6 +24,7 @@ public class TweetDatabase {
     private List<Status> stats;
     private int size = 0;
     private int mode = 0;
+    private int length = 50;
     private long CurrentId = 0;
     private SharedPreferences settings;
 
@@ -153,7 +154,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("tweetID"); // tweetID
                 tweetId.add(cursor.getLong(index) );
                 size++;
-            } while(cursor.moveToNext());
+            } while(cursor.moveToNext()  && size < length);
         }
         cursor.close();
         db.close();
