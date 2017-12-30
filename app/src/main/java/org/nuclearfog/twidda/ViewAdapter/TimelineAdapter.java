@@ -37,6 +37,7 @@ public class TimelineAdapter extends ArrayAdapter {
             v = inf.inflate(R.layout.tweet, parent,false);
         }
         ((TextView) v.findViewById(R.id.username)).setText(mTweets.getUsername(position));
+        ((TextView) v.findViewById(R.id.screenname)).setText(mTweets.getScreenname(position));
         ((TextView) v.findViewById(R.id.tweettext)).setText(mTweets.getTweet(position));
         ((TextView) v.findViewById(R.id.answer_number)).setText(mTweets.getAnswer(position));
         ((TextView) v.findViewById(R.id.retweet_number)).setText(mTweets.getRetweet(position));

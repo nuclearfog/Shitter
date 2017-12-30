@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 
 public class Profile extends AppCompatActivity {
 
+    private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
     private long userId;
 
@@ -64,7 +65,6 @@ public class Profile extends AppCompatActivity {
         return true;
     }
 
-
     /**
      * Init Tab Listener
      */
@@ -84,7 +84,10 @@ public class Profile extends AppCompatActivity {
         // Listener
         mTab.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
-            public void onTabChanged(String tabId) { }
+            public void onTabChanged(String tabId) {
+                homeReload.setRefreshing(false);
+                favoriteReload.setRefreshing(false);
+            }
         });
     }
 
@@ -92,15 +95,15 @@ public class Profile extends AppCompatActivity {
      * Init SwipeRefresh
      */
     private void initSwipe(){
-        SwipeRefreshLayout homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
+        homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         homeReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getTweets(0L);
             }
         });
-        SwipeRefreshLayout favoritReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
-        favoritReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+        favoriteReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getTweets(1L);

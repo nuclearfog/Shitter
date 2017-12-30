@@ -11,7 +11,7 @@ public class AppDatabase extends SQLiteOpenHelper
     private Context c;
 
     private AppDatabase(Context context) {
-        super(context, "twitter.sqlite",null, 1);
+        super(context, context.getString(R.string.database),null, 1);
         c = context;
     }
 

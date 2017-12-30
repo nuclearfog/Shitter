@@ -241,13 +241,25 @@ public class MainActivity extends AppCompatActivity
         trendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("1 klick: "+position); //TODO
+                TrendDatabase trend = new TrendDatabase(con);
+                trend.getTrendname(position);
             }
         });
         mentionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                System.out.println("2 klick"+position); //TODO
+                if(!mentionReload.isRefreshing()) {
+                    TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.GET_MENT, 0L);
+                    int index = mentionList.getPositionForView(view);
+                    long tweetID = tweetDeck.getTweetId(index);
+                    long userID = tweetDeck.getUserID(index);
+                    Intent intent = new Intent(con, Tweet.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    bundle.putLong("userID",userID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
     }

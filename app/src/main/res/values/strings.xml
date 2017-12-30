@@ -14,14 +14,16 @@
     <string name="tweet">Tweet</string>
     <string name="settings">Einstellungen</string>
     <string name="back">Back</string>
-    <string name="datei">timeline.db</string>
+    <string name="database">database.db</string>
     <string name="image">Bilder Laden</string>
-
+    <string name="delete_database">Datenbank Löschen</string>
+    <string name="connection_failure">Fehler beim Abruf der Daten!</string>
 
     <string name="tableUser">
     CREATE TABLE IF NOT EXISTS user (
         userID   INTEGER PRIMARY KEY,
         username TEXT,
+        scrname  TEXT,
         pbLink   TEXT,
         banner   TEXT,
         bio      TEXT,
@@ -52,7 +54,9 @@
     <string name="tableHome">
      CREATE TABLE IF NOT EXISTS timeline (
         tweetID     INTEGER UNIQUE,
-        FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));
+        mTweetID    INTEGER UNIQUE,
+        FOREIGN KEY (tweetID)  REFERENCES tweet(tweetID));
+        FOREIGN KEY (mTweetID) REFERENCES tweet(tweetID));
     </string>
 
     <string name="tableTrend">
@@ -61,4 +65,10 @@
         trendname   TEXT,
         trendlink   TEXT);
     </string>
+    <string name="tweet_image">TwitterBild</string>
+
+    <string-array name="countries">
+        <item>Deutschland</item>
+    </string-array>
+
 </resources>

@@ -17,14 +17,15 @@ public class TweetDatabase {
     public static final int FAV_TL  = 1;
     public static final int USER_TL = 2;
     public static final int GET_TWEET = 3;
+    public static final int GET_MENT = 4;
 
     private AppDatabase dataHelper;
-    private List<String> user,tweet,noRT,noFav,noAns,pbLink;
+    private List<String> user,scrname, tweet,noRT,noFav,noAns,pbLink;
     private List<Long> userId,tweetId,timeMillis;
     private List<Status> stats;
     private int size = 0;
     private int mode = 0;
-    private int length = 50;
+    private int limit;
     private long CurrentId = 0;
     private SharedPreferences settings;
 
@@ -40,9 +41,7 @@ public class TweetDatabase {
         this.stats=stats;
         this.CurrentId = CurrentId;
         this.mode=mode;
-        dataHelper = AppDatabase.getInstance(context);
-        settings = context.getSharedPreferences("settings", 0);
-        initArray();
+        initialize(context);
         store();
         load();
     }
@@ -56,9 +55,7 @@ public class TweetDatabase {
     public TweetDatabase(Context context, final int mode, long CurrentId) {
         this.CurrentId=CurrentId;
         this.mode=mode;
-        dataHelper = AppDatabase.getInstance(context);
-        settings = context.getSharedPreferences("settings", 0);
-        initArray();
+        initialize(context);
         load();
     }
 
@@ -68,6 +65,7 @@ public class TweetDatabase {
         ContentValues tweet = new ContentValues();
         ContentValues home  = new ContentValues();
         ContentValues fav   = new ContentValues();
+        ContentValues ment  = new ContentValues();
 
         for(int pos = 0; pos < stats.size(); pos++) {
             Status stat = stats.get(pos);
@@ -75,6 +73,7 @@ public class TweetDatabase {
 
             user.put("userID",usr.getId());
             user.put("username", usr.getName());
+            user.put("scrname",'@'+usr.getScreenName());
             user.put("pbLink", usr.getProfileImageURL());
             user.put("banner", usr.getProfileBannerURL());
             user.put("bio",usr.getDescription());
@@ -93,6 +92,8 @@ public class TweetDatabase {
             fav.put("tweetID", stat.getId());
             fav.put("ownerID", CurrentId);
 
+            ment.put("mTweetID",stat.getId());
+
             db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_IGNORE);
             db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_IGNORE);
 
@@ -102,6 +103,9 @@ public class TweetDatabase {
                 }
                 else if(mode == FAV_TL) {
                     db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_IGNORE);
+                }
+                else if(mode == GET_MENT) {
+                    db.insertWithOnConflict("timeline",null,ment,SQLiteDatabase.CONFLICT_IGNORE);
                 }
             }
         }
@@ -129,6 +133,10 @@ public class TweetDatabase {
         } else if(mode==GET_TWEET) {
             SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
                     "WHERE tweet.tweetID = "+CurrentId+" ORDER BY tweet.time DESC";
+        } else if(mode==GET_MENT){
+            SQL_GET_HOME = "SELECT * FROM timeline " +
+                    "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
+                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY time DESC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -147,6 +155,8 @@ public class TweetDatabase {
                 noAns.add(cursor.getString(index));
                 index = cursor.getColumnIndex("username"); // user
                 user.add(cursor.getString(index) );
+                index = cursor.getColumnIndex("scrname"); // username
+                scrname.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("pbLink"); // image
                 pbLink.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("userID"); // UserID
@@ -154,7 +164,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("tweetID"); // tweetID
                 tweetId.add(cursor.getLong(index) );
                 size++;
-            } while(cursor.moveToNext()  && size < length);
+            } while(cursor.moveToNext()  && size < limit);
         }
         cursor.close();
         db.close();
@@ -167,6 +177,7 @@ public class TweetDatabase {
     public long getTweetId(int pos){return tweetId.get(pos);}
     public long getTime(int pos){return timeMillis.get(pos);}
     public String getUsername(int pos){return user.get(pos);}
+    public String getScreenname(int pos){return scrname.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
     public String getRetweet(int pos){return noRT.get(pos);}
     public String getFavorite(int pos){return noFav.get(pos);}
@@ -203,8 +214,16 @@ public class TweetDatabase {
             return "vor "+seconds+" s";
     }
 
+    private void initialize(Context c){
+        dataHelper = AppDatabase.getInstance(c);
+        settings = c.getSharedPreferences("settings", 0);
+        limit = settings.getInt("limit", 50);
+        initArray();
+    }
+
     private void initArray() {
         user    = new ArrayList<>();
+        scrname = new ArrayList<>();
         tweet   = new ArrayList<>();
         noRT    = new ArrayList<>();
         noFav   = new ArrayList<>();

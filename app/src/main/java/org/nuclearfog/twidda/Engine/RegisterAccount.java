@@ -15,6 +15,12 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
     private Button verifierButton, loginButton;
     private Context context;
 
+    /**
+     * Register App for Account access
+     * @see MainActivity
+     * @see TwitterStore used to Store Twitter instance
+     * @param context current Activity's Context.
+     */
     public RegisterAccount( Context context ){
         this.context = context;
     }
@@ -46,10 +52,10 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
 
     @Override
     protected void onPostExecute(String msg) {
-        if( msg=="success" ) {
+        if( msg.equals("success") ) {
             verifierButton.setVisibility(Button.INVISIBLE);
             loginButton.setVisibility(Button.VISIBLE);
-            loginButton.setBackgroundColor(0xFFFF0000);//todo
+            loginButton.setBackgroundColor(0xFFFF0000);
         } else if( !msg.trim().isEmpty() ) {
             Toast.makeText(context,"Fehler: "+msg,Toast.LENGTH_LONG).show();
         }

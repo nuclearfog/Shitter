@@ -20,26 +20,31 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Window.Profile"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".Window.TweetWindow"
             android:theme="@style/Transparency"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".Window.Settings"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".Window.Tweet"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".Window.TwitterSearch"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
+
     </application>
 </manifest>

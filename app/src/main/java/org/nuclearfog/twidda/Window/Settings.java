@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
@@ -35,8 +37,13 @@ public class Settings extends AppCompatActivity {
                 e.apply();
             }
         });
-
-
+        Button delButon = (Button) findViewById(R.id.delete_db);
+        delButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getApplicationContext().deleteDatabase(getApplicationContext().getString(R.string.database));
+            }
+        });
     }
 
     /**

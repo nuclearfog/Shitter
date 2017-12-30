@@ -15,11 +15,21 @@
         android:id="@+id/toggleImg"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:text="@string/image" />
 
     <Spinner
         android:id="@+id/location_list"
         android:layout_width="180dp"
-        android:layout_height="wrap_content"></Spinner>
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"></Spinner>
+
+    <Button
+        android:id="@+id/delete_db"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@android:color/holo_red_dark"
+        android:text="@string/delete_database" />
 
 </LinearLayout>

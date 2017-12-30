@@ -57,11 +57,11 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
     protected void onPostExecute(Void v) {
         if(homeTl != null){
             profileTweets.setAdapter(homeTl);
+            tweetsReload.setRefreshing(false);
         }
         else if(homeFav != null){
             profileFavorits.setAdapter(homeFav);
+            favoritsReload.setRefreshing(false);
         }
-        tweetsReload.setRefreshing(false);
-        favoritsReload.setRefreshing(false);
     }
 }

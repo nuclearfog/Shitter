@@ -16,18 +16,21 @@ import android.os.AsyncTask;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class TwitterEngine extends AsyncTask<Integer, Void, Void>
+public class TwitterEngine extends AsyncTask<Integer, Void, Boolean>
 {
-    private final String ERR_MSG = "Fehler bei der Verbindung";
     private TwitterStore twitterStore;
     private Context context;
 
     private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
     private ListView timelineList, trendList, mentionList;
-    private TimelineAdapter timelineAdapter;
+    private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendsAdapter trendsAdapter;
 
 
+    /**
+     * Main View
+     * @see MainActivity
+     */
     public TwitterEngine(Context context) {
         this.context=context;
         twitterStore = TwitterStore.getInstance(context);
@@ -49,10 +52,10 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
 
     /**
      * @param args [0] Executing Mode: (0)HomeTL, (1)Trend, (2)Mention
-     *
+     * @return success
      */
     @Override
-    protected Void doInBackground(Integer... args) {
+    protected Boolean doInBackground(Integer... args) {
         Twitter twitter = twitterStore.getTwitter();
         try {
             if(args[0]==0) {
@@ -63,24 +66,31 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Void>
                 TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
                 trendsAdapter = new TrendsAdapter(context,trend);
             }
-            else if(args[0]==2) { //TODO
-                // twitter.getMentionsTimeline()
+            else if(args[0]==2) {
+                TweetDatabase mention = new TweetDatabase(twitter.getMentionsTimeline(), context,TweetDatabase.GET_MENT,0);
+                mentionAdapter = new TimelineAdapter(context,mention);
             }
         } catch (TwitterException e) {
-            Toast.makeText(context, ERR_MSG, Toast.LENGTH_LONG).show();
-        } catch (Exception e){ e.printStackTrace(); }
-        return null;
+            return false;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
-    /**
-     * Refresh List in a new Thread
-     */
     @Override
-    protected void onPostExecute(Void v) {
-        if(timelineAdapter != null)
-            timelineList.setAdapter(timelineAdapter);
-        else if(trendsAdapter != null)
-            trendList.setAdapter(trendsAdapter);
+    protected void onPostExecute(Boolean success) {
+        if(success) {
+            if(timelineAdapter != null)
+                timelineList.setAdapter(timelineAdapter);
+            else if(trendsAdapter != null)
+                trendList.setAdapter(trendsAdapter);
+            else if(mentionAdapter != null)
+                mentionList.setAdapter(mentionAdapter);
+        } else {
+            Toast.makeText(context, context.getString(R.string.connection_failure), Toast.LENGTH_LONG).show();
+        }
         if(timelineRefresh.isRefreshing())
             timelineRefresh.setRefreshing(false);
         else if(mentionRefresh.isRefreshing())

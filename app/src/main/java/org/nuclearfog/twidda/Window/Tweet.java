@@ -28,24 +28,24 @@ public class Tweet extends AppCompatActivity {
 
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
         pb.setOnClickListener(new View.OnClickListener() {
-                                  @Override
-                                  public void onClick(View v) {
-                                      Intent profile = new Intent(getApplicationContext(), Profile.class);
-                                      Bundle bundle = new Bundle();
-                                      bundle.putLong("userID",userID);
-                                      profile.putExtras(bundle);
-                                      startActivity(profile);
-                                  }
-                              });
+            @Override
+            public void onClick(View v) {
+              Intent profile = new Intent(getApplicationContext(), Profile.class);
+              Bundle bundle = new Bundle();
+              bundle.putLong("userID",userID);
+              profile.putExtras(bundle);
+              startActivity(profile);
+            }
+        });
         setContent();
     }
 
 
-
     private void setContent() {
         mTweet = new TweetDatabase(getApplicationContext(),TweetDatabase.GET_TWEET,tweetID);
+        String scrName = mTweet.getUsername(0)+" "+mTweet.getScreenname(0);
         tweet.setText(mTweet.getTweet(0));
-        username.setText(mTweet.getUsername(0));
+        username.setText(scrName);
 
     }
 }
