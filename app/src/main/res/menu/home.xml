@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:checkable="false"
         android:icon="@drawable/search"
-        android:title="Search"
+        android:title="@string/search"
         android:visible="false"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
@@ -98,6 +99,10 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(this, Settings.class);
                 startActivity(intent);
                 break;
+            case R.id.action_search:
+                System.out.println("test");
+                break;
+
         }
         return true;
     }
