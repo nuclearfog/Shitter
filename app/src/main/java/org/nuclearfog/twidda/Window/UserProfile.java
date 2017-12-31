@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.Backend.ProfileTweets;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 
-public class Profile extends AppCompatActivity {
+public class UserProfile extends AppCompatActivity {
 
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
@@ -51,11 +51,11 @@ public class Profile extends AppCompatActivity {
         Intent intent;
         switch(item.getItemId()) {
             case R.id.action_tweet:
-                intent = new Intent(this, TweetWindow.class);
+                intent = new Intent(this, TweetPopup.class);
                 startActivity(intent);
                 break;
             case R.id.action_settings:
-                intent = new Intent(this,Settings.class);
+                intent = new Intent(this,AppSettings.class);
                 startActivity(intent);
                 break;
         }
@@ -115,18 +115,18 @@ public class Profile extends AppCompatActivity {
         new Thread(){
             @Override
             public void run(){
-                TweetDatabase mTweet = new TweetDatabase(Profile.this, TweetDatabase.USER_TL, userId);
-                TimelineAdapter tl = new TimelineAdapter(Profile.this,mTweet);
+                TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
+                TimelineAdapter tl = new TimelineAdapter(UserProfile.this,mTweet);
                 homeTweets.setAdapter(tl);
-                TweetDatabase fTweet = new TweetDatabase(Profile.this, TweetDatabase.FAV_TL, userId);
-                TimelineAdapter fl = new TimelineAdapter(Profile.this,fTweet);
+                TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
+                TimelineAdapter fl = new TimelineAdapter(UserProfile.this,fTweet);
                 homeFavorits.setAdapter(fl);
             }
         }.run();
     }
 
     /**
-     * Profile Contents
+     * UserProfile Contents
      */
     private void initElements() {
         ProfileInfo profile = new ProfileInfo(this);

@@ -42,7 +42,7 @@ public class SendStatus extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if(success) {
-            Toast.makeText(context, "Tweet wurde gesendet!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "TweetDetail wurde gesendet!", Toast.LENGTH_LONG).show();
         }
     }
 }

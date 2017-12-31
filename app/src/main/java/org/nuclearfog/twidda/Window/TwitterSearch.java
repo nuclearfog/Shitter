@@ -50,7 +50,7 @@ public class TwitterSearch extends AppCompatActivity {
         int id = item.getItemId();
         switch(id) {
             case R.id.action_tweet:
-            intent = new Intent(this, TweetWindow.class);
+            intent = new Intent(this, TweetPopup.class);
             startActivity(intent);
             break;
         }

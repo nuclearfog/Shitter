@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import org.nuclearfog.twidda.Backend.SendStatus;
 import org.nuclearfog.twidda.R;
 
-public class TweetWindow extends AppCompatActivity {
+public class TweetPopup extends AppCompatActivity {
 
     private EditText tweetfield;
 

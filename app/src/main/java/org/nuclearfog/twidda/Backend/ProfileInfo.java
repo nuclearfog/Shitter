@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.Window.Profile;
+import org.nuclearfog.twidda.Window.UserProfile;
 
 import twitter4j.Twitter;
 import twitter4j.User;
@@ -32,14 +32,14 @@ public class ProfileInfo extends AsyncTask<Long,Void,Void>
 
     @Override
     protected void onPreExecute() {
-        txtUser = (TextView) ((Profile)context).findViewById(R.id.profile_username);
-        txtScrName =(TextView) ((Profile)context).findViewById(R.id.profile_screenname);
-        txtBio = (TextView)((Profile)context).findViewById(R.id.bio);
-        txtLocation = (TextView)((Profile)context).findViewById(R.id.location);
-        txtFollowing = (TextView)((Profile)context).findViewById(R.id.following);
-        txtFollower = (TextView)((Profile)context).findViewById(R.id.follower);
-        profile = (ImageView)((Profile)context).findViewById(R.id.profile_img);
-        banner  = (ImageView)((Profile)context).findViewById(R.id.banner);
+        txtUser = (TextView) ((UserProfile)context).findViewById(R.id.profile_username);
+        txtScrName =(TextView) ((UserProfile)context).findViewById(R.id.profile_screenname);
+        txtBio = (TextView)((UserProfile)context).findViewById(R.id.bio);
+        txtLocation = (TextView)((UserProfile)context).findViewById(R.id.location);
+        txtFollowing = (TextView)((UserProfile)context).findViewById(R.id.following);
+        txtFollower = (TextView)((UserProfile)context).findViewById(R.id.follower);
+        profile = (ImageView)((UserProfile)context).findViewById(R.id.profile_img);
+        banner  = (ImageView)((UserProfile)context).findViewById(R.id.banner);
     }
 
     /**

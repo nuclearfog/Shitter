@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-public class TrendsAdapter extends ArrayAdapter {
+public class TrendAdapter extends ArrayAdapter {
     private TrendDatabase trend;
     private Context context;
 
-    public TrendsAdapter(Context context, TrendDatabase trend) {
+    public TrendAdapter(Context context, TrendDatabase trend) {
         super(context, R.layout.trend);//test
         this.trend = trend;
         this.context = context;

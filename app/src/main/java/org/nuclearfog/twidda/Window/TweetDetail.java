@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
 
-public class Tweet extends AppCompatActivity {
+public class TweetDetail extends AppCompatActivity {
 
     private TweetDatabase mTweet;
     private TextView tweet, username;
@@ -30,7 +30,7 @@ public class Tweet extends AppCompatActivity {
         pb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              Intent profile = new Intent(getApplicationContext(), Profile.class);
+              Intent profile = new Intent(getApplicationContext(), UserProfile.class);
               Bundle bundle = new Bundle();
               bundle.putLong("userID",userID);
               profile.putExtras(bundle);

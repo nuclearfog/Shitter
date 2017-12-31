@@ -5,7 +5,7 @@ import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
+import org.nuclearfog.twidda.ViewAdapter.TrendAdapter;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
@@ -25,7 +25,7 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
     private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
     private ListView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter, mentionAdapter;
-    private TrendsAdapter trendsAdapter;
+    private TrendAdapter trendsAdapter;
 
 
     /**
@@ -67,7 +67,7 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
             }
             else if(args[0]==1) {
                 TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
-                trendsAdapter = new TrendsAdapter(context,trend);
+                trendsAdapter = new TrendAdapter(context,trend);
             }
             else if(args[0]==2) {
                 TweetDatabase mention = new TweetDatabase(twitter.getMentionsTimeline(), context,TweetDatabase.GET_MENT,0);

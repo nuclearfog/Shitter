@@ -23,11 +23,11 @@ import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.Backend.RegisterAccount;
 import org.nuclearfog.twidda.Backend.MainPage;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
-import org.nuclearfog.twidda.Window.Profile;
-import org.nuclearfog.twidda.Window.Settings;
-import org.nuclearfog.twidda.Window.Tweet;
-import org.nuclearfog.twidda.Window.TweetWindow;
+import org.nuclearfog.twidda.ViewAdapter.TrendAdapter;
+import org.nuclearfog.twidda.Window.UserProfile;
+import org.nuclearfog.twidda.Window.AppSettings;
+import org.nuclearfog.twidda.Window.TweetDetail;
+import org.nuclearfog.twidda.Window.TweetPopup;
 import org.nuclearfog.twidda.Window.TwitterSearch;
 
 public class MainActivity extends AppCompatActivity
@@ -85,18 +85,18 @@ public class MainActivity extends AppCompatActivity
         Intent intent;
         switch(item.getItemId()) {
             case R.id.action_profile:
-                intent = new Intent(this, Profile.class);
+                intent = new Intent(this, UserProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong("userID",settings.getLong("userID", -1));
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.action_tweet:
-                intent = new Intent(this, TweetWindow.class);
+                intent = new Intent(this, TweetPopup.class);
                 startActivity(intent);
                 break;
             case R.id.action_settings:
-                intent = new Intent(this, Settings.class);
+                intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 break;
         }
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
         TrendDatabase trendDeck = new TrendDatabase(con);
         TimelineAdapter tlAdapt = new TimelineAdapter(con,tweetDeck);
-        TrendsAdapter trendAdp = new TrendsAdapter(con,trendDeck);
+        TrendAdapter trendAdp = new TrendAdapter(con,trendDeck);
         timelineList.setAdapter(tlAdapt);
         trendList.setAdapter(trendAdp);
     }
@@ -219,7 +219,7 @@ public class MainActivity extends AppCompatActivity
 
 
     /**
-     * Item Listener for a Tweet
+     * Item Listener for a TweetDetail
      */
     private void setListViewListener() {
         timelineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity
                     int index = timelineList.getPositionForView(view);
                     long tweetID = tweetDeck.getTweetId(index);
                     long userID = tweetDeck.getUserID(index);
-                    Intent intent = new Intent(con, Tweet.class);
+                    Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity
                     int index = mentionList.getPositionForView(view);
                     long tweetID = tweetDeck.getTweetId(index);
                     long userID = tweetDeck.getUserID(index);
-                    Intent intent = new Intent(con, Tweet.class);
+                    Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);

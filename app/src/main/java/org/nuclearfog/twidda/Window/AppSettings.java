@@ -14,7 +14,7 @@ import android.widget.Switch;
 
 import org.nuclearfog.twidda.R;
 
-public class Settings extends AppCompatActivity {
+public class AppSettings extends AppCompatActivity {
 
     private SharedPreferences settings;
 

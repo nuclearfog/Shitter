@@ -8,7 +8,7 @@ import android.widget.ListView;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.Window.Profile;
+import org.nuclearfog.twidda.Window.UserProfile;
 
 import twitter4j.Twitter;
 
@@ -27,15 +27,15 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
     }
 
     /**
-     * Profile Backend
-     * @see Profile accessing this class
+     * UserProfile Backend
+     * @see UserProfile accessing this class
      */
     @Override
     protected void onPreExecute() {
-        tweetsReload    = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.hometweets);
-        favoritsReload  = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.homefavorits);
-        profileTweets   = (ListView)((Profile)context).findViewById(R.id.ht_list);
-        profileFavorits = (ListView)((Profile)context).findViewById(R.id.hf_list);
+        tweetsReload    = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.hometweets);
+        favoritsReload  = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.homefavorits);
+        profileTweets   = (ListView)((UserProfile)context).findViewById(R.id.ht_list);
+        profileFavorits = (ListView)((UserProfile)context).findViewById(R.id.hf_list);
     }
 
     /**

@@ -203,7 +203,7 @@ public class TweetDatabase {
 
     /**
      * Convert Time to String
-     * @param mills Tweet Time
+     * @param mills TweetDetail Time
      * @return Formatted String
      */
     private String timeToString(long mills) {
