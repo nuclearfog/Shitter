@@ -31,18 +31,24 @@
                 android:id="@+id/usernamedetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp" />
+                android:layout_margin="2dp" />
+
+            <TextView
+                android:id="@+id/scrnamedetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp" />
 
             <TextView
                 android:id="@+id/timedetail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp" />
+                android:layout_margin="2dp" />
         </LinearLayout>
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tweetdetail"
+        android:id="@+id/tweet_detailed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
@@ -113,12 +119,5 @@
         android:id="@+id/answer_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/sendanswer"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:ems="10"
-        android:inputType="textPersonName" />
 
 </LinearLayout>

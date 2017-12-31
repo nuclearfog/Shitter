@@ -7,13 +7,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.nuclearfog.twidda.Backend.ShowStatus;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
 
 public class TweetDetail extends AppCompatActivity {
 
     private TweetDatabase mTweet;
-    private TextView tweet, username;
+
     private long tweetID;
     private long userID;
 
@@ -23,8 +24,7 @@ public class TweetDetail extends AppCompatActivity {
         setContentView(R.layout.tweet_detail);
         tweetID = getIntent().getExtras().getLong("tweetID");
         userID = getIntent().getExtras().getLong("userID");
-        tweet = (TextView) findViewById(R.id.tweetdetail);
-        username = (TextView) findViewById(R.id.usernamedetail);
+
 
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
         pb.setOnClickListener(new View.OnClickListener() {
@@ -40,12 +40,14 @@ public class TweetDetail extends AppCompatActivity {
         setContent();
     }
 
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
 
     private void setContent() {
-        mTweet = new TweetDatabase(getApplicationContext(),TweetDatabase.GET_TWEET,tweetID);
-        String scrName = mTweet.getUsername(0)+" "+mTweet.getScreenname(0);
-        tweet.setText(mTweet.getTweet(0));
-        username.setText(scrName);
+        ShowStatus set = new ShowStatus(this);
+        set.execute(tweetID);
 
     }
 }
