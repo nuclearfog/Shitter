@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.nuclearfog.twidda.R;
-
 import java.util.ArrayList;
 import java.util.List;
 

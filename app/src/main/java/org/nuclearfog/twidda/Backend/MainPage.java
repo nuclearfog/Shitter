@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine;
+package org.nuclearfog.twidda.Backend;
 
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
@@ -13,12 +13,13 @@ import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import twitter4j.Paging;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class TwitterEngine extends AsyncTask<Integer, Void, Boolean>
+public class MainPage extends AsyncTask<Integer, Void, Boolean>
 {
-    private TwitterStore twitterStore;
+    private TwitterResource twitterResource;
     private Context context;
 
     private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
@@ -31,10 +32,10 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Boolean>
      * Main View
      * @see MainActivity
      */
-    public TwitterEngine(Context context) {
+    public MainPage(Context context) {
         this.context=context;
-        twitterStore = TwitterStore.getInstance(context);
-        twitterStore.init();
+        twitterResource = TwitterResource.getInstance(context);
+        twitterResource.init();
     }
 
     @Override
@@ -56,10 +57,12 @@ public class TwitterEngine extends AsyncTask<Integer, Void, Boolean>
      */
     @Override
     protected Boolean doInBackground(Integer... args) {
-        Twitter twitter = twitterStore.getTwitter();
+        Twitter twitter = twitterResource.getTwitter();
+        Paging p = new Paging(); //TODO
+        p.setCount(100);
         try {
             if(args[0]==0) {
-                TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(), context,TweetDatabase.HOME_TL,0);
+                TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(p), context,TweetDatabase.HOME_TL,0);
                 timelineAdapter = new TimelineAdapter(context,mTweets);
             }
             else if(args[0]==1) {

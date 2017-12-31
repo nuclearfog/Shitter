@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import org.nuclearfog.twidda.Engine.SendStatus;
+import org.nuclearfog.twidda.Backend.SendStatus;
 import org.nuclearfog.twidda.R;
 
 public class TweetWindow extends AppCompatActivity {

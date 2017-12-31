@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine;
+package org.nuclearfog.twidda.Backend;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.Window.Profile;
 import twitter4j.Twitter;
 import twitter4j.User;
 
-public class ProfileInformation extends AsyncTask<Long,Void,Void>
+public class ProfileInfo extends AsyncTask<Long,Void,Void>
 {
     private String screenName, username, description, location, follower, following;
     private TextView txtUser,txtScrName, txtBio,txtLocation,txtFollowing,txtFollower;
@@ -24,7 +24,7 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
     /**
      * @param context "this" Context
      */
-    public ProfileInformation(Context context) {
+    public ProfileInfo(Context context) {
         this.context=context;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imgEnabled = settings.getBoolean("image_load",false);
@@ -47,7 +47,7 @@ public class ProfileInformation extends AsyncTask<Long,Void,Void>
      */
     @Override
     protected Void doInBackground(Long... args) {
-        TwitterStore mTwitter = TwitterStore.getInstance(context);
+        TwitterResource mTwitter = TwitterResource.getInstance(context);
         Twitter twitter = mTwitter.getTwitter();
         try {
             User user = twitter.showUser(args[0]);

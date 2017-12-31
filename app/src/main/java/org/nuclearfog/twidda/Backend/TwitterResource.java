@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine;
+package org.nuclearfog.twidda.Backend;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,8 +17,8 @@ import twitter4j.conf.ConfigurationBuilder;
  * Stores Twitter Object
  * NOT RECOMMENDED FOR MAIN-THREAD!
  */
-public class TwitterStore {
-    private static TwitterStore mTwitter;
+public class TwitterResource {
+    private static TwitterResource mTwitter;
     private Twitter twitter;
     private Context context;
     private SharedPreferences settings;
@@ -32,7 +32,7 @@ public class TwitterStore {
      * @param context Current Activity's Context
      * @see #getInstance
      */
-    private TwitterStore(Context context) {
+    private TwitterResource(Context context) {
         settings = context.getSharedPreferences("settings", 0);
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
@@ -132,11 +132,11 @@ public class TwitterStore {
     /**
      * Singleton
      * @param context Main Thread Context
-     * @return TwitterStore Instance
+     * @return TwitterResource Instance
      */
-    public static TwitterStore getInstance(Context context) {
+    public static TwitterResource getInstance(Context context) {
         if(mTwitter == null){
-            mTwitter = new TwitterStore(context);
+            mTwitter = new TwitterResource(context);
         }
         return mTwitter;
     }

@@ -19,6 +19,10 @@
     <string name="delete_database">Datenbank Löschen</string>
     <string name="connection_failure">Fehler beim Abruf der Daten!</string>
     <string name="search">Suche</string>
+    <string name="tweet_image">TwitterBild</string>
+    <string-array name="countries">
+        <item>Deutschland</item>
+    </string-array>
 
     <string name="tableUser">
     CREATE TABLE IF NOT EXISTS user (
@@ -66,10 +70,5 @@
         trendname   TEXT,
         trendlink   TEXT);
     </string>
-    <string name="tweet_image">TwitterBild</string>
-
-    <string-array name="countries">
-        <item>Deutschland</item>
-    </string-array>
 
 </resources>

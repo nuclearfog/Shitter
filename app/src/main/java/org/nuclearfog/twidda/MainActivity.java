@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SearchView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
@@ -21,14 +20,15 @@ import android.content.SharedPreferences;
 
 import org.nuclearfog.twidda.DataBase.TrendDatabase;
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
-import org.nuclearfog.twidda.Engine.RegisterAccount;
-import org.nuclearfog.twidda.Engine.TwitterEngine;
+import org.nuclearfog.twidda.Backend.RegisterAccount;
+import org.nuclearfog.twidda.Backend.MainPage;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.ViewAdapter.TrendsAdapter;
 import org.nuclearfog.twidda.Window.Profile;
 import org.nuclearfog.twidda.Window.Settings;
 import org.nuclearfog.twidda.Window.Tweet;
 import org.nuclearfog.twidda.Window.TweetWindow;
+import org.nuclearfog.twidda.Window.TwitterSearch;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -99,10 +99,6 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(this, Settings.class);
                 startActivity(intent);
                 break;
-            case R.id.action_search:
-                System.out.println("test");
-                break;
-
         }
         return true;
     }
@@ -201,21 +197,21 @@ public class MainActivity extends AppCompatActivity
         timelineReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TwitterEngine homeView = new TwitterEngine(MainActivity.this);
+                MainPage homeView = new MainPage(MainActivity.this);
                 homeView.execute(0);
             }
         });
         trendReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TwitterEngine homeView = new TwitterEngine(MainActivity.this);
+                MainPage homeView = new MainPage(MainActivity.this);
                 homeView.execute(1);
             }
         });
         mentionReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                TwitterEngine homeView = new TwitterEngine(MainActivity.this);
+                MainPage homeView = new MainPage(MainActivity.this);
                 homeView.execute(2);
             }
         });
@@ -247,7 +243,12 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TrendDatabase trend = new TrendDatabase(con);
-                trend.getTrendname(position);
+                String search = trend.getTrendname(position);
+                Intent intent = new Intent(con, TwitterSearch.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("search", search);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
         mentionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

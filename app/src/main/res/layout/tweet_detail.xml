@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
 
     <LinearLayout
@@ -22,17 +24,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/usernamedetail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" />
 
             <TextView
                 android:id="@+id/timedetail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -107,6 +112,13 @@
     <ListView
         android:id="@+id/answer_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/sendanswer"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:ems="10"
+        android:inputType="textPersonName" />
 
 </LinearLayout>

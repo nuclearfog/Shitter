@@ -7,14 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
-import org.nuclearfog.twidda.Engine.ProfileInformation;
-import org.nuclearfog.twidda.Engine.ProfileTweets;
+import org.nuclearfog.twidda.Backend.ProfileInfo;
+import org.nuclearfog.twidda.Backend.ProfileTweets;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 
@@ -51,8 +49,7 @@ public class Profile extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        switch(item.getItemId())
-        {
+        switch(item.getItemId()) {
             case R.id.action_tweet:
                 intent = new Intent(this, TweetWindow.class);
                 startActivity(intent);
@@ -132,7 +129,7 @@ public class Profile extends AppCompatActivity {
      * Profile Contents
      */
     private void initElements() {
-        ProfileInformation profile = new ProfileInformation(this);
+        ProfileInfo profile = new ProfileInfo(this);
         profile.execute(userId);
     }
 

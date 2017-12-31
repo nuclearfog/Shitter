@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine;
+package org.nuclearfog.twidda.Backend;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -17,17 +17,21 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
     private Context context;
     private SwipeRefreshLayout tweetsReload, favoritsReload;
     private ListView profileTweets, profileFavorits;
-    private TwitterStore twitterStore;
+    private TwitterResource twitterResource;
     private TimelineAdapter homeTl, homeFav;
 
     public ProfileTweets(Context context){
         this.context=context;
-        twitterStore = TwitterStore.getInstance(context);
-        twitterStore.init();
+        twitterResource = TwitterResource.getInstance(context);
+        twitterResource.init();
     }
 
+    /**
+     * Profile Backend
+     * @see Profile accessing this class
+     */
     @Override
-    protected void onPreExecute(){
+    protected void onPreExecute() {
         tweetsReload    = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.hometweets);
         favoritsReload  = (SwipeRefreshLayout)((Profile)context).findViewById(R.id.homefavorits);
         profileTweets   = (ListView)((Profile)context).findViewById(R.id.ht_list);
@@ -41,7 +45,7 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
     protected Void doInBackground(Long... id) {
         try {
             long userId = id[0];
-            Twitter twitter = twitterStore.getTwitter();
+            Twitter twitter = twitterResource.getTwitter();
             if(id[1] == 0) {
                 TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL,userId);
                 homeTl = new TimelineAdapter(context,hTweets);
@@ -55,11 +59,10 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        if(homeTl != null){
+        if(homeTl != null) {
             profileTweets.setAdapter(homeTl);
             tweetsReload.setRefreshing(false);
-        }
-        else if(homeFav != null){
+        } else if(homeFav != null) {
             profileFavorits.setAdapter(homeFav);
             favoritsReload.setRefreshing(false);
         }

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Engine;
+package org.nuclearfog.twidda.Backend;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -18,7 +18,7 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
     /**
      * Register App for Account access
      * @see MainActivity
-     * @see TwitterStore used to Store Twitter instance
+     * @see TwitterResource used to Store Twitter instance
      * @param context current Activity's Context.
      */
     public RegisterAccount( Context context ){
@@ -34,7 +34,7 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
     @Override
     protected String doInBackground( String... twitterPin ) {
         String pin = twitterPin[0];
-        TwitterStore mTwitter = TwitterStore.getInstance(context);
+        TwitterResource mTwitter = TwitterResource.getInstance(context);
         try {
             if( pin.trim().isEmpty() ) {
                 mTwitter.request();

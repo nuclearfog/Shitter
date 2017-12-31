@@ -18,10 +18,12 @@ public class TweetDatabase {
     public static final int USER_TL = 2;
     public static final int GET_TWEET = 3;
     public static final int GET_MENT = 4;
+    public static final int SEARCH = 5;
 
     private AppDatabase dataHelper;
-    private List<String> user,scrname, tweet,noRT,noFav,noAns,pbLink;
+    private List<String> user,scrname, tweet,pbLink;
     private List<Long> userId,tweetId,timeMillis;
+    private List<Integer> noRT,noFav,noAns;
     private List<Status> stats;
     private int size = 0;
     private int mode = 0;
@@ -57,6 +59,17 @@ public class TweetDatabase {
         this.mode=mode;
         initialize(context);
         load();
+    }
+
+    /**
+     * TODO
+     * this Constructor is used by twitter search
+     * no need to store in SQLITE
+     * @param stats Search Result Tweets
+     */
+    public TweetDatabase(List<Status> stats, Context context) {
+        initialize(context);
+        insert(stats);
     }
 
     private void store() {
@@ -148,11 +161,11 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("tweet"); // tweet
                 tweet.add( cursor.getString(index) );
                 index = cursor.getColumnIndex("retweet"); // retweet
-                noRT.add( cursor.getString(index) );
+                noRT.add( cursor.getInt(index) );
                 index = cursor.getColumnIndex("favorite"); // fav
-                noFav.add( cursor.getString(index) );
+                noFav.add( cursor.getInt(index) );
                 index = cursor.getColumnIndex("answers"); // answers
-                noAns.add(cursor.getString(index));
+                noAns.add(cursor.getInt(index));
                 index = cursor.getColumnIndex("username"); // user
                 user.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("scrname"); // username
@@ -173,16 +186,16 @@ public class TweetDatabase {
     public int getSize() {
         return size;
     }
+    public int getRetweet(int pos){return noRT.get(pos);}
+    public int getFavorite(int pos){return noFav.get(pos);}
+    public int getAnswer(int pos){return noAns.get(pos);}
     public long getUserID(int pos){return userId.get(pos);}
     public long getTweetId(int pos){return tweetId.get(pos);}
     public long getTime(int pos){return timeMillis.get(pos);}
     public String getUsername(int pos){return user.get(pos);}
     public String getScreenname(int pos){return scrname.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
-    public String getRetweet(int pos){return noRT.get(pos);}
-    public String getFavorite(int pos){return noFav.get(pos);}
     public String getDate(int pos){return timeToString(getTime(pos));}
-    public String getAnswer(int pos){return noAns.get(pos);}
     public String getPbImg (int pos){return pbLink.get(pos);}
     public boolean loadImages(){
         return settings.getBoolean("image_load", false);
@@ -217,8 +230,25 @@ public class TweetDatabase {
     private void initialize(Context c){
         dataHelper = AppDatabase.getInstance(c);
         settings = c.getSharedPreferences("settings", 0);
-        limit = settings.getInt("limit", 50);
+        limit = settings.getInt("limit", 100);
         initArray();
+    }
+
+    private void insert(List<Status> stats) {
+        for(Status stat: stats) {
+            User usr = stat.getUser();
+            user.add(usr.getName());
+            scrname.add('@'+usr.getScreenName());
+            tweet.add(stat.getText());
+            noRT.add(stat.getRetweetCount());
+            noFav.add(stat.getFavoriteCount());
+            noAns.add(0); // TODO
+            userId.add(usr.getId());
+            pbLink.add(usr.getProfileImageURL());
+            tweetId.add(stat.getId());
+            timeMillis.add(stat.getCreatedAt().getTime());
+            size++;
+        }
     }
 
     private void initArray() {
