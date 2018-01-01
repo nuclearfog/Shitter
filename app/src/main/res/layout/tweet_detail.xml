@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <LinearLayout
@@ -51,10 +50,8 @@
         android:id="@+id/tweet_detailed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
         android:autoLink="web"
         android:linksClickable="true"
         android:textSize="24sp" />
@@ -72,43 +69,43 @@
         android:id="@+id/actionbar"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:addStatesFromChildren="false"
-        android:gravity="right"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/answer"
+            android:id="@+id/answer_detail"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:background="@drawable/chat" />
 
         <TextView
-            android:id="@+id/answer_number"
+            android:id="@+id/no_ans_detail"
             android:layout_width="64dp"
             android:layout_height="match_parent"
             android:ems="10" />
 
         <Button
-            android:id="@+id/retweet"
+            android:id="@+id/rt_detail"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:background="@drawable/retweet" />
 
         <TextView
-            android:id="@+id/retweet_number"
+            android:id="@+id/no_rt_detail"
             android:layout_width="64dp"
             android:layout_height="match_parent"
             android:ems="10" />
 
         <Button
-            android:id="@+id/favorite"
+            android:id="@+id/fav_detail"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:background="@drawable/favorite" />
 
         <TextView
-            android:id="@+id/favorite_number"
+            android:id="@+id/no_fav_detail"
             android:layout_width="64dp"
             android:layout_height="match_parent"
             android:ems="10" />
@@ -118,6 +115,8 @@
     <ListView
         android:id="@+id/answer_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" />
 
 </LinearLayout>

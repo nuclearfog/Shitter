@@ -226,10 +226,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(!timelineReload.isRefreshing()) {
-                    TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
-                    int index = timelineList.getPositionForView(view);
-                    long tweetID = tweetDeck.getTweetId(index);
-                    long userID = tweetDeck.getUserID(index);
+                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
                     Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity
         trendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TrendDatabase trend = new TrendDatabase(con);
+                TrendDatabase trend = ((TrendDatabase) trendList.getAdapter());
                 String search = trend.getTrendname(position);
                 Intent intent = new Intent(con, TwitterSearch.class);
                 Bundle bundle = new Bundle();

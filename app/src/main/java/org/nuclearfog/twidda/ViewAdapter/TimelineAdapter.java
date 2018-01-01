@@ -24,6 +24,10 @@ public class TimelineAdapter extends ArrayAdapter {
         this.context = context;
     }
 
+    public TweetDatabase getAdapter(){
+        return mTweets;
+    }
+
     @Override
     public int getCount() {
         return mTweets.getSize();
@@ -48,7 +52,9 @@ public class TimelineAdapter extends ArrayAdapter {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               ((ListView)p).performItemClick(v,0,0);
+                ListView parent = ((ListView)p);
+                int position = parent.getPositionForView(v);
+                parent.performItemClick(v,position,0);
             }
         });
 
