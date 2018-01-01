@@ -24,13 +24,13 @@ public class TrendDatabase {
 
     public TrendDatabase(Trends trends, Context c) {
         this.trends = trends;
-        this.c=c;
+        this.c = c;
         init();
         setup();
         store();
     }
 
-    public TrendDatabase(Context c){
+    public TrendDatabase(Context c) {
         this.c = c;
         init();
         load();
@@ -47,7 +47,7 @@ public class TrendDatabase {
             return size;
     }
 
-    private void load(){
+    private void load() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         String SQL_TREND = "SELECT * FROM trend ORDER BY trendpos ASC";
         Cursor cursor = db.rawQuery(SQL_TREND,null);
@@ -66,7 +66,7 @@ public class TrendDatabase {
         db.close();
     }
 
-    private void store(){
+    private void store() {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues trend = new ContentValues();
         for(int pos = 0; pos < getSize(); pos++) {
@@ -77,7 +77,7 @@ public class TrendDatabase {
         }
     }
 
-    private void init(){
+    private void init() {
         dataHelper = AppDatabase.getInstance(c);
         trendpos  = new ArrayList<>();
         trendName = new ArrayList<>();

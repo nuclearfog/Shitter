@@ -13,12 +13,12 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
 {
     private ImageView imgView;
 
-    public ImageDownloader(ImageView imgView){
+    public ImageDownloader(ImageView imgView) {
         this.imgView = imgView;
     }
 
     @Override
-    protected Bitmap doInBackground(String... links){
+    protected Bitmap doInBackground(String... links) {
         Bitmap picture = null;
 
         try {
@@ -31,7 +31,7 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
     }
 
     @Override
-    protected void onPostExecute(Bitmap img){
+    protected void onPostExecute(Bitmap img) {
         imgView.setImageBitmap(img);
     }
 }

@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.Backend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,10 +27,14 @@ public class ShowStatus extends AsyncTask<Long, Void, Void> {
     private TextView  username,scrName, tweet;
     private ArrayList<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr;
+    private SharedPreferences settings;
+    private int load;
 
-    public ShowStatus( Context c) {
+    public ShowStatus(Context c) {
         twitter = TwitterResource.getInstance(c).getTwitter();
         answers = new ArrayList<>();
+        settings = c.getSharedPreferences("settings", 0);
+        load = settings.getInt("preload", 10);
         this.c=c;
     }
 
@@ -53,8 +58,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Void> {
             usernameStr = currentTweet.getUser().getName();
             scrNameStr = currentTweet.getUser().getScreenName();
 
-            Query query = new Query('@'+scrNameStr+" since_id:"+tweetID);
-            query.setCount(10);//TODO
+            Query query = new Query('@'+scrNameStr+" since_id:"+tweetID+" +exclude:retweets");
+            query.setCount(load);
             QueryResult result= null;
             do {
                 result = twitter.search(query);

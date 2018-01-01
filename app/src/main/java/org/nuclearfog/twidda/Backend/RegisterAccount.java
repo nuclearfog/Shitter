@@ -21,7 +21,7 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
      * @see TwitterResource used to Store Twitter instance
      * @param context current Activity's Context.
      */
-    public RegisterAccount( Context context ){
+    public RegisterAccount(Context context) {
         this.context = context;
     }
 

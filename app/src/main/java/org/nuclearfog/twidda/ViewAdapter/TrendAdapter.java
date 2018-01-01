@@ -20,6 +20,10 @@ public class TrendAdapter extends ArrayAdapter {
         this.context = context;
     }
 
+    public TrendDatabase getDatabase(){
+        return trend;
+    }
+
     @Override
     public int getCount() {
         return trend.getSize();

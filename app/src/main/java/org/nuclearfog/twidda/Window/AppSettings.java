@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.Window;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,40 +11,43 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Switch;
 
 import org.nuclearfog.twidda.R;
 
 public class AppSettings extends AppCompatActivity {
 
+
+    private Button delButon;
+    private Switch toggleImg;
+    private EditText woeId;
     private SharedPreferences settings;
+    private NumberPicker load_factor;
+    private Editor edit;
 
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
-        settings = getApplicationContext().getSharedPreferences("settings", 0);
         setContentView(R.layout.settings);
-        Toolbar tool = (Toolbar) findViewById(R.id.toolbar_setting);
-        setSupportActionBar(tool);
 
-        Switch toggleImg = (Switch) findViewById(R.id.toggleImg);
+        settings = getApplicationContext().getSharedPreferences("settings", 0);
+        int location = settings.getInt("woeid",23424829);
+        edit  = settings.edit();
+
+        Toolbar tool = (Toolbar) findViewById(R.id.toolbar_setting);
+        load_factor = (NumberPicker)findViewById(R.id.tweet_load);
+        delButon = (Button) findViewById(R.id.delete_db);
+        toggleImg = (Switch) findViewById(R.id.toggleImg);
+        woeId = (EditText) findViewById(R.id.woeid);
+
+        setSupportActionBar(tool);
+        load_factor.setMinValue(5);
+        load_factor.setMaxValue(100);
         toggleImg.setChecked(settings.getBoolean("image_load",false));
-        toggleImg.setOnCheckedChangeListener(
-            new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton b, boolean checked){
-                SharedPreferences.Editor e = settings.edit();
-                e.putBoolean("image_load", checked);
-                e.apply();
-            }
-        });
-        Button delButon = (Button) findViewById(R.id.delete_db);
-        delButon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getApplicationContext().deleteDatabase(getApplicationContext().getString(R.string.database));
-            }
-        });
+        woeId.setText(""+location);
+
+        setListener();
     }
 
     /**
@@ -60,12 +64,42 @@ public class AppSettings extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId())
-        {
+        switch(item.getItemId()) {
             case R.id.back_settings:
                 finish();
-                break;
+                return true;
         }
-        return true;
+        return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        edit.putInt("woeid", Integer.valueOf(woeId.getText().toString()));
+        edit.putInt("preload", load_factor.getValue());
+        edit.apply();
+        super.onDestroy();
+    }
+
+
+
+    private void setListener() {
+
+        toggleImg.setOnCheckedChangeListener(
+            new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton b, boolean checked) {
+                    edit.putBoolean("image_load", checked);
+                    edit.apply();
+                }
+            });
+
+
+        delButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getApplicationContext().deleteDatabase(getApplicationContext().getString(R.string.database));
+            }
+        });
+
     }
 }

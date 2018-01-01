@@ -13,7 +13,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import org.nuclearfog.twidda.Backend.Search;
+import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 
 
 public class TwitterSearch extends AppCompatActivity {
@@ -61,8 +63,18 @@ public class TwitterSearch extends AppCompatActivity {
         searchTL.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int index = searchTL.getPositionForView(view);
-
+                if(!search_refresh.isRefreshing()) {
+                    TimelineAdapter tlAdp = (TimelineAdapter) searchTL.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
+                    Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    bundle.putLong("userID",userID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -71,4 +83,6 @@ public class TwitterSearch extends AppCompatActivity {
         Search s = new Search(this);
         s.execute("tweet",search);
     }
+
+
 }

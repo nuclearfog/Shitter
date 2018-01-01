@@ -24,7 +24,7 @@ public class TimelineAdapter extends ArrayAdapter {
         this.context = context;
     }
 
-    public TweetDatabase getAdapter(){
+    public TweetDatabase getAdapter() {
         return mTweets;
     }
 

@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
 public class SendStatus extends AsyncTask<String, Void, Boolean> {
 
@@ -34,8 +33,9 @@ public class SendStatus extends AsyncTask<String, Void, Boolean> {
                     twitter.tweets().updateStatus(tweet);
                     return true;
             }
-        }catch(TwitterException err){}
-        catch(Exception err){}
+        } catch(Exception err) {
+            err.printStackTrace();
+        }
         return false;
     }
 
@@ -43,6 +43,8 @@ public class SendStatus extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if(success) {
             Toast.makeText(context, "TweetDetail wurde gesendet!", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(context, "Fehler beim Senden des Tweets!", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -7,6 +7,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.ViewAdapter.TrendAdapter;
 
+import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
     private ListView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
+    private SharedPreferences settings;
+    private int load;
 
 
     /**
@@ -35,7 +38,9 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
     public MainPage(Context context) {
         this.context=context;
         twitterResource = TwitterResource.getInstance(context);
-        twitterResource.init();
+        twitterResource.init();// preload
+        settings = context.getSharedPreferences("settings", 0);
+        load = settings.getInt("preload", 10);
     }
 
     @Override
@@ -58,15 +63,16 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
     @Override
     protected Boolean doInBackground(Integer... args) {
         Twitter twitter = twitterResource.getTwitter();
-        Paging p = new Paging(); //TODO
-        p.setCount(100);
+        Paging p = new Paging();
+        p.setCount(load);
         try {
             if(args[0]==0) {
                 TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(p), context,TweetDatabase.HOME_TL,0);
                 timelineAdapter = new TimelineAdapter(context,mTweets);
             }
             else if(args[0]==1) {
-                TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(23424829),context); //Germany by default
+                int location = settings.getInt("woeid",23424829);
+                TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(location),context); //Germany by default
                 trendsAdapter = new TrendAdapter(context,trend);
             }
             else if(args[0]==2) {

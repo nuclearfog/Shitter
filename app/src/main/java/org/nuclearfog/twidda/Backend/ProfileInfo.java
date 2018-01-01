@@ -22,7 +22,7 @@ public class ProfileInfo extends AsyncTask<Long,Void,Void>
     private boolean imgEnabled = false;
 
     /**
-     * @param context "this" Context
+     * @param context Activity's Context
      */
     public ProfileInfo(Context context) {
         this.context=context;

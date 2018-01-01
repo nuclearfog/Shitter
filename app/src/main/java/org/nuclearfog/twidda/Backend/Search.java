@@ -53,6 +53,5 @@ public class Search extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         tl.setAdapter(tlAdp);
-
     }
 }

@@ -64,7 +64,7 @@ public class TwitterResource {
      * @throws NullPointerException if Request-Token is not set
      * @see #initKeys(String, String)
      */
-    public void initialize(String twitterPin) throws TwitterException, NullPointerException{
+    public void initialize(String twitterPin) throws TwitterException, NullPointerException {
         if(reqToken == null) throw new NullPointerException("empty request token");
         AccessToken accessToken = twitter.getOAuthAccessToken(reqToken,twitterPin);
         String key1 = accessToken.getToken();
@@ -109,7 +109,7 @@ public class TwitterResource {
      * get Twitter object
      * @return Twitter Object
      */
-    public Twitter getTwitter(){
+    public Twitter getTwitter() {
         init();
         return twitter;
     }
@@ -119,7 +119,7 @@ public class TwitterResource {
      * recall Keys from Shared-Preferences
      * & initialize Twitter
      */
-    public void init(){
+    public void init() {
         String key1,key2;
         if( settings.getBoolean("login", false) ) {
             key1 = settings.getString("key1", " ");
@@ -135,7 +135,7 @@ public class TwitterResource {
      * @return TwitterResource Instance
      */
     public static TwitterResource getInstance(Context context) {
-        if(mTwitter == null){
+        if(mTwitter == null) {
             mTwitter = new TwitterResource(context);
         }
         return mTwitter;

@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.Backend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
@@ -10,6 +11,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
 import org.nuclearfog.twidda.Window.UserProfile;
 
+import twitter4j.Paging;
 import twitter4j.Twitter;
 
 public class ProfileTweets extends AsyncTask<Long, Void, Void> {
@@ -19,11 +21,15 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
     private ListView profileTweets, profileFavorits;
     private TwitterResource twitterResource;
     private TimelineAdapter homeTl, homeFav;
+    private SharedPreferences settings;
+    private int load;
 
     public ProfileTweets(Context context){
         this.context=context;
         twitterResource = TwitterResource.getInstance(context);
         twitterResource.init();
+        settings = context.getSharedPreferences("settings", 0);
+        load = settings.getInt("preload", 10);
     }
 
     /**
@@ -45,12 +51,14 @@ public class ProfileTweets extends AsyncTask<Long, Void, Void> {
     protected Void doInBackground(Long... id) {
         try {
             long userId = id[0];
+            Paging p = new Paging();
+            p.setCount(load);
             Twitter twitter = twitterResource.getTwitter();
             if(id[1] == 0) {
-                TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId), context,TweetDatabase.USER_TL,userId);
+                TweetDatabase hTweets = new TweetDatabase(twitter.getUserTimeline(userId,p), context,TweetDatabase.USER_TL,userId);
                 homeTl = new TimelineAdapter(context,hTweets);
             } else if(id[1] == 1) {
-               TweetDatabase fTweets = new TweetDatabase(twitter.getFavorites(userId), context,TweetDatabase.FAV_TL,userId);
+               TweetDatabase fTweets = new TweetDatabase(twitter.getFavorites(userId,p), context,TweetDatabase.FAV_TL,userId);
                 homeFav = new TimelineAdapter(context,fTweets);
             }
         } catch(Exception err){err.printStackTrace();}

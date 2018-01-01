@@ -15,7 +15,7 @@ public class TweetPopup extends AppCompatActivity {
     private EditText tweetfield;
 
     @Override
-    protected void onCreate(Bundle SavedInstance){
+    protected void onCreate(Bundle SavedInstance) {
         super.onCreate(SavedInstance);
         getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.tweetwindow);
@@ -38,7 +38,7 @@ public class TweetPopup extends AppCompatActivity {
         });
     }
 
-    private void send(){
+    private void send() {
         String tweet = tweetfield.getText().toString();
         SendStatus sendTweet = new SendStatus(getApplicationContext());
         sendTweet.execute(SendStatus.SEND_STATUS, tweet);

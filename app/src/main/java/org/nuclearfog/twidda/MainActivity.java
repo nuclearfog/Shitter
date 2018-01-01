@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Swipe To Refresh Listener TODO
+     * Swipe To Refresh Listener
      */
     private void setRefreshListener() {
         timelineReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -217,9 +217,8 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
     /**
-     * Item Listener for a TweetDetail
+     * Set On Item Click Listener for the main Listviews
      */
     private void setListViewListener() {
         timelineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -242,8 +241,8 @@ public class MainActivity extends AppCompatActivity
         trendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TrendDatabase trend = ((TrendDatabase) trendList.getAdapter());
-                String search = trend.getTrendname(position);
+                TrendAdapter trend = (TrendAdapter) trendList.getAdapter();
+                String search = trend.getDatabase().getTrendname(position);
                 Intent intent = new Intent(con, TwitterSearch.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("search", search);
@@ -255,10 +254,10 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(!mentionReload.isRefreshing()) {
-                    TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.GET_MENT, 0L);
-                    int index = mentionList.getPositionForView(view);
-                    long tweetID = tweetDeck.getTweetId(index);
-                    long userID = tweetDeck.getUserID(index);
+                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
                     Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);

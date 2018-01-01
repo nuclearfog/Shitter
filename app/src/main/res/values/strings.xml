@@ -20,8 +20,10 @@
     <string name="connection_failure">Fehler beim Abruf der Daten!</string>
     <string name="search">Suche</string>
     <string name="tweet_image">TwitterBild</string>
+    <string name="trend">Trends</string>
     <string-array name="countries">
         <item>Deutschland</item>
+        <item>Welt</item>
     </string-array>
 
     <string name="tableUser">
@@ -70,5 +72,6 @@
         trendname   TEXT,
         trendlink   TEXT);
     </string>
+    <string name="woe_id">WOE ID</string>
 
 </resources>

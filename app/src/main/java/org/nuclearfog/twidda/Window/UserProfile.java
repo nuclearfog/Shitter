@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 
@@ -142,5 +144,43 @@ public class UserProfile extends AppCompatActivity {
         mProfile.execute(userId, mode);
     }
 
-    private void setListener(){}
+    /**
+     * Set On Item Click  Listener
+     */
+    private void setListener(){
+        homeTweets.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(!homeReload.isRefreshing()) {
+                    TimelineAdapter tlAdp = (TimelineAdapter) homeTweets.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
+                    Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    bundle.putLong("userID",userID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
+        });
+        homeFavorits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(!favoriteReload.isRefreshing()) {
+                    TimelineAdapter tlAdp = (TimelineAdapter) homeFavorits.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
+                    Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    bundle.putLong("userID",userID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            }
+        });
+    }
 }

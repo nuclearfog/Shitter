@@ -6,19 +6,20 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import twitter4j.Status;
 import twitter4j.User;
 
 public class TweetDatabase {
-    public static final int HOME_TL = 0;
-    public static final int FAV_TL  = 1;
-    public static final int USER_TL = 2;
-    public static final int GET_TWEET = 3;
-    public static final int GET_MENT = 4;
-    public static final int SEARCH = 5;
+    public static final int HOME_TL   = 0;    // GET HOME TIMELINE
+    public static final int FAV_TL    = 1;    // GET FAVORITE TL
+    public static final int USER_TL   = 2;    // GET USERS TWEET TL @userID
+    public static final int GET_TWEET = 3;    // GET TWEET @ userID
+    public static final int GET_MENT  = 4;    // GET MENTION TL
 
     private AppDatabase dataHelper;
     private List<String> user,scrname, tweet,pbLink;
@@ -62,7 +63,6 @@ public class TweetDatabase {
     }
 
     /**
-     * TODO
      * this Constructor is used by twitter search
      * no need to store in SQLITE
      * @param stats Search Result Tweets
@@ -113,11 +113,9 @@ public class TweetDatabase {
             if(mode!=USER_TL) {
                 if(mode == HOME_TL) {
                     db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_IGNORE);
-                }
-                else if(mode == FAV_TL) {
+                } else if(mode == FAV_TL) {
                     db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_IGNORE);
-                }
-                else if(mode == GET_MENT) {
+                } else if(mode == GET_MENT) {
                     db.insertWithOnConflict("timeline",null,ment,SQLiteDatabase.CONFLICT_IGNORE);
                 }
             }
@@ -215,6 +213,11 @@ public class TweetDatabase {
         long days = hours / 24;
         long weeks = days / 7;
 
+        if(weeks > 4) {
+            Date tweetDate = new Date(mills);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            return sdf.format(tweetDate);
+        }
         if(weeks > 0)
             return "vor "+weeks+" w";
         if(days > 0)
