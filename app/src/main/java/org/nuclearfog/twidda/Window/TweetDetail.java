@@ -57,11 +57,9 @@ public class TweetDetail extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 TimelineAdapter tlAdp = (TimelineAdapter) answer_list.getAdapter();
                 TweetDatabase twDB = tlAdp.getAdapter();
-                long tweetID = twDB.getTweetId(position);
                 long userID = twDB.getUserID(position);
-                Intent intent = new Intent(context, TweetDetail.class);
+                Intent intent = new Intent(context, UserProfile.class);
                 Bundle bundle = new Bundle();
-                bundle.putLong("tweetID",tweetID);
                 bundle.putLong("userID",userID);
                 intent.putExtras(bundle);
                 startActivity(intent);

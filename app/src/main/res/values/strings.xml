@@ -21,10 +21,9 @@
     <string name="search">Suche</string>
     <string name="tweet_image">TwitterBild</string>
     <string name="trend">Trends</string>
-    <string-array name="countries">
-        <item>Deutschland</item>
-        <item>Welt</item>
-    </string-array>
+    <string name="following">Following</string>
+    <string name="follower">Follower</string>
+
 
     <string name="tableUser">
     CREATE TABLE IF NOT EXISTS user (
@@ -73,5 +72,6 @@
         trendlink   TEXT);
     </string>
     <string name="woe_id">WOE ID</string>
+    <string name="banner">Profilbanner</string>
 
 </resources>

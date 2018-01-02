@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.Backend.ProfileInfo;
@@ -22,6 +23,7 @@ public class UserProfile extends AppCompatActivity {
 
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
+    private TextView txtFollowing, txtFollower;
     private long userId;
 
     @Override
@@ -34,6 +36,8 @@ public class UserProfile extends AppCompatActivity {
         userId = getIntent().getExtras().getLong("userID");
         homeTweets = (ListView)findViewById(R.id.ht_list);
         homeFavorits = (ListView)findViewById(R.id.hf_list);
+        txtFollowing = (TextView)findViewById(R.id.following);
+        txtFollower  = (TextView)findViewById(R.id.follower);
         initElements();
         initTabs();
         initSwipe();
@@ -182,5 +186,27 @@ public class UserProfile extends AppCompatActivity {
                 }
             }
         });
+
+        txtFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFollows(0L);
+            }
+        });
+        txtFollower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFollows(1L);
+            }
+        });
+    }
+
+    private void getFollows(long mode){
+        Intent intent = new Intent(getApplicationContext(), Follower.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong("userID",userId);
+        bundle.putLong("mode",mode);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

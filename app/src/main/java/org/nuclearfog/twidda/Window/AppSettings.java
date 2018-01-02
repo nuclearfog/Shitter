@@ -18,7 +18,6 @@ import org.nuclearfog.twidda.R;
 
 public class AppSettings extends AppCompatActivity {
 
-
     private Button delButon;
     private Switch toggleImg;
     private EditText woeId;
@@ -45,6 +44,7 @@ public class AppSettings extends AppCompatActivity {
         load_factor.setMinValue(5);
         load_factor.setMaxValue(100);
         toggleImg.setChecked(settings.getBoolean("image_load",false));
+        load_factor.setValue(settings.getInt("preload",10));
         woeId.setText(""+location);
 
         setListener();
@@ -80,19 +80,14 @@ public class AppSettings extends AppCompatActivity {
         super.onDestroy();
     }
 
-
-
     private void setListener() {
-
-        toggleImg.setOnCheckedChangeListener(
-            new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton b, boolean checked) {
-                    edit.putBoolean("image_load", checked);
-                    edit.apply();
-                }
-            });
-
+        toggleImg.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton b, boolean checked) {
+                edit.putBoolean("image_load", checked);
+                edit.apply();
+            }
+        });
 
         delButon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +95,5 @@ public class AppSettings extends AppCompatActivity {
                 getApplicationContext().deleteDatabase(getApplicationContext().getString(R.string.database));
             }
         });
-
     }
 }

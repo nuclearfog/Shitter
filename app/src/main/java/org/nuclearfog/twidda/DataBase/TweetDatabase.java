@@ -26,6 +26,7 @@ public class TweetDatabase {
     private List<Long> userId,tweetId,timeMillis;
     private List<Integer> noRT,noFav,noAns;
     private List<Status> stats;
+    private boolean toggleImg;
     private int size = 0;
     private int mode = 0;
     private int limit;
@@ -41,9 +42,9 @@ public class TweetDatabase {
      * @see #HOME_TL#FAV_TL#USER_TL
      */
     public TweetDatabase(List<Status> stats, Context context, final int mode,long CurrentId) {
-        this.stats=stats;
+        this.stats = stats;
         this.CurrentId = CurrentId;
-        this.mode=mode;
+        this.mode = mode;
         initialize(context);
         store();
         load();
@@ -56,8 +57,8 @@ public class TweetDatabase {
      * @param CurrentId current ID (USER OR TWEET)
      */
     public TweetDatabase(Context context, final int mode, long CurrentId) {
-        this.CurrentId=CurrentId;
-        this.mode=mode;
+        this.CurrentId = CurrentId;
+        this.mode = mode;
         initialize(context);
         load();
     }
@@ -195,9 +196,7 @@ public class TweetDatabase {
     public String getTweet(int pos){return tweet.get(pos);}
     public String getDate(int pos){return timeToString(getTime(pos));}
     public String getPbImg (int pos){return pbLink.get(pos);}
-    public boolean loadImages(){
-        return settings.getBoolean("image_load", false);
-    }
+    public boolean loadImages(){return toggleImg;}
 
     /**
      * Convert Time to String
@@ -234,6 +233,7 @@ public class TweetDatabase {
         dataHelper = AppDatabase.getInstance(c);
         settings = c.getSharedPreferences("settings", 0);
         limit = settings.getInt("limit", 100);
+        toggleImg = settings.getBoolean("image_load", false);
         initArray();
     }
 
