@@ -75,5 +75,6 @@
     <string name="banner">Profilbanner</string>
     <string name="link">Webseite</string>
     <string name="location">Ort</string>
+    <string name="save">Speichern</string>
 
 </resources>
