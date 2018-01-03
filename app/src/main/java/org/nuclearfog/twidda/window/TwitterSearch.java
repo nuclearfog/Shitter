@@ -47,7 +47,7 @@ public class TwitterSearch extends AppCompatActivity {
         Intent intent;
         int id = item.getItemId();
         switch(id) {
-            case R.id.action_tweet:
+            case R.id.search_tweet:
             intent = new Intent(this, TweetPopup.class);
             startActivity(intent);
             break;
@@ -71,6 +71,12 @@ public class TwitterSearch extends AppCompatActivity {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
+            }
+        });
+        search_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getContent();
             }
         });
     }

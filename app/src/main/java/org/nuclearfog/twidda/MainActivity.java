@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity
 {
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private ListView timelineList, trendList,mentionList;
-    private MenuItem profile, tweet, search;
+    private MenuItem profile, tweet, search, setting;
     private SharedPreferences settings;
     private EditText pin;
     private Context con;
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         profile = m.findItem(R.id.action_profile);
         tweet = m.findItem(R.id.action_tweet);
         search = m.findItem(R.id.action_search);
+        setting = m.findItem(R.id.action_settings);
         SearchView searchQuery = (SearchView)m.findItem(R.id.action_search).getActionView();
 
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -297,16 +298,19 @@ public class MainActivity extends AppCompatActivity
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
+                setting.setVisible(false);
                 break;
             case "trends":
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
+                setting.setVisible(true);
                 break;
             case "mention":
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);
+                setting.setVisible(true);
                 break;
         }
     }

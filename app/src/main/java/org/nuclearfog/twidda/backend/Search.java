@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
@@ -15,7 +16,9 @@ import twitter4j.QueryResult;
 import twitter4j.Twitter;
 
 public class Search extends AsyncTask<String, Void, Boolean> {
+
     private TimelineAdapter tlAdp;
+    private SwipeRefreshLayout refresh;
     private Context context;
     private Twitter twitter;
     private ListView tl;
@@ -30,6 +33,7 @@ public class Search extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         tl = (ListView) ((TwitterSearch)context).findViewById(R.id.search_result);
+        refresh = (SwipeRefreshLayout) ((TwitterSearch)context).findViewById(R.id.search_refresh);
         twitter = TwitterResource.getInstance(context).getTwitter();
     }
 
@@ -56,5 +60,6 @@ public class Search extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean result) {
         tl.setAdapter(tlAdp);
+        refresh.setRefreshing(false);
     }
 }
