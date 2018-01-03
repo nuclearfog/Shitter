@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Backend;
+package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.Window.UserProfile;
+import org.nuclearfog.twidda.window.UserProfile;
 
 import twitter4j.Twitter;
 import twitter4j.User;

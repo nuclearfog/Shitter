@@ -17,19 +17,16 @@
 
     <item
         android:id="@+id/action_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checkable="false"
         android:icon="@drawable/search"
         android:title="@string/search"
         android:visible="false"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="always" />
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/setting_icon"
         android:title="@string/settings"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="ifRoom" />
 
 </menu>

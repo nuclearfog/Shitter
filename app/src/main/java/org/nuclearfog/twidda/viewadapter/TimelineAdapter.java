@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.ViewAdapter;
+package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.Backend.ImageDownloader;
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
+import org.nuclearfog.twidda.backend.ImageDownloader;
+import org.nuclearfog.twidda.database.TweetDatabase;
 
 public class TimelineAdapter extends ArrayAdapter {
     private TweetDatabase mTweets;
@@ -41,7 +41,7 @@ public class TimelineAdapter extends ArrayAdapter {
             v = inf.inflate(R.layout.tweet, parent,false);
         }
         ((TextView) v.findViewById(R.id.username)).setText(mTweets.getUsername(position));
-        ((TextView) v.findViewById(R.id.screenname)).setText(mTweets.getScreenname(position));
+        ((TextView) v.findViewById(R.id.screenname)).setText(" "+mTweets.getScreenname(position));
         ((TextView) v.findViewById(R.id.tweettext)).setText(mTweets.getTweet(position));
         ((TextView) v.findViewById(R.id.answer_number)).setText(""+mTweets.getAnswer(position));
         ((TextView) v.findViewById(R.id.retweet_number)).setText(""+mTweets.getRetweet(position));
@@ -57,12 +57,10 @@ public class TimelineAdapter extends ArrayAdapter {
                 parent.performItemClick(v,position,0);
             }
         });
-
         if(mTweets.loadImages()) {
             ImageDownloader imgDl = new ImageDownloader(imgView);
             imgDl.execute(mTweets.getPbImg(position));
         }
-
         return v;
     }
 }

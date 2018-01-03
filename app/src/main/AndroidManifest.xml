@@ -22,32 +22,32 @@
         </activity>
 
         <activity
-            android:name=".Window.UserProfile"
+            android:name=".window.TwitterSearch"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".Window.TweetPopup"
+            android:name=".window.UserProfile"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".window.TweetPopup"
             android:theme="@style/Transparency"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".Window.AppSettings"
+            android:name=".window.AppSettings"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".Window.TweetDetail"
+            android:name=".window.TweetDetail"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".Window.TwitterSearch"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".Window.Follower"
+            android:name=".window.Follower"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 

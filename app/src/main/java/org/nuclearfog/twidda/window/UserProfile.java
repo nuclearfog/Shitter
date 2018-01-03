@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Window;
+package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,11 +13,11 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
-import org.nuclearfog.twidda.Backend.ProfileInfo;
-import org.nuclearfog.twidda.Backend.ProfileTweets;
+import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.backend.ProfileInfo;
+import org.nuclearfog.twidda.backend.ProfileTweets;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
 public class UserProfile extends AppCompatActivity {
 

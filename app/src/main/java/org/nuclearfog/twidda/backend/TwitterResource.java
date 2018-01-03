@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Backend;
+package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.content.Intent;

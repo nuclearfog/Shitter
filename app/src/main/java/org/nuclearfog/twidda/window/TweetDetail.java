@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Window;
+package org.nuclearfog.twidda.window;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +8,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import org.nuclearfog.twidda.Backend.ShowStatus;
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
+import org.nuclearfog.twidda.backend.ShowStatus;
+import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
 public class TweetDetail extends AppCompatActivity {
 
@@ -58,9 +57,11 @@ public class TweetDetail extends AppCompatActivity {
                 TimelineAdapter tlAdp = (TimelineAdapter) answer_list.getAdapter();
                 TweetDatabase twDB = tlAdp.getAdapter();
                 long userID = twDB.getUserID(position);
-                Intent intent = new Intent(context, UserProfile.class);
+                long tweetID = twDB.getTweetId(position);
+                Intent intent = new Intent(context, TweetDetail.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong("userID",userID);
+                bundle.putLong("tweetID",tweetID);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

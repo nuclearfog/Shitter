@@ -1,11 +1,11 @@
-package org.nuclearfog.twidda.Backend;
+package org.nuclearfog.twidda.backend;
 
-import org.nuclearfog.twidda.DataBase.TrendDatabase;
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
+import org.nuclearfog.twidda.database.TrendDatabase;
+import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
-import org.nuclearfog.twidda.ViewAdapter.TrendAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 
 import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;

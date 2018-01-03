@@ -1,6 +1,5 @@
-package org.nuclearfog.twidda.Window;
+package org.nuclearfog.twidda.window;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,16 +11,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.nuclearfog.twidda.Backend.Search;
-import org.nuclearfog.twidda.DataBase.TweetDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ViewAdapter.TimelineAdapter;
-
+import org.nuclearfog.twidda.backend.Search;
+import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
 public class TwitterSearch extends AppCompatActivity {
 
     private String search;
-    private Context c;
     private ListView searchTL;
     private SwipeRefreshLayout search_refresh;
 
@@ -30,12 +27,11 @@ public class TwitterSearch extends AppCompatActivity {
         super.onCreate(bundle);
         setContentView(R.layout.search);
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
-        setSupportActionBar(tool);
-        c = getApplicationContext();
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        search = getIntent().getExtras().getString("search");
         searchTL = (ListView) findViewById(R.id.search_result);
         search_refresh = (SwipeRefreshLayout) findViewById(R.id.search_refresh);
+        setSupportActionBar(tool);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        search = getIntent().getExtras().getString("search");
         getContent();
         setListener();
     }
@@ -59,7 +55,7 @@ public class TwitterSearch extends AppCompatActivity {
         return true;
     }
 
-    private void setListener(){
+    private void setListener() {
         searchTL.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -83,6 +79,4 @@ public class TwitterSearch extends AppCompatActivity {
         Search s = new Search(this);
         s.execute("tweet",search);
     }
-
-
 }

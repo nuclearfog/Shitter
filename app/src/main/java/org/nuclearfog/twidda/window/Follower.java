@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Window;
+package org.nuclearfog.twidda.window;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,10 +11,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.nuclearfog.twidda.Backend.Following;
-import org.nuclearfog.twidda.DataBase.UserDatabase;
+import org.nuclearfog.twidda.backend.Following;
+import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ViewAdapter.UserAdapter;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
 public class Follower extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.ViewAdapter;
+package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.nuclearfog.twidda.Backend.ImageDownloader;
-import org.nuclearfog.twidda.DataBase.UserDatabase;
+import org.nuclearfog.twidda.backend.ImageDownloader;
+import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 
 public class UserAdapter extends ArrayAdapter {

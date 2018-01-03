@@ -1,7 +1,7 @@
-package org.nuclearfog.twidda.ViewAdapter;
+package org.nuclearfog.twidda.viewadapter;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.DataBase.TrendDatabase;
+import org.nuclearfog.twidda.database.TrendDatabase;
 
 import android.content.Context;
 import android.view.LayoutInflater;

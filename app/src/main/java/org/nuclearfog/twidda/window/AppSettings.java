@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Window;
+package org.nuclearfog.twidda.window;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;

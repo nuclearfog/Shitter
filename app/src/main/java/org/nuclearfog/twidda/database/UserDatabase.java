@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.DataBase;
+package org.nuclearfog.twidda.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;

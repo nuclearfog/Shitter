@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.Backend;
+package org.nuclearfog.twidda.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

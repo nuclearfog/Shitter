@@ -1,14 +1,14 @@
-package org.nuclearfog.twidda.Backend;
+package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 
-import org.nuclearfog.twidda.DataBase.UserDatabase;
+import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.ViewAdapter.UserAdapter;
-import org.nuclearfog.twidda.Window.Follower;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
+import org.nuclearfog.twidda.window.Follower;
 
 import java.util.List;
 

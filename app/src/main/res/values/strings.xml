@@ -73,5 +73,7 @@
     </string>
     <string name="woe_id">WOE ID</string>
     <string name="banner">Profilbanner</string>
+    <string name="link">Webseite</string>
+    <string name="location">Ort</string>
 
 </resources>
