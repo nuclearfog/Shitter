@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private ListView timelineList, trendList,mentionList;
     private MenuItem profile, tweet, search, setting;
     private SharedPreferences settings;
+    private SearchView searchQuery;
     private EditText pin;
     private Context con;
     private Toolbar toolbar;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         tweet = m.findItem(R.id.action_tweet);
         search = m.findItem(R.id.action_search);
         setting = m.findItem(R.id.action_settings);
-        SearchView searchQuery = (SearchView)m.findItem(R.id.action_search).getActionView();
+        searchQuery = (SearchView)m.findItem(R.id.action_search).getActionView();
 
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -201,6 +202,7 @@ public class MainActivity extends AppCompatActivity
                 mentionReload.setRefreshing(false);
                 trendReload.setRefreshing(false);
                 timelineReload.setRefreshing(false);
+                searchQuery.onActionViewCollapsed();
                 setVisibility(tabId);
             }
         });
@@ -305,6 +307,7 @@ public class MainActivity extends AppCompatActivity
     private void setVisibility(String currentTab) {
         switch(currentTab) {
             case "timeline":
+                searchQuery.onActionViewCollapsed();
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
@@ -317,6 +320,7 @@ public class MainActivity extends AppCompatActivity
                 setting.setVisible(true);
                 break;
             case "mention":
+                searchQuery.onActionViewCollapsed();
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);

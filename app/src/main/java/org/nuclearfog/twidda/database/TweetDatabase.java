@@ -26,12 +26,12 @@ public class TweetDatabase {
     private List<Long> userId,tweetId,timeMillis;
     private List<Integer> noRT,noFav,noAns;
     private List<Status> stats;
+    private SharedPreferences settings;
     private boolean toggleImg;
     private int size = 0;
     private int mode = 0;
     private int limit;
     private long CurrentId = 0;
-    private SharedPreferences settings;
 
     /**
      * Store & Read Data

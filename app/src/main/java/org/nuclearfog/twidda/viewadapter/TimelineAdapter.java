@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +49,7 @@ public class TimelineAdapter extends ArrayAdapter {
         ((TextView) v.findViewById(R.id.favorite_number)).setText(""+mTweets.getFavorite(position));
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ImageView imgView = v.findViewById(R.id.tweetPb);
-
+        v.setBackgroundColor(Color.BLUE);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -10,30 +10,36 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Search;
 import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
 public class TwitterSearch extends AppCompatActivity {
 
     private String search;
-    private ListView searchTL;
-    private SwipeRefreshLayout search_refresh;
+    private ListView tweetSearch, userSearch;
+    private SwipeRefreshLayout tweetReload,userReload;
 
     @Override
-    protected void onCreate(Bundle bundle){
+    protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.search);
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
-        searchTL = (ListView) findViewById(R.id.search_result);
-        search_refresh = (SwipeRefreshLayout) findViewById(R.id.search_refresh);
+        tweetSearch  = (ListView) findViewById(R.id.tweet_result);
+        userSearch   = (ListView) findViewById(R.id.user_result);
+        tweetReload = (SwipeRefreshLayout) findViewById(R.id.searchtweets);
+        userReload = (SwipeRefreshLayout) findViewById(R.id.searchusers);
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         search = getIntent().getExtras().getString("search");
-        getContent();
+        setTabContent();
         setListener();
+        getContent(Search.TWEETS);
     }
 
     @Override
@@ -56,11 +62,11 @@ public class TwitterSearch extends AppCompatActivity {
     }
 
     private void setListener() {
-        searchTL.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        tweetSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!search_refresh.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) searchTL.getAdapter();
+                if(!tweetReload.isRefreshing()) {
+                    TimelineAdapter tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
                     TweetDatabase twDB = tlAdp.getAdapter();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
@@ -73,16 +79,61 @@ public class TwitterSearch extends AppCompatActivity {
                 }
             }
         });
-        search_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        userSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(!userReload.isRefreshing()) {
+                    UserAdapter uAdp = (UserAdapter) userSearch.getAdapter();
+                    UserDatabase uDb = uAdp.getAdapter();
+                    Intent profile = new Intent(getApplicationContext(), UserProfile.class);
+                    Bundle bundle = new Bundle();
+                    long userID = uDb.getUserID(position);
+                    bundle.putLong("userID",userID);
+                    profile.putExtras(bundle);
+                    startActivity(profile);
+                }
+            }
+        });
+        tweetReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getContent();
+                getContent(Search.TWEETS);
+            }
+        });
+        userReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getContent(Search.USERS);
             }
         });
     }
 
-    private void getContent() {
-        Search s = new Search(this);
-        s.execute("tweet",search);
+    private void setTabContent(){
+        TabHost tabhost = (TabHost)findViewById(R.id.search_tab);
+        tabhost.setup();
+
+        TabHost.TabSpec tab1 = tabhost.newTabSpec("Tweets");
+        tab1.setContent(R.id.searchtweets);
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.search_result));
+        tabhost.addTab(tab1);
+
+        TabHost.TabSpec tab2 = tabhost.newTabSpec("Tweets");
+        tab2.setContent(R.id.searchusers);
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.user_result));
+        tabhost.addTab(tab2);
+
+        tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                tweetReload.setRefreshing(false);
+                userReload.setRefreshing(false);
+            }
+        });
+    }
+
+    private void getContent(final String MODE){
+        Search s = new Search(TwitterSearch.this);
+        s.execute(MODE,search);
+
     }
 }

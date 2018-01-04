@@ -8,20 +8,26 @@ import android.widget.ListView;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.TwitterSearch;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
 
-public class Search extends AsyncTask<String, Void, Boolean> {
+public class Search extends AsyncTask<String, Void, String> {
+
+    public static final String TWEETS = "tweets";
+    public static final String USERS = "users";
 
     private TimelineAdapter tlAdp;
-    private SwipeRefreshLayout refresh;
+    private UserAdapter uAdp;
+    private SwipeRefreshLayout tweetReload, userReload;
+    private ListView tweetSearch, userSearch;
     private Context context;
     private Twitter twitter;
-    private ListView tl;
     private int load;
 
     public Search(Context context) {
@@ -32,34 +38,46 @@ public class Search extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        tl = (ListView) ((TwitterSearch)context).findViewById(R.id.search_result);
-        refresh = (SwipeRefreshLayout) ((TwitterSearch)context).findViewById(R.id.search_refresh);
+        tweetSearch = (ListView) ((TwitterSearch)context).findViewById(R.id.tweet_result);
+        userSearch  = (ListView) ((TwitterSearch)context).findViewById(R.id.user_result);
+        tweetReload = (SwipeRefreshLayout) ((TwitterSearch)context).findViewById(R.id.searchtweets);
+        userReload  = (SwipeRefreshLayout) ((TwitterSearch)context).findViewById(R.id.searchusers);
         twitter = TwitterResource.getInstance(context).getTwitter();
     }
 
     @Override
-    protected Boolean doInBackground(String... search) {
+    protected String doInBackground(String... search) {
+        String mode = search[0];
         String get = search[1];
-        Query q = new Query();
-        q.setQuery(get+" +exclude:retweets");
-        q.setCount(load);
         try {
-            switch(search[0]) {
-                case("tweet"):
+            switch(mode) {
+                case(TWEETS):
+                    Query q = new Query();
+                    q.setQuery(get+" +exclude:retweets");
+                    q.setCount(load);
                     QueryResult result = twitter.search(q);
                     TweetDatabase searchdb = new TweetDatabase(result.getTweets(),context);
                     tlAdp = new TimelineAdapter(context, searchdb);
-                    break;
-                case("user"):
-                    break;
+                    return TWEETS;
+                case(USERS):
+                    UserDatabase userdb = new UserDatabase(context, twitter.searchUsers(get,-1));
+                    uAdp = new UserAdapter(context, userdb);
+                    return USERS;
             }
         } catch(Exception err){err.printStackTrace();}
-        return false;
+        return "";
     }
 
     @Override
-    protected void onPostExecute(Boolean result) {
-        tl.setAdapter(tlAdp);
-        refresh.setRefreshing(false);
+    protected void onPostExecute(String mode) {
+        switch(mode) {
+            case(TWEETS):
+                tweetSearch.setAdapter(tlAdp);
+                tweetReload.setRefreshing(false);
+                break;
+            case(USERS):
+                userSearch.setAdapter(uAdp);
+                userReload.setRefreshing(false);
+        }
     }
 }
