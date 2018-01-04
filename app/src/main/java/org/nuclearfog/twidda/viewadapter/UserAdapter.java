@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.backend.ImageDownloader;
+import org.nuclearfog.twidda.database.ColorPreferences;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 
@@ -18,11 +19,13 @@ public class UserAdapter extends ArrayAdapter {
     private Context context;
     private UserDatabase userDatabase;
     private ViewGroup p;
+    private ColorPreferences mColor;
 
     public UserAdapter(Context context, UserDatabase userDatabase) {
         super(context, R.layout.user);
         this.context = context;
         this.userDatabase = userDatabase;
+        mColor = ColorPreferences.getInstance(context);
     }
 
     public UserDatabase getAdapter(){
@@ -59,6 +62,8 @@ public class UserAdapter extends ArrayAdapter {
             ImageDownloader imgDl = new ImageDownloader(imgView);
             imgDl.execute(userDatabase.getProfileURL(position));
         }
+
+        v.setBackgroundColor(mColor.getBackgroundColor());
 
         return v;
     }

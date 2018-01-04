@@ -18,16 +18,17 @@ import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.ColorPreferences;
 
 public class AppSettings extends AppCompatActivity implements View.OnClickListener{
 
     private Button delButon,save_woeid, colorButton1, colorButton2;
     private int backgroundColor, fontColor;
-    private int mode;
     private Switch toggleImg;
     private EditText woeId;
     private SharedPreferences settings;
     private NumberPicker load_factor;
+    private ColorPreferences mColor;
     private Editor edit;
     private boolean modified = false;
     private boolean imgldr;
@@ -36,10 +37,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
         setContentView(R.layout.settings);
-
+        mColor = ColorPreferences.getInstance(this);
         settings = getApplicationContext().getSharedPreferences("settings", 0);
         int location = settings.getInt("woeid",23424829);
         edit  = settings.edit();
+
 
         load_factor = (NumberPicker)findViewById(R.id.tweet_load);
         delButon = (Button) findViewById(R.id.delete_db);
@@ -88,14 +90,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
-        if(modified) {
-            edit.putInt("woeid", Integer.valueOf(woeId.getText().toString()));
-            edit.putInt("preload", load_factor.getValue());
-            edit.putInt("background", backgroundColor);
-            edit.putInt("fontColor", fontColor);
-            edit.putBoolean("image_load", imgldr);
-            edit.apply();
-        }
+        edit.putInt("woeid", Integer.valueOf(woeId.getText().toString()));
+        edit.putInt("preload", load_factor.getValue());
+        edit.putBoolean("image_load", imgldr);
+        edit.apply();
+        mColor.commit();
         super.onDestroy();
     }
 
@@ -106,15 +105,10 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 deleteDatabase(getString(R.string.database));
                 break;
             case R.id.color_background:
-                mode=0;
-                setColorPicker();
+                mColor.setColor(ColorPreferences.BACKGROUND);
                 break;
             case R.id.color_font:
-                mode=1;
-                setColorPicker();
-                break;
-            case R.id.save_woeid:
-                modified=true;
+                mColor.setColor(ColorPreferences.FONT_COLOR);
                 break;
         }
     }
@@ -134,27 +128,4 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         fontColor = settings.getInt("fontColor",10);
     }
 
-    private void setColorPicker() {
-        ColorPickerDialogBuilder.with(this)
-                .showAlphaSlider(false)
-                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
-                .setOnColorSelectedListener(new OnColorSelectedListener() {
-                    @Override
-                    public void onColorSelected(int i) {
-                        changeColor(i);
-                    }
-                }).build().show();
-    }
-
-    private void changeColor(int color) {
-        switch(mode){
-            case(0):
-                backgroundColor = color;
-                break;
-            case(1):
-                fontColor = color;
-                break;
-        }
-        modified = true;
-    }
 }

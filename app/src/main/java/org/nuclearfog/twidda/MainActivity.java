@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     private EditText pin;
     private Context con;
     private Toolbar toolbar;
+    private boolean login;
 
     /**
      * Create Activity
@@ -50,7 +51,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         con = getApplicationContext();
         settings = con.getSharedPreferences("settings", 0);
-        if( !(settings.getBoolean("login", false)) ) {
+        login = settings.getBoolean("login", false);
+        if( !login ) {
             setContentView(R.layout.login);
             pin = (EditText) findViewById(R.id.pin);
             Button linkButton  = (Button) findViewById(R.id.linkButton);
@@ -130,6 +132,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onResume(){
+        if(login) {
+            setTabContent();
+        }
+
         super.onResume();
     }
 

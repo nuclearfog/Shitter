@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,12 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImageDownloader;
+import org.nuclearfog.twidda.database.ColorPreferences;
 import org.nuclearfog.twidda.database.TweetDatabase;
 
 public class TimelineAdapter extends ArrayAdapter {
     private TweetDatabase mTweets;
+    private ColorPreferences mcolor;
     private Context context;
     private ViewGroup p;
 
@@ -23,6 +24,7 @@ public class TimelineAdapter extends ArrayAdapter {
         super(context, R.layout.tweet);
         this.mTweets = mTweets;
         this.context = context;
+        mcolor = ColorPreferences.getInstance(context);
     }
 
     public TweetDatabase getAdapter() {
@@ -40,6 +42,7 @@ public class TimelineAdapter extends ArrayAdapter {
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.tweet, parent,false);
+            v.setBackgroundColor(mcolor.getBackgroundColor());
         }
         ((TextView) v.findViewById(R.id.username)).setText(mTweets.getUsername(position));
         ((TextView) v.findViewById(R.id.screenname)).setText(" "+mTweets.getScreenname(position));
@@ -49,7 +52,6 @@ public class TimelineAdapter extends ArrayAdapter {
         ((TextView) v.findViewById(R.id.favorite_number)).setText(""+mTweets.getFavorite(position));
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ImageView imgView = v.findViewById(R.id.tweetPb);
-        v.setBackgroundColor(Color.BLUE);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
