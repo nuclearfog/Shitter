@@ -1,11 +1,11 @@
 package org.nuclearfog.twidda.window;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -14,10 +14,9 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
-public class TweetDetail extends AppCompatActivity {
+public class TweetDetail extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private ListView answer_list;
-    private Context context;
     private long tweetID;
     private long userID;
 
@@ -29,19 +28,17 @@ public class TweetDetail extends AppCompatActivity {
         userID = getIntent().getExtras().getLong("userID");
 
         answer_list = (ListView) findViewById(R.id.answer_list);
+        Button answer = (Button) findViewById(R.id.answer_button);
+        Button retweet = (Button) findViewById(R.id.rt_button);
+        Button favorite = (Button) findViewById(R.id.fav_button);
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
-        pb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-              Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-              Bundle bundle = new Bundle();
-              bundle.putLong("userID",userID);
-              profile.putExtras(bundle);
-              startActivity(profile);
-            }
-        });
+
+        answer_list.setOnItemClickListener(this);
+        answer.setOnClickListener(this);
+        retweet.setOnClickListener(this);
+        favorite.setOnClickListener(this);
+        pb.setOnClickListener(this);
         setContent();
-        setListViewListener();
     }
 
     @Override
@@ -49,23 +46,41 @@ public class TweetDetail extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void setListViewListener() {
-        context = getApplicationContext();
-        answer_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TimelineAdapter tlAdp = (TimelineAdapter) answer_list.getAdapter();
-                TweetDatabase twDB = tlAdp.getAdapter();
-                long userID = twDB.getUserID(position);
-                long tweetID = twDB.getTweetId(position);
-                Intent intent = new Intent(context, TweetDetail.class);
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.answer_button:
+                //todo
+                break;
+            case R.id.rt_button:
+                //todo
+                break;
+            case R.id.fav_button:
+                //todo
+                break;
+            case R.id.profileimage_detail:
+                Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong("userID",userID);
-                bundle.putLong("tweetID",tweetID);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+                bundle.putBoolean("home", false);//todo
+                profile.putExtras(bundle);
+                startActivity(profile);
+                break;
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TimelineAdapter tlAdp = (TimelineAdapter) answer_list.getAdapter();
+        TweetDatabase twDB = tlAdp.getAdapter();
+        long userID = twDB.getUserID(position);
+        long tweetID = twDB.getTweetId(position);
+        Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong("userID",userID);
+        bundle.putLong("tweetID",tweetID);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void setContent() {

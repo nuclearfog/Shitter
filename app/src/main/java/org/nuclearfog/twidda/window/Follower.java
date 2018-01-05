@@ -68,6 +68,7 @@ public class Follower extends AppCompatActivity {
                     Intent intent = new Intent(context, UserProfile.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("userID",userID);
+                    bundle.putBoolean("home", false);//todo
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

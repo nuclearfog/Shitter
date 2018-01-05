@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.TwitterSearch;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
 {
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private ListView timelineList, trendList,mentionList;
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity
     private Context con;
     private Toolbar toolbar;
     private boolean login;
+    private String currentTab;
 
     /**
      * Create Activity
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity
         search = m.findItem(R.id.action_search);
         setting = m.findItem(R.id.action_settings);
         searchQuery = (SearchView)m.findItem(R.id.action_search).getActionView();
-
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -109,11 +109,15 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(this, UserProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong("userID",settings.getLong("userID", -1));
+                bundle.putBoolean("home", true);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
             case R.id.action_tweet:
                 intent = new Intent(this, TweetPopup.class);
+                Bundle b = new Bundle();
+                b.putLong("TweetID", -1);
+                intent.putExtras(b);
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
@@ -135,8 +139,68 @@ public class MainActivity extends AppCompatActivity
         if(login) {
             setTabContent();
         }
-
         super.onResume();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch(parent.getId()) {
+            case R.id.tl_list:
+                if(!timelineReload.isRefreshing()) {
+                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
+                    Intent intent = new Intent(con, TweetDetail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    bundle.putLong("userID",userID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                break;
+            case R.id.tr_list:
+                if(!trendReload.isRefreshing()) {
+                    TrendAdapter trend = (TrendAdapter) trendList.getAdapter();
+                    String search = trend.getDatabase().getTrendname(position);
+                    Intent intent = new Intent(con, TwitterSearch.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("search", search);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                break;
+            case R.id.mention:
+                if(!mentionReload.isRefreshing()) {
+                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
+                    TweetDatabase twDB = tlAdp.getAdapter();
+                    long tweetID = twDB.getTweetId(position);
+                    long userID = twDB.getUserID(position);
+                    Intent intent = new Intent(con, TweetDetail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetID);
+                    bundle.putLong("userID",userID);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onRefresh() {
+        MainPage homeView = new MainPage(MainActivity.this);
+        switch (currentTab) {
+            case "timeline":
+                homeView.execute(0);
+                break;
+            case "trends":
+                homeView.execute(1);
+                break;
+            case "mention":
+                homeView.execute(2);
+                break;
+        }
     }
 
     /**
@@ -171,13 +235,19 @@ public class MainActivity extends AppCompatActivity
         timelineReload = (SwipeRefreshLayout) findViewById(R.id.timeline);
         trendReload = (SwipeRefreshLayout) findViewById(R.id.trends);
         mentionReload = (SwipeRefreshLayout) findViewById(R.id.mention);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        setRefreshListener();
+
+        timelineList.setOnItemClickListener(this);
+        trendList.setOnItemClickListener(this);
+        mentionList.setOnItemClickListener(this);
+        timelineReload.setOnRefreshListener(this);
+        trendReload.setOnRefreshListener(this);
+        mentionReload.setOnRefreshListener(this);
+
         setTabListener();
         setTabContent();
-        setListViewListener();
     }
 
     /**
@@ -202,6 +272,7 @@ public class MainActivity extends AppCompatActivity
         tab3.setContent(R.id.mention);
         tab3.setIndicator("",getResources().getDrawable(R.drawable.mention_icon));
         tabhost.addTab(tab3);
+        currentTab = "timeline";
         tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -210,6 +281,7 @@ public class MainActivity extends AppCompatActivity
                 timelineReload.setRefreshing(false);
                 searchQuery.onActionViewCollapsed();
                 setVisibility(tabId);
+                currentTab = tabId;
             }
         });
     }
@@ -225,85 +297,6 @@ public class MainActivity extends AppCompatActivity
         TrendAdapter trendAdp = new TrendAdapter(con,trendDeck);
         timelineList.setAdapter(tlAdapt);
         trendList.setAdapter(trendAdp);
-    }
-
-    /**
-     * Swipe To Refresh Listener
-     */
-    private void setRefreshListener() {
-        timelineReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                MainPage homeView = new MainPage(MainActivity.this);
-                homeView.execute(0);
-            }
-        });
-        trendReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                MainPage homeView = new MainPage(MainActivity.this);
-                homeView.execute(1);
-            }
-        });
-        mentionReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                MainPage homeView = new MainPage(MainActivity.this);
-                homeView.execute(2);
-            }
-        });
-    }
-
-    /**
-     * Set On Item Click Listener for the main Listviews
-     */
-    private void setListViewListener() {
-        timelineList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!timelineReload.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
-                    TweetDatabase twDB = tlAdp.getAdapter();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    Intent intent = new Intent(con, TweetDetail.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            }
-        });
-        trendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TrendAdapter trend = (TrendAdapter) trendList.getAdapter();
-                String search = trend.getDatabase().getTrendname(position);
-                Intent intent = new Intent(con, TwitterSearch.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("search", search);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-        mentionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!mentionReload.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
-                    TweetDatabase twDB = tlAdp.getAdapter();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    Intent intent = new Intent(con, TweetDetail.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            }
-        });
     }
 
     /**

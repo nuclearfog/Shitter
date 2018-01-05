@@ -67,7 +67,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/answer_detail"
+            android:id="@+id/answer_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:background="@drawable/chat" />
@@ -79,7 +79,7 @@
             android:ems="10" />
 
         <Button
-            android:id="@+id/rt_detail"
+            android:id="@+id/rt_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:background="@drawable/retweet" />
@@ -91,7 +91,7 @@
             android:ems="10" />
 
         <Button
-            android:id="@+id/fav_detail"
+            android:id="@+id/fav_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:background="@drawable/favorite" />

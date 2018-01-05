@@ -13,12 +13,17 @@ import org.nuclearfog.twidda.R;
 public class TweetPopup extends AppCompatActivity {
 
     private EditText tweetfield;
+    private long inReplyId;
 
     @Override
     protected void onCreate(Bundle SavedInstance) {
         super.onCreate(SavedInstance);
-        getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         setContentView(R.layout.tweetwindow);
+
+        inReplyId = getIntent().getExtras().getLong("TweetID");
+
+        getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
         tweetfield = (EditText) findViewById(R.id.tweet_input);
 
         Button closeButton = (Button) findViewById(R.id.close);
@@ -41,7 +46,10 @@ public class TweetPopup extends AppCompatActivity {
     private void send() {
         String tweet = tweetfield.getText().toString();
         SendStatus sendTweet = new SendStatus(getApplicationContext());
-        sendTweet.execute(SendStatus.SEND_STATUS, tweet);
+        if(inReplyId > 0)
+            sendTweet.execute(tweet, inReplyId);
+        else
+            sendTweet.execute(tweet);
         finish();
     }
 

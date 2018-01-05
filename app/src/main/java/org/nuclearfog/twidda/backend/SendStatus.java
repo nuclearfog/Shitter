@@ -4,35 +4,38 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import twitter4j.GeoLocation;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 
-public class SendStatus extends AsyncTask<String, Void, Boolean> {
+public class SendStatus extends AsyncTask<Object, Void, Boolean> {
 
     public static final String SEND_STATUS="stats";
 
     private Context context;
+    private Twitter twitter;
 
-    public SendStatus(Context context){
+    public SendStatus(Context context) {
         this.context = context;
+        twitter = TwitterResource.getInstance(context).getTwitter();
     }
 
     /**
      * @param args Argument + Text
-     *             args[0] = Mode
-     *             args[1] = Data
+     *             args[0] = TWEET TEXT
+     *             args[1] = REPLY TWEET ID
      */
     @Override
-    protected Boolean doInBackground(String... args) {
+    protected Boolean doInBackground(Object... args) {
         try {
-            switch(args[0]) {
-                case(SEND_STATUS):
-                    String tweet = args[1];
-                    TwitterResource mTwitter = TwitterResource.getInstance(context);
-                    mTwitter.init();
-                    Twitter twitter = mTwitter.getTwitter();
-                    twitter.tweets().updateStatus(tweet);
-                    return true;
-            }
+            String tweet = (String) args[0];
+            StatusUpdate mStatus = new StatusUpdate(tweet);
+            if(args.length > 1)
+                mStatus.setInReplyToStatusId((Long)args[1]);
+
+            twitter.tweets().updateStatus(mStatus);
+            return true;
+
         } catch(Exception err) {
             err.printStackTrace();
         }
