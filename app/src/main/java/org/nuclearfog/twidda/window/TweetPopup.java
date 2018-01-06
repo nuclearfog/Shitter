@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.window;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -40,6 +39,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
     @Override
     protected void onDestroy() {
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         super.onDestroy();
     }
 
@@ -54,6 +54,12 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 break;
         }
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void send() {

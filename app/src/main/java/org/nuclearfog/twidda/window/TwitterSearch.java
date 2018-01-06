@@ -75,6 +75,9 @@ public class TwitterSearch extends AppCompatActivity implements AdapterView.OnIt
         switch(id) {
             case R.id.search_tweet:
             intent = new Intent(this, TweetPopup.class);
+            Bundle b = new Bundle();
+            b.putLong("TweetID", -1);
+            intent.putExtras(b);
             startActivity(intent);
             break;
         }

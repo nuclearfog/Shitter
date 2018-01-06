@@ -72,6 +72,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
         if(!home) {

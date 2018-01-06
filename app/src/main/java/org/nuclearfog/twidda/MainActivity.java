@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 bundle.putBoolean("home", true);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             case R.id.action_tweet:
                 intent = new Intent(this, TweetPopup.class);
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 b.putLong("TweetID", -1);
                 intent.putExtras(b);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             case R.id.action_settings:
                 intent = new Intent(this, AppSettings.class);

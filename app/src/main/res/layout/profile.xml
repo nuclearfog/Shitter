@@ -6,11 +6,10 @@
     android:orientation="vertical">
 
 
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/profile_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/profile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bar_wide" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,12 +33,11 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_margin="5dp"
-                android:contentDescription="@string/profile_image"
-                app:srcCompat="@color/soylentgreen" />
+                android:contentDescription="@string/profile_image" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:orientation="vertical">
 
@@ -47,13 +45,32 @@
                     android:id="@+id/profile_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp" />
+                    android:layout_marginBottom="2dp" />
 
                 <TextView
                     android:id="@+id/profile_screenname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5dp" />
+                    android:layout_marginBottom="5dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/following"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/follower"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -98,25 +115,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/following"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/follower"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-        </LinearLayout>
-
     </LinearLayout>
 
         <TabHost
@@ -132,7 +130,7 @@
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="@dimen/bar_wide" />
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"

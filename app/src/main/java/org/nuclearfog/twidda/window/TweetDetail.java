@@ -45,7 +45,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
-        // TODO save tweet
         super.onDestroy();
     }
 
