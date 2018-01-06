@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,16 +19,20 @@ import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
 
+public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
 
-public class ShowStatus extends AsyncTask<Long, Void, Void> {
+    public static final long RETWEET = 0;
+    public static final long FAVORITE = 1;
 
     private Context c;
     private Twitter twitter;
     private ListView replyList;
     private TextView  username,scrName, tweet, txtAns, txtRet, txtFav;
+    private Button retweetButton, favoriteButton;
     private ArrayList<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr;
     private String ansStr, rtStr, favStr;
+    private boolean retweeted, favorited;
     private SharedPreferences settings;
     private int load, ansNo;
 
@@ -36,7 +41,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Void> {
         answers = new ArrayList<>();
         settings = c.getSharedPreferences("settings", 0);
         load = settings.getInt("preload", 10);
-        this.c=c;
+        this.c = c;
         ansNo = 0;
     }
 
@@ -50,28 +55,32 @@ public class ShowStatus extends AsyncTask<Long, Void, Void> {
         txtAns = (TextView) ((TweetDetail)c).findViewById(R.id.no_ans_detail);
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
         txtFav = (TextView) ((TweetDetail)c).findViewById(R.id.no_fav_detail);
+
+        retweetButton = (Button) ((TweetDetail)c).findViewById(R.id.rt_button_detail);
+        favoriteButton = (Button) ((TweetDetail)c).findViewById(R.id.fav_button_detail);
     }
 
     /**
-     * @param id TWEET ID
+     * @param id [0] TWEET ID , [1] Mode
      */
     @Override
-    protected Void doInBackground(Long... id) {
+    protected Boolean doInBackground(Long... id) {
         long tweetID = id[0];
         try {
             twitter4j.Status currentTweet = twitter.showStatus(tweetID);
-            tweetStr = currentTweet.getText();
-            usernameStr = currentTweet.getUser().getName();
-            scrNameStr = currentTweet.getUser().getScreenName();
-            ansStr = ""; //todo
             rtStr = Integer.toString(currentTweet.getRetweetCount());
             favStr = Integer.toString(currentTweet.getFavoriteCount());
+            retweeted = currentTweet.isRetweetedByMe();
+            favorited = currentTweet.isFavorited();
+            if(id.length == 1) {
+                tweetStr = currentTweet.getText();
+                usernameStr = currentTweet.getUser().getName();
+                scrNameStr = currentTweet.getUser().getScreenName();
 
-            Query query = new Query('@'+scrNameStr+" since_id:"+tweetID+" +exclude:retweets");
-            query.setCount(load);
-            QueryResult result= null;
-            do {
-                result = twitter.search(query);
+                Query query = new Query('@'+scrNameStr+" since_id:"+tweetID+" +exclude:retweets");
+                query.setCount(load);
+
+                QueryResult result = twitter.search(query);
                 List<twitter4j.Status> stats = result.getTweets();
 
                 for(twitter4j.Status reply : stats) {
@@ -80,24 +89,57 @@ public class ShowStatus extends AsyncTask<Long, Void, Void> {
                         ansNo++;
                     }
                 }
-            } while((query = result.nextQuery()) != null);
-        } catch(Exception err){err.printStackTrace();}
-        return null;
+                return true;
+            } else {
+                if(id[1]==RETWEET) {
+                    if(retweeted) {
+                        //TODO
+                    } else {
+                        twitter.retweetStatus(tweetID);
+                        retweeted = true;
+                    }
+                } else if(id[1]==FAVORITE) {
+                    if(favorited) {
+                        twitter.destroyFavorite(tweetID);
+                        favorited = false;
+                    } else {
+                        twitter.createFavorite(tweetID);
+                        favorited = true;
+                    }
+                }
+                return false;
+            }
+        } catch(Exception err){ err.printStackTrace(); }
+        return true;
     }
 
     @Override
-    protected void onPostExecute(Void v) {
-        tweet.setText(tweetStr);
-        username.setText(usernameStr);
-        scrName.setText(scrNameStr);
+    protected void onPostExecute(Boolean tweetLoaded) {
+        if(tweetLoaded) {
+            ansStr = Integer.toString(ansNo);
+            tweet.setText(tweetStr);
+            username.setText(usernameStr);
+            scrName.setText(scrNameStr);
+            txtAns.setText(ansStr);
 
-        ansStr = Integer.toString(ansNo);
-        txtAns.setText(ansStr);
+        }
+        setIcons();
         txtRet.setText(rtStr);
         txtFav.setText(favStr);
-
         TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
         TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);
         replyList.setAdapter(tlAdp);
+    }
+
+    private void setIcons() {
+        if(favorited) {
+            favoriteButton.setBackgroundResource(R.drawable.favorite_enabled);
+        } else {
+            favoriteButton.setBackgroundResource(R.drawable.favorite);
+        } if(retweeted) {
+            retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
+        } else {
+            retweetButton.setBackgroundResource(R.drawable.retweet);
+        }
     }
 }

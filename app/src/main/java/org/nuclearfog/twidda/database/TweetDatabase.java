@@ -109,13 +109,13 @@ public class TweetDatabase {
             ment.put("mTweetID",stat.getId());
 
             db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_IGNORE);
-            db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_IGNORE);
+            db.insertWithOnConflict("tweet",null, tweet,SQLiteDatabase.CONFLICT_REPLACE);
 
             if(mode!=USER_TL) {
                 if(mode == HOME_TL) {
-                    db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_IGNORE);
+                    db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_REPLACE);
                 } else if(mode == FAV_TL) {
-                    db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_IGNORE);
+                    db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_REPLACE);
                 } else if(mode == GET_MENT) {
                     db.insertWithOnConflict("timeline",null,ment,SQLiteDatabase.CONFLICT_IGNORE);
                 }

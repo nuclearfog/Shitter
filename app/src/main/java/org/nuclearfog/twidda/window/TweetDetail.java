@@ -31,10 +31,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
         answer_list = (ListView) findViewById(R.id.answer_list);
         Button answer = (Button) findViewById(R.id.answer_button);
-        Button retweet = (Button) findViewById(R.id.rt_button);
-        Button favorite = (Button) findViewById(R.id.fav_button);
+        Button retweet = (Button) findViewById(R.id.rt_button_detail);
+        Button favorite = (Button) findViewById(R.id.fav_button_detail);
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
-
         answer_list.setOnItemClickListener(this);
         answer.setOnClickListener(this);
         retweet.setOnClickListener(this);
@@ -52,6 +51,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         Intent intent;
         Bundle bundle = new Bundle();
+        ShowStatus mStat = new ShowStatus(this);
         switch(v.getId()) {
             case R.id.answer_button:
                 intent = new Intent(getApplicationContext(), TweetPopup.class);
@@ -59,11 +59,11 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
-            case R.id.rt_button:
-                //todo
+            case R.id.rt_button_detail:
+                mStat.execute(tweetID, ShowStatus.RETWEET);
                 break;
-            case R.id.fav_button:
-                //todo
+            case R.id.fav_button_detail:
+                mStat.execute(tweetID, ShowStatus.FAVORITE);
                 break;
             case R.id.profileimage_detail:
                 intent = new Intent(getApplicationContext(), UserProfile.class);

@@ -59,48 +59,52 @@
         android:textSize="24sp" />
 
     <LinearLayout
-        android:id="@+id/actionbar"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_margin="10dp"
         android:addStatesFromChildren="false"
-        android:gravity="center_horizontal"
+        android:gravity="center_vertical|center_horizontal"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/answer_button"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/chat" />
 
         <TextView
             android:id="@+id/no_ans_detail"
             android:layout_width="64dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
             android:ems="10" />
 
         <Button
-            android:id="@+id/rt_button"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:id="@+id/rt_button_detail"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/retweet" />
 
         <TextView
             android:id="@+id/no_rt_detail"
             android:layout_width="64dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp"
             android:ems="10" />
 
         <Button
-            android:id="@+id/fav_button"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
+            android:id="@+id/fav_button_detail"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:background="@drawable/favorite" />
 
         <TextView
             android:id="@+id/no_fav_detail"
             android:layout_width="64dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
             android:ems="10" />
 
     </LinearLayout>
