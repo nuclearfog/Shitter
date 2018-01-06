@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.window;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,12 +15,12 @@ import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
-public class Follower extends AppCompatActivity {
+public class Follower extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private long userID;
     private long mode;
     private ListView follow;
-    private Context context;
     private SwipeRefreshLayout reload;
     private Toolbar toolbar;
 
@@ -31,49 +30,42 @@ public class Follower extends AppCompatActivity {
         setContentView(R.layout.follow);
         userID = getIntent().getExtras().getLong("userID");
         mode = getIntent().getExtras().getLong("mode");
-        toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
-        setSupportActionBar(toolbar);
+
         follow = (ListView) findViewById(R.id.followList);
         reload = (SwipeRefreshLayout) findViewById(R.id.follow_swipe);
-        context = getApplicationContext();
+        toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
+        setSupportActionBar(toolbar);
         setActionbarTitle(mode);
-        setListener();
+
+        follow.setOnItemClickListener(this);
+        reload.setOnRefreshListener(this);
     }
 
-    /**
-     * Create Actionbar
-     */
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
         toolbar.inflateMenu(R.menu.setting); //TODO
         return true;
     }
 
-    private void setListener() {
-        reload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Following follow = new Following(Follower.this);
-                follow.execute(mode, userID);
-            }
-        });
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(!reload.isRefreshing()) {
+            UserAdapter uAdp = (UserAdapter) follow.getAdapter();
+            UserDatabase uDB = uAdp.getAdapter();
+            long userID = uDB.getUserID(position);
+            Intent intent = new Intent(getApplicationContext(), UserProfile.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong("userID",userID);
+            bundle.putBoolean("home", false);//todo
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    }
 
-        follow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(!reload.isRefreshing()) {
-                    UserAdapter uAdp = (UserAdapter) follow.getAdapter();
-                    UserDatabase uDB = uAdp.getAdapter();
-                    long userID = uDB.getUserID(position);
-                    Intent intent = new Intent(context, UserProfile.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("userID",userID);
-                    bundle.putBoolean("home", false);//todo
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            }
-        });
+    @Override
+    public void onRefresh() {
+        Following follow = new Following(Follower.this);
+        follow.execute(mode, userID);
     }
 
     private void setActionbarTitle(long mode) {

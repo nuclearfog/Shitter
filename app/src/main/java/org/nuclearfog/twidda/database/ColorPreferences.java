@@ -10,9 +10,11 @@ public class ColorPreferences implements OnColorSelectedListener {
 
     public static final int BACKGROUND = 0x0;
     public static final int FONT_COLOR = 0x1;
+    public static final int TWEET_COLOR = 0x3;
 
     private int background = 0;
     private int font = 0;
+    private int tweet = 0;
     private int mode;
 
     private static ColorPreferences ourInstance;
@@ -23,8 +25,9 @@ public class ColorPreferences implements OnColorSelectedListener {
     private ColorPreferences(Context context) {
         ColorPreferences.context = context;
         settings = context.getSharedPreferences("settings", 0);
-        background = settings.getInt("background_color", 0x061a22);//-14142465
-        font = settings.getInt("font_color", 0xffffff);//-851982
+        background = settings.getInt("background_color", 0xff061a22);
+        font = settings.getInt("font_color", 0xffffffff);
+        tweet = settings.getInt("tweet_color", 0xff19aae8);
     }
 
     @Override
@@ -36,6 +39,9 @@ public class ColorPreferences implements OnColorSelectedListener {
             case FONT_COLOR:
                 font = i;
                 break;
+            case TWEET_COLOR:
+                tweet = i;
+                break;
         }
     }
 
@@ -43,9 +49,11 @@ public class ColorPreferences implements OnColorSelectedListener {
         int preColor = 0x0;
         mode = MODE;
         if(MODE == BACKGROUND)
-            preColor = getBackgroundColor();
+            preColor = background;
         else if(MODE == FONT_COLOR)
-            preColor = getFontColor();
+            preColor = font;
+        else if(MODE == TWEET_COLOR)
+            preColor = tweet;
         ColorPickerDialogBuilder.with(context)
                 .showAlphaSlider(false).initialColor(preColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
@@ -56,11 +64,13 @@ public class ColorPreferences implements OnColorSelectedListener {
         SharedPreferences.Editor e = settings.edit();
         e.putInt("background_color", background);
         e.putInt("font_color", font);
+        e.putInt("tweet_color", tweet);
         e.apply();
     }
 
     public int getBackgroundColor(){return background;}
     public int getFontColor(){return font;}
+    public int getTweetColor(){return tweet;}
 
     public static ColorPreferences getInstance(Context c) {
         if(ourInstance==null)

@@ -20,7 +20,6 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
     @Override
     protected Bitmap doInBackground(String... links) {
         Bitmap picture = null;
-
         try {
             InputStream iStream = new URL(links[0]).openStream();
             picture = BitmapFactory.decodeStream(iStream);

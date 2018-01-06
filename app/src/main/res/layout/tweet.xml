@@ -47,7 +47,6 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_margin="5dp"
-            android:background="@mipmap/pb"
             android:contentDescription="@string/profile_image" />
 
         <TextView

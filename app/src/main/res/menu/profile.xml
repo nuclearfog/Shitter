@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/profile_tweet"
+        android:icon="@drawable/tweet"
+        android:title="@string/tweet"
+        android:visible="true"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/profile_follow"
+        android:icon="@drawable/follow"
+        android:title="follow "
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/profile_block"
+        android:icon="@drawable/block"
+        android:title="Block"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -91,6 +91,8 @@ public class ProfileInfo extends AsyncTask<Long,Void,Void>
         if(imgEnabled) {
             profileImg.execute(imageLink);
             bannerImg.execute(bannerLink);
+        } else{
+            profile.setImageResource(R.mipmap.pb);
         }
     }
 }

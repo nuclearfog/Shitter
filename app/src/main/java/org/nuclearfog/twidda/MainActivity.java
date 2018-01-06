@@ -31,7 +31,8 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.TwitterSearch;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener
 {
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private ListView timelineList, trendList,mentionList;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Context con;
     private Toolbar toolbar;
     private boolean login;
-    private String currentTab;
+    private String currentTab = "timeline";
 
     /**
      * Create Activity
@@ -203,6 +204,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    @Override
+    public void onTabChanged(String tabId) {
+        mentionReload.setRefreshing(false);
+        trendReload.setRefreshing(false);
+        timelineReload.setRefreshing(false);
+        searchQuery.onActionViewCollapsed();
+        currentTab = tabId;
+        switch(tabId) {
+            case "timeline":
+                searchQuery.onActionViewCollapsed();
+                profile.setVisible(true);
+                search.setVisible(false);
+                tweet.setVisible(true);
+                setting.setVisible(false);
+                break;
+            case "trends":
+                profile.setVisible(false);
+                search.setVisible(true);
+                tweet.setVisible(false);
+                setting.setVisible(true);
+                break;
+            case "mention":
+                searchQuery.onActionViewCollapsed();
+                profile.setVisible(false);
+                search.setVisible(false);
+                tweet.setVisible(false);
+                setting.setVisible(true);
+                break;
+        }
+    }
+
     /**
      * Load Preferences
      */
@@ -235,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         timelineReload = (SwipeRefreshLayout) findViewById(R.id.timeline);
         trendReload = (SwipeRefreshLayout) findViewById(R.id.trends);
         mentionReload = (SwipeRefreshLayout) findViewById(R.id.mention);
+        TabHost tabhost = (TabHost)findViewById(R.id.main_tabhost);
         toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -246,16 +279,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
 
-        setTabListener();
-        setTabContent();
-    }
-
-    /**
-     * Set Tab Listener
-     * @see #setTabContent()
-     */
-    private void setTabListener() {
-        TabHost tabhost = (TabHost)findViewById(R.id.main_tabhost);
         tabhost.setup();
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
@@ -272,23 +295,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         tab3.setContent(R.id.mention);
         tab3.setIndicator("",getResources().getDrawable(R.drawable.mention_icon));
         tabhost.addTab(tab3);
-        currentTab = "timeline";
-        tabhost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-                mentionReload.setRefreshing(false);
-                trendReload.setRefreshing(false);
-                timelineReload.setRefreshing(false);
-                searchQuery.onActionViewCollapsed();
-                setVisibility(tabId);
-                currentTab = tabId;
-            }
-        });
+
+        tabhost.setOnTabChangedListener(this);
+        setTabContent();
     }
 
     /**
      * Set DB Content
-     * separate THREAD
      */
     private void setTabContent() {
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
@@ -297,34 +310,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         TrendAdapter trendAdp = new TrendAdapter(con,trendDeck);
         timelineList.setAdapter(tlAdapt);
         trendList.setAdapter(trendAdp);
-    }
-
-    /**
-     * Toolbar Items
-     * @param currentTab 3 Tabs "timeline" , "trends" , "mention"
-     */
-    private void setVisibility(String currentTab) {
-        switch(currentTab) {
-            case "timeline":
-                searchQuery.onActionViewCollapsed();
-                profile.setVisible(true);
-                search.setVisible(false);
-                tweet.setVisible(true);
-                setting.setVisible(false);
-                break;
-            case "trends":
-                profile.setVisible(false);
-                search.setVisible(true);
-                tweet.setVisible(false);
-                setting.setVisible(true);
-                break;
-            case "mention":
-                searchQuery.onActionViewCollapsed();
-                profile.setVisible(false);
-                search.setVisible(false);
-                tweet.setVisible(false);
-                setting.setVisible(true);
-                break;
-        }
     }
 }

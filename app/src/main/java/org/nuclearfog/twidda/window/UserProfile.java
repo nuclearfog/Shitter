@@ -19,16 +19,18 @@ import org.nuclearfog.twidda.backend.ProfileTweets;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
-public class UserProfile extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class UserProfile extends AppCompatActivity implements View.OnClickListener,
+        AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
 
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
     private TextView txtFollowing, txtFollower;
     private long userId, tweetId;
     private boolean home;
+    private String currentTab = "tweets";
 
     @Override
-    protected void onCreate(Bundle savedInstance){
+    protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile);
         Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
@@ -42,15 +44,30 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         txtFollower  = (TextView)findViewById(R.id.follower);
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+        TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
 
         txtFollowing.setOnClickListener(this);
         txtFollower.setOnClickListener(this);
         homeTweets.setOnItemClickListener(this);
         homeFavorits.setOnItemClickListener(this);
+        homeReload.setOnRefreshListener(this);
+        favoriteReload.setOnRefreshListener(this);
+
+        mTab.setup();
+        // Tab #1
+        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
+        tab1.setContent(R.id.hometweets);
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.timeline_icon));
+        mTab.addTab(tab1);
+        // Tab #2
+        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
+        tab2.setContent(R.id.homefavorits);
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite_icon));
+        mTab.addTab(tab2);
+
+        mTab.setOnTabChangedListener(this);
 
         initElements();
-        initTabs();
-        initSwipe();
         getContent();
     }
 
@@ -131,55 +148,29 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-
-    /**
-     * Init Tab Listener
-     */
-    private void initTabs(){
-        TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
-        mTab.setup();
-        // Tab #1
-        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
-        tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.timeline_icon));
-        mTab.addTab(tab1);
-        // Tab #2
-        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
-        tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite_icon));
-        mTab.addTab(tab2);
-        // Listener
-        mTab.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-            @Override
-            public void onTabChanged(String tabId) {
-                homeReload.setRefreshing(false);
-                favoriteReload.setRefreshing(false);
-            }
-        });
+    @Override
+    public void onRefresh() {
+        switch(currentTab) {
+            case "tweets":
+                getTweets(0L);
+                break;
+            case "favorites":
+                getTweets(1L);
+                break;
+        }
     }
 
-    /**
-     * Init SwipeRefresh
-     */
-    private void initSwipe() {
-        homeReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getTweets(0L);
-            }
-        });
-        favoriteReload.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getTweets(1L);
-            }
-        });
+    @Override
+    public void onTabChanged(String tabId) {
+        homeReload.setRefreshing(false);
+        favoriteReload.setRefreshing(false);
+        currentTab = tabId;
     }
 
     /**
      * Load Content from Database
      */
-    private void getContent(){
+    private void getContent() {
         new Thread(){
             @Override
             public void run(){
@@ -203,9 +194,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     /**
      * Download Content
-     * @param mode  0 = Home Tweets, 1 = Home Favorite Tweets
      */
-    private void getTweets(long mode ){
+    private void getTweets(long mode) {
         ProfileTweets mProfile = new ProfileTweets(this);
         mProfile.execute(userId, mode);
     }

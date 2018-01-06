@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import org.nuclearfog.twidda.database.ColorPreferences;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 
-public class UserAdapter extends ArrayAdapter {
+public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
 
     private Context context;
     private UserDatabase userDatabase;
@@ -37,8 +38,9 @@ public class UserAdapter extends ArrayAdapter {
         return userDatabase.getSize();
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View v, ViewGroup parent) {
+    public View getView(int position, View v, @NonNull ViewGroup parent) {
         p = parent;
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -46,25 +48,27 @@ public class UserAdapter extends ArrayAdapter {
         }
 
         ((TextView)v.findViewById(R.id.username_detail)).setText(userDatabase.getUsername(position));
-        ((TextView)v.findViewById(R.id.screenname_detail)).setText('@'+userDatabase.getScreenname(position));
+        ((TextView)v.findViewById(R.id.screenname_detail)).setText(userDatabase.getScreenname(position));
         ImageView imgView = v.findViewById(R.id.user_profileimg);
 
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ListView parent = ((ListView)p);
-                int position = parent.getPositionForView(v);
-                parent.performItemClick(v,position,0);
-            }
-        });
+        v.setOnClickListener(this);
 
         if(userDatabase.loadImages()) {
             ImageDownloader imgDl = new ImageDownloader(imgView);
             imgDl.execute(userDatabase.getProfileURL(position));
+        } else {
+            imgView.setImageResource(R.mipmap.pb);
         }
 
         v.setBackgroundColor(mColor.getBackgroundColor());
 
         return v;
+    }
+
+    @Override
+    public void onClick(View v) {
+        ListView parent = ((ListView)p);
+        int position = parent.getPositionForView(v);
+        parent.performItemClick(v,position,0);
     }
 }

@@ -7,9 +7,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.nuclearfog.twidda.backend.ShowStatus;
+import org.nuclearfog.twidda.database.ColorPreferences;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -21,7 +23,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private long userID;
 
     @Override
-    protected void onCreate(Bundle b){
+    protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.tweet_detail);
         tweetID = getIntent().getExtras().getLong("tweetID");
@@ -43,14 +45,20 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
+        // TODO save tweet
         super.onDestroy();
     }
 
     @Override
     public void onClick(View v) {
+        Intent intent;
+        Bundle bundle = new Bundle();
         switch(v.getId()) {
             case R.id.answer_button:
-                //todo
+                intent = new Intent(getApplicationContext(), TweetPopup.class);
+                bundle.putLong("TweetID", tweetID);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.rt_button:
                 //todo
@@ -59,12 +67,11 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 //todo
                 break;
             case R.id.profileimage_detail:
-                Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                Bundle bundle = new Bundle();
+                intent = new Intent(getApplicationContext(), UserProfile.class);
                 bundle.putLong("userID",userID);
                 bundle.putBoolean("home", false);//todo
-                profile.putExtras(bundle);
-                startActivity(profile);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
         }
     }
@@ -84,6 +91,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setContent() {
+        ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
+        LinearLayout background = (LinearLayout) findViewById(R.id.tweet_detail);
+        background.setBackgroundColor(mColor.getBackgroundColor());//TODO
         ShowStatus set = new ShowStatus(this);
         set.execute(tweetID);
     }

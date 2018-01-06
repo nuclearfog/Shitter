@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.window;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -9,8 +10,9 @@ import android.widget.LinearLayout;
 
 import org.nuclearfog.twidda.backend.SendStatus;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.ColorPreferences;
 
-public class TweetPopup extends AppCompatActivity {
+public class TweetPopup extends AppCompatActivity implements View.OnClickListener {
 
     private EditText tweetfield;
     private long inReplyId;
@@ -19,28 +21,39 @@ public class TweetPopup extends AppCompatActivity {
     protected void onCreate(Bundle SavedInstance) {
         super.onCreate(SavedInstance);
         setContentView(R.layout.tweetwindow);
-
         inReplyId = getIntent().getExtras().getLong("TweetID");
 
-        getWindow().setLayout(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-
+        Button tweetButton = (Button) findViewById(R.id.sendTweet);
+        Button closeButton = (Button) findViewById(R.id.close);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
 
-        Button closeButton = (Button) findViewById(R.id.close);
-        closeButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
+        getWindow().setLayout(size, size);
 
-        Button tweetButton = (Button) findViewById(R.id.sendTweet);
-        tweetButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        closeButton.setOnClickListener(this);
+        tweetButton.setOnClickListener(this);
+
+        LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
+        ColorPreferences mColor = ColorPreferences.getInstance(this);
+        root.setBackgroundColor(mColor.getTweetColor());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.sendTweet:
                 send();
-            }
-        });
+                break;
+            case R.id.close:
+                finish();
+                break;
+        }
+        finish();
     }
 
     private void send() {
@@ -51,10 +64,5 @@ public class TweetPopup extends AppCompatActivity {
         else
             sendTweet.execute(tweet);
         finish();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
