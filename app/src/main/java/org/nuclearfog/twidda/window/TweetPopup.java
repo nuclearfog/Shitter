@@ -11,6 +11,10 @@ import org.nuclearfog.twidda.backend.SendStatus;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.ColorPreferences;
 
+/**
+ * Tweet Window
+ * @see SendStatus
+ */
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener {
 
     private EditText tweetfield;

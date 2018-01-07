@@ -13,17 +13,22 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.backend.ProfileAction;
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
+/**
+ * User Profile Class uses AsyncTask
+ * @see ProfileAction
+ */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
 
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
     private TextView txtFollowing, txtFollower;
+    private Toolbar tool;
     private long userId;
     private boolean home;
     private String currentTab = "tweets";
@@ -32,7 +37,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile);
-        Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
+        tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         userId = getIntent().getExtras().getLong("userID");
@@ -44,7 +49,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
-
         mTab.setup();
         // Tab #1
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
@@ -88,7 +92,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        ProfileAction action = new ProfileAction(this, item);
+        ProfileAction action = new ProfileAction(this, tool);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
                 intent = new Intent(this, TweetPopup.class);
@@ -158,7 +162,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        ProfileAction tweets = new ProfileAction(this);
+        ProfileAction tweets = new ProfileAction(this, tool);
         switch(currentTab) {
             case "tweets":
                 tweets.execute(userId, ProfileAction.GET_TWEETS);
@@ -191,7 +195,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initElements() {
-        ProfileAction profile = new ProfileAction(this);
+        ProfileAction profile = new ProfileAction(this, tool);
         profile.execute(userId, ProfileAction.GET_INFORMATION);
     }
 

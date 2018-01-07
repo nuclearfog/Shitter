@@ -15,7 +15,7 @@ import java.util.List;
 import twitter4j.Twitter;
 import twitter4j.User;
 
-public class Following extends AsyncTask <Long, Void, Void> {
+public class FollowStatus extends AsyncTask <Long, Void, Void> {
 
     private Context context;
     private Twitter twitter;
@@ -23,7 +23,7 @@ public class Following extends AsyncTask <Long, Void, Void> {
     private ListView followList;
     private SwipeRefreshLayout followReload;
 
-    public Following(Context context) {
+    public FollowStatus(Context context) {
         this.context=context;
     }
 
@@ -35,7 +35,7 @@ public class Following extends AsyncTask <Long, Void, Void> {
     }
 
     /**
-     * @param data [0] mode Following/Follower ,  [1] UserID
+     * @param data [0] mode FollowStatus/Follower ,  [1] UserID
      */
     @Override
     protected Void doInBackground(Long... data) {

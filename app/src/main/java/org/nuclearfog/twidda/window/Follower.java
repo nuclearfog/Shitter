@@ -10,11 +10,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.nuclearfog.twidda.backend.Following;
+import org.nuclearfog.twidda.backend.FollowStatus;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
+/**
+ * Get Follow Connections from an User
+ * @see FollowStatus
+ */
 public class Follower extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener {
 
@@ -64,7 +68,7 @@ public class Follower extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public void onRefresh() {
-        Following follow = new Following(Follower.this);
+        FollowStatus follow = new FollowStatus(Follower.this);
         follow.execute(mode, userID);
     }
 

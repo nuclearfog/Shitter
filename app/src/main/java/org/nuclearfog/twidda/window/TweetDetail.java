@@ -16,6 +16,10 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
+/**
+ * Detailed Tweet Window
+ * @see ShowStatus
+ */
 public class TweetDetail extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private ListView answer_list;

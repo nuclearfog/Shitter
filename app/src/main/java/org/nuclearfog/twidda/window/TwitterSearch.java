@@ -19,12 +19,16 @@ import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
+/**
+ * Search Tweets and Users
+ * @see Search
+ */
 public class TwitterSearch extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
 
-    private String search;
     private ListView tweetSearch, userSearch;
     private SwipeRefreshLayout tweetReload,userReload;
+    private String search;
     private String currentTab = "search_result";
 
     @Override

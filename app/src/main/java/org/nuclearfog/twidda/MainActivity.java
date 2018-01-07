@@ -31,6 +31,11 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.TwitterSearch;
 
+/**
+ * MainPage of the App
+ * @see RegisterAccount Registing App in Twitter
+ * @see MainPage show Home Window
+ */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener
 {

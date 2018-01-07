@@ -16,6 +16,10 @@ import android.widget.Switch;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.ColorPreferences;
 
+/**
+ * App Settings Page
+ * @see ColorPreferences
+ */
 public class AppSettings extends AppCompatActivity implements View.OnClickListener,
         CompoundButton.OnCheckedChangeListener {
 
