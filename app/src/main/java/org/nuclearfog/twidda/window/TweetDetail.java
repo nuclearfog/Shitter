@@ -34,6 +34,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Button retweet = (Button) findViewById(R.id.rt_button_detail);
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
+
         answer_list.setOnItemClickListener(this);
         answer.setOnClickListener(this);
         retweet.setOnClickListener(this);

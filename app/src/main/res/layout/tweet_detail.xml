@@ -58,6 +58,12 @@
         android:linksClickable="true"
         android:textSize="24sp" />
 
+    <ImageView
+        android:id="@+id/tweet_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:color/black" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="20dp"

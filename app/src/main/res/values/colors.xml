@@ -6,4 +6,6 @@
     <color name="twitterBlau">#061a22</color>
     <color name="soylentgreen">#76b900</color>
     <color name="tweetwindow">#19aae8</color>
+    <color name="following">#00ffff</color>
+    <color name="muted">#ff0000</color>
 </resources>

@@ -46,12 +46,16 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
             v = inf.inflate(R.layout.tweet, parent,false);
             v.setBackgroundColor(mcolor.getBackgroundColor());
         }
+        String answerStr = Integer.toString(mTweets.getAnswer(position));
+        String retweetStr = Integer.toString(mTweets.getRetweet(position));
+        String favoriteStr = Integer.toString(mTweets.getFavorite(position));
+
         ((TextView) v.findViewById(R.id.username)).setText(mTweets.getUsername(position));
         ((TextView) v.findViewById(R.id.screenname)).setText(mTweets.getScreenname(position));
         ((TextView) v.findViewById(R.id.tweettext)).setText(mTweets.getTweet(position));
-        ((TextView) v.findViewById(R.id.answer_number)).setText(""+mTweets.getAnswer(position));
-        ((TextView) v.findViewById(R.id.retweet_number)).setText(""+mTweets.getRetweet(position));
-        ((TextView) v.findViewById(R.id.favorite_number)).setText(""+mTweets.getFavorite(position));
+        ((TextView) v.findViewById(R.id.answer_number)).setText(answerStr);
+        ((TextView) v.findViewById(R.id.retweet_number)).setText(retweetStr);
+        ((TextView) v.findViewById(R.id.favorite_number)).setText(favoriteStr);
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ImageView imgView = v.findViewById(R.id.tweetPb);
         v.setOnClickListener(this);

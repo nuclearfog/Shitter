@@ -2,22 +2,28 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import twitter4j.MediaEntity;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Twitter;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.window.TweetDetail;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import twitter4j.Query;
-import twitter4j.QueryResult;
-import twitter4j.Twitter;
 
 public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
 
@@ -29,18 +35,21 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private ListView replyList;
     private TextView  username,scrName, tweet, txtAns, txtRet, txtFav;
     private Button retweetButton, favoriteButton;
+    private ImageView profile_img, tweet_img;
     private ArrayList<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr;
     private String ansStr, rtStr, favStr;
-    private boolean retweeted, favorited;
+    private boolean retweeted, favorited, toggleImg;
     private SharedPreferences settings;
     private int load, ansNo;
+    private Bitmap profile_btm, tweet_btm;
 
     public ShowStatus(Context c) {
         twitter = TwitterResource.getInstance(c).getTwitter();
         answers = new ArrayList<>();
         settings = c.getSharedPreferences("settings", 0);
         load = settings.getInt("preload", 10);
+        toggleImg = settings.getBoolean("image_load", false);
         this.c = c;
         ansNo = 0;
     }
@@ -55,6 +64,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         txtAns = (TextView) ((TweetDetail)c).findViewById(R.id.no_ans_detail);
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
         txtFav = (TextView) ((TweetDetail)c).findViewById(R.id.no_fav_detail);
+
+        profile_img = (ImageView) ((TweetDetail)c).findViewById(R.id.profileimage_detail);
+        tweet_img   = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image);
 
         retweetButton = (Button) ((TweetDetail)c).findViewById(R.id.rt_button_detail);
         favoriteButton = (Button) ((TweetDetail)c).findViewById(R.id.fav_button_detail);
@@ -77,7 +89,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 usernameStr = currentTweet.getUser().getName();
                 scrNameStr = currentTweet.getUser().getScreenName();
 
-                Query query = new Query('@'+scrNameStr+" since_id:"+tweetID+" +exclude:retweets");
+                Query query = new Query("to:"+scrNameStr+" since_id:"+tweetID+" +exclude:retweets");
                 query.setCount(load);
 
                 QueryResult result = twitter.search(query);
@@ -89,6 +101,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                         ansNo++;
                     }
                 }
+                if(toggleImg)
+                    setMedia(currentTweet);
                 return true;
             } else {
                 if(id[1]==RETWEET) {
@@ -121,14 +135,30 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             username.setText(usernameStr);
             scrName.setText(scrNameStr);
             txtAns.setText(ansStr);
-
+            TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
+            TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);
+            replyList.setAdapter(tlAdp);
         }
+        if(toggleImg) {
+            profile_img.setImageBitmap(profile_btm);
+            tweet_img.setImageBitmap(tweet_btm);
+        }
+
         setIcons();
         txtRet.setText(rtStr);
         txtFav.setText(favStr);
-        TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
-        TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);
-        replyList.setAdapter(tlAdp);
+    }
+
+    private void setMedia(twitter4j.Status tweet) throws Exception {
+        String pbLink = tweet.getUser().getMiniProfileImageURL();
+        InputStream iStream = new URL(pbLink).openStream();
+        profile_btm = BitmapFactory.decodeStream(iStream);
+
+        MediaEntity[] media = tweet.getMediaEntities();
+        if( media.length > 0 ) {
+            InputStream mediaStream = new URL(media[0].getMediaURL()).openStream();
+            tweet_btm = BitmapFactory.decodeStream(mediaStream);
+        }
     }
 
     private void setIcons() {

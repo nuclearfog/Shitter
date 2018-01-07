@@ -14,8 +14,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
-import org.nuclearfog.twidda.backend.ProfileInfo;
-import org.nuclearfog.twidda.backend.ProfileTweets;
+import org.nuclearfog.twidda.backend.ProfileAction;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
@@ -25,7 +24,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
     private TextView txtFollowing, txtFollower;
-    private long userId, tweetId;
+    private long userId;
     private boolean home;
     private String currentTab = "tweets";
 
@@ -46,13 +45,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
 
-        txtFollowing.setOnClickListener(this);
-        txtFollower.setOnClickListener(this);
-        homeTweets.setOnItemClickListener(this);
-        homeFavorits.setOnItemClickListener(this);
-        homeReload.setOnRefreshListener(this);
-        favoriteReload.setOnRefreshListener(this);
-
         mTab.setup();
         // Tab #1
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
@@ -66,6 +58,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         mTab.addTab(tab2);
 
         mTab.setOnTabChangedListener(this);
+        txtFollowing.setOnClickListener(this);
+        txtFollower.setOnClickListener(this);
+        homeTweets.setOnItemClickListener(this);
+        homeFavorits.setOnItemClickListener(this);
+        homeReload.setOnRefreshListener(this);
+        favoriteReload.setOnRefreshListener(this);
 
         initElements();
         getContent();
@@ -90,19 +88,23 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
+        ProfileAction action = new ProfileAction(this, item);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
                 intent = new Intent(this, TweetPopup.class);
                 Bundle b = new Bundle();
-                b.putLong("TweetID", -1);  //todo
+                if(home)
+                    b.putLong("TweetID", -1);
+                else
+                    b.putLong("TweetID", userId);
                 intent.putExtras(b);
                 startActivity(intent);
                 break;
             case R.id.profile_follow:
-                //TODO
+                action.execute(userId, ProfileAction.ACTION_FOLLOW);
                 break;
             case R.id.profile_block:
-                //TODO
+                action.execute(userId, ProfileAction.ACTION_MUTE);
                 break;
         }
         return true;
@@ -156,12 +158,13 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
+        ProfileAction tweets = new ProfileAction(this);
         switch(currentTab) {
             case "tweets":
-                getTweets(0L);
+                tweets.execute(userId, ProfileAction.GET_TWEETS);
                 break;
             case "favorites":
-                getTweets(1L);
+                tweets.execute(userId, ProfileAction.GET_FAVS);
                 break;
         }
     }
@@ -173,9 +176,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         currentTab = tabId;
     }
 
-    /**
-     * Load Content from Database
-     */
     private void getContent() {
         new Thread(){
             @Override
@@ -190,23 +190,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }.run();
     }
 
-    /**
-     * UserProfile Contents
-     */
     private void initElements() {
-        ProfileInfo profile = new ProfileInfo(this);
-        profile.execute(userId);
+        ProfileAction profile = new ProfileAction(this);
+        profile.execute(userId, ProfileAction.GET_INFORMATION);
     }
 
-    /**
-     * Download Content
-     */
-    private void getTweets(long mode) {
-        ProfileTweets mProfile = new ProfileTweets(this);
-        mProfile.execute(userId, mode);
-    }
-
-    private void getFollows(long mode){
+    private void getFollows(long mode) {
         Intent intent = new Intent(getApplicationContext(), Follower.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userId);

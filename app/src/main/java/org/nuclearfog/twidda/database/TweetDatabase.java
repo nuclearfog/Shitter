@@ -192,7 +192,7 @@ public class TweetDatabase {
     public long getTweetId(int pos){return tweetId.get(pos);}
     public long getTime(int pos){return timeMillis.get(pos);}
     public String getUsername(int pos){return user.get(pos);}
-    public String getScreenname(int pos){return '@'+scrname.get(pos);}
+    public String getScreenname(int pos){return scrname.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
     public String getDate(int pos){return timeToString(getTime(pos));}
     public String getPbImg (int pos){return pbLink.get(pos);}
