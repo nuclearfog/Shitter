@@ -130,7 +130,7 @@
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/bar_wide" />
+                    android:layout_height="wrap_content" />
 
                 <FrameLayout
                     android:id="@android:id/tabcontent"

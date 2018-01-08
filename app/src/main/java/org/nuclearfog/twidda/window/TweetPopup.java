@@ -1,10 +1,17 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import org.nuclearfog.twidda.backend.SendStatus;
@@ -18,7 +25,9 @@ import org.nuclearfog.twidda.database.ColorPreferences;
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener {
 
     private EditText tweetfield;
+    private ImageView tweetImg;
     private long inReplyId;
+    private String imgPath;
 
     @Override
     protected void onCreate(Bundle SavedInstance) {
@@ -28,13 +37,16 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
         Button tweetButton = (Button) findViewById(R.id.sendTweet);
         Button closeButton = (Button) findViewById(R.id.close);
+        Button imageButton = (Button) findViewById(R.id.image);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
+        tweetImg = (ImageView) findViewById(R.id.tweetImg);
 
         final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
         getWindow().setLayout(size, size);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
+        imageButton.setOnClickListener(this);
 
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
@@ -56,8 +68,29 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
             case R.id.close:
                 finish();
                 break;
+            case R.id.image:
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, RESULT_FIRST_USER);
+                break;
         }
-        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int returnCode, Intent i){
+        super.onActivityResult(reqCode,returnCode,i);
+        if(returnCode == RESULT_OK){
+            Uri imageInput = i.getData();
+            String[] filepath = {MediaStore.Images.Media.DATA};
+            Cursor c = getContentResolver().query(imageInput,filepath,null,null,null);
+            if(c.moveToFirst()) {
+                int index = c.getColumnIndex(filepath[0]);
+                imgPath = c.getString(index);
+                Bitmap img = BitmapFactory.decodeFile(imgPath);
+                tweetImg.setImageBitmap(img);
+                tweetImg.setVisibility(View.VISIBLE);
+            }
+            c.close();
+        }
     }
 
     @Override
@@ -68,11 +101,16 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
     private void send() {
         String tweet = tweetfield.getText().toString();
-        SendStatus sendTweet = new SendStatus(getApplicationContext());
-        if(inReplyId > 0)
+        SendStatus sendTweet;
+        if(imgPath == null) {
+            sendTweet = new SendStatus(getApplicationContext(), "");
+        } else {
+            sendTweet = new SendStatus(getApplicationContext(), imgPath);
+        } if(inReplyId > 0) {
             sendTweet.execute(tweet, inReplyId);
-        else
+        } else {
             sendTweet.execute(tweet);
+        }
         finish();
     }
 }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import java.io.File;
+
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 
@@ -13,9 +15,11 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
 
     private Context context;
     private Twitter twitter;
+    private String path = "";
 
-    public SendStatus(Context context) {
+    public SendStatus(Context context, String path) {
         this.context = context;
+        this.path = path;
         twitter = TwitterResource.getInstance(context).getTwitter();
     }
 
@@ -29,12 +33,14 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
         try {
             String tweet = (String) args[0];
             StatusUpdate mStatus = new StatusUpdate(tweet);
-            if(args.length > 1)
+            if(args.length > 1) { //ANSWER TO USER
                 mStatus.setInReplyToStatusId((Long)args[1]);
-
+            }
+            if(path.isEmpty()) { //ADD IMAGE
+                mStatus.setMedia(new File(path));
+            }
             twitter.tweets().updateStatus(mStatus);
             return true;
-
         } catch(Exception err) {
             err.printStackTrace();
         }

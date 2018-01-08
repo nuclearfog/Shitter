@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tweet_popup"
-    android:layout_width="300dp"
-    android:layout_height="200dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@color/tweetwindow"
     android:orientation="vertical">
 
     <EditText
         android:id="@+id/tweet_input"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
         android:layout_marginTop="5dip"
@@ -19,11 +20,33 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="5dip"
-        android:layout_marginLeft="5dip"
-        android:layout_marginRight="5dip"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/tweetImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:contentDescription="@string/tweet_image_enclosure"
+            android:visibility="invisible"
+            app:srcCompat="@color/twitterBlau" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
         android:gravity="right"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/image"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginRight="50dp"
+            android:background="@drawable/image" />
 
         <Button
             android:id="@+id/sendTweet"
