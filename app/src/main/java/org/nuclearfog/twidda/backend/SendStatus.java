@@ -15,8 +15,12 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
 
     private Context context;
     private Twitter twitter;
-    private String path = "";
+    private String path;
 
+    /**
+     * @param context Context of #TweetPopup
+     * @param path Internal Path of the Image
+     */
     public SendStatus(Context context, String path) {
         this.context = context;
         this.path = path;
@@ -36,7 +40,7 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
             if(args.length > 1) { //ANSWER TO USER
                 mStatus.setInReplyToStatusId((Long)args[1]);
             }
-            if(path.isEmpty()) { //ADD IMAGE
+            if(!path.trim().isEmpty()) { //ADD IMAGE
                 mStatus.setMedia(new File(path));
             }
             twitter.tweets().updateStatus(mStatus);
