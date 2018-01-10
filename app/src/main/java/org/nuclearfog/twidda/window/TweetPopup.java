@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.database.ColorPreferences;
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener {
 
     private EditText tweetfield;
-    private ImageView tweetImg;
+    private ImageView tweetImg1,tweetImg2,tweetImg3,tweetImg4;
     private long inReplyId;
     private String imgPath;
 
@@ -39,7 +39,10 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         Button closeButton = (Button) findViewById(R.id.close);
         Button imageButton = (Button) findViewById(R.id.image);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
-        tweetImg = (ImageView) findViewById(R.id.tweetImg);
+        tweetImg1 = (ImageView) findViewById(R.id.tweetImg1);
+        tweetImg2 = (ImageView) findViewById(R.id.tweetImg2);
+        tweetImg3 = (ImageView) findViewById(R.id.tweetImg3);
+        tweetImg4 = (ImageView) findViewById(R.id.tweetImg4);
 
         final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
         getWindow().setLayout(size, size);
@@ -86,8 +89,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 int index = c.getColumnIndex(filepath[0]);
                 imgPath = c.getString(index);
                 Bitmap img = BitmapFactory.decodeFile(imgPath);
-                tweetImg.setImageBitmap(img);
-                tweetImg.setVisibility(View.VISIBLE);
+                tweetImg1.setImageBitmap(img);
+                tweetImg1.setVisibility(View.VISIBLE);
             }
             c.close();
         }

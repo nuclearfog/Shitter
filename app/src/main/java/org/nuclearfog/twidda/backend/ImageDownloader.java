@@ -5,15 +5,18 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
+import org.nuclearfog.twidda.R;
+
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 
 public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
 {
-    private ImageView imgView;
+    private final WeakReference<ImageView> imgReference ;
 
     public ImageDownloader(ImageView imgView) {
-        this.imgView = imgView;
+        imgReference = new WeakReference<>(imgView);
     }
 
     @Override
@@ -30,6 +33,17 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
 
     @Override
     protected void onPostExecute(Bitmap img) {
-        imgView.setImageBitmap(img);
+        ImageView pb = imgReference.get();
+        if(pb != null) {
+            if(img != null)
+                pb.setImageBitmap(img);
+            else
+                pb.setImageResource(R.mipmap.pb);
+        }
+    }
+
+    @Override
+    protected void onCancelled(){
+        super.onCancelled();
     }
 }

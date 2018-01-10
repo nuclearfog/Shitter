@@ -90,7 +90,7 @@ public class TweetDatabase {
             user.put("userID",usr.getId());
             user.put("username", usr.getName());
             user.put("scrname",'@'+usr.getScreenName());
-            user.put("pbLink", usr.getProfileImageURL());
+            user.put("pbLink", usr.getMiniProfileImageURL());
             user.put("banner", usr.getProfileBannerURL());
             user.put("bio",usr.getDescription());
             user.put("location",usr.getLocation());
@@ -249,7 +249,7 @@ public class TweetDatabase {
             noFav.add(stat.getFavoriteCount());
             noAns.add(0); // TODO
             userId.add(usr.getId());
-            pbLink.add(usr.getProfileImageURL());
+            pbLink.add(usr.getMiniProfileImageURL());
             tweetId.add(stat.getId());
             timeMillis.add(stat.getCreatedAt().getTime());
             size++;

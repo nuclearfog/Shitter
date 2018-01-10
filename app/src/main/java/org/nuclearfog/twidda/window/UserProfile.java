@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private boolean home;
     private String currentTab = "tweets";
 
+    private RecyclerView testV;
+
     @Override
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -61,6 +64,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite_icon));
         mTab.addTab(tab2);
 
+
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
         txtFollower.setOnClickListener(this);
@@ -68,7 +72,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         homeFavorits.setOnItemClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
-
         initElements();
         getContent();
     }

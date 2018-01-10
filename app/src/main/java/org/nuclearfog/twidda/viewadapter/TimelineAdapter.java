@@ -18,13 +18,13 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 public class TimelineAdapter extends ArrayAdapter implements View.OnClickListener {
     private TweetDatabase mTweets;
     private ColorPreferences mcolor;
-    private Context context;
     private ViewGroup p;
+    private LayoutInflater inf;
 
     public TimelineAdapter(Context context, TweetDatabase mTweets) {
         super(context, R.layout.tweet);
         this.mTweets = mTweets;
-        this.context = context;
+        inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mcolor = ColorPreferences.getInstance(context);
     }
 
@@ -42,7 +42,6 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
     public View getView(int position, View v, @NonNull ViewGroup parent) {
         p = parent;
         if(v == null) {
-            LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.tweet, parent,false);
             v.setBackgroundColor(mcolor.getBackgroundColor());
         }
@@ -59,12 +58,9 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ImageView imgView = v.findViewById(R.id.tweetPb);
         v.setOnClickListener(this);
-        if(mTweets.loadImages()) {
-            ImageDownloader imgDl = new ImageDownloader(imgView);
-            imgDl.execute(mTweets.getPbImg(position));
-        } else {
-            imgView.setImageResource(R.mipmap.pb);
-        }
+        imgView.setImageResource(R.mipmap.pb);
+        if(mTweets.loadImages())
+            new ImageDownloader(imgView).execute(mTweets.getPbImg(position));
         return v;
     }
 
