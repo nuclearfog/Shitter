@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.TwitterResource;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.backend.ProfileAction;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -44,7 +46,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         setSupportActionBar(tool);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         userId = getIntent().getExtras().getLong("userID");
-        home = getIntent().getExtras().getBoolean("home");
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
+        long homeId = settings.getLong("userID", -1);
+        home = userId == homeId;
         homeTweets = (ListView)findViewById(R.id.ht_list);
         homeFavorits = (ListView)findViewById(R.id.hf_list);
         txtFollowing = (TextView)findViewById(R.id.following);

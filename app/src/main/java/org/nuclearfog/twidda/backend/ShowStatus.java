@@ -87,7 +87,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             if(id.length == 1) {
                 tweetStr = currentTweet.getText();
                 usernameStr = currentTweet.getUser().getName();
-                scrNameStr = currentTweet.getUser().getScreenName();
+                scrNameStr = '@'+currentTweet.getUser().getScreenName();
 
                 Query query = new Query("to:"+scrNameStr+" since_id:"+tweetID+" -filter:retweets");
                 query.setCount(load);
