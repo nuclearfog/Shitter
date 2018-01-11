@@ -39,7 +39,7 @@ public class TrendAdapter extends ArrayAdapter {
         if(v == null) {
             LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.trend, parent,false);
-            v.setBackgroundColor(mcolor.getBackgroundColor());
+            v.setBackgroundColor(mcolor.getColor(ColorPreferences.BACKGROUND));
         }
         String trendName = trend.getTrendname(position);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);

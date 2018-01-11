@@ -53,7 +53,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
-        root.setBackgroundColor(mColor.getTweetColor());
+        root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.image:
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, RESULT_FIRST_USER);
+                startActivityForResult(i, RESULT_FIRST_USER );
                 break;
         }
     }

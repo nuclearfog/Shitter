@@ -43,7 +43,7 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         p = parent;
         if(v == null) {
             v = inf.inflate(R.layout.tweet, parent,false);
-            v.setBackgroundColor(mcolor.getBackgroundColor());
+            v.setBackgroundColor(mcolor.getColor(ColorPreferences.BACKGROUND));
         }
         String answerStr = Integer.toString(mTweets.getAnswer(position));
         String retweetStr = Integer.toString(mTweets.getRetweet(position));

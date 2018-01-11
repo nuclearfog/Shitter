@@ -97,7 +97,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private void setContent() {
         ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
         LinearLayout background = (LinearLayout) findViewById(R.id.tweet_detail);
-        background.setBackgroundColor(mColor.getBackgroundColor());//TODO
+        background.setBackgroundColor(mColor.getColor(ColorPreferences.BACKGROUND));//TODO
         ShowStatus set = new ShowStatus(this);
         set.execute(tweetID);
     }

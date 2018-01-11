@@ -60,7 +60,7 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
             imgView.setImageResource(R.mipmap.pb);
         }
 
-        v.setBackgroundColor(mColor.getBackgroundColor());
+        v.setBackgroundColor(mColor.getColor(ColorPreferences.BACKGROUND));
 
         return v;
     }

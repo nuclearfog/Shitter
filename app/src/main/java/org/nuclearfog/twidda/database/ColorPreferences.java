@@ -1,12 +1,19 @@
 package org.nuclearfog.twidda.database;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.widget.Button;
+
 import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-public class ColorPreferences implements OnColorSelectedListener {
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.window.AppSettings;
+
+public class ColorPreferences implements OnColorChangedListener, DialogInterface.OnDismissListener {
 
     public static final int BACKGROUND = 0x0;
     public static final int FONT_COLOR = 0x1;
@@ -21,7 +28,6 @@ public class ColorPreferences implements OnColorSelectedListener {
     private SharedPreferences settings;
     private static Context context;
 
-
     private ColorPreferences(Context context) {
         ColorPreferences.context = context;
         settings = context.getSharedPreferences("settings", 0);
@@ -31,7 +37,7 @@ public class ColorPreferences implements OnColorSelectedListener {
     }
 
     @Override
-    public void onColorSelected(int i) {
+    public void onColorChanged(int i) {
         switch(mode) {
             case BACKGROUND:
                 background = i;
@@ -45,6 +51,35 @@ public class ColorPreferences implements OnColorSelectedListener {
         }
     }
 
+    @Override
+    public void onDismiss(DialogInterface i) {
+        Button colorButton1 = (Button)((AppSettings)context).findViewById(R.id.color_background);
+        Button colorButton2 = (Button)((AppSettings)context).findViewById(R.id.color_font);
+        Button colorButton3 = (Button)((AppSettings)context).findViewById(R.id.color_tweet);
+        String color1Str = "#"+Integer.toHexString(background);
+        String color2Str = "#"+Integer.toHexString(font);
+        String color3Str = "#"+Integer.toHexString(tweet);
+        colorButton1.setBackgroundColor(background);
+        colorButton2.setBackgroundColor(font);
+        colorButton3.setBackgroundColor(tweet);
+        colorButton1.setText(color1Str);
+        colorButton2.setText(color2Str);
+        colorButton3.setText(color3Str);
+    }
+
+    public int getColor(final int Mode){
+        switch (Mode) {
+            case BACKGROUND:
+                return background;
+            case FONT_COLOR:
+                return font;
+            case TWEET_COLOR:
+               return tweet;
+            default:
+                return -1;
+        }
+    }
+
     public void setColor(final int MODE) {
         int preColor = 0x0;
         mode = MODE;
@@ -54,10 +89,12 @@ public class ColorPreferences implements OnColorSelectedListener {
             preColor = font;
         else if(MODE == TWEET_COLOR)
             preColor = tweet;
-        ColorPickerDialogBuilder.with(context)
+        Dialog d = ColorPickerDialogBuilder.with(context)
                 .showAlphaSlider(false).initialColor(preColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
-                .setOnColorSelectedListener(this).build().show();
+                .setOnColorChangedListener(this).build();
+        d.setOnDismissListener(this);
+        d.show();
     }
 
     public void commit() {
@@ -68,12 +105,8 @@ public class ColorPreferences implements OnColorSelectedListener {
         e.apply();
     }
 
-    public int getBackgroundColor(){return background;}
-    public int getFontColor(){return font;}
-    public int getTweetColor(){return tweet;}
-
     public static ColorPreferences getInstance(Context c) {
-        if(ourInstance==null)
+        if(ourInstance == null)
             ourInstance = new ColorPreferences(c);
         context = c;
         return ourInstance;

@@ -8,10 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.Switch;
+import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.ColorPreferences;
@@ -25,9 +25,10 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     private EditText woeId;
     private SharedPreferences settings;
-    private NumberPicker load_factor;
+    private TextView load_factor;
     private ColorPreferences mColor;
     private boolean imgldr;
+    private int row, wId;
 
     @Override
     protected void onCreate(Bundle savedInst) {
@@ -35,28 +36,46 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.settings);
         mColor = ColorPreferences.getInstance(this);
         settings = getApplicationContext().getSharedPreferences("settings", 0);
-        String location = Integer.toString(settings.getInt("woeid",23424829));
+        row = settings.getInt("preload",10);
+        wId = settings.getInt("woeid",23424829);
+        String location = Integer.toString(wId);
+        String load = Integer.toString(row);
 
         Button delButon = (Button) findViewById(R.id.delete_db);
-        Switch toggleImg = (Switch) findViewById(R.id.toggleImg);
+        CheckBox toggleImg = (CheckBox) findViewById(R.id.toggleImg);
         Button colorButton1 = (Button) findViewById(R.id.color_background);
         Button colorButton2 = (Button) findViewById(R.id.color_font);
         Button colorButton3 = (Button) findViewById(R.id.color_tweet);
-        Button save_woeid = (Button) findViewById(R.id.save_woeid);
-        load_factor = (NumberPicker)findViewById(R.id.tweet_load);
+        Button reduce = (Button) findViewById(R.id.less);
+        Button enhance = (Button) findViewById(R.id.more);
+        load_factor = (TextView)findViewById(R.id.number_row);
         woeId = (EditText) findViewById(R.id.woeid);
 
         delButon.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
-        save_woeid.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
+        reduce.setOnClickListener(this);
+        enhance.setOnClickListener(this);
 
-        load_factor.setMinValue(5);
-        load_factor.setMaxValue(100);
+        int color1 = mColor.getColor(ColorPreferences.BACKGROUND);
+        int color2 = mColor.getColor(ColorPreferences.TWEET_COLOR);
+        int color3 = mColor.getColor(ColorPreferences.FONT_COLOR);
+        String color1Str = "#"+Integer.toHexString(color1);
+        String color2Str = "#"+Integer.toHexString(color2);
+        String color3Str = "#"+Integer.toHexString(color3);
+
+        colorButton1.setBackgroundColor(color1);
+        colorButton2.setBackgroundColor(color2);
+        colorButton3.setBackgroundColor(color3);
+        colorButton1.setText(color1Str);
+        colorButton2.setText(color2Str);
+        colorButton3.setText(color3Str);
+
         toggleImg.setChecked(settings.getBoolean("image_load",false));
-        load_factor.setValue(settings.getInt("preload",10));
+
+        load_factor.setText(load);
         woeId.setText(location);
     }
 
@@ -79,8 +98,8 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         Editor edit  = settings.edit();
-        edit.putInt("woeid", Integer.valueOf(woeId.getText().toString()));
-        edit.putInt("preload", load_factor.getValue());
+        edit.putInt("woeid", wId);
+        edit.putInt("preload", row);
         edit.putBoolean("image_load", imgldr);
         edit.apply();
         mColor.commit();
@@ -101,6 +120,16 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.color_tweet:
                 mColor.setColor(ColorPreferences.TWEET_COLOR);
+                break;
+            case R.id.less:
+                if(row > 5)
+                    row -= 5;
+                load_factor.setText(Integer.toString(row));
+                break;
+            case R.id.more:
+                if(row < 200)
+                    row += 5;
+                load_factor.setText(Integer.toString(row));
                 break;
         }
     }
