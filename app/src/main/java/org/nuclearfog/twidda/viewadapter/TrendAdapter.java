@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.viewadapter;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.ColorPreferences;
+import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.TrendDatabase;
 
 import android.content.Context;
@@ -14,14 +14,15 @@ import android.widget.TextView;
 
 public class TrendAdapter extends ArrayAdapter {
     private TrendDatabase trend;
-    private Context context;
-    private ColorPreferences mcolor;
+    private LayoutInflater inf;
+    private  int background;
 
     public TrendAdapter(Context context, TrendDatabase trend) {
         super(context, R.layout.trend);
+        inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ColorPreferences mcolor = ColorPreferences.getInstance(context);
+        background = mcolor.getColor(ColorPreferences.BACKGROUND);
         this.trend = trend;
-        this.context = context;
-        mcolor = ColorPreferences.getInstance(context);
     }
 
     public TrendDatabase getDatabase() {
@@ -37,9 +38,8 @@ public class TrendAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View v, @NonNull ViewGroup parent) {
         if(v == null) {
-            LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.trend, parent,false);
-            v.setBackgroundColor(mcolor.getColor(ColorPreferences.BACKGROUND));
+            v.setBackgroundColor(background);
         }
         String trendName = trend.getTrendname(position);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);

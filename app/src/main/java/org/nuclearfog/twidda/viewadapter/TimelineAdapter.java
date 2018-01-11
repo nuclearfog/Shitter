@@ -12,20 +12,22 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImageDownloader;
-import org.nuclearfog.twidda.database.ColorPreferences;
+import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.TweetDatabase;
 
 public class TimelineAdapter extends ArrayAdapter implements View.OnClickListener {
     private TweetDatabase mTweets;
-    private ColorPreferences mcolor;
     private ViewGroup p;
     private LayoutInflater inf;
+    private int textColor, background;
 
     public TimelineAdapter(Context context, TweetDatabase mTweets) {
         super(context, R.layout.tweet);
         this.mTweets = mTweets;
         inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mcolor = ColorPreferences.getInstance(context);
+        ColorPreferences mColor = ColorPreferences.getInstance(context);
+        textColor = mColor.getColor(ColorPreferences.FONT_COLOR);
+        background = mColor.getColor(ColorPreferences.BACKGROUND);
     }
 
     public TweetDatabase getAdapter() {
@@ -43,7 +45,8 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         p = parent;
         if(v == null) {
             v = inf.inflate(R.layout.tweet, parent,false);
-            v.setBackgroundColor(mcolor.getColor(ColorPreferences.BACKGROUND));
+            v.setBackgroundColor(background);
+            v.setOnClickListener(this);
         }
         String answerStr = Integer.toString(mTweets.getAnswer(position));
         String retweetStr = Integer.toString(mTweets.getRetweet(position));
@@ -56,8 +59,8 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         ((TextView) v.findViewById(R.id.retweet_number)).setText(retweetStr);
         ((TextView) v.findViewById(R.id.favorite_number)).setText(favoriteStr);
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
+        ((TextView) v.findViewById(R.id.tweettext)).setTextColor(textColor);
         ImageView imgView = v.findViewById(R.id.tweetPb);
-        v.setOnClickListener(this);
         imgView.setImageResource(R.mipmap.pb);
         if(mTweets.loadImages())
             new ImageDownloader(imgView).execute(mTweets.getPbImg(position));

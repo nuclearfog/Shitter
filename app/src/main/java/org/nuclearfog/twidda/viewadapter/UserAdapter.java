@@ -11,22 +11,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.backend.ImageDownloader;
-import org.nuclearfog.twidda.database.ColorPreferences;
+import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 
 public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
 
-    private Context context;
     private UserDatabase userDatabase;
     private ViewGroup p;
-    private ColorPreferences mColor;
+    private LayoutInflater inf;
+    private int background;
 
     public UserAdapter(Context context, UserDatabase userDatabase) {
         super(context, R.layout.user);
-        this.context = context;
         this.userDatabase = userDatabase;
-        mColor = ColorPreferences.getInstance(context);
+        inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ColorPreferences mColor = ColorPreferences.getInstance(context);
+        background = mColor.getColor(ColorPreferences.BACKGROUND);
     }
 
     public UserDatabase getAdapter(){
@@ -43,15 +44,16 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
     public View getView(int position, View v, @NonNull ViewGroup parent) {
         p = parent;
         if(v == null) {
-            LayoutInflater inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             v = inf.inflate(R.layout.user, parent,false);
+            v.setBackgroundColor(background);
+            v.setOnClickListener(this);
         }
 
         ((TextView)v.findViewById(R.id.username_detail)).setText(userDatabase.getUsername(position));
         ((TextView)v.findViewById(R.id.screenname_detail)).setText(userDatabase.getScreenname(position));
         ImageView imgView = v.findViewById(R.id.user_profileimg);
 
-        v.setOnClickListener(this);
+
 
         if(userDatabase.loadImages()) {
             ImageDownloader imgDl = new ImageDownloader(imgView);
@@ -60,7 +62,7 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
             imgView.setImageResource(R.mipmap.pb);
         }
 
-        v.setBackgroundColor(mColor.getColor(ColorPreferences.BACKGROUND));
+
 
         return v;
     }

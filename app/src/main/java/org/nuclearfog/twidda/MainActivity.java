@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(intent);
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -313,8 +312,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void setTabContent() {
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
         TrendDatabase trendDeck = new TrendDatabase(con);
-        TimelineAdapter tlAdapt = new TimelineAdapter(con,tweetDeck);
-        TrendAdapter trendAdp = new TrendAdapter(con,trendDeck);
+        TimelineAdapter tlAdapt = new TimelineAdapter(this,tweetDeck);
+        TrendAdapter trendAdp = new TrendAdapter(this,trendDeck);
         timelineList.setAdapter(tlAdapt);
         trendList.setAdapter(trendAdp);
     }

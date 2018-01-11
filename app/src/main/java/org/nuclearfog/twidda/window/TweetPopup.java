@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 
 import org.nuclearfog.twidda.backend.SendStatus;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.ColorPreferences;
 
 /**
  * Tweet Window

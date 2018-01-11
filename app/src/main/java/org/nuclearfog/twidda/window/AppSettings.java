@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.ColorPreferences;
 
 /**
  * App Settings Page
@@ -60,18 +59,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         enhance.setOnClickListener(this);
 
         int color1 = mColor.getColor(ColorPreferences.BACKGROUND);
-        int color2 = mColor.getColor(ColorPreferences.TWEET_COLOR);
-        int color3 = mColor.getColor(ColorPreferences.FONT_COLOR);
-        String color1Str = "#"+Integer.toHexString(color1);
-        String color2Str = "#"+Integer.toHexString(color2);
-        String color3Str = "#"+Integer.toHexString(color3);
-
+        int color2 = mColor.getColor(ColorPreferences.FONT_COLOR);
+        int color3 = mColor.getColor(ColorPreferences.TWEET_COLOR);
         colorButton1.setBackgroundColor(color1);
         colorButton2.setBackgroundColor(color2);
         colorButton3.setBackgroundColor(color3);
-        colorButton1.setText(color1Str);
-        colorButton2.setText(color2Str);
-        colorButton3.setText(color3Str);
 
         toggleImg.setChecked(settings.getBoolean("image_load",false));
 
