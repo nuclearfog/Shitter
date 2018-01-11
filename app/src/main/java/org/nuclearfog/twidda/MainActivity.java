@@ -138,14 +138,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onPause(){
+        if(!searchQuery.isIconified())
+            searchQuery.onActionViewCollapsed();
         super.onPause();
     }
 
     @Override
     protected void onResume(){
-        if(login) {
-            setTabContent();
-        }
         super.onResume();
     }
 
@@ -173,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Intent intent = new Intent(con, TwitterSearch.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("search", search);
+                    if(search.startsWith("#")) {
+                        bundle.putString("Hashtag", search);
+                    }
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

@@ -26,13 +26,19 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     private EditText tweetfield;
     private ImageView tweetImg1,tweetImg2,tweetImg3,tweetImg4;
     private long inReplyId;
-    private String imgPath;
+    private String imgPath, hashtag="";
 
     @Override
     protected void onCreate(Bundle SavedInstance) {
         super.onCreate(SavedInstance);
         setContentView(R.layout.tweetwindow);
+
         inReplyId = getIntent().getExtras().getLong("TweetID");
+        if(getIntent().hasExtra("Hashtag"))
+            hashtag = getIntent().getExtras().getString("Hashtag");
+
+        final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
+        getWindow().setLayout(size, size);
 
         Button tweetButton = (Button) findViewById(R.id.sendTweet);
         Button closeButton = (Button) findViewById(R.id.close);
@@ -43,9 +49,6 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         tweetImg3 = (ImageView) findViewById(R.id.tweetImg3);
         tweetImg4 = (ImageView) findViewById(R.id.tweetImg4);
 
-        final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
-        getWindow().setLayout(size, size);
-
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
         imageButton.setOnClickListener(this);
@@ -53,6 +56,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
         root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
+        tweetfield.setText(hashtag);
     }
 
     @Override

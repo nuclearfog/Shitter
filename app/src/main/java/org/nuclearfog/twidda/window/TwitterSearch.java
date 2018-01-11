@@ -81,6 +81,9 @@ public class TwitterSearch extends AppCompatActivity implements AdapterView.OnIt
             intent = new Intent(this, TweetPopup.class);
             Bundle b = new Bundle();
             b.putLong("TweetID", -1);
+            if(search.startsWith("#")) {
+                b.putString("Hashtag", search);
+            }
             intent.putExtras(b);
             startActivity(intent);
             break;
