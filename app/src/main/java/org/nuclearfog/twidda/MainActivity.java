@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Context con;
     private Toolbar toolbar;
     private boolean login;
+    private boolean settingFlag = false;
     private String currentTab = "timeline";
 
     /**
@@ -130,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.action_settings:
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
+                settingFlag = true;
                 return true;
             default:
                 return false;
@@ -137,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         if(!searchQuery.isIconified())
             searchQuery.onActionViewCollapsed();
         super.onPause();
@@ -146,6 +148,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onResume(){
         super.onResume();
+        if(settingFlag) {
+            setTabContent();
+            settingFlag = false;
+        }
     }
 
     @Override

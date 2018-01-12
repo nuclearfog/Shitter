@@ -119,7 +119,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 load_factor.setText(Integer.toString(row));
                 break;
             case R.id.more:
-                if(row < 200)
+                if(row < 300)
                     row += 5;
                 load_factor.setText(Integer.toString(row));
                 break;
