@@ -1,124 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tweet_detail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal">
+        android:background="@android:color/transparent">
 
-        <ImageView
-            android:id="@+id/profileimage_detail"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_margin="5dp"
-            android:contentDescription="@string/profile_image"
-            app:srcCompat="@mipmap/pb" />
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:toolbarId="@+id/toolbar">
+
+            <LinearLayout
+                android:id="@+id/tweet_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/profileimage_detail"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_margin="5dp"
+                        android:contentDescription="@string/profile_image"
+                        app:srcCompat="@mipmap/pb" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/usernamedetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/scrnamedetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="2dp"
+                            android:layout_marginTop="2dp" />
+
+                        <TextView
+                            android:id="@+id/timedetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tweet_detailed"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:autoLink="web"
+                    android:linksClickable="true"
+                    android:textSize="24sp" />
+
+                <ImageView
+                    android:id="@+id/tweet_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/tweet_image"
+                    app:srcCompat="@android:color/black" />
+
+            </LinearLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/usernamedetail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/scrnamedetail"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp" />
+                android:addStatesFromChildren="false"
+                android:background="@color/twitterBlau"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:padding="5dp">
 
-            <TextView
-                android:id="@+id/timedetail"
+                <Button
+                    android:id="@+id/answer_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/chat" />
+
+                <TextView
+                    android:id="@+id/no_ans_detail"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="5dp"
+                    android:ems="10" />
+
+                <Button
+                    android:id="@+id/rt_button_detail"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/retweet" />
+
+                <TextView
+                    android:id="@+id/no_rt_detail"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="5dp"
+                    android:ems="10" />
+
+                <Button
+                    android:id="@+id/fav_button_detail"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/favorite" />
+
+                <TextView
+                    android:id="@+id/no_fav_detail"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:ems="10" />
+
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/answer_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="true" />
         </LinearLayout>
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tweet_detailed"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:autoLink="web"
-        android:linksClickable="true"
-        android:textSize="24sp" />
-
-    <ImageView
-        android:id="@+id/tweet_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@android:color/black" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_margin="10dp"
-        android:addStatesFromChildren="false"
-        android:gravity="center_vertical|center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/answer_button"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/chat" />
-
-        <TextView
-            android:id="@+id/no_ans_detail"
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="20dp"
-            android:ems="10" />
-
-        <Button
-            android:id="@+id/rt_button_detail"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/retweet" />
-
-        <TextView
-            android:id="@+id/no_rt_detail"
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="20dp"
-            android:ems="10" />
-
-        <Button
-            android:id="@+id/fav_button_detail"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:background="@drawable/favorite" />
-
-        <TextView
-            android:id="@+id/no_fav_detail"
-            android:layout_width="64dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:ems="10" />
-
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/answer_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
-
-</LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

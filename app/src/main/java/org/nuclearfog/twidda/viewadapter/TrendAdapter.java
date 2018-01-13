@@ -41,8 +41,9 @@ public class TrendAdapter extends ArrayAdapter {
             v = inf.inflate(R.layout.trend, parent,false);
             v.setBackgroundColor(background);
         }
+        String trendPos = (1+Integer.toString(position))+'.';
         String trendName = trend.getTrendname(position);
-        ((TextView) v.findViewById(R.id.trendpos)).setText(Integer.toString(position)+'.');
+        ((TextView) v.findViewById(R.id.trendpos)).setText(trendPos);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);
         return v;
     }
