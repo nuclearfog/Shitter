@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/trendpos"
-        android:layout_width="48dp"
+        android:layout_width="32dp"
         android:layout_height="match_parent"
         android:layout_margin="5dp" />
 

@@ -23,14 +23,15 @@
             android:id="@+id/screenname"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="5dp" />
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:gravity="right"
+            android:layout_gravity="end"
+            android:gravity="end"
             android:textAlignment="gravity" />
 
     </LinearLayout>
@@ -63,10 +64,10 @@
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
         android:addStatesFromChildren="false"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="horizontal">
 
         <Button
@@ -79,6 +80,8 @@
             android:id="@+id/answer_number"
             android:layout_width="64dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
             android:ems="10" />
 
         <Button
@@ -91,6 +94,8 @@
             android:id="@+id/retweet_number"
             android:layout_width="64dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
             android:ems="10" />
 
         <Button
@@ -103,6 +108,8 @@
             android:id="@+id/favorite_number"
             android:layout_width="64dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="5dp"
             android:ems="10" />
 
     </LinearLayout>

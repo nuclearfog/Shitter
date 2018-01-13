@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import twitter4j.MediaEntity;
@@ -33,15 +35,16 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private Context c;
     private Twitter twitter;
     private ListView replyList;
-    private TextView  username,scrName, tweet, txtAns, txtRet, txtFav;
+    private TextView  username,scrName, tweet, txtAns, txtRet, txtFav, date;
     private Button retweetButton, favoriteButton;
     private ImageView profile_img, tweet_img;
     private ArrayList<twitter4j.Status> answers;
-    private String usernameStr, scrNameStr, tweetStr;
+    private String usernameStr, scrNameStr, tweetStr, dateString;
     private String ansStr, rtStr, favStr;
     private boolean retweeted, favorited, toggleImg;
     private SharedPreferences settings;
     private int load, ansNo;
+    private Date d;
     private Bitmap profile_btm, tweet_btm;
 
     public ShowStatus(Context c) {
@@ -60,6 +63,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         tweet = (TextView) ((TweetDetail)c).findViewById(R.id.tweet_detailed);
         username = (TextView) ((TweetDetail)c).findViewById(R.id.usernamedetail);
         scrName = (TextView) ((TweetDetail)c).findViewById(R.id.scrnamedetail);
+        date = (TextView) ((TweetDetail)c).findViewById(R.id.timedetail);
 
         txtAns = (TextView) ((TweetDetail)c).findViewById(R.id.no_ans_detail);
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
@@ -88,6 +92,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 tweetStr = currentTweet.getText();
                 usernameStr = currentTweet.getUser().getName();
                 scrNameStr = '@'+currentTweet.getUser().getScreenName();
+                d = currentTweet.getCreatedAt();
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+                dateString = sdf.format(d);
 
                 Query query = new Query("to:"+scrNameStr+" since_id:"+tweetID+" -filter:retweets");
                 query.setCount(load);
@@ -135,6 +142,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             username.setText(usernameStr);
             scrName.setText(scrNameStr);
             txtAns.setText(ansStr);
+            date.setText(dateString);
             TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
             TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);
             replyList.setAdapter(tlAdp);

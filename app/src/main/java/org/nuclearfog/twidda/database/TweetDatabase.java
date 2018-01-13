@@ -151,6 +151,7 @@ public class TweetDatabase {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID ORDER BY time DESC";
+            limit = 5; //TODO 5 Mentions only!
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);

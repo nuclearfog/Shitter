@@ -146,6 +146,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);
+                    bundle.putBoolean("home", true);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -202,8 +203,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initElements() {
-        ProfileAction profile = new ProfileAction(this, tool);
-        profile.execute(userId, ProfileAction.GET_INFORMATION);
+        new ProfileAction(this, tool).execute(userId, ProfileAction.GET_INFORMATION);
     }
 
     private void getFollows(long mode) {

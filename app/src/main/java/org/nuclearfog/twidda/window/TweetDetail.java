@@ -24,7 +24,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private ListView answer_list;
     private long tweetID;
     private long userID;
-    private long homeID;
+    private boolean home = false;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -32,6 +32,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.tweet_detail);
         tweetID = getIntent().getExtras().getLong("tweetID");
         userID = getIntent().getExtras().getLong("userID");//userID
+        if(getIntent().hasExtra("home") ){
+            home = getIntent().getExtras().getBoolean("home");
+        }
 
         answer_list = (ListView) findViewById(R.id.answer_list);
         Button answer = (Button) findViewById(R.id.answer_button);
@@ -97,7 +100,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
         LinearLayout background = (LinearLayout) findViewById(R.id.tweet_detail);
         background.setBackgroundColor(mColor.getColor(ColorPreferences.BACKGROUND));
-        ShowStatus set = new ShowStatus(this);
-        set.execute(tweetID);
+        new ShowStatus(this).execute(tweetID);
     }
 }

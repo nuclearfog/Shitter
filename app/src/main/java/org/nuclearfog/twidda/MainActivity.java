@@ -320,9 +320,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void setTabContent() {
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
         TrendDatabase trendDeck = new TrendDatabase(con);
+        TweetDatabase mentDeck  = new TweetDatabase(con, TweetDatabase.GET_MENT, 0L);
         TimelineAdapter tlAdapt = new TimelineAdapter(this,tweetDeck);
         TrendAdapter trendAdp = new TrendAdapter(this,trendDeck);
+        TimelineAdapter ment  = new TimelineAdapter(this, mentDeck);
         timelineList.setAdapter(tlAdapt);
         trendList.setAdapter(trendAdp);
+        mentionList.setAdapter(ment);
     }
 }

@@ -103,15 +103,15 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
             if(MODE == GET_INFORMATION)
             {
                 User user = twitter.showUser(userId);
-                screenName = '@'+ user.getScreenName();
+                screenName = '@'+user.getScreenName();
                 username = user.getName();
                 description = user.getDescription();
                 location = user.getLocation();
                 link = user.getURL();
-                follower = "Follower: "+ user.getFollowersCount();
+                follower = "Follower: "+user.getFollowersCount();
                 following = "Following: "+user.getFriendsCount();
                 imageLink = user.getProfileImageURL();
-                bannerLink = user.getProfileBannerURL();
+                bannerLink = user.getProfileBannerMobileURL();
             }
             else if(MODE == GET_TWEETS)
             {
@@ -154,9 +154,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
 
     @Override
     protected void onPostExecute(Long mode) {
-        if(mode == GET_INFORMATION)
-        {
-            ImageDownloader profileImg, bannerImg;
+        if(mode == GET_INFORMATION) {
             txtUser.setText(username);
             txtScrName.setText(screenName);
             txtBio.setText(description);
@@ -170,11 +168,9 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 txtLink.setText(link);
                 linkIcon.setVisibility(View.VISIBLE);
             }
-            profileImg = new ImageDownloader(profile);
-            bannerImg = new ImageDownloader(banner);
             if(imgEnabled) {
-                profileImg.execute(imageLink);
-                bannerImg.execute(bannerLink);
+                new ImageDownloader(profile).execute(imageLink);
+                //new ImageDownloader(banner).execute(bannerLink); TODO
             } else {
                 profile.setImageResource(R.mipmap.pb);
             }

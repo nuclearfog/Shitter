@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Shitter</string>
-
-    <!-- Strings related to login -->
     <string name="prompt_token">Pin eingeben</string>
     <string name="action_sign_in">Login</string>
     <string name="error_field_required">This field is required</string>
@@ -23,7 +21,18 @@
     <string name="trend">Trends</string>
     <string name="following">Following</string>
     <string name="follower">Follower</string>
-
+    <string name="woe_id">WOE ID</string>
+    <string name="banner">Profilbanner</string>
+    <string name="link">Webseite</string>
+    <string name="location">Ort</string>
+    <string name="save">Speichern</string>
+    <string name="tweet_image_enclosure">Image Enclosure</string>
+    <string name="background">Hintergrund</string>
+    <string name="font">Schrift</string>
+    <string name="popup">Popup</string>
+    <string name="woeid">WOEID Standort</string>
+    <string name="get_link">Link</string>
+    <string name="delete_tweet">Löschen</string>
 
     <string name="tableUser">
     CREATE TABLE IF NOT EXISTS user (
@@ -71,15 +80,5 @@
         trendname   TEXT,
         trendlink   TEXT);
     </string>
-    <string name="woe_id">WOE ID</string>
-    <string name="banner">Profilbanner</string>
-    <string name="link">Webseite</string>
-    <string name="location">Ort</string>
-    <string name="save">Speichern</string>
-    <string name="tweet_image_enclosure">Image Enclosure</string>
-    <string name="background">Hintergrund</string>
-    <string name="font">Schrift</string>
-    <string name="popup">Popup</string>
-    <string name="woeid">WOEID Standort</string>
 
 </resources>
