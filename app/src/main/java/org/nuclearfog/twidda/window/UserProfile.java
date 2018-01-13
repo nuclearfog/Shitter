@@ -189,15 +189,22 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void getContent() {
-        new Thread(){
+        new Thread() {
             @Override
-            public void run(){
+            public void run() {
                 TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
-                TimelineAdapter tl = new TimelineAdapter(UserProfile.this,mTweet);
-                homeTweets.setAdapter(tl);
                 TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
-                TimelineAdapter fl = new TimelineAdapter(UserProfile.this,fTweet);
-                homeFavorits.setAdapter(fl);
+
+                if(mTweet.getSize() == 0) {
+                    new ProfileAction(UserProfile.this, tool).execute(userId, ProfileAction.GET_TWEETS);
+                } else {
+                    homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
+                }
+                if(fTweet.getSize() == 0) {
+                    new ProfileAction(UserProfile.this, tool).execute(userId, ProfileAction.GET_FAVS);
+                } else {
+                    homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
+                }
             }
         }.run();
     }
