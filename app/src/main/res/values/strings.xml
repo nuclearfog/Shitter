@@ -80,5 +80,6 @@
         trendname   TEXT,
         trendlink   TEXT);
     </string>
+    <string name="refresh_dummy">Aktualisieren</string>
 
 </resources>

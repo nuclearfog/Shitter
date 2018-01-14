@@ -48,12 +48,17 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
     private int load;
     private long homeUserID;
 
+    /**
+     * @param context Context to Activity
+     * @param tool Actionbar
+     * @see UserProfile
+     */
     public ProfileAction(Context context, Toolbar tool) {
         this.context=context;
         this.tool = tool;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imgEnabled = settings.getBoolean("image_load",false);
-        load = settings.getInt("preload", 10);
+        load = settings.getInt("preload", 10) + 1;
         homeUserID = settings.getLong("userID", -1);
     }
 
@@ -138,10 +143,10 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
             else if(MODE == ACTION_MUTE)
             {
                 if(muted) {
-                    twitter.destroyMute(userId);
+                    twitter.destroyBlock(userId);
                     muted = false;
                 } else {
-                    twitter.createMute(userId);
+                    twitter.createBlock(userId);
                     muted = true;
                 }
             }

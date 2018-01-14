@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -67,7 +68,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         tab2.setContent(R.id.homefavorits);
         tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite_icon));
         mTab.addTab(tab2);
-
 
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
@@ -189,24 +189,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     private void getContent() {
-        new Thread() {
-            @Override
-            public void run() {
-                TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
-                TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
+        TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
+        TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
+        if(mTweet.getSize()>0)
+            homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
+        else
+            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_TWEETS);
 
-                if(mTweet.getSize() == 0) {
-                    new ProfileAction(UserProfile.this, tool).execute(userId, ProfileAction.GET_TWEETS);
-                } else {
-                    homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
-                }
-                if(fTweet.getSize() == 0) {
-                    new ProfileAction(UserProfile.this, tool).execute(userId, ProfileAction.GET_FAVS);
-                } else {
-                    homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
-                }
-            }
-        }.run();
+        if(fTweet.getSize()>0)
+            homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
+        else
+            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_FAVS);
     }
 
     private void initElements() {

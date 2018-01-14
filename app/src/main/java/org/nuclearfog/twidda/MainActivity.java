@@ -185,9 +185,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     startActivity(intent);
                 }
                 break;
-            case R.id.mention:
+            case R.id.m_list:
                 if(!mentionReload.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) timelineList.getAdapter();
+                    TimelineAdapter tlAdp = (TimelineAdapter) mentionList.getAdapter();
                     TweetDatabase twDB = tlAdp.getAdapter();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);

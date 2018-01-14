@@ -103,10 +103,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 List<twitter4j.Status> stats = result.getTweets();
 
                 for(twitter4j.Status reply : stats) {
-                    //if(reply.getInReplyToStatusId() == tweetID) { TODO
+                    if(reply.getInReplyToStatusId() == tweetID) {
                         answers.add(reply);
                         ansNo++;
-                    //}
+                    }
                 }
                 if(toggleImg)
                     setMedia(currentTweet);

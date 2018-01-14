@@ -33,7 +33,7 @@ public class Search extends AsyncTask<String, Void, String> {
     public Search(Context context) {
         this.context=context;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        load = settings.getInt("preload", 10);
+        load = settings.getInt("preload", 10) + 1;
     }
 
     @Override

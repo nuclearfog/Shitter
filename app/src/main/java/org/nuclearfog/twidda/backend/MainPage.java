@@ -30,7 +30,6 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
     private SharedPreferences settings;
     private int load;
 
-
     /**
      * Main View
      * @see MainActivity
@@ -40,7 +39,7 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
         twitterResource = TwitterResource.getInstance(context);
         twitterResource.init();// preload
         settings = context.getSharedPreferences("settings", 0);
-        load = settings.getInt("preload", 10);
+        load = settings.getInt("preload", 10) + 1;
     }
 
     @Override
