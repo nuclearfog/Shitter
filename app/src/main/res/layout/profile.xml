@@ -2,21 +2,19 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/barlayout_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:fitsSystemWindows="false">
+        android:background="@android:color/transparent">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:toolbarId="@+id/tweet_toolbar">
 
             <LinearLayout
@@ -28,7 +26,7 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/profile_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/bar_wide"/>
+                    android:layout_height="@dimen/bar_wide" />
 
                 <ImageView
                     android:id="@+id/banner"

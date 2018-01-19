@@ -119,13 +119,14 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                         ansNo++;
                     }
                 }
-                if(toggleImg)
+                if(toggleImg) {
                     setMedia(currentTweet);
+                }
                 return true;
             } else {
                 if(id[1]==RETWEET) {
                     if(retweeted) {
-                        //TODO
+                        //TODO destroy Retweet
                     } else {
                         twitter.retweetStatus(tweetID);
                         retweeted = true;
@@ -186,10 +187,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
 
     private void setMedia(twitter4j.Status tweet) throws Exception {
         String pbLink = tweet.getUser().getMiniProfileImageURL();
+        MediaEntity[] media = tweet.getMediaEntities();
+
         InputStream iStream = new URL(pbLink).openStream();
         profile_btm = BitmapFactory.decodeStream(iStream);
 
-        MediaEntity[] media = tweet.getMediaEntities();
         if( media.length > 0 ) {
             InputStream mediaStream = new URL(media[0].getMediaURL()).openStream();
             tweet_btm = BitmapFactory.decodeStream(mediaStream);
