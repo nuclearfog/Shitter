@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText pin;
     private Context con;
     private Toolbar toolbar;
-    private boolean login;
     private boolean settingFlag = false;
     private String currentTab = "timeline";
 
@@ -59,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         con = getApplicationContext();
         settings = con.getSharedPreferences("settings", 0);
-        login = settings.getBoolean("login", false);
+        boolean login = settings.getBoolean("login", false);
         if( !login ) {
             setContentView(R.layout.login);
             pin = (EditText) findViewById(R.id.pin);
@@ -205,13 +204,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MainPage homeView = new MainPage(MainActivity.this);
         switch (currentTab) {
             case "timeline":
-                homeView.execute(0);
+                homeView.execute(0,1);
                 break;
             case "trends":
-                homeView.execute(1);
+                homeView.execute(1,1);
                 break;
             case "mention":
-                homeView.execute(2);
+                homeView.execute(2,1);
                 break;
         }
     }
@@ -295,12 +294,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.timeline_icon));
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
         tabhost.addTab(tab1);
         // Tab #2
         TabSpec tab2 = tabhost.newTabSpec("trends");
         tab2.setContent(R.id.trends);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.trends_icon));
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.hash));
         tabhost.addTab(tab2);
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");

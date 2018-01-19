@@ -61,20 +61,21 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
      */
     @Override
     protected Boolean doInBackground(Integer... args) {
+        int mode = args[0];
+        int page = args[1];
         Twitter twitter = twitterResource.getTwitter();
-        Paging p = new Paging();
-        p.setCount(load);
+        Paging p = new Paging(page, load);
         try {
-            if(args[0]==0) {
+            if(mode == 0) {
                 TweetDatabase mTweets = new TweetDatabase(twitter.getHomeTimeline(p), context,TweetDatabase.HOME_TL,0);
                 timelineAdapter = new TimelineAdapter(context,mTweets);
             }
-            else if(args[0]==1) {
+            else if(mode == 1) {
                 int location = settings.getInt("woeid",23424829);
                 TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(location),context); //Germany by default
                 trendsAdapter = new TrendAdapter(context,trend);
             }
-            else if(args[0]==2) {
+            else if(mode == 2) {
                 TweetDatabase mention = new TweetDatabase(twitter.getMentionsTimeline(), context,TweetDatabase.GET_MENT,0);
                 mentionAdapter = new TimelineAdapter(context,mention);
             }

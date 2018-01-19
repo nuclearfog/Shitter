@@ -62,7 +62,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         // Tab #1
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.timeline_icon));
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
         mTab.addTab(tab1);
         // Tab #2
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");

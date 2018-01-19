@@ -196,12 +196,12 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         }
         if(!isHome) { //Set Icons if it isn't the home profile
             if(isFollowing) {
-                tool.getMenu().getItem(1).setIcon(R.drawable.follow_active);
+                tool.getMenu().getItem(1).setIcon(R.drawable.follow_enabled);
             } else {
                 tool.getMenu().getItem(1).setIcon(R.drawable.follow);
             }
             if(muted) {
-                tool.getMenu().getItem(2).setIcon(R.drawable.block_active);
+                tool.getMenu().getItem(2).setIcon(R.drawable.block_enabled);
             } else {
                 tool.getMenu().getItem(2).setIcon(R.drawable.block);
             }
