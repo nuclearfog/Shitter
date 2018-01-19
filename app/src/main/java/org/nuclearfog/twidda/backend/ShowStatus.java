@@ -1,10 +1,13 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -35,15 +38,16 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private Context c;
     private Twitter twitter;
     private ListView replyList;
-    private TextView  username,scrName, tweet, txtAns, txtRet, txtFav, date;
+    private TextView  username,scrName, replyName, tweet, txtAns, txtRet, txtFav, date;
     private Button retweetButton, favoriteButton;
     private ImageView profile_img, tweet_img;
     private ArrayList<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr, dateString;
-    private String ansStr, rtStr, favStr;
+    private String ansStr, rtStr, favStr, repliedUsername;
     private boolean retweeted, favorited, toggleImg;
     private SharedPreferences settings;
     private int load, ansNo;
+    private long userReply, tweetReplyID;
     private Date d;
     private Bitmap profile_btm, tweet_btm;
 
@@ -64,7 +68,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         username = (TextView) ((TweetDetail)c).findViewById(R.id.usernamedetail);
         scrName = (TextView) ((TweetDetail)c).findViewById(R.id.scrnamedetail);
         date = (TextView) ((TweetDetail)c).findViewById(R.id.timedetail);
-
+        replyName = (TextView) ((TweetDetail)c).findViewById(R.id.answer_reference_detail);
         txtAns = (TextView) ((TweetDetail)c).findViewById(R.id.no_ans_detail);
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
         txtFav = (TextView) ((TweetDetail)c).findViewById(R.id.no_fav_detail);
@@ -78,6 +82,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
 
     /**
      * @param id [0] TWEET ID , [1] Mode
+     * @returns false if Tweet is already loaded.
      */
     @Override
     protected Boolean doInBackground(Long... id) {
@@ -86,12 +91,18 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             twitter4j.Status currentTweet = twitter.showStatus(tweetID);
             rtStr = Integer.toString(currentTweet.getRetweetCount());
             favStr = Integer.toString(currentTweet.getFavoriteCount());
+            userReply = currentTweet.getInReplyToUserId();
+            tweetReplyID = currentTweet.getInReplyToStatusId();
+
             retweeted = currentTweet.isRetweetedByMe();
             favorited = currentTweet.isFavorited();
             if(id.length == 1) {
                 tweetStr = currentTweet.getText();
                 usernameStr = currentTweet.getUser().getName();
                 scrNameStr = '@'+currentTweet.getUser().getScreenName();
+                if(userReply > 0) {
+                    repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
+                }
                 d = currentTweet.getCreatedAt();
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
                 dateString = sdf.format(d);
@@ -143,6 +154,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             scrName.setText(scrNameStr);
             txtAns.setText(ansStr);
             date.setText(dateString);
+            if(repliedUsername != null) {
+                replyName.setText(repliedUsername);
+                replyName.setVisibility(View.VISIBLE);
+            }
+
             TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
             TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);
             replyList.setAdapter(tlAdp);
@@ -151,10 +167,21 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             profile_img.setImageBitmap(profile_btm);
             tweet_img.setImageBitmap(tweet_btm);
         }
-
         setIcons();
         txtRet.setText(rtStr);
         txtFav.setText(favStr);
+
+        replyName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(c, TweetDetail.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong("tweetID",tweetReplyID);
+                bundle.putLong("userID",userReply);
+                intent.putExtras(bundle);
+                c.startActivity(intent);
+            }
+        });
     }
 
     private void setMedia(twitter4j.Status tweet) throws Exception {

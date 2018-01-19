@@ -140,8 +140,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onPause() {
-        if(!searchQuery.isIconified())
-            searchQuery.onActionViewCollapsed();
         super.onPause();
     }
 
@@ -307,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // Tab #3
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setContent(R.id.mention);
-        tab3.setIndicator("",getResources().getDrawable(R.drawable.mention_icon));
+        tab3.setIndicator("",getResources().getDrawable(R.drawable.mention));
         tabhost.addTab(tab3);
 
         tabhost.setOnTabChangedListener(this);

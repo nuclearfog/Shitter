@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -66,7 +67,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         // Tab #2
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
         tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite_icon));
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite));
         mTab.addTab(tab2);
 
         mTab.setOnTabChangedListener(this);

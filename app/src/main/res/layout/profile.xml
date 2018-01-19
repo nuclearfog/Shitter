@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/barlayout_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -28,7 +28,7 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/profile_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/bar_wide" />
+                    android:layout_height="@dimen/bar_wide"/>
 
                 <ImageView
                     android:id="@+id/banner"
@@ -141,6 +141,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:fitsSystemWindows="true"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
         <LinearLayout

@@ -15,8 +15,12 @@ public class ImageDownloader extends AsyncTask<String, Void, Bitmap>
 {
     private final WeakReference<ImageView> imgReference ;
 
-    public ImageDownloader(ImageView imgView) {
-        imgReference = new WeakReference<>(imgView);
+    public ImageDownloader(WeakReference<ImageView> imgReference) {
+        this.imgReference = imgReference;
+    }
+
+    public ImageDownloader(ImageView img) {
+        imgReference = new WeakReference<>(img);
     }
 
     @Override

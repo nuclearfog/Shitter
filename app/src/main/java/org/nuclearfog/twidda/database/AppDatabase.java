@@ -12,7 +12,7 @@ public class AppDatabase extends SQLiteOpenHelper
 
     private AppDatabase(Context context) {
         super(context, context.getString(R.string.database),null, 1);
-        context = context;
+        this.context = context;
     }
 
     @Override

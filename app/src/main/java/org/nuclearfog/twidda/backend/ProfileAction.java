@@ -115,7 +115,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 link = user.getURL();
                 follower = "Follower: "+user.getFollowersCount();
                 following = "Following: "+user.getFriendsCount();
-                imageLink = user.getProfileImageURL();
+                imageLink = user.getMiniProfileImageURL();
                 bannerLink = user.getProfileBannerMobileURL();
             }
             else if(MODE == GET_TWEETS)

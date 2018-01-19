@@ -23,7 +23,7 @@ public class TweetDatabase {
     public static final int GET_MENT  = 4;    // GET MENTION TL
 
     private AppDatabase dataHelper;
-    private List<String> user,scrname, tweet,pbLink;
+    private List<String> user,scrname,tweet,pbLink;
     private List<Long> userId,tweetId,timeMillis;
     private List<Integer> noRT,noFav,noAns;
     private List<Status> stats;
@@ -200,6 +200,7 @@ public class TweetDatabase {
     public String getDate(int pos){return timeToString(getTime(pos));}
     public String getPbImg (int pos){return pbLink.get(pos);}
     public boolean loadImages(){return toggleImg;}
+    public Bitmap getProfileImg(int pos){return profileImg.get(pos);}
 
     /**
      * Convert Time to String

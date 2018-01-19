@@ -15,6 +15,8 @@ import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 
+import java.lang.ref.WeakReference;
+
 public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
 
     private UserDatabase userDatabase;
@@ -56,7 +58,7 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
 
 
         if(userDatabase.loadImages()) {
-            ImageDownloader imgDl = new ImageDownloader(imgView);
+            ImageDownloader imgDl = new ImageDownloader(new WeakReference<>(imgView));
             imgDl.execute(userDatabase.getProfileURL(position));
         } else {
             imgView.setImageResource(R.mipmap.pb);

@@ -15,6 +15,8 @@ import org.nuclearfog.twidda.backend.ImageDownloader;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.TweetDatabase;
 
+import java.lang.ref.WeakReference;
+
 public class TimelineAdapter extends ArrayAdapter implements View.OnClickListener {
     private TweetDatabase mTweets;
     private ViewGroup p;
@@ -60,10 +62,11 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         ((TextView) v.findViewById(R.id.favorite_number)).setText(favoriteStr);
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ((TextView) v.findViewById(R.id.tweettext)).setTextColor(textColor);
-        ImageView imgView = v.findViewById(R.id.tweetPb);
-        imgView.setImageResource(R.mipmap.pb);
-        if(mTweets.loadImages())
-            new ImageDownloader(imgView).execute(mTweets.getPbImg(position));
+
+        if(mTweets.loadImages()) {
+            ImageView imgView = v.findViewById(R.id.tweetPb);
+            new ImageDownloader(new WeakReference<>(imgView)).execute(mTweets.getPbImg(position));
+        }
         return v;
     }
 
