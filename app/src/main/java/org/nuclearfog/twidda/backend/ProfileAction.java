@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -174,8 +176,8 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 linkIcon.setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
-                new ImageDownloader(profile).execute(imageLink);
-                //new ImageDownloader(banner).execute(bannerLink); TODO
+                Picasso.with(context).load(imageLink).into(profile);
+                Picasso.with(context).load(bannerLink).into(banner);
             } else {
                 profile.setImageResource(R.mipmap.pb);
             }

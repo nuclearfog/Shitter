@@ -27,6 +27,7 @@ dependencies {
     compile 'com.android.support:design:26+'
     compile(name: 'colorpicker', ext: 'aar')
     compile files('libs/twitter4j-core-4.0.4.jar')
+    implementation files('libs/picasso-2.5.2.jar')
 }
 
 repositories {

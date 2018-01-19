@@ -10,22 +10,23 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.ImageDownloader;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.TweetDatabase;
-
-import java.lang.ref.WeakReference;
 
 public class TimelineAdapter extends ArrayAdapter implements View.OnClickListener {
     private TweetDatabase mTweets;
     private ViewGroup p;
     private LayoutInflater inf;
     private int textColor, background;
+    private Context context;
 
     public TimelineAdapter(Context context, TweetDatabase mTweets) {
         super(context, R.layout.tweet);
         this.mTweets = mTweets;
+        this.context = context;
         inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ColorPreferences mColor = ColorPreferences.getInstance(context);
         textColor = mColor.getColor(ColorPreferences.FONT_COLOR);
@@ -62,10 +63,9 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         ((TextView) v.findViewById(R.id.favorite_number)).setText(favoriteStr);
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ((TextView) v.findViewById(R.id.tweettext)).setTextColor(textColor);
-
+        ImageView pb = v.findViewById(R.id.tweetPb);
         if(mTweets.loadImages()) {
-            ImageView imgView = v.findViewById(R.id.tweetPb);
-            new ImageDownloader(new WeakReference<>(imgView)).execute(mTweets.getPbImg(position));
+            Picasso.with(context).load(mTweets.getPbLink(position)).into(pb);
         }
         return v;
     }

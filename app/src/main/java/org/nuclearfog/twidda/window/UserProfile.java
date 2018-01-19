@@ -3,22 +3,18 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.TwitterResource;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.backend.ProfileAction;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -37,8 +33,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private long userId;
     private boolean home;
     private String currentTab = "tweets";
-
-    private RecyclerView testV;
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -105,21 +99,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.profile_tweet:
                 intent = new Intent(this, TweetPopup.class);
                 Bundle b = new Bundle();
-                if(home)
+                if(home) {
                     b.putLong("TweetID", -1);
-                else
+                } else {
                     b.putLong("TweetID", userId);
+                }
                 intent.putExtras(b);
                 startActivity(intent);
-                break;
+                return true;
             case R.id.profile_follow:
-                action.execute(userId, ProfileAction.ACTION_FOLLOW);
-                break;
+                if(!home) {
+                    action.execute(userId, ProfileAction.ACTION_FOLLOW);
+                }
+                return true;
             case R.id.profile_block:
-                action.execute(userId, ProfileAction.ACTION_MUTE);
-                break;
+                if(!home) {
+                    action.execute(userId, ProfileAction.ACTION_MUTE);
+                }
+                return true;
+            default: return false;
         }
-        return true;
     }
 
     @Override
@@ -147,7 +146,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);
-                    bundle.putBoolean("home", true);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -192,15 +190,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private void getContent() {
         TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
         TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
-        if(mTweet.getSize()>0)
+        if(mTweet.getSize()>0) {
             homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
-        else
+        }else {
             new ProfileAction(this, tool).execute(userId, ProfileAction.GET_TWEETS);
-
-        if(fTweet.getSize()>0)
+        }
+        if(fTweet.getSize()>0) {
             homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
-        else
+        } else {
             new ProfileAction(this, tool).execute(userId, ProfileAction.GET_FAVS);
+        }
     }
 
     private void initElements() {

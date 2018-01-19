@@ -23,7 +23,7 @@ public class UserDatabase {
     public long getUserID(int pos){ return user.get(pos).getId();}
     public String getUsername(int pos){ return user.get(pos).getName();}
     public String getScreenname(int pos){ return '@' + user.get(pos).getScreenName();}
-    public String getProfileURL(int pos){ return user.get(pos).getProfileBackgroundImageURL();}
+    public String getImageUrl(int pos){ return user.get(pos).getMiniProfileImageURL();}
     public int getSize(){ return user.size(); }
     public boolean loadImages(){ return toggleImg; }
 }

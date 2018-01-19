@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import org.nuclearfog.twidda.backend.ShowStatus;
 import org.nuclearfog.twidda.database.TweetDatabase;
@@ -25,8 +24,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private ListView answer_list;
     private long tweetID;
     private long userID;
-    private long replyID = -1;
-    private boolean home = false;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -34,12 +31,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.tweet_detail);
         tweetID = getIntent().getExtras().getLong("tweetID");
         userID = getIntent().getExtras().getLong("userID");
-        if(getIntent().hasExtra("home")) {
-            home = getIntent().getExtras().getBoolean("home");
-        }
-        if(getIntent().hasExtra("replyID")) {
-            replyID = getIntent().getExtras().getLong("replyID");
-        }
 
         answer_list = (ListView) findViewById(R.id.answer_list);
         Button answer = (Button) findViewById(R.id.answer_button);

@@ -50,9 +50,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private boolean settingFlag = false;
     private String currentTab = "timeline";
 
-    /**
-     * Create Activity
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,9 +71,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else { login(); }
     }
 
-    /**
-     * Create Actionbar
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         toolbar.inflateMenu(R.menu.home);
@@ -103,9 +97,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return true;
     }
 
-    /**
-     * Actionbar selection
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
@@ -312,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * Set DB Content
+     * Set Teb Content
      */
     private void setTabContent() {
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);

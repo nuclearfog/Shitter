@@ -10,12 +10,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.nuclearfog.twidda.backend.ImageDownloader;
+import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
-
-import java.lang.ref.WeakReference;
 
 public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
 
@@ -23,10 +22,12 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
     private ViewGroup p;
     private LayoutInflater inf;
     private int background;
+    private Context context;
 
     public UserAdapter(Context context, UserDatabase userDatabase) {
         super(context, R.layout.user);
         this.userDatabase = userDatabase;
+        this.context = context;
         inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ColorPreferences mColor = ColorPreferences.getInstance(context);
         background = mColor.getColor(ColorPreferences.BACKGROUND);
@@ -50,22 +51,13 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
             v.setBackgroundColor(background);
             v.setOnClickListener(this);
         }
-
         ((TextView)v.findViewById(R.id.username_detail)).setText(userDatabase.getUsername(position));
         ((TextView)v.findViewById(R.id.screenname_detail)).setText(userDatabase.getScreenname(position));
-        ImageView imgView = v.findViewById(R.id.user_profileimg);
-
-
+        ImageView pb = v.findViewById(R.id.user_profileimg);
 
         if(userDatabase.loadImages()) {
-            ImageDownloader imgDl = new ImageDownloader(new WeakReference<>(imgView));
-            imgDl.execute(userDatabase.getProfileURL(position));
-        } else {
-            imgView.setImageResource(R.mipmap.pb);
+            Picasso.with(context).load(userDatabase.getImageUrl(position)).into(pb);
         }
-
-
-
         return v;
     }
 

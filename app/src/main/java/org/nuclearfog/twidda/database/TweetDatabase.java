@@ -185,6 +185,10 @@ public class TweetDatabase {
         db.close();
     }
 
+    public void setPbList(List<Bitmap> profileImg) {
+        this.profileImg = profileImg;
+    }
+
     public int getSize() {
         return size;
     }
@@ -198,7 +202,7 @@ public class TweetDatabase {
     public String getScreenname(int pos){return scrname.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
     public String getDate(int pos){return timeToString(getTime(pos));}
-    public String getPbImg (int pos){return pbLink.get(pos);}
+    public String getPbLink (int pos){return pbLink.get(pos);}
     public boolean loadImages(){return toggleImg;}
     public Bitmap getProfileImg(int pos){return profileImg.get(pos);}
 
