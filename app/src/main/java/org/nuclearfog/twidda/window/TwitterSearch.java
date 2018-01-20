@@ -49,12 +49,12 @@ public class TwitterSearch extends AppCompatActivity implements AdapterView.OnIt
 
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
         tab1.setContent(R.id.searchtweets);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.search_result));
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.search));
         tabhost.addTab(tab1);
 
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.searchusers);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.user_result));
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.user));
         tabhost.addTab(tab2);
 
         tabhost.setOnTabChangedListener(this);

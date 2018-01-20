@@ -274,13 +274,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        timelineList.setOnItemClickListener(this);
-        trendList.setOnItemClickListener(this);
-        mentionList.setOnItemClickListener(this);
-        timelineReload.setOnRefreshListener(this);
-        trendReload.setOnRefreshListener(this);
-        mentionReload.setOnRefreshListener(this);
-
         tabhost.setup();
         // Tab #1
         TabSpec tab1 = tabhost.newTabSpec("timeline");
@@ -299,6 +292,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         tabhost.addTab(tab3);
 
         tabhost.setOnTabChangedListener(this);
+        timelineList.setOnItemClickListener(this);
+        trendList.setOnItemClickListener(this);
+        mentionList.setOnItemClickListener(this);
+        timelineReload.setOnRefreshListener(this);
+        trendReload.setOnRefreshListener(this);
+        mentionReload.setOnRefreshListener(this);
         setTabContent();
     }
 
@@ -309,11 +308,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
         TrendDatabase trendDeck = new TrendDatabase(con);
         TweetDatabase mentDeck  = new TweetDatabase(con, TweetDatabase.GET_MENT, 0L);
-        TimelineAdapter tlAdapt = new TimelineAdapter(this,tweetDeck);
-        TrendAdapter trendAdp = new TrendAdapter(this,trendDeck);
-        TimelineAdapter ment  = new TimelineAdapter(this, mentDeck);
-        timelineList.setAdapter(tlAdapt);
+        TimelineAdapter tlAdap  = new TimelineAdapter(this,tweetDeck);
+        TrendAdapter  trendAdp  = new TrendAdapter(this,trendDeck);
+        TimelineAdapter mentAdp = new TimelineAdapter(this, mentDeck);
+        timelineList.setAdapter(tlAdap);
         trendList.setAdapter(trendAdp);
-        mentionList.setAdapter(ment);
+        mentionList.setAdapter(mentAdp);
     }
 }
