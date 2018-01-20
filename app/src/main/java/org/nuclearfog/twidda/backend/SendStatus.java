@@ -11,8 +11,6 @@ import twitter4j.Twitter;
 
 public class SendStatus extends AsyncTask<Object, Void, Boolean> {
 
-    public static final String SEND_STATUS="stats";
-
     private Context context;
     private Twitter twitter;
     private String path;

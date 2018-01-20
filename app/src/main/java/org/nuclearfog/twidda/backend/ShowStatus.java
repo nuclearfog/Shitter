@@ -38,15 +38,16 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private Context c;
     private Twitter twitter;
     private ListView replyList;
-    private TextView  username,scrName, replyName, tweet, txtAns, txtRet, txtFav, date;
+    private TextView  username,scrName, replyName, tweet, txtRet, txtFav, date;
+    private TextView used_api, txtAns;
     private Button retweetButton, favoriteButton;
     private ImageView profile_img, tweet_img;
     private ArrayList<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr, dateString;
-    private String ansStr, rtStr, favStr, repliedUsername;
-    private boolean retweeted, favorited, toggleImg;
+    private String ansStr, rtStr, favStr, repliedUsername, apiName;
+    private boolean retweeted, favorited, toggleImg, rtFlag = false;
     private SharedPreferences settings;
-    private int load, ansNo;
+    private int load, ansNo = 0;
     private long userReply, tweetReplyID;
     private Date d;
     private Bitmap profile_btm, tweet_btm;
@@ -58,7 +59,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         load = settings.getInt("preload", 10);
         toggleImg = settings.getBoolean("image_load", false);
         this.c = c;
-        ansNo = 0;
     }
 
     @Override
@@ -72,6 +72,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         txtAns = (TextView) ((TweetDetail)c).findViewById(R.id.no_ans_detail);
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
         txtFav = (TextView) ((TweetDetail)c).findViewById(R.id.no_fav_detail);
+        used_api    = (TextView) ((TweetDetail)c).findViewById(R.id.used_api);
 
         profile_img = (ImageView) ((TweetDetail)c).findViewById(R.id.profileimage_detail);
         tweet_img   = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image);
@@ -89,6 +90,12 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         long tweetID = id[0];
         try {
             twitter4j.Status currentTweet = twitter.showStatus(tweetID);
+            twitter4j.Status retweetedStat = currentTweet.getRetweetedStatus();
+            if(retweetedStat != null) {
+                currentTweet = retweetedStat;
+                rtFlag = true;
+            }
+
             rtStr = Integer.toString(currentTweet.getRetweetCount());
             favStr = Integer.toString(currentTweet.getFavoriteCount());
             userReply = currentTweet.getInReplyToUserId();
@@ -100,6 +107,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 tweetStr = currentTweet.getText();
                 usernameStr = currentTweet.getUser().getName();
                 scrNameStr = '@'+currentTweet.getUser().getScreenName();
+                apiName = formatString(currentTweet.getSource());
+
                 if(userReply > 0) {
                     repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
                 }
@@ -155,19 +164,20 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             scrName.setText(scrNameStr);
             txtAns.setText(ansStr);
             date.setText(dateString);
+            used_api.setText(apiName);
             if(repliedUsername != null) {
                 replyName.setText(repliedUsername);
                 replyName.setVisibility(View.VISIBLE);
             }
-
             TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
             TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);
             replyList.setAdapter(tlAdp);
+            if(toggleImg) {
+                profile_img.setImageBitmap(profile_btm);
+                tweet_img.setImageBitmap(tweet_btm);
+            }
         }
-        if(toggleImg) {
-            profile_img.setImageBitmap(profile_btm);
-            tweet_img.setImageBitmap(tweet_btm);
-        }
+
         setIcons();
         txtRet.setText(rtStr);
         txtFav.setText(favStr);
@@ -186,7 +196,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     }
 
     private void setMedia(twitter4j.Status tweet) throws Exception {
-        String pbLink = tweet.getUser().getMiniProfileImageURL();
+        String pbLink = tweet.getUser().getProfileImageURL();
         MediaEntity[] media = tweet.getMediaEntities();
 
         InputStream iStream = new URL(pbLink).openStream();
@@ -196,6 +206,26 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             InputStream mediaStream = new URL(media[0].getMediaURL()).openStream();
             tweet_btm = BitmapFactory.decodeStream(mediaStream);
         }
+    }
+
+    /**
+     * @param input xml Tag
+     * @return formatted String
+     */
+    private String formatString(String input) {
+        String output = "gesendet von: ";
+        boolean openTag = false;
+        for(int i = 0 ; i < input.length() ; i++){
+            char current = input.charAt(i);
+            if(current == '>' && !openTag){
+                openTag = true;
+            } else if(current == '<'){
+                openTag = false;
+            } else if(openTag) {
+                output += current;
+            }
+        }
+        return output;
     }
 
     private void setIcons() {

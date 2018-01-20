@@ -18,13 +18,15 @@ import twitter4j.conf.ConfigurationBuilder;
  * NOT RECOMMENDED FOR MAIN-THREAD!
  */
 public class TwitterResource {
+
+    private final String TWITTER_CONSUMER_KEY = "GrylGIgQK3cDjo9mSTBqF1vwf";
+    private final String TWITTER_CONSUMER_SECRET = "pgaWUlDVS5b7Q6VJQDgBzHKw0mIxJIX0UQBcT1oFJEivsCl5OV";
+
     private static TwitterResource mTwitter;
     private Twitter twitter;
     private Context context;
     private SharedPreferences settings;
     private RequestToken reqToken;
-    private final String TWITTER_CONSUMER_KEY = "GrylGIgQK3cDjo9mSTBqF1vwf";
-    private final String TWITTER_CONSUMER_SECRET = "pgaWUlDVS5b7Q6VJQDgBzHKw0mIxJIX0UQBcT1oFJEivsCl5OV";
 
 
     /**

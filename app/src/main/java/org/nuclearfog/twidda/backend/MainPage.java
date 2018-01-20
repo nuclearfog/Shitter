@@ -8,18 +8,11 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
-
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import twitter4j.Paging;
 import twitter4j.Twitter;
@@ -42,7 +35,7 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
      * @see MainActivity
      */
     public MainPage(Context context) {
-        this.context=context;
+        this.context = context;
         twitterResource = TwitterResource.getInstance(context);
         twitterResource.init();// preload
         settings = context.getSharedPreferences("settings", 0);

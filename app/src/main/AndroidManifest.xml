@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".window.TwitterSearch"
+            android:name=".window.SearchWindow"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 

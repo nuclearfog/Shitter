@@ -23,6 +23,9 @@ public class FollowStatus extends AsyncTask <Long, Void, Void> {
     private ListView followList;
     private SwipeRefreshLayout followReload;
 
+    /**
+     *@see Follower
+     */
     public FollowStatus(Context context) {
         this.context=context;
     }

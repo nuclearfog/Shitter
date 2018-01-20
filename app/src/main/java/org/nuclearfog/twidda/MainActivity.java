@@ -25,11 +25,11 @@ import org.nuclearfog.twidda.backend.RegisterAccount;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
+import org.nuclearfog.twidda.window.SearchWindow;
 import org.nuclearfog.twidda.window.UserProfile;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
-import org.nuclearfog.twidda.window.TwitterSearch;
 
 /**
  * MainPage of the App
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Intent intent = new Intent(con, TwitterSearch.class);
+                Intent intent = new Intent(con, SearchWindow.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("search", s);
                 intent.putExtras(bundle);
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(!trendReload.isRefreshing()) {
                     TrendAdapter trend = (TrendAdapter) trendList.getAdapter();
                     String search = trend.getDatabase().getTrendname(position);
-                    Intent intent = new Intent(con, TwitterSearch.class);
+                    Intent intent = new Intent(con, SearchWindow.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("search", search);
                     if(search.startsWith("#")) {

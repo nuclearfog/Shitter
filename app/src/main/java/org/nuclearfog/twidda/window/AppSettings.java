@@ -102,7 +102,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.delete_db:
-                deleteDatabase(getString(R.string.database));
+                deleteDatabase("database.db");
                 break;
             case R.id.color_background:
                 mColor.setColor(ColorPreferences.BACKGROUND);

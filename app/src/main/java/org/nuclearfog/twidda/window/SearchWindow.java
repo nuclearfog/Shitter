@@ -13,17 +13,16 @@ import android.widget.ListView;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.Search;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
 /**
- * Search Tweets and Users
- * @see Search
+ * SearchWindow Tweets and Users
+ * @see org.nuclearfog.twidda.backend.TwitterSearch
  */
-public class TwitterSearch extends AppCompatActivity implements AdapterView.OnItemClickListener,
+public class SearchWindow extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
 
     private ListView tweetSearch, userSearch;
@@ -63,7 +62,7 @@ public class TwitterSearch extends AppCompatActivity implements AdapterView.OnIt
         tweetReload.setOnRefreshListener(this);
         userReload.setOnRefreshListener(this);
 
-        getContent(Search.TWEETS);
+        getContent(org.nuclearfog.twidda.backend.TwitterSearch.TWEETS);
     }
 
     @Override
@@ -127,10 +126,10 @@ public class TwitterSearch extends AppCompatActivity implements AdapterView.OnIt
     public void onRefresh() {
         switch(currentTab){
             case "search_result":
-                getContent(Search.TWEETS);
+                getContent(org.nuclearfog.twidda.backend.TwitterSearch.TWEETS);
                 break;
             case "user_result":
-                getContent(Search.USERS);
+                getContent(org.nuclearfog.twidda.backend.TwitterSearch.USERS);
                 break;
         }
     }
@@ -143,7 +142,7 @@ public class TwitterSearch extends AppCompatActivity implements AdapterView.OnIt
     }
 
     private void getContent(final String MODE) {
-        Search s = new Search(TwitterSearch.this);
+        org.nuclearfog.twidda.backend.TwitterSearch s = new org.nuclearfog.twidda.backend.TwitterSearch(SearchWindow.this);
         s.execute(MODE,search);
     }
 }

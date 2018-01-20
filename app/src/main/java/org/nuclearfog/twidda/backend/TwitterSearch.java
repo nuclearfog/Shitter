@@ -11,13 +11,13 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
-import org.nuclearfog.twidda.window.TwitterSearch;
+import org.nuclearfog.twidda.window.SearchWindow;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
 
-public class Search extends AsyncTask<String, Void, String> {
+public class TwitterSearch extends AsyncTask<String, Void, String> {
 
     public static final String TWEETS = "tweets";
     public static final String USERS = "users";
@@ -30,7 +30,7 @@ public class Search extends AsyncTask<String, Void, String> {
     private Twitter twitter;
     private int load;
 
-    public Search(Context context) {
+    public TwitterSearch(Context context) {
         this.context=context;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         load = settings.getInt("preload", 10) + 1;
@@ -38,10 +38,10 @@ public class Search extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        tweetSearch = (ListView) ((TwitterSearch)context).findViewById(R.id.tweet_result);
-        userSearch  = (ListView) ((TwitterSearch)context).findViewById(R.id.user_result);
-        tweetReload = (SwipeRefreshLayout) ((TwitterSearch)context).findViewById(R.id.searchtweets);
-        userReload  = (SwipeRefreshLayout) ((TwitterSearch)context).findViewById(R.id.searchusers);
+        tweetSearch = (ListView) ((SearchWindow)context).findViewById(R.id.tweet_result);
+        userSearch  = (ListView) ((SearchWindow)context).findViewById(R.id.user_result);
+        tweetReload = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchtweets);
+        userReload  = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchusers);
         twitter = TwitterResource.getInstance(context).getTwitter();
     }
 

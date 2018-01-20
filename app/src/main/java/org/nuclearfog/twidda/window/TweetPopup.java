@@ -88,13 +88,14 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
             Uri imageInput = i.getData();
             String[] filepath = {MediaStore.Images.Media.DATA};
             Cursor c = getContentResolver().query(imageInput,filepath,null,null,null);
-            if(c.moveToFirst()) {
-                int index = c.getColumnIndex(filepath[0]);
-                imgPath = c.getString(index);
-                Bitmap img = BitmapFactory.decodeFile(imgPath);
-                tweetImg1.setImageBitmap(img);
-                tweetImg1.setVisibility(View.VISIBLE);
-            }
+            if(c != null)
+                if(c.moveToFirst()) {
+                    int index = c.getColumnIndex(filepath[0]);
+                    imgPath = c.getString(index);
+                    Bitmap img = BitmapFactory.decodeFile(imgPath);
+                    tweetImg1.setImageBitmap(img);
+                    tweetImg1.setVisibility(View.VISIBLE);
+                }
             c.close();
         }
     }

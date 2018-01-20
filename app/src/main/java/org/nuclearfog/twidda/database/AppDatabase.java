@@ -3,25 +3,40 @@ package org.nuclearfog.twidda.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import org.nuclearfog.twidda.R;
 
 public class AppDatabase extends SQLiteOpenHelper
 {
+    private static final String uQuery = "CREATE TABLE IF NOT EXISTS user ("+
+            "userID INTEGER PRIMARY KEY, username TEXT," +
+            "scrname  TEXT, pbLink TEXT, banner TEXT, bio TEXT,"+
+            "location TEXT, link TEXT);";
+
+    private static final String tQuery = "CREATE TABLE IF NOT EXISTS tweet (" +
+            "tweetID INTEGER PRIMARY KEY, userID INTEGER," +
+            "time INTEGER, tweet TEXT, retweet INTEGER, favorite INTEGER," +
+            "answers INTEGER, FOREIGN KEY (userID) REFERENCES user(userID));";
+
+    private static final String trQuery = "CREATE TABLE IF NOT EXISTS trend (" +
+            "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";
+
+    private static final String hQuery = "CREATE TABLE IF NOT EXISTS timeline (" +
+            "tweetID INTEGER UNIQUE, mTweetID INTEGER UNIQUE," +
+            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));" +
+            "FOREIGN KEY (mTweetID) REFERENCES tweet(tweetID));";
+
+    private static final String fQuery = "CREATE TABLE IF NOT EXISTS favorit (" +
+            "ownerID INTEGER, tweetID INTEGER UNIQUE," +
+            "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
+            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
+
     private static AppDatabase mData;
-    private Context context;
 
     private AppDatabase(Context context) {
-        super(context, context.getString(R.string.database),null, 1);
-        this.context = context;
+        super(context, "database.db",null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String uQuery  = context.getString(R.string.tableUser);
-        String tQuery  = context.getString(R.string.tableTweet);
-        String trQuery = context.getString(R.string.tableTrend);
-        String hQuery  = context.getString(R.string.tableHome);
-        String fQuery  = context.getString(R.string.tableFavorit);
         db.execSQL(uQuery);
         db.execSQL(tQuery);
         db.execSQL(trQuery);

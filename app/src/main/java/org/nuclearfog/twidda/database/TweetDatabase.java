@@ -68,7 +68,7 @@ public class TweetDatabase {
     /**
      * this Constructor is used by twitter search
      * no need to store in SQLITE
-     * @param stats Search Result Tweets
+     * @param stats SearchWindow Result Tweets
      */
     public TweetDatabase(List<Status> stats, Context context) {
         initialize(context);
