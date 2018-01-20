@@ -28,7 +28,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
-    private TextView txtFollowing, txtFollower;
     private Toolbar tool;
     private long userId;
     private boolean home;
@@ -43,12 +42,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         userId = getIntent().getExtras().getLong("userID");
         SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
-        long homeId = settings.getLong("userID", -1);
-        home = userId == homeId;
+        home = userId == settings.getLong("userID", -1);
         homeTweets = (ListView)findViewById(R.id.ht_list);
         homeFavorits = (ListView)findViewById(R.id.hf_list);
-        txtFollowing = (TextView)findViewById(R.id.following);
-        txtFollower  = (TextView)findViewById(R.id.follower);
+        TextView txtFollowing = (TextView)findViewById(R.id.following);
+        TextView txtFollower  = (TextView)findViewById(R.id.follower);
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
@@ -187,6 +185,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         currentTab = tabId;
     }
 
+    /**
+     * Tab Content
+     */
     private void getContent() {
         TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
         TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
@@ -202,10 +203,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * Profile Information
+     */
     private void initElements() {
         new ProfileAction(this, tool).execute(userId, ProfileAction.GET_INFORMATION);
     }
 
+    /**
+     *  @param mode 0L = Following , 1L Follower
+     */
     private void getFollows(long mode) {
         Intent intent = new Intent(getApplicationContext(), Follower.class);
         Bundle bundle = new Bundle();

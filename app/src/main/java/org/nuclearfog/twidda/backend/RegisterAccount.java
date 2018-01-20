@@ -42,8 +42,6 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
                 mTwitter.initialize(pin);
                 return "success";
             }
-        } catch ( TwitterException e ) {
-            return e.getMessage();
         } catch ( Exception e ) {
             return e.getMessage();
         }

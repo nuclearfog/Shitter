@@ -71,8 +71,8 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean>
                 timelineAdapter = new TimelineAdapter(context,mTweets);
             }
             else if(mode == 1) {
-                int location = settings.getInt("woeid",23424829);
-                TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(location),context); //Germany by default
+                int location = settings.getInt("woeid",23424829); // Germany WOEID
+                TrendDatabase trend = new TrendDatabase(twitter.getPlaceTrends(location),context);
                 trendsAdapter = new TrendAdapter(context,trend);
             }
             else if(mode == 2) {

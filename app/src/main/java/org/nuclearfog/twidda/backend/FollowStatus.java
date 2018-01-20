@@ -49,11 +49,10 @@ public class FollowStatus extends AsyncTask <Long, Void, Void> {
         try {
             if(mode == 1L) { //FOLLOWING
                 userlist = twitter.getFollowersList(userID,cursor);
-                usrAdp = new UserAdapter(context,new UserDatabase(context,userlist));
             } else {        //Follower
                 userlist = twitter.getFriendsList(userID,cursor);
-                usrAdp = new UserAdapter(context,new UserDatabase(context,userlist));
             }
+            usrAdp = new UserAdapter(context,new UserDatabase(context,userlist));
         } catch(Exception err) {
             err.printStackTrace();
         }

@@ -195,7 +195,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         {
             Toast.makeText(context,"Fehler beim Laden des Profils",Toast.LENGTH_LONG).show();
         }
-        if(!isHome) { //Set Icons if it isn't the home profile
+        if(!isHome) {
             if(isFollowing) {
                 tool.getMenu().getItem(1).setIcon(R.drawable.follow_enabled);
             } else {
