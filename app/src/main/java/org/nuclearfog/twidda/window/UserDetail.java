@@ -10,21 +10,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import org.nuclearfog.twidda.backend.FollowStatus;
+import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
 /**
  * Get Follow Connections from an User
- * @see FollowStatus
+ * @see UserLists
  */
-public class Follower extends AppCompatActivity implements AdapterView.OnItemClickListener,
+public class UserDetail extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private long userID;
+    private long userID, tweetID;
     private long mode;
-    private ListView follow;
+    private ListView userListview;
     private SwipeRefreshLayout reload;
     private Toolbar toolbar;
 
@@ -32,16 +32,20 @@ public class Follower extends AppCompatActivity implements AdapterView.OnItemCli
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.follow);
-        userID = getIntent().getExtras().getLong("userID");
-        mode = getIntent().getExtras().getLong("mode");
+        Intent i = getIntent();
+        userID = i.getExtras().getLong("userID");
+        mode = i.getExtras().getLong("mode");
+        if(i.hasExtra("tweetID")){
+            tweetID = i.getExtras().getLong("tweetID");
+        }
 
-        follow = (ListView) findViewById(R.id.followList);
+        userListview = (ListView) findViewById(R.id.followList);
         reload = (SwipeRefreshLayout) findViewById(R.id.follow_swipe);
         toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
         setSupportActionBar(toolbar);
         setActionbarTitle(mode);
 
-        follow.setOnItemClickListener(this);
+        userListview.setOnItemClickListener(this);
         reload.setOnRefreshListener(this);
     }
 
@@ -54,7 +58,7 @@ public class Follower extends AppCompatActivity implements AdapterView.OnItemCli
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if(!reload.isRefreshing()) {
-            UserAdapter uAdp = (UserAdapter) follow.getAdapter();
+            UserAdapter uAdp = (UserAdapter) userListview.getAdapter();
             UserDatabase uDB = uAdp.getAdapter();
             long userID = uDB.getUserID(position);
             Intent intent = new Intent(getApplicationContext(), UserProfile.class);
@@ -68,15 +72,29 @@ public class Follower extends AppCompatActivity implements AdapterView.OnItemCli
 
     @Override
     public void onRefresh() {
-        FollowStatus follow = new FollowStatus(Follower.this);
-        follow.execute(mode, userID);
+        getUsers();
+    }
+
+    private void getUsers(){
+        UserLists uList = new UserLists(UserDetail.this);
+        if(mode == 0L || mode == 1L) {
+            uList.execute(mode, userID);
+        } else if(mode == 2L || mode == 3L) {
+            uList.execute(mode, tweetID);
+        }
     }
 
     private void setActionbarTitle(long mode) {
-        if(mode==1){
-            getSupportActionBar().setTitle(R.string.follower);
-        } else{
+        if(getSupportActionBar() == null)
+            return;
+        if(mode == 0) {
             getSupportActionBar().setTitle(R.string.following);
+        } else if(mode == 1) {
+            getSupportActionBar().setTitle(R.string.follower);
+        } else if(mode == 2) {
+            getSupportActionBar().setTitle(R.string.retweet);
+        } else if(mode == 3) {
+            getSupportActionBar().setTitle(R.string.favorite);
         }
     }
 }

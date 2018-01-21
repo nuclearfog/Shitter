@@ -17,6 +17,7 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
+import org.nuclearfog.twidda.backend.TwitterSearch;
 
 /**
  * SearchWindow Tweets and Users
@@ -62,7 +63,8 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
         tweetReload.setOnRefreshListener(this);
         userReload.setOnRefreshListener(this);
 
-        getContent(org.nuclearfog.twidda.backend.TwitterSearch.TWEETS);
+        getContent(TwitterSearch.TWEETS);
+        getContent(TwitterSearch.USERS);
     }
 
     @Override
@@ -142,7 +144,6 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void getContent(final String MODE) {
-        org.nuclearfog.twidda.backend.TwitterSearch s = new org.nuclearfog.twidda.backend.TwitterSearch(SearchWindow.this);
-        s.execute(MODE,search);
+        new TwitterSearch(SearchWindow.this).execute(MODE,search);
     }
 }

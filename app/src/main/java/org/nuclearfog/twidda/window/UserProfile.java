@@ -211,10 +211,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
-     *  @param mode 0L = Following , 1L Follower
+     *  @param mode 0L = Following , 1L UserDetail
      */
     private void getFollows(long mode) {
-        Intent intent = new Intent(getApplicationContext(), Follower.class);
+        Intent intent = new Intent(getApplicationContext(), UserDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userId);
         bundle.putLong("mode",mode);

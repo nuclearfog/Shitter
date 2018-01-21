@@ -47,7 +47,7 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".window.Follower"
+            android:name=".window.UserDetail"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 

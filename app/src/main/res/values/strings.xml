@@ -20,6 +20,8 @@
     <string name="trend">Trends</string>
     <string name="following">Following</string>
     <string name="follower">Follower</string>
+    <string name="retweet">Retweet</string>
+    <string name="favorite">Favorite</string>
     <string name="woe_id">WOE ID</string>
     <string name="banner">Profilbanner</string>
     <string name="link">Webseite</string>

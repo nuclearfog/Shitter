@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.nuclearfog.twidda.backend.ShowStatus;
 import org.nuclearfog.twidda.database.TweetDatabase;
@@ -38,10 +39,15 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
 
+        TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
+        TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
+
         answer_list.setOnItemClickListener(this);
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
         answer.setOnClickListener(this);
+        txtFav.setOnClickListener(this);
+        txtRt.setOnClickListener(this);
         pb.setOnClickListener(this);
         setContent();
     }
@@ -72,6 +78,22 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
             case R.id.profileimage_detail:
                 intent = new Intent(getApplicationContext(), UserProfile.class);
                 bundle.putLong("userID",userID);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case R.id.no_rt_detail:
+                intent = new Intent(getApplicationContext(), UserDetail.class);
+                bundle.putLong("userID",userID);
+                bundle.putLong("tweetID",tweetID);
+                bundle.putLong("mode",2L);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
+            case R.id.no_fav_detail:
+                intent = new Intent(getApplicationContext(), UserDetail.class);
+                bundle.putLong("userID",userID);
+                bundle.putLong("tweetID",tweetID);
+                bundle.putLong("mode",3L);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;

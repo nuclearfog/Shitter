@@ -110,7 +110,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 description = user.getDescription();
                 location = user.getLocation();
                 link = user.getURL();
-                follower = "Follower: "+user.getFollowersCount();
+                follower = "UserDetail: "+user.getFollowersCount();
                 following = "Following: "+user.getFriendsCount();
                 imageLink = user.getProfileImageURL();
                 bannerLink = user.getProfileBannerMobileURL();

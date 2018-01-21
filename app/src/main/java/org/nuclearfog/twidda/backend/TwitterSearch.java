@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
@@ -26,6 +28,7 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
     private UserAdapter uAdp;
     private SwipeRefreshLayout tweetReload, userReload;
     private ListView tweetSearch, userSearch;
+    private ProgressBar circleLoad;
     private Context context;
     private Twitter twitter;
     private int load;
@@ -42,6 +45,7 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
         userSearch  = (ListView) ((SearchWindow)context).findViewById(R.id.user_result);
         tweetReload = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchtweets);
         userReload  = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchusers);
+        circleLoad  = (ProgressBar) ((SearchWindow)context).findViewById(R.id.search_progress);
         twitter = TwitterResource.getInstance(context).getTwitter();
     }
 
@@ -70,6 +74,7 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String mode) {
+        circleLoad.setVisibility(View.INVISIBLE);
         switch(mode) {
             case(TWEETS):
                 tweetSearch.setAdapter(tlAdp);
