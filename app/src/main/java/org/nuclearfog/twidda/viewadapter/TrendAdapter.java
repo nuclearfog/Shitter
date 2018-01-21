@@ -15,12 +15,13 @@ import android.widget.TextView;
 public class TrendAdapter extends ArrayAdapter {
     private TrendDatabase trend;
     private LayoutInflater inf;
-    private  int background;
+    private  int background, textColor;
 
     public TrendAdapter(Context context, TrendDatabase trend) {
         super(context, R.layout.trend);
         inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ColorPreferences mcolor = ColorPreferences.getInstance(context);
+        textColor = mcolor.getColor(ColorPreferences.FONT_COLOR);
         background = mcolor.getColor(ColorPreferences.BACKGROUND);
         this.trend = trend;
     }
@@ -45,6 +46,8 @@ public class TrendAdapter extends ArrayAdapter {
         String trendName = trend.getTrendname(position);
         ((TextView) v.findViewById(R.id.trendpos)).setText(trendPos);
         ((TextView) v.findViewById(R.id.trendname)).setText(trendName);
+        ((TextView) v.findViewById(R.id.trendpos)).setTextColor(textColor);
+        ((TextView) v.findViewById(R.id.trendname)).setTextColor(textColor);
         return v;
     }
 }

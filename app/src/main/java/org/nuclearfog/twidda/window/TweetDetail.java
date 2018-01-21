@@ -117,11 +117,14 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private void setContent() {
         ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
         int backgroundColor = mColor.getColor(ColorPreferences.BACKGROUND);
+        int fontColor = mColor.getColor(ColorPreferences.FONT_COLOR);
         LinearLayout background = (LinearLayout) findViewById(R.id.tweet_detail);
         LinearLayout tweetaction = (LinearLayout) findViewById(R.id.tweetbar);
+        TextView txtTw = (TextView) findViewById(R.id.tweet_detailed);
         background.setBackgroundColor(backgroundColor);
         tweetaction.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
+        txtTw.setTextColor(fontColor);
         new ShowStatus(this).execute(tweetID);
     }
 }
