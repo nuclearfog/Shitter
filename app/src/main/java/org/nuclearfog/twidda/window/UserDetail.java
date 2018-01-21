@@ -19,19 +19,17 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
  * Get Follow Connections from an User
  * @see UserLists
  */
-public class UserDetail extends AppCompatActivity implements AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener {
+public class UserDetail extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private long userID, tweetID;
     private long mode;
     private ListView userListview;
-    private SwipeRefreshLayout reload;
     private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.follow);
+        setContentView(R.layout.user);
         Intent i = getIntent();
         userID = i.getExtras().getLong("userID");
         mode = i.getExtras().getLong("mode");
@@ -40,42 +38,32 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         }
 
         userListview = (ListView) findViewById(R.id.followList);
-        reload = (SwipeRefreshLayout) findViewById(R.id.follow_swipe);
+        userListview.setOnItemClickListener(this);
         toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
         setSupportActionBar(toolbar);
         setActionbarTitle(mode);
-
-        userListview.setOnItemClickListener(this);
-        reload.setOnRefreshListener(this);
+        getUsers();
     }
 
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
-        toolbar.inflateMenu(R.menu.setting); //TODO
+        toolbar.inflateMenu(R.menu.setting);    //  TODO
         return true;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(!reload.isRefreshing()) {
-            UserAdapter uAdp = (UserAdapter) userListview.getAdapter();
-            UserDatabase uDB = uAdp.getAdapter();
-            long userID = uDB.getUserID(position);
-            Intent intent = new Intent(getApplicationContext(), UserProfile.class);
-            Bundle bundle = new Bundle();
-            bundle.putLong("userID",userID);
-            bundle.putBoolean("home", false);//todo
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
+        UserAdapter uAdp = (UserAdapter) userListview.getAdapter();
+        UserDatabase uDB = uAdp.getAdapter();
+        long userID = uDB.getUserID(position);
+        Intent intent = new Intent(getApplicationContext(), UserProfile.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong("userID",userID);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
-    @Override
-    public void onRefresh() {
-        getUsers();
-    }
-
-    private void getUsers(){
+    private void getUsers() {
         UserLists uList = new UserLists(UserDetail.this);
         if(mode == 0L || mode == 1L) {
             uList.execute(mode, userID);

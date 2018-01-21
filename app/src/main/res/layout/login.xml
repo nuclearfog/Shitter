@@ -9,10 +9,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-
-    <!-- user name label -->
-
-    <!-- Twitter Login Button -->
     <Button
         android:id="@+id/linkButton"
         android:layout_width="180dp"

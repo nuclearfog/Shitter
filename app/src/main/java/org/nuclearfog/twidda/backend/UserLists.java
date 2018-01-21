@@ -3,15 +3,19 @@ package org.nuclearfog.twidda.backend;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.UserDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.IDs;
 import twitter4j.Twitter;
 import twitter4j.User;
 
@@ -21,7 +25,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private Twitter twitter;
     private UserAdapter usrAdp;
     private ListView userList;
-    private SwipeRefreshLayout userReload;
+    private ProgressBar uProgress;
 
     /**
      *@see UserDetail
@@ -34,7 +38,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     protected void onPreExecute() {
         twitter = TwitterResource.getInstance(context).getTwitter();
         userList = (ListView)((UserDetail)context).findViewById(R.id.followList);
-        userReload = (SwipeRefreshLayout)((UserDetail)context).findViewById(R.id.follow_swipe);
+        uProgress = (ProgressBar)((UserDetail)context).findViewById(R.id.user_progress);
     }
 
     /**
@@ -45,18 +49,27 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         long mode = data[0];
         long id = data[1];
         long cursor = -1L;  //TODO
-        List<User> userlist = null;
+        List<User> listUser = null;
         try {
-            if(mode == 0L) { //FOLLOWING
-                userlist = twitter.getFollowersList(id,cursor);
-            } else if(mode == 1L) { //Follower
-                userlist = twitter.getFriendsList(id,cursor);
-            } else if(mode == 2L) {         // Retweet TODO
-            } else if(mode == 3L) {         // Favorite TODO
+            if(mode == 0L) { // GET FOLLOWING USERS
+                listUser = twitter.getFriendsList(id,cursor);
             }
-            if(userlist != null)
-                usrAdp = new UserAdapter(context,new UserDatabase(context,userlist));
-        } catch(Exception err) {
+            else if(mode == 1L) { // GET FOLLOWER
+                listUser = twitter.getFollowersList(id,cursor);
+            }
+            else if(mode == 2L) { // GET RETWEET USER
+                IDs retweeter = twitter.getRetweeterIds(id, cursor);
+                listUser = new ArrayList<>();
+                for(long userId : retweeter.getIDs()) {
+                    listUser.add(twitter.showUser(userId));
+                }
+            }
+            else if(mode == 3L) { // GET FAV USERS TODO
+            }
+            if(listUser != null)
+                usrAdp = new UserAdapter(context,new UserDatabase(context,listUser));
+        }
+        catch(Exception err) {
             err.printStackTrace();
         }
         return null;
@@ -65,6 +78,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     @Override
     protected void onPostExecute(Void v) {
         userList.setAdapter(usrAdp);
-        userReload.setRefreshing(false);
+        uProgress.setVisibility(View.INVISIBLE);
     }
 }

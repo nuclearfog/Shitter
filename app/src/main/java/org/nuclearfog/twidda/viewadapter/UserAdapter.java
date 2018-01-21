@@ -25,7 +25,7 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
     private Context context;
 
     public UserAdapter(Context context, UserDatabase userDatabase) {
-        super(context, R.layout.user);
+        super(context, R.layout.useritem);
         this.userDatabase = userDatabase;
         this.context = context;
         inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,7 +47,7 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
     public View getView(int position, View v, @NonNull ViewGroup parent) {
         p = parent;
         if(v == null) {
-            v = inf.inflate(R.layout.user, parent,false);
+            v = inf.inflate(R.layout.useritem, parent,false);
             v.setBackgroundColor(background);
             v.setOnClickListener(this);
         }

@@ -16,9 +16,11 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
 
     public static final int BACKGROUND = 0x0;
     public static final int FONT_COLOR = 0x1;
+    public static final int HIGHLIGHTING = 0x2;
     public static final int TWEET_COLOR = 0x3;
 
     private int background = 0;
+    private int highlight = 0;
     private int font = 0;
     private int tweet = 0;
     private int mode;
@@ -32,6 +34,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
         background = settings.getInt("background_color", 0xff061a22);
         font = settings.getInt("font_color", 0xffffffff);
         tweet = settings.getInt("tweet_color", 0xff19aae8);
+        highlight = settings.getInt("highlight_color", 0xffff00ff);
     }
 
     @Override
@@ -43,6 +46,9 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
             case FONT_COLOR:
                 font = newColor;
                 break;
+            case HIGHLIGHTING:
+                highlight = newColor;
+
             case TWEET_COLOR:
                 tweet = newColor;
                 break;
@@ -67,6 +73,8 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
                 return font;
             case TWEET_COLOR:
                return tweet;
+            case HIGHLIGHTING:
+                return highlight;
             default:
                 return -1;
         }
@@ -85,6 +93,9 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
             case(TWEET_COLOR):
                 preColor = tweet;
                 break;
+            case HIGHLIGHTING:
+                preColor = highlight;
+                break;
             default:
                 preColor = 0xFFFFFFFF;
         }
@@ -101,6 +112,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
         e.putInt("background_color", background);
         e.putInt("font_color", font);
         e.putInt("tweet_color", tweet);
+        e.putInt("highlight_color", highlight);
         e.apply();
     }
 

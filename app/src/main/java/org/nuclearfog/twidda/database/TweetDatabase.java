@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ public class TweetDatabase {
     private List<Long> userId,tweetId,timeMillis;
     private List<Integer> noRT,noFav,noAns;
     private List<Status> stats;
-    private List<Bitmap> profileImg;
     private SharedPreferences settings;
     private boolean toggleImg;
     private int size = 0;
@@ -185,10 +183,6 @@ public class TweetDatabase {
         db.close();
     }
 
-    public void setPbList(List<Bitmap> profileImg) {
-        this.profileImg = profileImg;
-    }
-
     public int getSize() {
         return size;
     }
@@ -204,7 +198,6 @@ public class TweetDatabase {
     public String getDate(int pos){return timeToString(getTime(pos));}
     public String getPbLink (int pos){return pbLink.get(pos);}
     public boolean loadImages(){return toggleImg;}
-    public Bitmap getProfileImg(int pos){return profileImg.get(pos);}
 
     /**
      * Convert Time to String

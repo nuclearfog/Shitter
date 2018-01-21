@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import twitter4j.MediaEntity;
@@ -38,10 +37,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private Context c;
     private Twitter twitter;
     private ListView replyList;
-    private TextView  username,scrName, replyName, tweet, txtRet, txtFav, date;
-    private TextView used_api, txtAns;
-    private Button retweetButton, favoriteButton;
-    private ImageView profile_img, tweet_img;
+    private TextView  username,scrName,replyName,tweet;
+    private TextView used_api,txtAns,txtRet,txtFav,date;
+    private Button retweetButton,favoriteButton;
+    private ImageView profile_img,tweet_img;
     private ArrayList<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String ansStr, rtStr, favStr, repliedUsername, apiName;
@@ -49,7 +48,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private SharedPreferences settings;
     private int load, ansNo = 0;
     private long userReply, tweetReplyID;
-    private Date d;
     private Bitmap profile_btm, tweet_btm;
 
     public ShowStatus(Context c) {
@@ -95,7 +93,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 currentTweet = retweetedStat;
                 rtFlag = true;
             }
-
             rtStr = Integer.toString(currentTweet.getRetweetCount());
             favStr = Integer.toString(currentTweet.getFavoriteCount());
             userReply = currentTweet.getInReplyToUserId();
@@ -112,9 +109,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 if(userReply > 0) {
                     repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
                 }
-                d = currentTweet.getCreatedAt();
+
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-                dateString = sdf.format(d);
+                dateString = sdf.format(currentTweet.getCreatedAt());
 
                 Query query = new Query("to:"+scrNameStr+" since_id:"+tweetID+" -filter:retweets");
                 query.setCount(load);
@@ -135,7 +132,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             } else {
                 if(id[1]==RETWEET) {
                     if(retweeted) {
-                        //TODO destroy Retweet
+                        // TODO del Retweet
                     } else {
                         twitter.retweetStatus(tweetID);
                         retweeted = true;
@@ -151,8 +148,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 }
                 return false;
             }
-        } catch(Exception err){ err.printStackTrace(); }
-        return true;
+        } catch(Exception err) {
+            err.printStackTrace();
+            return false;
+        }
     }
 
     @Override

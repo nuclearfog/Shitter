@@ -211,7 +211,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
-     *  @param mode 0L = Following , 1L UserDetail
+     *  @param mode 0L = Following , 1L Follower
      */
     private void getFollows(long mode) {
         Intent intent = new Intent(getApplicationContext(), UserDetail.class);

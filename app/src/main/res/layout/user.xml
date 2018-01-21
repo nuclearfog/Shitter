@@ -1,34 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:contentDescription="@string/profile_image"
-    android:padding="5dp">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/user_profileimg"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:contentDescription="@string/profile_image"
-        android:padding="5dp" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/follow_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/userframe"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/username_detail"
-            android:layout_width="match_parent"
+        <ProgressBar
+            android:id="@+id/user_progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10" />
+            android:layout_gravity="center" />
 
-        <TextView
-            android:id="@+id/screenname_detail"
+        <ListView
+            android:id="@+id/followList"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10" />
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
-    </LinearLayout>
 </LinearLayout>

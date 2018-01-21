@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
