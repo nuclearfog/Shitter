@@ -45,6 +45,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         Button colorButton1 = (Button) findViewById(R.id.color_background);
         Button colorButton2 = (Button) findViewById(R.id.color_font);
         Button colorButton3 = (Button) findViewById(R.id.color_tweet);
+        Button colorButton4 = (Button) findViewById(R.id.highlight_color);
         Button reduce = (Button) findViewById(R.id.less);
         Button enhance = (Button) findViewById(R.id.more);
         load_factor = (TextView)findViewById(R.id.number_row);
@@ -54,6 +55,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
+        colorButton4.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
         reduce.setOnClickListener(this);
         enhance.setOnClickListener(this);
@@ -61,9 +63,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         int color1 = mColor.getColor(ColorPreferences.BACKGROUND);
         int color2 = mColor.getColor(ColorPreferences.FONT_COLOR);
         int color3 = mColor.getColor(ColorPreferences.TWEET_COLOR);
+        int color4 = mColor.getColor(ColorPreferences.HIGHLIGHTING);
         colorButton1.setBackgroundColor(color1);
         colorButton2.setBackgroundColor(color2);
         colorButton3.setBackgroundColor(color3);
+        colorButton4.setBackgroundColor(color4);
 
         toggleImg.setChecked(settings.getBoolean("image_load",false));
 
@@ -112,6 +116,9 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.color_tweet:
                 mColor.setColor(ColorPreferences.TWEET_COLOR);
+                break;
+            case R.id.highlight_color:
+                mColor.setColor(ColorPreferences.HIGHLIGHTING);
                 break;
             case R.id.less:
                 if(row > 10)

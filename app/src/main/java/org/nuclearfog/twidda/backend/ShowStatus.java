@@ -7,6 +7,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +30,7 @@ import twitter4j.Twitter;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
@@ -47,6 +51,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private boolean retweeted, favorited, toggleImg, rtFlag = false;
     private SharedPreferences settings;
     private int load, ansNo = 0;
+    private int highlight;
     private long userReply, tweetReplyID;
     private Bitmap profile_btm, tweet_btm;
 
@@ -56,6 +61,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         settings = c.getSharedPreferences("settings", 0);
         load = settings.getInt("preload", 10);
         toggleImg = settings.getBoolean("image_load", false);
+        highlight = ColorPreferences.getInstance(c).getColor(ColorPreferences.HIGHLIGHTING);
         this.c = c;
     }
 
@@ -158,7 +164,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     protected void onPostExecute(Boolean tweetLoaded) {
         if(tweetLoaded) {
             ansStr = Integer.toString(ansNo);
-            tweet.setText(tweetStr);
+            tweet.setText(highlight(tweetStr)); //TODO make abstract class
             username.setText(usernameStr);
             scrName.setText(scrNameStr);
             txtAns.setText(ansStr);
@@ -225,6 +231,39 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             }
         }
         return output;
+    }
+
+    private SpannableStringBuilder highlight(String tweet) {
+        SpannableStringBuilder sTweet = new SpannableStringBuilder(tweet);
+        int start = 0;
+        boolean marked = false;
+        for(int i = 0 ; i < tweet.length() ; i++) {
+            char current = tweet.charAt(i);
+            switch(current){
+                case '@':
+                    start = i;
+                    marked = true;
+                    break;
+                case '#':
+                    start = i;
+                    marked = true;
+                    break;
+
+                case '\'':
+                case ':':
+                case ' ':
+                case '.':
+                case ',':
+                    if(marked)
+                        sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    marked = false;
+                    break;
+            }
+            if(i == tweet.length()-1 && marked) {
+                sTweet.setSpan(new ForegroundColorSpan(highlight),start,i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return sTweet;
     }
 
     private void setIcons() {

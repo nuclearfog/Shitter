@@ -48,7 +48,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
                 break;
             case HIGHLIGHTING:
                 highlight = newColor;
-
+                break;
             case TWEET_COLOR:
                 tweet = newColor;
                 break;
@@ -60,9 +60,11 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
         Button colorButton1 = (Button)((AppSettings)context).findViewById(R.id.color_background);
         Button colorButton2 = (Button)((AppSettings)context).findViewById(R.id.color_font);
         Button colorButton3 = (Button)((AppSettings)context).findViewById(R.id.color_tweet);
+        Button colorButton4 = (Button)((AppSettings)context).findViewById(R.id.highlight_color);
         colorButton1.setBackgroundColor(background);
         colorButton2.setBackgroundColor(font);
         colorButton3.setBackgroundColor(tweet);
+        colorButton4.setBackgroundColor(highlight);
     }
 
     public int getColor(final int Mode){
@@ -76,7 +78,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
             case HIGHLIGHTING:
                 return highlight;
             default:
-                return -1;
+                return 0xFFFFFFFF;
         }
     }
 
