@@ -49,7 +49,6 @@ public class TwitterEngine {
      */
     private TwitterEngine(Context context) {
         settings = context.getSharedPreferences("settings", 0);
-        load = settings.getInt("preload", 10) + 1;
         location = settings.getInt("woeid",23424829); // Germany WOEID
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
@@ -401,6 +400,7 @@ public class TwitterEngine {
             mTwitter = new TwitterEngine(context);
             mTwitter.init();
         }
+        mTwitter.load = mTwitter.settings.getInt("preload", 10);
         return mTwitter;
     }
 }
