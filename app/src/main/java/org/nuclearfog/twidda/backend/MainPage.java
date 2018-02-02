@@ -19,7 +19,6 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
 
     private TwitterEngine mTwitter;
     private Context context;
-
     private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
     private ListView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter, mentionAdapter;
@@ -32,7 +31,6 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
     public MainPage(Context context) {
         this.context = context;
         mTwitter = TwitterEngine.getInstance(context);
-        mTwitter.init();// preload
     }
 
     @Override

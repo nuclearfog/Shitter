@@ -399,6 +399,7 @@ public class TwitterEngine {
     public static TwitterEngine getInstance(Context context) {
         if(mTwitter == null) {
             mTwitter = new TwitterEngine(context);
+            mTwitter.init();
         }
         return mTwitter;
     }

@@ -170,10 +170,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         ProfileAction tweets = new ProfileAction(this, tool);
         switch(currentTab) {
             case "tweets":
-                tweets.execute(userId, ProfileAction.GET_TWEETS);
+                tweets.execute(userId, ProfileAction.GET_TWEETS,1L);
                 break;
             case "favorites":
-                tweets.execute(userId, ProfileAction.GET_FAVS);
+                tweets.execute(userId, ProfileAction.GET_FAVS,1L);
                 break;
         }
     }
@@ -207,7 +207,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * Profile Information
      */
     private void initElements() {
-        new ProfileAction(this, tool).execute(userId, ProfileAction.GET_INFORMATION);
+        new ProfileAction(this, tool).execute(userId, ProfileAction.GET_INFORMATION,1L);
     }
 
     /**
