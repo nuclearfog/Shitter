@@ -8,8 +8,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 
-import twitter4j.TwitterException;
-
 public class RegisterAccount extends AsyncTask<String, Void, String>
 {
     private Button verifierButton, loginButton;
@@ -18,7 +16,7 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
     /**
      * Register App for Account access
      * @see MainActivity
-     * @see TwitterResource used to Store Twitter instance
+     * @see TwitterEngine used to Store Twitter instance
      * @param context current Activity's Context.
      */
     public RegisterAccount(Context context) {
@@ -34,7 +32,7 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
     @Override
     protected String doInBackground( String... twitterPin ) {
         String pin = twitterPin[0];
-        TwitterResource mTwitter = TwitterResource.getInstance(context);
+        TwitterEngine mTwitter = TwitterEngine.getInstance(context);
         try {
             if( pin.trim().isEmpty() ) {
                 mTwitter.request();

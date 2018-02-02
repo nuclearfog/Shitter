@@ -11,8 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -20,11 +18,9 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
-import twitter4j.Paging;
-import twitter4j.Twitter;
 import twitter4j.User;
+
+import com.squareup.picasso.Picasso;
 
 public class ProfileAction extends AsyncTask<Long,Void,Long>
 {
@@ -44,12 +40,11 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
     private TimelineAdapter homeTl, homeFav;
     private Context context;
     private Toolbar tool;
+    private boolean isHome = false;
     private boolean imgEnabled = false;
     private boolean isFollowing = false;
     private boolean  isFollowed = false;
     private boolean muted = false;
-    private boolean isHome = false;
-    private int load;
 
     /**
      * @param context Context to Activity
@@ -61,13 +56,12 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         this.tool = tool;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imgEnabled = settings.getBoolean("image_load",false);
-        load = settings.getInt("preload", 10) + 1;
     }
 
     @Override
     protected void onPreExecute() {
-        txtUser  = (TextView) ((UserProfile)context).findViewById(R.id.profile_username);
-        txtScrName = (TextView) ((UserProfile)context).findViewById(R.id.profile_screenname);
+        txtUser  = (TextView)((UserProfile)context).findViewById(R.id.profile_username);
+        txtScrName = (TextView)((UserProfile)context).findViewById(R.id.profile_screenname);
         txtBio = (TextView)((UserProfile)context).findViewById(R.id.bio);
         txtLocation = (TextView)((UserProfile)context).findViewById(R.id.location);
         txtLink = (TextView)((UserProfile)context).findViewById(R.id.links);
@@ -76,8 +70,8 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         txtFollower  = (TextView)((UserProfile)context).findViewById(R.id.follower);
         profile  = (ImageView)((UserProfile)context).findViewById(R.id.profile_img);
         banner   = (ImageView)((UserProfile)context).findViewById(R.id.banner);
-        linkIcon = (ImageView) ((UserProfile)context).findViewById(R.id.link_img);
-        locationIcon = (ImageView) ((UserProfile)context).findViewById(R.id.location_img);
+        linkIcon = (ImageView)((UserProfile)context).findViewById(R.id.link_img);
+        locationIcon = (ImageView)((UserProfile)context).findViewById(R.id.location_img);
         tweetsReload    = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.hometweets);
         favoritsReload  = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.homefavorits);
         profileTweets   = (ListView)((UserProfile)context).findViewById(R.id.ht_list);
@@ -88,23 +82,18 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
     protected Long doInBackground(Long... args) {
         long userId = args[0];
         final long MODE = args[1];
-        TwitterResource mTwitter = TwitterResource.getInstance(context);
-        Twitter twitter = mTwitter.getTwitter();
+        TwitterEngine mTwitter = TwitterEngine.getInstance(context);
         try {
-            long homeID = twitter.getId();
-            isHome = homeID == userId;
-            Paging p = new Paging();
-            p.setCount(load);
-
+            isHome = mTwitter.isHome(userId);
             if(!isHome)
             {
-                isFollowing = twitter.showFriendship(homeID,userId).isSourceFollowingTarget();
-                isFollowed  = twitter.showFriendship(homeID,userId).isTargetFollowingSource();
-                muted = twitter.showFriendship(homeID,userId).isSourceMutingTarget();
+                isFollowing = mTwitter.getConnection(userId, true);
+                isFollowed  = mTwitter.getConnection(userId, false);
+                muted = mTwitter.getBlocked(userId);
             }
             if(MODE == GET_INFORMATION)
             {
-                User user = twitter.showUser(userId);
+                User user = mTwitter.getUser(userId);
                 screenName = '@'+user.getScreenName();
                 username = user.getName();
                 description = user.getDescription();
@@ -115,40 +104,31 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 imageLink = user.getProfileImageURL();
                 bannerLink = user.getProfileBannerMobileURL();
                 Date d = user.getCreatedAt();
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-                dateString = "seit "+sdf.format(d);
+                dateString = "seit "+new SimpleDateFormat("dd.MM.yyyy").format(d);
             }
             else if(MODE == GET_TWEETS)
             {
-                List<twitter4j.Status> tweets = twitter.getUserTimeline(userId,p);
-                TweetDatabase hTweets = new TweetDatabase(tweets,context,TweetDatabase.USER_TL,userId);
+                TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2]),context,TweetDatabase.USER_TL,userId);
                 homeTl = new TimelineAdapter(context,hTweets);
             }
             else if(MODE == GET_FAVS)
             {
-                List<twitter4j.Status> favorits = twitter.getFavorites(userId,p);
-                TweetDatabase fTweets = new TweetDatabase(favorits,context,TweetDatabase.FAV_TL,userId);
+                TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2]),context,TweetDatabase.FAV_TL,userId);
                 homeFav = new TimelineAdapter(context,fTweets);
             }
             else if(MODE == ACTION_FOLLOW)
             {
-                if(isFollowing) {
-                    twitter.destroyFriendship(userId);
-                    isFollowing = false;
-                } else {
-                    twitter.createFriendship(userId);
-                    isFollowing = true;
-                }
+                if(isFollowing)
+                    isFollowing = mTwitter.toggleFollow(userId);
+                else
+                    isFollowing = mTwitter.toggleFollow(userId);
             }
             else if(MODE == ACTION_MUTE)
             {
-                if(muted) {
-                    twitter.destroyBlock(userId);
-                    muted = false;
-                } else {
-                    twitter.createBlock(userId);
-                    muted = true;
-                }
+                if(muted)
+                    muted = mTwitter.toggleBlock(userId);
+                else
+                    muted = mTwitter.toggleBlock(userId);
             }
         } catch(Exception err) {
             err.printStackTrace();
@@ -196,16 +176,14 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
             Toast.makeText(context,"Fehler beim Laden des Profils",Toast.LENGTH_LONG).show();
         }
         if(!isHome) {
-            if(isFollowing) {
+            if(isFollowing)
                 tool.getMenu().getItem(1).setIcon(R.drawable.follow_enabled);
-            } else {
+            else
                 tool.getMenu().getItem(1).setIcon(R.drawable.follow);
-            }
-            if(muted) {
+            if(muted)
                 tool.getMenu().getItem(2).setIcon(R.drawable.block_enabled);
-            } else {
+            else
                 tool.getMenu().getItem(2).setIcon(R.drawable.block);
-            }
         }
     }
 }

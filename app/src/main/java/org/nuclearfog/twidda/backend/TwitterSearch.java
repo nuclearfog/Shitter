@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
@@ -15,10 +14,6 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.SearchWindow;
 
-import twitter4j.Query;
-import twitter4j.QueryResult;
-import twitter4j.Twitter;
-
 public class TwitterSearch extends AsyncTask<String, Void, String> {
 
     public static final String TWEETS = "tweets";
@@ -30,13 +25,10 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
     private ListView tweetSearch, userSearch;
     private ProgressBar circleLoad;
     private Context context;
-    private Twitter twitter;
-    private int load;
+    private TwitterEngine mTwitter;
 
     public TwitterSearch(Context context) {
         this.context=context;
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        load = settings.getInt("preload", 10) + 1;
     }
 
     @Override
@@ -46,7 +38,7 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
         tweetReload = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchtweets);
         userReload  = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchusers);
         circleLoad  = (ProgressBar) ((SearchWindow)context).findViewById(R.id.search_progress);
-        twitter = TwitterResource.getInstance(context).getTwitter();
+        mTwitter = TwitterEngine.getInstance(context);
     }
 
     @Override
@@ -56,16 +48,10 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
         try {
             switch(mode) {
                 case(TWEETS):
-                    Query q = new Query();
-                    q.setQuery(get+" +exclude:retweets");
-                    q.setCount(load);
-                    QueryResult result = twitter.search(q);
-                    TweetDatabase searchdb = new TweetDatabase(result.getTweets(),context);
-                    tlAdp = new TimelineAdapter(context, searchdb);
+                    tlAdp = new TimelineAdapter(context, new TweetDatabase(mTwitter.searchTweets(get),context));
                     return TWEETS;
                 case(USERS):
-                    UserDatabase userdb = new UserDatabase(context, twitter.searchUsers(get,-1));
-                    uAdp = new UserAdapter(context, userdb);
+                    uAdp = new UserAdapter(context, new UserDatabase(context, mTwitter.searchUsers(get)));
                     return USERS;
             }
         } catch(Exception err){err.printStackTrace();}

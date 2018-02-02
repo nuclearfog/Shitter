@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.MediaEntity;
-import twitter4j.Query;
-import twitter4j.QueryResult;
-import twitter4j.Twitter;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
@@ -39,27 +36,25 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     public static final long FAVORITE = 1;
 
     private Context c;
-    private Twitter twitter;
     private ListView replyList;
     private TextView  username,scrName,replyName,tweet;
     private TextView used_api,txtAns,txtRet,txtFav,date;
     private Button retweetButton,favoriteButton;
     private ImageView profile_img,tweet_img;
-    private ArrayList<twitter4j.Status> answers;
+    private List<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String ansStr, rtStr, favStr, repliedUsername, apiName;
-    private boolean retweeted, favorited, toggleImg, rtFlag = false;
-    private SharedPreferences settings;
-    private int load, ansNo = 0;
+    private TwitterEngine mTwitter;
+    private boolean retweeted, favorited, toggleImg;
+    private int ansNo = 0;
     private int highlight;
     private long userReply, tweetReplyID;
     private Bitmap profile_btm, tweet_btm;
 
     public ShowStatus(Context c) {
-        twitter = TwitterResource.getInstance(c).getTwitter();
+        mTwitter = TwitterEngine.getInstance(c);
         answers = new ArrayList<>();
-        settings = c.getSharedPreferences("settings", 0);
-        load = settings.getInt("preload", 10);
+        SharedPreferences settings = c.getSharedPreferences("settings", 0);
         toggleImg = settings.getBoolean("image_load", false);
         highlight = ColorPreferences.getInstance(c).getColor(ColorPreferences.HIGHLIGHTING);
         this.c = c;
@@ -93,12 +88,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     protected Boolean doInBackground(Long... id) {
         long tweetID = id[0];
         try {
-            twitter4j.Status currentTweet = twitter.showStatus(tweetID);
-            twitter4j.Status retweetedStat = currentTweet.getRetweetedStatus();
-            if(retweetedStat != null) {
-                currentTweet = retweetedStat;
-                rtFlag = true;
-            }
+            twitter4j.Status currentTweet = mTwitter.getStatus(tweetID);
             rtStr = Integer.toString(currentTweet.getRetweetCount());
             favStr = Integer.toString(currentTweet.getFavoriteCount());
             userReply = currentTweet.getInReplyToUserId();
@@ -116,21 +106,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                     repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
                 }
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-                dateString = sdf.format(currentTweet.getCreatedAt());
+                dateString = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(currentTweet.getCreatedAt());
+                answers = mTwitter.getAnswers(scrNameStr, tweetID);
+                ansNo = answers.size();
 
-                Query query = new Query("to:"+scrNameStr+" since_id:"+tweetID+" -filter:retweets");
-                query.setCount(load);
-
-                QueryResult result = twitter.search(query);
-                List<twitter4j.Status> stats = result.getTweets();
-
-                for(twitter4j.Status reply : stats) {
-                    if(reply.getInReplyToStatusId() == tweetID) {
-                        answers.add(reply);
-                        ansNo++;
-                    }
-                }
                 if(toggleImg) {
                     setMedia(currentTweet);
                 }
@@ -138,17 +117,18 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             } else {
                 if(id[1]==RETWEET) {
                     if(retweeted) {
+                        mTwitter.retweet(tweetID, true);
                         // TODO del Retweet
                     } else {
-                        twitter.retweetStatus(tweetID);
+                        mTwitter.retweet(tweetID, false);
                         retweeted = true;
                     }
                 } else if(id[1]==FAVORITE) {
                     if(favorited) {
-                        twitter.destroyFavorite(tweetID);
+                        mTwitter.favorite(tweetID, true);
                         favorited = false;
                     } else {
-                        twitter.createFavorite(tweetID);
+                        mTwitter.favorite(tweetID, false);
                         favorited = true;
                     }
                 }
@@ -164,7 +144,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     protected void onPostExecute(Boolean tweetLoaded) {
         if(tweetLoaded) {
             ansStr = Integer.toString(ansNo);
-            tweet.setText(highlight(tweetStr)); //TODO make abstract class
+            tweet.setText(highlight(tweetStr));
             username.setText(usernameStr);
             scrName.setText(scrNameStr);
             txtAns.setText(ansStr);
@@ -254,6 +234,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 case ' ':
                 case '.':
                 case ',':
+                case '!':
+                case '?':
                     if(marked)
                         sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     marked = false;
@@ -267,14 +249,13 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     }
 
     private void setIcons() {
-        if(favorited) {
+        if(favorited)
             favoriteButton.setBackgroundResource(R.drawable.favorite_enabled);
-        } else {
+        else
             favoriteButton.setBackgroundResource(R.drawable.favorite);
-        } if(retweeted) {
+        if(retweeted)
             retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
-        } else {
+        else
             retweetButton.setBackgroundResource(R.drawable.retweet);
-        }
     }
 }

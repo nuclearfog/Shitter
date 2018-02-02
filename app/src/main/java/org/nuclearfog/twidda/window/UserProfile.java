@@ -194,12 +194,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         if(mTweet.getSize()>0) {
             homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
         }else {
-            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_TWEETS);
+            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_TWEETS,1L);
         }
         if(fTweet.getSize()>0) {
             homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
         } else {
-            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_FAVS);
+            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_FAVS,1L);
         }
     }
 

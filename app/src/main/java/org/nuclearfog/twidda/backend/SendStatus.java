@@ -4,15 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import java.io.File;
-
-import twitter4j.StatusUpdate;
-import twitter4j.Twitter;
-
 public class SendStatus extends AsyncTask<Object, Void, Boolean> {
 
     private Context context;
-    private Twitter twitter;
     private String path;
 
     /**
@@ -22,7 +16,6 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
     public SendStatus(Context context, String path) {
         this.context = context;
         this.path = path;
-        twitter = TwitterResource.getInstance(context).getTwitter();
     }
 
     /**
@@ -33,20 +26,16 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Object... args) {
         try {
+            Long id = -1L;
             String tweet = (String) args[0];
-            StatusUpdate mStatus = new StatusUpdate(tweet);
-            if(args.length > 1) { //ANSWER TO USER
-                mStatus.setInReplyToStatusId((Long)args[1]);
-            }
-            if(!path.trim().isEmpty()) { //ADD IMAGE
-                mStatus.setMedia(new File(path));
-            }
-            twitter.tweets().updateStatus(mStatus);
+            if(args.length > 1)
+                id = (Long) args[1];
+            TwitterEngine.getInstance(context).sendStatus(tweet,id,path);
             return true;
         } catch(Exception err) {
             err.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override
