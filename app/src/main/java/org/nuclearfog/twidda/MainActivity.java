@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onBackPressed() {
-        if(currentTab.equals("timeline"))
+        if( currentTab.equals("timeline") )
             super.onBackPressed();
         else
             tabhost.setCurrentTab(0);
