@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText pin;
     private Context con;
     private Toolbar toolbar;
+    private TabHost tabhost;
     private boolean settingFlag = false;
     private String currentTab = "timeline";
 
@@ -140,6 +141,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             setTabContent();
             settingFlag = false;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(currentTab.equals("timeline"))
+            super.onBackPressed();
+        else
+            tabhost.setCurrentTab(0);
     }
 
     @Override
@@ -269,10 +278,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         timelineReload = (SwipeRefreshLayout) findViewById(R.id.timeline);
         trendReload = (SwipeRefreshLayout) findViewById(R.id.trends);
         mentionReload = (SwipeRefreshLayout) findViewById(R.id.mention);
-        TabHost tabhost = (TabHost)findViewById(R.id.main_tabhost);
+        tabhost = (TabHost)findViewById(R.id.main_tabhost);
         toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         tabhost.setup();
         // Tab #1

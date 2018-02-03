@@ -39,7 +39,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.profile);
         tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         userId = getIntent().getExtras().getLong("userID");
         SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
         home = userId == settings.getLong("userID", -1);
