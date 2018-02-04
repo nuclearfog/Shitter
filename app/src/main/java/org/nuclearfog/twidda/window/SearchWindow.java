@@ -98,7 +98,7 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
             case R.id.tweet_result:
                 if(!tweetReload.isRefreshing()) {
                     TimelineAdapter tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
-                    TweetDatabase twDB = tlAdp.getAdapter();
+                    TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
                     Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
@@ -112,7 +112,7 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
             case R.id.user_result:
                 if(!userReload.isRefreshing()) {
                     UserAdapter uAdp = (UserAdapter) userSearch.getAdapter();
-                    UserDatabase uDb = uAdp.getAdapter();
+                    UserDatabase uDb = uAdp.getData();
                     Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                     Bundle bundle = new Bundle();
                     long userID = uDb.getUserID(position);

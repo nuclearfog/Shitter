@@ -33,7 +33,7 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
         background = mColor.getColor(ColorPreferences.BACKGROUND);
     }
 
-    public UserDatabase getAdapter(){
+    public UserDatabase getData(){
         return userDatabase;
     }
 

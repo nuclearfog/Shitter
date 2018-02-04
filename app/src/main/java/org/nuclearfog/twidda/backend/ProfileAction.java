@@ -112,7 +112,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 homeTl = (TimelineAdapter) profileTweets.getAdapter();
                 if(homeTl != null) {
                     id = homeTl.getItemId(0);
-                    homeTl.getAdapter().add(mTwitter.getUserTweets(userId,args[2],id));
+                    homeTl.getData().add(mTwitter.getUserTweets(userId,args[2],id));
                 } else {
                     TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
                     homeTl = new TimelineAdapter(context,hTweets);
@@ -123,7 +123,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 homeFav = (TimelineAdapter) profileFavorits.getAdapter();
                 if(homeFav != null) {
                     id = homeFav.getItemId(0);
-                    homeFav.getAdapter().add(mTwitter.getUserFavs(userId,args[2],id));
+                    homeFav.getData().add(mTwitter.getUserFavs(userId,args[2],id));
                 } else {
                     TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2],id),context,TweetDatabase.FAV_TL,userId);
                     homeFav = new TimelineAdapter(context,fTweets);

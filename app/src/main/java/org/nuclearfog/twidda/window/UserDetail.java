@@ -53,7 +53,7 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         UserAdapter uAdp = (UserAdapter) userListview.getAdapter();
-        UserDatabase uDB = uAdp.getAdapter();
+        UserDatabase uDB = uAdp.getData();
         long userID = uDB.getUserID(position);
         Intent intent = new Intent(getApplicationContext(), UserProfile.class);
         Bundle bundle = new Bundle();

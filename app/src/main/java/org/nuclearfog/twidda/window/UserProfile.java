@@ -142,7 +142,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.ht_list:
                 if(!homeReload.isRefreshing()) {
                     TimelineAdapter tlAdp = (TimelineAdapter) homeTweets.getAdapter();
-                    TweetDatabase twDB = tlAdp.getAdapter();
+                    TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
                     Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
@@ -156,7 +156,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.hf_list:
                 if(!favoriteReload.isRefreshing()) {
                     TimelineAdapter tlAdp = (TimelineAdapter) homeFavorits.getAdapter();
-                    TweetDatabase twDB = tlAdp.getAdapter();
+                    TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
                     Intent intent = new Intent(getApplicationContext(), TweetDetail.class);

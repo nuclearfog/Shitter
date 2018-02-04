@@ -103,7 +103,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TimelineAdapter tlAdp = (TimelineAdapter) answer_list.getAdapter();
-        TweetDatabase twDB = tlAdp.getAdapter();
+        TweetDatabase twDB = tlAdp.getData();
         long userID = twDB.getUserID(position);
         long tweetID = twDB.getTweetId(position);
         Intent intent = new Intent(getApplicationContext(), TweetDetail.class);

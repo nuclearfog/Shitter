@@ -38,7 +38,11 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
     }
 
-    public TweetDatabase getAdapter() {
+    /**
+     * Fetch & Update Data
+     * @return TweetDatabase instance
+     */
+    public TweetDatabase getData() {
         return mTweets;
     }
 
@@ -108,6 +112,8 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
                 case ' ':
                 case '.':
                 case ',':
+                case '!':
+                case '?':
                     if(marked)
                         sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     marked = false;

@@ -52,7 +52,7 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
                     tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
                     if(tlAdp != null) {
                         id = tlAdp.getItemId(0);
-                        tlAdp.getAdapter().addHot(mTwitter.searchTweets(get,id));
+                        tlAdp.getData().addHot(mTwitter.searchTweets(get,id));
                     } else {
                         tlAdp = new TimelineAdapter(context, new TweetDatabase(mTwitter.searchTweets(get,id),context));
                     }
