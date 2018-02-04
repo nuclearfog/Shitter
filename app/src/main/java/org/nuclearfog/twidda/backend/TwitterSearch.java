@@ -45,10 +45,17 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... search) {
         String mode = search[0];
         String get = search[1];
+        long id = 1L;
         try {
             switch(mode) {
                 case(TWEETS):
-                    tlAdp = new TimelineAdapter(context, new TweetDatabase(mTwitter.searchTweets(get),context));
+                    tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
+                    if(tlAdp != null) {
+                        id = tlAdp.getItemId(0);
+                        tlAdp.getAdapter().addHot(mTwitter.searchTweets(get,id));
+                    } else {
+                        tlAdp = new TimelineAdapter(context, new TweetDatabase(mTwitter.searchTweets(get,id),context));
+                    }
                     return TWEETS;
                 case(USERS):
                     uAdp = new UserAdapter(context, new UserDatabase(context, mTwitter.searchUsers(get)));
@@ -63,7 +70,10 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
         circleLoad.setVisibility(View.INVISIBLE);
         switch(mode) {
             case(TWEETS):
-                tweetSearch.setAdapter(tlAdp);
+                if(tweetSearch.getAdapter() == null)
+                    tweetSearch.setAdapter(tlAdp);
+                else
+                    tlAdp.notifyDataSetChanged();
                 tweetReload.setRefreshing(false);
                 break;
             case(USERS):

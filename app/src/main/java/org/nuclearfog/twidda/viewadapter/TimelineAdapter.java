@@ -47,6 +47,11 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         return mTweets.getSize();
     }
 
+    @Override
+    public long getItemId(int pos){
+        return mTweets.getTweetId(pos);
+    }
+
     @NonNull
     @Override
     public View getView(int position, View v, @NonNull ViewGroup parent) {

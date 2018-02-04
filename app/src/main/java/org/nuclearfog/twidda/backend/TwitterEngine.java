@@ -124,7 +124,7 @@ public class TwitterEngine {
      * recall Keys from Shared-Preferences
      * & initialize Twitter
      */
-    public void init() {
+    private void init() {
         String key1,key2;
         if( settings.getBoolean("login", false) ) {
             key1 = settings.getString("key1", " ");
@@ -136,11 +136,12 @@ public class TwitterEngine {
     /**
      * Get Home Timeline
      * @param page current page
+     * @param lastId Tweet ID of the earliest Tweet
      * @return List of Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getHome(int page) throws TwitterException {
-        return twitter.getHomeTimeline(new Paging(page,load));
+    public List<Status> getHome(int page, long lastId) throws TwitterException {
+        return twitter.getHomeTimeline(new Paging(page,load,lastId));
     }
 
     /**
@@ -155,11 +156,12 @@ public class TwitterEngine {
     /**
      * Get Mention Tweets
      * @param page current page
+     * @param id ID of the earliest Tweet
      * @return List of Mention Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getMention(int page) throws TwitterException {
-        return twitter.getMentionsTimeline(new Paging(page,load));
+    public List<Status> getMention(int page, long id) throws TwitterException {
+        return twitter.getMentionsTimeline(new Paging(page,load,id));
     }
 
 
@@ -169,10 +171,11 @@ public class TwitterEngine {
      * @return List of Tweets
      * @throws TwitterException if acces is unavailable
      */
-    public List<Status> searchTweets(String search) throws TwitterException {
+    public List<Status> searchTweets(String search, long id) throws TwitterException {
         Query q = new Query();
         q.setQuery(search+" +exclude:retweets");
         q.setCount(load);
+        q.setSinceId(id);
         QueryResult result = twitter.search(q);
         return result.getTweets();
     }
@@ -194,8 +197,8 @@ public class TwitterEngine {
      * @return List of User Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getUserTweets(long userId, long page) throws TwitterException {
-        return twitter.getUserTimeline(userId, new Paging((int)page,load));
+    public List<Status> getUserTweets(long userId, long page, long id) throws TwitterException {
+        return twitter.getUserTimeline(userId, new Paging((int)page,load, id));
     }
 
     /**
@@ -205,8 +208,8 @@ public class TwitterEngine {
      * @return List of User Favs
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getUserFavs(long userId, long page) throws TwitterException {
-        return twitter.getFavorites(userId,new Paging((int)page,load ));
+    public List<Status> getUserFavs(long userId, long page, long id) throws TwitterException {
+        return twitter.getFavorites(userId,new Paging((int)page,load,id));
     }
 
     /**

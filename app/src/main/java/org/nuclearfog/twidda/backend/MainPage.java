@@ -54,17 +54,30 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
     protected Boolean doInBackground(Integer... args) {
         int mode = args[0];
         int page = args[1];
+        long id = 1L;
         try {
             if(mode == 0) {
-                TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page), context,TweetDatabase.HOME_TL,0);
-                timelineAdapter = new TimelineAdapter(context,mTweets);
+                timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
+                if(timelineAdapter != null) {
+                    id = timelineAdapter.getItemId(0);
+                    timelineAdapter.getAdapter().add(mTwitter.getHome(page,id));
+                } else {
+                    TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
+                    timelineAdapter = new TimelineAdapter(context,mTweets);
+                }
             }
             else if(mode == 1) {
                 trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(),context));
             }
             else if(mode == 2) {
-                TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page), context,TweetDatabase.GET_MENT,0);
-                mentionAdapter = new TimelineAdapter(context,mention);
+                mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
+                if(mentionAdapter != null) {
+                    id = mentionAdapter.getItemId(0);
+                    mentionAdapter.getAdapter().add(mTwitter.getMention(page,id));
+                } else {
+                    TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
+                    mentionAdapter = new TimelineAdapter(context,mention);
+                }
             }
         } catch (TwitterException e) {
             return false;
@@ -78,20 +91,24 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if(success) {
-            if(timelineAdapter != null)
-                timelineList.setAdapter(timelineAdapter);
-            else if(trendsAdapter != null)
+            if(timelineAdapter != null) {
+                if(timelineList.getAdapter() == null)
+                    timelineList.setAdapter(timelineAdapter);
+                else
+                    timelineAdapter.notifyDataSetChanged();
+                timelineRefresh.setRefreshing(false);
+            } else if(trendsAdapter != null) {
                 trendList.setAdapter(trendsAdapter);
-            else if(mentionAdapter != null)
-                mentionList.setAdapter(mentionAdapter);
+                trendRefresh.setRefreshing(false);
+            } else if(mentionAdapter != null) {
+                if(mentionList.getAdapter() == null)
+                    mentionList.setAdapter(mentionAdapter);
+                else
+                    mentionAdapter.notifyDataSetChanged();
+                mentionRefresh.setRefreshing(false);
+            }
         } else {
             Toast.makeText(context, context.getString(R.string.connection_failure), Toast.LENGTH_LONG).show();
         }
-        if(timelineRefresh.isRefreshing())
-            timelineRefresh.setRefreshing(false);
-        else if(mentionRefresh.isRefreshing())
-            mentionRefresh.setRefreshing(false);
-        else if(trendRefresh.isRefreshing())
-            trendRefresh.setRefreshing(false);
     }
 }

@@ -25,7 +25,6 @@ public class TweetDatabase {
     private List<String> user,scrname,tweet,pbLink;
     private List<Long> userId,tweetId,timeMillis;
     private List<Integer> noRT,noFav,noAns;
-    private List<Status> stats;
     private SharedPreferences settings;
     private boolean toggleImg;
     private int size = 0;
@@ -42,11 +41,10 @@ public class TweetDatabase {
      * @see #HOME_TL#FAV_TL#USER_TL
      */
     public TweetDatabase(List<Status> stats, Context context, final int mode,long CurrentId) {
-        this.stats = stats;
         this.CurrentId = CurrentId;
         this.mode = mode;
         initialize(context);
-        store();
+        store(stats);
         load();
     }
 
@@ -73,7 +71,24 @@ public class TweetDatabase {
         insert(stats);
     }
 
-    private void store() {
+    /**
+     * Add new Elements to the Lists and store into Database
+     * @param stats List of Tweets
+     */
+    public void add(List<Status> stats) {
+        store(stats);
+        insertNew(stats);
+    }
+
+    /**
+     * Add new Elements without storing
+     * @param stats list of Tweets
+     */
+    public void addHot(List<Status> stats) {
+        insertNew(stats);
+    }
+
+    private void store(List<Status> stats) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues user  = new ContentValues();
         ContentValues tweet = new ContentValues();
@@ -215,8 +230,7 @@ public class TweetDatabase {
 
         if(weeks > 4) {
             Date tweetDate = new Date(mills);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-            return sdf.format(tweetDate);
+            return new SimpleDateFormat("dd.MM.yyyy").format(tweetDate);
         }
         if(weeks > 0)
             return "vor "+weeks+" w";
@@ -230,7 +244,7 @@ public class TweetDatabase {
             return "vor "+seconds+" s";
     }
 
-    private void initialize(Context c){
+    private void initialize(Context c) {
         dataHelper = AppDatabase.getInstance(c);
         settings = c.getSharedPreferences("settings", 0);
         limit = settings.getInt("limit", 100);
@@ -251,6 +265,24 @@ public class TweetDatabase {
             pbLink.add(usr.getMiniProfileImageURL());
             tweetId.add(stat.getId());
             timeMillis.add(stat.getCreatedAt().getTime());
+            size++;
+        }
+    }
+
+    private void insertNew(List<Status> stats) {
+        for(int index = stats.size()-1 ; index >=0 ; index--) {
+            Status stat = stats.get(index);
+            User usr = stat.getUser();
+            user.add(0,usr.getName());
+            scrname.add(0,'@'+usr.getScreenName());
+            tweet.add(0,stat.getText());
+            noRT.add(0,stat.getRetweetCount());
+            noFav.add(0,stat.getFavoriteCount());
+            noAns.add(0,0); // TODO
+            userId.add(0,usr.getId());
+            pbLink.add(0,usr.getMiniProfileImageURL());
+            tweetId.add(0,stat.getId());
+            timeMillis.add(0,stat.getCreatedAt().getTime());
             size++;
         }
     }

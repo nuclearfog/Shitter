@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +25,8 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
  * @see ProfileAction
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
+        AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
+        TabHost.OnTabChangeListener, AppBarLayout.OnOffsetChangedListener {
 
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
@@ -50,6 +52,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         TextView txtFollower  = (TextView)findViewById(R.id.follower);
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+     //   AppBarLayout mBar = (AppBarLayout) findViewById(R.id.barlayout_profile); //TODO
+     //   mBar.addOnOffsetChangedListener(this);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
         mTab.setup();
         // Tab #1
@@ -186,18 +190,30 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         currentTab = tabId;
     }
 
+    @Override
+    public void onOffsetChanged(AppBarLayout mBar, int high) {
+        int max = - mBar.getTotalScrollRange();
+        if(high == max) {
+            homeTweets.setNestedScrollingEnabled(true);
+            homeFavorits.setNestedScrollingEnabled(true);
+        } else {
+            homeTweets.setNestedScrollingEnabled(false);
+            homeFavorits.setNestedScrollingEnabled(false);
+        }
+    }
+
     /**
      * Tab Content
      */
     private void getContent() {
         TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
         TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
-        if(mTweet.getSize()>0) {
+        if( mTweet.getSize() > 0 ) {
             homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
         }else {
             new ProfileAction(this, tool).execute(userId, ProfileAction.GET_TWEETS,1L);
         }
-        if(fTweet.getSize()>0) {
+        if( fTweet.getSize() > 0 ) {
             homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
         } else {
             new ProfileAction(this, tool).execute(userId, ProfileAction.GET_FAVS,1L);

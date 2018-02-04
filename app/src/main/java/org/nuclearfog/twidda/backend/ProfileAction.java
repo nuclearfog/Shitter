@@ -82,6 +82,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
     protected Long doInBackground(Long... args) {
         long userId = args[0];
         final long MODE = args[1];
+        long id = 1L;
         TwitterEngine mTwitter = TwitterEngine.getInstance(context);
         try {
             isHome = mTwitter.isHome(userId);
@@ -108,13 +109,25 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
             }
             else if(MODE == GET_TWEETS)
             {
-                TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2]),context,TweetDatabase.USER_TL,userId);
-                homeTl = new TimelineAdapter(context,hTweets);
+                homeTl = (TimelineAdapter) profileTweets.getAdapter();
+                if(homeTl != null) {
+                    id = homeTl.getItemId(0);
+                    homeTl.getAdapter().add(mTwitter.getUserTweets(userId,args[2],id));
+                } else {
+                    TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
+                    homeTl = new TimelineAdapter(context,hTweets);
+                }
             }
             else if(MODE == GET_FAVS)
             {
-                TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2]),context,TweetDatabase.FAV_TL,userId);
-                homeFav = new TimelineAdapter(context,fTweets);
+                homeFav = (TimelineAdapter) profileFavorits.getAdapter();
+                if(homeFav != null) {
+                    id = homeFav.getItemId(0);
+                    homeFav.getAdapter().add(mTwitter.getUserFavs(userId,args[2],id));
+                } else {
+                    TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2],id),context,TweetDatabase.FAV_TL,userId);
+                    homeFav = new TimelineAdapter(context,fTweets);
+                }
             }
             else if(MODE == ACTION_FOLLOW)
             {
@@ -163,12 +176,18 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         }
         else if(mode == GET_TWEETS)
         {
-            profileTweets.setAdapter(homeTl);
+            if(profileTweets.getAdapter() == null)
+                profileTweets.setAdapter(homeTl);
+            else
+                homeTl.notifyDataSetChanged();
             tweetsReload.setRefreshing(false);
         }
         else if(mode == GET_FAVS)
         {
-            profileFavorits.setAdapter(homeFav);
+            if(profileFavorits.getAdapter() == null)
+                profileFavorits.setAdapter(homeFav);
+            else
+                homeFav.notifyDataSetChanged();
             favoritsReload.setRefreshing(false);
         }
         else if(mode == FAILURE)
