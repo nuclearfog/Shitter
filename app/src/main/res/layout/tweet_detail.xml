@@ -41,8 +41,7 @@
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_margin="5dp"
-                        android:contentDescription="@string/profile_image"
-                        app:srcCompat="@mipmap/pb" />
+                        android:contentDescription="@string/profile_image" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -108,6 +107,70 @@
                     android:contentDescription="@string/tweet_image"
                     app:srcCompat="@android:color/black" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/tweetbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:addStatesFromChildren="false"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <Button
+                            android:id="@+id/answer_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/chat" />
+
+                        <TextView
+                            android:id="@+id/no_ans_detail"
+                            android:layout_width="64dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginStart="5dp"
+                            android:ems="10" />
+
+                        <Button
+                            android:id="@+id/rt_button_detail"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/retweet" />
+
+                        <TextView
+                            android:id="@+id/no_rt_detail"
+                            android:layout_width="64dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginStart="5dp"
+                            android:ems="10" />
+
+                        <Button
+                            android:id="@+id/fav_button_detail"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/favorite" />
+
+                        <TextView
+                            android:id="@+id/no_fav_detail"
+                            android:layout_width="64dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="5dp"
+                            android:ems="10" />
+
+                    </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/answer_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="true" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -119,70 +182,6 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/tweetbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:addStatesFromChildren="false"
-                android:gravity="center_vertical|center_horizontal"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <Button
-                    android:id="@+id/answer_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/chat" />
-
-                <TextView
-                    android:id="@+id/no_ans_detail"
-                    android:layout_width="64dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="5dp"
-                    android:ems="10" />
-
-                <Button
-                    android:id="@+id/rt_button_detail"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/retweet" />
-
-                <TextView
-                    android:id="@+id/no_rt_detail"
-                    android:layout_width="64dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="5dp"
-                    android:ems="10" />
-
-                <Button
-                    android:id="@+id/fav_button_detail"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:background="@drawable/favorite" />
-
-                <TextView
-                    android:id="@+id/no_fav_detail"
-                    android:layout_width="64dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="5dp"
-                    android:ems="10" />
-
-            </LinearLayout>
-
-            <ListView
-                android:id="@+id/answer_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="true" />
-        </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
