@@ -24,7 +24,7 @@ public class TweetDatabase {
     private AppDatabase dataHelper;
     private List<String> user,scrname,tweet,pbLink;
     private List<Long> userId,tweetId,timeMillis;
-    private List<Integer> noRT,noFav,noAns;
+    private List<Integer> noRT,noFav,noAns, verify;
     private SharedPreferences settings;
     private boolean toggleImg;
     private int size = 0;
@@ -108,7 +108,7 @@ public class TweetDatabase {
             user.put("bio",usr.getDescription());
             user.put("location",usr.getLocation());
             user.put("link",usr.getURL());
-
+            user.put("verify", usr.isVerified() ? 1 : 0);
             tweet.put("userID", usr.getId());
             tweet.put("tweetID", stat.getId());
             tweet.put("time", stat.getCreatedAt().getTime());
@@ -185,6 +185,8 @@ public class TweetDatabase {
                 user.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("scrname"); // username
                 scrname.add(cursor.getString(index) );
+                index = cursor.getColumnIndex("verify"); // VERIFIED
+                verify.add(cursor.getInt(index));
                 index = cursor.getColumnIndex("pbLink"); // image
                 pbLink.add(cursor.getString(index) );
                 index = cursor.getColumnIndex("userID"); // UserID
@@ -213,6 +215,7 @@ public class TweetDatabase {
     public String getDate(int pos){return timeToString(getTime(pos));}
     public String getPbLink (int pos){return pbLink.get(pos);}
     public boolean loadImages(){return toggleImg;}
+    public boolean isVerified(int pos){return verify.get(pos) == 1;}
 
     /**
      * Convert Time to String
@@ -264,6 +267,7 @@ public class TweetDatabase {
             userId.add(usr.getId());
             pbLink.add(usr.getMiniProfileImageURL());
             tweetId.add(stat.getId());
+            verify.add(usr.isVerified() ? 1 : 0);
             timeMillis.add(stat.getCreatedAt().getTime());
             size++;
         }
@@ -282,6 +286,7 @@ public class TweetDatabase {
             userId.add(0,usr.getId());
             pbLink.add(0,usr.getMiniProfileImageURL());
             tweetId.add(0,stat.getId());
+            verify.add(0,usr.isVerified() ? 1 : 0);
             timeMillis.add(0,stat.getCreatedAt().getTime());
             size++;
         }
@@ -297,6 +302,7 @@ public class TweetDatabase {
         userId  = new ArrayList<>();
         pbLink  = new ArrayList<>();
         tweetId = new ArrayList<>();
+        verify  = new ArrayList<>();
         timeMillis = new ArrayList<>();
     }
 }

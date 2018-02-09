@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#ff4081</color>
     <color name="twitterBlau">#034059</color>
     <color name="soylentgreen">#76b900</color>
     <color name="tweetwindow">#19aae8</color>

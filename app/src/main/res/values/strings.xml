@@ -36,4 +36,5 @@
     <string name="delete_tweet">Löschen</string>
     <string name="refresh_dummy">Aktualisieren</string>
     <string name="highlight">Highlight</string>
+    <string name="verify">Verifiziert</string>
 </resources>

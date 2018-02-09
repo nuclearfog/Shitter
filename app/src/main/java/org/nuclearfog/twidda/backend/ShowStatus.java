@@ -40,12 +40,12 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private TextView  username,scrName,replyName,tweet;
     private TextView used_api,txtAns,txtRet,txtFav,date;
     private Button retweetButton,favoriteButton;
-    private ImageView profile_img,tweet_img;
+    private ImageView profile_img,tweet_img,tweet_verify;
     private List<twitter4j.Status> answers;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String ansStr, rtStr, favStr, repliedUsername, apiName;
     private TwitterEngine mTwitter;
-    private boolean retweeted, favorited, toggleImg;
+    private boolean retweeted, favorited, toggleImg, verified;
     private int ansNo = 0;
     private int highlight;
     private long userReply, tweetReplyID;
@@ -75,6 +75,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
 
         profile_img = (ImageView) ((TweetDetail)c).findViewById(R.id.profileimage_detail);
         tweet_img   = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image);
+        tweet_verify =(ImageView)((TweetDetail)c).findViewById(R.id.tweet_verify);
 
         retweetButton = (Button) ((TweetDetail)c).findViewById(R.id.rt_button_detail);
         favoriteButton = (Button) ((TweetDetail)c).findViewById(R.id.fav_button_detail);
@@ -93,7 +94,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             favStr = Integer.toString(currentTweet.getFavoriteCount());
             userReply = currentTweet.getInReplyToUserId();
             tweetReplyID = currentTweet.getInReplyToStatusId();
-
+            verified = currentTweet.getUser().isVerified();
             retweeted = currentTweet.isRetweetedByMe();
             favorited = currentTweet.isFavorited();
             if(id.length == 1) {
@@ -153,6 +154,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
             if(repliedUsername != null) {
                 replyName.setText(repliedUsername);
                 replyName.setVisibility(View.VISIBLE);
+            }
+            if(verified) {
+                tweet_verify.setVisibility(View.VISIBLE);
             }
             TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
             TimelineAdapter tlAdp = new TimelineAdapter(c, tweetDatabase);

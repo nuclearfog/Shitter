@@ -9,7 +9,7 @@ public class AppDatabase extends SQLiteOpenHelper
     private static final String uQuery = "CREATE TABLE IF NOT EXISTS user ("+
             "userID INTEGER PRIMARY KEY, username TEXT," +
             "scrname  TEXT, pbLink TEXT, banner TEXT, bio TEXT,"+
-            "location TEXT, link TEXT);";
+            "location TEXT, link TEXT, verify INTEGER);";
 
     private static final String tQuery = "CREATE TABLE IF NOT EXISTS tweet (" +
             "tweetID INTEGER PRIMARY KEY, userID INTEGER," +

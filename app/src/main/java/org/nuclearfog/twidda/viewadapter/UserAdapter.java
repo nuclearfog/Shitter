@@ -11,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
@@ -57,6 +56,11 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
 
         if(userDatabase.loadImages()) {
             Picasso.with(context).load(userDatabase.getImageUrl(position)).into(pb);
+        }
+        if(userDatabase.isVerified(position)) {
+            v.findViewById(R.id.verified).setVisibility(View.VISIBLE);
+        } else {
+            v.findViewById(R.id.verified).setVisibility(View.INVISIBLE);
         }
         return v;
     }

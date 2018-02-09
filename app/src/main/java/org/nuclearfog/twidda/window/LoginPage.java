@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
         pin = findViewById(R.id.pin);
         findViewById(R.id.linkButton).setOnClickListener(this);
         findViewById(R.id.get).setOnClickListener(this);
+        findViewById(R.id.clipboard).setOnClickListener(this);
     }
 
     @Override
@@ -44,6 +46,19 @@ public class LoginPage extends Activity implements View.OnClickListener {
                     new RegisterAccount(this).execute(twitterPin);
                 } else {
                     Toast.makeText(getApplicationContext(),"PIN eingeben!",Toast.LENGTH_LONG).show();
+                }
+                break;
+
+            case R.id.clipboard:
+                ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                if(clip != null && clip.hasPrimaryClip()) {
+                    String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
+                    if(text.matches("\\d++\n?")) {
+                        pin.setText(text);
+                        Toast.makeText(getApplicationContext(),"Eingefügt!",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(),"Falsches Format!",Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
         }

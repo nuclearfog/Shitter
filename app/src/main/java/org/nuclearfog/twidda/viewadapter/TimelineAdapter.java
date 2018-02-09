@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.database.TweetDatabase;
@@ -77,6 +76,11 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ((TextView) v.findViewById(R.id.tweettext)).setTextColor(textColor);
         ImageView pb = v.findViewById(R.id.tweetPb);
+        if(mTweets.isVerified(position)) {
+            v.findViewById(R.id.list_verify).setVisibility(View.VISIBLE);
+        } else {
+            v.findViewById(R.id.list_verify).setVisibility(View.INVISIBLE);
+        }
         if(mTweets.loadImages()) {
             Picasso.with(context).load(mTweets.getPbLink(position)).into(pb);
         }
