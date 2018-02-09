@@ -37,4 +37,6 @@
     <string name="refresh_dummy">Aktualisieren</string>
     <string name="highlight">Highlight</string>
     <string name="verify">Verifiziert</string>
+    <string name="yes_confirm">Ja</string>
+    <string name="no_confirm">Nein</string>
 </resources>

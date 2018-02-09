@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +22,8 @@ import org.nuclearfog.twidda.R;
  */
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText tweetfield;
     private ImageView tweetImg1,tweetImg2,tweetImg3,tweetImg4;
+    private EditText tweetfield;
     private long inReplyId;
     private String imgPath, hashtag="";
 
@@ -59,11 +58,6 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         tweetfield.setText(hashtag);
     }
 
-    @Override
-    protected void onDestroy() {
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        super.onDestroy();
-    }
 
     @Override
     public void onClick(View v) {
@@ -76,7 +70,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.image:
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, RESULT_FIRST_USER );
+                startActivityForResult(i, 0);
                 break;
         }
     }
@@ -85,10 +79,9 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);
         if(returnCode == RESULT_OK){
-            Uri imageInput = i.getData();
             String[] filepath = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(imageInput,filepath,null,null,null);
-            if(c != null)
+            Cursor c = getContentResolver().query(i.getData(),filepath,null,null,null);
+            if(c != null) {
                 if(c.moveToFirst()) {
                     int index = c.getColumnIndex(filepath[0]);
                     imgPath = c.getString(index);
@@ -96,14 +89,9 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                     tweetImg1.setImageBitmap(img);
                     tweetImg1.setVisibility(View.VISIBLE);
                 }
-            c.close();
+                c.close();
+            }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void send() {

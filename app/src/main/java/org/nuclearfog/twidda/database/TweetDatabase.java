@@ -88,6 +88,10 @@ public class TweetDatabase {
         insertNew(stats);
     }
 
+    public void delete(long id) {
+        //TODO
+    }
+
     private void store(List<Status> stats) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues user  = new ContentValues();

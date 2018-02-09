@@ -388,6 +388,13 @@ public class TwitterEngine {
     }
 
     /**
+     * @param id Tweet ID
+     */
+    public void deleteTweet(long id) throws TwitterException {
+        twitter.destroyStatus(id);
+    }
+
+    /**
      * check if User ID is home ID
      * @param id User ID
      * @return result

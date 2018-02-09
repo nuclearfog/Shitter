@@ -184,6 +184,14 @@
                     android:layout_marginStart="5dp"
                     android:ems="10" />
 
+                <Button
+                    android:id="@+id/delete"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/ic_cross"
+                    android:visibility="invisible" />
+
             </LinearLayout>
 
             <ListView

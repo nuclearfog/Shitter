@@ -1,7 +1,10 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,11 +19,15 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
+import static android.content.DialogInterface.BUTTON_POSITIVE;
+
 /**
  * Detailed Tweet Window
  * @see ShowStatus
  */
-public class TweetDetail extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class TweetDetail extends AppCompatActivity implements View.OnClickListener,
+        AdapterView.OnItemClickListener, DialogInterface.OnClickListener {
 
     private ListView answer_list;
     private long tweetID;
@@ -32,15 +39,21 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.tweet_detail);
         tweetID = getIntent().getExtras().getLong("tweetID");
         userID = getIntent().getExtras().getLong("userID");
+        SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
+        boolean home = userID == settings.getLong("userID", -1);
 
         answer_list = (ListView) findViewById(R.id.answer_list);
         Button answer = (Button) findViewById(R.id.answer_button);
         Button retweet = (Button) findViewById(R.id.rt_button_detail);
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
+        Button delete = (Button) findViewById(R.id.delete);
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
 
         TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
         TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
+        if(home) {
+            delete.setVisibility(View.VISIBLE);
+        }
 
         answer_list.setOnItemClickListener(this);
         favorite.setOnClickListener(this);
@@ -48,6 +61,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         answer.setOnClickListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
+        delete.setOnClickListener(this);
         pb.setOnClickListener(this);
         setContent();
     }
@@ -68,7 +82,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 bundle.putLong("TweetID", tweetID);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
             case R.id.rt_button_detail:
                 mStat.execute(tweetID, ShowStatus.RETWEET);
@@ -97,6 +110,24 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 bundle.putLong("mode",3L);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                break;
+            case R.id.delete:
+                AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+                alerta.setMessage("Tweet löschen?");
+                alerta.setPositiveButton(R.string.yes_confirm, this);
+                alerta.setNegativeButton(R.string.no_confirm, this);
+                alerta.show();
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface d, int id) {
+        switch(id){
+            case BUTTON_NEGATIVE:
+                break;
+            case BUTTON_POSITIVE:
+                new ShowStatus(this).execute(tweetID,ShowStatus.DELETE);
                 break;
         }
     }

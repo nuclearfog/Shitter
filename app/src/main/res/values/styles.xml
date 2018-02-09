@@ -4,9 +4,17 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:displayOptions">showHome</item>
+        <item name="android:windowAnimationStyle">@style/TransactionPending</item>
     </style>
 
-    <style name="Transparency" parent="Theme.AppCompat.NoActionBar">
+    <style name="Transparency" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="TransactionPending" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
     </style>
 </resources>

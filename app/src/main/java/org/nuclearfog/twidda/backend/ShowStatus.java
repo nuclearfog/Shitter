@@ -34,6 +34,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
 
     public static final long RETWEET = 0;
     public static final long FAVORITE = 1;
+    public static final long DELETE = 2;
 
     private Context c;
     private ListView replyList;
@@ -116,7 +117,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 }
                 return true;
             } else {
-                if(id[1]==RETWEET) {
+                long mode = id[1];
+                if(mode==RETWEET) {
                     if(retweeted) {
                         mTwitter.retweet(tweetID, true);
                         // TODO del Retweet
@@ -124,7 +126,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                         mTwitter.retweet(tweetID, false);
                         retweeted = true;
                     }
-                } else if(id[1]==FAVORITE) {
+                } else if(mode==FAVORITE) {
                     if(favorited) {
                         mTwitter.favorite(tweetID, true);
                         favorited = false;
@@ -132,6 +134,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                         mTwitter.favorite(tweetID, false);
                         favorited = true;
                     }
+                } else if(mode==DELETE){
+                    mTwitter.deleteTweet(tweetID);
                 }
                 return false;
             }
