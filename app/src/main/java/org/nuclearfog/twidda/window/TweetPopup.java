@@ -82,7 +82,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     }
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i){
+    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);
         if(returnCode == RESULT_OK){
             Uri imageInput = i.getData();

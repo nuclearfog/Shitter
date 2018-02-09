@@ -12,12 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
-import android.widget.Toast;
 
 import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.database.TweetDatabase;
@@ -25,6 +22,7 @@ import org.nuclearfog.twidda.backend.RegisterAccount;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
+import org.nuclearfog.twidda.window.LoginPage;
 import org.nuclearfog.twidda.window.SearchWindow;
 import org.nuclearfog.twidda.window.UserProfile;
 import org.nuclearfog.twidda.window.AppSettings;
@@ -44,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MenuItem profile, tweet, search, setting;
     private SharedPreferences settings;
     private SearchView searchQuery;
-    private EditText pin;
     private Context con;
     private Toolbar toolbar;
     private TabHost tabhost;
@@ -58,18 +55,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         settings = con.getSharedPreferences("settings", 0);
         boolean login = settings.getBoolean("login", false);
         if( !login ) {
-            setContentView(R.layout.login);
-            pin = (EditText) findViewById(R.id.pin);
-            Button linkButton  = (Button) findViewById(R.id.linkButton);
-            Button verifierButton = (Button) findViewById(R.id.verifier);
-            Button loginButton = (Button) findViewById(R.id.login);
-            linkButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View arg0){linkTwitter();}});
-            verifierButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View arg0){verifier();}});
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View arg0){login();}});
+            Intent i = new Intent(con,LoginPage.class);
+            startActivityForResult(i,1);
         } else { login(); }
+    }
+
+    @Override
+    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
+        super.onActivityResult(reqCode,returnCode,i);
+        if(returnCode == RESULT_OK) {
+            login();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -246,26 +244,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    /**
-     * Load Preferences
-     */
-    private void linkTwitter() {
-        RegisterAccount account = new RegisterAccount(this);
-        account.execute("");
-    }
-
-    /**
-     * Check Twitter PIN
-     */
-    private void verifier() {
-        String twitterPin = pin.getText().toString();
-        if(!twitterPin.trim().isEmpty()) {
-            RegisterAccount account = new RegisterAccount(this);
-            account.execute(twitterPin);
-        } else {
-            Toast.makeText(con,"PIN eingeben!",Toast.LENGTH_LONG).show();
-        }
-    }
 
     /**
      * Login Handle

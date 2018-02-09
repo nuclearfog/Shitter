@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Button;
@@ -7,15 +8,14 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.window.LoginPage;
 
-public class RegisterAccount extends AsyncTask<String, Void, String>
-{
-    private Button verifierButton, loginButton;
+public class RegisterAccount extends AsyncTask<String, Void, String> {
     private Context context;
 
     /**
      * Register App for Account access
-     * @see MainActivity
+     * @see LoginPage
      * @see TwitterEngine used to Store Twitter instance
      * @param context current Activity's Context.
      */
@@ -23,11 +23,10 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
         this.context = context;
     }
 
+
     @Override
-    protected void onPreExecute() {
-        verifierButton  = (Button)((MainActivity)context).findViewById(R.id.verifier);
-        loginButton = (Button)((MainActivity)context).findViewById(R.id.login);
-    }
+    protected void onPreExecute() { }
+
 
     @Override
     protected String doInBackground( String... twitterPin ) {
@@ -46,12 +45,12 @@ public class RegisterAccount extends AsyncTask<String, Void, String>
         return " ";
     }
 
+
     @Override
     protected void onPostExecute(String msg) {
         if( msg.equals("success") ) {
-            verifierButton.setVisibility(Button.INVISIBLE);
-            loginButton.setVisibility(Button.VISIBLE);
-            loginButton.setBackgroundColor(0xFFFF0000);
+            ((LoginPage)context).setResult(Activity.RESULT_OK);
+            ((LoginPage)context).finish();
         } else if( !msg.trim().isEmpty() ) {
             Toast.makeText(context,"Fehler: "+msg,Toast.LENGTH_LONG).show();
         }

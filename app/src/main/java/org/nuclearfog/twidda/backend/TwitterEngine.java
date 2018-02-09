@@ -65,7 +65,8 @@ public class TwitterEngine {
      * @throws TwitterException if Connection is unavailable
      */
     public void request() throws TwitterException {
-        reqToken = twitter.getOAuthRequestToken();
+        if(reqToken == null)
+            reqToken = twitter.getOAuthRequestToken();
         String redirectURL = reqToken.getAuthenticationURL();
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(redirectURL));
@@ -144,14 +145,6 @@ public class TwitterEngine {
         return twitter.getHomeTimeline(new Paging(page,load,lastId));
     }
 
-    /**
-     * Get Trending Hashtags
-     * @return Trend Resource
-     * @throws TwitterException if access is unavailable
-     */
-    public Trends getTrends() throws TwitterException {
-        return twitter.getPlaceTrends(location);
-    }
 
     /**
      * Get Mention Tweets
@@ -179,6 +172,17 @@ public class TwitterEngine {
         QueryResult result = twitter.search(q);
         return result.getTweets();
     }
+
+
+    /**
+     * Get Trending Hashtags
+     * @return Trend Resource
+     * @throws TwitterException if access is unavailable
+     */
+    public Trends getTrends() throws TwitterException {
+        return twitter.getPlaceTrends(location);
+    }
+
 
     /**
      * Get User search result

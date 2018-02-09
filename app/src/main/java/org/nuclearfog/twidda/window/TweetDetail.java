@@ -68,6 +68,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 bundle.putLong("TweetID", tweetID);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
             case R.id.rt_button_detail:
                 mStat.execute(tweetID, ShowStatus.RETWEET);

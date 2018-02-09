@@ -52,8 +52,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         TextView txtFollower  = (TextView)findViewById(R.id.follower);
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
-     //   AppBarLayout mBar = (AppBarLayout) findViewById(R.id.barlayout_profile); //TODO
-     //   mBar.addOnOffsetChangedListener(this);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
         mTab.setup();
         // Tab #1
@@ -109,6 +107,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 }
                 intent.putExtras(b);
                 startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             case R.id.profile_follow:
                 if(!home) {

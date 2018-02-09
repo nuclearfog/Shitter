@@ -87,6 +87,7 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
             }
             intent.putExtras(b);
             startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             break;
         }
         return true;

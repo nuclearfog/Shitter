@@ -51,5 +51,10 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".window.LoginPage"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
+
     </application>
 </manifest>

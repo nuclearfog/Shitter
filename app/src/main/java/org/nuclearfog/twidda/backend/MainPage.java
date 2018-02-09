@@ -58,12 +58,12 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
         try {
             if(mode == 0) {
                 timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
-                if(timelineAdapter != null) {
-                    id = timelineAdapter.getItemId(0);
-                    timelineAdapter.getData().add(mTwitter.getHome(page,id));
-                } else {
+                if(timelineAdapter.getCount() == 0) {
                     TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
                     timelineAdapter = new TimelineAdapter(context,mTweets);
+                } else {
+                    id = timelineAdapter.getItemId(0);
+                    timelineAdapter.getData().add(mTwitter.getHome(page,id));
                 }
             }
             else if(mode == 1) {
@@ -71,12 +71,12 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
             }
             else if(mode == 2) {
                 mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
-                if(mentionAdapter != null) {
-                    id = mentionAdapter.getItemId(0);
-                    mentionAdapter.getData().add(mTwitter.getMention(page,id));
-                } else {
+                if(mentionAdapter.getCount() == 0) {
                     TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
                     mentionAdapter = new TimelineAdapter(context,mention);
+                } else {
+                    id = mentionAdapter.getItemId(0);
+                    mentionAdapter.getData().add(mTwitter.getMention(page,id));
                 }
             }
         } catch (TwitterException e) {
@@ -92,7 +92,7 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if(success) {
             if(timelineAdapter != null) {
-                if(timelineList.getAdapter() == null)
+                if(timelineList.getAdapter().getCount() == 0)
                     timelineList.setAdapter(timelineAdapter);
                 else
                     timelineAdapter.notifyDataSetChanged();
@@ -101,7 +101,7 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
                 trendList.setAdapter(trendsAdapter);
                 trendRefresh.setRefreshing(false);
             } else if(mentionAdapter != null) {
-                if(mentionList.getAdapter() == null)
+                if(mentionList.getAdapter().getCount() == 0)
                     mentionList.setAdapter(mentionAdapter);
                 else
                     mentionAdapter.notifyDataSetChanged();

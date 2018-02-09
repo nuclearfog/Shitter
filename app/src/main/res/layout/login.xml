@@ -27,20 +27,11 @@
         android:singleLine="true" />
 
     <Button
-        android:id="@+id/verifier"
+        android:id="@+id/get"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:background="@android:color/darker_gray"
         android:text="@string/verifierbutton" />
-
-    <Button
-        android:id="@+id/login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:background="@android:color/darker_gray"
-        android:text="@string/login"
-        android:visibility="invisible" />
 
 </LinearLayout>

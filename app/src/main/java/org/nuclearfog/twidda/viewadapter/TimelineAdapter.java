@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -112,6 +111,8 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
                 case ' ':
                 case '.':
                 case ',':
+                case '\n':
+                case '\t':
                 case '!':
                 case '?':
                     if(marked)
