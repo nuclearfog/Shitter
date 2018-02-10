@@ -10,7 +10,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.RegisterAccount;
 
-
 public class LoginPage extends Activity implements View.OnClickListener {
 
     private EditText pin;

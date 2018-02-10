@@ -51,13 +51,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.mainpage);
         con = getApplicationContext();
         settings = con.getSharedPreferences("settings", 0);
         boolean login = settings.getBoolean("login", false);
         if( !login ) {
             Intent i = new Intent(con,LoginPage.class);
             startActivityForResult(i,1);
-        } else { login(); }
+        } else {
+            login();
+        }
     }
 
     @Override
@@ -123,11 +126,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             default:
                 return false;
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -200,13 +198,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         MainPage homeView = new MainPage(MainActivity.this);
         switch (currentTab) {
             case "timeline":
-                homeView.execute(0,1);
+                homeView.execute(MainPage.HOME,1);
                 break;
             case "trends":
-                homeView.execute(1,1);
+                homeView.execute(MainPage.TRND,1);
                 break;
             case "mention":
-                homeView.execute(2,1);
+                homeView.execute(MainPage.MENT,1);
                 break;
         }
     }
@@ -242,12 +240,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-
     /**
      * Login Handle
      */
     private void login() {
-        setContentView(R.layout.mainpage);
         timelineList = (ListView) findViewById(R.id.tl_list);
         trendList = (ListView) findViewById(R.id.tr_list);
         mentionList = (ListView) findViewById(R.id.m_list);
@@ -256,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mentionReload = (SwipeRefreshLayout) findViewById(R.id.mention);
         tabhost = (TabHost)findViewById(R.id.main_tabhost);
         toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
+
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -284,11 +281,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
+
         setTabContent();
     }
 
     /**
-     * Set Teb Content
+     * Set Tab Content
      */
     private void setTabContent() {
         TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);

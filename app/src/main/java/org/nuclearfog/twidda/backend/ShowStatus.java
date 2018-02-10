@@ -30,11 +30,13 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
 
-public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
+public class ShowStatus extends AsyncTask<Long, Void, Long> {
 
+    private static final long ERROR = -1;
     public static final long RETWEET = 0;
     public static final long FAVORITE = 1;
     public static final long DELETE = 2;
+    public static final long LOAD_TWEET = 3;
 
     private Context c;
     private ListView replyList;
@@ -47,7 +49,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     private String ansStr, rtStr, favStr, repliedUsername, apiName;
     private TwitterEngine mTwitter;
     private boolean retweeted, favorited, toggleImg, verified;
-    private int ansNo = 0;
+    private int rt, fav, ansNo = 0;
     private int highlight;
     private long userReply, tweetReplyID;
     private Bitmap profile_btm, tweet_btm;
@@ -72,7 +74,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
         txtAns = (TextView) ((TweetDetail)c).findViewById(R.id.no_ans_detail);
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
         txtFav = (TextView) ((TweetDetail)c).findViewById(R.id.no_fav_detail);
-        used_api    = (TextView) ((TweetDetail)c).findViewById(R.id.used_api);
+        used_api = (TextView) ((TweetDetail)c).findViewById(R.id.used_api);
 
         profile_img = (ImageView) ((TweetDetail)c).findViewById(R.id.profileimage_detail);
         tweet_img   = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image);
@@ -83,22 +85,23 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
     }
 
     /**
-     * @param id [0] TWEET ID , [1] Mode
+     * @param data [0] TWEET ID , [1] Mode
      * @returns false if Tweet is already loaded.
      */
     @Override
-    protected Boolean doInBackground(Long... id) {
-        long tweetID = id[0];
+    protected Long doInBackground(Long... data) {
+        long tweetID = data[0];
+        long mode = data[1];
         try {
             twitter4j.Status currentTweet = mTwitter.getStatus(tweetID);
-            rtStr = Integer.toString(currentTweet.getRetweetCount());
-            favStr = Integer.toString(currentTweet.getFavoriteCount());
+            rt = currentTweet.getRetweetCount();
+            fav = currentTweet.getFavoriteCount();
             userReply = currentTweet.getInReplyToUserId();
             tweetReplyID = currentTweet.getInReplyToStatusId();
             verified = currentTweet.getUser().isVerified();
             retweeted = currentTweet.isRetweetedByMe();
             favorited = currentTweet.isFavorited();
-            if(id.length == 1) {
+            if(mode == LOAD_TWEET) {
                 tweetStr = currentTweet.getText();
                 usernameStr = currentTweet.getUser().getName();
                 scrNameStr = '@'+currentTweet.getUser().getScreenName();
@@ -115,40 +118,43 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 if(toggleImg) {
                     setMedia(currentTweet);
                 }
-                return true;
-            } else {
-                long mode = id[1];
-                if(mode==RETWEET) {
-                    if(retweeted) {
-                        mTwitter.retweet(tweetID, true);
-                        // TODO del Retweet
-                    } else {
-                        mTwitter.retweet(tweetID, false);
-                        retweeted = true;
-                    }
-                } else if(mode==FAVORITE) {
-                    if(favorited) {
-                        mTwitter.favorite(tweetID, true);
-                        favorited = false;
-                    } else {
-                        mTwitter.favorite(tweetID, false);
-                        favorited = true;
-                    }
-                } else if(mode==DELETE){
-                    mTwitter.deleteTweet(tweetID);
+
+            } else if(mode == RETWEET) {
+                if(retweeted) {
+                    mTwitter.retweet(tweetID, true);
+                    retweeted = false;
+                    rt--;
+                } else {
+                    mTwitter.retweet(tweetID, false);
+                    retweeted = true;
+                    rt++;
                 }
-                return false;
+            } else if(mode == FAVORITE) {
+                if(favorited) {
+                    mTwitter.favorite(tweetID, true);
+                    favorited = false;
+                    fav--;
+                } else {
+                    mTwitter.favorite(tweetID, false);
+                    favorited = true;
+                    fav++;
+                }
+            } else if(mode == DELETE) {
+                mTwitter.deleteTweet(tweetID);
             }
         } catch(Exception err) {
             err.printStackTrace();
-            return false;
+            return ERROR;
         }
+        return mode;
     }
 
     @Override
-    protected void onPostExecute(Boolean tweetLoaded) {
-        if(tweetLoaded) {
+    protected void onPostExecute(Long mode) {
+        if(mode == LOAD_TWEET) {
             ansStr = Integer.toString(ansNo);
+            rtStr = Integer.toString(rt);
+            favStr = Integer.toString(fav);
             tweet.setText(highlight(tweetStr));
             username.setText(usernameStr);
             scrName.setText(scrNameStr);
@@ -169,23 +175,24 @@ public class ShowStatus extends AsyncTask<Long, Void, Boolean> {
                 profile_img.setImageBitmap(profile_btm);
                 tweet_img.setImageBitmap(tweet_btm);
             }
+            replyName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(c, TweetDetail.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("tweetID",tweetReplyID);
+                    bundle.putLong("userID",userReply);
+                    intent.putExtras(bundle);
+                    c.startActivity(intent);
+                }
+            });
         }
 
         setIcons();
         txtRet.setText(rtStr);
         txtFav.setText(favStr);
 
-        replyName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(c, TweetDetail.class);
-                Bundle bundle = new Bundle();
-                bundle.putLong("tweetID",tweetReplyID);
-                bundle.putLong("userID",userReply);
-                intent.putExtras(bundle);
-                c.startActivity(intent);
-            }
-        });
+
     }
 
     private void setMedia(twitter4j.Status tweet) throws Exception {

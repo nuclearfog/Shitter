@@ -369,6 +369,9 @@ public class TwitterEngine {
     public void retweet(long id, boolean active) throws TwitterException {
         if(!active) {
             twitter.retweetStatus(id);
+        }//TODO remove Retweet
+        else {
+            deleteTweet(id);
         }
     }
 

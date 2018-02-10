@@ -3,15 +3,12 @@ package org.nuclearfog.twidda.backend;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Button;
 import android.widget.Toast;
-
-import org.nuclearfog.twidda.MainActivity;
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.window.LoginPage;
 
-public class RegisterAccount extends AsyncTask<String, Void, String> {
+public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
     private Context context;
+    private String errMSG = "";
 
     /**
      * Register App for Account access
@@ -25,11 +22,7 @@ public class RegisterAccount extends AsyncTask<String, Void, String> {
 
 
     @Override
-    protected void onPreExecute() { }
-
-
-    @Override
-    protected String doInBackground( String... twitterPin ) {
+    protected Boolean doInBackground( String... twitterPin ) {
         String pin = twitterPin[0];
         TwitterEngine mTwitter = TwitterEngine.getInstance(context);
         try {
@@ -37,22 +30,22 @@ public class RegisterAccount extends AsyncTask<String, Void, String> {
                 mTwitter.request();
             }else {
                 mTwitter.initialize(pin);
-                return "success";
+                return true;
             }
         } catch ( Exception e ) {
-            return e.getMessage();
+            errMSG =  e.getMessage();
         }
-        return " ";
+        return false;
     }
 
 
     @Override
-    protected void onPostExecute(String msg) {
-        if( msg.equals("success") ) {
+    protected void onPostExecute(Boolean success) {
+        if(success) {
             ((LoginPage)context).setResult(Activity.RESULT_OK);
             ((LoginPage)context).finish();
-        } else if( !msg.trim().isEmpty() ) {
-            Toast.makeText(context,"Fehler: "+msg,Toast.LENGTH_LONG).show();
+        } else if(errMSG.isEmpty()) {
+            Toast.makeText(context,"Fehler: "+errMSG,Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -13,9 +13,13 @@ import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import twitter4j.TwitterException;
 
-public class MainPage extends AsyncTask<Integer, Void, Boolean> {
+public class MainPage extends AsyncTask<Integer, Void, Integer> {
+
+    public static final int HOME = 0;
+    public static final int TRND = 1;
+    public static final int MENT = 2;
+    private static final int FAIL = -1;
 
     private TwitterEngine mTwitter;
     private Context context;
@@ -51,12 +55,13 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
      * @return success
      */
     @Override
-    protected Boolean doInBackground(Integer... args) {
-        int mode = args[0];
+    protected Integer doInBackground(Integer... args) {
+        final int MODE = args[0];
         int page = args[1];
         long id = 1L;
         try {
-            if(mode == 0) {
+            switch (MODE) {
+                case HOME:
                 timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
                 if(timelineAdapter.getCount() == 0) {
                     TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
@@ -65,11 +70,13 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
                     id = timelineAdapter.getItemId(0);
                     timelineAdapter.getData().add(mTwitter.getHome(page,id));
                 }
-            }
-            else if(mode == 1) {
+                break;
+
+                case TRND:
                 trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(),context));
-            }
-            else if(mode == 2) {
+                break;
+
+                case MENT:
                 mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
                 if(mentionAdapter.getCount() == 0) {
                     TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
@@ -78,37 +85,44 @@ public class MainPage extends AsyncTask<Integer, Void, Boolean> {
                     id = mentionAdapter.getItemId(0);
                     mentionAdapter.getData().add(mTwitter.getMention(page,id));
                 }
+                break;
             }
-        } catch (TwitterException e) {
-            return false;
         } catch (Exception e){
             e.printStackTrace();
-            return false;
+            return FAIL;
         }
-        return true;
+        return MODE;
     }
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        if(success) {
-            if(timelineAdapter != null) {
-                if(timelineList.getAdapter().getCount() == 0)
-                    timelineList.setAdapter(timelineAdapter);
-                else
-                    timelineAdapter.notifyDataSetChanged();
+    protected void onPostExecute(Integer MODE) {
+        switch(MODE) {
+            case HOME:
                 timelineRefresh.setRefreshing(false);
-            } else if(trendsAdapter != null) {
-                trendList.setAdapter(trendsAdapter);
+                if(timelineList.getAdapter().getCount() == 0) {
+                    timelineList.setAdapter(timelineAdapter);
+                } else {
+                    timelineAdapter.notifyDataSetChanged();
+                }
+                break;
+
+            case TRND:
                 trendRefresh.setRefreshing(false);
-            } else if(mentionAdapter != null) {
-                if(mentionList.getAdapter().getCount() == 0)
-                    mentionList.setAdapter(mentionAdapter);
-                else
-                    mentionAdapter.notifyDataSetChanged();
+                trendList.setAdapter(trendsAdapter);
+                break;
+
+            case MENT:
                 mentionRefresh.setRefreshing(false);
-            }
-        } else {
-            Toast.makeText(context, context.getString(R.string.connection_failure), Toast.LENGTH_LONG).show();
+                if(mentionList.getAdapter().getCount() == 0) {
+                    mentionList.setAdapter(mentionAdapter);
+                } else {
+                    mentionAdapter.notifyDataSetChanged();
+                }
+                break;
+
+            case FAIL:
+            default:
+                Toast.makeText(context, context.getString(R.string.connection_failure), Toast.LENGTH_LONG).show();
         }
     }
 }
