@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,7 +29,7 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
  * @see ShowStatus
  */
 public class TweetDetail extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, DialogInterface.OnClickListener {
+        AdapterView.OnItemClickListener, DialogInterface.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ListView answer_list;
     private long tweetID;
@@ -48,6 +50,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         Button delete = (Button) findViewById(R.id.delete);
         ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
+        SwipeRefreshLayout answerReload = (SwipeRefreshLayout) findViewById(R.id.answer_reload);
 
         TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
         TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
@@ -58,6 +61,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         answer_list.setOnItemClickListener(this);
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
+        answerReload.setOnRefreshListener(this);
         answer.setOnClickListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
@@ -146,17 +150,23 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
+    @Override
+    public void onRefresh() {
+        new ShowStatus(this).execute(tweetID, ShowStatus.LOAD_REPLY);
+    }
+
     private void setContent() {
         ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
         int backgroundColor = mColor.getColor(ColorPreferences.BACKGROUND);
         int fontColor = mColor.getColor(ColorPreferences.FONT_COLOR);
-        LinearLayout background = (LinearLayout) findViewById(R.id.tweet_detail);
+        CollapsingToolbarLayout cLayout = (CollapsingToolbarLayout) findViewById(R.id.tweet_detail);
         LinearLayout tweetaction = (LinearLayout) findViewById(R.id.tweetbar);
         TextView txtTw = (TextView) findViewById(R.id.tweet_detailed);
-        background.setBackgroundColor(backgroundColor);
+        cLayout.setBackgroundColor(backgroundColor);
         tweetaction.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
         new ShowStatus(this).execute(tweetID, ShowStatus.LOAD_TWEET);
+        new ShowStatus(this).execute(tweetID, ShowStatus.LOAD_REPLY);
     }
 }

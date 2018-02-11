@@ -350,6 +350,7 @@ public class TwitterEngine {
         Query query = new Query("to:"+name+" since_id:"+id+" -filter:retweets");
         query.setCount(load);
 
+
         QueryResult result = twitter.search(query);
         List<twitter4j.Status> stats = result.getTweets();
 
