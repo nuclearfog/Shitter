@@ -259,10 +259,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
         }
     }
 
-    /**
-     * @param input xml Tag
-     * @return formatted String
-     */
     private String formatString(String input) {
         String output = "gesendet von: ";
         boolean openTag = false;
