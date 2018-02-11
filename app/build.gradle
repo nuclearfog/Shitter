@@ -15,11 +15,6 @@ android {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug {
-            zipAlignEnabled false
-        }
-    }
-    productFlavors {
     }
 }
 
@@ -28,8 +23,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:26+'
     compile 'com.android.support:design:26+'
     compile(name: 'colorpicker', ext: 'aar')
-    compile files('libs/twitter4j-core-4.0.4.jar')
     implementation files('libs/picasso-2.5.2.jar')
+    implementation files('libs/twitter4j-core-4.0.6.jar')
+    implementation files('libs/twitter4j-core-4.0.6-sources.jar')
 }
 
 repositories {

@@ -100,6 +100,7 @@ public class TwitterEngine {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+        builder.setTweetModeExtended(true);
         AccessToken token = new AccessToken(key1,key2);
         twitter = new TwitterFactory( builder.build() ).getInstance(token);
     }
@@ -369,7 +370,7 @@ public class TwitterEngine {
     public void retweet(long id, boolean active) throws TwitterException {
         if(!active) {
             twitter.retweetStatus(id);
-        }//TODO remove Retweet
+        }
         else {
             deleteTweet(id);
         }
