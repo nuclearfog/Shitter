@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
@@ -100,7 +101,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
 
     /**
      * @param data [0] TWEET ID , [1] Mode
-     * @returns false if Tweet is already loaded.
      */
     @Override
     protected Long doInBackground(Long... data) {
@@ -283,14 +283,12 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             char current = tweet.charAt(i);
             switch(current){
                 case '@':
-                    start = i;
-                    marked = true;
-                    break;
                 case '#':
                     start = i;
                     marked = true;
                     break;
 
+                case '\0':
                 case '\'':
                 case ':':
                 case ' ':
@@ -298,13 +296,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                 case ',':
                 case '!':
                 case '?':
-                    if(marked)
+                    if(marked) {
                         sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
                     marked = false;
                     break;
-            }
-            if(i == tweet.length()-1 && marked) {
-                sTweet.setSpan(new ForegroundColorSpan(highlight),start,i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
         return sTweet;

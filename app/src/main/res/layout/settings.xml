@@ -32,15 +32,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/font" />
-
-        <Button
-            android:id="@+id/color_tweet"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="@string/popup" />
+            android:includeFontPadding="false"
+            android:text="@string/font"
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
@@ -49,6 +43,14 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/color_tweet"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/popup" />
 
         <Button
             android:id="@+id/highlight_color"

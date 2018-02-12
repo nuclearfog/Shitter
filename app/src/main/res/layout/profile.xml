@@ -39,28 +39,42 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
                     <ImageView
                         android:id="@+id/profile_img"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:layout_margin="5dp"
+                        android:layout_marginEnd="5dp"
                         android:contentDescription="@string/profile_image" />
 
-                    <ImageView
-                        android:id="@+id/profile_verify"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="8dp"
-                        android:contentDescription="@string/verify"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/verify" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/profile_verify"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginBottom="5dp"
+                            android:contentDescription="@string/verify"
+                            android:visibility="invisible"
+                            app:srcCompat="@drawable/verify" />
+
+                        <ImageView
+                            android:id="@+id/profile_locked"
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:visibility="invisible"
+                            app:srcCompat="@drawable/lock" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
+                        android:layout_marginStart="5dp"
                         android:orientation="vertical">
 
                         <TextView
@@ -73,7 +87,7 @@
                             android:id="@+id/profile_screenname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp" />
+                            android:layout_marginBottom="2dp" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -141,19 +155,13 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/profile_date"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/profile_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

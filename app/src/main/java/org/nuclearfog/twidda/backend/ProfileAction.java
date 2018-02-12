@@ -33,7 +33,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
 
     private String screenName, username, description, location, follower, following;
     private TextView txtUser,txtScrName,txtBio,txtLocation,txtLink,txtFollowing,txtFollower,txtCreated;
-    private ImageView profile, banner, linkIcon, locationIcon, verifier;
+    private ImageView profile, banner, linkIcon, locationIcon, verifier, locked;
     private SwipeRefreshLayout tweetsReload, favoritsReload;
     private ListView profileTweets, profileFavorits;
     private String imageLink, bannerLink, link, dateString;
@@ -45,6 +45,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
     private boolean isFollowing = false;
     private boolean isFollowed = false;
     private boolean isVerified = false;
+    private boolean isLocked = false;
     private boolean muted = false;
 
     /**
@@ -73,6 +74,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         banner   = (ImageView)((UserProfile)context).findViewById(R.id.banner);
         linkIcon = (ImageView)((UserProfile)context).findViewById(R.id.link_img);
         verifier = (ImageView)((UserProfile)context).findViewById(R.id.profile_verify);
+        locked = (ImageView)((UserProfile)context).findViewById(R.id.profile_locked);
         locationIcon = (ImageView)((UserProfile)context).findViewById(R.id.location_img);
         tweetsReload    = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.hometweets);
         favoritsReload  = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.homefavorits);
@@ -102,6 +104,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 description = user.getDescription();
                 location = user.getLocation();
                 isVerified = user.isVerified();
+                isLocked = user.isProtected();
                 link = user.getURL();
                 follower = "Follower: "+user.getFollowersCount();
                 following = "Following: "+user.getFriendsCount();
@@ -170,12 +173,15 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 txtLink.setText(link);
                 linkIcon.setVisibility(View.VISIBLE);
             }
-            if(isVerified){
+            if(isVerified) {
                 verifier.setVisibility(View.VISIBLE);
+            }
+            if(isLocked) {
+                locked.setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
                 Picasso.with(context).load(imageLink).into(profile);
-              //  Picasso.with(context).load(bannerLink).into(banner); TODO
+              //  Picasso.with(context).load(bannerLink).into(banner); // TODO
             }
         }
         else if(mode == GET_TWEETS)

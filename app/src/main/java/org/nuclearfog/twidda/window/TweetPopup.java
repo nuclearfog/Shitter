@@ -1,17 +1,20 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import static android.content.DialogInterface.*;
 
 import org.nuclearfog.twidda.backend.SendStatus;
 import org.nuclearfog.twidda.R;
@@ -20,7 +23,8 @@ import org.nuclearfog.twidda.R;
  * Tweet Window
  * @see SendStatus
  */
-public class TweetPopup extends AppCompatActivity implements View.OnClickListener {
+public class TweetPopup extends AppCompatActivity implements View.OnClickListener,
+        DialogInterface.OnClickListener {
 
     private ImageView tweetImg1,tweetImg2,tweetImg3,tweetImg4;
     private EditText tweetfield;
@@ -60,19 +64,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
 
     @Override
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.sendTweet:
-                send();
-                break;
-            case R.id.close:
-                finish();
-                break;
-            case R.id.image:
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 0);
-                break;
-        }
+    public void onBackPressed() {
+        showClosingMsg();
     }
 
     @Override
@@ -91,6 +84,46 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 }
                 c.close();
             }
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface d, int id) {
+        switch(id) {
+            case BUTTON_POSITIVE:
+                finish();
+                break;
+
+            case BUTTON_NEGATIVE:
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.sendTweet:
+                send();
+                break;
+            case R.id.close:
+                showClosingMsg();
+                break;
+            case R.id.image:
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, 0);
+                break;
+        }
+    }
+
+    private void showClosingMsg() {
+        if( !hashtag.equals(tweetfield.getText().toString()) ){
+        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+        alerta.setMessage("Tweet verwerfen?");
+        alerta.setPositiveButton(R.string.yes_confirm, this);
+        alerta.setNegativeButton(R.string.no_confirm, this);
+        alerta.show();
+        } else {
+            finish();
         }
     }
 

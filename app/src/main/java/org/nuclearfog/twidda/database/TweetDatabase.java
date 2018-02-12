@@ -254,7 +254,7 @@ public class TweetDatabase {
     private void initialize(Context c) {
         dataHelper = AppDatabase.getInstance(c);
         settings = c.getSharedPreferences("settings", 0);
-        limit = settings.getInt("limit", 100);
+        limit = settings.getInt("limit", 200);
         toggleImg = settings.getBoolean("image_load", false);
         initArray();
     }

@@ -1,8 +1,10 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,13 +22,12 @@ import org.nuclearfog.twidda.R;
  * @see ColorPreferences
  */
 public class AppSettings extends AppCompatActivity implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+        CompoundButton.OnCheckedChangeListener, AlertDialog.OnClickListener {
 
     private EditText woeId;
     private SharedPreferences settings;
     private TextView load_factor;
     private ColorPreferences mColor;
-    private boolean imgldr;
     private int row, wId;
 
     @Override
@@ -93,10 +94,10 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
+        wId = Integer.parseInt(woeId.getText().toString());
         Editor edit  = settings.edit();
         edit.putInt("woeid", wId);
         edit.putInt("preload", row);
-        edit.putBoolean("image_load", imgldr);
         edit.apply();
         mColor.commit();
         super.onDestroy();
@@ -106,7 +107,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.delete_db:
-                deleteDatabase("database.db");
+               new AlertDialog.Builder(this)
+                .setMessage("Datenbank löschen?")
+                .setPositiveButton(R.string.yes_confirm, this)
+                .setNegativeButton(R.string.no_confirm, this)
+                .show();
                 break;
             case R.id.color_background:
                 mColor.setColor(ColorPreferences.BACKGROUND);
@@ -121,20 +126,33 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 mColor.setColor(ColorPreferences.HIGHLIGHTING);
                 break;
             case R.id.less:
-                if(row > 10)
+                if(row > 10) {
                     row -= 10;
-                load_factor.setText(Integer.toString(row));
+                    load_factor.setText(Integer.toString(row));
+                }
                 break;
             case R.id.more:
-                if(row < 300)
+                if(row < 100) {
                     row += 10;
-                load_factor.setText(Integer.toString(row));
+                    load_factor.setText(Integer.toString(row));
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(DialogInterface d, int id) {
+        switch(id) {
+            case DialogInterface.BUTTON_POSITIVE:
+                deleteDatabase("database.db");
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
                 break;
         }
     }
 
     @Override
     public void onCheckedChanged(CompoundButton b, boolean checked) {
-        imgldr = checked;
+        settings.edit().putBoolean("image_load", checked).apply();
     }
 }
