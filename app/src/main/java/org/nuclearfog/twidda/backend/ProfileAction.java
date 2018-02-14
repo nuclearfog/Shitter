@@ -203,6 +203,8 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         else if(mode == FAILURE)
         {
             Toast.makeText(context,"Fehler beim Laden des Profils",Toast.LENGTH_LONG).show();
+            tweetsReload.setRefreshing(false);
+            favoritsReload.setRefreshing(false);
         }
         if(!isHome) {
             if(isFollowing)

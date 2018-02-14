@@ -122,6 +122,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
             case FAIL:
             default:
+                timelineRefresh.setRefreshing(false);
+                trendRefresh.setRefreshing(false);
+                mentionRefresh.setRefreshing(false);
                 Toast.makeText(context, context.getString(R.string.connection_failure), Toast.LENGTH_LONG).show();
         }
     }
