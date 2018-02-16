@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import twitter4j.PagableResponseList;
 import twitter4j.User;
 
 public class UserDatabase {
@@ -15,18 +17,17 @@ public class UserDatabase {
 
     private boolean toggleImg;
     private int size = 0;
+    private long cursor = -1L;
 
-    public UserDatabase(Context context, List<User> user) {
-        uID = new ArrayList<>();
-        uName = new ArrayList<>();
-        scrName = new ArrayList<>();
-        imgUrl = new ArrayList<>();
-        verified = new ArrayList<>();
+    public UserDatabase(Context context, PagableResponseList<User> user) {
+        init(context);
+        cursor = user.getNextCursor();
+        add(user);
+    }
 
-        SharedPreferences s = context.getSharedPreferences("settings", 0);
-        toggleImg = s.getBoolean("image_load", false);
-
-        init(user);
+    public UserDatabase(Context context, List<User> user){
+        init(context);
+        add(user);
     }
 
     public long getUserID(int pos){ return uID.get(pos);}
@@ -36,8 +37,15 @@ public class UserDatabase {
     public boolean isVerified(int pos){ return verified.get(pos);}
     public int getSize(){ return size; }
     public boolean loadImages(){ return toggleImg; }
+    public long getCursor(){return cursor;}
 
-    private void init(List<User> user) {
+
+    public void addLast(PagableResponseList<User> user) {
+        add(user);
+        cursor = user.getNextCursor();
+    }
+
+    private void add(List<User> user) {
         for(User usr : user) {
             uID.add(usr.getId());
             uName.add(usr.getName());
@@ -46,5 +54,15 @@ public class UserDatabase {
             verified.add(usr.isVerified());
             size++;
         }
+    }
+
+    private void init(Context c) {
+        uID = new ArrayList<>();
+        uName = new ArrayList<>();
+        scrName = new ArrayList<>();
+        imgUrl = new ArrayList<>();
+        verified = new ArrayList<>();
+        SharedPreferences s = c.getSharedPreferences("settings", 0);
+        toggleImg = s.getBoolean("image_load", false);
     }
 }

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
@@ -13,11 +14,17 @@ import org.nuclearfog.twidda.window.UserDetail;
 
 public class UserLists extends AsyncTask <Long, Void, Void> {
 
+    public static final long FOLLOWING = 0L;
+    public static final long FOLLOWERS = 1L;
+    public static final long RETWEETER = 2L;
+    public static final long FAVORISER = 3L;
+
     private Context context;
     private TwitterEngine mTwitter;
     private UserAdapter usrAdp;
     private ListView userList;
     private ProgressBar uProgress;
+    private String errmsg;
 
     /**
      *@see UserDetail
@@ -38,30 +45,49 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
      */
     @Override
     protected Void doInBackground(Long... data) {
-        long mode = data[0];
-        long id = data[1];
-        long cursor = -1L;  //TODO
+        long id = data[0];
+        long mode = data[1];
+        long cursor = data[2];
         try {
-            if(mode == 0L) { // GET FOLLOWING USERS
-                usrAdp = new UserAdapter(context,new UserDatabase(context,mTwitter.getFollowing(id)));
+            usrAdp = (UserAdapter) userList.getAdapter();
+            if(mode == FOLLOWING) {
+                if(usrAdp == null) {
+                    usrAdp = new UserAdapter(context,new UserDatabase(context,mTwitter.getFollowing(id,cursor)));
+                } else {
+                    UserDatabase uDb = usrAdp.getData();
+                    uDb.addLast(mTwitter.getFollowing(id,cursor));
+                    usrAdp.notifyDataSetChanged();
+                }
             }
-            else if(mode == 1L) { // GET FOLLOWER
-                usrAdp = new UserAdapter(context,new UserDatabase(context,mTwitter.getFollower(id)));
+            else if(mode == FOLLOWERS) {
+                if(usrAdp == null) {
+                    usrAdp = new UserAdapter(context,new UserDatabase(context,mTwitter.getFollower(id,cursor)));
+                } else {
+                    UserDatabase uDb = usrAdp.getData();
+                    uDb.addLast(mTwitter.getFollower(id,cursor));
+                    usrAdp.notifyDataSetChanged();
+                }
             }
-            else if(mode == 2L) { // GET RETWEET USER
+            else if(mode == RETWEETER) {
+                // GET RETWEET USER TODO
             }
-            else if(mode == 3L) { // GET FAV USERS TODO
+            else if(mode == FAVORISER) {
+                // GET FAV USERS TODO
             }
         }
         catch(Exception err) {
-            err.printStackTrace();
+            errmsg = err.getMessage();
         }
         return null;
     }
 
     @Override
     protected void onPostExecute(Void v) {
-        userList.setAdapter(usrAdp);
-        uProgress.setVisibility(View.INVISIBLE);
+        if(errmsg == null) {
+            userList.setAdapter(usrAdp);
+            uProgress.setVisibility(View.INVISIBLE);
+        } else {
+            Toast.makeText(context,errmsg,Toast.LENGTH_LONG).show();
+        }
     }
 }

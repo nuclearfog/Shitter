@@ -8,7 +8,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -23,7 +22,6 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
-
 /**
  * Detailed Tweet Window
  * @see ShowStatus
@@ -34,6 +32,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private ListView answer_list;
     private long tweetID;
     private long userID;
+    private ShowStatus mStat, mReply;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -72,6 +71,8 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
+        mStat.cancel(true);
+        mReply.cancel(true);
         super.onDestroy();
     }
 
@@ -152,7 +153,8 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        new ShowStatus(this).execute(tweetID, ShowStatus.LOAD_REPLY);
+        mReply = new ShowStatus(this);
+        mReply.execute(tweetID, ShowStatus.LOAD_REPLY);
     }
 
     private void setContent() {
@@ -166,7 +168,10 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         tweetaction.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
-        new ShowStatus(this).execute(tweetID, ShowStatus.LOAD_TWEET);
-        new ShowStatus(this).execute(tweetID, ShowStatus.LOAD_REPLY);
+
+        mStat = new ShowStatus(this);
+        mReply = new ShowStatus(this);
+        mStat.execute(tweetID, ShowStatus.LOAD_TWEET);
+        mReply.execute(tweetID, ShowStatus.LOAD_REPLY);
     }
 }

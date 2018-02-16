@@ -288,7 +288,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     marked = true;
                     break;
 
-                case '\0':
                 case '\'':
                 case ':':
                 case ' ':
@@ -302,6 +301,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     marked = false;
                     break;
             }
+        }
+        if(marked) {
+            sTweet.setSpan(new ForegroundColorSpan(highlight),start,tweet.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return sTweet;
     }

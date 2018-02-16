@@ -41,6 +41,11 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
         return userDatabase.getSize();
     }
 
+    @Override
+    public long getItemId(int position){
+        return userDatabase.getUserID(position);
+    }
+
     @NonNull
     @Override
     public View getView(int position, View v, @NonNull ViewGroup parent) {

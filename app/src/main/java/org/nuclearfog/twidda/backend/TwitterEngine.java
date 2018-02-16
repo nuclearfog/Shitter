@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.PagableResponseList;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -291,8 +292,8 @@ public class TwitterEngine {
      * @return List of Following User
      * @throws TwitterException if Access is unavailable
      */
-    public List<User> getFollowing(long id) throws TwitterException {
-        return twitter.getFriendsList(id,-1L);
+    public PagableResponseList<User> getFollowing(long id, long cursor) throws TwitterException {
+        return twitter.getFriendsList(id, cursor, load);
     }
 
     /**
@@ -301,8 +302,8 @@ public class TwitterEngine {
      * @return List of Follower
      * @throws TwitterException if Access is unavailable
      */
-    public List<User> getFollower(long id) throws TwitterException {
-        return twitter.getFollowersList(id,-1L);
+    public PagableResponseList<User> getFollower(long id, long cursor) throws TwitterException {
+        return twitter.getFollowersList(id,cursor, load);
     }
 
     /**

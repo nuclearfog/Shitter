@@ -35,18 +35,16 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         if(i.hasExtra("tweetID")){
             tweetID = i.getExtras().getLong("tweetID");
         }
-
         userListview = (ListView) findViewById(R.id.followList);
         userListview.setOnItemClickListener(this);
         toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
         setSupportActionBar(toolbar);
-        setActionbarTitle(mode);
         getUsers();
     }
 
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
-        toolbar.inflateMenu(R.menu.setting);    //  TODO
+        toolbar.inflateMenu(R.menu.setting);
         return true;
     }
 
@@ -64,24 +62,18 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
 
     private void getUsers() {
         UserLists uList = new UserLists(UserDetail.this);
-        if(mode == 0L || mode == 1L) {
-            uList.execute(mode, userID);
-        } else if(mode == 2L || mode == 3L) {
-            uList.execute(mode, tweetID);
-        }
-    }
-
-    private void setActionbarTitle(long mode) {
-        if(getSupportActionBar() == null)
-            return;
-        if(mode == 0) {
+        if(mode == 0L){
             getSupportActionBar().setTitle(R.string.following);
-        } else if(mode == 1) {
+            uList.execute(userID, UserLists.FOLLOWING, -1L);
+        } else if(mode == 1L){
             getSupportActionBar().setTitle(R.string.follower);
-        } else if(mode == 2) {
+            uList.execute(userID, UserLists.FOLLOWERS, -1L);
+        } else if(mode == 2L){
             getSupportActionBar().setTitle(R.string.retweet);
-        } else if(mode == 3) {
+            uList.execute(userID, UserLists.RETWEETER, -1L);
+        } else if(mode == 3L){
             getSupportActionBar().setTitle(R.string.favorite);
+            uList.execute(userID, UserLists.FAVORISER, -1L);
         }
     }
 }
