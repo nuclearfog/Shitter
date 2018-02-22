@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.MediaEntity;
+import twitter4j.TwitterException;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
@@ -132,6 +133,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             else if(mode == RETWEET) {
                 if(retweeted) {
                     mTwitter.retweet(tweetID, true);
+                    TweetDatabase.delete(c, tweetID);
                     retweeted = false;
                     rt--;
                 } else {
@@ -161,6 +163,13 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             else if(mode == DELETE) {
                 mTwitter.deleteTweet(tweetID);
             }
+        }catch(TwitterException e) {
+            int err = e.getErrorCode();
+            if(err == 144) { // gelöscht
+                TweetDatabase.delete(c,tweetID);
+            }
+            e.printStackTrace();
+            return ERROR;
         } catch(Exception err) {
             errMSG = err.getMessage();
             return ERROR;
@@ -289,6 +298,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     break;
 
                 case '\'':
+                case '\"':
                 case ':':
                 case ' ':
                 case '.':
@@ -301,9 +311,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     marked = false;
                     break;
             }
-        }
-        if(marked) {
-            sTweet.setSpan(new ForegroundColorSpan(highlight),start,tweet.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if(i == tweet.length()-1 && marked) {
+                sTweet.setSpan(new ForegroundColorSpan(highlight),start,tweet.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
         }
         return sTweet;
     }

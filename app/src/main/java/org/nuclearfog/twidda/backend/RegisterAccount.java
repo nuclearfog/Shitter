@@ -33,7 +33,7 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
                 return true;
             }
         } catch ( Exception e ) {
-            errMSG =  e.getMessage();
+            errMSG = e.getMessage();
         }
         return false;
     }

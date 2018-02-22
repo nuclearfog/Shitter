@@ -334,7 +334,7 @@ public class TwitterEngine {
         twitter4j.Status currentTweet = twitter.showStatus(id);
         twitter4j.Status retweetedStat = currentTweet.getRetweetedStatus();
         if(retweetedStat != null) {
-            currentTweet = retweetedStat;
+            currentTweet = getStatus(retweetedStat.getId());
         }
         return currentTweet;
     }
@@ -350,11 +350,8 @@ public class TwitterEngine {
         List<Status> answers = new ArrayList<>();
         Query query = new Query("to:"+name+" since_id:"+id+" -filter:retweets");
         query.setCount(load);
-
-
         QueryResult result = twitter.search(query);
         List<twitter4j.Status> stats = result.getTweets();
-
         for(twitter4j.Status reply : stats) {
             if(reply.getInReplyToStatusId() == id) {
                 answers.add(reply);

@@ -88,8 +88,15 @@ public class TweetDatabase {
         insertNew(stats);
     }
 
-    public void delete(long id) {
-        //TODO
+    /**
+     * Remove Tweet from Database
+     * @param c Current Context
+     * @param id Tweet ID
+     */
+    public static void delete(Context c, long id) {
+        SQLiteDatabase db = AppDatabase.getInstance(c).getWritableDatabase();
+        db.delete("tweet", "tweetID"+"="+id, null);
+        db.close();
     }
 
     private void store(List<Status> stats) {
