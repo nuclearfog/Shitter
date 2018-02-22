@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/search_tweet"
-        android:icon="@drawable/tweet_icon"
+        android:icon="@drawable/tweet"
         android:title="@string/tweet"
         app:showAsAction="always" />
 

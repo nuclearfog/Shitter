@@ -50,12 +50,10 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
 
     /**
      * @param context Context to Activity
-     * @param tool Actionbar
      * @see UserProfile
      */
-    public ProfileAction(Context context, Toolbar tool) {
+    public ProfileAction(Context context) {
         this.context=context;
-        this.tool = tool;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imgEnabled = settings.getBoolean("image_load",false);
     }
@@ -80,6 +78,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
         favoritsReload  = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.homefavorits);
         profileTweets   = (ListView)((UserProfile)context).findViewById(R.id.ht_list);
         profileFavorits = (ListView)((UserProfile)context).findViewById(R.id.hf_list);
+        tool = (Toolbar) ((UserProfile)context).findViewById(R.id.profile_toolbar);
     }
 
     @Override

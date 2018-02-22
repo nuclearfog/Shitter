@@ -28,9 +28,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
         TabHost.OnTabChangeListener, AppBarLayout.OnOffsetChangedListener {
 
+    private ProfileAction mProfile, mTweets, mFavorits;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
-    private Toolbar tool;
     private long userId;
     private boolean home;
     private String currentTab = "tweets";
@@ -39,7 +39,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.profile);
-        tool = (Toolbar) findViewById(R.id.profile_toolbar);
+        Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -53,18 +53,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
-        mTab.setup();
-        // Tab #1
-        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
-        tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
-        mTab.addTab(tab1);
-        // Tab #2
-        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
-        tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite));
-        mTab.addTab(tab2);
-
+        setTabs(mTab);
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
         txtFollower.setOnClickListener(this);
@@ -74,6 +63,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         favoriteReload.setOnRefreshListener(this);
         initElements();
         getContent();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mProfile.cancel(true);
+        mTweets.cancel(true);
+        mFavorits.cancel(true);
+        super.onDestroy();
     }
 
     @Override
@@ -89,28 +86,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        ProfileAction action = new ProfileAction(this, tool);
+        mProfile = new ProfileAction(this);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
                 intent = new Intent(this, TweetPopup.class);
-                Bundle b = new Bundle();
-                if(home) {
-                    b.putLong("TweetID", -1);
-                } else {
-                    b.putLong("TweetID", userId);
-                }
-                intent.putExtras(b);
                 startActivity(intent);
                 return true;
             case R.id.profile_follow:
-                if(!home) {
-                    action.execute(userId, ProfileAction.ACTION_FOLLOW);
-                }
+                mProfile.execute(userId, ProfileAction.ACTION_FOLLOW);
                 return true;
             case R.id.profile_block:
-                if(!home) {
-                    action.execute(userId, ProfileAction.ACTION_MUTE);
-                }
+                mProfile.execute(userId, ProfileAction.ACTION_MUTE);
                 return true;
             default: return false;
         }
@@ -164,13 +150,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        ProfileAction tweets = new ProfileAction(this, tool);
         switch(currentTab) {
             case "tweets":
-                tweets.execute(userId, ProfileAction.GET_TWEETS,1L);
+                mTweets = new ProfileAction(this);
+                mTweets.execute(userId, ProfileAction.GET_TWEETS,1L);
                 break;
             case "favorites":
-                tweets.execute(userId, ProfileAction.GET_FAVS,1L);
+                mFavorits = new ProfileAction(this);
+                mFavorits.execute(userId, ProfileAction.GET_FAVS,1L);
                 break;
         }
     }
@@ -194,21 +181,37 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    private void setTabs(TabHost mTab) {
+        mTab.setup();
+        // Tab #1
+        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
+        tab1.setContent(R.id.hometweets);
+        tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
+        mTab.addTab(tab1);
+        // Tab #2
+        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
+        tab2.setContent(R.id.homefavorits);
+        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite));
+        mTab.addTab(tab2);
+    }
+
     /**
      * Tab Content
      */
     private void getContent() {
         TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
         TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
+        mTweets = new ProfileAction(this);
+        mFavorits = new ProfileAction(this);
         if( mTweet.getSize() > 0 ) {
             homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
         }else {
-            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_TWEETS,1L);
+            mTweets.execute(userId, ProfileAction.GET_TWEETS,1L);
         }
         if( fTweet.getSize() > 0 ) {
             homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
         } else {
-            new ProfileAction(this, tool).execute(userId, ProfileAction.GET_FAVS,1L);
+            mFavorits.execute(userId, ProfileAction.GET_FAVS,1L);
         }
     }
 
@@ -216,7 +219,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * Profile Information
      */
     private void initElements() {
-        new ProfileAction(this, tool).execute(userId, ProfileAction.GET_INFORMATION,1L);
+        mProfile = new ProfileAction(this);
+        mProfile.execute(userId, ProfileAction.GET_INFORMATION,1L);
     }
 
     /**

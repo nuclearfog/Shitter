@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Bundle bundle = new Bundle();
                     bundle.putString("search", search);
                     if(search.startsWith("#")) {
-                        bundle.putString("Hashtag", search);
+                        bundle.putString("Addition", search);
                     }
                     intent.putExtras(bundle);
                     startActivity(intent);

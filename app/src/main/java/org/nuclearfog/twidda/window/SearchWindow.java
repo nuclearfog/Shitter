@@ -83,7 +83,7 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
             Bundle b = new Bundle();
             b.putLong("TweetID", -1);
             if(search.startsWith("#")) {
-                b.putString("Hashtag", search);
+                b.putString("Addition", search);
             }
             intent.putExtras(b);
             startActivity(intent);

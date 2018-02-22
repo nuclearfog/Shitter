@@ -28,17 +28,17 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
     private ImageView tweetImg1,tweetImg2,tweetImg3,tweetImg4;
     private EditText tweetfield;
-    private long inReplyId;
-    private String imgPath, hashtag="";
+    private long inReplyId =-1L;
+    private String imgPath, addition="";
 
     @Override
     protected void onCreate(Bundle SavedInstance) {
         super.onCreate(SavedInstance);
         setContentView(R.layout.tweetwindow);
-
-        inReplyId = getIntent().getExtras().getLong("TweetID");
-        if(getIntent().hasExtra("Hashtag"))
-            hashtag = getIntent().getExtras().getString("Hashtag");
+        if(getIntent().hasExtra("TweetID"))
+            inReplyId = getIntent().getExtras().getLong("TweetID");
+        if(getIntent().hasExtra("Addition"))
+            addition = getIntent().getExtras().getString("Addition");
 
         final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
         getWindow().setLayout(size, size);
@@ -59,7 +59,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
         root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
-        tweetfield.setText(hashtag);
+        tweetfield.setText(addition);
     }
 
 
@@ -116,7 +116,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     }
 
     private void showClosingMsg() {
-        if( !hashtag.equals(tweetfield.getText().toString()) ){
+        if( !addition.equals(tweetfield.getText().toString()) ){
         AlertDialog.Builder alerta = new AlertDialog.Builder(this);
         alerta.setMessage("Tweet verwerfen?");
         alerta.setPositiveButton(R.string.yes_confirm, this);

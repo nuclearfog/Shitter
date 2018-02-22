@@ -311,9 +311,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     marked = false;
                     break;
             }
-            if(i == tweet.length()-1 && marked) {
-                sTweet.setSpan(new ForegroundColorSpan(highlight),start,tweet.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
+        }
+        if(marked) {
+            sTweet.setSpan(new ForegroundColorSpan(highlight),start,tweet.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return sTweet;
     }
