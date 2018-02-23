@@ -75,6 +75,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
         if(!home) {

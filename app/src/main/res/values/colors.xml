@@ -8,4 +8,5 @@
     <color name="tweetwindow">#19aae8</color>
     <color name="following">#00ffff</color>
     <color name="muted">#ff0000</color>
+    <color name="transparent">#00000000</color>
 </resources>

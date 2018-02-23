@@ -19,7 +19,7 @@ public class TrendAdapter extends ArrayAdapter {
 
     public TrendAdapter(Context context, TrendDatabase trend) {
         super(context, R.layout.trend);
-        inf=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         ColorPreferences mcolor = ColorPreferences.getInstance(context);
         textColor = mcolor.getColor(ColorPreferences.FONT_COLOR);
         background = mcolor.getColor(ColorPreferences.BACKGROUND);

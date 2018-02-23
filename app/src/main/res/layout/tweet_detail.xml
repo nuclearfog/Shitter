@@ -94,49 +94,12 @@
                     android:linksClickable="false"
                     android:textSize="12sp" />
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/tweet_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/tweet_image"
-                        app:srcCompat="@android:color/black" />
-
-                    <ImageView
-                        android:id="@+id/tweet_image2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/tweet_image"
-                        app:srcCompat="@android:color/black" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/tweet_image3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/tweet_image"
-                        app:srcCompat="@android:color/black" />
-
-                    <ImageView
-                        android:id="@+id/tweet_image4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/tweet_image"
-                        app:srcCompat="@android:color/black" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/image_attach"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/preview"
+                    android:visibility="invisible" />
 
             </LinearLayout>
 

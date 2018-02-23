@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
@@ -48,13 +47,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
     private ListView replyList;
     private TextView  username,scrName,replyName,tweet;
     private TextView used_api,txtAns,txtRet,txtFav,date;
-    private Button retweetButton,favoriteButton;
+    private Button retweetButton,favoriteButton, mediabutton;
     private ImageView profile_img,tweet_verify;
     private List<twitter4j.Status> answers;
     private SwipeRefreshLayout ansReload;
     private TimelineAdapter tlAdp;
-    private ImageView[] tweetImg;
-    private Bitmap[] tweet_btm;
     private Bitmap profile_btm;
     private String errMSG = "";
     private String usernameStr, scrNameStr, tweetStr, dateString;
@@ -63,12 +60,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
     private int rt, fav, ansNo = 0;
     private int highlight;
     private long userReply, tweetReplyID;
+    private String medialinks[];
 
     public ShowStatus(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
         answers = new ArrayList<>();
-        tweet_btm = new Bitmap[4];
-        tweetImg = new ImageView[4];
         SharedPreferences settings = c.getSharedPreferences("settings", 0);
         toggleImg = settings.getBoolean("image_load", false);
         highlight = ColorPreferences.getInstance(c).getColor(ColorPreferences.HIGHLIGHTING);
@@ -90,14 +86,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
         ansReload = (SwipeRefreshLayout) ((TweetDetail)c).findViewById(R.id.answer_reload);
 
         profile_img = (ImageView) ((TweetDetail)c).findViewById(R.id.profileimage_detail);
-        tweetImg[0] = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image);
-        tweetImg[1] = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image2);
-        tweetImg[2] = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image3);
-        tweetImg[3] = (ImageView) ((TweetDetail)c).findViewById(R.id.tweet_image4);
         tweet_verify =(ImageView)((TweetDetail)c).findViewById(R.id.tweet_verify);
 
         retweetButton = (Button) ((TweetDetail)c).findViewById(R.id.rt_button_detail);
         favoriteButton = (Button) ((TweetDetail)c).findViewById(R.id.fav_button_detail);
+        mediabutton = (Button) ((TweetDetail)c).findViewById(R.id.image_attach);
     }
 
     /**
@@ -127,8 +120,17 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
 
                 if(userReply > 0)
                     repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
-                if(toggleImg)
-                    setMedia(currentTweet);
+                if(toggleImg) {
+                    String pbLink = currentTweet.getUser().getProfileImageURL();
+                    InputStream iStream = new URL(pbLink).openStream();
+                    profile_btm = BitmapFactory.decodeStream(iStream);
+
+                    MediaEntity[] media = currentTweet.getMediaEntities();
+                    medialinks = new String[media.length];
+                    for(int i = 0 ; i < media.length ; i++) {
+                        medialinks[i] = media[i].getMediaURL();
+                    }
+                }
             }
             else if(mode == RETWEET) {
                 if(retweeted) {
@@ -202,9 +204,13 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             }
             if(toggleImg) {
                 profile_img.setImageBitmap(profile_btm);
-                for(int i = 0 ; i < 4 ; i++) {
-                    tweetImg[i].setImageBitmap(tweet_btm[i]);
-                }
+                mediabutton.setVisibility(View.VISIBLE);
+                mediabutton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new ImagePopup(c).execute(medialinks);
+                    }
+                });
             }
             setIcons();
             replyName.setOnClickListener(new View.OnClickListener() {
@@ -252,19 +258,6 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             if(ansReload.isRefreshing()) {
                 ansReload.setRefreshing(false);
             }
-        }
-    }
-
-    private void setMedia(twitter4j.Status tweet) throws Exception {
-        String pbLink = tweet.getUser().getProfileImageURL();
-        MediaEntity[] media = tweet.getMediaEntities();
-
-        InputStream iStream = new URL(pbLink).openStream();
-        profile_btm = BitmapFactory.decodeStream(iStream);
-        byte i = 0;
-        for(MediaEntity m : media) {
-            InputStream mediaStream = new URL(m.getMediaURL()).openStream();
-            tweet_btm[i++] = BitmapFactory.decodeStream(mediaStream);
         }
     }
 

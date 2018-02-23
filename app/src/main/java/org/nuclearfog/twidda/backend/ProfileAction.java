@@ -36,7 +36,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
     private ImageView profile, banner, linkIcon, locationIcon, verifier, locked;
     private SwipeRefreshLayout tweetsReload, favoritsReload;
     private ListView profileTweets, profileFavorits;
-    private String imageLink, bannerLink, link, dateString;
+    private String imageLink, bannerLink, fullPbLink, link, dateString;
     private TimelineAdapter homeTl, homeFav;
     private Context context;
     private Toolbar tool;
@@ -109,6 +109,7 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
                 following = "Following: "+user.getFriendsCount();
                 imageLink = user.getProfileImageURL();
                 bannerLink = user.getProfileBannerMobileURL();
+                fullPbLink = user.getOriginalProfileImageURL();
                 Date d = user.getCreatedAt();
                 dateString = "seit "+new SimpleDateFormat("dd.MM.yyyy").format(d);
             }
@@ -181,6 +182,12 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
             if(imgEnabled) {
                 Picasso.with(context).load(imageLink).into(profile);
               //  Picasso.with(context).load(bannerLink).into(banner); // TODO
+                profile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new ImagePopup(context).execute(fullPbLink);
+                    }
+                });
             }
         }
         else if(mode == GET_TWEETS)
