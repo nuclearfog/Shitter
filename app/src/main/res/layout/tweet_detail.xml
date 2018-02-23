@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/tweetwindow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -94,57 +94,49 @@
                     android:linksClickable="false"
                     android:textSize="12sp" />
 
-                <TableLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/tweet_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/tweet_image"
+                        app:srcCompat="@android:color/black" />
 
-                        <ImageView
-                            android:id="@+id/tweet_image"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/tweet_image"
-                            app:srcCompat="@android:color/black" />
+                    <ImageView
+                        android:id="@+id/tweet_image2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/tweet_image"
+                        app:srcCompat="@android:color/black" />
+                </LinearLayout>
 
-                        <ImageView
-                            android:id="@+id/tweet_image2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/tweet_image"
-                            app:srcCompat="@android:color/black" />
-                    </TableRow>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/tweet_image3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/tweet_image"
+                        app:srcCompat="@android:color/black" />
 
-                        <ImageView
-                            android:id="@+id/tweet_image3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/tweet_image"
-                            app:srcCompat="@android:color/black" />
-
-                        <ImageView
-                            android:id="@+id/tweet_image4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/tweet_image"
-                            app:srcCompat="@android:color/black" />
-                    </TableRow>
-
-                </TableLayout>
+                    <ImageView
+                        android:id="@+id/tweet_image4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/tweet_image"
+                        app:srcCompat="@android:color/black" />
+                </LinearLayout>
 
             </LinearLayout>
 

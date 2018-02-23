@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -116,35 +117,27 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        switch(parent.getId()) {
-            case R.id.ht_list:
-                if(!homeReload.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) homeTweets.getAdapter();
-                    TweetDatabase twDB = tlAdp.getData();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-                break;
-            case R.id.hf_list:
-                if(!favoriteReload.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) homeFavorits.getAdapter();
-                    TweetDatabase twDB = tlAdp.getData();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-                break;
+        TimelineAdapter tlAdp;
+
+        if(parent.getId() == R.id.ht_list) {
+            tlAdp = (TimelineAdapter) homeTweets.getAdapter();
+        }
+        else {
+            tlAdp = (TimelineAdapter) homeFavorits.getAdapter();
+        }
+
+        if(position >= tlAdp.getCount()) {
+
+        } else {
+            TweetDatabase twDB = tlAdp.getData();
+            long tweetID = twDB.getTweetId(position);
+            long userID = twDB.getUserID(position);
+            Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+            Bundle bundle = new Bundle();
+            bundle.putLong("tweetID",tweetID);
+            bundle.putLong("userID",userID);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
@@ -169,13 +162,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         currentTab = tabId;
     }
 
+    /**
+     * Deaktiviert
+     */
     @Override
     public void onOffsetChanged(AppBarLayout mBar, int high) {
         int max = - mBar.getTotalScrollRange();
         if(high == max) {
             homeTweets.setNestedScrollingEnabled(true);
             homeFavorits.setNestedScrollingEnabled(true);
-        } else {
+        } else if (high == 0) {
             homeTweets.setNestedScrollingEnabled(false);
             homeFavorits.setNestedScrollingEnabled(false);
         }
