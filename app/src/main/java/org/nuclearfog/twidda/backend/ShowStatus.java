@@ -204,13 +204,15 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             }
             if(toggleImg) {
                 profile_img.setImageBitmap(profile_btm);
-                mediabutton.setVisibility(View.VISIBLE);
-                mediabutton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new ImagePopup(c).execute(medialinks);
-                    }
-                });
+                if(medialinks.length != 0) {
+                    mediabutton.setVisibility(View.VISIBLE);
+                    mediabutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new ImagePopup(c).execute(medialinks);
+                        }
+                    });
+                }
             }
             setIcons();
             replyName.setOnClickListener(new View.OnClickListener() {
