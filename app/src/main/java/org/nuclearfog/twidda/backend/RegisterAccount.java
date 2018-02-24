@@ -44,7 +44,7 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
         if(success) {
             ((LoginPage)context).setResult(Activity.RESULT_OK);
             ((LoginPage)context).finish();
-        } else if(errMSG.isEmpty()) {
+        } else if(!errMSG.isEmpty()) {
             Toast.makeText(context,"Fehler: "+errMSG,Toast.LENGTH_LONG).show();
         }
     }

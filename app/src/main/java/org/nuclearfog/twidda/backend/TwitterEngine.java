@@ -27,7 +27,6 @@ import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Stores Twitter Object
- * NOT RECOMMENDED FOR MAIN-THREAD!
  */
 public class TwitterEngine {
 
@@ -331,12 +330,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public Status getStatus(long id) throws TwitterException {
-        twitter4j.Status currentTweet = twitter.showStatus(id);
-        twitter4j.Status retweetedStat = currentTweet.getRetweetedStatus();
-        if(retweetedStat != null) {
-            currentTweet = getStatus(retweetedStat.getId());
-        }
-        return currentTweet;
+        return twitter.showStatus(id);
     }
 
     /**

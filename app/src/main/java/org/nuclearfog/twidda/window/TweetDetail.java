@@ -65,7 +65,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
         delete.setOnClickListener(this);
-        pb.setOnClickListener(this);
         setContent();
     }
 
@@ -93,12 +92,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.fav_button_detail:
                 mStat.execute(tweetID, ShowStatus.FAVORITE);
-                break;
-            case R.id.profileimage_detail:
-                intent = new Intent(getApplicationContext(), UserProfile.class);
-                bundle.putLong("userID",userID);
-                intent.putExtras(bundle);
-                startActivity(intent);
                 break;
             case R.id.no_rt_detail:
                 intent = new Intent(getApplicationContext(), UserDetail.class);

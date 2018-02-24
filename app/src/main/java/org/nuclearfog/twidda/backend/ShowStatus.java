@@ -26,12 +26,14 @@ import java.util.List;
 
 import twitter4j.MediaEntity;
 import twitter4j.TwitterException;
+import twitter4j.User;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
+import org.nuclearfog.twidda.window.UserProfile;
 
 public class ShowStatus extends AsyncTask<Long, Void, Long> {
 
@@ -44,23 +46,26 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
 
     private Context c;
     private TwitterEngine mTwitter;
-    private ListView replyList;
-    private TextView  username,scrName,replyName,tweet;
-    private TextView used_api,txtAns,txtRet,txtFav,date;
-    private Button retweetButton,favoriteButton, mediabutton;
-    private ImageView profile_img,tweet_verify;
     private List<twitter4j.Status> answers;
-    private SwipeRefreshLayout ansReload;
     private TimelineAdapter tlAdp;
+    private ListView replyList;
+    private TextView  username,scrName,replyName,tweet,userRetweet;
+    private TextView used_api,txtAns,txtRet,txtFav,date;
+    private ImageView profile_img,tweet_verify;
+    private Button retweetButton,favoriteButton, mediabutton;
+    private SwipeRefreshLayout ansReload;
     private Bitmap profile_btm;
-    private String errMSG = "";
     private String usernameStr, scrNameStr, tweetStr, dateString;
-    private String repliedUsername, apiName;
+    private String repliedUsername, apiName, retweeter;
+    private String medialinks[];
+    private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
+    private boolean rtFlag = false;
+    private long userReply, tweetReplyID, userID;
     private int rt, fav, ansNo = 0;
     private int highlight;
-    private long userReply, tweetReplyID;
-    private String medialinks[];
+
+
 
     public ShowStatus(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
@@ -83,6 +88,8 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
         txtRet = (TextView) ((TweetDetail)c).findViewById(R.id.no_rt_detail);
         txtFav = (TextView) ((TweetDetail)c).findViewById(R.id.no_fav_detail);
         used_api = (TextView) ((TweetDetail)c).findViewById(R.id.used_api);
+        used_api = (TextView) ((TweetDetail)c).findViewById(R.id.used_api);
+        userRetweet = (TextView) ((TweetDetail)c).findViewById(R.id.rt_info);
         ansReload = (SwipeRefreshLayout) ((TweetDetail)c).findViewById(R.id.answer_reload);
 
         profile_img = (ImageView) ((TweetDetail)c).findViewById(R.id.profileimage_detail);
@@ -102,26 +109,33 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
         long mode = data[1];
         try {
             twitter4j.Status currentTweet = mTwitter.getStatus(tweetID);
-            scrNameStr = '@'+currentTweet.getUser().getScreenName();
+            twitter4j.Status embeddedTweet = currentTweet.getRetweetedStatus();
+            if(embeddedTweet != null) {
+                retweeter = "Retweet von @"+currentTweet.getUser().getScreenName();
+                currentTweet = mTwitter.getStatus(embeddedTweet.getId());
+                rtFlag = true;
+            }
             rt = currentTweet.getRetweetCount();
             fav = currentTweet.getFavoriteCount();
             retweeted = currentTweet.isRetweetedByMe();
             favorited = currentTweet.isFavorited();
 
             if(mode == LOAD_TWEET) {
+                User user = currentTweet.getUser();
+                userID = user.getId();
                 userReply = currentTweet.getInReplyToUserId();
                 tweetReplyID = currentTweet.getInReplyToStatusId();
-                verified = currentTweet.getUser().isVerified();
                 tweetStr = currentTweet.getText();
-                usernameStr = currentTweet.getUser().getName();
-                scrNameStr = '@'+currentTweet.getUser().getScreenName();
+                verified = user.isVerified();
+                usernameStr = user.getName();
+                scrNameStr = '@'+user.getScreenName();
                 apiName = formatString(currentTweet.getSource());
                 dateString = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(currentTweet.getCreatedAt());
 
                 if(userReply > 0)
                     repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
                 if(toggleImg) {
-                    String pbLink = currentTweet.getUser().getProfileImageURL();
+                    String pbLink = user.getProfileImageURL();
                     InputStream iStream = new URL(pbLink).openStream();
                     profile_btm = BitmapFactory.decodeStream(iStream);
 
@@ -199,11 +213,24 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                 replyName.setText(repliedUsername);
                 replyName.setVisibility(View.VISIBLE);
             }
+            if(rtFlag) {
+                userRetweet.setText(retweeter);
+            }
             if(verified) {
                 tweet_verify.setVisibility(View.VISIBLE);
             }
             if(toggleImg) {
                 profile_img.setImageBitmap(profile_btm);
+                profile_img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(c, UserProfile.class);
+                        Bundle b = new Bundle();
+                        b.putLong("userID",userID);
+                        intent.putExtras(b);
+                        c.startActivity(intent);
+                    }
+                });
                 if(medialinks.length != 0) {
                     mediabutton.setVisibility(View.VISIBLE);
                     mediabutton.setOnClickListener(new View.OnClickListener() {
@@ -291,9 +318,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     start = i;
                     marked = true;
                     break;
-
                 case '\'':
                 case '\"':
+                case ')':
+                case '(':
                 case ':':
                 case ' ':
                 case '.':

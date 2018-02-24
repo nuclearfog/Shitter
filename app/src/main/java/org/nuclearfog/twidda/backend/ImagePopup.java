@@ -71,8 +71,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
         if(result) {
             View content = inf.inflate(R.layout.imagepreview,null);
             mImg = content.findViewById(R.id.fullSizeImage);
-            imgArray[0] = Bitmap.createScaledBitmap( imgArray[0],640,640, false);
-            mImg.setImageBitmap(imgArray[0]);
+            setImage(imgArray[position]);
             popup.setContentView(content);
             if(index > 0) {
                 left = content.findViewById(R.id.image_left);
@@ -107,7 +106,12 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
                 position++;
                 break;
         }
-        Bitmap current = Bitmap.createScaledBitmap( imgArray[position],640,640, false);
-        mImg.setImageBitmap(current);
+        setImage(imgArray[position]);
+    }
+
+    private void setImage(Bitmap btm) {
+        int height = (int)(btm.getHeight() / (btm.getWidth() / 640.0));
+        btm = Bitmap.createScaledBitmap( btm,640,height, false);
+        mImg.setImageBitmap(btm);
     }
 }
