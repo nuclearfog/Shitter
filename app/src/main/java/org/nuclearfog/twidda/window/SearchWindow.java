@@ -37,8 +37,6 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.search);
-        if(getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
         search = getIntent().getExtras().getString("search");
 
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
@@ -46,6 +44,7 @@ public class SearchWindow extends AppCompatActivity implements AdapterView.OnIte
         userSearch   = (ListView) findViewById(R.id.user_result);
         tweetReload = (SwipeRefreshLayout) findViewById(R.id.searchtweets);
         setSupportActionBar(tool);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         TabHost tabhost = (TabHost)findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);

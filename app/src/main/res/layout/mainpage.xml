@@ -37,8 +37,7 @@
                     <ListView
                         android:id="@+id/tl_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/twitterBlau" />
+                        android:layout_height="match_parent" />
                 </android.support.v4.widget.SwipeRefreshLayout>
 
                 <android.support.v4.widget.SwipeRefreshLayout
@@ -49,8 +48,7 @@
                     <ListView
                         android:id="@+id/tr_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/twitterBlau" />
+                        android:layout_height="match_parent" />
                 </android.support.v4.widget.SwipeRefreshLayout>
 
                 <android.support.v4.widget.SwipeRefreshLayout
@@ -61,8 +59,7 @@
                     <ListView
                         android:id="@+id/m_list"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/twitterBlau" />
+                        android:layout_height="match_parent" />
                 </android.support.v4.widget.SwipeRefreshLayout>
 
             </FrameLayout>

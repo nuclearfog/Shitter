@@ -68,6 +68,7 @@
                             android:id="@+id/profile_locked"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
+                            android:contentDescription="@string/profile_locked"
                             android:visibility="invisible"
                             app:srcCompat="@drawable/lock" />
                     </LinearLayout>
@@ -212,7 +213,6 @@
                                 android:id="@+id/ht_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="@color/twitterBlau"
                                 android:nestedScrollingEnabled="true" />
                         </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -225,7 +225,6 @@
                                 android:id="@+id/hf_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:background="@color/twitterBlau"
                                 android:nestedScrollingEnabled="true" />
                         </android.support.v4.widget.SwipeRefreshLayout>
 
