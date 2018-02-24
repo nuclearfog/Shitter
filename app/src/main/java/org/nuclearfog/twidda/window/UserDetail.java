@@ -35,7 +35,7 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         if(i.hasExtra("tweetID")){
             tweetID = i.getExtras().getLong("tweetID");
         }
-        userListview = (ListView) findViewById(R.id.followList);
+        userListview = (ListView) findViewById(R.id.userlist);
         userListview.setOnItemClickListener(this);
         toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
         setSupportActionBar(toolbar);

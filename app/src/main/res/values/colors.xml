@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#ff4081</color>
     <color name="twitterBlau">#034059</color>
-    <color name="soylentgreen">#76b900</color>
+    <color name="soylentgreen">#76ff03</color>
     <color name="tweetwindow">#19aae8</color>
     <color name="following">#00ffff</color>
     <color name="muted">#ff0000</color>
     <color name="transparent">#00000000</color>
+    <color name="DarkBlue">#050f48</color>
 </resources>

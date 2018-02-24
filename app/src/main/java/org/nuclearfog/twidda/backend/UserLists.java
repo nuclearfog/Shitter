@@ -36,7 +36,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     @Override
     protected void onPreExecute() {
         mTwitter = TwitterEngine.getInstance(context);
-        userList = (ListView)((UserDetail)context).findViewById(R.id.followList);
+        userList = (ListView)((UserDetail)context).findViewById(R.id.userlist);
         uProgress = (ProgressBar)((UserDetail)context).findViewById(R.id.user_progress);
     }
 

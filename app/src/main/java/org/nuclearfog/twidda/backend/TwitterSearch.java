@@ -14,14 +14,11 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.SearchWindow;
 
-public class TwitterSearch extends AsyncTask<String, Void, String> {
-
-    public static final String TWEETS = "tweets";
-    public static final String USERS = "users";
+public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     private TimelineAdapter tlAdp;
     private UserAdapter uAdp;
-    private SwipeRefreshLayout tweetReload, userReload;
+    private SwipeRefreshLayout tweetReload;
     private ListView tweetSearch, userSearch;
     private ProgressBar circleLoad;
     private Context context;
@@ -36,49 +33,35 @@ public class TwitterSearch extends AsyncTask<String, Void, String> {
         tweetSearch = (ListView) ((SearchWindow)context).findViewById(R.id.tweet_result);
         userSearch  = (ListView) ((SearchWindow)context).findViewById(R.id.user_result);
         tweetReload = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchtweets);
-        userReload  = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchusers);
         circleLoad  = (ProgressBar) ((SearchWindow)context).findViewById(R.id.search_progress);
         mTwitter = TwitterEngine.getInstance(context);
     }
 
     @Override
-    protected String doInBackground(String... search) {
-        String mode = search[0];
-        String get = search[1];
+    protected Void doInBackground(String... search) {
+        String get = search[0];
         long id = 1L;
         try {
-            switch(mode) {
-                case(TWEETS):
-                    tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
-                    if(tlAdp != null) {
-                        id = tlAdp.getItemId(0);
-                        tlAdp.getData().addHot(mTwitter.searchTweets(get,id));
-                    } else {
-                        tlAdp = new TimelineAdapter(context, new TweetDatabase(mTwitter.searchTweets(get,id),context));
-                    }
-                    return TWEETS;
-                case(USERS):
-                    uAdp = new UserAdapter(context, new UserDatabase(context, mTwitter.searchUsers(get)));
-                    return USERS;
+            tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
+            if(tlAdp != null) {
+                id = tlAdp.getItemId(0);
+                tlAdp.getData().addHot(mTwitter.searchTweets(get,id));
+            } else {
+                tlAdp = new TimelineAdapter(context, new TweetDatabase(mTwitter.searchTweets(get,id),context));
             }
+            uAdp = new UserAdapter(context, new UserDatabase(context, mTwitter.searchUsers(get)));
         } catch(Exception err){err.printStackTrace();}
-        return "";
+        return null;
     }
 
     @Override
-    protected void onPostExecute(String mode) {
+    protected void onPostExecute(Void v) {
         circleLoad.setVisibility(View.INVISIBLE);
-        switch(mode) {
-            case(TWEETS):
-                if(tweetSearch.getAdapter() == null)
-                    tweetSearch.setAdapter(tlAdp);
-                else
-                    tlAdp.notifyDataSetChanged();
-                tweetReload.setRefreshing(false);
-                break;
-            case(USERS):
-                userSearch.setAdapter(uAdp);
-                userReload.setRefreshing(false);
-        }
+        if(tweetSearch.getAdapter() == null)
+            tweetSearch.setAdapter(tlAdp);
+        else
+            tlAdp.notifyDataSetChanged();
+        userSearch.setAdapter(uAdp);
+        tweetReload.setRefreshing(false);
     }
 }

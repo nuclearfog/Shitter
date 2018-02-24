@@ -21,17 +21,19 @@
         <Button
             android:id="@+id/color_background"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:text="@string/background" />
 
         <Button
             android:id="@+id/color_font"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:includeFontPadding="false"
             android:text="@string/font"
             android:textColor="@android:color/black" />
@@ -41,23 +43,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/color_tweet"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:text="@string/popup" />
 
         <Button
             android:id="@+id/highlight_color"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:layout_weight="1"
             android:text="@string/highlight" />
     </LinearLayout>
 
@@ -109,7 +114,8 @@
             android:id="@+id/woeid"
             android:layout_width="128dp"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:inputType="number"
+            android:labelFor="@id/textView" />
 
         <TextView
             android:id="@+id/textView"

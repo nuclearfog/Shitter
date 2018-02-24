@@ -38,27 +38,22 @@
                     <ListView
                         android:id="@+id/tweet_result"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:background="@color/twitterBlau">
 
                     </ListView>
 
 
                 </android.support.v4.widget.SwipeRefreshLayout>
 
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/searchusers"
+                <ListView
+                    android:id="@+id/user_result"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@color/twitterBlau">
 
-                    <ListView
-                        android:id="@+id/user_result"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                </ListView>
 
-                    </ListView>
-
-
-                </android.support.v4.widget.SwipeRefreshLayout>
             </FrameLayout>
         </LinearLayout>
 

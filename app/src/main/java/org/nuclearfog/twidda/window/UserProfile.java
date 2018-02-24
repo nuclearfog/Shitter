@@ -7,7 +7,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,6 +61,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         homeFavorits.setOnItemClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
+
         initElements();
         getContent();
     }
