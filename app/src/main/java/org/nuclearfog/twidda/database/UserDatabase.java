@@ -63,6 +63,6 @@ public class UserDatabase {
         imgUrl = new ArrayList<>();
         verified = new ArrayList<>();
         SharedPreferences s = c.getSharedPreferences("settings", 0);
-        toggleImg = s.getBoolean("image_load", false);
+        toggleImg = s.getBoolean("image_load", true);
     }
 }

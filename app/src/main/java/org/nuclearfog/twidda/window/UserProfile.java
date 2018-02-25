@@ -17,18 +17,18 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
-import org.nuclearfog.twidda.backend.ProfileAction;
+import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
 /**
  * User Profile Class uses AsyncTask
- * @see ProfileAction
+ * @see ProfileLoader
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
         TabHost.OnTabChangeListener, AppBarLayout.OnOffsetChangedListener {
 
-    private ProfileAction mProfile, mTweets, mFavorits;
+    private ProfileLoader mProfile, mTweets, mFavorits;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
     private long userId;
@@ -93,17 +93,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent;
-        mProfile = new ProfileAction(this);
+        mProfile = new ProfileLoader(this);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
                 intent = new Intent(this, TweetPopup.class);
                 startActivity(intent);
                 return true;
             case R.id.profile_follow:
-                mProfile.execute(userId, ProfileAction.ACTION_FOLLOW);
+                mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
                 return true;
             case R.id.profile_block:
-                mProfile.execute(userId, ProfileAction.ACTION_MUTE);
+                mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
                 return true;
             default: return false;
         }
@@ -151,12 +151,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onRefresh() {
         switch(currentTab) {
             case "tweets":
-                mTweets = new ProfileAction(this);
-                mTweets.execute(userId, ProfileAction.GET_TWEETS,1L);
+                mTweets = new ProfileLoader(this);
+                mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
                 break;
             case "favorites":
-                mFavorits = new ProfileAction(this);
-                mFavorits.execute(userId, ProfileAction.GET_FAVS,1L);
+                mFavorits = new ProfileLoader(this);
+                mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
                 break;
         }
     }
@@ -203,17 +203,17 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private void getContent() {
         TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
         TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
-        mTweets = new ProfileAction(this);
-        mFavorits = new ProfileAction(this);
+        mTweets = new ProfileLoader(this);
+        mFavorits = new ProfileLoader(this);
         if( mTweet.getSize() > 0 ) {
             homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
         }else {
-            mTweets.execute(userId, ProfileAction.GET_TWEETS,1L);
+            mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
         }
         if( fTweet.getSize() > 0 ) {
             homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
         } else {
-            mFavorits.execute(userId, ProfileAction.GET_FAVS,1L);
+            mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
         }
     }
 
@@ -221,8 +221,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * Profile Information
      */
     private void initElements() {
-        mProfile = new ProfileAction(this);
-        mProfile.execute(userId, ProfileAction.GET_INFORMATION,1L);
+        mProfile = new ProfileLoader(this);
+        mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
     }
 
     /**

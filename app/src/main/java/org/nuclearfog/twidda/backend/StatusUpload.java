@@ -7,13 +7,13 @@ import android.widget.Toast;
 public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
 
     private Context context;
-    private String path;
+    private String[] path;
 
     /**
      * @param context Context of #TweetPopup
      * @param path Internal Path of the Image
      */
-    public StatusUpload(Context context, String path) {
+    public StatusUpload(Context context, String[] path) {
         this.context = context;
         this.path = path;
     }
@@ -30,7 +30,12 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
             String tweet = (String) args[0];
             if(args.length > 1)
                 id = (Long) args[1];
-            TwitterEngine.getInstance(context).sendStatus(tweet,id,path);
+
+            if(path == null) {
+                TwitterEngine.getInstance(context).sendStatus(tweet,id);
+            } else {
+                TwitterEngine.getInstance(context).sendStatus(tweet,id,path);
+            }
             return true;
         } catch(Exception err) {
             err.printStackTrace();

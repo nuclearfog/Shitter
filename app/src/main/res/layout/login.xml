@@ -26,6 +26,7 @@
             android:id="@+id/pin"
             android:layout_width="96dp"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:hint="@string/pin"
             android:inputType="numberPassword"
             android:singleLine="true" />

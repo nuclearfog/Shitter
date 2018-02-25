@@ -72,7 +72,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         mTwitter = TwitterEngine.getInstance(c);
         answers = new ArrayList<>();
         SharedPreferences settings = c.getSharedPreferences("settings", 0);
-        toggleImg = settings.getBoolean("image_load", false);
+        toggleImg = settings.getBoolean("image_load", true);
         highlight = ColorPreferences.getInstance(c).getColor(ColorPreferences.HIGHLIGHTING);
         this.c = c;
     }

@@ -22,7 +22,7 @@ import twitter4j.User;
 
 import com.squareup.picasso.Picasso;
 
-public class ProfileAction extends AsyncTask<Long,Void,Long>
+public class ProfileLoader extends AsyncTask<Long,Void,Long>
 {
     public static final long GET_INFORMATION = 0x0;
     public static final long ACTION_FOLLOW   = 0x1;
@@ -52,10 +52,10 @@ public class ProfileAction extends AsyncTask<Long,Void,Long>
      * @param context Context to Activity
      * @see UserProfile
      */
-    public ProfileAction(Context context) {
+    public ProfileLoader(Context context) {
         this.context=context;
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        imgEnabled = settings.getBoolean("image_load",false);
+        imgEnabled = settings.getBoolean("image_load",true);
     }
 
     @Override

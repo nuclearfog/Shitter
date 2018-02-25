@@ -19,6 +19,7 @@ import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.UploadedMedia;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -309,17 +310,40 @@ public class TwitterEngine {
      * Send Tweet
      * @param text Tweet Text
      * @param reply In reply to tweet ID
+     * @throws TwitterException if Access is unavailable
+     */
+    public void sendStatus(String text, long reply) throws TwitterException {
+        StatusUpdate mStatus = new StatusUpdate(text);
+        if(reply > 0)
+            mStatus.setInReplyToStatusId(reply);
+        twitter.tweets().updateStatus(mStatus);
+    }
+
+    /**
+     * Send Tweet
+     * @param text Tweet Text
+     * @param reply In reply to tweet ID
      * @param path Path to the Media File
      * @throws TwitterException if Access is unavailable
      * @throws NullPointerException if file path is wrong
      */
-    public void sendStatus(String text, long reply, String path) throws TwitterException, NullPointerException {
+    public void sendStatus(String text, long reply, String[] path) throws TwitterException, NullPointerException {
+        UploadedMedia media;
+        int count = path.length;
+        long[] mIDs = new long[count];
         StatusUpdate mStatus = new StatusUpdate(text);
-        if(reply > 0)
+
+        if(reply > 0) {
             mStatus.setInReplyToStatusId(reply);
-        if(!path.isEmpty()) {
-            mStatus.setMedia(new File(path));
         }
+        for(int i = 0 ; i < count; i++) {
+            String current = path[i];
+            if(current != null) {
+                media = twitter.uploadMedia(new File(current));
+                mIDs[i] = media.getMediaId();
+            }
+        }
+        mStatus.setMediaIds(mIDs);
         twitter.tweets().updateStatus(mStatus);
     }
 

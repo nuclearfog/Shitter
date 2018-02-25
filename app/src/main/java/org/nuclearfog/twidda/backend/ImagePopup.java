@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import org.nuclearfog.twidda.R;
+
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -43,7 +45,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                ImagePopup.this.cancel(false);
+                ImagePopup.this.cancel(true);
             }
         });
     }
@@ -55,9 +57,17 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
             if(size == 0)
                 return false;
             imgArray = new Bitmap[size];
-            for(String link : links) {
-                InputStream mediaStream = new URL(link).openStream();
-                imgArray[index++] = BitmapFactory.decodeStream(mediaStream);
+            if(links[0].startsWith("/")) {
+                for(String link : links) {
+                    if(link != null)
+                        imgArray[index++] = BitmapFactory.decodeFile(link);
+                }
+            }
+            else {
+                for(String link : links) {
+                    InputStream mediaStream = new URL(link).openStream();
+                    imgArray[index++] = BitmapFactory.decodeStream(mediaStream);
+                }
             }
             return true;
         } catch (Exception err) {
