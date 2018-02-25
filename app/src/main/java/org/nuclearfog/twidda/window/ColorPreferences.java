@@ -31,7 +31,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
 
     private ColorPreferences(Context context) {
         settings = context.getSharedPreferences("settings", 0);
-        background = settings.getInt("background_color", 0xff061a22);
+        background = settings.getInt("background_color", 0xff071222);
         font = settings.getInt("font_color", 0xffffffff);
         tweet = settings.getInt("tweet_color", 0xff19aae8);
         highlight = settings.getInt("highlight_color", 0xffff00ff);

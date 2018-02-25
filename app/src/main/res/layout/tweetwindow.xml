@@ -15,10 +15,9 @@
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
         android:layout_marginTop="5dip"
-        android:background="@android:color/background_light"
+        android:background="@android:color/transparent"
         android:gravity="top"
-        android:inputType="textMultiLine"
-        android:textColor="@android:color/background_dark" />
+        android:inputType="textMultiLine" />
 
     <LinearLayout
         android:layout_width="match_parent"
