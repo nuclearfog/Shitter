@@ -24,7 +24,7 @@
         app:showAsAction="ifRoom|collapseActionView" />
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/setting_icon"
+        android:icon="@drawable/setting"
         android:title="@string/settings"
         android:visible="false"
         app:showAsAction="ifRoom" />
