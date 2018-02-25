@@ -109,14 +109,17 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
                     break;
 
                 case '\'':
+                case '\"':
+                case '\n':
+                case ')':
+                case '(':
                 case ':':
                 case ' ':
                 case '.':
                 case ',':
-                case '\n':
-                case '\t':
                 case '!':
                 case '?':
+                case '-':
                     if(marked)
                         sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     marked = false;

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 
@@ -26,6 +28,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     private EditText woeId;
     private SharedPreferences settings;
+    private ClipboardManager clip;
     private TextView load_factor;
     private ColorPreferences mColor;
     private int row, wId;
@@ -36,6 +39,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.settings);
         mColor = ColorPreferences.getInstance(this);
         settings = getApplicationContext().getSharedPreferences("settings", 0);
+        clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         row = settings.getInt("preload",10);
         wId = settings.getInt("woeid",23424829);
         String location = Integer.toString(wId);
@@ -49,6 +53,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         Button colorButton4 = (Button) findViewById(R.id.highlight_color);
         Button reduce = (Button) findViewById(R.id.less);
         Button enhance = (Button) findViewById(R.id.more);
+        Button clip = (Button) findViewById(R.id.woeid_clip);
         load_factor = (TextView)findViewById(R.id.number_row);
         woeId = (EditText) findViewById(R.id.woeid);
 
@@ -60,6 +65,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         toggleImg.setOnCheckedChangeListener(this);
         reduce.setOnClickListener(this);
         enhance.setOnClickListener(this);
+        clip.setOnClickListener(this);
 
         int color1 = mColor.getColor(ColorPreferences.BACKGROUND);
         int color2 = mColor.getColor(ColorPreferences.FONT_COLOR);
@@ -135,6 +141,17 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 if(row < 100) {
                     row += 10;
                     load_factor.setText(Integer.toString(row));
+                }
+                break;
+            case R.id.woeid_clip:
+                if(clip != null && clip.hasPrimaryClip()) {
+                    String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
+                    if(text.matches("\\d++\n?")) {
+                        woeId.setText(text);
+                        Toast.makeText(getApplicationContext(),"Eingefügt!",Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(),"Falsches Format!",Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
         }

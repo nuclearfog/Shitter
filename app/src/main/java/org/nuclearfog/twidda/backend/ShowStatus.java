@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -35,7 +36,7 @@ import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
-public class ShowStatus extends AsyncTask<Long, Void, Long> {
+public class ShowStatus extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
 
     private static final long ERROR = -1;
     public static final long RETWEET = 0;
@@ -56,7 +57,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
     private SwipeRefreshLayout ansReload;
     private Bitmap profile_btm;
     private String usernameStr, scrNameStr, tweetStr, dateString;
-    private String repliedUsername, apiName, retweeter;
+    private String repliedUsername, apiName, retweeter, tweetlink;
     private String medialinks[];
     private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
@@ -111,8 +112,9 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             twitter4j.Status currentTweet = mTwitter.getStatus(tweetID);
             twitter4j.Status embeddedTweet = currentTweet.getRetweetedStatus();
             if(embeddedTweet != null) {
-                retweeter = "Retweet von @"+currentTweet.getUser().getScreenName();
+                retweeter = "Retweet @"+currentTweet.getUser().getScreenName();
                 currentTweet = mTwitter.getStatus(embeddedTweet.getId());
+                tweetID = currentTweet.getId();
                 rtFlag = true;
             }
             rt = currentTweet.getRetweetCount();
@@ -120,8 +122,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             retweeted = currentTweet.isRetweetedByMe();
             favorited = currentTweet.isFavorited();
 
+            User user = currentTweet.getUser();
+
             if(mode == LOAD_TWEET) {
-                User user = currentTweet.getUser();
+
                 userID = user.getId();
                 userReply = currentTweet.getInReplyToUserId();
                 tweetReplyID = currentTweet.getInReplyToStatusId();
@@ -131,9 +135,10 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                 scrNameStr = '@'+user.getScreenName();
                 apiName = formatString(currentTweet.getSource());
                 dateString = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(currentTweet.getCreatedAt());
+                tweetlink = "https://twitter.com/"+user.getScreenName()+"/status/"+tweetID;
 
                 if(userReply > 0)
-                    repliedUsername = "Antwort an @"+currentTweet.getInReplyToScreenName();
+                    repliedUsername = "Antwort @"+currentTweet.getInReplyToScreenName();
                 if(toggleImg) {
                     String pbLink = user.getProfileImageURL();
                     InputStream iStream = new URL(pbLink).openStream();
@@ -170,10 +175,11 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                 }
             }
             else if(mode == LOAD_REPLY) {
+                String replyname = user.getScreenName();
                 tlAdp = (TimelineAdapter) replyList.getAdapter();
                 if(tlAdp != null)
                     tweetID = tlAdp.getItemId(0);
-                answers = mTwitter.getAnswers(scrNameStr, tweetID);
+                answers = mTwitter.getAnswers(replyname, tweetID);
                 ansNo = answers.size();
             }
             else if(mode == DELETE) {
@@ -221,38 +227,16 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
             }
             if(toggleImg) {
                 profile_img.setImageBitmap(profile_btm);
-                profile_img.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(c, UserProfile.class);
-                        Bundle b = new Bundle();
-                        b.putLong("userID",userID);
-                        intent.putExtras(b);
-                        c.startActivity(intent);
-                    }
-                });
+                profile_img.setOnClickListener(this);
                 if(medialinks.length != 0) {
                     mediabutton.setVisibility(View.VISIBLE);
-                    mediabutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            new ImagePopup(c).execute(medialinks);
-                        }
-                    });
+                    mediabutton.setOnClickListener(this);
                 }
             }
             setIcons();
-            replyName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(c, TweetDetail.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetReplyID);
-                    bundle.putLong("userID",userReply);
-                    intent.putExtras(bundle);
-                    c.startActivity(intent);
-                }
-            });
+            replyName.setOnClickListener(this);
+            date.setOnClickListener(this);
+
         }
         else if(mode == RETWEET) {
             String rtStr = Integer.toString(rt);
@@ -290,6 +274,39 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch(v.getId()) {
+            case R.id.profileimage_detail:
+                intent = new Intent(c, UserProfile.class);
+                Bundle b = new Bundle();
+                b.putLong("userID",userID);
+                intent.putExtras(b);
+                c.startActivity(intent);
+                break;
+
+            case R.id.image_attach:
+                new ImagePopup(c).execute(medialinks);
+                break;
+
+            case R.id.answer_reference_detail:
+                intent = new Intent(c, TweetDetail.class);
+                Bundle bundle = new Bundle();
+                bundle.putLong("tweetID",tweetReplyID);
+                bundle.putLong("userID",userReply);
+                intent.putExtras(bundle);
+                c.startActivity(intent);
+                break;
+
+            case R.id.timedetail:
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(tweetlink));
+                c.startActivity(intent);
+                break;
+        }
+    }
+
     private String formatString(String input) {
         String output = "gesendet von: ";
         boolean openTag = false;
@@ -320,6 +337,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                     break;
                 case '\'':
                 case '\"':
+                case '\n':
                 case ')':
                 case '(':
                 case ':':
@@ -328,6 +346,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> {
                 case ',':
                 case '!':
                 case '?':
+                case '-':
                     if(marked) {
                         sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
