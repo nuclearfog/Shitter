@@ -18,12 +18,12 @@ import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.database.TweetDatabase;
-import org.nuclearfog.twidda.backend.RegisterAccount;
+import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 import org.nuclearfog.twidda.window.LoginPage;
-import org.nuclearfog.twidda.window.SearchWindow;
+import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.UserProfile;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.TweetDetail;
@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.window.TweetPopup;
 
 /**
  * MainPage of the App
- * @see RegisterAccount Registing App in Twitter
+ * @see Registration Registing App in Twitter
  * @see MainPage show Home Window
  */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Intent intent = new Intent(con, SearchWindow.class);
+                Intent intent = new Intent(con, SearchPage.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("search", s);
                 intent.putExtras(bundle);
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 if(!trendReload.isRefreshing()) {
                     TrendAdapter trend = (TrendAdapter) trendList.getAdapter();
                     String search = trend.getDatabase().getTrendname(position);
-                    Intent intent = new Intent(con, SearchWindow.class);
+                    Intent intent = new Intent(con, SearchPage.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("search", search);
                     if(search.startsWith("#")) {

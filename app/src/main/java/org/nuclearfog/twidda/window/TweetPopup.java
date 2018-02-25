@@ -16,12 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import static android.content.DialogInterface.*;
 
-import org.nuclearfog.twidda.backend.SendStatus;
+import org.nuclearfog.twidda.backend.StatusUpload;
 import org.nuclearfog.twidda.R;
 
 /**
  * Tweet Window
- * @see SendStatus
+ * @see StatusUpload
  */
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener,
         DialogInterface.OnClickListener {
@@ -129,11 +129,11 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
     private void send() {
         String tweet = tweetfield.getText().toString();
-        SendStatus sendTweet;
+        StatusUpload sendTweet;
         if(imgPath == null) {
-            sendTweet = new SendStatus(getApplicationContext(), "");
+            sendTweet = new StatusUpload(getApplicationContext(), "");
         } else {
-            sendTweet = new SendStatus(getApplicationContext(), imgPath);
+            sendTweet = new StatusUpload(getApplicationContext(), imgPath);
         } if(inReplyId > 0) {
             sendTweet.execute(tweet, inReplyId);
         } else {

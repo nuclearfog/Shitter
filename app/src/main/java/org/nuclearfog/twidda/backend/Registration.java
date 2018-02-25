@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import org.nuclearfog.twidda.window.LoginPage;
 
-public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
+public class Registration extends AsyncTask<String, Void, Boolean> {
     private Context context;
     private String errMSG = "";
 
@@ -16,7 +16,7 @@ public class RegisterAccount extends AsyncTask<String, Void, Boolean> {
      * @see TwitterEngine used to Store Twitter instance
      * @param context current Activity's Context.
      */
-    public RegisterAccount(Context context) {
+    public Registration(Context context) {
         this.context = context;
     }
 

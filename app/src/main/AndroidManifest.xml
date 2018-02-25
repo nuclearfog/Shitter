@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".window.SearchWindow"
+            android:name=".window.SearchPage"
             android:screenOrientation="portrait"/>
 
         <activity

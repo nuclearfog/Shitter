@@ -22,10 +22,10 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.backend.TwitterSearch;
 
 /**
- * SearchWindow Tweets and Users
+ * SearchPage Tweets and Users
  * @see TwitterSearch
  */
-public class SearchWindow extends AppCompatActivity implements AdapterView.OnItemClickListener,
+public class SearchPage extends AppCompatActivity implements AdapterView.OnItemClickListener,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
 
     private ListView tweetSearch, userSearch;

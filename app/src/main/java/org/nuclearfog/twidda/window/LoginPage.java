@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.RegisterAccount;
+import org.nuclearfog.twidda.backend.Registration;
 
 public class LoginPage extends Activity implements View.OnClickListener {
 
@@ -35,14 +35,14 @@ public class LoginPage extends Activity implements View.OnClickListener {
     public void onClick(View v){
         switch(v.getId()){
             case R.id.linkButton:
-                RegisterAccount account = new RegisterAccount(this);
+                Registration account = new Registration(this);
                 account.execute("");
                 break;
 
             case R.id.get:
                 String twitterPin = pin.getText().toString();
                 if(!twitterPin.trim().isEmpty()) {
-                    new RegisterAccount(this).execute(twitterPin);
+                    new Registration(this).execute(twitterPin);
                 } else {
                     Toast.makeText(getApplicationContext(),"PIN eingeben!",Toast.LENGTH_LONG).show();
                 }

@@ -17,14 +17,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import static android.content.DialogInterface.*;
 
-import org.nuclearfog.twidda.backend.ShowStatus;
+import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 
 /**
  * Detailed Tweet Window
- * @see ShowStatus
+ * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener, DialogInterface.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -32,7 +32,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private ListView answer_list;
     private long tweetID;
     private long userID;
-    private ShowStatus mStat, mReply;
+    private StatusLoader mStat, mReply;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -79,7 +79,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         Intent intent;
         Bundle bundle = new Bundle();
-        ShowStatus mStat = new ShowStatus(this);
+        StatusLoader mStat = new StatusLoader(this);
         switch(v.getId()) {
             case R.id.answer_button:
                 intent = new Intent(getApplicationContext(), TweetPopup.class);
@@ -88,10 +88,10 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 startActivity(intent);
                 break;
             case R.id.rt_button_detail:
-                mStat.execute(tweetID, ShowStatus.RETWEET);
+                mStat.execute(tweetID, StatusLoader.RETWEET);
                 break;
             case R.id.fav_button_detail:
-                mStat.execute(tweetID, ShowStatus.FAVORITE);
+                mStat.execute(tweetID, StatusLoader.FAVORITE);
                 break;
             case R.id.no_rt_detail:
                 intent = new Intent(getApplicationContext(), UserDetail.class);
@@ -125,7 +125,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
             case BUTTON_NEGATIVE:
                 break;
             case BUTTON_POSITIVE:
-                new ShowStatus(this).execute(tweetID,ShowStatus.DELETE);
+                new StatusLoader(this).execute(tweetID, StatusLoader.DELETE);
                 break;
         }
     }
@@ -146,8 +146,8 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        mReply = new ShowStatus(this);
-        mReply.execute(tweetID, ShowStatus.LOAD_REPLY);
+        mReply = new StatusLoader(this);
+        mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
     }
 
     private void setContent() {
@@ -162,9 +162,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         answer_list.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
 
-        mStat = new ShowStatus(this);
-        mReply = new ShowStatus(this);
-        mStat.execute(tweetID, ShowStatus.LOAD_TWEET);
-        mReply.execute(tweetID, ShowStatus.LOAD_REPLY);
+        mStat = new StatusLoader(this);
+        mReply = new StatusLoader(this);
+        mStat.execute(tweetID, StatusLoader.LOAD_TWEET);
+        mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
     }
 }

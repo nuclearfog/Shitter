@@ -36,7 +36,7 @@ import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
-public class ShowStatus extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
+public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
 
     private static final long ERROR = -1;
     public static final long RETWEET = 0;
@@ -68,7 +68,7 @@ public class ShowStatus extends AsyncTask<Long, Void, Long> implements View.OnCl
 
 
 
-    public ShowStatus(Context c) {
+    public StatusLoader(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
         answers = new ArrayList<>();
         SharedPreferences settings = c.getSharedPreferences("settings", 0);

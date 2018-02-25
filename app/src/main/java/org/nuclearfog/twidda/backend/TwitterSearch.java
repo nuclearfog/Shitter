@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
-import org.nuclearfog.twidda.window.SearchWindow;
+import org.nuclearfog.twidda.window.SearchPage;
 
 public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
@@ -30,10 +30,10 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        tweetSearch = (ListView) ((SearchWindow)context).findViewById(R.id.tweet_result);
-        userSearch  = (ListView) ((SearchWindow)context).findViewById(R.id.user_result);
-        tweetReload = (SwipeRefreshLayout) ((SearchWindow)context).findViewById(R.id.searchtweets);
-        circleLoad  = (ProgressBar) ((SearchWindow)context).findViewById(R.id.search_progress);
+        tweetSearch = (ListView) ((SearchPage)context).findViewById(R.id.tweet_result);
+        userSearch  = (ListView) ((SearchPage)context).findViewById(R.id.user_result);
+        tweetReload = (SwipeRefreshLayout) ((SearchPage)context).findViewById(R.id.searchtweets);
+        circleLoad  = (ProgressBar) ((SearchPage)context).findViewById(R.id.search_progress);
         mTwitter = TwitterEngine.getInstance(context);
     }
 

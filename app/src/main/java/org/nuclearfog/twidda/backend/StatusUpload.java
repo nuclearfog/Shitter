@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-public class SendStatus extends AsyncTask<Object, Void, Boolean> {
+public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
 
     private Context context;
     private String path;
@@ -13,7 +13,7 @@ public class SendStatus extends AsyncTask<Object, Void, Boolean> {
      * @param context Context of #TweetPopup
      * @param path Internal Path of the Image
      */
-    public SendStatus(Context context, String path) {
+    public StatusUpload(Context context, String path) {
         this.context = context;
         this.path = path;
     }
