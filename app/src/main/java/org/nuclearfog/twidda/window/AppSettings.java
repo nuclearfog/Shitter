@@ -76,7 +76,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         colorButton3.setBackgroundColor(color3);
         colorButton4.setBackgroundColor(color4);
 
-        toggleImg.setChecked(settings.getBoolean("image_load",false));
+        toggleImg.setChecked(settings.getBoolean("image_load",true));
 
         load_factor.setText(load);
         woeId.setText(location);
