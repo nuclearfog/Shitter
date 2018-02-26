@@ -17,6 +17,9 @@ import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
 import org.nuclearfog.twidda.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Tweet Window
  * @see StatusUpload
@@ -28,8 +31,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     Button imageButton, previewBtn;
     private long inReplyId =-1L;
     private String addition="";
-    private final String[] filePath = new String[4];
     private int imgIndex = 0;
+    private List<String> mediaPath;
 
     @Override
     protected void onCreate(Bundle SavedInstance) {
@@ -40,8 +43,10 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         if(getIntent().hasExtra("Addition"))
             addition = getIntent().getExtras().getString("Addition");
 
-        final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
-        getWindow().setLayout(size, size);
+       // final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
+      //  getWindow().setLayout(size, size);
+        mediaPath = new ArrayList<>();
+
 
         Button tweetButton = (Button) findViewById(R.id.sendTweet);
         Button closeButton = (Button) findViewById(R.id.close);
@@ -49,15 +54,15 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         previewBtn  = (Button) findViewById(R.id.img_preview);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
 
-        closeButton.setOnClickListener(this);
-        tweetButton.setOnClickListener(this);
-        imageButton.setOnClickListener(this);
-        previewBtn.setOnClickListener(this);
-
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
         root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
         tweetfield.setText(addition);
+
+        closeButton.setOnClickListener(this);
+        tweetButton.setOnClickListener(this);
+        imageButton.setOnClickListener(this);
+        previewBtn.setOnClickListener(this);
     }
 
 
@@ -78,7 +83,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 }
                 if(imgIndex  < 4) {
                     int index = c.getColumnIndex(mode[0]);
-                    filePath[imgIndex++] = c.getString(index);
+                    mediaPath.add(c.getString(index));
                 }
                 if(imgIndex == 4) {
                     imageButton.setVisibility(View.INVISIBLE);
@@ -113,7 +118,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 startActivityForResult(i, 0);
                 break;
             case R.id.img_preview:
-                new ImagePopup(this).execute(filePath);
+                new ImagePopup(this).execute((String[])mediaPath.toArray());
                 break;
         }
     }
@@ -132,12 +137,12 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
     private void send() {
         String tweet = tweetfield.getText().toString();
+        String[] paths = new String[mediaPath.size()];
+        paths = mediaPath.toArray(paths);
         StatusUpload sendTweet;
-        if(filePath[0] == null) {
-            sendTweet = new StatusUpload(getApplicationContext(),null);
-        } else {
-            sendTweet = new StatusUpload(getApplicationContext(), filePath);
-        } if(inReplyId > 0) {
+        sendTweet = new StatusUpload(getApplicationContext(),paths);
+
+        if(inReplyId > 0) {
             sendTweet.execute(tweet, inReplyId);
         } else {
             sendTweet.execute(tweet);

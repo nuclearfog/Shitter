@@ -99,14 +99,14 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         wId = Integer.parseInt(woeId.getText().toString());
         Editor edit  = settings.edit();
         edit.putInt("woeid", wId);
         edit.putInt("preload", row);
-        edit.apply();
+        edit.commit();
         mColor.commit();
-        super.onDestroy();
+        super.onBackPressed();
     }
 
     @Override

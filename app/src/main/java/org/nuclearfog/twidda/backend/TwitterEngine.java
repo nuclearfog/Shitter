@@ -338,10 +338,8 @@ public class TwitterEngine {
         }
         for(int i = 0 ; i < count; i++) {
             String current = path[i];
-            if(current != null) {
-                media = twitter.uploadMedia(new File(current));
-                mIDs[i] = media.getMediaId();
-            }
+            media = twitter.uploadMedia(new File(current));
+            mIDs[i] = media.getMediaId();
         }
         mStatus.setMediaIds(mIDs);
         twitter.tweets().updateStatus(mStatus);

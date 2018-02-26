@@ -31,7 +31,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
             if(args.length > 1)
                 id = (Long) args[1];
 
-            if(path == null) {
+            if(path.length == 0) { //No Media included
                 TwitterEngine.getInstance(context).sendStatus(tweet,id);
             } else {
                 TwitterEngine.getInstance(context).sendStatus(tweet,id,path);
