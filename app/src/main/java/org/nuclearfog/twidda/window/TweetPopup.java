@@ -125,7 +125,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 startActivityForResult(i, 0);
                 break;
             case R.id.img_preview:
-                new ImagePopup(this).execute((String[])mediaPath.toArray());
+                new ImagePopup(this).execute(mediaPath.toArray(new String[mediaPath.size()]));
                 break;
         }
     }
