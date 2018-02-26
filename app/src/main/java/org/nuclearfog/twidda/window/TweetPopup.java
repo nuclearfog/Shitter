@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import static android.content.DialogInterface.*;
 
 import org.nuclearfog.twidda.backend.ImagePopup;
@@ -28,7 +30,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         DialogInterface.OnClickListener {
 
     private EditText tweetfield;
-    Button imageButton, previewBtn;
+    private Button imageButton, previewBtn;
+    private TextView imgcount;
     private long inReplyId =-1L;
     private String addition="";
     private int imgIndex = 0;
@@ -51,6 +54,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         imageButton = (Button) findViewById(R.id.image);
         previewBtn  = (Button) findViewById(R.id.img_preview);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
+        imgcount = (TextView) findViewById(R.id.imgcount);
 
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
@@ -91,6 +95,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 if(imgIndex  < 4) {
                     int index = c.getColumnIndex(mode[0]);
                     mediaPath.add(c.getString(index));
+                    String count = Integer.toString(++imgIndex);
+                    imgcount.setText(count);
                 }
                 if(imgIndex == 4) {
                     imageButton.setVisibility(View.INVISIBLE);
@@ -131,12 +137,12 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     }
 
     private void showClosingMsg() {
-        if( !addition.equals(tweetfield.getText().toString()) ){
-        AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-        alerta.setMessage("Tweet verwerfen?");
-        alerta.setPositiveButton(R.string.yes_confirm, this);
-        alerta.setNegativeButton(R.string.no_confirm, this);
-        alerta.show();
+        if( !addition.equals(tweetfield.getText().toString()) || imgIndex > 0) {
+            AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+            alerta.setMessage("Tweet verwerfen?");
+            alerta.setPositiveButton(R.string.yes_confirm, this);
+            alerta.setNegativeButton(R.string.no_confirm, this);
+            alerta.show();
         } else {
             finish();
         }
