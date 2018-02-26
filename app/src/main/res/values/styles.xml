@@ -6,17 +6,17 @@
         <item name="android:windowAnimationStyle">@style/TransactionPending</item>
         <item name="android:navigationBarColor">@android:color/background_dark</item>
         <item name="android:colorBackground">@color/DarkBlue</item>
-        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Transparency" parent="AppTheme">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
     </style>
 
-    <style name="TransactionPending" parent="@android:style/Animation.Activity">
-        <item name="android:activityOpenEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:activityOpenExitAnimation">@android:anim/fade_out</item>
-        <item name="android:activityCloseEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:activityCloseExitAnimation">@android:anim/fade_out</item>
+    <style name="TransactionPending" parent="@android:style/Animation.Translucent">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
+
 </resources>

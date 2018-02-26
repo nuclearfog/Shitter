@@ -7,6 +7,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,32 +29,32 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     private EditText woeId;
     private SharedPreferences settings;
+    private ColorPreferences mColor;
     private ClipboardManager clip;
     private TextView load_factor;
-    private ColorPreferences mColor;
+    private CheckBox toggleImg;
     private int row, wId;
+    private boolean imgEnabled;
 
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
         setContentView(R.layout.settings);
-        mColor = ColorPreferences.getInstance(this);
-        settings = getApplicationContext().getSharedPreferences("settings", 0);
-        clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        row = settings.getInt("preload",10);
-        wId = settings.getInt("woeid",23424829);
-        String location = Integer.toString(wId);
-        String load = Integer.toString(row);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Button delButon = (Button) findViewById(R.id.delete_db);
-        CheckBox toggleImg = (CheckBox) findViewById(R.id.toggleImg);
         Button colorButton1 = (Button) findViewById(R.id.color_background);
         Button colorButton2 = (Button) findViewById(R.id.color_font);
         Button colorButton3 = (Button) findViewById(R.id.color_tweet);
         Button colorButton4 = (Button) findViewById(R.id.highlight_color);
         Button reduce = (Button) findViewById(R.id.less);
         Button enhance = (Button) findViewById(R.id.more);
-        Button clip = (Button) findViewById(R.id.woeid_clip);
+        Button clipButton = (Button) findViewById(R.id.woeid_clip);
+        toggleImg = (CheckBox) findViewById(R.id.toggleImg);
         load_factor = (TextView)findViewById(R.id.number_row);
         woeId = (EditText) findViewById(R.id.woeid);
 
@@ -65,21 +66,15 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         toggleImg.setOnCheckedChangeListener(this);
         reduce.setOnClickListener(this);
         enhance.setOnClickListener(this);
-        clip.setOnClickListener(this);
+        clipButton.setOnClickListener(this);
 
-        int color1 = mColor.getColor(ColorPreferences.BACKGROUND);
-        int color2 = mColor.getColor(ColorPreferences.FONT_COLOR);
-        int color3 = mColor.getColor(ColorPreferences.TWEET_COLOR);
-        int color4 = mColor.getColor(ColorPreferences.HIGHLIGHTING);
-        colorButton1.setBackgroundColor(color1);
-        colorButton2.setBackgroundColor(color2);
-        colorButton3.setBackgroundColor(color3);
-        colorButton4.setBackgroundColor(color4);
+        mColor = ColorPreferences.getInstance(this);
+        colorButton1.setBackgroundColor(mColor.getColor(ColorPreferences.BACKGROUND));
+        colorButton2.setBackgroundColor(mColor.getColor(ColorPreferences.FONT_COLOR));
+        colorButton3.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
+        colorButton4.setBackgroundColor( mColor.getColor(ColorPreferences.HIGHLIGHTING));
 
-        toggleImg.setChecked(settings.getBoolean("image_load",true));
-
-        load_factor.setText(load);
-        woeId.setText(location);
+        loadSettings();
     }
 
     @Override
@@ -91,22 +86,14 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected( MenuItem item ) {
         switch(item.getItemId()) {
+            case R.id.save_settings:
+                save();
+                return true;
             case R.id.back_settings:
                 finish();
                 return true;
+            default:return false;
         }
-        return false;
-    }
-
-    @Override
-    public void onBackPressed() {
-        wId = Integer.parseInt(woeId.getText().toString());
-        Editor edit  = settings.edit();
-        edit.putInt("woeid", wId);
-        edit.putInt("preload", row);
-        edit.commit();
-        mColor.commit();
-        super.onBackPressed();
     }
 
     @Override
@@ -170,6 +157,30 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onCheckedChanged(CompoundButton b, boolean checked) {
-        settings.edit().putBoolean("image_load", checked).apply();
+        imgEnabled = true;
+    }
+
+    private void loadSettings() {
+        settings = getApplicationContext().getSharedPreferences("settings", 0);
+        clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        row = settings.getInt("preload",10);
+        wId = settings.getInt("woeid",23424829);
+        imgEnabled = settings.getBoolean("image_load",true);
+
+        String location = Integer.toString(wId);
+        woeId.setText(location);
+        toggleImg.setChecked(imgEnabled);
+        String load = Integer.toString(row);
+        load_factor.setText(load);
+    }
+
+    private void save() {
+        wId = Integer.parseInt(woeId.getText().toString());
+        Editor edit  = settings.edit();
+        edit.putInt("woeid", wId);
+        edit.putInt("preload", row);
+        edit.putBoolean("image_load", imgEnabled);
+        edit.apply();
+        mColor.commit();
     }
 }

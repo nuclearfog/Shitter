@@ -43,8 +43,6 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         if(getIntent().hasExtra("Addition"))
             addition = getIntent().getExtras().getString("Addition");
 
-       // final int size = LinearLayout.LayoutParams.WRAP_CONTENT;
-      //  getWindow().setLayout(size, size);
         mediaPath = new ArrayList<>();
 
 
