@@ -75,6 +75,15 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         super.onDestroy();
     }
 
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint(){
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent;

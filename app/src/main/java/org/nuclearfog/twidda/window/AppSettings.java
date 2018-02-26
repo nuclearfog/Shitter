@@ -77,6 +77,15 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         loadSettings();
     }
 
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
+
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
         getMenuInflater().inflate(R.menu.setting, m);

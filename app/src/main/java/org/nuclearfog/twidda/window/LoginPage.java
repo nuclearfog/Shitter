@@ -30,6 +30,15 @@ public class LoginPage extends Activity implements View.OnClickListener {
         super.onBackPressed();
     }
 
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint(){
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
+
 
     @Override
     public void onClick(View v){

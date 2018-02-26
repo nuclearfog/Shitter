@@ -42,6 +42,15 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         getUsers();
     }
 
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint(){
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
+
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
         toolbar.inflateMenu(R.menu.setting);

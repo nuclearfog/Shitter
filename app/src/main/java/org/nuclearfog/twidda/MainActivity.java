@@ -138,11 +138,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0,0);
+    }
+
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint(){
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
+
+    @Override
     public void onBackPressed() {
-        if( currentTab.equals("timeline") )
+        if( currentTab.equals("timeline") ) {
             super.onBackPressed();
-        else
+        }else {
             tabhost.setCurrentTab(0);
+        }
     }
 
     @Override

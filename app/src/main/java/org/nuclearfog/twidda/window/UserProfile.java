@@ -79,6 +79,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         super.onBackPressed();
     }
 
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {

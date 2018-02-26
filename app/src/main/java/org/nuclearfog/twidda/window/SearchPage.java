@@ -63,6 +63,15 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
         super.onDestroy();
     }
 
+    /**
+     * Home Button
+     */
+    @Override
+    protected void onUserLeaveHint(){
+        super.onUserLeaveHint();
+        overridePendingTransition(0,0);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);

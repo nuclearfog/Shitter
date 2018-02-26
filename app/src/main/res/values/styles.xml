@@ -7,6 +7,7 @@
         <item name="android:navigationBarColor">@android:color/background_dark</item>
         <item name="android:colorBackground">@color/DarkBlue</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+
     </style>
 
     <style name="Transparency" parent="AppTheme">
@@ -14,9 +15,10 @@
         <item name="android:colorBackground">@android:color/transparent</item>
     </style>
 
-    <style name="TransactionPending" parent="@android:style/Animation.Translucent">
+    <style name="TransactionPending" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+
     </style>
 
 </resources>
