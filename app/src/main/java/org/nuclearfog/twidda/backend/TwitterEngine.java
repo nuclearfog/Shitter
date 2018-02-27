@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -327,7 +328,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      * @throws NullPointerException if file path is wrong
      */
-    public void sendStatus(String text, long reply, String[] path) throws TwitterException, NullPointerException {
+    public void sendStatus(String text, long reply,@NonNull String[] path) throws TwitterException, NullPointerException {
         UploadedMedia media;
         int count = path.length;
         long[] mIDs = new long[count];

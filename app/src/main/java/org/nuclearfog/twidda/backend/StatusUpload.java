@@ -8,6 +8,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
 
     private Context context;
     private String[] path;
+    private String error;
 
     /**
      * @param context Context of #TweetPopup
@@ -28,17 +29,17 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
         try {
             Long id = -1L;
             String tweet = (String) args[0];
-            if(args.length > 1)
+            if(args.length > 1) {
                 id = (Long) args[1];
-
-            if(path.length == 0) { //No Media included
+            }
+            if(path.length == 0) {
                 TwitterEngine.getInstance(context).sendStatus(tweet,id);
             } else {
                 TwitterEngine.getInstance(context).sendStatus(tweet,id,path);
             }
             return true;
         } catch(Exception err) {
-            err.printStackTrace();
+            error = err.getMessage();
             return false;
         }
     }
@@ -46,9 +47,9 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if(success) {
-            Toast.makeText(context, "Tweet wurde gesendet!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "gesendet!", Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(context, "Fehler beim Senden des Tweets!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Fehler: "+error, Toast.LENGTH_LONG).show();
         }
     }
 }

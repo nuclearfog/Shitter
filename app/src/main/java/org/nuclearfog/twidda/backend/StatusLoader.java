@@ -184,6 +184,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(mode == DELETE) {
                 mTwitter.deleteTweet(tweetID);
+                TweetDatabase.delete(c,tweetID);
             }
         }catch(TwitterException e) {
             int err = e.getErrorCode();

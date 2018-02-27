@@ -2,22 +2,19 @@ package org.nuclearfog.twidda.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import twitter4j.PagableResponseList;
 import twitter4j.User;
 
 public class UserDatabase {
 
-    private List<Long> uID;
     private List<String> uName, scrName, imgUrl;
     private List<Boolean> verified;
-
+    private List<Long> uID;
     private boolean toggleImg;
-    private int size = 0;
     private long cursor = -1L;
+    private int size = 0;
 
     public UserDatabase(Context context, PagableResponseList<User> user) {
         init(context);
@@ -25,7 +22,7 @@ public class UserDatabase {
         add(user);
     }
 
-    public UserDatabase(Context context, List<User> user){
+    public UserDatabase(Context context, List<User> user) {
         init(context);
         add(user);
     }
@@ -38,7 +35,6 @@ public class UserDatabase {
     public int getSize(){ return size; }
     public boolean loadImages(){ return toggleImg; }
     public long getCursor(){return cursor;}
-
 
     public void addLast(PagableResponseList<User> user) {
         add(user);
