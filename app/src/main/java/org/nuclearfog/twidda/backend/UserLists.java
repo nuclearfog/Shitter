@@ -40,9 +40,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         uProgress = (ProgressBar)((UserDetail)context).findViewById(R.id.user_progress);
     }
 
-    /**
-     * @param data [0] mode UserLists/UserDetail ,  [1] UserID
-     */
     @Override
     protected Void doInBackground(Long... data) {
         long id = data[0];
@@ -69,7 +66,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
                 }
             }
             else if(mode == RETWEETER) {
-                // GET RETWEET USER TODO
+                UserDatabase udb = new UserDatabase(context,mTwitter.getRetweeter(id,cursor));
+                usrAdp = new UserAdapter(context,udb);
             }
             else if(mode == FAVORISER) {
                 // GET FAV USERS TODO
@@ -85,9 +83,9 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     protected void onPostExecute(Void v) {
         if(errmsg == null) {
             userList.setAdapter(usrAdp);
-            uProgress.setVisibility(View.INVISIBLE);
         } else {
             Toast.makeText(context,errmsg,Toast.LENGTH_LONG).show();
         }
+        uProgress.setVisibility(View.INVISIBLE);
     }
 }

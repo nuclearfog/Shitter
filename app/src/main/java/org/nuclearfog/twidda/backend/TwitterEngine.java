@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.IDs;
 import twitter4j.PagableResponseList;
 import twitter4j.Paging;
 import twitter4j.Query;
@@ -386,8 +387,7 @@ public class TwitterEngine {
     public void retweet(long id, boolean active) throws TwitterException {
         if(!active) {
             twitter.retweetStatus(id);
-        }
-        else {
+        } else {
             deleteTweet(id);
         }
     }
@@ -401,14 +401,28 @@ public class TwitterEngine {
     public void favorite(long id, boolean active) throws TwitterException {
         if(!active){
             twitter.createFavorite(id);
-        }
-        else{
+        } else {
             twitter.destroyFavorite(id);
         }
     }
 
     /**
+     * Get User who retweeted a Tweet
+     * @param tweetID Tweet ID
+     * @param cursor List Cursor
+     * @throws TwitterException if Access is unavailable
+     */
+    public List<User> getRetweeter(long tweetID, long cursor) throws TwitterException {
+        Status embeddedStat = getStatus(tweetID).getRetweetedStatus();
+        if(embeddedStat != null)
+            tweetID = embeddedStat.getId();
+        IDs test = twitter.getRetweeterIds(tweetID,load,cursor);
+        return twitter.lookupUsers(test.getIDs());
+    }
+
+    /**
      * @param id Tweet ID
+     * @throws TwitterException if Access is unavailable
      */
     public void deleteTweet(long id) throws TwitterException {
         twitter.destroyStatus(id);

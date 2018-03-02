@@ -210,7 +210,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             String rtStr = Integer.toString(rt);
             txtFav.setText(favStr);
             txtRet.setText(rtStr);
-            txtAns.setText("0");
 
             setIcons();
             if(repliedUsername != null) {

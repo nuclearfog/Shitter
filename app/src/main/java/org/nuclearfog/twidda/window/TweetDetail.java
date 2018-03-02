@@ -110,7 +110,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.no_rt_detail:
                 intent = new Intent(getApplicationContext(), UserDetail.class);
-                bundle.putLong("userID",userID);
                 bundle.putLong("tweetID",tweetID);
                 bundle.putLong("mode",2L);
                 intent.putExtras(bundle);
@@ -118,7 +117,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.no_fav_detail:
                 intent = new Intent(getApplicationContext(), UserDetail.class);
-                bundle.putLong("userID",userID);
                 bundle.putLong("tweetID",tweetID);
                 bundle.putLong("mode",3L);
                 intent.putExtras(bundle);

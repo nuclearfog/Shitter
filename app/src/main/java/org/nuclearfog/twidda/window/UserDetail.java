@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,9 +22,10 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
  */
 public class UserDetail extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private long userID;
+    private long userID, tweetID;
     private long mode;
     private ListView userListview;
+    private UserLists uList;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -36,6 +38,12 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         setSupportActionBar(toolbar);
         userListview.setOnItemClickListener(this);
         getUsers();
+    }
+
+    @Override
+    protected void onDestroy() {
+        uList.cancel(true);
+        super.onDestroy();
     }
 
     /**
@@ -78,7 +86,7 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
 
     @SuppressWarnings("ConstantConditions")
     private void getUsers() {
-        UserLists uList = new UserLists(UserDetail.this);
+        uList = new UserLists(UserDetail.this);
         if(mode == 0L){
             getSupportActionBar().setTitle(R.string.following);
             uList.execute(userID, UserLists.FOLLOWING, -1L);
@@ -87,16 +95,17 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
             uList.execute(userID, UserLists.FOLLOWERS, -1L);
         } else if(mode == 2L){
             getSupportActionBar().setTitle(R.string.retweet);
-            uList.execute(userID, UserLists.RETWEETER, -1L);
+            uList.execute(tweetID, UserLists.RETWEETER, -1L);
         } else if(mode == 3L){
             getSupportActionBar().setTitle(R.string.favorite);
-            uList.execute(userID, UserLists.FAVORISER, -1L);
+            uList.execute(tweetID, UserLists.FAVORISER, -1L);
         }
     }
 
     @SuppressWarnings("ConstantCondidions")
     private void getExtras(Bundle b) {
-        userID = b.getLong("userID");
+        userID  = b.getLong("userID");
+        tweetID = b.getLong("tweetID");
         mode = b.getLong("mode");
     }
 }
