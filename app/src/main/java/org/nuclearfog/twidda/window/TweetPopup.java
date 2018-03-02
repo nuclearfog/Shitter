@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import static android.content.DialogInterface.*;
 
 import org.nuclearfog.twidda.backend.ImagePopup;
@@ -38,28 +37,22 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     private List<String> mediaPath;
 
     @Override
-    protected void onCreate(Bundle SavedInstance) {
-        super.onCreate(SavedInstance);
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
         setContentView(R.layout.tweetwindow);
-        if(getIntent().hasExtra("TweetID"))
-            inReplyId = getIntent().getExtras().getLong("TweetID");
-        if(getIntent().hasExtra("Addition"))
-            addition = getIntent().getExtras().getString("Addition");
+        getExtras(getIntent().getExtras());
 
         mediaPath = new ArrayList<>();
-
-
-        Button tweetButton = (Button) findViewById(R.id.sendTweet);
-        Button closeButton = (Button) findViewById(R.id.close);
         imageButton = (Button) findViewById(R.id.image);
         previewBtn  = (Button) findViewById(R.id.img_preview);
         tweetfield = (EditText) findViewById(R.id.tweet_input);
         imgcount = (TextView) findViewById(R.id.imgcount);
-
+        Button tweetButton = (Button) findViewById(R.id.sendTweet);
+        Button closeButton = (Button) findViewById(R.id.close);
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
         root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
-        tweetfield.setText(addition);
+        tweetfield.append(addition);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
@@ -161,5 +154,13 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
             sendTweet.execute(tweet);
         }
         finish();
+    }
+
+    @SuppressWarnings("ConstantCondidions")
+    private void getExtras(Bundle b) {
+        if(b.containsKey("TweetID"))
+            inReplyId = b.getLong("TweetID");
+        if(b.containsKey("Addition"))
+            addition = b.getString("Addition")+" ";
     }
 }

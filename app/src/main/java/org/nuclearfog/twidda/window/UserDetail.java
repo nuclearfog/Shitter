@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,25 +21,20 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
  */
 public class UserDetail extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    private long userID, tweetID;
+    private long userID;
     private long mode;
     private ListView userListview;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.user);
-        Intent i = getIntent();
-        userID = i.getExtras().getLong("userID");
-        mode = i.getExtras().getLong("mode");
-        if(i.hasExtra("tweetID")){
-            tweetID = i.getExtras().getLong("tweetID");
-        }
+        getExtras(getIntent().getExtras());
+
         userListview = (ListView) findViewById(R.id.userlist);
-        userListview.setOnItemClickListener(this);
-        toolbar = (Toolbar) findViewById(R.id.follow_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
+        userListview.setOnItemClickListener(this);
         getUsers();
     }
 
@@ -53,8 +49,17 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
 
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
-        toolbar.inflateMenu(R.menu.setting);
+        getMenuInflater().inflate(R.menu.user, m);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.user_back) {
+            finish();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -62,13 +67,16 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         UserAdapter uAdp = (UserAdapter) userListview.getAdapter();
         UserDatabase uDB = uAdp.getData();
         long userID = uDB.getUserID(position);
+        String username = uDB.getScreenname(position);
         Intent intent = new Intent(getApplicationContext(), UserProfile.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userID);
+        bundle.putString("username", username);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void getUsers() {
         UserLists uList = new UserLists(UserDetail.this);
         if(mode == 0L){
@@ -84,5 +92,11 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
             getSupportActionBar().setTitle(R.string.favorite);
             uList.execute(userID, UserLists.FAVORISER, -1L);
         }
+    }
+
+    @SuppressWarnings("ConstantCondidions")
+    private void getExtras(Bundle b) {
+        userID = b.getLong("userID");
+        mode = b.getLong("mode");
     }
 }

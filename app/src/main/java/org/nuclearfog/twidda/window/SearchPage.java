@@ -34,17 +34,18 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
     private String search = "";
 
     @Override
-    protected void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
         setContentView(R.layout.search);
-        search = getIntent().getExtras().getString("search");
+        getExtras(getIntent().getExtras());
 
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
         tweetSearch  = (ListView) findViewById(R.id.tweet_result);
         userSearch   = (ListView) findViewById(R.id.user_result);
         tweetReload = (SwipeRefreshLayout) findViewById(R.id.searchtweets);
         setSupportActionBar(tool);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
         TabHost tabhost = (TabHost)findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);
@@ -122,10 +123,12 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
                     TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
+                    String username = twDB.getScreenname(position);
                     Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);
+                    bundle.putString("username", username);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -169,5 +172,10 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
     private void getContent() {
         mSearch = new TwitterSearch(this);
         mSearch.execute(search);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void getExtras(Bundle b) {
+        search = b.getString("search");
     }
 }

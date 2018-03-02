@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,14 +34,15 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private long tweetID;
     private long userID;
     private StatusLoader mStat, mReply;
+    private static String username;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.tweet_detail);
-        tweetID = getIntent().getExtras().getLong("tweetID");
-        userID = getIntent().getExtras().getLong("userID");
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
+        getExtras(getIntent().getExtras());
+
+        SharedPreferences settings = getSharedPreferences("settings", 0);
         boolean home = userID == settings.getLong("userID", -1);
 
         answer_list = (ListView) findViewById(R.id.answer_list);
@@ -48,11 +50,12 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Button retweet = (Button) findViewById(R.id.rt_button_detail);
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         Button delete = (Button) findViewById(R.id.delete);
-        ImageView pb = (ImageView) findViewById(R.id.profileimage_detail);
+        ImageView pb =(ImageView) findViewById(R.id.profileimage_detail);
         SwipeRefreshLayout answerReload = (SwipeRefreshLayout) findViewById(R.id.answer_reload);
 
         TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
         TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
+        TextView date = (TextView) findViewById(R.id.timedetail);
         if(home) {
             delete.setVisibility(View.VISIBLE);
         }
@@ -64,7 +67,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         answer.setOnClickListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
+        date.setOnClickListener(this);
         delete.setOnClickListener(this);
+        pb.setOnClickListener(this);
         setContent();
     }
 
@@ -93,6 +98,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
             case R.id.answer_button:
                 intent = new Intent(getApplicationContext(), TweetPopup.class);
                 bundle.putLong("TweetID", tweetID);
+                bundle.putString("Addition", username);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -124,6 +130,20 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 alerta.setPositiveButton(R.string.yes_confirm, this);
                 alerta.setNegativeButton(R.string.no_confirm, this);
                 alerta.show();
+                break;
+            case R.id.profileimage_detail:
+                intent = new Intent(getApplicationContext(), UserProfile.class);
+                Bundle b = new Bundle();
+                b.putLong("userID",userID);
+                b.putString("username", username);
+                intent.putExtras(b);
+                startActivity(intent);
+                break;
+            case R.id.timedetail:
+                intent = new Intent(Intent.ACTION_VIEW);
+                String tweetlink = "https://twitter.com/"+username+"/status/"+tweetID;
+                intent.setData(Uri.parse(tweetlink));
+                startActivity(intent);
                 break;
         }
     }
@@ -175,5 +195,12 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         mReply = new StatusLoader(this);
         mStat.execute(tweetID, StatusLoader.LOAD_TWEET);
         mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void getExtras(Bundle b) {
+        tweetID = b.getLong("tweetID");
+        userID = b.getLong("userID");
+        username = b.getString("username");
     }
 }

@@ -10,8 +10,10 @@
         android:icon="@mipmap/shitter"
         android:theme="@style/AppTheme"
         android:label="@string/app_name">
+
         <activity
             android:name=".MainActivity"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,32 +23,39 @@
 
         <activity
             android:name=".window.SearchPage"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".window.UserProfile"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".window.TweetPopup"
-            android:screenOrientation="portrait"
-            android:theme="@style/Transparency"/>
+            android:theme="@style/Transparency"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".window.AppSettings"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".window.TweetDetail"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".window.UserDetail"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".window.LoginPage"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
     </application>
+
 </manifest>

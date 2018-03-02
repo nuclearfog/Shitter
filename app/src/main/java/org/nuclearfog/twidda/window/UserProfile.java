@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,32 +25,34 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener,
-        TabHost.OnTabChangeListener, AppBarLayout.OnOffsetChangedListener {
+        TabHost.OnTabChangeListener {
 
     private ProfileLoader mProfile, mTweets, mFavorits;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private ListView homeTweets, homeFavorits;
     private long userId;
     private boolean home;
+    private String username = "";
     private String currentTab = "tweets";
 
     @Override
-    protected void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
         setContentView(R.layout.profile);
+        getExtras(getIntent().getExtras());
         Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-        userId = getIntent().getExtras().getLong("userID");
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("settings", 0);
+
+        SharedPreferences settings = getSharedPreferences("settings", 0);
         home = userId == settings.getLong("userID", -1);
         homeTweets = (ListView)findViewById(R.id.ht_list);
         homeFavorits = (ListView)findViewById(R.id.hf_list);
-        TextView txtFollowing = (TextView)findViewById(R.id.following);
-        TextView txtFollower  = (TextView)findViewById(R.id.follower);
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+        TextView txtFollowing = (TextView)findViewById(R.id.following);
+        TextView txtFollower  = (TextView)findViewById(R.id.follower);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
         setTabs(mTab);
         mTab.setOnTabChangedListener(this);
@@ -104,7 +105,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         mProfile = new ProfileLoader(this);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
+                Bundle extra = new Bundle();
                 intent = new Intent(this, TweetPopup.class);
+                if(username != null)
+                    extra.putString("Addition", username);
+                intent.putExtras(extra);
                 startActivity(intent);
                 return true;
             case R.id.profile_follow:
@@ -132,27 +137,22 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TimelineAdapter tlAdp;
-
         if(parent.getId() == R.id.ht_list) {
             tlAdp = (TimelineAdapter) homeTweets.getAdapter();
-        }
-        else {
+        } else {
             tlAdp = (TimelineAdapter) homeFavorits.getAdapter();
         }
-
-        if(position >= tlAdp.getCount()) {
-
-        } else {
-            TweetDatabase twDB = tlAdp.getData();
-            long tweetID = twDB.getTweetId(position);
-            long userID = twDB.getUserID(position);
-            Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
-            Bundle bundle = new Bundle();
-            bundle.putLong("tweetID",tweetID);
-            bundle.putLong("userID",userID);
-            intent.putExtras(bundle);
-            startActivity(intent);
-        }
+        TweetDatabase twDB = tlAdp.getData();
+        long tweetID = twDB.getTweetId(position);
+        long userID = twDB.getUserID(position);
+        String username = twDB.getScreenname(position);
+        Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putLong("tweetID",tweetID);
+        bundle.putLong("userID",userID);
+        bundle.putString("username", username);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -176,21 +176,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         currentTab = tabId;
     }
 
-    /**
-     * Deaktiviert
-     */
-    @Override
-    public void onOffsetChanged(AppBarLayout mBar, int high) {
-        int max = - mBar.getTotalScrollRange();
-        if(high == max) {
-            homeTweets.setNestedScrollingEnabled(true);
-            homeFavorits.setNestedScrollingEnabled(true);
-        } else if (high == 0) {
-            homeTweets.setNestedScrollingEnabled(false);
-            homeFavorits.setNestedScrollingEnabled(false);
-        }
-    }
-
     private void setTabs(TabHost mTab) {
         mTab.setup();
         // Tab #1
@@ -209,20 +194,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
      * Tab Content
      */
     private void getContent() {
-        TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
-        TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
-        mTweets = new ProfileLoader(this);
-        mFavorits = new ProfileLoader(this);
-        if( mTweet.getSize() > 0 ) {
-            homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
-        }else {
-            mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
-        }
-        if( fTweet.getSize() > 0 ) {
-            homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
-        } else {
-            mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
-        }
+        new Thread( new Runnable() {
+                @Override
+                public void run() {
+                    TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
+                    TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
+                    mTweets = new ProfileLoader(UserProfile.this);
+                    mFavorits = new ProfileLoader(UserProfile.this);
+                    if( mTweet.getSize() > 0 ) {
+                        homeTweets.setAdapter(new TimelineAdapter(UserProfile.this,mTweet));
+                    }else {
+                        mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
+                    }
+                    if( fTweet.getSize() > 0 ) {
+                        homeFavorits.setAdapter(new TimelineAdapter(UserProfile.this,fTweet));
+                    } else {
+                        mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
+                    }
+                }
+            }
+        ).run();
     }
 
     /**
@@ -243,5 +234,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         bundle.putLong("mode",mode);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void getExtras(Bundle b) {
+        userId = b.getLong("userID");
+        username = b.getString("username");
     }
 }

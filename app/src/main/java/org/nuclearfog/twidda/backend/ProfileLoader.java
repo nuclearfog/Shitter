@@ -165,11 +165,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long>
             txtFollower.setText(follower);
             txtFollowing.setText(following);
             txtCreated.setText(dateString);
-            if(location!= null) {
+            if(location!= null && !location.isEmpty()) {
                 txtLocation.setText(location);
                 locationIcon.setVisibility(View.VISIBLE);
             }
-            if(link != null) {
+            if(link != null && !link.isEmpty()) {
                 txtLink.setText(link);
                 linkIcon.setVisibility(View.VISIBLE);
             }

@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
         con = getApplicationContext();
-        settings = con.getSharedPreferences("settings", 0);
+        settings = getSharedPreferences("settings", 0);
         boolean login = settings.getBoolean("login", false);
         if( !login ) {
             Intent i = new Intent(con,LoginPage.class);
@@ -170,10 +170,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
+                    String username = twDB.getScreenname(position);
                     Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);
+                    bundle.putString("username",username);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -198,10 +200,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
+                    String username = twDB.getScreenname(position);
                     Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
                     bundle.putLong("userID",userID);
+                    bundle.putString("username",username);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

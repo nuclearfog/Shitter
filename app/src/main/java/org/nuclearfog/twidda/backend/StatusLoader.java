@@ -62,7 +62,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
-    private long userReply, tweetReplyID, userID;
+    private long userReply, tweetReplyID;
     private int rt, fav, ansNo = 0;
     private int highlight;
 
@@ -125,8 +125,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             User user = currentTweet.getUser();
 
             if(mode == LOAD_TWEET) {
-
-                userID = user.getId();
                 userReply = currentTweet.getInReplyToUserId();
                 tweetReplyID = currentTweet.getInReplyToStatusId();
                 tweetStr = currentTweet.getText();
@@ -135,10 +133,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 scrNameStr = '@'+user.getScreenName();
                 apiName = formatString(currentTweet.getSource());
                 dateString = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss").format(currentTweet.getCreatedAt());
-                tweetlink = "https://twitter.com/"+user.getScreenName()+"/status/"+tweetID;
 
                 if(userReply > 0)
-                    repliedUsername = "Antwort @"+currentTweet.getInReplyToScreenName();
+                    repliedUsername = currentTweet.getInReplyToScreenName();
                 if(toggleImg) {
                     String pbLink = user.getProfileImageURL();
                     InputStream iStream = new URL(pbLink).openStream();
@@ -217,7 +214,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
             setIcons();
             if(repliedUsername != null) {
-                replyName.setText(repliedUsername);
+                replyName.setText("antwort @"+repliedUsername);
                 replyName.setVisibility(View.VISIBLE);
             }
             if(rtFlag) {
@@ -228,7 +225,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             if(toggleImg) {
                 profile_img.setImageBitmap(profile_btm);
-                profile_img.setOnClickListener(this);
                 if(medialinks.length != 0) {
                     mediabutton.setVisibility(View.VISIBLE);
                     mediabutton.setOnClickListener(this);
@@ -236,8 +232,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             setIcons();
             replyName.setOnClickListener(this);
-            date.setOnClickListener(this);
-
         }
         else if(mode == RETWEET) {
             String rtStr = Integer.toString(rt);
@@ -279,14 +273,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     public void onClick(View v) {
         Intent intent;
         switch(v.getId()) {
-            case R.id.profileimage_detail:
-                intent = new Intent(c, UserProfile.class);
-                Bundle b = new Bundle();
-                b.putLong("userID",userID);
-                intent.putExtras(b);
-                c.startActivity(intent);
-                break;
-
             case R.id.image_attach:
                 new ImagePopup(c).execute(medialinks);
                 break;
@@ -296,13 +282,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 Bundle bundle = new Bundle();
                 bundle.putLong("tweetID",tweetReplyID);
                 bundle.putLong("userID",userReply);
+                bundle.putString("username", repliedUsername);
                 intent.putExtras(bundle);
-                c.startActivity(intent);
-                break;
-
-            case R.id.timedetail:
-                intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(tweetlink));
                 c.startActivity(intent);
                 break;
         }
