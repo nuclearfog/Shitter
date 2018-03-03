@@ -15,7 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:background="@android:color/darker_gray"
-        android:text="@string/register_link" />
+        android:text="@string/register_link"
+        android:textSize="12sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -46,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:background="@android:color/darker_gray"
-        android:text="@string/verifierbutton" />
+        android:text="@string/verifierbutton"
+        android:textSize="12sp" />
 
 </LinearLayout>

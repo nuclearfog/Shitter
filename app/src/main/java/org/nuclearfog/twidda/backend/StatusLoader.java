@@ -262,7 +262,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 replyList.setAdapter(tlAdp);
             } else {
                 TweetDatabase twDb = tlAdp.getData();
-                twDb.addHot(answers);
+                twDb.insert(answers,false);
                 tlAdp.notifyDataSetChanged();
                 ansReload.setRefreshing(false);
             }

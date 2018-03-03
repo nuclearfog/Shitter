@@ -69,7 +69,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
                     if(timelineAdapter != null && timelineAdapter.getCount() != 0) {
                         id = timelineAdapter.getItemId(0);
-                        timelineAdapter.getData().add(mTwitter.getHome(page,id));
+                        timelineAdapter.getData().insert(mTwitter.getHome(page,id),true);
                     } else {
                         TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
                         timelineAdapter = new TimelineAdapter(context,mTweets);
@@ -84,7 +84,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
                     if(mentionAdapter != null && mentionAdapter.getCount() != 0) {
                         id = mentionAdapter.getItemId(0);
-                        mentionAdapter.getData().add(mTwitter.getMention(page,id));
+                        mentionAdapter.getData().insert(mTwitter.getMention(page,id),true);
                     } else {
                         TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
                         mentionAdapter = new TimelineAdapter(context,mention);

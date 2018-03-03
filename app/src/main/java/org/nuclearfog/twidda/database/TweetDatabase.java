@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,9 +25,9 @@ public class TweetDatabase {
     private List<Long> userId,tweetId,timeMillis;
     private List<Integer> noRT,noFav, verify;
     private boolean toggleImg;
+    private int limit;
     private int size = 0;
     private int mode = 0;
-    private int limit;
     private long CurrentId = 0;
 
     /**
@@ -67,24 +66,18 @@ public class TweetDatabase {
      */
     public TweetDatabase(List<Status> stats, Context context) {
         initialize(context);
-        insert(stats);
+        add(stats);
     }
 
     /**
-     * Add new Elements to the Lists and store into Database
+     * Add new Elements to the List
      * @param stats List of Tweets
+     * @param store if True, data will be stored in SQL
      */
-    public void add(List<Status> stats) {
-        store(stats);
-        insertNew(stats);
-    }
-
-    /**
-     * Add new Elements without storing
-     * @param stats list of Tweets
-     */
-    public void addHot(List<Status> stats) {
-        insertNew(stats);
+    public void insert(List<Status> stats, boolean store) {
+        if(store)
+            store(stats);
+        addFirst(stats);
     }
 
     /**
@@ -276,7 +269,7 @@ public class TweetDatabase {
         initArray();
     }
 
-    private void insert(List<Status> stats) {
+    private void add(List<Status> stats) {
         for(Status stat: stats) {
             Status rtStat = stat.getRetweetedStatus();
             User usr = stat.getUser();
@@ -285,7 +278,7 @@ public class TweetDatabase {
                 stat = rtStat;
                 usr = rtStat.getUser();
             } else {
-                retweeter.add(" ");
+                retweeter.add("\0");
             }
             user.add(usr.getName());
             scrname.add('@'+usr.getScreenName());
@@ -301,7 +294,7 @@ public class TweetDatabase {
         }
     }
 
-    private void insertNew(List<Status> stats) {
+    private void addFirst(List<Status> stats) {
         for(int index = stats.size()-1 ; index >=0 ; index--) {
             Status stat = stats.get(index);
             Status rtStat = stat.getRetweetedStatus();
