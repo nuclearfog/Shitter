@@ -38,7 +38,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_margin="2dp"
                     android:background="@drawable/verify"
-                    android:contentDescription="@string/verify" />
+                    android:contentDescription="@string/verify"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/username"

@@ -80,7 +80,7 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         if(mTweets.isVerified(position)) {
             verify.setVisibility(ImageView.VISIBLE);
         } else {
-            verify.setVisibility(ImageView.INVISIBLE);
+            verify.setVisibility(ImageView.GONE);
         }
         if(mTweets.loadImages()) {
             Picasso.with(context).load(mTweets.getPbLink(position)).into(pb);

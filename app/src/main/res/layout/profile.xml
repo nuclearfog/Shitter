@@ -111,15 +111,31 @@
                                 android:layout_height="16dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="2dp"
+                                android:background="@drawable/followback"
                                 android:contentDescription="@string/followback"
-                                android:visibility="invisible"
-                                app:srcCompat="@drawable/followback" />
+                                android:visibility="invisible" />
+
+                            <ImageView
+                                android:id="@+id/following_icon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="2dp"
+                                android:background="@drawable/following" />
 
                             <TextView
                                 android:id="@+id/following"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1" />
+
+                            <ImageView
+                                android:id="@+id/follower_icon"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="2dp"
+                                android:background="@drawable/follower" />
 
                             <TextView
                                 android:id="@+id/follower"
@@ -156,7 +172,8 @@
                     <TextView
                         android:id="@+id/location"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:singleLine="true" />
 
                     <ImageView
                         android:id="@+id/link_img"

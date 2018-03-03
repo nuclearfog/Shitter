@@ -36,7 +36,8 @@
             <TextView
                 android:id="@+id/username_detail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:singleLine="true" />
 
         </LinearLayout>
 
@@ -57,7 +58,8 @@
             <TextView
                 android:id="@+id/screenname_detail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:singleLine="true" />
         </LinearLayout>
 
     </LinearLayout>

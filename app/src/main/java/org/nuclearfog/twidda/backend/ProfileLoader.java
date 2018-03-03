@@ -106,8 +106,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 isVerified = user.isVerified();
                 isLocked = user.isProtected();
                 link = user.getURL();
-                follower = "Follower: "+user.getFollowersCount();
-                following = "Following: "+user.getFriendsCount();
+                follower = Integer.toString(user.getFollowersCount());
+                following = Integer.toString(user.getFriendsCount());
                 imageLink = user.getProfileImageURL();
                 bannerLink = user.getProfileBannerMobileURL();
                 fullPbLink = user.getOriginalProfileImageURL();
