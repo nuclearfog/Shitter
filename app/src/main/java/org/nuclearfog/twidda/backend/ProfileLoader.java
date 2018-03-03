@@ -22,8 +22,8 @@ import twitter4j.User;
 
 import com.squareup.picasso.Picasso;
 
-public class ProfileLoader extends AsyncTask<Long,Void,Long>
-{
+public class ProfileLoader extends AsyncTask<Long,Void,Long> {
+
     public static final long GET_INFORMATION = 0x0;
     public static final long ACTION_FOLLOW   = 0x1;
     public static final long GET_TWEETS      = 0x2;
@@ -33,7 +33,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long>
 
     private String screenName, username, description, location, follower, following;
     private TextView txtUser,txtScrName,txtBio,txtLocation,txtLink,txtFollowing,txtFollower,txtCreated;
-    private ImageView profile, banner, linkIcon, locationIcon, verifier, locked;
+    private ImageView profile, banner, linkIcon, locationIcon, verifier, locked, followback;
     private SwipeRefreshLayout tweetsReload, favoritsReload;
     private ListView profileTweets, profileFavorits;
     private String imageLink, bannerLink, fullPbLink, link, dateString;
@@ -72,6 +72,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long>
         banner   = (ImageView)((UserProfile)context).findViewById(R.id.banner);
         linkIcon = (ImageView)((UserProfile)context).findViewById(R.id.link_img);
         verifier = (ImageView)((UserProfile)context).findViewById(R.id.profile_verify);
+        followback = (ImageView)((UserProfile)context).findViewById(R.id.followback);
         locked = (ImageView)((UserProfile)context).findViewById(R.id.profile_locked);
         locationIcon = (ImageView)((UserProfile)context).findViewById(R.id.location_img);
         tweetsReload    = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.hometweets);
@@ -88,7 +89,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long>
         long id = 1L;
         TwitterEngine mTwitter = TwitterEngine.getInstance(context);
         try {
-            isHome = mTwitter.isHome(userId);
+            isHome = TwitterEngine.getHomeId() == userId;
             if(!isHome)
             {
                 isFollowing = mTwitter.getConnection(userId, true);
@@ -178,6 +179,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long>
             }
             if(isLocked) {
                 locked.setVisibility(View.VISIBLE);
+            }
+            if(isFollowed) {
+                followback.setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
                 Picasso.with(context).load(imageLink).into(profile);

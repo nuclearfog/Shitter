@@ -36,7 +36,7 @@ import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
-public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
+public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     private static final long ERROR = -1;
     public static final long RETWEET = 0;
@@ -63,7 +63,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
     private long userReply, tweetReplyID;
-    private int rt, fav, ansNo = 0;
+    private int rt, fav;
     private int highlight;
 
 
@@ -177,7 +177,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 if(tlAdp != null)
                     tweetID = tlAdp.getItemId(0);
                 answers = mTwitter.getAnswers(replyname, tweetID);
-                ansNo = answers.size();
             }
             else if(mode == DELETE) {
                 mTwitter.deleteTweet(tweetID);
@@ -226,11 +225,25 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 profile_img.setImageBitmap(profile_btm);
                 if(medialinks.length != 0) {
                     mediabutton.setVisibility(View.VISIBLE);
-                    mediabutton.setOnClickListener(this);
+                    mediabutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new ImagePopup(c).execute(medialinks);
+                        }
+                    });
                 }
             }
             setIcons();
-            replyName.setOnClickListener(this);
+            replyName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(c, TweetDetail.class);
+                    intent.putExtra("tweetID",tweetReplyID);
+                    intent.putExtra("userID",userReply);
+                    intent.putExtra("username", repliedUsername);
+                    c.startActivity(intent);
+                }
+            });
         }
         else if(mode == RETWEET) {
             String rtStr = Integer.toString(rt);
@@ -253,7 +266,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 tlAdp.notifyDataSetChanged();
                 ansReload.setRefreshing(false);
             }
-            String ansStr = Integer.toString(ansNo);
+            String ansStr = Integer.toString(tlAdp.getCount());
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {
@@ -265,26 +278,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             if(ansReload.isRefreshing()) {
                 ansReload.setRefreshing(false);
             }
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        Intent intent;
-        switch(v.getId()) {
-            case R.id.image_attach:
-                new ImagePopup(c).execute(medialinks);
-                break;
-
-            case R.id.answer_reference_detail:
-                intent = new Intent(c, TweetDetail.class);
-                Bundle bundle = new Bundle();
-                bundle.putLong("tweetID",tweetReplyID);
-                bundle.putLong("userID",userReply);
-                bundle.putString("username", repliedUsername);
-                intent.putExtras(bundle);
-                c.startActivity(intent);
-                break;
         }
     }
 

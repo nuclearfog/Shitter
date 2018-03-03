@@ -10,7 +10,7 @@ import twitter4j.User;
 public class UserDatabase {
 
     private List<String> uName, scrName, imgUrl;
-    private List<Boolean> verified;
+    private List<Boolean> verified, locked;
     private List<Long> uID;
     private boolean toggleImg;
     private long cursor = -1L;
@@ -32,6 +32,7 @@ public class UserDatabase {
     public String getScreenname(int pos){ return scrName.get(pos);}
     public String getImageUrl(int pos){ return imgUrl.get(pos);}
     public boolean isVerified(int pos){ return verified.get(pos);}
+    public boolean isLocked(int pos){ return locked.get(pos);}
     public int getSize(){ return size; }
     public boolean loadImages(){ return toggleImg; }
     public long getCursor(){return cursor;}
@@ -48,6 +49,7 @@ public class UserDatabase {
             scrName.add('@'+usr.getScreenName());
             imgUrl.add(usr.getMiniProfileImageURLHttps());
             verified.add(usr.isVerified());
+            locked.add(usr.isProtected());
             size++;
         }
     }
@@ -58,6 +60,7 @@ public class UserDatabase {
         scrName = new ArrayList<>();
         imgUrl = new ArrayList<>();
         verified = new ArrayList<>();
+        locked = new ArrayList<>();
         SharedPreferences s = c.getSharedPreferences("settings", 0);
         toggleImg = s.getBoolean("image_load", true);
     }

@@ -67,6 +67,11 @@ public class UserAdapter extends ArrayAdapter implements View.OnClickListener {
         } else {
             v.findViewById(R.id.verified).setVisibility(View.INVISIBLE);
         }
+        if(userDatabase.isLocked(position)) {
+            v.findViewById(R.id.locked_profile).setVisibility(View.VISIBLE);
+        } else {
+            v.findViewById(R.id.locked_profile).setVisibility(View.INVISIBLE);
+        }
         return v;
     }
 

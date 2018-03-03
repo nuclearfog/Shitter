@@ -43,4 +43,5 @@
     <string name="fullimg">Vollbild</string>
     <string name="profile_locked">Privates Profil</string>
     <string name="load_factor">Ladefaktor</string>
+    <string name="followback">Folgt dir</string>
 </resources>

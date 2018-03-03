@@ -18,7 +18,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import static android.content.DialogInterface.*;
 
+import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusLoader;
+import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -42,8 +44,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.tweet_detail);
         getExtras(getIntent().getExtras());
 
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        boolean home = userID == settings.getLong("userID", -1);
+        boolean home = userID == TwitterEngine.getHomeId();
 
         answer_list = (ListView) findViewById(R.id.answer_list);
         Button answer = (Button) findViewById(R.id.answer_button);

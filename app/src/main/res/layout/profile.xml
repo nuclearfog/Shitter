@@ -51,51 +51,69 @@
                         android:contentDescription="@string/profile_image" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/profile_verify"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginBottom="5dp"
-                            android:contentDescription="@string/verify"
-                            android:visibility="invisible"
-                            app:srcCompat="@drawable/verify" />
-
-                        <ImageView
-                            android:id="@+id/profile_locked"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:contentDescription="@string/profile_locked"
-                            android:visibility="invisible"
-                            app:srcCompat="@drawable/lock" />
-                    </LinearLayout>
-
-                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/profile_username"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/profile_screenname"
+                            <ImageView
+                                android:id="@+id/profile_verify"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="2dp"
+                                android:contentDescription="@string/verify"
+                                android:visibility="invisible"
+                                app:srcCompat="@drawable/verify" />
+
+                            <TextView
+                                android:id="@+id/profile_username"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="2dp" />
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/profile_locked"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="2dp"
+                                android:contentDescription="@string/profile_locked"
+                                android:visibility="invisible"
+                                app:srcCompat="@drawable/lock" />
+
+                            <TextView
+                                android:id="@+id/profile_screenname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="2dp" />
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/followback"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="2dp"
+                                android:contentDescription="@string/followback"
+                                android:visibility="invisible"
+                                app:srcCompat="@drawable/followback" />
 
                             <TextView
                                 android:id="@+id/following"

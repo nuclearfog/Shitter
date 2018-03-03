@@ -37,12 +37,12 @@ public class TwitterEngine {
     private final String TWITTER_CONSUMER_SECRET = "pgaWUlDVS5b7Q6VJQDgBzHKw0mIxJIX0UQBcT1oFJEivsCl5OV";
 
     private static TwitterEngine mTwitter;
+    private static long twitterID;
     private Twitter twitter;
     private Context context;
     private SharedPreferences settings;
     private RequestToken reqToken;
     private int load;
-    private int location;
 
 
     /**
@@ -52,7 +52,6 @@ public class TwitterEngine {
      */
     private TwitterEngine(Context context) {
         settings = context.getSharedPreferences("settings", 0);
-        location = settings.getInt("woeid",23424829); // Germany WOEID
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
@@ -134,6 +133,7 @@ public class TwitterEngine {
         if( settings.getBoolean("login", false) ) {
             key1 = settings.getString("key1", " ");
             key2 = settings.getString("key2", " ");
+            twitterID = settings.getLong("userID", -1L);
             initKeys(key1,key2);
         }
     }
@@ -180,11 +180,12 @@ public class TwitterEngine {
 
     /**
      * Get Trending Hashtags
+     * @param woeid Yahoo World ID
      * @return Trend Resource
      * @throws TwitterException if access is unavailable
      */
-    public Trends getTrends() throws TwitterException {
-        return twitter.getPlaceTrends(location);
+    public Trends getTrends(int woeid) throws TwitterException {
+        return twitter.getPlaceTrends(woeid);
     }
 
 
@@ -239,9 +240,9 @@ public class TwitterEngine {
      */
     public boolean getConnection(long id,boolean following) throws TwitterException {
         if(following)
-            return twitter.showFriendship(twitter.getId(),id).isSourceFollowingTarget();
+            return twitter.showFriendship(twitterID,id).isSourceFollowingTarget();
         else
-            return twitter.showFriendship(twitter.getId(),id).isTargetFollowingSource();
+            return twitter.showFriendship(twitterID,id).isTargetFollowingSource();
     }
 
     /**
@@ -429,13 +430,11 @@ public class TwitterEngine {
     }
 
     /**
-     * check if User ID is home ID
-     * @param id User ID
+     * Return User ID
      * @return result
-     * @throws TwitterException if Access is unavailable
      */
-    public boolean isHome(long id) throws TwitterException {
-        return twitter.getId() == id;
+    public static long getHomeId() {
+        return twitterID;
     }
 
     /**

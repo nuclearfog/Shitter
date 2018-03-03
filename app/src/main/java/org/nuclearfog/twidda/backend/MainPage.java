@@ -7,6 +7,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 
+import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private ListView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
+    private int woeid;
 
     /**
      * Main View
@@ -35,6 +37,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     public MainPage(Context context) {
         this.context = context;
         mTwitter = TwitterEngine.getInstance(context);
+        SharedPreferences settings = context.getSharedPreferences("settings", 0);
+        woeid = settings.getInt("woeid",23424829); // Germany WOEID
     }
 
     @Override
@@ -73,7 +77,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
                 case TRND:
-                trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(),context));
+                trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(woeid),context));
                 break;
 
                 case MENT:
