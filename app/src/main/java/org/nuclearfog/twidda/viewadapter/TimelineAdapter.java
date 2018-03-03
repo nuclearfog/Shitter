@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.viewadapter;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -71,13 +72,15 @@ public class TimelineAdapter extends ArrayAdapter implements View.OnClickListene
         ((TextView) v.findViewById(R.id.tweettext)).setText(highlight(mTweets.getTweet(position)));
         ((TextView) v.findViewById(R.id.retweet_number)).setText(retweetStr);
         ((TextView) v.findViewById(R.id.favorite_number)).setText(favoriteStr);
+        ((TextView) v.findViewById(R.id.retweeter)).setText(mTweets.getRetweeter(position));
         ((TextView) v.findViewById(R.id.time)).setText(mTweets.getDate(position));
         ((TextView) v.findViewById(R.id.tweettext)).setTextColor(textColor);
         ImageView pb = v.findViewById(R.id.tweetPb);
+        ImageView verify = v.findViewById(R.id.list_verify);
         if(mTweets.isVerified(position)) {
-            v.findViewById(R.id.list_verify).setVisibility(View.VISIBLE);
+            verify.setVisibility(ImageView.VISIBLE);
         } else {
-            v.findViewById(R.id.list_verify).setVisibility(View.INVISIBLE);
+            verify.setVisibility(ImageView.INVISIBLE);
         }
         if(mTweets.loadImages()) {
             Picasso.with(context).load(mTweets.getPbLink(position)).into(pb);

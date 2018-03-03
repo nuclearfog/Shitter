@@ -117,12 +117,12 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             else if(MODE == GET_TWEETS)
             {
                 homeTl = (TimelineAdapter) profileTweets.getAdapter();
-                if(homeTl != null) {
-                    id = homeTl.getItemId(0);
-                    homeTl.getData().add(mTwitter.getUserTweets(userId,args[2],id));
-                } else {
+                if(homeTl == null || homeTl.getCount() == 0) {
                     TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
                     homeTl = new TimelineAdapter(context,hTweets);
+                } else {
+                    id = homeTl.getItemId(0);
+                    homeTl.getData().add(mTwitter.getUserTweets(userId,args[2],id));
                 }
             }
             else if(MODE == GET_FAVS)

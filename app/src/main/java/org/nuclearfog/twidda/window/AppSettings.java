@@ -190,5 +190,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         edit.putBoolean("image_load", imgEnabled);
         edit.apply();
         mColor.commit();
+        Toast.makeText(getApplicationContext(), "Gespeichert", Toast.LENGTH_SHORT).show();
     }
 }

@@ -15,17 +15,16 @@ import twitter4j.Status;
 import twitter4j.User;
 
 public class TweetDatabase {
-    public static final int HOME_TL   = 0;    // GET HOME TIMELINE
-    public static final int FAV_TL    = 1;    // GET FAVORITE TL
-    public static final int USER_TL   = 2;    // GET USERS TWEET TL @userID
-    public static final int GET_TWEET = 3;    // GET TWEET @ userID
-    public static final int GET_MENT  = 4;    // GET MENTION TL
+    public static final int HOME_TL   = 0;
+    public static final int FAV_TL    = 1;
+    public static final int USER_TL   = 2;
+    public static final int GET_TWEET = 3;
+    public static final int GET_MENT  = 4;
 
     private AppDatabase dataHelper;
-    private List<String> user,scrname,tweet,pbLink;
+    private List<String> user,scrname,tweet,pbLink,retweeter;
     private List<Long> userId,tweetId,timeMillis;
-    private List<Integer> noRT,noFav,noAns, verify;
-    private SharedPreferences settings;
+    private List<Integer> noRT,noFav, verify;
     private boolean toggleImg;
     private int size = 0;
     private int mode = 0;
@@ -110,6 +109,15 @@ public class TweetDatabase {
         for(int pos = 0; pos < stats.size(); pos++) {
             Status stat = stats.get(pos);
             User usr = stat.getUser();
+            Status rtStat = stat.getRetweetedStatus();
+
+            if(rtStat != null) {
+                tweet.put("retweeter",usr.getScreenName());
+                stat = rtStat;
+                usr = rtStat.getUser();
+            } else {
+                tweet.put("retweeter","\0");
+            }
 
             user.put("userID",usr.getId());
             user.put("username", usr.getName());
@@ -126,7 +134,6 @@ public class TweetDatabase {
             tweet.put("tweet", stat.getText());
             tweet.put("retweet", stat.getRetweetCount());
             tweet.put("favorite", stat.getFavoriteCount());
-            tweet.put("answers", 0);
 
             home.put("tweetID", stat.getId());
             fav.put("tweetID", stat.getId());
@@ -182,30 +189,30 @@ public class TweetDatabase {
 
         if(cursor.moveToFirst()) {
             do {
-                index = cursor.getColumnIndex("time"); // time
+                index = cursor.getColumnIndex("time");
                 timeMillis.add(cursor.getLong(index));
-                index = cursor.getColumnIndex("tweet"); // tweet
-                tweet.add( cursor.getString(index) );
-                index = cursor.getColumnIndex("retweet"); // retweet
-                noRT.add( cursor.getInt(index) );
-                index = cursor.getColumnIndex("favorite"); // fav
-                noFav.add( cursor.getInt(index) );
-                index = cursor.getColumnIndex("answers"); // answers
-                noAns.add(cursor.getInt(index));
-                index = cursor.getColumnIndex("username"); // user
-                user.add(cursor.getString(index) );
-                index = cursor.getColumnIndex("scrname"); // username
-                scrname.add(cursor.getString(index) );
-                index = cursor.getColumnIndex("verify"); // VERIFIED
+                index = cursor.getColumnIndex("tweet");
+                tweet.add( cursor.getString(index));
+                index = cursor.getColumnIndex("retweet");
+                noRT.add( cursor.getInt(index));
+                index = cursor.getColumnIndex("favorite");
+                noFav.add( cursor.getInt(index));
+                index = cursor.getColumnIndex("username");
+                user.add(cursor.getString(index));
+                index = cursor.getColumnIndex("scrname");
+                scrname.add(cursor.getString(index));
+                index = cursor.getColumnIndex("verify");
                 verify.add(cursor.getInt(index));
-                index = cursor.getColumnIndex("pbLink"); // image
-                pbLink.add(cursor.getString(index) );
-                index = cursor.getColumnIndex("userID"); // UserID
-                userId.add(cursor.getLong(index) );
-                index = cursor.getColumnIndex("tweetID"); // tweetID
-                tweetId.add(cursor.getLong(index) );
+                index = cursor.getColumnIndex("pbLink");
+                pbLink.add(cursor.getString(index));
+                index = cursor.getColumnIndex("userID");
+                userId.add(cursor.getLong(index));
+                index = cursor.getColumnIndex("tweetID");
+                tweetId.add(cursor.getLong(index));
+                index = cursor.getColumnIndex("retweeter");
+                retweeter.add(cursor.getString(index));
                 size++;
-            } while(cursor.moveToNext()  && size < limit);
+            } while(cursor.moveToNext() && size < limit);
         }
         cursor.close();
         db.close();
@@ -216,7 +223,6 @@ public class TweetDatabase {
     }
     public int getRetweet(int pos){return noRT.get(pos);}
     public int getFavorite(int pos){return noFav.get(pos);}
-    public int getAnswer(int pos){return noAns.get(pos);}
     public long getUserID(int pos){return userId.get(pos);}
     public long getTweetId(int pos){return tweetId.get(pos);}
     public long getTime(int pos){return timeMillis.get(pos);}
@@ -224,9 +230,13 @@ public class TweetDatabase {
     public String getScreenname(int pos){return scrname.get(pos);}
     public String getTweet(int pos){return tweet.get(pos);}
     public String getDate(int pos){return timeToString(getTime(pos));}
-    public String getPbLink (int pos){return pbLink.get(pos);}
+    public String getPbLink(int pos){return pbLink.get(pos);}
     public boolean loadImages(){return toggleImg;}
     public boolean isVerified(int pos){return verify.get(pos) == 1;}
+    public String getRetweeter(int pos) {
+        if(retweeter.get(pos).trim().isEmpty()) return "";
+        else return " RT @"+retweeter.get(pos);
+    }
 
     /**
      * Convert Time to String
@@ -260,7 +270,7 @@ public class TweetDatabase {
 
     private void initialize(Context c) {
         dataHelper = AppDatabase.getInstance(c);
-        settings = c.getSharedPreferences("settings", 0);
+        SharedPreferences settings = c.getSharedPreferences("settings", 0);
         limit = settings.getInt("limit", 200);
         toggleImg = settings.getBoolean("image_load", true);
         initArray();
@@ -268,13 +278,20 @@ public class TweetDatabase {
 
     private void insert(List<Status> stats) {
         for(Status stat: stats) {
+            Status rtStat = stat.getRetweetedStatus();
             User usr = stat.getUser();
+            if(rtStat != null) {
+                retweeter.add(usr.getScreenName());
+                stat = rtStat;
+                usr = rtStat.getUser();
+            } else {
+                retweeter.add(" ");
+            }
             user.add(usr.getName());
             scrname.add('@'+usr.getScreenName());
             tweet.add(stat.getText());
             noRT.add(stat.getRetweetCount());
             noFav.add(stat.getFavoriteCount());
-            noAns.add(0); // TODO
             userId.add(usr.getId());
             pbLink.add(usr.getMiniProfileImageURL());
             tweetId.add(stat.getId());
@@ -287,13 +304,20 @@ public class TweetDatabase {
     private void insertNew(List<Status> stats) {
         for(int index = stats.size()-1 ; index >=0 ; index--) {
             Status stat = stats.get(index);
+            Status rtStat = stat.getRetweetedStatus();
             User usr = stat.getUser();
+            if(rtStat != null) {
+                retweeter.add(usr.getScreenName());
+                stat = rtStat;
+                usr = rtStat.getUser();
+            } else {
+                retweeter.add(0,"\0");
+            }
             user.add(0,usr.getName());
             scrname.add(0,'@'+usr.getScreenName());
             tweet.add(0,stat.getText());
             noRT.add(0,stat.getRetweetCount());
             noFav.add(0,stat.getFavoriteCount());
-            noAns.add(0,0); // TODO
             userId.add(0,usr.getId());
             pbLink.add(0,usr.getMiniProfileImageURL());
             tweetId.add(0,stat.getId());
@@ -309,11 +333,11 @@ public class TweetDatabase {
         tweet   = new ArrayList<>();
         noRT    = new ArrayList<>();
         noFav   = new ArrayList<>();
-        noAns   = new ArrayList<>();
         userId  = new ArrayList<>();
         pbLink  = new ArrayList<>();
         tweetId = new ArrayList<>();
         verify  = new ArrayList<>();
+        retweeter  = new ArrayList<>();
         timeMillis = new ArrayList<>();
     }
 }

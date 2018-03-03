@@ -66,30 +66,30 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         try {
             switch (MODE) {
                 case HOME:
-                timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
-                if(timelineAdapter.getCount() == 0) {
-                    TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
-                    timelineAdapter = new TimelineAdapter(context,mTweets);
-                } else {
-                    id = timelineAdapter.getItemId(0);
-                    timelineAdapter.getData().add(mTwitter.getHome(page,id));
-                }
-                break;
+                    timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
+                    if(timelineAdapter != null && timelineAdapter.getCount() != 0) {
+                        id = timelineAdapter.getItemId(0);
+                        timelineAdapter.getData().add(mTwitter.getHome(page,id));
+                    } else {
+                        TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
+                        timelineAdapter = new TimelineAdapter(context,mTweets);
+                    }
+                    break;
 
                 case TRND:
-                trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(woeid),context));
-                break;
+                    trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(woeid),context));
+                    break;
 
                 case MENT:
-                mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
-                if(mentionAdapter.getCount() == 0) {
-                    TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
-                    mentionAdapter = new TimelineAdapter(context,mention);
-                } else {
-                    id = mentionAdapter.getItemId(0);
-                    mentionAdapter.getData().add(mTwitter.getMention(page,id));
-                }
-                break;
+                    mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
+                    if(mentionAdapter != null && mentionAdapter.getCount() != 0) {
+                        id = mentionAdapter.getItemId(0);
+                        mentionAdapter.getData().add(mTwitter.getMention(page,id));
+                    } else {
+                        TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
+                        mentionAdapter = new TimelineAdapter(context,mention);
+                    }
+                    break;
             }
         } catch (Exception e){
             e.printStackTrace();
