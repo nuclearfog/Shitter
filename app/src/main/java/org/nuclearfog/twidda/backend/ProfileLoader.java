@@ -4,22 +4,21 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import twitter4j.User;
-
 import com.squareup.picasso.Picasso;
 
 public class ProfileLoader extends AsyncTask<Long,Void,Long> {
@@ -35,9 +34,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private TextView txtUser,txtScrName,txtBio,txtLocation,txtLink,txtFollowing,txtFollower,txtCreated;
     private ImageView profile, banner, linkIcon, locationIcon, verifier, locked, followback;
     private SwipeRefreshLayout tweetsReload, favoritsReload;
-    private ListView profileTweets, profileFavorits;
+    private RecyclerView profileTweets, profileFavorits;
     private String imageLink, bannerLink, fullPbLink, link, dateString;
-    private TimelineAdapter homeTl, homeFav;
+    private TimelineRecycler homeTl, homeFav;
     private Context context;
     private Toolbar tool;
     private boolean isHome = false;
@@ -77,8 +76,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         locationIcon = (ImageView)((UserProfile)context).findViewById(R.id.location_img);
         tweetsReload    = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.hometweets);
         favoritsReload  = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.homefavorits);
-        profileTweets   = (ListView)((UserProfile)context).findViewById(R.id.ht_list);
-        profileFavorits = (ListView)((UserProfile)context).findViewById(R.id.hf_list);
+        profileTweets   = (RecyclerView)((UserProfile)context).findViewById(R.id.ht_list);
+        profileFavorits = (RecyclerView)((UserProfile)context).findViewById(R.id.hf_list);
         tool = (Toolbar) ((UserProfile)context).findViewById(R.id.profile_toolbar);
     }
 
@@ -116,10 +115,10 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == GET_TWEETS)
             {
-                homeTl = (TimelineAdapter) profileTweets.getAdapter();
-                if(homeTl == null || homeTl.getCount() == 0) {
+                homeTl = (TimelineRecycler) profileTweets.getAdapter();
+                if(homeTl == null || homeTl.getItemCount() == 0) {
                     TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
-                    homeTl = new TimelineAdapter(context,hTweets);
+                    homeTl = new TimelineRecycler(hTweets,(UserProfile)context);
                 } else {
                     id = homeTl.getItemId(0);
                     homeTl.getData().insert(mTwitter.getUserTweets(userId,args[2],id),true);
@@ -127,13 +126,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == GET_FAVS)
             {
-                homeFav = (TimelineAdapter) profileFavorits.getAdapter();
+                homeFav = (TimelineRecycler) profileFavorits.getAdapter();
                 if(homeFav != null) {
                     id = homeFav.getItemId(0);
                     homeFav.getData().insert(mTwitter.getUserFavs(userId,args[2],id),true);
                 } else {
                     TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2],id),context,TweetDatabase.FAV_TL,userId);
-                    homeFav = new TimelineAdapter(context,fTweets);
+                    homeFav = new TimelineRecycler(fTweets,(UserProfile)context);
                 }
             }
             else if(MODE == ACTION_FOLLOW)

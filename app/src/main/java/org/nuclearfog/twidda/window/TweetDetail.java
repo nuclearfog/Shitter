@@ -2,14 +2,16 @@ package org.nuclearfog.twidda.window;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,21 +20,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import static android.content.DialogInterface.*;
 
-import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
 /**
  * Detailed Tweet Window
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, DialogInterface.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+        TimelineRecycler.OnItemClicked, DialogInterface.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private ListView answer_list;
+    private RecyclerView answer_list;
     private long tweetID;
     private long userID;
     private StatusLoader mStat, mReply;
@@ -46,22 +47,20 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
         boolean home = userID == TwitterEngine.getHomeId();
 
-        answer_list = (ListView) findViewById(R.id.answer_list);
+        answer_list = (RecyclerView) findViewById(R.id.answer_list);
         Button answer = (Button) findViewById(R.id.answer_button);
         Button retweet = (Button) findViewById(R.id.rt_button_detail);
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         Button delete = (Button) findViewById(R.id.delete);
         ImageView pb =(ImageView) findViewById(R.id.profileimage_detail);
         SwipeRefreshLayout answerReload = (SwipeRefreshLayout) findViewById(R.id.answer_reload);
-
         TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
         TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
         TextView date = (TextView) findViewById(R.id.timedetail);
+        answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if(home) {
             delete.setVisibility(View.VISIBLE);
         }
-
-        answer_list.setOnItemClickListener(this);
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
         answerReload.setOnRefreshListener(this);
@@ -159,8 +158,8 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TimelineAdapter tlAdp = (TimelineAdapter) answer_list.getAdapter();
+    public void onItemClick(View view, ViewGroup parent, int position) {
+        TimelineRecycler tlAdp = (TimelineRecycler) answer_list.getAdapter();
         TweetDatabase twDB = tlAdp.getData();
         long userID = twDB.getUserID(position);
         long tweetID = twDB.getTweetId(position);

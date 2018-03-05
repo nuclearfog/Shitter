@@ -2,14 +2,14 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.viewadapter.UserAdapter;
+import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.UserDetail;
 
 public class UserLists extends AsyncTask <Long, Void, Void> {
@@ -21,8 +21,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
 
     private Context context;
     private TwitterEngine mTwitter;
-    private UserAdapter usrAdp;
-    private ListView userList;
+    private UserRecycler usrAdp;
+    private RecyclerView userList;
     private ProgressBar uProgress;
     private String errmsg;
 
@@ -36,7 +36,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     @Override
     protected void onPreExecute() {
         mTwitter = TwitterEngine.getInstance(context);
-        userList = (ListView)((UserDetail)context).findViewById(R.id.userlist);
+        userList = (RecyclerView) ((UserDetail)context).findViewById(R.id.userlist);
         uProgress = (ProgressBar)((UserDetail)context).findViewById(R.id.user_progress);
     }
 
@@ -46,10 +46,11 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         long mode = data[1];
         long cursor = data[2];
         try {
-            usrAdp = (UserAdapter) userList.getAdapter();
+            usrAdp = (UserRecycler) userList.getAdapter();
             if(mode == FOLLOWING) {
                 if(usrAdp == null) {
-                    usrAdp = new UserAdapter(context,new UserDatabase(context,mTwitter.getFollowing(id,cursor)));
+                    UserDatabase udb = new UserDatabase(context,mTwitter.getFollowing(id,cursor));
+                    usrAdp = new UserRecycler(udb,(UserDetail)context);
                 } else {
                     UserDatabase uDb = usrAdp.getData();
                     uDb.addLast(mTwitter.getFollowing(id,cursor));
@@ -58,7 +59,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
             }
             else if(mode == FOLLOWERS) {
                 if(usrAdp == null) {
-                    usrAdp = new UserAdapter(context,new UserDatabase(context,mTwitter.getFollower(id,cursor)));
+                    UserDatabase udb = new UserDatabase(context,mTwitter.getFollower(id,cursor));
+                    usrAdp = new UserRecycler(udb,(UserDetail)context);
                 } else {
                     UserDatabase uDb = usrAdp.getData();
                     uDb.addLast(mTwitter.getFollower(id,cursor));
@@ -67,14 +69,14 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
             }
             else if(mode == RETWEETER) {
                 UserDatabase udb = new UserDatabase(context,mTwitter.getRetweeter(id,cursor));
-                usrAdp = new UserAdapter(context,udb);
+                usrAdp = new UserRecycler(udb,(UserDetail)context);
             }
             else if(mode == FAVORISER) {
                 // GET FAV USERS TODO
             }
         }
         catch(Exception err) {
-            errmsg = err.getMessage();
+            errmsg = "Fehler: "+err.getMessage();
         }
         return null;
     }

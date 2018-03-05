@@ -4,31 +4,32 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.database.UserDatabase;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
-import org.nuclearfog.twidda.viewadapter.UserAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.backend.TwitterSearch;
+import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 /**
  * SearchPage Tweets and Users
  * @see TwitterSearch
  */
-public class SearchPage extends AppCompatActivity implements AdapterView.OnItemClickListener,
-        SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener {
+public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
+        SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener, TimelineRecycler.OnItemClicked {
 
-    private ListView tweetSearch, userSearch;
+    private RecyclerView tweetSearch,userSearch;
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
     private String search = "";
@@ -40,9 +41,12 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
         getExtras(getIntent().getExtras());
 
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
-        tweetSearch  = (ListView) findViewById(R.id.tweet_result);
-        userSearch   = (ListView) findViewById(R.id.user_result);
+
+        tweetSearch  = (RecyclerView) findViewById(R.id.tweet_result);
+        userSearch   = (RecyclerView) findViewById(R.id.user_result);
         tweetReload = (SwipeRefreshLayout) findViewById(R.id.searchtweets);
+        tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        userSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -51,10 +55,7 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
         setTabs(tabhost);
 
         tabhost.setOnTabChangedListener(this);
-        tweetSearch.setOnItemClickListener(this);
-        userSearch.setOnItemClickListener(this);
         tweetReload.setOnRefreshListener(this);
-
         getContent();
     }
 
@@ -115,11 +116,11 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(View view, ViewGroup parent, int position) {
         switch(parent.getId()) {
             case R.id.tweet_result:
                 if(!tweetReload.isRefreshing()) {
-                    TimelineAdapter tlAdp = (TimelineAdapter) tweetSearch.getAdapter();
+                    TimelineRecycler tlAdp = (TimelineRecycler) tweetSearch.getAdapter();
                     TweetDatabase twDB = tlAdp.getData();
                     long tweetID = twDB.getTweetId(position);
                     long userID = twDB.getUserID(position);
@@ -134,7 +135,7 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
                 }
                 break;
             case R.id.user_result:
-                UserAdapter uAdp = (UserAdapter) userSearch.getAdapter();
+                UserRecycler uAdp = (UserRecycler) userSearch.getAdapter();
                 UserDatabase uDb = uAdp.getData();
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 Bundle bundle = new Bundle();
@@ -173,6 +174,7 @@ public class SearchPage extends AppCompatActivity implements AdapterView.OnItemC
         mSearch = new TwitterSearch(this);
         mSearch.execute(search);
     }
+
 
     @SuppressWarnings("ConstantConditions")
     private void getExtras(Bundle b) {

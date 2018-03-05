@@ -7,7 +7,7 @@
 
     <Button
         android:id="@+id/linkButton"
-        android:layout_width="128dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:background="@android:color/darker_gray"
@@ -21,7 +21,7 @@
 
         <EditText
             android:id="@+id/pin"
-            android:layout_width="96dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="@string/pin"
@@ -30,16 +30,18 @@
 
         <Button
             android:id="@+id/clipboard"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginStart="10dp"
-            android:background="@drawable/copy" />
+            android:background="@drawable/copy"
+            android:onClick="onClick" />
 
     </LinearLayout>
 
     <Button
         android:id="@+id/get"
-        android:layout_width="128dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:background="@android:color/darker_gray"

@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+
+import org.nuclearfog.twidda.window.ColorPreferences;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -175,6 +181,7 @@ public class TweetDatabase {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID ASC";
+            limit = 5;
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -204,7 +211,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("retweeter");
                 retweeter.add(cursor.getString(index));
                 size++;
-            } while(cursor.moveToNext());
+            } while(cursor.moveToNext() && size < limit);
         }
         cursor.close();
         db.close();
@@ -228,6 +235,48 @@ public class TweetDatabase {
     public String getRetweeter(int pos) {
         if(retweeter.get(pos).trim().isEmpty()) return "";
         else return " RT @"+retweeter.get(pos);
+    }
+
+    public SpannableStringBuilder getHighlightedTweet(Context c, int pos) {
+        String tweet = getTweet(pos);
+        int highlight = ColorPreferences.getInstance(c).getColor(ColorPreferences.HIGHLIGHTING);
+        SpannableStringBuilder sTweet = new SpannableStringBuilder(tweet);
+        int start = 0;
+        boolean marked = false;
+        for(int i = 0 ; i < tweet.length() ; i++) {
+            char current = tweet.charAt(i);
+            switch(current){
+                case '@':
+                    start = i;
+                    marked = true;
+                    break;
+                case '#':
+                    start = i;
+                    marked = true;
+                    break;
+
+                case '\'':
+                case '\"':
+                case '\n':
+                case ')':
+                case '(':
+                case ':':
+                case ' ':
+                case '.':
+                case ',':
+                case '!':
+                case '?':
+                case '-':
+                    if(marked)
+                        sTweet.setSpan(new ForegroundColorSpan(highlight),start,i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    marked = false;
+                    break;
+            }
+            if(i == tweet.length()-1 && marked) {
+                sTweet.setSpan(new ForegroundColorSpan(highlight),start,i+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        return sTweet;
     }
 
     /**

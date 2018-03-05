@@ -21,12 +21,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/userlist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </ListView>
+            android:layout_height="match_parent"/>
 
     </FrameLayout>
 

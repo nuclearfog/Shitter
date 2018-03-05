@@ -4,12 +4,12 @@ import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
-import org.nuclearfog.twidda.viewadapter.TrendAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TrendRecycler;
 
 import android.content.SharedPreferences;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.widget.ListView;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -25,9 +25,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private TwitterEngine mTwitter;
     private Context context;
     private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
-    private ListView timelineList, trendList, mentionList;
-    private TimelineAdapter timelineAdapter, mentionAdapter;
-    private TrendAdapter trendsAdapter;
+    private RecyclerView timelineList, trendList, mentionList;
+    private TimelineRecycler timelineAdapter, mentionAdapter;
+    private TrendRecycler trendsAdapter;
     private int woeid;
 
     /**
@@ -45,13 +45,13 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     protected void onPreExecute() {
         // Timeline Tab
         timelineRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.timeline);
-        timelineList = (ListView)((MainActivity)context).findViewById(R.id.tl_list);
+        timelineList = (RecyclerView)((MainActivity)context).findViewById(R.id.tl_list);
         // Trend Tab
         trendRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.trends);
-        trendList = (ListView)((MainActivity)context).findViewById(R.id.tr_list);
+        trendList = (RecyclerView)((MainActivity)context).findViewById(R.id.tr_list);
         // Mention Tab
         mentionRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.mention);
-        mentionList = (ListView)((MainActivity)context).findViewById(R.id.m_list);
+        mentionList = (RecyclerView)((MainActivity)context).findViewById(R.id.m_list);
     }
 
     /**
@@ -66,28 +66,28 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         try {
             switch (MODE) {
                 case HOME:
-                    timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
-                    if(timelineAdapter != null && timelineAdapter.getCount() != 0) {
+                    timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
+                    if(timelineAdapter != null && timelineAdapter.getItemCount() != 0) {
                         id = timelineAdapter.getItemId(0);
                         timelineAdapter.getData().insert(mTwitter.getHome(page,id),true);
                     } else {
                         TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
-                        timelineAdapter = new TimelineAdapter(context,mTweets);
+                        timelineAdapter = new TimelineRecycler(mTweets,(MainActivity)context);
                     }
                     break;
 
                 case TRND:
-                    trendsAdapter = new TrendAdapter(context, new TrendDatabase(mTwitter.getTrends(woeid),context));
+                    trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),context),(MainActivity)context);
                     break;
 
                 case MENT:
-                    mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
-                    if(mentionAdapter != null && mentionAdapter.getCount() != 0) {
+                    mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
+                    if(mentionAdapter != null && mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
                         mentionAdapter.getData().insert(mTwitter.getMention(page,id),true);
                     } else {
                         TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
-                        mentionAdapter = new TimelineAdapter(context,mention);
+                        mentionAdapter = new TimelineRecycler(mention,(MainActivity)context);
                     }
                     break;
             }
@@ -103,7 +103,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         switch(MODE) {
             case HOME:
                 timelineRefresh.setRefreshing(false);
-                if(timelineList.getAdapter().getCount() == 0) {
+                if(timelineList.getAdapter().getItemCount() == 0) {
                     timelineList.setAdapter(timelineAdapter);
                 } else {
                     timelineAdapter.notifyDataSetChanged();
@@ -117,7 +117,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
             case MENT:
                 mentionRefresh.setRefreshing(false);
-                if(mentionList.getAdapter().getCount() == 0) {
+                if(mentionList.getAdapter().getItemCount() == 0) {
                     mentionList.setAdapter(mentionAdapter);
                 } else {
                     mentionAdapter.notifyDataSetChanged();

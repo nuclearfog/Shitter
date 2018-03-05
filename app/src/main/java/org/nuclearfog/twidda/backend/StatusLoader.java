@@ -5,17 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +29,9 @@ import twitter4j.User;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
-import org.nuclearfog.twidda.window.UserProfile;
 
 public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
@@ -48,8 +45,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private Context c;
     private TwitterEngine mTwitter;
     private List<twitter4j.Status> answers;
-    private TimelineAdapter tlAdp;
-    private ListView replyList;
+    private TimelineRecycler tlAdp;
+    private RecyclerView replyList;
     private TextView  username,scrName,replyName,tweet,userRetweet;
     private TextView used_api,txtAns,txtRet,txtFav,date;
     private ImageView profile_img,tweet_verify;
@@ -79,7 +76,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     @Override
     protected void onPreExecute() {
-        replyList = (ListView) ((TweetDetail)c).findViewById(R.id.answer_list);
+        replyList = (RecyclerView) ((TweetDetail)c).findViewById(R.id.answer_list);
         tweet = (TextView) ((TweetDetail)c).findViewById(R.id.tweet_detailed);
         username = (TextView) ((TweetDetail)c).findViewById(R.id.usernamedetail);
         scrName = (TextView) ((TweetDetail)c).findViewById(R.id.scrnamedetail);
@@ -173,7 +170,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             }
             else if(mode == LOAD_REPLY) {
                 String replyname = user.getScreenName();
-                tlAdp = (TimelineAdapter) replyList.getAdapter();
+                tlAdp = (TimelineRecycler) replyList.getAdapter();
                 if(tlAdp != null)
                     tweetID = tlAdp.getItemId(0);
                 answers = mTwitter.getAnswers(replyname, tweetID);
@@ -256,9 +253,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             setIcons();
         }
         else if(mode == LOAD_REPLY) {
-            if(tlAdp == null || tlAdp.getCount() == 0) {
+            if(tlAdp == null || tlAdp.getItemCount() == 0) {
                 TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
-                tlAdp = new TimelineAdapter(c, tweetDatabase);
+                tlAdp = new TimelineRecycler(tweetDatabase,(TweetDetail)c);
                 replyList.setAdapter(tlAdp);
             } else {
                 TweetDatabase twDb = tlAdp.getData();
@@ -266,7 +263,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tlAdp.notifyDataSetChanged();
                 ansReload.setRefreshing(false);
             }
-            String ansStr = Integer.toString(tlAdp.getCount());
+            String ansStr = Integer.toString(tlAdp.getItemCount());
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {

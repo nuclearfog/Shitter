@@ -38,7 +38,7 @@ public class TrendDatabase {
 
     public String getTrendname(int pos){ return trendName.get(pos); }
     public String getTrendlink(int pos){return trendLink.get(pos);}
-    public int getTrendpos(int pos){ return trendpos.get(pos); }
+    public String getTrendpos(int pos){ return Integer.toString(trendpos.get(pos))+"."; }
 
     public int getSize(){
         if(trendName != null)

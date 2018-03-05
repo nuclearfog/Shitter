@@ -3,27 +3,28 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.viewadapter.UserAdapter;
+import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 /**
  * Get Follow Connections from an User
  * @see UserLists
  */
-public class UserDetail extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class UserDetail extends AppCompatActivity implements UserRecycler.OnItemClicked {
 
     private long userID, tweetID;
     private long mode;
-    private ListView userListview;
+    private RecyclerView userListview;
     private UserLists uList;
 
     @Override
@@ -32,10 +33,10 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
         setContentView(R.layout.user);
         getExtras(getIntent().getExtras());
 
-        userListview = (ListView) findViewById(R.id.userlist);
+        userListview = (RecyclerView) findViewById(R.id.userlist);
+        userListview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
-        userListview.setOnItemClickListener(this);
         getUsers();
     }
 
@@ -70,8 +71,8 @@ public class UserDetail extends AppCompatActivity implements AdapterView.OnItemC
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        UserAdapter uAdp = (UserAdapter) userListview.getAdapter();
+    public void onItemClick(View view, ViewGroup parent, int position) {
+        UserRecycler uAdp = (UserRecycler) userListview.getAdapter();
         UserDatabase uDB = uAdp.getData();
         long userID = uDB.getUserID(position);
         String username = uDB.getScreenname(position);
