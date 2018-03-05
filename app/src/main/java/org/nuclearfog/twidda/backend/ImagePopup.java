@@ -12,10 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
 import org.nuclearfog.twidda.R;
-
-import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 

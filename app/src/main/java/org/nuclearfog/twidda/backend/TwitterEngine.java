@@ -411,14 +411,19 @@ public class TwitterEngine {
      * Get User who retweeted a Tweet
      * @param tweetID Tweet ID
      * @param cursor List Cursor
+     * @return List of users or empty list if no match
      * @throws TwitterException if Access is unavailable
      */
     public List<User> getRetweeter(long tweetID, long cursor) throws TwitterException {
         Status embeddedStat = getStatus(tweetID).getRetweetedStatus();
         if(embeddedStat != null)
             tweetID = embeddedStat.getId();
-        IDs test = twitter.getRetweeterIds(tweetID,load,cursor);
-        return twitter.lookupUsers(test.getIDs());
+        long[] userIds = twitter.getRetweeterIds(tweetID,load,cursor).getIDs();
+        if(userIds.length == 0) {
+            return new ArrayList<>();
+        } else {
+            return twitter.lookupUsers(userIds);
+        }
     }
 
     /**

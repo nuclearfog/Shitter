@@ -159,23 +159,22 @@ public class TweetDatabase {
         if(mode==HOME_TL) {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY time DESC";
+                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID DESC";
         } else if(mode==FAV_TL) {
             SQL_GET_HOME = "SELECT * FROM favorit " +
                     "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID " +
-                    "WHERE favorit.ownerID = "+CurrentId+" ORDER BY tweet.time DESC";
+                    "WHERE favorit.ownerID = "+CurrentId+" ORDER BY tweetID DESC";
         } else if(mode==USER_TL) {
             SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
-                    "WHERE user.userID = "+CurrentId+" ORDER BY tweet.time DESC";
+                    "WHERE user.userID = "+CurrentId+" ORDER BY tweetID DESC";
         } else if(mode==GET_TWEET) {
             SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
-                    "WHERE tweet.tweetID = "+CurrentId+" ORDER BY tweet.time DESC";
-        } else if(mode==GET_MENT){
+                    "WHERE tweetID = "+CurrentId+" ORDER BY tweetID DESC";
+        } else if(mode==GET_MENT) {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY time DESC";
-            limit = 5; //TODO 5 Mentions only!
+                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID ASC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -205,7 +204,7 @@ public class TweetDatabase {
                 index = cursor.getColumnIndex("retweeter");
                 retweeter.add(cursor.getString(index));
                 size++;
-            } while(cursor.moveToNext() && size < limit);
+            } while(cursor.moveToNext());
         }
         cursor.close();
         db.close();
