@@ -18,15 +18,13 @@ public class TrendDatabase {
     private List<String> trendName;
     private List<String> trendLink;
     private List<Integer> trendpos;
-    private Trends trends;
-    private int size = 0;
+    private int size;
     private Context c;
 
     public TrendDatabase(Trends trends, Context c) {
-        this.trends = trends;
         this.c = c;
         init();
-        setup();
+        setup(trends);
         store();
     }
 
@@ -34,6 +32,12 @@ public class TrendDatabase {
         this.c = c;
         init();
         load();
+    }
+
+    public void setTrends(Trends trends) {
+        init();
+        setup(trends);
+        store();
     }
 
     public String getTrendname(int pos){ return trendName.get(pos); }
@@ -78,13 +82,14 @@ public class TrendDatabase {
     }
 
     private void init() {
+        size = 0;
         dataHelper = AppDatabase.getInstance(c);
         trendpos  = new ArrayList<>();
         trendName = new ArrayList<>();
         trendLink = new ArrayList<>();
     }
 
-    private void setup() {
+    private void setup(Trends trends) {
         SharedPreferences settings = c.getSharedPreferences("settings", 0);
         SharedPreferences.Editor e = settings.edit();
         e.putString("location", trends.getLocation().getName()).apply();

@@ -67,7 +67,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             switch (MODE) {
                 case HOME:
                     timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
-                    if(timelineAdapter != null && timelineAdapter.getItemCount() != 0) {
+                    if(timelineAdapter != null && timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
                         timelineAdapter.getData().insert(mTwitter.getHome(page,id),true);
                     } else {
@@ -77,7 +77,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     break;
 
                 case TRND:
-                    trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),context),(MainActivity)context);
+                    trendsAdapter = (TrendRecycler) trendList.getAdapter();
+                    if(trendsAdapter != null && trendsAdapter.getItemCount() > 0)
+                        trendsAdapter.getData().setTrends( mTwitter.getTrends(woeid) );
+                    else
+                        trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),context),(MainActivity)context);
                     break;
 
                 case MENT:
@@ -112,7 +116,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
             case TRND:
                 trendRefresh.setRefreshing(false);
-                trendList.setAdapter(trendsAdapter);
+                if(trendList.getAdapter().getItemCount() == 0) {
+                    trendList.setAdapter(trendsAdapter);
+                } else {
+                    trendsAdapter.notifyDataSetChanged();
+                }
                 break;
 
             case MENT:
