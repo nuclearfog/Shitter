@@ -14,7 +14,7 @@ public class AppDatabase extends SQLiteOpenHelper
     private static final String tQuery = "CREATE TABLE IF NOT EXISTS tweet (" +
             "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweeter TEXT," +
             "time INTEGER, tweet TEXT, retweet INTEGER, favorite INTEGER," +
-            "FOREIGN KEY (userID) REFERENCES user(userID));";
+            "retweeterID INTEGER, FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String trQuery = "CREATE TABLE IF NOT EXISTS trend (" +
             "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";

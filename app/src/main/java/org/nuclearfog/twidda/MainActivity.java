@@ -168,8 +168,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-
-
     @Override
     public void onRefresh() {
         MainPage homeView = new MainPage(MainActivity.this);

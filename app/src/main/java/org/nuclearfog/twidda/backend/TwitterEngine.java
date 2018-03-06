@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.IDs;
 import twitter4j.PagableResponseList;
 import twitter4j.Paging;
 import twitter4j.Query;

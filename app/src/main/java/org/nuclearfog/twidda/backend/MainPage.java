@@ -14,7 +14,6 @@ import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 
-
 public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
     public static final int HOME = 0;

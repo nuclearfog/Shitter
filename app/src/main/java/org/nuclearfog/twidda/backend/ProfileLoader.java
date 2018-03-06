@@ -116,18 +116,18 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             else if(MODE == GET_TWEETS)
             {
                 homeTl = (TimelineRecycler) profileTweets.getAdapter();
-                if(homeTl == null || homeTl.getItemCount() == 0) {
-                    TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
-                    homeTl = new TimelineRecycler(hTweets,(UserProfile)context);
-                } else {
+                if(homeTl != null && homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     homeTl.getData().insert(mTwitter.getUserTweets(userId,args[2],id),true);
+                } else {
+                    TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
+                    homeTl = new TimelineRecycler(hTweets,(UserProfile)context);
                 }
             }
             else if(MODE == GET_FAVS)
             {
                 homeFav = (TimelineRecycler) profileFavorits.getAdapter();
-                if(homeFav != null) {
+                if(homeFav != null && homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     homeFav.getData().insert(mTwitter.getUserFavs(userId,args[2],id),true);
                 } else {

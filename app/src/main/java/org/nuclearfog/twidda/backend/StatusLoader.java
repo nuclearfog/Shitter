@@ -171,7 +171,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             else if(mode == LOAD_REPLY) {
                 String replyname = user.getScreenName();
                 tlAdp = (TimelineRecycler) replyList.getAdapter();
-                if(tlAdp != null)
+                if(tlAdp != null && tlAdp.getItemCount() > 0)
                     tweetID = tlAdp.getItemId(0);
                 answers = mTwitter.getAnswers(replyname, tweetID);
             }
@@ -183,6 +183,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             int err = e.getErrorCode();
             if(err == 144) { // gelöscht
                 TweetDatabase.delete(c,tweetID);
+                errMSG = e.getMessage();
             }
             e.printStackTrace();
             return ERROR;

@@ -1,4 +1,5 @@
 package org.nuclearfog.twidda.database;
+import org.nuclearfog.twidda.window.ColorPreferences;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,9 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-
-import org.nuclearfog.twidda.window.ColorPreferences;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,7 +21,6 @@ public class TweetDatabase {
     public static final int HOME_TL   = 0;
     public static final int FAV_TL    = 1;
     public static final int USER_TL   = 2;
-    public static final int GET_TWEET = 3;
     public static final int GET_MENT  = 4;
 
     private AppDatabase dataHelper;
@@ -55,7 +52,7 @@ public class TweetDatabase {
     /**
      * Read Data
      * @param context MainActivity Context
-     * @param mode which type of data should be loaded
+     * @param mode {@link #FAV_TL #GET_MENT}
      * @param CurrentId current ID (USER OR TWEET)
      */
     public TweetDatabase(Context context, final int mode, long CurrentId) {
@@ -112,10 +109,12 @@ public class TweetDatabase {
 
             if(rtStat != null) {
                 tweet.put("retweeter",usr.getScreenName());
+                tweet.put("retweeterID", usr.getId());
                 stat = rtStat;
                 usr = rtStat.getUser();
             } else {
                 tweet.put("retweeter","\0");
+                tweet.put("retweeterID", -1L);
             }
 
             user.put("userID",usr.getId());
@@ -166,22 +165,22 @@ public class TweetDatabase {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.tweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID DESC";
-        } else if(mode==FAV_TL) {
-            SQL_GET_HOME = "SELECT * FROM favorit " +
-                    "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID=user.userID " +
-                    "WHERE favorit.ownerID = "+CurrentId+" ORDER BY tweetID DESC";
-        } else if(mode==USER_TL) {
-            SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
-                    "WHERE user.userID = "+CurrentId+" ORDER BY tweetID DESC";
-        } else if(mode==GET_TWEET) {
-            SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
-                    "WHERE tweetID = "+CurrentId+" ORDER BY tweetID DESC";
         } else if(mode==GET_MENT) {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID ASC";
             limit = 5;
+        }
+
+        else if(mode==USER_TL) {
+            SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
+                    "WHERE tweet.userID = "+CurrentId+" OR tweet.retweeterID = "+CurrentId +" " +
+                    "ORDER BY tweetID DESC";
+        } else if(mode==FAV_TL) {
+            SQL_GET_HOME = "SELECT * FROM favorit " +
+                    "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
+                    "INNER JOIN user ON tweet.userID=user.userID " +
+                    "WHERE favorit.ownerID = "+CurrentId+" ORDER BY tweetID DESC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -321,6 +320,7 @@ public class TweetDatabase {
         for(Status stat: stats) {
             Status rtStat = stat.getRetweetedStatus();
             User usr = stat.getUser();
+            tweetId.add(stat.getId());
             if(rtStat != null) {
                 retweeter.add(usr.getScreenName());
                 stat = rtStat;
@@ -335,7 +335,6 @@ public class TweetDatabase {
             noFav.add(stat.getFavoriteCount());
             userId.add(usr.getId());
             pbLink.add(usr.getMiniProfileImageURL());
-            tweetId.add(stat.getId());
             verify.add(usr.isVerified() ? 1 : 0);
             timeMillis.add(stat.getCreatedAt().getTime());
             size++;
@@ -343,10 +342,11 @@ public class TweetDatabase {
     }
 
     private void addFirst(List<Status> stats) {
-        for(int index = stats.size()-1 ; index >=0 ; index--) {
+        for(int index = stats.size()-1 ; index >= 0 ; index--) {
             Status stat = stats.get(index);
             Status rtStat = stat.getRetweetedStatus();
             User usr = stat.getUser();
+            tweetId.add(0,stat.getId());
             if(rtStat != null) {
                 retweeter.add(usr.getScreenName());
                 stat = rtStat;
@@ -361,7 +361,6 @@ public class TweetDatabase {
             noFav.add(0,stat.getFavoriteCount());
             userId.add(0,usr.getId());
             pbLink.add(0,usr.getMiniProfileImageURL());
-            tweetId.add(0,stat.getId());
             verify.add(0,usr.isVerified() ? 1 : 0);
             timeMillis.add(0,stat.getCreatedAt().getTime());
             size++;
