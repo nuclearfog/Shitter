@@ -15,58 +15,61 @@ import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.SearchPage;
 
+import java.lang.ref.WeakReference;
+
 public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     private TimelineRecycler tlRc;
     private UserRecycler uAdp;
-    private SwipeRefreshLayout tweetReload;
     private RecyclerView tweetSearch, userSearch;
-    private ProgressBar circleLoad;
-    private Context context;
     private TwitterEngine mTwitter;
+    private WeakReference<SearchPage> ui;
     private int background, font_color;
 
     public TwitterSearch(Context context) {
-        this.context=context;
+        ui = new WeakReference<>((SearchPage)context);
+        tweetSearch = (RecyclerView) ui.get().findViewById(R.id.tweet_result);
+        userSearch  = (RecyclerView) ui.get().findViewById(R.id.user_result);
+        mTwitter = TwitterEngine.getInstance(context);
         ColorPreferences mcolor = ColorPreferences.getInstance(context);
         background = mcolor.getColor(ColorPreferences.BACKGROUND);
         font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
     }
 
     @Override
-    protected void onPreExecute() {
-        tweetSearch = (RecyclerView) ((SearchPage)context).findViewById(R.id.tweet_result);
-        userSearch  = (RecyclerView) ((SearchPage)context).findViewById(R.id.user_result);
-        tweetReload = (SwipeRefreshLayout) ((SearchPage)context).findViewById(R.id.searchtweets);
-        circleLoad  = (ProgressBar) ((SearchPage)context).findViewById(R.id.search_progress);
-        mTwitter = TwitterEngine.getInstance(context);
-    }
-
-    @Override
     protected Void doInBackground(String... search) {
-        String get = search[0];
+        String strSearch = search[0];
         long id = 1L;
         try {
             tlRc = (TimelineRecycler) tweetSearch.getAdapter();
             if(tlRc != null) {
                 id = tlRc.getItemId(0);
-                tlRc.getData().insert(mTwitter.searchTweets(get,id),false);
+                tlRc.getData().insert(mTwitter.searchTweets(strSearch,id),false);
             } else {
-                tlRc = new TimelineRecycler(new TweetDatabase(mTwitter.searchTweets(get,id),context),((SearchPage)context));
+                tlRc = new TimelineRecycler(new TweetDatabase(mTwitter.searchTweets(strSearch,id),ui.get()),ui.get());
                 tlRc.setColor(background,font_color);
             }
-            uAdp = new UserRecycler(new UserDatabase(context, mTwitter.searchUsers(get)),((SearchPage)context));
+            uAdp = new UserRecycler(new UserDatabase(ui.get(), mTwitter.searchUsers(strSearch)),ui.get());
         } catch(Exception err){err.printStackTrace();}
         return null;
     }
 
     @Override
     protected void onPostExecute(Void v) {
+
+        SearchPage connect = ui.get();
+        if(connect == null)
+            return;
+
+        SwipeRefreshLayout tweetReload = (SwipeRefreshLayout)connect.findViewById(R.id.searchtweets);
+        ProgressBar circleLoad = (ProgressBar)connect.findViewById(R.id.search_progress);
+
         circleLoad.setVisibility(View.INVISIBLE);
-        if(tweetSearch.getAdapter() == null)
+        if(tweetSearch.getAdapter() == null) {
             tweetSearch.setAdapter(tlRc);
-        else
+        } else {
             tlRc.notifyDataSetChanged();
+        }
         userSearch.setAdapter(uAdp);
         tweetReload.setRefreshing(false);
     }

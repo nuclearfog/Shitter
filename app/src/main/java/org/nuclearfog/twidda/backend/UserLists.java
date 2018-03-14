@@ -12,6 +12,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.UserDetail;
 
+import java.lang.ref.WeakReference;
+
 public class UserLists extends AsyncTask <Long, Void, Void> {
 
     public static final long FOLLOWING = 0L;
@@ -19,7 +21,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     public static final long RETWEETER = 2L;
     public static final long FAVORISER = 3L;
 
-    private Context context;
+    private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
     private RecyclerView userList;
@@ -30,15 +32,13 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
      *@see UserDetail
      */
     public UserLists(Context context) {
-        this.context = context;
+        ui = new WeakReference<>((UserDetail)context);
+        mTwitter = TwitterEngine.getInstance(context);
+        userList = (RecyclerView) ui.get().findViewById(R.id.userlist);
+        uProgress = (ProgressBar) ui.get().findViewById(R.id.user_progress);
     }
 
-    @Override
-    protected void onPreExecute() {
-        mTwitter = TwitterEngine.getInstance(context);
-        userList = (RecyclerView) ((UserDetail)context).findViewById(R.id.userlist);
-        uProgress = (ProgressBar)((UserDetail)context).findViewById(R.id.user_progress);
-    }
+
 
     @Override
     protected Void doInBackground(Long... data) {
@@ -49,8 +49,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
             usrAdp = (UserRecycler) userList.getAdapter();
             if(mode == FOLLOWING) {
                 if(usrAdp == null) {
-                    UserDatabase udb = new UserDatabase(context,mTwitter.getFollowing(id,cursor));
-                    usrAdp = new UserRecycler(udb,(UserDetail)context);
+                    UserDatabase udb = new UserDatabase(ui.get(),mTwitter.getFollowing(id,cursor));
+                    usrAdp = new UserRecycler(udb,ui.get());
                 } else {
                     UserDatabase uDb = usrAdp.getData();
                     uDb.addLast(mTwitter.getFollowing(id,cursor));
@@ -59,8 +59,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
             }
             else if(mode == FOLLOWERS) {
                 if(usrAdp == null) {
-                    UserDatabase udb = new UserDatabase(context,mTwitter.getFollower(id,cursor));
-                    usrAdp = new UserRecycler(udb,(UserDetail)context);
+                    UserDatabase udb = new UserDatabase(ui.get(),mTwitter.getFollower(id,cursor));
+                    usrAdp = new UserRecycler(udb,ui.get());
                 } else {
                     UserDatabase uDb = usrAdp.getData();
                     uDb.addLast(mTwitter.getFollower(id,cursor));
@@ -68,12 +68,12 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
                 }
             }
             else if(mode == RETWEETER) {
-                UserDatabase udb = new UserDatabase(context,mTwitter.getRetweeter(id,cursor));
-                usrAdp = new UserRecycler(udb,(UserDetail)context);
+                UserDatabase udb = new UserDatabase(ui.get(),mTwitter.getRetweeter(id,cursor));
+                usrAdp = new UserRecycler(udb,ui.get());
             }
-            else if(mode == FAVORISER) {
+            /*else if(mode == FAVORISER) {
                 // GET FAV USERS TODO
-            }
+            }*/
         }
         catch(Exception err) {
             errmsg = "Fehler: "+err.getMessage();
@@ -83,10 +83,12 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
+        if(ui.get() == null)
+            return;
         if(errmsg == null) {
             userList.setAdapter(usrAdp);
         } else {
-            Toast.makeText(context,errmsg,Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get().getApplicationContext(),errmsg,Toast.LENGTH_LONG).show();
         }
         uProgress.setVisibility(View.INVISIBLE);
     }

@@ -4,9 +4,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/soylentgreen</item>
         <item name="android:windowAnimationStyle">@style/TransactionPending</item>
-        <item name="android:navigationBarColor">@android:color/background_dark</item>
         <item name="android:colorBackground">@color/DarkBlue</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
     <style name="Transparency" parent="AppTheme">

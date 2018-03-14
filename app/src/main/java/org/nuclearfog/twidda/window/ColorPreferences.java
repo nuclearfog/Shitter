@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.window;
 
+import org.nuclearfog.twidda.R;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,8 +11,6 @@ import android.widget.Button;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-
-import org.nuclearfog.twidda.R;
 
 public class ColorPreferences implements OnColorChangedListener, DialogInterface.OnDismissListener {
 
@@ -28,6 +28,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
     private static ColorPreferences ourInstance;
     private SharedPreferences settings;
     private Context context;
+    private Dialog d;
 
     private ColorPreferences(Context context) {
         settings = context.getSharedPreferences("settings", 0);
@@ -65,6 +66,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
         colorButton2.setBackgroundColor(font);
         colorButton3.setBackgroundColor(tweet);
         colorButton4.setBackgroundColor(highlight);
+        d.dismiss();
     }
 
     public int getColor(final int Mode){
@@ -101,7 +103,7 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
             default:
                 preColor = 0xFFFFFFFF;
         }
-        Dialog d = ColorPickerDialogBuilder.with(context)
+        d = ColorPickerDialogBuilder.with(context)
                 .showAlphaSlider(false).initialColor(preColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
                 .setOnColorChangedListener(this).build();

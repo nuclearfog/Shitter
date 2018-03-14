@@ -6,8 +6,12 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import org.nuclearfog.twidda.window.LoginPage;
 
+import java.lang.ref.WeakReference;
+
 public class Registration extends AsyncTask<String, Void, Boolean> {
-    private Context context;
+
+    private WeakReference<LoginPage> ui;
+    private TwitterEngine mTwitter;
     private String errMSG = "";
 
     /**
@@ -17,18 +21,18 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
      * @param context current Activity's Context.
      */
     public Registration(Context context) {
-        this.context = context;
+        ui = new WeakReference<>((LoginPage)context);
+        mTwitter = TwitterEngine.getInstance(context);
     }
 
 
     @Override
     protected Boolean doInBackground( String... twitterPin ) {
         String pin = twitterPin[0];
-        TwitterEngine mTwitter = TwitterEngine.getInstance(context);
         try {
             if( pin.trim().isEmpty() ) {
                 mTwitter.request();
-            }else {
+            } else {
                 mTwitter.initialize(pin);
                 return true;
             }
@@ -41,10 +45,14 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
+        LoginPage connect = ui.get();
+        if(connect == null)
+            return;
         if(success) {
-            ((LoginPage)context).setResult(Activity.RESULT_OK);
-            ((LoginPage)context).finish();
+            connect.setResult(Activity.RESULT_OK);
+            connect.finish();
         } else if(!errMSG.isEmpty()) {
+            Context context = connect.getApplicationContext();
             Toast.makeText(context,"Fehler: "+errMSG,Toast.LENGTH_LONG).show();
         }
     }

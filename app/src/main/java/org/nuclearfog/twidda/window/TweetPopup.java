@@ -28,6 +28,7 @@ import java.util.List;
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener,
         DialogInterface.OnClickListener {
 
+    private StatusUpload sendTweet;
     private EditText tweetfield;
     private Button imageButton, previewBtn;
     private TextView imgcount;
@@ -60,7 +61,6 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         previewBtn.setOnClickListener(this);
     }
 
-
     @Override
     public void onBackPressed() {
         showClosingMsg();
@@ -80,6 +80,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         super.onActivityResult(reqCode,returnCode,i);
         if(returnCode == RESULT_OK){
             String[] mode = {MediaStore.Images.Media.DATA};
+            if(i.getData() == null)
+                return;
             Cursor c = getContentResolver().query(i.getData(),mode,null,null,null);
             if(c != null && c.moveToFirst()) {
                 if(imgIndex == 0) {
@@ -103,6 +105,8 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     public void onClick(DialogInterface d, int id) {
         switch(id) {
             case BUTTON_POSITIVE:
+                if(sendTweet != null)
+                    sendTweet.cancel(true);
                 finish();
                 break;
             case BUTTON_NEGATIVE:
@@ -145,15 +149,12 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         String tweet = tweetfield.getText().toString();
         String[] paths = new String[mediaPath.size()];
         paths = mediaPath.toArray(paths);
-        StatusUpload sendTweet;
-        sendTweet = new StatusUpload(getApplicationContext(),paths);
-
+        sendTweet = new StatusUpload(this ,paths);
         if(inReplyId > 0) {
             sendTweet.execute(tweet, inReplyId);
         } else {
             sendTweet.execute(tweet);
         }
-        finish();
     }
 
     @SuppressWarnings("ConstantCondidions")

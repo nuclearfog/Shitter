@@ -13,7 +13,6 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.TweetDatabase;
 
-
 public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> implements View.OnClickListener {
 
     private TweetDatabase mTweets;
@@ -70,7 +69,6 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         vh.tweet.setText(mTweets.getHighlightedTweet(parent.getContext(),index));
         vh.retweet.setText(Integer.toString(mTweets.getRetweet(index)));
         vh.favorite.setText(Integer.toString(mTweets.getFavorite(index)));
-        vh.retweeter.setText(mTweets.getRetweeter(index));
         vh.time.setText(mTweets.getDate(index));
         if(mTweets.loadImages()) {
             Picasso.with(parent.getContext()).load(mTweets.getPbLink(index)).into(vh.profile);

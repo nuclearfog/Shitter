@@ -18,7 +18,6 @@ import java.net.URL;
 
 public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Button.OnClickListener {
 
-    private ProgressBar mBar;
     private ImageView mImg;
     private Dialog popup;
     private Bitmap imgArray[];
@@ -29,14 +28,10 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
 
     public ImagePopup(Context c) {
         popup = new Dialog(c);
-        mBar = new ProgressBar(c);
+        ProgressBar mBar = new ProgressBar(c);
         inf = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    @Override
-    protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.getWindow().setBackgroundDrawableResource(R.color.transparent);
+        popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         popup.setContentView(mBar);
         popup.show();
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {

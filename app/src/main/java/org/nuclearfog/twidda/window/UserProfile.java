@@ -16,6 +16,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -26,7 +27,7 @@ import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener,
-        TimelineRecycler.OnItemClicked {
+        TimelineRecycler.OnItemClicked, ProfileLoader.OnProfileFinished {
 
     private ProfileLoader mProfile, mTweets, mFavorits;
     private SwipeRefreshLayout homeReload, favoriteReload;
@@ -65,19 +66,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         favoriteReload.setOnRefreshListener(this);
 
         initElements();
-        getContent();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         mProfile.cancel(true);
-        mTweets.cancel(true);
-        mFavorits.cancel(true);
-        super.onDestroy();
-    }
-
-    @Override
-    public void onBackPressed(){
+        if(mTweets != null)
+            mTweets.cancel(true);
+        if(mFavorits != null)
+            mFavorits.cancel(true);
         super.onBackPressed();
     }
 
@@ -195,7 +192,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     /**
      * Tab Content
      */
-    private void getContent() {
+    @Override
+    public void onLoaded() {
         new Thread( new Runnable() {
                 @Override
                 public void run() {

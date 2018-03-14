@@ -24,8 +24,8 @@ public class TweetDatabase {
     public static final int GET_MENT  = 4;
 
     private AppDatabase dataHelper;
-    private List<String> user,scrname,tweet,pbLink,retweeter;
-    private List<Long> userId,tweetId,timeMillis;
+    private List<String> user,scrname,tweet,pbLink;
+    private List<Long> userId,tweetId,timeMillis, retweetId;
     private List<Integer> noRT,noFav, verify;
     private boolean toggleImg;
     private int limit;
@@ -109,12 +109,10 @@ public class TweetDatabase {
 
             if(rtStat != null) {
                 tweet.put("retweeter",usr.getScreenName());
-                tweet.put("retweeterID", usr.getId());
                 stat = rtStat;
                 usr = rtStat.getUser();
             } else {
-                tweet.put("retweeter","\0");
-                tweet.put("retweeterID", -1L);
+                tweet.put("retweeter","\t");
             }
 
             user.put("userID",usr.getId());
@@ -135,7 +133,7 @@ public class TweetDatabase {
 
             home.put("tweetID", stat.getId());
             fav.put("tweetID", stat.getId());
-            fav.put("ownerID", CurrentId);
+            fav.put("userID", CurrentId);
 
             ment.put("mTweetID",stat.getId());
 
@@ -173,14 +171,14 @@ public class TweetDatabase {
         }
 
         else if(mode==USER_TL) {
-            SQL_GET_HOME = "SELECT * FROM user INNER JOIN tweet ON user.userID = tweet.userID " +
-                    "WHERE tweet.userID = "+CurrentId+" OR tweet.retweeterID = "+CurrentId +" " +
-                    "ORDER BY tweetID DESC";
+            SQL_GET_HOME = "SELECT * FROM user " +
+                    "INNER JOIN tweet ON tweet.userID = user.userID"+
+                    " WHERE user.userID = "+CurrentId+ " ORDER BY tweetID DESC";
         } else if(mode==FAV_TL) {
             SQL_GET_HOME = "SELECT * FROM favorit " +
                     "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID=user.userID " +
-                    "WHERE favorit.ownerID = "+CurrentId+" ORDER BY tweetID DESC";
+                    "INNER JOIN user ON tweet.userID = user.userID " +
+                    "WHERE favorit.userID = "+CurrentId+" ORDER BY tweetID DESC";
         }
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
@@ -207,8 +205,8 @@ public class TweetDatabase {
                 userId.add(cursor.getLong(index));
                 index = cursor.getColumnIndex("tweetID");
                 tweetId.add(cursor.getLong(index));
-                index = cursor.getColumnIndex("retweeter");
-                retweeter.add(cursor.getString(index));
+               // index = cursor.getColumnIndex("retweetID");
+                //retweetId.add(cursor.getLong(index));
                 size++;
             } while(cursor.moveToNext() && size < limit);
         }
@@ -231,10 +229,6 @@ public class TweetDatabase {
     public String getPbLink(int pos){return pbLink.get(pos);}
     public boolean loadImages(){return toggleImg;}
     public boolean isVerified(int pos){return verify.get(pos) == 1;}
-    public String getRetweeter(int pos) {
-        if(retweeter.get(pos).trim().isEmpty()) return "";
-        else return " RT @"+retweeter.get(pos);
-    }
 
     public SpannableStringBuilder getHighlightedTweet(Context c, int pos) {
         String tweet = getTweet(pos);
@@ -322,11 +316,8 @@ public class TweetDatabase {
             User usr = stat.getUser();
             tweetId.add(stat.getId());
             if(rtStat != null) {
-                retweeter.add(usr.getScreenName());
                 stat = rtStat;
                 usr = rtStat.getUser();
-            } else {
-                retweeter.add("\0");
             }
             user.add(usr.getName());
             scrname.add('@'+usr.getScreenName());
@@ -348,11 +339,9 @@ public class TweetDatabase {
             User usr = stat.getUser();
             tweetId.add(0,stat.getId());
             if(rtStat != null) {
-                retweeter.add(usr.getScreenName());
+               // retweetId.add(usr.getScreenName());
                 stat = rtStat;
                 usr = rtStat.getUser();
-            } else {
-                retweeter.add(0,"\0");
             }
             user.add(0,usr.getName());
             scrname.add(0,'@'+usr.getScreenName());
@@ -377,7 +366,7 @@ public class TweetDatabase {
         pbLink  = new ArrayList<>();
         tweetId = new ArrayList<>();
         verify  = new ArrayList<>();
-        retweeter  = new ArrayList<>();
+        retweetId  = new ArrayList<>();
         timeMillis = new ArrayList<>();
     }
 }

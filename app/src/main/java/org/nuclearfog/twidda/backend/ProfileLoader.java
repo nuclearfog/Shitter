@@ -16,7 +16,8 @@ import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.UserProfile;
 
-import java.text.SimpleDateFormat;
+import java.lang.ref.WeakReference;
+import java.text.DateFormat;
 import java.util.Date;
 import twitter4j.User;
 import com.squareup.picasso.Picasso;
@@ -31,14 +32,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private static final long FAILURE        = 0x6;
 
     private String screenName, username, description, location, follower, following;
-    private TextView txtUser,txtScrName,txtBio,txtLocation,txtLink,txtFollowing,txtFollower,txtCreated;
-    private ImageView profile, banner, linkIcon, locationIcon, verifier, locked, followback;
-    private SwipeRefreshLayout tweetsReload, favoritsReload;
     private RecyclerView profileTweets, profileFavorits;
     private String imageLink, bannerLink, fullPbLink, link, dateString;
     private TimelineRecycler homeTl, homeFav;
-    private Context context;
-    private Toolbar tool;
+    private WeakReference<UserProfile> ui;
+    private TwitterEngine mTwitter;
     private boolean isHome = false;
     private boolean imgEnabled = false;
     private boolean isFollowing = false;
@@ -52,33 +50,12 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
      * @see UserProfile
      */
     public ProfileLoader(Context context) {
-        this.context=context;
+        ui = new WeakReference<>((UserProfile)context);
+        profileTweets = (RecyclerView) ui.get().findViewById(R.id.ht_list);
+        profileFavorits = (RecyclerView) ui.get().findViewById(R.id.hf_list);
+        mTwitter = TwitterEngine.getInstance(context);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imgEnabled = settings.getBoolean("image_load",true);
-    }
-
-    @Override
-    protected void onPreExecute() {
-        txtUser  = (TextView)((UserProfile)context).findViewById(R.id.profile_username);
-        txtScrName = (TextView)((UserProfile)context).findViewById(R.id.profile_screenname);
-        txtBio = (TextView)((UserProfile)context).findViewById(R.id.bio);
-        txtLocation = (TextView)((UserProfile)context).findViewById(R.id.location);
-        txtLink = (TextView)((UserProfile)context).findViewById(R.id.links);
-        txtCreated = (TextView)((UserProfile)context).findViewById(R.id.profile_date);
-        txtFollowing = (TextView)((UserProfile)context).findViewById(R.id.following);
-        txtFollower  = (TextView)((UserProfile)context).findViewById(R.id.follower);
-        profile  = (ImageView)((UserProfile)context).findViewById(R.id.profile_img);
-        banner   = (ImageView)((UserProfile)context).findViewById(R.id.banner);
-        linkIcon = (ImageView)((UserProfile)context).findViewById(R.id.link_img);
-        verifier = (ImageView)((UserProfile)context).findViewById(R.id.profile_verify);
-        followback = (ImageView)((UserProfile)context).findViewById(R.id.followback);
-        locked = (ImageView)((UserProfile)context).findViewById(R.id.profile_locked);
-        locationIcon = (ImageView)((UserProfile)context).findViewById(R.id.location_img);
-        tweetsReload    = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.hometweets);
-        favoritsReload  = (SwipeRefreshLayout)((UserProfile)context).findViewById(R.id.homefavorits);
-        profileTweets   = (RecyclerView)((UserProfile)context).findViewById(R.id.ht_list);
-        profileFavorits = (RecyclerView)((UserProfile)context).findViewById(R.id.hf_list);
-        tool = (Toolbar) ((UserProfile)context).findViewById(R.id.profile_toolbar);
     }
 
     @Override
@@ -86,7 +63,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         long userId = args[0];
         final long MODE = args[1];
         long id = 1L;
-        TwitterEngine mTwitter = TwitterEngine.getInstance(context);
+
         try {
             isHome = TwitterEngine.getHomeId() == userId;
             if(!isHome)
@@ -111,7 +88,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 bannerLink = user.getProfileBannerMobileURL();
                 fullPbLink = user.getOriginalProfileImageURL();
                 Date d = user.getCreatedAt();
-                dateString = "seit "+new SimpleDateFormat("dd.MM.yyyy").format(d);
+                dateString = "seit "+ DateFormat.getDateTimeInstance().format(d);
             }
             else if(MODE == GET_TWEETS)
             {
@@ -120,8 +97,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     id = homeTl.getItemId(0);
                     homeTl.getData().insert(mTwitter.getUserTweets(userId,args[2],id),true);
                 } else {
-                    TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),context,TweetDatabase.USER_TL,userId);
-                    homeTl = new TimelineRecycler(hTweets,(UserProfile)context);
+                    TweetDatabase hTweets = new TweetDatabase(mTwitter.getUserTweets(userId,args[2],id),ui.get(),TweetDatabase.USER_TL,userId);
+                    homeTl = new TimelineRecycler(hTweets,ui.get());
                 }
             }
             else if(MODE == GET_FAVS)
@@ -131,8 +108,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     id = homeFav.getItemId(0);
                     homeFav.getData().insert(mTwitter.getUserFavs(userId,args[2],id),true);
                 } else {
-                    TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2],id),context,TweetDatabase.FAV_TL,userId);
-                    homeFav = new TimelineRecycler(fTweets,(UserProfile)context);
+                    TweetDatabase fTweets = new TweetDatabase(mTwitter.getUserFavs(userId,args[2],id),ui.get(),TweetDatabase.FAV_TL,userId);
+                    homeFav = new TimelineRecycler(fTweets,ui.get());
                 }
             }
             else if(MODE == ACTION_FOLLOW)
@@ -158,6 +135,32 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
     @Override
     protected void onPostExecute(Long mode) {
+
+        UserProfile connect = ui.get();
+        if(connect == null)
+            return;
+
+        final Context context = connect.getApplicationContext();
+
+        TextView txtUser = (TextView)connect.findViewById(R.id.profile_username);
+        TextView txtScrName = (TextView)connect.findViewById(R.id.profile_screenname);
+        TextView txtBio = (TextView)connect.findViewById(R.id.bio);
+        TextView txtLocation = (TextView)connect.findViewById(R.id.location);
+        TextView txtLink = (TextView)connect.findViewById(R.id.links);
+        TextView txtCreated = (TextView)connect.findViewById(R.id.profile_date);
+        TextView txtFollowing = (TextView)connect.findViewById(R.id.following);
+        TextView txtFollower  = (TextView)connect.findViewById(R.id.follower);
+        ImageView profile  = (ImageView)connect.findViewById(R.id.profile_img);
+        ImageView banner   = (ImageView)connect.findViewById(R.id.banner);
+        ImageView linkIcon = (ImageView)connect.findViewById(R.id.link_img);
+        ImageView verifier = (ImageView)connect.findViewById(R.id.profile_verify);
+        ImageView followback = (ImageView)connect.findViewById(R.id.followback);
+        ImageView locked = (ImageView)connect.findViewById(R.id.profile_locked);
+        ImageView locationIcon = (ImageView)connect.findViewById(R.id.location_img);
+        SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
+        SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
+        Toolbar tool = (Toolbar) connect.findViewById(R.id.profile_toolbar);
+
         if(mode == GET_INFORMATION) {
             txtUser.setText(username);
             txtScrName.setText(screenName);
@@ -192,6 +195,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     }
                 });
             }
+            ui.get().onLoaded();
         }
         else if(mode == GET_TWEETS)
         {
@@ -225,5 +229,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             else
                 tool.getMenu().getItem(2).setIcon(R.drawable.block);
         }
+    }
+
+    public interface OnProfileFinished {
+        void onLoaded();
     }
 }

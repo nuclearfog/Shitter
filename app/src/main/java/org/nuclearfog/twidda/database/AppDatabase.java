@@ -6,28 +6,34 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class AppDatabase extends SQLiteOpenHelper
 {
-    private static final String uQuery = "CREATE TABLE IF NOT EXISTS user ("+
+    private static final String userTable = "CREATE TABLE IF NOT EXISTS user ("+
             "userID INTEGER PRIMARY KEY, username TEXT," +
             "scrname  TEXT, pbLink TEXT, banner TEXT, bio TEXT,"+
             "location TEXT, link TEXT, verify INTEGER);";
 
-    private static final String tQuery = "CREATE TABLE IF NOT EXISTS tweet (" +
-            "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweeter TEXT," +
+    private static final String tweetTable = "CREATE TABLE IF NOT EXISTS tweet (" +
+            "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweetID INTEGER," +
             "time INTEGER, tweet TEXT, retweet INTEGER, favorite INTEGER," +
-            "retweeterID INTEGER, FOREIGN KEY (userID) REFERENCES user(userID));";
+            "FOREIGN KEY (userID) REFERENCES user(userID));";
 
-    private static final String trQuery = "CREATE TABLE IF NOT EXISTS trend (" +
-            "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";
+    private static final String favoriteTable = "CREATE TABLE IF NOT EXISTS favorit (" +
+            "userID INTEGER, tweetID INTEGER UNIQUE," +
+            "FOREIGN KEY (userID) REFERENCES user(userID)," +
+            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
-    private static final String hQuery = "CREATE TABLE IF NOT EXISTS timeline (" +
+    private static final String retweetTable = "CREATE TABLE IF NOT EXISTS retweet ("+
+            "userID INTEGER, tweetID INTEGER UNIQUE," +
+            "FOREIGN KEY (userID) REFERENCES user(userID)," +
+            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
+
+    private static final String timelineTable = "CREATE TABLE IF NOT EXISTS timeline (" +
             "tweetID INTEGER UNIQUE, mTweetID INTEGER UNIQUE," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));" +
             "FOREIGN KEY (mTweetID) REFERENCES tweet(tweetID));";
 
-    private static final String fQuery = "CREATE TABLE IF NOT EXISTS favorit (" +
-            "ownerID INTEGER, tweetID INTEGER UNIQUE," +
-            "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
-            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
+    private static final String trendTable = "CREATE TABLE IF NOT EXISTS trend (" +
+            "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";
+
 
     private static AppDatabase mData;
 
@@ -37,11 +43,12 @@ public class AppDatabase extends SQLiteOpenHelper
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(uQuery);
-        db.execSQL(tQuery);
-        db.execSQL(trQuery);
-        db.execSQL(hQuery);
-        db.execSQL(fQuery);
+        db.execSQL(userTable);
+        db.execSQL(tweetTable);
+        db.execSQL(trendTable);
+        db.execSQL(timelineTable);
+        db.execSQL(favoriteTable);
+        db.execSQL(retweetTable);
     }
 
     @Override
@@ -50,6 +57,7 @@ public class AppDatabase extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + "tweet");
         db.execSQL("DROP TABLE IF EXISTS " + "favorit");
         db.execSQL("DROP TABLE IF EXISTS " + "timeline");
+        db.execSQL("DROP TABLE IF EXISTS " + "retweet");
         db.execSQL("DROP TABLE IF EXISTS " + "trend");
         onCreate(db);
     }

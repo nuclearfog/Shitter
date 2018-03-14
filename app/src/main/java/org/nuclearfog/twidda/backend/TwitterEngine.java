@@ -164,6 +164,7 @@ public class TwitterEngine {
     /**
      * Get Tweet search result
      * @param search Search String
+     * @param id Since ID
      * @return List of Tweets
      * @throws TwitterException if acces is unavailable
      */

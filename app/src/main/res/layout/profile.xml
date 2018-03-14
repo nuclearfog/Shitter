@@ -34,8 +34,7 @@
                     android:id="@+id/banner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/banner"
-                    app:srcCompat="@android:color/holo_red_dark" />
+                    android:contentDescription="@string/banner" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

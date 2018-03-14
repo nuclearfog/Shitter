@@ -14,6 +14,8 @@ import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import java.lang.ref.WeakReference;
+
 public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
     public static final int HOME = 0;
@@ -21,9 +23,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     public static final int MENT = 2;
     private static final int FAIL = -1;
 
+    private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
-    private Context context;
-    private SwipeRefreshLayout timelineRefresh, trendRefresh, mentionRefresh;
     private RecyclerView timelineList, trendList, mentionList;
     private TimelineRecycler timelineAdapter, mentionAdapter;
     private TrendRecycler trendsAdapter;
@@ -34,23 +35,13 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
      * @see MainActivity
      */
     public MainPage(Context context) {
-        this.context = context;
+        ui = new WeakReference<>((MainActivity)context);
         mTwitter = TwitterEngine.getInstance(context);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         woeid = settings.getInt("woeid",23424829); // Germany WOEID
-    }
-
-    @Override
-    protected void onPreExecute() {
-        // Timeline Tab
-        timelineRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.timeline);
-        timelineList = (RecyclerView)((MainActivity)context).findViewById(R.id.tl_list);
-        // Trend Tab
-        trendRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.trends);
-        trendList = (RecyclerView)((MainActivity)context).findViewById(R.id.tr_list);
-        // Mention Tab
-        mentionRefresh = (SwipeRefreshLayout)((MainActivity)context).findViewById(R.id.mention);
-        mentionList = (RecyclerView)((MainActivity)context).findViewById(R.id.m_list);
+        timelineList = (RecyclerView)ui.get().findViewById(R.id.tl_list);
+        trendList = (RecyclerView)ui.get().findViewById(R.id.tr_list);
+        mentionList = (RecyclerView)ui.get().findViewById(R.id.m_list);
     }
 
     /**
@@ -70,8 +61,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                         id = timelineAdapter.getItemId(0);
                         timelineAdapter.getData().insert(mTwitter.getHome(page,id),true);
                     } else {
-                        TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), context,TweetDatabase.HOME_TL,0);
-                        timelineAdapter = new TimelineRecycler(mTweets,(MainActivity)context);
+                        TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), ui.get(),TweetDatabase.HOME_TL,0);
+                        timelineAdapter = new TimelineRecycler(mTweets,ui.get());
                     }
                     break;
 
@@ -80,7 +71,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     if(trendsAdapter != null && trendsAdapter.getItemCount() > 0)
                         trendsAdapter.getData().setTrends( mTwitter.getTrends(woeid) );
                     else
-                        trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),context),(MainActivity)context);
+                        trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),ui.get()), ui.get());
                     break;
 
                 case MENT:
@@ -89,8 +80,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                         id = mentionAdapter.getItemId(0);
                         mentionAdapter.getData().insert(mTwitter.getMention(page,id),true);
                     } else {
-                        TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), context,TweetDatabase.GET_MENT,0);
-                        mentionAdapter = new TimelineRecycler(mention,(MainActivity)context);
+                        TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), ui.get(),TweetDatabase.GET_MENT,0);
+                        mentionAdapter = new TimelineRecycler(mention,ui.get());
                     }
                     break;
             }
@@ -103,6 +94,14 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
     @Override
     protected void onPostExecute(Integer MODE) {
+        MainActivity connect = ui.get();
+        if(connect == null)
+            return;
+        Context context = connect.getApplicationContext();
+        SwipeRefreshLayout timelineRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.timeline);
+        SwipeRefreshLayout trendRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.trends);
+        SwipeRefreshLayout mentionRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.mention);
+
         switch(MODE) {
             case HOME:
                 timelineRefresh.setRefreshing(false);
