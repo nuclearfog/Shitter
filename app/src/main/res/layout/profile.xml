@@ -50,7 +50,6 @@
                         android:contentDescription="@string/profile_image" />
 
                     <LinearLayout
-                        android:id="@+id/banner"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical">
