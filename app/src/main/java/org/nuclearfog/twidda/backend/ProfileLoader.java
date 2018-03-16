@@ -22,7 +22,6 @@ import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-import twitter4j.User;
 import com.squareup.picasso.Picasso;
 
 public class ProfileLoader extends AsyncTask<Long,Void,Long> {
@@ -80,20 +79,20 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             if(MODE == GET_INFORMATION)
             {
-                User user = mTwitter.getUser(userId);
-                screenName = '@'+user.getScreenName();
-                username = user.getName();
-                description = user.getDescription();
-                location = user.getLocation();
-                isVerified = user.isVerified();
-                isLocked = user.isProtected();
-                link = user.getURL();
-                follower = Integer.toString(user.getFollowersCount());
-                following = Integer.toString(user.getFriendsCount());
-                imageLink = user.getProfileImageURL();
-                // bannerLink = user.getProfileBannerMobileURL();
-                fullPbLink = user.getOriginalProfileImageURL();
-                Date d = user.getCreatedAt();
+                TwitterUser user = mTwitter.getUser(userId);
+                screenName = '@'+user.screenname;
+                username = user.username;
+                description = user.bio;
+                location = user.location;
+                isVerified = user.isVerified;
+                isLocked = user.isLocked;
+                link = user.link;
+                follower = Integer.toString(user.follower);
+                following = Integer.toString(user.following);
+                imageLink = user.profileImg;
+                // bannerLink = user.bannerImg;
+                 fullPbLink = user.fullpb;
+                Date d = new Date(user.created);
                 dateString = "seit "+ DateFormat.getDateTimeInstance().format(d);
             }
             else if(MODE == GET_TWEETS)

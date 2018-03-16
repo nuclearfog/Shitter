@@ -35,8 +35,8 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class TwitterEngine {
 
-    private final String TWITTER_CONSUMER_KEY = "GrylGIgQK3cDjo9mSTBqF1vwf";
-    private final String TWITTER_CONSUMER_SECRET = "pgaWUlDVS5b7Q6VJQDgBzHKw0mIxJIX0UQBcT1oFJEivsCl5OV";
+    private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
+    private final String TWITTER_CONSUMER_SECRET = "4SNMCHbg68LM14X2wYDjWkmzuNqq5dnB7tfAj2b4Muu8uPQ2QE";
 
     private static TwitterEngine mTwitter;
     private static long twitterID;
@@ -126,6 +126,7 @@ public class TwitterEngine {
         e.apply();
     }
 
+
     /**
      * recall Keys from Shared-Preferences
      * & initialize Twitter
@@ -139,6 +140,7 @@ public class TwitterEngine {
             initKeys(key1,key2);
         }
     }
+
 
     /**
      * Get Home Timeline
@@ -202,6 +204,7 @@ public class TwitterEngine {
         return convertUserList(twitter.searchUsers(search, -1));
     }
 
+
     /**
      * Get User Tweets
      * @param userId User ID
@@ -212,6 +215,7 @@ public class TwitterEngine {
     public List<Tweet> getUserTweets(long userId, long page, long id) throws TwitterException {
         return convertStatusList(twitter.getUserTimeline(userId, new Paging((int)page,load, id)));
     }
+
 
     /**
      * Get User Favs
@@ -224,15 +228,17 @@ public class TwitterEngine {
         return convertStatusList(twitter.getFavorites(userId,new Paging((int)page,load,id)));
     }
 
+
     /**
      * Get User Context
      * @param id User ID
      * @return User Object
      * @throws TwitterException if Access is unavailable
      */
-    public User getUser(long id) throws TwitterException {
-        return twitter.showUser(id);
+    public TwitterUser getUser(long id) throws TwitterException {
+        return getUser(twitter.showUser(id));
     }
+
 
     /**
      * Get Connection between Home and another User
@@ -247,6 +253,7 @@ public class TwitterEngine {
         else
             return twitter.showFriendship(twitterID,id).isTargetFollowingSource();
     }
+
 
     /**
      * Get Block Status
@@ -274,6 +281,7 @@ public class TwitterEngine {
             return true;
         }
     }
+
 
     /**
      * Switch blocking User
@@ -303,6 +311,7 @@ public class TwitterEngine {
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
+
     /**
      * get Follower
      * @param id User ID
@@ -313,6 +322,7 @@ public class TwitterEngine {
         IDs userIDs = twitter.getFollowersIDs(id,cursor,load);
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
+
 
     /**
      * Send Tweet
@@ -326,6 +336,7 @@ public class TwitterEngine {
             mStatus.setInReplyToStatusId(reply);
         twitter.tweets().updateStatus(mStatus);
     }
+
 
     /**
      * Send Tweet
@@ -353,6 +364,7 @@ public class TwitterEngine {
         twitter.tweets().updateStatus(mStatus);
     }
 
+
     /**
      * Get Tweet
      * @param id Tweet ID
@@ -369,6 +381,7 @@ public class TwitterEngine {
             return getTweet(status,null);
         }
     }
+
 
     /**
      * Get Answer Tweets
@@ -391,6 +404,7 @@ public class TwitterEngine {
         return convertStatusList(answers);
     }
 
+
     /**
      * Retweet Action
      * @param id Tweet ID
@@ -405,6 +419,7 @@ public class TwitterEngine {
         }
     }
 
+
     /**
      * Favorite Action
      * @param id Tweet ID
@@ -418,6 +433,7 @@ public class TwitterEngine {
             twitter.destroyFavorite(id);
         }
     }
+
 
     /**
      * Get User who retweeted a Tweet
@@ -442,19 +458,23 @@ public class TwitterEngine {
     /**
      * convert #twitter4j.User to TwitterUser List
      * @param users Twitter4J user List
-     * @return #TwitterEngine.TwitteUser
+     * @return TwitterUser
      */
     private List<TwitterUser> convertUserList(List<User> users) {
         List <TwitterUser> result = new ArrayList<>();
         for(User user : users) {
-            TwitterUser item = new TwitterUser(user.getId(), user.getName(), user.getScreenName(),
-                    user.getMiniProfileImageURL(),user.getDescription(), user.getLocation(),user.isVerified(),
-                    user.isProtected(), user.getURL(), user.getProfileBannerURL());
+            TwitterUser item = getUser(user);
             result.add(item);
         }
         return result;
     }
 
+
+    /**
+     * convert #twitter4j.Status to Tweet List
+     * @param statuses Twitter4J status List
+     * @return TwitterStatus
+     */
     private List<Tweet> convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
         for(Status status : statuses) {
@@ -471,6 +491,12 @@ public class TwitterEngine {
         return result;
     }
 
+
+    /**
+     * @param status twitter4j.Status
+     * @param retweetedStat embedded Status
+     * @return Tweet item
+     */
     private Tweet getTweet(Status status, Tweet retweetedStat) {
         User user = status.getUser();
         return new Tweet(status.getId(), user.getId(), user.getName(), user.getScreenName(),
@@ -480,6 +506,23 @@ public class TwitterEngine {
                 retweetedStat, status.isRetweetedByMe(), status.isFavorited());
     }
 
+
+    /**
+     * @param user Twitter4J User
+     * @return User item
+     */
+    private TwitterUser getUser(User user) {
+        return new TwitterUser(user.getId(),user.getName(),user.getScreenName(),user.getMiniProfileImageURL(),
+                user.getOriginalProfileImageURL(),user.getDescription(),user.getLocation(),user.isVerified(),
+                user.isProtected(),user.getURL(),user.getProfileBannerURL(),user.getCreatedAt().getTime(),
+                user.getFriendsCount(),user.getFollowersCount());
+    }
+
+
+    /**
+     * @param status Twitter4J status
+     * @return Array of Medialinks
+     */
     private String[] getMediaLinks(Status status) {
         MediaEntity[] mediaEntities = status.getMediaEntities();
         String medialinks[] = new String[mediaEntities.length];
@@ -499,6 +542,7 @@ public class TwitterEngine {
         twitter.destroyStatus(id);
     }
 
+
     /**
      * Return User ID
      * @return result
@@ -506,6 +550,7 @@ public class TwitterEngine {
     public static long getHomeId() {
         return twitterID;
     }
+
 
     /**
      * Singleton
