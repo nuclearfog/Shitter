@@ -21,18 +21,17 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.text.DateFormat;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import twitter4j.MediaEntity;
 import twitter4j.TwitterException;
-import twitter4j.User;
 
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
+import org.nuclearfog.twidda.backend.listitems.*;
 
 public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
@@ -44,7 +43,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     public static final long LOAD_REPLY = 4;
 
     private TwitterEngine mTwitter;
-    private List<twitter4j.Status> answers;
     private TimelineRecycler tlAdp;
     private RecyclerView replyList;
     private Bitmap profile_btm;
@@ -56,16 +54,17 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private boolean rtFlag = false;
     private long userReply, tweetReplyID;
     private int rt, fav;
-    private int highlight;
+    private int highlight, font;
 
     private WeakReference<TweetDetail> ui;
 
     public StatusLoader(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
-        answers = new ArrayList<>();
         SharedPreferences settings = c.getSharedPreferences("settings", 0);
         toggleImg = settings.getBoolean("image_load", true);
-        highlight = ColorPreferences.getInstance(c).getColor(ColorPreferences.HIGHLIGHTING);
+        ColorPreferences mColor = ColorPreferences.getInstance(c);
+        highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
+        font = mColor.getColor(ColorPreferences.FONT_COLOR);
 
         ui = new WeakReference<>((TweetDetail)c);
         replyList = (RecyclerView) ui.get().findViewById(R.id.answer_list);
@@ -80,49 +79,40 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         long tweetID = data[0];
         long mode = data[1];
         try {
-            twitter4j.Status currentTweet = mTwitter.getStatus(tweetID);
-            twitter4j.Status embeddedTweet = currentTweet.getRetweetedStatus();
+            Tweet tweet = mTwitter.getStatus(tweetID);
+            Tweet embeddedTweet = tweet.embedded;
             if(embeddedTweet != null) {
-                retweeter = "Retweet @"+currentTweet.getUser().getScreenName();
-                currentTweet = mTwitter.getStatus(embeddedTweet.getId());
-                tweetID = currentTweet.getId();
+                retweeter = "Retweet @"+tweet.screenname;
+                tweet = mTwitter.getStatus(embeddedTweet.tweetID);
+                tweetID = embeddedTweet.tweetID;
                 rtFlag = true;
             }
-            rt = currentTweet.getRetweetCount();
-            fav = currentTweet.getFavoriteCount();
-            retweeted = currentTweet.isRetweetedByMe();
-            favorited = currentTweet.isFavorited();
-
-            User user = currentTweet.getUser();
+            rt = tweet.retweet;
+            fav = tweet.favorit;
+            retweeted = tweet.retweeted;
+            favorited = tweet.favorized;
 
             if(mode == LOAD_TWEET) {
-                userReply = currentTweet.getInReplyToUserId();
-                tweetReplyID = currentTweet.getInReplyToStatusId();
-                tweetStr = currentTweet.getText();
-                verified = user.isVerified();
-                usernameStr = user.getName();
-                scrNameStr = '@'+user.getScreenName();
-                apiName = formatString(currentTweet.getSource());
-                dateString = DateFormat.getDateTimeInstance().format(currentTweet.getCreatedAt());
+                tweetReplyID = tweet.replyID;
+                verified = tweet.verified;
+                tweetStr = tweet.tweet;
+                usernameStr = tweet.username;
+                scrNameStr = '@'+tweet.screenname;
+                apiName = formatString(tweet.source);
+                dateString = DateFormat.getDateTimeInstance().format(new Date(tweet.time));
+                repliedUsername = tweet.replyName;
 
-                if(userReply > 0)
-                    repliedUsername = currentTweet.getInReplyToScreenName();
                 if(toggleImg) {
-                    String pbLink = user.getProfileImageURL();
+                    String pbLink = tweet.profileImg;
                     InputStream iStream = new URL(pbLink).openStream();
                     profile_btm = BitmapFactory.decodeStream(iStream);
-
-                    MediaEntity[] media = currentTweet.getMediaEntities();
-                    medialinks = new String[media.length];
-                    for(int i = 0 ; i < media.length ; i++) {
-                        medialinks[i] = media[i].getMediaURL();
-                    }
+                    medialinks = tweet.media;
                 }
             }
             else if(mode == RETWEET) {
                 if(retweeted) {
                     mTwitter.retweet(tweetID, true);
-                    TweetDatabase.delete(ui.get(), tweetID);
+                    TweetDatabase.removeStatus(ui.get(), tweetID);
                     retweeted = false;
                     rt--;
                 } else {
@@ -143,20 +133,27 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 }
             }
             else if(mode == LOAD_REPLY) {
-                String replyname = user.getScreenName();
+                List<Tweet> answers;
+                String replyname = tweet.screenname;
                 tlAdp = (TimelineRecycler) replyList.getAdapter();
-                if(tlAdp != null && tlAdp.getItemCount() > 0)
+                if(tlAdp != null && tlAdp.getItemCount() > 0) {
                     tweetID = tlAdp.getItemId(0);
-                answers = mTwitter.getAnswers(replyname, tweetID);
+                    answers = mTwitter.getAnswers(replyname, tweetID);
+                    answers.addAll(tlAdp.getData());
+                } else {
+                    answers = mTwitter.getAnswers(replyname, tweetID);
+                }
+                tlAdp = new TimelineRecycler(answers,ui.get());
+                tlAdp.setColor(highlight, font);
             }
             else if(mode == DELETE) {
                 mTwitter.deleteTweet(tweetID);
-                TweetDatabase.delete(ui.get(),tweetID);
+                TweetDatabase.removeStatus(ui.get(),tweetID);
             }
         }catch(TwitterException e) {
             int err = e.getErrorCode();
             if(err == 144) { // gelöscht
-                TweetDatabase.delete(ui.get(),tweetID);
+                TweetDatabase.removeStatus(ui.get(),tweetID);
                 errMSG = e.getMessage();
             }
             e.printStackTrace();
@@ -170,12 +167,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     @Override
     protected void onPostExecute(Long mode) {
-
         TweetDetail connect = ui.get();
         if(connect == null)
             return;
-
-        final Context c = connect.getApplicationContext();
+        final Context c = connect;
 
         TextView tweet = (TextView)connect.findViewById(R.id.tweet_detailed);
         TextView username = (TextView)connect.findViewById(R.id.usernamedetail);
@@ -252,15 +247,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             setIcons(favoriteButton, retweetButton);
         }
         else if(mode == LOAD_REPLY) {
-            if(tlAdp == null || tlAdp.getItemCount() == 0) {
-                TweetDatabase tweetDatabase = new TweetDatabase(answers,c);
-                tlAdp = new TimelineRecycler(tweetDatabase,(ui.get()));
-                replyList.setAdapter(tlAdp);
-            } else {
-                TweetDatabase twDb = tlAdp.getData();
-                twDb.insert(answers,false);
-                tlAdp.notifyDataSetChanged();
-            }
+            replyList.setAdapter(tlAdp);
             ansReload.setRefreshing(false);
             String ansStr = Integer.toString(tlAdp.getItemCount());
             txtAns.setText(ansStr);

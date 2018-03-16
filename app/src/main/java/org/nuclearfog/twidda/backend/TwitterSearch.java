@@ -6,16 +6,17 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.SearchPage;
+import org.nuclearfog.twidda.backend.listitems.*;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
@@ -24,7 +25,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private RecyclerView tweetSearch, userSearch;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
-    private int background, font_color;
+    private int background, highlight, font_color;
+    private String error;
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
@@ -33,6 +35,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         mTwitter = TwitterEngine.getInstance(context);
         ColorPreferences mcolor = ColorPreferences.getInstance(context);
         background = mcolor.getColor(ColorPreferences.BACKGROUND);
+        highlight = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
         font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
     }
 
@@ -42,34 +45,45 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         long id = 1L;
         try {
             tlRc = (TimelineRecycler) tweetSearch.getAdapter();
-            if(tlRc != null) {
+            uAdp = (UserRecycler) userSearch.getAdapter();
+
+            if(tlRc != null && tlRc.getItemCount() > 0) {
                 id = tlRc.getItemId(0);
-                tlRc.getData().insert(mTwitter.searchTweets(strSearch,id),false);
+                List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
+                tweets.addAll(tlRc.getData());
+                tlRc = new TimelineRecycler(tweets,ui.get());
             } else {
-                tlRc = new TimelineRecycler(new TweetDatabase(mTwitter.searchTweets(strSearch,id),ui.get()),ui.get());
-                tlRc.setColor(background,font_color);
+                List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
+                tlRc = new TimelineRecycler(tweets,ui.get());
             }
-            uAdp = new UserRecycler(new UserDatabase(ui.get(), mTwitter.searchUsers(strSearch)),ui.get());
-        } catch(Exception err){err.printStackTrace();}
+
+            if(uAdp == null ||uAdp.getItemCount() == 0) {
+                List<TwitterUser> user = mTwitter.searchUsers(strSearch);
+                uAdp = new UserRecycler(user, ui.get());
+            }
+
+            tlRc.setColor(highlight,font_color);
+            uAdp.setColor(background,font_color);
+
+        } catch(Exception err) {
+            error = err.getMessage();
+        }
         return null;
     }
 
     @Override
     protected void onPostExecute(Void v) {
-
         SearchPage connect = ui.get();
         if(connect == null)
             return;
+        if(error != null)
+            Toast.makeText(connect, "Fehler beim Laden: "+error, Toast.LENGTH_LONG).show();
 
         SwipeRefreshLayout tweetReload = (SwipeRefreshLayout)connect.findViewById(R.id.searchtweets);
         ProgressBar circleLoad = (ProgressBar)connect.findViewById(R.id.search_progress);
 
         circleLoad.setVisibility(View.INVISIBLE);
-        if(tweetSearch.getAdapter() == null) {
-            tweetSearch.setAdapter(tlRc);
-        } else {
-            tlRc.notifyDataSetChanged();
-        }
+        tweetSearch.setAdapter(tlRc);
         userSearch.setAdapter(uAdp);
         tweetReload.setRefreshing(false);
     }

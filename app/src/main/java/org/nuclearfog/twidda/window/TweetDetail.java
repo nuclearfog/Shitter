@@ -12,17 +12,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import static android.content.DialogInterface.*;
 
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
@@ -99,7 +97,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
             case R.id.answer_button:
                 intent = new Intent(getApplicationContext(), TweetPopup.class);
                 bundle.putLong("TweetID", tweetID);
-                bundle.putString("Addition", username);
+                bundle.putString("Addition", '@'+username);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -161,9 +159,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onItemClick(View view, ViewGroup parent, int position) {
         TimelineRecycler tlAdp = (TimelineRecycler) answer_list.getAdapter();
-        TweetDatabase twDB = tlAdp.getData();
-        long userID = twDB.getUserID(position);
-        long tweetID = twDB.getTweetId(position);
+        Tweet tweet = tlAdp.getData().get(position);
+        long userID = tweet.userID;
+        long tweetID = tweet.tweetID;
         Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userID);

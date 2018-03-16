@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
+import org.nuclearfog.twidda.backend.listitems.*;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +12,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.PagableResponseList;
+import twitter4j.IDs;
+import twitter4j.MediaEntity;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -144,8 +147,8 @@ public class TwitterEngine {
      * @return List of Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getHome(int page, long lastId) throws TwitterException {
-        return twitter.getHomeTimeline(new Paging(page,load,lastId));
+    public List<Tweet> getHome(int page, long lastId) throws TwitterException {
+        return convertStatusList(twitter.getHomeTimeline(new Paging(page,load,lastId)));
     }
 
 
@@ -156,8 +159,8 @@ public class TwitterEngine {
      * @return List of Mention Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getMention(int page, long id) throws TwitterException {
-        return twitter.getMentionsTimeline(new Paging(page,load,id));
+    public List<Tweet> getMention(int page, long id) throws TwitterException {
+        return convertStatusList(twitter.getMentionsTimeline(new Paging(page,/*load*/5,id)));
     }
 
 
@@ -168,13 +171,13 @@ public class TwitterEngine {
      * @return List of Tweets
      * @throws TwitterException if acces is unavailable
      */
-    public List<Status> searchTweets(String search, long id) throws TwitterException {
+    public List<Tweet> searchTweets(String search, long id) throws TwitterException {
         Query q = new Query();
         q.setQuery(search+" +exclude:retweets");
         q.setCount(load);
         q.setSinceId(id);
         QueryResult result = twitter.search(q);
-        return result.getTweets();
+        return convertStatusList(result.getTweets());
     }
 
 
@@ -195,8 +198,8 @@ public class TwitterEngine {
      * @return List of Users
      * @throws TwitterException if access is unavailable
      */
-    public List<User> searchUsers(String search) throws TwitterException {
-        return twitter.searchUsers(search, -1);
+    public List<TwitterUser> searchUsers(String search) throws TwitterException {
+        return convertUserList(twitter.searchUsers(search, -1));
     }
 
     /**
@@ -206,8 +209,8 @@ public class TwitterEngine {
      * @return List of User Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getUserTweets(long userId, long page, long id) throws TwitterException {
-        return twitter.getUserTimeline(userId, new Paging((int)page,load, id));
+    public List<Tweet> getUserTweets(long userId, long page, long id) throws TwitterException {
+        return convertStatusList(twitter.getUserTimeline(userId, new Paging((int)page,load, id)));
     }
 
     /**
@@ -217,8 +220,8 @@ public class TwitterEngine {
      * @return List of User Favs
      * @throws TwitterException if access is unavailable
      */
-    public List<Status> getUserFavs(long userId, long page, long id) throws TwitterException {
-        return twitter.getFavorites(userId,new Paging((int)page,load,id));
+    public List<Tweet> getUserFavs(long userId, long page, long id) throws TwitterException {
+        return convertStatusList(twitter.getFavorites(userId,new Paging((int)page,load,id)));
     }
 
     /**
@@ -252,7 +255,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public boolean getBlocked(long id) throws TwitterException {
-        return twitter.showFriendship(twitter.getId(),id).isSourceMutingTarget();
+        return twitter.showFriendship(twitter.getId(),id).isSourceBlockingTarget();
     }
 
 
@@ -295,8 +298,9 @@ public class TwitterEngine {
      * @return List of Following User
      * @throws TwitterException if Access is unavailable
      */
-    public PagableResponseList<User> getFollowing(long id, long cursor) throws TwitterException {
-        return twitter.getFriendsList(id, cursor, load);
+    public List<TwitterUser> getFollowing(long id, long cursor) throws TwitterException {
+        IDs userIDs = twitter.getFriendsIDs(id,cursor,load);
+        return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
     /**
@@ -305,8 +309,9 @@ public class TwitterEngine {
      * @return List of Follower
      * @throws TwitterException if Access is unavailable
      */
-    public PagableResponseList<User> getFollower(long id, long cursor) throws TwitterException {
-        return twitter.getFollowersList(id,cursor, load);
+    public List<TwitterUser> getFollower(long id, long cursor) throws TwitterException {
+        IDs userIDs = twitter.getFollowersIDs(id,cursor,load);
+        return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
     /**
@@ -354,8 +359,15 @@ public class TwitterEngine {
      * @return Tweet Object
      * @throws TwitterException if Access is unavailable
      */
-    public Status getStatus(long id) throws TwitterException {
-        return twitter.showStatus(id);
+    public Tweet getStatus(long id) throws TwitterException {
+        Status status = twitter.showStatus(id);
+        Status retweet = status.getRetweetedStatus();
+        if(retweet != null ) {
+            Tweet embedded = getTweet(retweet,null);
+            return getTweet(status,embedded);
+        } else {
+            return getTweet(status,null);
+        }
     }
 
     /**
@@ -365,7 +377,7 @@ public class TwitterEngine {
      * @return List of Answers
      * @throws TwitterException if Access is unavailable
      */
-    public List<Status> getAnswers(String name, long id) throws TwitterException {
+    public List<Tweet> getAnswers(String name, long id) throws TwitterException {
         List<Status> answers = new ArrayList<>();
         Query query = new Query("to:"+name+" since_id:"+id+" -filter:retweets");
         query.setCount(load);
@@ -376,7 +388,7 @@ public class TwitterEngine {
                 answers.add(reply);
             }
         }
-        return answers;
+        return convertStatusList(answers);
     }
 
     /**
@@ -414,17 +426,70 @@ public class TwitterEngine {
      * @return List of users or empty list if no match
      * @throws TwitterException if Access is unavailable
      */
-    public List<User> getRetweeter(long tweetID, long cursor) throws TwitterException {
-        Status embeddedStat = getStatus(tweetID).getRetweetedStatus();
+    public List<TwitterUser> getRetweeter(long tweetID, long cursor) throws TwitterException {
+        Tweet embeddedStat = getStatus(tweetID).embedded;
         if(embeddedStat != null)
-            tweetID = embeddedStat.getId();
-        long[] userIds = twitter.getRetweeterIds(tweetID,load,cursor).getIDs();
+            tweetID = embeddedStat.tweetID;
+        long[] userIds = twitter.getRetweeterIds(tweetID,load).getIDs();
         if(userIds.length == 0) {
             return new ArrayList<>();
         } else {
-            return twitter.lookupUsers(userIds);
+            return convertUserList(twitter.lookupUsers(userIds));
         }
     }
+
+
+    /**
+     * convert #twitter4j.User to TwitterUser List
+     * @param users Twitter4J user List
+     * @return #TwitterEngine.TwitteUser
+     */
+    private List<TwitterUser> convertUserList(List<User> users) {
+        List <TwitterUser> result = new ArrayList<>();
+        for(User user : users) {
+            TwitterUser item = new TwitterUser(user.getId(), user.getName(), user.getScreenName(),
+                    user.getMiniProfileImageURL(),user.getDescription(), user.getLocation(),user.isVerified(),
+                    user.isProtected(), user.getURL(), user.getProfileBannerURL());
+            result.add(item);
+        }
+        return result;
+    }
+
+    private List<Tweet> convertStatusList(List<Status> statuses) {
+        List<Tweet> result = new ArrayList<>();
+        for(Status status : statuses) {
+            Status embedded = status.getRetweetedStatus();
+            if(embedded != null) {
+                Tweet retweet = getTweet(embedded, null);
+                Tweet tweet = getTweet(status, retweet);
+                result.add(tweet);
+            } else {
+                Tweet tweet = getTweet(status, null);
+                result.add(tweet);
+            }
+        }
+        return result;
+    }
+
+    private Tweet getTweet(Status status, Tweet retweetedStat) {
+        User user = status.getUser();
+        return new Tweet(status.getId(), user.getId(), user.getName(), user.getScreenName(),
+                status.getRetweetCount(),status.getFavoriteCount(),user.getMiniProfileImageURL(),
+                status.getText(),status.getCreatedAt().getTime(), status.getInReplyToScreenName(),
+                getMediaLinks(status),status.getSource(), status.getInReplyToStatusId(), user.isVerified(),
+                retweetedStat, status.isRetweetedByMe(), status.isFavorited());
+    }
+
+    private String[] getMediaLinks(Status status) {
+        MediaEntity[] mediaEntities = status.getMediaEntities();
+        String medialinks[] = new String[mediaEntities.length];
+        byte i = 0;
+        for(MediaEntity media : mediaEntities) {
+            medialinks[i++] = media.getMediaURL();
+        }
+        return medialinks;
+    }
+
 
     /**
      * @param id Tweet ID

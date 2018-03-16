@@ -33,13 +33,13 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         popup.setContentView(mBar);
-        popup.show();
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 ImagePopup.this.cancel(true);
             }
         });
+        popup.show();
     }
 
     @Override

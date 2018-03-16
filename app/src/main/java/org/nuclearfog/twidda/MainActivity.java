@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.backend.Registration;
@@ -30,6 +31,8 @@ import org.nuclearfog.twidda.window.UserProfile;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
+
+import java.util.List;
 
 /**
  * MainPage of the App
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
     private TabHost tabhost;
     private boolean settingFlag = false;
     private String currentTab = "timeline";
-    private int background, font_color;
+    private int background, font_color, highlight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,10 +224,12 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.tl_list:
                 if(!timelineReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) timelineList.getAdapter();
-                    TweetDatabase twDB = tlAdp.getData();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    String username = twDB.getScreenname(position);
+                    Tweet tweet = tlAdp.getData().get(position);
+                    if(tweet.embedded != null)
+                        tweet = tweet.embedded;
+                    long tweetID = tweet.tweetID;
+                    long userID = tweet.userID;
+                    String username = tweet.screenname;
                     Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -241,9 +246,8 @@ public class MainActivity extends AppCompatActivity implements
                     Intent intent = new Intent(con, SearchPage.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("search", search);
-                    if(search.startsWith("#")) {
+                    if(search.startsWith("#"))
                         bundle.putString("Addition", search);
-                    }
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -251,10 +255,12 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.m_list:
                 if(!mentionReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) mentionList.getAdapter();
-                    TweetDatabase twDB = tlAdp.getData();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    String username = twDB.getScreenname(position);
+                    Tweet tweet = tlAdp.getData().get(position);
+                    if(tweet.embedded != null)
+                        tweet = tweet.embedded;
+                    long tweetID = tweet.tweetID;
+                    long userID = tweet.userID;
+                    String username = tweet.screenname;
                     Intent intent = new Intent(con, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -323,24 +329,31 @@ public class MainActivity extends AppCompatActivity implements
                 ColorPreferences mColor = ColorPreferences.getInstance(con);
                 background = mColor.getColor(ColorPreferences.BACKGROUND);
                 font_color = mColor.getColor(ColorPreferences.FONT_COLOR);
+                highlight  = mColor.getColor(ColorPreferences.HIGHLIGHTING);
+
+                timelineList.setBackgroundColor(background);
+                trendList.setBackgroundColor(background);
+                mentionList.setBackgroundColor(background);
 
                 TimelineRecycler rlRc = (TimelineRecycler) timelineList.getAdapter();
                 TrendRecycler  trendRc = (TrendRecycler) trendList.getAdapter();
                 TimelineRecycler mentRc = (TimelineRecycler) mentionList.getAdapter();
 
                 if(rlRc == null || rlRc.getItemCount() == 0) {
-                    TweetDatabase tweetDeck = new TweetDatabase(con,TweetDatabase.HOME_TL, 0L);
-                    rlRc  = new TimelineRecycler(tweetDeck, MainActivity.this);
+                    TweetDatabase tweetDeck = new TweetDatabase(con);
+                    List<Tweet> tweets = tweetDeck.load(TweetDatabase.HOME, -1L);
+                    rlRc = new TimelineRecycler(tweets, MainActivity.this);
                 } if(mentRc == null || mentRc.getItemCount() == 0) {
-                    TweetDatabase mentDeck  = new TweetDatabase(con, TweetDatabase.GET_MENT, 0L);
-                    mentRc = new TimelineRecycler(mentDeck, MainActivity.this);
+                    TweetDatabase mentDeck  = new TweetDatabase(con);
+                    List<Tweet> tweets = mentDeck.load(TweetDatabase.MENT,-1L);
+                    mentRc = new TimelineRecycler(tweets, MainActivity.this);
                 } if(trendRc == null || trendRc.getItemCount() == 0) {
                     TrendDatabase trendDeck = new TrendDatabase(con);
                     trendRc  = new TrendRecycler(trendDeck, MainActivity.this);
                 }
-                rlRc.setColor(background,font_color);
+                rlRc.setColor(highlight,font_color);
                 trendRc.setColor(background,font_color);
-                mentRc.setColor(background,font_color);
+                mentRc.setColor(highlight,font_color);
                 timelineList.setAdapter(rlRc);
                 trendList.setAdapter(trendRc);
                 mentionList.setAdapter(mentRc);

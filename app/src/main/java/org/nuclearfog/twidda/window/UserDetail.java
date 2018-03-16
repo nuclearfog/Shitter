@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.backend.UserLists;
-import org.nuclearfog.twidda.database.UserDatabase;
+import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
@@ -73,9 +73,9 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
     @Override
     public void onItemClick(View view, ViewGroup parent, int position) {
         UserRecycler uAdp = (UserRecycler) userListview.getAdapter();
-        UserDatabase uDB = uAdp.getData();
-        long userID = uDB.getUserID(position);
-        String username = uDB.getScreenname(position);
+        TwitterUser user = uAdp.getData().get(position);
+        long userID = user.userID;
+        String username = user.screenname;
         Intent intent = new Intent(getApplicationContext(), UserProfile.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userID);

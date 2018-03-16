@@ -13,8 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
+import org.nuclearfog.twidda.backend.listitems.*;
+import org.nuclearfog.twidda.window.ColorPreferences;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
@@ -29,6 +32,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private TimelineRecycler timelineAdapter, mentionAdapter;
     private TrendRecycler trendsAdapter;
     private int woeid;
+    private String errMsg;
+    private int highlight, font;
 
     /**
      * Main View
@@ -42,10 +47,13 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         timelineList = (RecyclerView)ui.get().findViewById(R.id.tl_list);
         trendList = (RecyclerView)ui.get().findViewById(R.id.tr_list);
         mentionList = (RecyclerView)ui.get().findViewById(R.id.m_list);
+        ColorPreferences mColor = ColorPreferences.getInstance(ui.get());
+        highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
+        font = mColor.getColor(ColorPreferences.FONT_COLOR);
     }
 
     /**
-     * @param args [0] Executing Mode: (0)HomeTL, (1)Trend, (2)Mention
+     * @param args [0] Execution Mode: (0)HomeTL, (1)Trend, (2)Mention
      * @return success
      */
     @Override
@@ -54,16 +62,22 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         int page = args[1];
         long id = 1L;
         try {
+            TweetDatabase tweetDb = new TweetDatabase(ui.get());
             switch (MODE) {
                 case HOME:
+                    List<Tweet> tweets;
                     timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
                     if(timelineAdapter != null && timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
-                        timelineAdapter.getData().insert(mTwitter.getHome(page,id),true);
+                        tweets = mTwitter.getHome(page,id);
+                        tweetDb.store(tweets, TweetDatabase.HOME,-1L);
+                        tweets.addAll(timelineAdapter.getData());
                     } else {
-                        TweetDatabase mTweets = new TweetDatabase(mTwitter.getHome(page,id), ui.get(),TweetDatabase.HOME_TL,0);
-                        timelineAdapter = new TimelineRecycler(mTweets,ui.get());
+                        tweets = mTwitter.getHome(page,id);
+                        tweetDb.store(tweets, TweetDatabase.HOME,-1L);
                     }
+                    timelineAdapter = new TimelineRecycler(tweets, ui.get());
+                    timelineAdapter.setColor(highlight, font);
                     break;
 
                 case TRND:
@@ -75,18 +89,23 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     break;
 
                 case MENT:
+                    List<Tweet> mention;
                     mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
                     if(mentionAdapter != null && mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
-                        mentionAdapter.getData().insert(mTwitter.getMention(page,id),true);
+                        mention = mTwitter.getMention(page,id);
+                        tweetDb.store(mention,TweetDatabase.MENT,-1L);
+                        mention.addAll(mentionAdapter.getData());
                     } else {
-                        TweetDatabase mention = new TweetDatabase(mTwitter.getMention(page,id), ui.get(),TweetDatabase.GET_MENT,0);
-                        mentionAdapter = new TimelineRecycler(mention,ui.get());
+                        mention = mTwitter.getMention(page,id);
+                        tweetDb.store(mention,TweetDatabase.MENT,-1L);
                     }
+                    mentionAdapter = new TimelineRecycler(mention, ui.get());
+                    mentionAdapter.setColor(highlight, font);
                     break;
             }
         } catch (Exception e){
-            e.printStackTrace();
+            errMsg = e.getMessage();
             return FAIL;
         }
         return MODE;
@@ -104,12 +123,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
         switch(MODE) {
             case HOME:
+                timelineList.setAdapter(timelineAdapter);
                 timelineRefresh.setRefreshing(false);
-                if(timelineList.getAdapter().getItemCount() == 0) {
-                    timelineList.setAdapter(timelineAdapter);
-                } else {
-                    timelineAdapter.notifyDataSetChanged();
-                }
                 break;
 
             case TRND:
@@ -122,12 +137,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case MENT:
+                mentionList.setAdapter(mentionAdapter);
                 mentionRefresh.setRefreshing(false);
-                if(mentionList.getAdapter().getItemCount() == 0) {
-                    mentionList.setAdapter(mentionAdapter);
-                } else {
-                    mentionAdapter.notifyDataSetChanged();
-                }
                 break;
 
             case FAIL:
@@ -135,7 +146,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 timelineRefresh.setRefreshing(false);
                 trendRefresh.setRefreshing(false);
                 mentionRefresh.setRefreshing(false);
-                Toast.makeText(context, context.getString(R.string.connection_failure), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Fehler: "+errMsg, Toast.LENGTH_LONG).show();
         }
     }
 }

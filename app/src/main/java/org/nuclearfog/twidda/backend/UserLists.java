@@ -7,12 +7,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.nuclearfog.twidda.database.UserDatabase;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.UserDetail;
+import org.nuclearfog.twidda.backend.listitems.*;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class UserLists extends AsyncTask <Long, Void, Void> {
 
@@ -48,28 +49,16 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         try {
             usrAdp = (UserRecycler) userList.getAdapter();
             if(mode == FOLLOWING) {
-                if(usrAdp == null) {
-                    UserDatabase udb = new UserDatabase(ui.get(),mTwitter.getFollowing(id,cursor));
-                    usrAdp = new UserRecycler(udb,ui.get());
-                } else {
-                    UserDatabase uDb = usrAdp.getData();
-                    uDb.addLast(mTwitter.getFollowing(id,cursor));
-                    usrAdp.notifyDataSetChanged();
-                }
+                List<TwitterUser> user = mTwitter.getFollowing(id,cursor);
+                usrAdp = new UserRecycler(user,ui.get());
             }
             else if(mode == FOLLOWERS) {
-                if(usrAdp == null) {
-                    UserDatabase udb = new UserDatabase(ui.get(),mTwitter.getFollower(id,cursor));
-                    usrAdp = new UserRecycler(udb,ui.get());
-                } else {
-                    UserDatabase uDb = usrAdp.getData();
-                    uDb.addLast(mTwitter.getFollower(id,cursor));
-                    usrAdp.notifyDataSetChanged();
-                }
+                List<TwitterUser> user = mTwitter.getFollower(id,cursor);
+                usrAdp = new UserRecycler(user,ui.get());
             }
             else if(mode == RETWEETER) {
-                UserDatabase udb = new UserDatabase(ui.get(),mTwitter.getRetweeter(id,cursor));
-                usrAdp = new UserRecycler(udb,ui.get());
+                List<TwitterUser> user = mTwitter.getRetweeter(id,cursor);
+                usrAdp = new UserRecycler(user,ui.get());
             }
             /*else if(mode == FAVORISER) {
                 // GET FAV USERS TODO

@@ -16,8 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.TweetDatabase;
-import org.nuclearfog.twidda.database.UserDatabase;
+import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.backend.TwitterSearch;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
@@ -39,14 +38,17 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         super.onCreate(b);
         setContentView(R.layout.search);
         getExtras(getIntent().getExtras());
+        int background = ColorPreferences.getInstance(this).getColor(ColorPreferences.BACKGROUND);
 
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
-
         tweetSearch  = (RecyclerView) findViewById(R.id.tweet_result);
         userSearch   = (RecyclerView) findViewById(R.id.user_result);
         tweetReload = (SwipeRefreshLayout) findViewById(R.id.searchtweets);
         tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         userSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        tweetSearch.setBackgroundColor(background);
+        userSearch.setBackgroundColor(background);
+
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -121,10 +123,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
             case R.id.tweet_result:
                 if(!tweetReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) tweetSearch.getAdapter();
-                    TweetDatabase twDB = tlAdp.getData();
-                    long tweetID = twDB.getTweetId(position);
-                    long userID = twDB.getUserID(position);
-                    String username = twDB.getScreenname(position);
+                    Tweet tweet = tlAdp.getData().get(position);
+                    long tweetID = tweet.tweetID;
+                    long userID = tweet.userID;
+                    String username = tweet.screenname;
                     Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -136,10 +138,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                 break;
             case R.id.user_result:
                 UserRecycler uAdp = (UserRecycler) userSearch.getAdapter();
-                UserDatabase uDb = uAdp.getData();
+                TwitterUser user = uAdp.getData().get(position);
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 Bundle bundle = new Bundle();
-                long userID = uDb.getUserID(position);
+                long userID = user.userID;
                 bundle.putLong("userID",userID);
                 profile.putExtras(bundle);
                 startActivity(profile);
@@ -163,7 +165,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         tab1.setContent(R.id.searchtweets);
         tab1.setIndicator("",getResources().getDrawable(R.drawable.search));
         tabhost.addTab(tab1);
-
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
         tab2.setIndicator("",getResources().getDrawable(R.drawable.user));

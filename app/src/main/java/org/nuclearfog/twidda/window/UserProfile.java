@@ -16,10 +16,12 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.StatusLoader;
+import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.database.TweetDatabase;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+
+import java.util.List;
 
 /**
  * User Profile Class uses AsyncTask
@@ -162,10 +164,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         } else {
             tlAdp = (TimelineRecycler) homeFavorits.getAdapter();
         }
-        TweetDatabase twDB = tlAdp.getData();
-        long tweetID = twDB.getTweetId(position);
-        long userID = twDB.getUserID(position);
-        String username = twDB.getScreenname(position);
+        Tweet tweet = tlAdp.getData().get(position);
+        if(tweet.embedded != null)
+            tweet = tweet.embedded;
+        long tweetID = tweet.tweetID;
+        long userID = tweet.userID;
+        String username = tweet.screenname;
         Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("tweetID",tweetID);
@@ -198,24 +202,29 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 @Override
                 public void run() {
                     ColorPreferences mcolor = ColorPreferences.getInstance(getApplicationContext());
+                    int highlight  = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
                     int background = mcolor.getColor(ColorPreferences.BACKGROUND);
                     int font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
 
-                    TweetDatabase mTweet = new TweetDatabase(UserProfile.this, TweetDatabase.USER_TL, userId);
-                    TweetDatabase fTweet = new TweetDatabase(UserProfile.this, TweetDatabase.FAV_TL, userId);
+                    TweetDatabase mTweet = new TweetDatabase(getApplicationContext());
+                    TweetDatabase fTweet = new TweetDatabase(getApplicationContext());
+                    List<Tweet> userTweets = mTweet.load(TweetDatabase.TWEET,userId);
+                    List<Tweet> userFavorit = fTweet.load(TweetDatabase.FAVT,userId);
 
                     mTweets = new ProfileLoader(UserProfile.this);
                     mFavorits = new ProfileLoader(UserProfile.this);
-                    if( mTweet.getSize() > 0 ) {
-                        TimelineRecycler tlRc = new TimelineRecycler(mTweet,UserProfile.this);
-                        tlRc.setColor(background,font_color);
+                    homeTweets.setBackgroundColor(background);
+                    homeFavorits.setBackgroundColor(background);
+                    if( userTweets.size() > 0 ) {
+                        TimelineRecycler tlRc = new TimelineRecycler(userTweets,UserProfile.this);
+                        tlRc.setColor(highlight,font_color);
                         homeTweets.setAdapter(tlRc);
                     } else {
                         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
                     }
-                    if( fTweet.getSize() > 0 ) {
-                        TimelineRecycler tlRc = new TimelineRecycler(fTweet,UserProfile.this);
-                        tlRc.setColor(background,font_color);
+                    if( userFavorit.size() > 0 ) {
+                        TimelineRecycler tlRc = new TimelineRecycler(userFavorit,UserProfile.this);
+                        tlRc.setColor(highlight,font_color);
                         homeFavorits.setAdapter(tlRc);
                     } else {
                         mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
