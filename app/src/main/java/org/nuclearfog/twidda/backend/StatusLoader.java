@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
@@ -32,6 +33,7 @@ import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
+import org.nuclearfog.twidda.window.UserProfile;
 
 public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
@@ -52,7 +54,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
-    private long userReply, tweetReplyID;
+    private long tweetReplyID, userID;
     private int rt, fav;
     private int highlight, font;
 
@@ -97,6 +99,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 verified = tweet.verified;
                 tweetStr = tweet.tweet;
                 usernameStr = tweet.username;
+                userID = tweet.userID;
                 scrNameStr = '@'+tweet.screenname;
                 apiName = formatString(tweet.source);
                 dateString = DateFormat.getDateTimeInstance().format(new Date(tweet.time));
@@ -154,9 +157,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             int err = e.getErrorCode();
             if(err == 144) { // gelöscht
                 TweetDatabase.removeStatus(ui.get(),tweetID);
-                errMSG = e.getMessage();
             }
-            e.printStackTrace();
+            errMSG = e.getMessage();
             return ERROR;
         } catch(Exception err) {
             errMSG = err.getMessage();
@@ -171,7 +173,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         if(connect == null)
             return;
         final Context c = connect;
-
         TextView tweet = (TextView)connect.findViewById(R.id.tweet_detailed);
         TextView username = (TextView)connect.findViewById(R.id.usernamedetail);
         TextView scrName = (TextView)connect.findViewById(R.id.scrnamedetail);
@@ -230,8 +231,18 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 public void onClick(View v) {
                     Intent intent = new Intent(c, TweetDetail.class);
                     intent.putExtra("tweetID",tweetReplyID);
-                    intent.putExtra("userID",userReply);
                     intent.putExtra("username", repliedUsername);
+                    c.startActivity(intent);
+                }
+            });
+            profile_img.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ui.get(), UserProfile.class);
+                    Bundle b = new Bundle();
+                    b.putLong("userID",userID);
+                    b.putString("username", usernameStr);
+                    intent.putExtras(b);
                     c.startActivity(intent);
                 }
             });

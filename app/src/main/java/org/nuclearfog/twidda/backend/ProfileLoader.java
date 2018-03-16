@@ -91,7 +91,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 following = Integer.toString(user.following);
                 imageLink = user.profileImg;
                 // bannerLink = user.bannerImg;
-                 fullPbLink = user.fullpb;
+                fullPbLink = user.fullpb;
                 Date d = new Date(user.created);
                 dateString = "seit "+ DateFormat.getDateTimeInstance().format(d);
             }
@@ -111,6 +111,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 }
                 homeTl = new TimelineRecycler(tweets,ui.get());
                 homeTl.setColor(highlight,font);
+                homeTl.toggleImage(imgEnabled);
             }
             else if(MODE == GET_FAVS)
             {
@@ -128,6 +129,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 }
                 homeFav = new TimelineRecycler(favorits,ui.get());
                 homeFav.setColor(highlight,font);
+                homeFav.toggleImage(imgEnabled);
             }
             else if(MODE == ACTION_FOLLOW)
             {

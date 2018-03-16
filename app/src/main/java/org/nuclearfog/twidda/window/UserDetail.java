@@ -37,6 +37,8 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
         userListview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
+        int background = ColorPreferences.getInstance(this).getColor(ColorPreferences.BACKGROUND);
+        userListview.setBackgroundColor(background);
         getUsers();
     }
 

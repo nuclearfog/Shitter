@@ -18,8 +18,7 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     private List<TwitterUser> mUser;
     private OnItemClicked mListener;
     private ViewGroup parent;
-    private int background = 0x00000000;
-    private int font_color = 0xFFFFFFFF;
+    private boolean loadImage = true;
 
     public UserRecycler(List<TwitterUser> mUser, OnItemClicked mListener) {
         this.mListener = mListener;
@@ -30,9 +29,8 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     public List<TwitterUser> getData(){return mUser; }
 
 
-    public void setColor(int background, int font_color) {
-        this.background = background;
-        this.font_color = font_color;
+    public void toggleImage(boolean image) {
+        loadImage = image;
     }
 
 
@@ -52,7 +50,6 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     public ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
         this.parent = parent;
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.useritem, parent,false);
-        v.setBackgroundColor(background);
         v.setOnClickListener(this);
         return new ItemHolder(v);
     }
@@ -63,7 +60,7 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
         TwitterUser user = mUser.get(index);
         vh.screenname.setText(user.screenname);
         vh.username.setText(user.username);
-        if(user.profileImg != null) {
+        if(loadImage) {
             Picasso.with(parent.getContext()).load(user.profileImg).into(vh.profileImg);
         }
         if(user.isVerified) {

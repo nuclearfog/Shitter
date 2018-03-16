@@ -165,7 +165,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onCheckedChanged(CompoundButton b, boolean checked) {
-        imgEnabled = true;
+        imgEnabled = checked;
     }
 
     private void loadSettings() {

@@ -50,7 +50,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Button retweet = (Button) findViewById(R.id.rt_button_detail);
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         Button delete = (Button) findViewById(R.id.delete);
-        ImageView pb =(ImageView) findViewById(R.id.profileimage_detail);
         SwipeRefreshLayout answerReload = (SwipeRefreshLayout) findViewById(R.id.answer_reload);
         TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
         TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
@@ -67,7 +66,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         txtRt.setOnClickListener(this);
         date.setOnClickListener(this);
         delete.setOnClickListener(this);
-        pb.setOnClickListener(this);
         setContent();
     }
 
@@ -127,14 +125,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 alerta.setPositiveButton(R.string.yes_confirm, this);
                 alerta.setNegativeButton(R.string.no_confirm, this);
                 alerta.show();
-                break;
-            case R.id.profileimage_detail:
-                intent = new Intent(getApplicationContext(), UserProfile.class);
-                Bundle b = new Bundle();
-                b.putLong("userID",userID);
-                b.putString("username", username);
-                intent.putExtras(b);
-                startActivity(intent);
                 break;
             case R.id.timedetail:
                 intent = new Intent(Intent.ACTION_VIEW);

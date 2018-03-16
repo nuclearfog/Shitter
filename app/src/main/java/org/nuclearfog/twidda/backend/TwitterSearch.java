@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private WeakReference<SearchPage> ui;
     private int background, highlight, font_color;
     private String error;
+    boolean imageload;
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
@@ -37,6 +39,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         background = mcolor.getColor(ColorPreferences.BACKGROUND);
         highlight = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
         font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
+        SharedPreferences settings = ui.get().getSharedPreferences("settings", 0);
+        imageload = settings.getBoolean("image_load", true);
     }
 
     @Override
@@ -63,7 +67,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             }
 
             tlRc.setColor(highlight,font_color);
-            uAdp.setColor(background,font_color);
+            tlRc.toggleImage(imageload);
+            uAdp.toggleImage(imageload);
 
         } catch(Exception err) {
             error = err.getMessage();

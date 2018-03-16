@@ -73,7 +73,6 @@ public class TweetDatabase {
                     "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID ASC";
         }
-
         else if(mode == TWEET) {
             SQL_GET_HOME = "SELECT * FROM user " +
                     "INNER JOIN tweet ON tweet.userID = user.userID"+
@@ -88,10 +87,7 @@ public class TweetDatabase {
         if(cursor.moveToFirst()) {
             do {
                 Tweet tweet = getTweet(cursor);
-               /* if(tweet.embedded != null)
-                    tweetlist.add(tweet.embedded);
-                else*/
-                    tweetlist.add(tweet);
+                tweetlist.add(tweet);
             } while(cursor.moveToNext());
         }
         cursor.close();

@@ -28,6 +28,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     private List<Tweet> tweets;
     private int highlight = 0xFFFFFFFF;
     private int font_color = 0xFFFFFFFF;
+    private boolean img_ldr = true;
 
     /**
      * @param mListener Item Click Listener
@@ -41,6 +42,10 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     public void setColor(int highlight, int font_color) {
         this.highlight = highlight;
         this.font_color = font_color;
+    }
+
+    public void toggleImage(boolean image_load) {
+        img_ldr = image_load;
     }
 
 
@@ -82,7 +87,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         vh.retweet.setText(retweet);
         vh.favorite.setText(favorit);
         vh.time.setText(stringTime(tweet.time));
-        if(tweet.profileImg != null) {
+        if(img_ldr) {
             Picasso.with(parent.getContext()).load(tweet.profileImg).into(vh.profile);
         }
         if(tweet.verified) {

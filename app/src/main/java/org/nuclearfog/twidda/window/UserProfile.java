@@ -35,7 +35,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeTweets, homeFavorits;
     private long userId;
-    private boolean home;
+    private boolean home, imageload;
     private String username = "";
     private String currentTab = "tweets";
 
@@ -51,6 +51,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         SharedPreferences settings = getSharedPreferences("settings", 0);
         home = userId == settings.getLong("userID", -1);
+        imageload = settings.getBoolean("image_load", true);
         homeTweets = (RecyclerView) findViewById(R.id.ht_list);
         homeFavorits = (RecyclerView)findViewById(R.id.hf_list);
         homeTweets.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -181,12 +182,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     private void setTabs(TabHost mTab) {
         mTab.setup();
-        // Tab #1
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
         tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
         mTab.addTab(tab1);
-        // Tab #2
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
         tab2.setContent(R.id.homefavorits);
         tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite));
@@ -202,6 +201,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 @Override
                 public void run() {
                     ColorPreferences mcolor = ColorPreferences.getInstance(getApplicationContext());
+
                     int highlight  = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
                     int background = mcolor.getColor(ColorPreferences.BACKGROUND);
                     int font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
@@ -215,9 +215,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     mFavorits = new ProfileLoader(UserProfile.this);
                     homeTweets.setBackgroundColor(background);
                     homeFavorits.setBackgroundColor(background);
+
                     if( userTweets.size() > 0 ) {
                         TimelineRecycler tlRc = new TimelineRecycler(userTweets,UserProfile.this);
                         tlRc.setColor(highlight,font_color);
+                        tlRc.toggleImage(imageload);
                         homeTweets.setAdapter(tlRc);
                     } else {
                         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
@@ -225,6 +227,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     if( userFavorit.size() > 0 ) {
                         TimelineRecycler tlRc = new TimelineRecycler(userFavorit,UserProfile.this);
                         tlRc.setColor(highlight,font_color);
+                        tlRc.toggleImage(imageload);
                         homeFavorits.setAdapter(tlRc);
                     } else {
                         mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);

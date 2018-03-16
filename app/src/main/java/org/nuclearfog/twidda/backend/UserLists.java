@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
+import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
 
@@ -28,6 +30,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private RecyclerView userList;
     private ProgressBar uProgress;
     private String errmsg;
+    private boolean imageload;
+
 
     /**
      *@see UserDetail
@@ -37,6 +41,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         mTwitter = TwitterEngine.getInstance(context);
         userList = (RecyclerView) ui.get().findViewById(R.id.userlist);
         uProgress = (ProgressBar) ui.get().findViewById(R.id.user_progress);
+        SharedPreferences settings = context.getSharedPreferences("settings", 0);
+        imageload = settings.getBoolean("image_load", true);
     }
 
 
@@ -60,9 +66,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
                 List<TwitterUser> user = mTwitter.getRetweeter(id,cursor);
                 usrAdp = new UserRecycler(user,ui.get());
             }
-            /*else if(mode == FAVORISER) {
-                // GET FAV USERS TODO
-            }*/
+            usrAdp.toggleImage(imageload);
         }
         catch(Exception err) {
             errmsg = "Fehler: "+err.getMessage();

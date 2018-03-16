@@ -446,7 +446,7 @@ public class TwitterEngine {
         Tweet embeddedStat = getStatus(tweetID).embedded;
         if(embeddedStat != null)
             tweetID = embeddedStat.tweetID;
-        long[] userIds = twitter.getRetweeterIds(tweetID,load).getIDs();
+        long[] userIds = twitter.getRetweeterIds(tweetID,load,cursor).getIDs();
         if(userIds.length == 0) {
             return new ArrayList<>();
         } else {

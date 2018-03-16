@@ -351,9 +351,13 @@ public class MainActivity extends AppCompatActivity implements
                     TrendDatabase trendDeck = new TrendDatabase(con);
                     trendRc  = new TrendRecycler(trendDeck, MainActivity.this);
                 }
+
+                boolean imageload = settings.getBoolean("image_load", true);
                 rlRc.setColor(highlight,font_color);
                 trendRc.setColor(background,font_color);
                 mentRc.setColor(highlight,font_color);
+                rlRc.toggleImage(imageload);
+                mentRc.toggleImage(imageload);
                 timelineList.setAdapter(rlRc);
                 trendList.setAdapter(trendRc);
                 mentionList.setAdapter(mentRc);
