@@ -35,7 +35,7 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.window.UserProfile;
 
-public class StatusLoader extends AsyncTask<Long, Void, Long> {
+public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
 
     private static final long ERROR = -1;
     public static final long RETWEET = 0;
@@ -54,7 +54,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
-    private long tweetReplyID, userID;
+    private long tweetReplyID, userID, retweeterID;
     private int rt, fav;
     private int highlight, font;
 
@@ -84,7 +84,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             Tweet tweet = mTwitter.getStatus(tweetID);
             Tweet embeddedTweet = tweet.embedded;
             if(embeddedTweet != null) {
-                retweeter = "Retweet @"+tweet.screenname;
+                retweeter = "Retweet "+tweet.screenname;
+                retweeterID = tweet.userID;
                 tweet = mTwitter.getStatus(embeddedTweet.tweetID);
                 tweetID = embeddedTweet.tweetID;
                 rtFlag = true;
@@ -100,7 +101,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tweetStr = tweet.tweet;
                 usernameStr = tweet.username;
                 userID = tweet.userID;
-                scrNameStr = '@'+tweet.screenname;
+                scrNameStr = tweet.screenname;
                 apiName = formatString(tweet.source);
                 dateString = DateFormat.getDateTimeInstance().format(new Date(tweet.time));
                 repliedUsername = tweet.replyName;
@@ -206,9 +207,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 String reply = "antwort @"+repliedUsername;
                 replyName.setText(reply);
                 replyName.setVisibility(View.VISIBLE);
+                replyName.setOnClickListener(this);
+                replyName.setVisibility(View.VISIBLE);
             }
             if(rtFlag) {
                 userRetweet.setText(retweeter);
+                userRetweet.setOnClickListener(this);
+                userRetweet.setVisibility(View.VISIBLE);
             }
             if(verified) {
                 tweet_verify.setVisibility(View.VISIBLE);
@@ -217,35 +222,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 profile_img.setImageBitmap(profile_btm);
                 if(medialinks.length != 0) {
                     mediabutton.setVisibility(View.VISIBLE);
-                    mediabutton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            new ImagePopup(c).execute(medialinks);
-                        }
-                    });
+                    mediabutton.setOnClickListener(this);
                 }
             }
             setIcons(favoriteButton, retweetButton);
-            replyName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(c, TweetDetail.class);
-                    intent.putExtra("tweetID",tweetReplyID);
-                    intent.putExtra("username", repliedUsername);
-                    c.startActivity(intent);
-                }
-            });
-            profile_img.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(ui.get(), UserProfile.class);
-                    Bundle b = new Bundle();
-                    b.putLong("userID",userID);
-                    b.putString("username", usernameStr);
-                    intent.putExtras(b);
-                    c.startActivity(intent);
-                }
-            });
+            profile_img.setOnClickListener(this);
         }
         else if(mode == RETWEET) {
             String rtStr = Integer.toString(rt);
@@ -337,5 +318,39 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
         else
             retweetButton.setBackgroundResource(R.drawable.retweet);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.profileimage_detail:
+                Intent profile = new Intent(ui.get(), UserProfile.class);
+                Bundle b = new Bundle();
+                b.putLong("userID",userID);
+                b.putString("username", scrNameStr);
+                profile.putExtras(b);
+                ui.get().startActivity(profile);
+                break;
+
+            case R.id.answer_reference_detail:
+                Intent tweet = new Intent(ui.get(), TweetDetail.class);
+                tweet.putExtra("tweetID",tweetReplyID);
+                tweet.putExtra("username", repliedUsername);
+                ui.get().startActivity(tweet);
+                break;
+
+            case R.id.image_attach:
+                new ImagePopup(ui.get()).execute(medialinks);
+                break;
+
+            case R.id.rt_info:
+                Intent rProfile = new Intent(ui.get(), UserProfile.class);
+                Bundle extras = new Bundle();
+                extras.putLong("userID",retweeterID);
+                extras.putString("username", scrNameStr);
+                rProfile.putExtras(extras);
+                ui.get().startActivity(rProfile);
+                break;
+        }
     }
 }

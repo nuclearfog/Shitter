@@ -21,6 +21,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
     private ImageView mImg;
     private Dialog popup;
     private Bitmap imgArray[];
+    private ProgressBar mCircle;
     private LayoutInflater inf;
     private Button left, right;
     private int index = 0;
@@ -28,11 +29,15 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
 
     public ImagePopup(Context c) {
         popup = new Dialog(c);
-        ProgressBar mBar = new ProgressBar(c);
+        mCircle = new ProgressBar(c);
         inf = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        popup.setContentView(mBar);
+        popup.setContentView(mCircle);
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {

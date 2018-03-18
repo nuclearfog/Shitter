@@ -36,7 +36,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
-    private final String TWITTER_CONSUMER_SECRET = "4SNMCHbg68LM14X2wYDjWkmzuNqq5dnB7tfAj2b4Muu8uPQ2QE";
+    private final String TWITTER_CONSUMER_SECRET = "GET YOUR OWN!";
 
     private static TwitterEngine mTwitter;
     private static long twitterID;
@@ -499,11 +499,11 @@ public class TwitterEngine {
      */
     private Tweet getTweet(Status status, Tweet retweetedStat) {
         User user = status.getUser();
-        return new Tweet(status.getId(), user.getId(), user.getName(), user.getScreenName(),
+        return new Tweet(status.getId(),user.getId(),user.getName(),user.getScreenName(),
                 status.getRetweetCount(),status.getFavoriteCount(),user.getMiniProfileImageURL(),
-                status.getText(),status.getCreatedAt().getTime(), status.getInReplyToScreenName(),
-                getMediaLinks(status),status.getSource(), status.getInReplyToStatusId(), user.isVerified(),
-                retweetedStat, status.isRetweetedByMe(), status.isFavorited());
+                status.getText(),status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
+                getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),user.isVerified(),
+                retweetedStat,status.isRetweetedByMe(),status.isFavorited());
     }
 
 

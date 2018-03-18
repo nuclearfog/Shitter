@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> implements View.OnClickListener {
-
     private ViewGroup parent;
     private OnItemClicked mListener;
     private List<Tweet> tweets;
@@ -80,6 +79,13 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         Tweet tweet = tweets.get(index);
         String retweet = Integer.toString(tweet.retweet);
         String favorit = Integer.toString(tweet.favorit);
+        if(tweet.embedded != null) {
+            String retweeter = "RT "+tweet.screenname;
+            vh.retweeter.setText(retweeter);
+            tweet = tweet.embedded;
+        } else {
+            vh.retweeter.setText("");
+        }
         vh.tweet.setTextColor(font_color);
         vh.username.setText(tweet.username);
         vh.screenname.setText(tweet.screenname);
@@ -93,7 +99,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         if(tweet.verified) {
             vh.verify.setVisibility(View.VISIBLE);
         } else {
-            vh.verify.setVisibility(View.INVISIBLE);
+            vh.verify.setVisibility(View.GONE);
         }
     }
 

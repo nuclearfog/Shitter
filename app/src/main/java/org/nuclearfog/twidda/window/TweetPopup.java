@@ -29,7 +29,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         DialogInterface.OnClickListener {
 
     private StatusUpload sendTweet;
-    private EditText tweetfield;
+    private EditText tweet;
     private Button imageButton, previewBtn;
     private TextView imgcount;
     private long inReplyId =-1L;
@@ -46,14 +46,14 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         mediaPath = new ArrayList<>();
         imageButton = (Button) findViewById(R.id.image);
         previewBtn  = (Button) findViewById(R.id.img_preview);
-        tweetfield = (EditText) findViewById(R.id.tweet_input);
+        tweet = (EditText) findViewById(R.id.tweet_input);
         imgcount = (TextView) findViewById(R.id.imgcount);
         Button tweetButton = (Button) findViewById(R.id.sendTweet);
         Button closeButton = (Button) findViewById(R.id.close);
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
         ColorPreferences mColor = ColorPreferences.getInstance(this);
         root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
-        tweetfield.append(addition);
+        tweet.append(addition);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
@@ -134,7 +134,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     }
 
     private void showClosingMsg() {
-        if( !addition.equals(tweetfield.getText().toString()) || imgIndex > 0) {
+        if( !addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             AlertDialog.Builder alerta = new AlertDialog.Builder(this);
             alerta.setMessage("Tweet verwerfen?");
             alerta.setPositiveButton(R.string.yes_confirm, this);
@@ -146,14 +146,14 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     }
 
     private void send() {
-        String tweet = tweetfield.getText().toString();
+        String tweetStr = tweet.getText().toString();
         String[] paths = new String[mediaPath.size()];
         paths = mediaPath.toArray(paths);
         sendTweet = new StatusUpload(this ,paths);
         if(inReplyId > 0) {
-            sendTweet.execute(tweet, inReplyId);
+            sendTweet.execute(tweetStr, inReplyId);
         } else {
-            sendTweet.execute(tweet);
+            sendTweet.execute(tweetStr);
         }
     }
 

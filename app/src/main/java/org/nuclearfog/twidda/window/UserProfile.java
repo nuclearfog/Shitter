@@ -33,7 +33,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     private ProfileLoader mProfile, mTweets, mFavorits;
     private SwipeRefreshLayout homeReload, favoriteReload;
-    private RecyclerView homeTweets, homeFavorits;
+    private RecyclerView homeList, favoritList;
     private long userId;
     private boolean home, imageload;
     private String username = "";
@@ -52,10 +52,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         SharedPreferences settings = getSharedPreferences("settings", 0);
         home = userId == settings.getLong("userID", -1);
         imageload = settings.getBoolean("image_load", true);
-        homeTweets = (RecyclerView) findViewById(R.id.ht_list);
-        homeFavorits = (RecyclerView)findViewById(R.id.hf_list);
-        homeTweets.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        homeFavorits.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        homeList = (RecyclerView) findViewById(R.id.ht_list);
+        favoritList = (RecyclerView)findViewById(R.id.hf_list);
+        homeList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        favoritList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
         TextView txtFollowing = (TextView)findViewById(R.id.following);
@@ -108,7 +108,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             case R.id.profile_tweet:
                 Bundle extra = new Bundle();
                 intent = new Intent(this, TweetPopup.class);
-                if(username != null)
+                if(!home)
                     extra.putString("Addition", username);
                 intent.putExtras(extra);
                 startActivity(intent);
@@ -161,9 +161,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onItemClick(View v, ViewGroup parent, int position){
         TimelineRecycler tlAdp;
         if(parent.getId() == R.id.ht_list) {
-            tlAdp = (TimelineRecycler) homeTweets.getAdapter();
+            tlAdp = (TimelineRecycler) homeList.getAdapter();
         } else {
-            tlAdp = (TimelineRecycler) homeFavorits.getAdapter();
+            tlAdp = (TimelineRecycler) favoritList.getAdapter();
         }
         Tweet tweet = tlAdp.getData().get(position);
         if(tweet.embedded != null)
@@ -213,14 +213,14 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
                     mTweets = new ProfileLoader(UserProfile.this);
                     mFavorits = new ProfileLoader(UserProfile.this);
-                    homeTweets.setBackgroundColor(background);
-                    homeFavorits.setBackgroundColor(background);
+                    homeList.setBackgroundColor(background);
+                    favoritList.setBackgroundColor(background);
 
                     if( userTweets.size() > 0 ) {
                         TimelineRecycler tlRc = new TimelineRecycler(userTweets,UserProfile.this);
                         tlRc.setColor(highlight,font_color);
                         tlRc.toggleImage(imageload);
-                        homeTweets.setAdapter(tlRc);
+                        homeList.setAdapter(tlRc);
                     } else {
                         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
                     }
@@ -228,7 +228,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                         TimelineRecycler tlRc = new TimelineRecycler(userFavorit,UserProfile.this);
                         tlRc.setColor(highlight,font_color);
                         tlRc.toggleImage(imageload);
-                        homeFavorits.setAdapter(tlRc);
+                        favoritList.setAdapter(tlRc);
                     } else {
                         mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
                     }

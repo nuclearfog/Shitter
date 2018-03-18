@@ -66,12 +66,12 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
         if(user.isVerified) {
             vh.verifyIco.setVisibility(View.VISIBLE);
         } else {
-            vh.verifyIco.setVisibility(View.INVISIBLE);
+            vh.verifyIco.setVisibility(View.GONE);
         }
         if(user.isLocked) {
             vh.lockIco.setVisibility(View.VISIBLE);
         } else {
-            vh.lockIco.setVisibility(View.INVISIBLE);
+            vh.lockIco.setVisibility(View.GONE);
         }
     }
 

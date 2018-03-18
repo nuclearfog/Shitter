@@ -76,7 +76,7 @@ public class TweetDatabase {
         else if(mode == TWEET) {
             SQL_GET_HOME = "SELECT * FROM user " +
                     "INNER JOIN tweet ON tweet.userID = user.userID"+
-                    " WHERE user.userID = "+id+ " ORDER BY tweetID DESC";
+                    " WHERE user.userID = "+id+" ORDER BY tweetID DESC";
         } else if(mode == FAVT) {
             SQL_GET_HOME = "SELECT * FROM favorit " +
                     "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
@@ -166,7 +166,7 @@ public class TweetDatabase {
 
         user.put("userID", tweet.userID);
         user.put("username", tweet.username);
-        user.put("scrname", tweet.screenname);
+        user.put("scrname", tweet.screenname.substring(1));
         user.put("pbLink", tweet.profileImg);
         user.put("verify", tweet.verified);
 

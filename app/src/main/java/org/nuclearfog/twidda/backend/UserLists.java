@@ -1,16 +1,16 @@
 package org.nuclearfog.twidda.backend;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
-import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
 
@@ -28,7 +28,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
     private RecyclerView userList;
-    private ProgressBar uProgress;
+    private Dialog popup;
+    private ProgressBar circle;
     private String errmsg;
     private boolean imageload;
 
@@ -40,9 +41,19 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
         userList = (RecyclerView) ui.get().findViewById(R.id.userlist);
-        uProgress = (ProgressBar) ui.get().findViewById(R.id.user_progress);
+       // uProgress = (ProgressBar) ui.get().findViewById(R.id.user_progress);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imageload = settings.getBoolean("image_load", true);
+        circle = new ProgressBar(ui.get());
+        popup = new Dialog(ui.get());
+    }
+
+    @Override
+    protected void onPreExecute() {
+        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        popup.setContentView(circle);
+        popup.show();
     }
 
 
@@ -83,6 +94,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         } else {
             Toast.makeText(ui.get().getApplicationContext(),errmsg,Toast.LENGTH_LONG).show();
         }
-        uProgress.setVisibility(View.INVISIBLE);
+        popup.dismiss();
     }
 }

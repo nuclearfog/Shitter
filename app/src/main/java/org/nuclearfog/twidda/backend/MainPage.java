@@ -129,11 +129,10 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
             case TRND:
                 trendRefresh.setRefreshing(false);
-                if(trendList.getAdapter().getItemCount() == 0) {
+                if(trendList.getAdapter().getItemCount() == 0)
                     trendList.setAdapter(trendsAdapter);
-                } else {
+                else
                     trendsAdapter.notifyDataSetChanged();
-                }
                 break;
 
             case MENT:

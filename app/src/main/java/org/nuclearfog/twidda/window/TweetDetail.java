@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import static android.content.DialogInterface.*;
@@ -35,7 +34,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private long tweetID;
     private long userID;
     private StatusLoader mStat, mReply;
-    private static String username;
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle b) {
@@ -93,9 +92,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         StatusLoader mStat = new StatusLoader(this);
         switch(v.getId()) {
             case R.id.answer_button:
-                intent = new Intent(getApplicationContext(), TweetPopup.class);
+                intent = new Intent(this, TweetPopup.class);
                 bundle.putLong("TweetID", tweetID);
-                bundle.putString("Addition", '@'+username);
+                bundle.putString("Addition", username);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -106,14 +105,14 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 mStat.execute(tweetID, StatusLoader.FAVORITE);
                 break;
             case R.id.no_rt_detail:
-                intent = new Intent(getApplicationContext(), UserDetail.class);
+                intent = new Intent(this, UserDetail.class);
                 bundle.putLong("tweetID",tweetID);
                 bundle.putLong("mode",2L);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.no_fav_detail:
-                intent = new Intent(getApplicationContext(), UserDetail.class);
+                intent = new Intent(this, UserDetail.class);
                 bundle.putLong("tweetID",tweetID);
                 bundle.putLong("mode",3L);
                 intent.putExtras(bundle);
@@ -152,10 +151,12 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Tweet tweet = tlAdp.getData().get(position);
         long userID = tweet.userID;
         long tweetID = tweet.tweetID;
+        String username = tweet.screenname;
         Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userID);
         bundle.putLong("tweetID",tweetID);
+        bundle.putString("username", username);
         intent.putExtras(bundle);
         startActivity(intent);
     }

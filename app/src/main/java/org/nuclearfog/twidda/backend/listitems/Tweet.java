@@ -15,7 +15,7 @@ public class Tweet {
         this.tweetID = tweetID;
         this.userID = userID;
         this.username = username;
-        this.screenname = screenname;
+        this.screenname = '@'+screenname;
         this.profileImg = profileImg;
         this.retweet = retweet;
         this.favorit = favorit;

@@ -14,7 +14,7 @@ public class TwitterUser {
                 String link, String bannerImg, long created, int following, int follower) {
         this.userID = userID;
         this.username = username;
-        this.screenname = screenname;
+        this.screenname = '@'+screenname;
         this.profileImg = profileImg;
         this.fullpb = fullpb;
         this.bio = bio;

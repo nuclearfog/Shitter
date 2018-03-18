@@ -24,7 +24,7 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
 
     private long userID, tweetID;
     private long mode;
-    private RecyclerView userListview;
+    private RecyclerView userList;
     private UserLists uList;
 
     @Override
@@ -33,12 +33,12 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
         setContentView(R.layout.user);
         getExtras(getIntent().getExtras());
 
-        userListview = (RecyclerView) findViewById(R.id.userlist);
-        userListview.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        userList = (RecyclerView) findViewById(R.id.userlist);
+        userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
         int background = ColorPreferences.getInstance(this).getColor(ColorPreferences.BACKGROUND);
-        userListview.setBackgroundColor(background);
+        userList.setBackgroundColor(background);
         getUsers();
     }
 
@@ -74,7 +74,7 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     public void onItemClick(View view, ViewGroup parent, int position) {
-        UserRecycler uAdp = (UserRecycler) userListview.getAdapter();
+        UserRecycler uAdp = (UserRecycler) userList.getAdapter();
         TwitterUser user = uAdp.getData().get(position);
         long userID = user.userID;
         String username = user.screenname;

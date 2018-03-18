@@ -80,7 +80,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             if(MODE == GET_INFORMATION)
             {
                 TwitterUser user = mTwitter.getUser(userId);
-                screenName = '@'+user.screenname;
+                screenName = user.screenname;
                 username = user.username;
                 description = user.bio;
                 location = user.location;
@@ -171,14 +171,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         TextView txtFollower  = (TextView)connect.findViewById(R.id.follower);
         ImageView profile  = (ImageView)connect.findViewById(R.id.profile_img);
         //ImageView banner   = (ImageView)connect.findViewById(R.id.banner);
-        ImageView linkIcon = (ImageView)connect.findViewById(R.id.link_img);
-        ImageView verifier = (ImageView)connect.findViewById(R.id.profile_verify);
-        ImageView followback = (ImageView)connect.findViewById(R.id.followback);
-        ImageView locked = (ImageView)connect.findViewById(R.id.profile_locked);
         ImageView locationIcon = (ImageView)connect.findViewById(R.id.location_img);
+        connect.findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
+        connect.findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
         SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
         SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
-        Toolbar tool = (Toolbar) connect.findViewById(R.id.profile_toolbar);
 
         if(mode == GET_INFORMATION) {
             txtUser.setText(username);
@@ -193,16 +190,16 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             if(link != null && !link.isEmpty()) {
                 txtLink.setText(link);
-                linkIcon.setVisibility(View.VISIBLE);
+                connect.findViewById(R.id.link_img).setVisibility(View.VISIBLE);
             }
             if(isVerified) {
-                verifier.setVisibility(View.VISIBLE);
+                connect.findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
             }
             if(isLocked) {
-                locked.setVisibility(View.VISIBLE);
+                connect.findViewById(R.id.profile_locked).setVisibility(View.VISIBLE);
             }
             if(isFollowed) {
-                followback.setVisibility(View.VISIBLE);
+                connect.findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
                 Picasso.with(context).load(imageLink).into(profile);
@@ -233,6 +230,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             favoritsReload.setRefreshing(false);
         }
         if(!isHome) {
+            Toolbar tool = (Toolbar) connect.findViewById(R.id.profile_toolbar);
             if(isFollowing) {
                 tool.getMenu().getItem(1).setIcon(R.drawable.follow_enabled);
             } else {

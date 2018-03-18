@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/tweetPb"
-            android:layout_width="38dp"
-            android:layout_height="match_parent"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:contentDescription="@string/profile_image" />
 
         <LinearLayout
@@ -45,7 +45,9 @@
                     android:id="@+id/username"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="start"
                     android:layout_weight="1"
+                    android:gravity="start"
                     android:singleLine="true" />
 
                 <TextView
@@ -81,7 +83,7 @@
     <LinearLayout
         android:id="@+id/actionbar"
         android:layout_width="match_parent"
-        android:layout_height="16dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginEnd="10dp"
         android:layout_marginStart="10dp"
@@ -94,6 +96,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
+            android:layout_weight="6"
+            android:singleLine="true"
             android:textSize="12sp" />
 
         <Button
@@ -104,9 +108,11 @@
 
         <TextView
             android:id="@+id/retweet_number"
-            android:layout_width="64dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
+            android:layout_weight="4"
+            android:singleLine="true"
             android:textSize="12sp" />
 
         <Button
@@ -118,9 +124,11 @@
 
         <TextView
             android:id="@+id/favorite_number"
-            android:layout_width="64dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
+            android:layout_weight="4"
+            android:singleLine="true"
             android:textSize="12sp" />
 
     </LinearLayout>

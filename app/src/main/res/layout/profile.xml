@@ -122,7 +122,8 @@
                                 android:layout_height="16dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="2dp"
-                                android:background="@drawable/following" />
+                                android:background="@drawable/following"
+                                android:visibility="invisible" />
 
                             <TextView
                                 android:id="@+id/following"
@@ -136,7 +137,8 @@
                                 android:layout_height="16dp"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="2dp"
-                                android:background="@drawable/follower" />
+                                android:background="@drawable/follower"
+                                android:visibility="invisible" />
 
                             <TextView
                                 android:id="@+id/follower"

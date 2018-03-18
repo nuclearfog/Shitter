@@ -5,10 +5,10 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "org.nuclearfog.twidda"
-        minSdkVersion 14
-        targetSdkVersion 14
+        minSdkVersion 22
+        targetSdkVersion 22
         versionCode 1
-        versionName '1.2'
+        versionName '1.2.1'
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {

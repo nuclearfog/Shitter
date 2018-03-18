@@ -31,7 +31,7 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/verify"
                 android:contentDescription="@string/verify"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/username_detail"
@@ -53,7 +53,7 @@
                 android:layout_margin="2dp"
                 android:background="@drawable/lock"
                 android:contentDescription="@string/profile_locked"
-                android:visibility="invisible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/screenname_detail"
