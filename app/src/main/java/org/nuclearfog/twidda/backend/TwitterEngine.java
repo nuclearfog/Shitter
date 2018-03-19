@@ -36,7 +36,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
-    private final String TWITTER_CONSUMER_SECRET = "INSERT SECRET"; // TODO
+    private final String TWITTER_CONSUMER_SECRET = "INSERT SECRET"; //TODO
 
     private static TwitterEngine mTwitter;
     private static long twitterID;
@@ -462,9 +462,14 @@ public class TwitterEngine {
      */
     private List<TwitterUser> convertUserList(List<User> users) {
         List <TwitterUser> result = new ArrayList<>();
-        for(User user : users) {
-            TwitterUser item = getUser(user);
-            result.add(item);
+        try {
+            for(User user : users) {
+                TwitterUser item = getUser(user);
+                result.add(item);
+            }
+        } catch (Exception err) {
+            // Bug in Twitter4J caused by 'wihheld accounts'
+            // because of empty profile image URL
         }
         return result;
     }
@@ -477,16 +482,21 @@ public class TwitterEngine {
      */
     private List<Tweet> convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
-        for(Status status : statuses) {
-            Status embedded = status.getRetweetedStatus();
-            if(embedded != null) {
-                Tweet retweet = getTweet(embedded, null);
-                Tweet tweet = getTweet(status, retweet);
-                result.add(tweet);
-            } else {
-                Tweet tweet = getTweet(status, null);
-                result.add(tweet);
+        try {
+            for(Status status : statuses) {
+                Status embedded = status.getRetweetedStatus();
+                if(embedded != null) {
+                    Tweet retweet = getTweet(embedded, null);
+                    Tweet tweet = getTweet(status, retweet);
+                    result.add(tweet);
+                } else {
+                    Tweet tweet = getTweet(status, null);
+                    result.add(tweet);
+                }
             }
+        } catch (Exception err) {
+            // Bug in Twitter4J caused by 'wihheld accounts'
+            // because of empty profile image URL
         }
         return result;
     }
