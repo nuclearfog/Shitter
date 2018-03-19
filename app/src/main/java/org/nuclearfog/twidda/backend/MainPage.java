@@ -86,6 +86,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                         trendsAdapter.getData().setTrends( mTwitter.getTrends(woeid) );
                     else
                         trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),ui.get()), ui.get());
+                    trendsAdapter.setColor(font);
                     break;
 
                 case MENT:

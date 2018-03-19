@@ -80,6 +80,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
         SearchView searchQuery = (SearchView)m.findItem(R.id.new_search).getActionView();
+        searchQuery.setQueryHint(search);
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {

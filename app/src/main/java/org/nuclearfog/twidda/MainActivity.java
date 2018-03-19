@@ -242,9 +242,13 @@ public class MainActivity extends AppCompatActivity implements
                     String search = trend.getData().getTrendname(position);
                     Intent intent = new Intent(this, SearchPage.class);
                     Bundle bundle = new Bundle();
-                    bundle.putString("search", search);
-                    if(search.startsWith("#"))
+                    if(search.startsWith("#")) {
                         bundle.putString("Addition", search);
+                        bundle.putString("search", search);
+                    } else {
+                        search = '\"'+ search + '\"';
+                        bundle.putString("search", search);
+                    }
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

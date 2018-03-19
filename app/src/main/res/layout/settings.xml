@@ -97,13 +97,13 @@
             android:id="@+id/load_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/load_factor" />
+            android:text="@string/load" />
 
         <CheckBox
             android:id="@+id/toggleImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:text="@string/image" />
 
     </LinearLayout>
