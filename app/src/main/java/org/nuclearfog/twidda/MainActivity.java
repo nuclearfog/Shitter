@@ -19,7 +19,7 @@ import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.database.TrendDatabase;
-import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -328,14 +328,14 @@ public class MainActivity extends AppCompatActivity implements
                 TimelineRecycler mentRc = (TimelineRecycler) mentionList.getAdapter();
 
                 if(tlRc == null || tlRc.getItemCount() == 0) {
-                    TweetDatabase tweetDeck = new TweetDatabase(getApplicationContext());
-                    List<Tweet> tweets = tweetDeck.load(TweetDatabase.HOME, -1L);
+                    DatabaseAdapter tweetDeck = new DatabaseAdapter(getApplicationContext());
+                    List<Tweet> tweets = tweetDeck.load(DatabaseAdapter.HOME, -1L);
                     tlRc = new TimelineRecycler(tweets, MainActivity.this);
                     timelineList.setAdapter(tlRc);
                 }
                 if(mentRc == null || mentRc.getItemCount() == 0) {
-                    TweetDatabase mentDeck  = new TweetDatabase(getApplicationContext());
-                    List<Tweet> tweets = mentDeck.load(TweetDatabase.MENT,-1L);
+                    DatabaseAdapter mentDeck  = new DatabaseAdapter(getApplicationContext());
+                    List<Tweet> tweets = mentDeck.load(DatabaseAdapter.MENT,-1L);
                     mentRc = new TimelineRecycler(tweets, MainActivity.this);
                     mentionList.setAdapter(mentRc);
                 }

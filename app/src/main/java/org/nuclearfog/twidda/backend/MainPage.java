@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import org.nuclearfog.twidda.database.TrendDatabase;
-import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -62,7 +62,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         int page = args[1];
         long id = 1L;
         try {
-            TweetDatabase tweetDb = new TweetDatabase(ui.get());
+            DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
             switch (MODE) {
                 case HOME:
                     List<Tweet> tweets;
@@ -70,11 +70,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     if(timelineAdapter != null && timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
                         tweets = mTwitter.getHome(page,id);
-                        tweetDb.store(tweets, TweetDatabase.HOME,-1L);
+                        tweetDb.store(tweets, DatabaseAdapter.HOME,-1L);
                         tweets.addAll(timelineAdapter.getData());
                     } else {
                         tweets = mTwitter.getHome(page,id);
-                        tweetDb.store(tweets, TweetDatabase.HOME,-1L);
+                        tweetDb.store(tweets, DatabaseAdapter.HOME,-1L);
                     }
                     timelineAdapter = new TimelineRecycler(tweets, ui.get());
                     timelineAdapter.setColor(highlight, font);
@@ -95,11 +95,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     if(mentionAdapter != null && mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
                         mention = mTwitter.getMention(page,id);
-                        tweetDb.store(mention,TweetDatabase.MENT,-1L);
+                        tweetDb.store(mention, DatabaseAdapter.MENT,-1L);
                         mention.addAll(mentionAdapter.getData());
                     } else {
                         mention = mTwitter.getMention(page,id);
-                        tweetDb.store(mention,TweetDatabase.MENT,-1L);
+                        tweetDb.store(mention, DatabaseAdapter.MENT,-1L);
                     }
                     mentionAdapter = new TimelineRecycler(mention, ui.get());
                     mentionAdapter.setColor(highlight, font);

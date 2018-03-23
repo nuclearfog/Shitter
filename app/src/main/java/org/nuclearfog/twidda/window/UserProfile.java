@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.*;
-import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
@@ -207,10 +207,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                     int background = mcolor.getColor(ColorPreferences.BACKGROUND);
                     int font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
 
-                    TweetDatabase mTweet = new TweetDatabase(getApplicationContext());
-                    TweetDatabase fTweet = new TweetDatabase(getApplicationContext());
-                    List<Tweet> userTweets = mTweet.load(TweetDatabase.TWEET,userId);
-                    List<Tweet> userFavorit = fTweet.load(TweetDatabase.FAVT,userId);
+                    DatabaseAdapter mTweet = new DatabaseAdapter(getApplicationContext());
+                    DatabaseAdapter fTweet = new DatabaseAdapter(getApplicationContext());
+                    List<Tweet> userTweets = mTweet.load(DatabaseAdapter.TWEET,userId);
+                    List<Tweet> userFavorit = fTweet.load(DatabaseAdapter.FAVT,userId);
 
                     mTweets = new ProfileLoader(UserProfile.this);
                     mFavorits = new ProfileLoader(UserProfile.this);

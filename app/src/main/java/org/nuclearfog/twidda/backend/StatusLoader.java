@@ -30,7 +30,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
@@ -120,7 +120,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             else if(mode == RETWEET) {
                 if(retweeted) {
                     mTwitter.retweet(tweetID, true);
-                    new TweetDatabase(ui.get()).removeStatus(tweetID);
+                    new DatabaseAdapter(ui.get()).removeStatus(tweetID);
                     retweeted = false;
                     rt--;
                 } else {
@@ -156,12 +156,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(mode == DELETE) {
                 mTwitter.deleteTweet(tweetID);
-                new TweetDatabase(ui.get()).removeStatus(tweetID);
+                new DatabaseAdapter(ui.get()).removeStatus(tweetID);
             }
         }catch(TwitterException e) {
             int err = e.getErrorCode();
             if(err == 144) { // gelöscht
-                new TweetDatabase(ui.get()).removeStatus(tweetID);
+                new DatabaseAdapter(ui.get()).removeStatus(tweetID);
             }
             errMSG = e.getMessage();
             return ERROR;

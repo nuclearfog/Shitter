@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TweetDatabase {
+public class DatabaseAdapter {
 
     public static final int FAVT  = 1;
     public static final int TWEET = 2;
@@ -19,7 +19,7 @@ public class TweetDatabase {
     private List<Tweet> tweetlist;
     private Context context;
 
-    public TweetDatabase(Context context) {
+    public DatabaseAdapter(Context context) {
         dataHelper = AppDatabase.getInstance(context);
         tweetlist = new ArrayList<>();
         this.context = context;
@@ -193,8 +193,10 @@ public class TweetDatabase {
     private void storeStatus(Tweet tweet, SQLiteDatabase db, long retweetID) {
         ContentValues status = new ContentValues();
         ContentValues user   = new ContentValues();
+        TwitterUser mUser = tweet.user;
 
         status.put("tweetID", tweet.tweetID);
+        status.put("userID", mUser.userID);
         status.put("time", tweet.time);
         status.put("tweet", tweet.tweet);
         status.put("retweet", tweet.retweet);
@@ -205,7 +207,7 @@ public class TweetDatabase {
         status.put("replyname", tweet.replyName);
         status.put("retweeted",tweet.retweeted);
         status.put("favorized", tweet.favorized);
-        TwitterUser mUser = tweet.user;
+
         user.put("userID", mUser.userID);
         user.put("username", mUser.username);
         user.put("scrname", mUser.screenname.substring(1));

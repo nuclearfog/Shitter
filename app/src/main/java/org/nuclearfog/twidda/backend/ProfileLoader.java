@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.TweetDatabase;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.UserProfile;
@@ -73,13 +73,17 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             isHome = TwitterEngine.getHomeId() == userId;
             if(!isHome)
             {
-                isFollowing = mTwitter.getConnection(userId, true);
-                isFollowed  = mTwitter.getConnection(userId, false);
-                muted = mTwitter.getBlocked(userId);
+                boolean connection[] = mTwitter.getConnection(userId);
+                isFollowing = connection[0];
+                isFollowed = connection[1];
+                muted = connection[2];
             }
             if(MODE == GET_INFORMATION)
             {
-                TwitterUser user = mTwitter.getUser(userId);
+                DatabaseAdapter userdb = new DatabaseAdapter(ui.get());
+                TwitterUser user = userdb.getUser(userId);
+                if(user == null)
+                    user = mTwitter.getUser(userId);
                 screenName = user.screenname;
                 username = user.username;
                 description = user.bio;
@@ -97,17 +101,17 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == GET_TWEETS)
             {
-                TweetDatabase tweetDb = new TweetDatabase(ui.get());
+                DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> tweets;
                 homeTl = (TimelineRecycler) profileTweets.getAdapter();
                 if(homeTl != null && homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
-                    tweetDb.store(tweets,TweetDatabase.TWEET, userId);
+                    tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
                     tweets.addAll(homeTl.getData());
                 } else {
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
-                    tweetDb.store(tweets,TweetDatabase.TWEET, userId);
+                    tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
                 }
                 homeTl = new TimelineRecycler(tweets,ui.get());
                 homeTl.setColor(highlight,font);
@@ -115,17 +119,17 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == GET_FAVS)
             {
-                TweetDatabase tweetDb = new TweetDatabase(ui.get());
+                DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> favorits;
                 homeFav = (TimelineRecycler) profileFavorits.getAdapter();
                 if(homeFav != null && homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
-                    tweetDb.store(favorits,TweetDatabase.FAVT, userId);
+                    tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
                     favorits.addAll(homeFav.getData());
                 } else {
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
-                    tweetDb.store(favorits,TweetDatabase.FAVT, userId);
+                    tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
                 }
                 homeFav = new TimelineRecycler(favorits,ui.get());
                 homeFav.setColor(highlight,font);

@@ -17,6 +17,7 @@ import twitter4j.MediaEntity;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
+import twitter4j.Relationship;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Trends;
@@ -241,28 +242,18 @@ public class TwitterEngine {
 
 
     /**
-     * Get Connection between Home and another User
-     * @param id User ID
-     * @param following mode following = true , follower = false
-     * @return result
-     * @throws TwitterException if Access is unavailable
+     * Efficient Access of Connection Information
+     * @param id User ID compared with Home ID
+     * @return array of connection states Index 0: Following, 1: Follow, 2: blocked
+     * @throws TwitterException if Connection is unavailable
      */
-    public boolean getConnection(long id,boolean following) throws TwitterException {
-        if(following)
-            return twitter.showFriendship(twitterID,id).isSourceFollowingTarget();
-        else
-            return twitter.showFriendship(twitterID,id).isTargetFollowingSource();
-    }
-
-
-    /**
-     * Get Block Status
-     * @param id User ID
-     * @return if target is blocked
-     * @throws TwitterException if Access is unavailable
-     */
-    public boolean getBlocked(long id) throws TwitterException {
-        return twitter.showFriendship(twitter.getId(),id).isSourceBlockingTarget();
+    public boolean[] getConnection(long id) throws TwitterException {
+        Relationship connect = twitter.showFriendship(twitterID,id);
+        boolean connection[] = new boolean[3];
+        connection[0] = connect.isSourceFollowingTarget();
+        connection[1] = connect.isTargetFollowingSource();
+        connection[2] = connect.isSourceBlockingTarget();
+        return connection;
     }
 
 
@@ -273,7 +264,7 @@ public class TwitterEngine {
      *  @throws TwitterException if Access is unavailable
      */
     public boolean toggleFollow(long id) throws TwitterException {
-        if(getConnection(id,false)) {
+        if(getConnection(id)[1]) {
             twitter.destroyFriendship(id);
             return false;
         } else {
@@ -290,7 +281,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public boolean toggleBlock(long id) throws TwitterException {
-        if(getBlocked(id)){
+        if(getConnection(id)[2]){
             twitter.destroyBlock(id);
             return false;
         } else {
