@@ -36,10 +36,10 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
-    private final String TWITTER_CONSUMER_SECRET = "INSERT SECRET"; //TODO
+    private final String TWITTER_CONSUMER_SECRET = "4SNMCHbg68LM14X2wYDjWkmzuNqq5dnB7tfAj2b4Muu8uPQ2QE";
 
     private static TwitterEngine mTwitter;
-    private static long twitterID;
+    private static long twitterID = -1L;
     private Twitter twitter;
     private Context context;
     private SharedPreferences settings;
@@ -508,12 +508,11 @@ public class TwitterEngine {
      * @return Tweet item
      */
     private Tweet getTweet(Status status, Tweet retweetedStat) {
-        User user = status.getUser();
-        return new Tweet(status.getId(),user.getId(),user.getName(),user.getScreenName(),
-                status.getRetweetCount(),status.getFavoriteCount(),user.getMiniProfileImageURL(),
+        TwitterUser user = getUser(status.getUser());
+        return new Tweet(status.getId(),status.getRetweetCount(),status.getFavoriteCount(),user,
                 status.getText(),status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
-                getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),user.isVerified(),
-                retweetedStat,status.isRetweetedByMe(),status.isFavorited());
+                getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),
+                retweetedStat, status.isRetweetedByMe(), status.isFavorited());
     }
 
 

@@ -17,10 +17,12 @@ public class TweetDatabase {
 
     private AppDatabase dataHelper;
     private List<Tweet> tweetlist;
+    private Context context;
 
     public TweetDatabase(Context context) {
         dataHelper = AppDatabase.getInstance(context);
         tweetlist = new ArrayList<>();
+        this.context = context;
     }
 
 
@@ -63,7 +65,6 @@ public class TweetDatabase {
     public List<Tweet> load(int mode, long id) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         String SQL_GET_HOME=" ";
-
         if(mode == HOME) {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.tweetID = tweet.tweetID " +
@@ -96,7 +97,7 @@ public class TweetDatabase {
     }
 
 
-    private Tweet searchTweet(long tweetId) {
+    public Tweet getTweet(long tweetId) {
         SQLiteDatabase search = dataHelper.getReadableDatabase();
         Tweet result = null;
         String query = "SELECT * FROM tweet " +
@@ -110,8 +111,21 @@ public class TweetDatabase {
     }
 
 
-    private Tweet getTweet(Cursor cursor){
-        int index = cursor.getColumnIndex("time");
+    public TwitterUser getUser(long userId) {
+        SQLiteDatabase search = dataHelper.getReadableDatabase();
+        TwitterUser user = null;
+        String query = "SELECT * FROM user WHERE userID ="+ userId;
+        Cursor cursor = search.rawQuery(query, null);
+        if(cursor.moveToFirst())
+            user = getUser(cursor);
+        cursor.close();
+        return user;
+    }
+
+
+    private Tweet getTweet(Cursor cursor) {
+        int index;
+        index = cursor.getColumnIndex("time");
         long time = cursor.getLong(index);
         index = cursor.getColumnIndex("tweet");
         String tweettext = cursor.getString(index);
@@ -119,41 +133,67 @@ public class TweetDatabase {
         int retweet = cursor.getInt(index);
         index = cursor.getColumnIndex("favorite");
         int favorit = cursor.getInt(index);
-        index = cursor.getColumnIndex("username");
-        String username = cursor.getString(index);
-        index = cursor.getColumnIndex("scrname");
-        String screenname = cursor.getString(index);
-        index = cursor.getColumnIndex("verify");
-        boolean isVerified = cursor.getInt(index) == 1;
-        index = cursor.getColumnIndex("pbLink");
-        String profileImg = cursor.getString(index);
-        index = cursor.getColumnIndex("userID");
-        long userId = cursor.getLong(index);
         index = cursor.getColumnIndex("tweetID");
         long tweetId = cursor.getLong(index);
         index = cursor.getColumnIndex("retweetID");
         long retweetId = cursor.getLong(index);
+        index = cursor.getColumnIndex("retweeted");
+        boolean retweeted = cursor.getInt(index) == 1;
+        index = cursor.getColumnIndex("favorized");
+        boolean favorized = cursor.getInt(index) == 1;
         index = cursor.getColumnIndex("replyname");
         String replyname = cursor.getString(index);
         index = cursor.getColumnIndex("replyID");
         long replyStatusId = cursor.getLong(index);
         index = cursor.getColumnIndex("source");
         String source = cursor.getString(index);
-
+        TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
-        if(retweetId > 0) {
-            embeddedTweet = searchTweet(retweetId);
-        }
-        return new Tweet(tweetId,userId,username,screenname,retweet,favorit,
-                profileImg,tweettext, time, replyname, null, source, replyStatusId,
-                isVerified,embeddedTweet,false,false);
+        if(retweetId > 0)
+            embeddedTweet = getTweet(retweetId);
+        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,null,
+                source,replyStatusId,embeddedTweet,retweeted,favorized);
+    }
+
+
+    private TwitterUser getUser(Cursor cursor){
+        int index = cursor.getColumnIndex("userID");
+        long userId = cursor.getLong(index);
+        index = cursor.getColumnIndex("username");
+        String username = cursor.getString(index);
+        index = cursor.getColumnIndex("scrname");
+        String screenname = cursor.getString(index);
+        index = cursor.getColumnIndex("verify");
+        boolean isVerified = cursor.getInt(index) == 1;
+        index = cursor.getColumnIndex("locked");
+        boolean locked = cursor.getInt(index) == 1;
+        index = cursor.getColumnIndex("pbLink");
+        String profileImg = cursor.getString(index);
+        index = cursor.getColumnIndex("fullpb");
+        String fullpb = cursor.getString(index);
+        index = cursor.getColumnIndex("bio");
+        String bio = cursor.getString(index);
+        index = cursor.getColumnIndex("link");
+        String link = cursor.getString(index);
+        index = cursor.getColumnIndex("location");
+        String location = cursor.getString(index);
+        index = cursor.getColumnIndex("banner");
+        String banner = cursor.getString(index);
+        index = cursor.getColumnIndex("createdAt");
+        long createdAt = cursor.getLong(index);
+        index = cursor.getColumnIndex("following");
+        int following = cursor.getInt(index);
+        index = cursor.getColumnIndex("follower");
+        int follower = cursor.getInt(index);
+        return new TwitterUser(userId, username,screenname,profileImg,fullpb,bio,
+                location,isVerified,locked,link,banner,createdAt,following,follower);
     }
 
 
     private void storeStatus(Tweet tweet, SQLiteDatabase db, long retweetID) {
         ContentValues status = new ContentValues();
         ContentValues user   = new ContentValues();
-        status.put("userID", tweet.userID);
+
         status.put("tweetID", tweet.tweetID);
         status.put("time", tweet.time);
         status.put("tweet", tweet.tweet);
@@ -163,20 +203,31 @@ public class TweetDatabase {
         status.put("source", tweet.source);
         status.put("replyID", tweet.replyID);
         status.put("replyname", tweet.replyName);
-
-        user.put("userID", tweet.userID);
-        user.put("username", tweet.username);
-        user.put("scrname", tweet.screenname.substring(1));
-        user.put("pbLink", tweet.profileImg);
-        user.put("verify", tweet.verified);
+        status.put("retweeted",tweet.retweeted);
+        status.put("favorized", tweet.favorized);
+        TwitterUser mUser = tweet.user;
+        user.put("userID", mUser.userID);
+        user.put("username", mUser.username);
+        user.put("scrname", mUser.screenname.substring(1));
+        user.put("pbLink", mUser.profileImg);
+        user.put("fullpb", mUser.fullpb);
+        user.put("verify", mUser.isVerified);
+        user.put("locked", mUser.isLocked);
+        user.put("bio", mUser.bio);
+        user.put("link", mUser.link);
+        user.put("location", mUser.location);
+        user.put("banner", mUser.bannerImg);
+        user.put("createdAt", mUser.created);
+        user.put("following", mUser.following);
+        user.put("follower", mUser.follower);
 
         db.insertWithOnConflict("tweet",null, status,SQLiteDatabase.CONFLICT_REPLACE);
         db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
 
-    public static void removeStatus(Context c, long id) {
-        SQLiteDatabase db = AppDatabase.getInstance(c).getWritableDatabase();
+    public void removeStatus(long id) {
+        SQLiteDatabase db = AppDatabase.getInstance(context).getWritableDatabase();
         db.delete("tweet", "tweetID"+"="+id, null);
         db.close();
     }

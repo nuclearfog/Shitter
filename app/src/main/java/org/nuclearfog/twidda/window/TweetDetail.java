@@ -149,9 +149,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     public void onItemClick(View view, ViewGroup parent, int position) {
         TimelineRecycler tlAdp = (TimelineRecycler) answer_list.getAdapter();
         Tweet tweet = tlAdp.getData().get(position);
-        long userID = tweet.userID;
+        long userID = tweet.user.userID;
         long tweetID = tweet.tweetID;
-        String username = tweet.screenname;
+        String username = tweet.user.screenname;
         Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userID);

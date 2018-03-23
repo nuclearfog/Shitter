@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -169,8 +170,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         if(tweet.embedded != null)
             tweet = tweet.embedded;
         long tweetID = tweet.tweetID;
-        long userID = tweet.userID;
-        String username = tweet.screenname;
+        long userID = tweet.user.userID;
+        String username = tweet.user.screenname;
         Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("tweetID",tweetID);
@@ -184,11 +185,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
+        tab1.setIndicator("", ContextCompat.getDrawable(getApplicationContext(),R.drawable.home));
         mTab.addTab(tab1);
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
         tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.favorite));
+        tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.favorite));
         mTab.addTab(tab2);
     }
 

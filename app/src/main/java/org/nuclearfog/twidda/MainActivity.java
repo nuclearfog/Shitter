@@ -3,6 +3,7 @@ package org.nuclearfog.twidda;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements
     private SearchView searchQuery;
     private Toolbar toolbar;
     private TabHost tabhost;
-    private boolean settingFlag = false;
     private String currentTab = "timeline";
     private int background, font_color, highlight;
 
@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_settings:
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
-                settingFlag = true;
                 return true;
             default:
                 return false;
@@ -135,13 +134,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume(){
         super.onResume();
-        if(settingFlag) {
-            timelineList.setAdapter(null);
-            trendList.setAdapter(null);
-            mentionList.setAdapter(null);
-            setTabContent();
-            settingFlag = false;
-        }
+        setTabContent();
     }
 
     @Override
@@ -154,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements
      * Home Button
      */
     @Override
-    protected void onUserLeaveHint(){
+    protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         overridePendingTransition(0,0);
     }
@@ -222,11 +215,9 @@ public class MainActivity extends AppCompatActivity implements
                 if(!timelineReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) timelineList.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-                    //if(tweet.embedded != null)
-                    //   tweet = tweet.embedded;
                     long tweetID = tweet.tweetID;
-                    long userID = tweet.userID;
-                    String username = tweet.screenname;
+                    long userID = tweet.user.userID;
+                    String username = tweet.user.screenname;
                     Intent intent = new Intent(this, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -260,8 +251,8 @@ public class MainActivity extends AppCompatActivity implements
                     if(tweet.embedded != null)
                         tweet = tweet.embedded;
                     long tweetID = tweet.tweetID;
-                    long userID = tweet.userID;
-                    String username = tweet.screenname;
+                    long userID = tweet.user.userID;
+                    String username = tweet.user.screenname;
                     Intent intent = new Intent(this, TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -298,23 +289,21 @@ public class MainActivity extends AppCompatActivity implements
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.home));
+        tab1.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.home));
         tabhost.addTab(tab1);
         TabSpec tab2 = tabhost.newTabSpec("trends");
         tab2.setContent(R.id.trends);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.hash));
+        tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.hash));
         tabhost.addTab(tab2);
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setContent(R.id.mention);
-        tab3.setIndicator("",getResources().getDrawable(R.drawable.mention));
+        tab3.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.mention));
         tabhost.addTab(tab3);
 
         tabhost.setOnTabChangedListener(this);
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
-
-        setTabContent();
     }
 
     /**
@@ -328,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements
                 background = mColor.getColor(ColorPreferences.BACKGROUND);
                 font_color = mColor.getColor(ColorPreferences.FONT_COLOR);
                 highlight  = mColor.getColor(ColorPreferences.HIGHLIGHTING);
+                boolean imageload = mColor.loadImage();
 
                 timelineList.setBackgroundColor(background);
                 trendList.setBackgroundColor(background);
@@ -341,24 +331,28 @@ public class MainActivity extends AppCompatActivity implements
                     TweetDatabase tweetDeck = new TweetDatabase(getApplicationContext());
                     List<Tweet> tweets = tweetDeck.load(TweetDatabase.HOME, -1L);
                     tlRc = new TimelineRecycler(tweets, MainActivity.this);
-                } if(mentRc == null || mentRc.getItemCount() == 0) {
+                    timelineList.setAdapter(tlRc);
+                }
+                if(mentRc == null || mentRc.getItemCount() == 0) {
                     TweetDatabase mentDeck  = new TweetDatabase(getApplicationContext());
                     List<Tweet> tweets = mentDeck.load(TweetDatabase.MENT,-1L);
                     mentRc = new TimelineRecycler(tweets, MainActivity.this);
-                } if(trendRc == null || trendRc.getItemCount() == 0) {
+                    mentionList.setAdapter(mentRc);
+                }
+                if(trendRc == null || trendRc.getItemCount() == 0) {
                     TrendDatabase trendDeck = new TrendDatabase(getApplicationContext());
                     trendRc  = new TrendRecycler(trendDeck, MainActivity.this);
+                    trendList.setAdapter(trendRc);
                 }
 
-                boolean imageload = settings.getBoolean("image_load", true);
                 tlRc.setColor(highlight,font_color);
-                trendRc.setColor(font_color);
-                mentRc.setColor(highlight,font_color);
                 tlRc.toggleImage(imageload);
+                tlRc.notifyDataSetChanged();
+                trendRc.setColor(font_color);
+                trendRc.notifyDataSetChanged();
+                mentRc.setColor(highlight,font_color);
                 mentRc.toggleImage(imageload);
-                timelineList.setAdapter(tlRc);
-                trendList.setAdapter(trendRc);
-                mentionList.setAdapter(mentRc);
+                mentRc.notifyDataSetChanged();
             }
         }).run();
     }

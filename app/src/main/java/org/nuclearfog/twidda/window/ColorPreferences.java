@@ -29,9 +29,11 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
     private SharedPreferences settings;
     private Context context;
     private Dialog d;
+    private boolean imageload;
 
     private ColorPreferences(Context context) {
         settings = context.getSharedPreferences("settings", 0);
+        imageload = settings.getBoolean("image_load", true);
         background = settings.getInt("background_color", 0xff0f114a);
         font = settings.getInt("font_color", 0xffffffff);
         tweet = settings.getInt("tweet_color", 0xff19aae8);
@@ -109,6 +111,10 @@ public class ColorPreferences implements OnColorChangedListener, DialogInterface
                 .setOnColorChangedListener(this).build();
         d.setOnDismissListener(this);
         d.show();
+    }
+
+    public boolean loadImage() {
+        return imageload;
     }
 
     public void commit() {

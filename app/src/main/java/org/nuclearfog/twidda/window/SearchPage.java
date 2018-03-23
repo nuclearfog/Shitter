@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -126,8 +127,8 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                     TimelineRecycler tlAdp = (TimelineRecycler) tweetSearch.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
                     long tweetID = tweet.tweetID;
-                    long userID = tweet.userID;
-                    String username = tweet.screenname;
+                    long userID = tweet.user.userID;
+                    String username = tweet.user.screenname;
                     Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
                     Bundle bundle = new Bundle();
                     bundle.putLong("tweetID",tweetID);
@@ -164,11 +165,11 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     private void setTabs(TabHost tabhost) {
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
         tab1.setContent(R.id.searchtweets);
-        tab1.setIndicator("",getResources().getDrawable(R.drawable.search));
+        tab1.setIndicator("", ContextCompat.getDrawable(getApplicationContext(),R.drawable.search));
         tabhost.addTab(tab1);
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
-        tab2.setIndicator("",getResources().getDrawable(R.drawable.user));
+        tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.user));
         tabhost.addTab(tab2);
     }
 

@@ -88,8 +88,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             Tweet tweet = mTwitter.getStatus(tweetID);
             Tweet embeddedTweet = tweet.embedded;
             if(embeddedTweet != null) {
-                retweeter = "Retweet "+tweet.screenname;
-                retweeterID = tweet.userID;
+                retweeter = "Retweet "+tweet.user.screenname;
+                retweeterID = tweet.user.userID;
                 tweet = mTwitter.getStatus(embeddedTweet.tweetID);
                 tweetID = embeddedTweet.tweetID;
                 rtFlag = true;
@@ -101,17 +101,17 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
             if(mode == LOAD_TWEET) {
                 tweetReplyID = tweet.replyID;
-                verified = tweet.verified;
+                verified = tweet.user.isVerified;
                 tweetStr = tweet.tweet;
-                usernameStr = tweet.username;
-                userID = tweet.userID;
-                scrNameStr = tweet.screenname;
+                usernameStr = tweet.user.username;
+                userID = tweet.user.userID;
+                scrNameStr = tweet.user.screenname;
                 apiName = formatString(tweet.source);
                 dateString = DateFormat.getDateTimeInstance().format(new Date(tweet.time));
                 repliedUsername = tweet.replyName;
 
                 if(toggleImg) {
-                    String pbLink = tweet.profileImg;
+                    String pbLink = tweet.user.profileImg;
                     InputStream iStream = new URL(pbLink).openStream();
                     profile_btm = BitmapFactory.decodeStream(iStream);
                     medialinks = tweet.media;
@@ -120,7 +120,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             else if(mode == RETWEET) {
                 if(retweeted) {
                     mTwitter.retweet(tweetID, true);
-                    TweetDatabase.removeStatus(ui.get(), tweetID);
+                    new TweetDatabase(ui.get()).removeStatus(tweetID);
                     retweeted = false;
                     rt--;
                 } else {
@@ -142,7 +142,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(mode == LOAD_REPLY) {
                 List<Tweet> answers;
-                String replyname = tweet.screenname;
+                String replyname = tweet.user.screenname;
                 tlAdp = (TimelineRecycler) replyList.getAdapter();
                 if(tlAdp != null && tlAdp.getItemCount() > 0) {
                     tweetID = tlAdp.getItemId(0);
@@ -156,12 +156,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(mode == DELETE) {
                 mTwitter.deleteTweet(tweetID);
-                TweetDatabase.removeStatus(ui.get(),tweetID);
+                new TweetDatabase(ui.get()).removeStatus(tweetID);
             }
         }catch(TwitterException e) {
             int err = e.getErrorCode();
             if(err == 144) { // gelöscht
-                TweetDatabase.removeStatus(ui.get(),tweetID);
+                new TweetDatabase(ui.get()).removeStatus(tweetID);
             }
             errMSG = e.getMessage();
             return ERROR;

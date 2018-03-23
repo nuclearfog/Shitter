@@ -80,23 +80,23 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         String retweet = Integer.toString(tweet.retweet);
         String favorit = Integer.toString(tweet.favorit);
         if(tweet.embedded != null) {
-            String retweeter = "RT "+tweet.screenname;
+            String retweeter = "RT "+tweet.user.screenname;
             vh.retweeter.setText(retweeter);
             tweet = tweet.embedded;
         } else {
             vh.retweeter.setText("");
         }
         vh.tweet.setTextColor(font_color);
-        vh.username.setText(tweet.username);
-        vh.screenname.setText(tweet.screenname);
+        vh.username.setText(tweet.user.username);
+        vh.screenname.setText(tweet.user.screenname);
         vh.tweet.setText(highlight(tweet.tweet));
         vh.retweet.setText(retweet);
         vh.favorite.setText(favorit);
         vh.time.setText(stringTime(tweet.time));
         if(img_ldr) {
-            Picasso.with(parent.getContext()).load(tweet.profileImg).into(vh.profile);
+            Picasso.with(parent.getContext()).load(tweet.user.profileImg).into(vh.profile);
         }
-        if(tweet.verified) {
+        if(tweet.user.isVerified) {
             vh.verify.setVisibility(View.VISIBLE);
         } else {
             vh.verify.setVisibility(View.GONE);

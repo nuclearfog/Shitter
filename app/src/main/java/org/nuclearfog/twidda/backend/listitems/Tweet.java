@@ -1,33 +1,30 @@
 package org.nuclearfog.twidda.backend.listitems;
 
 public class Tweet {
-    public final long tweetID, userID;
+    public final TwitterUser user;
+    public final long tweetID;
     public final Tweet embedded;
-    public final String username, screenname, profileImg, tweet, replyName,source;
+    public final String tweet, replyName,source;
     public final long time, replyID;
     public final int retweet, favorit;
-    public final boolean verified, retweeted, favorized;
     public final String[] media;
+    public final boolean retweeted, favorized;
 
-    public Tweet(long tweetID, long userID, String username, String screenname, int retweet, int favorit,
-                 String profileImg, String tweet, long time, String replyName, String[] media, String source,
-                 long replyID, boolean verified, Tweet embedded, boolean retweeted, boolean favorized) {
+    public Tweet(long tweetID, int retweet, int favorit, TwitterUser user, String tweet, long time,
+                 String replyName, String[] media, String source, long replyID, Tweet embedded,
+                 boolean retweeted, boolean favorized) {
         this.tweetID = tweetID;
-        this.userID = userID;
-        this.username = username;
-        this.screenname = '@'+screenname;
-        this.profileImg = profileImg;
+        this.user = user;
         this.retweet = retweet;
         this.favorit = favorit;
         this.tweet = tweet;
         this.time = time;
         this.replyID = replyID;
-        this.verified = verified;
         this.embedded = embedded;
-        this.favorized = favorized;
-        this.retweeted = retweeted;
         this.replyName = replyName;
         this.media = media;
         this.source = source;
+        this.retweeted = retweeted;
+        this.favorized = favorized;
     }
 }
