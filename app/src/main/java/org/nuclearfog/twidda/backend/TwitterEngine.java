@@ -37,7 +37,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
-    private final String TWITTER_CONSUMER_SECRET = "4SNMCHbg68LM14X2wYDjWkmzuNqq5dnB7tfAj2b4Muu8uPQ2QE";
+    private final String TWITTER_CONSUMER_SECRET = "get your own";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -377,18 +377,20 @@ public class TwitterEngine {
     /**
      * Get Answer Tweets
      * @param name name of receiver
-     * @param id tweet ID
+     * @param tweetId tweet ID
+     * @param sinceId last tweet
      * @return List of Answers
      * @throws TwitterException if Access is unavailable
      */
-    public List<Tweet> getAnswers(String name, long id) throws TwitterException {
+    public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws TwitterException {
         List<Status> answers = new ArrayList<>();
-        Query query = new Query("to:"+name+" since_id:"+id+" -filter:retweets");
+        name = name.substring(1);
+        Query query = new Query("to:"+name+" since_id:"+sinceId+" -filter:retweets");
         query.setCount(load);
         QueryResult result = twitter.search(query);
         List<twitter4j.Status> stats = result.getTweets();
         for(twitter4j.Status reply : stats) {
-            if(reply.getInReplyToStatusId() == id) {
+            if(reply.getInReplyToStatusId() == tweetId) {
                 answers.add(reply);
             }
         }
@@ -459,7 +461,7 @@ public class TwitterEngine {
                 result.add(item);
             }
         } catch (Exception err) {
-            // Bug in Twitter4J caused by 'wihheld accounts'
+            // Bug in Twitter4J caused by 'withheld accounts'
             // because of empty profile image URL
         }
         return result;
@@ -486,7 +488,7 @@ public class TwitterEngine {
                 }
             }
         } catch (Exception err) {
-            // Bug in Twitter4J caused by 'wihheld accounts'
+            // Bug in Twitter4J caused by 'withheld accounts'
             // because of empty profile image URL
         }
         return result;

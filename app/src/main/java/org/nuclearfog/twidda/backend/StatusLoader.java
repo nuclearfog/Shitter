@@ -145,11 +145,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 String replyname = tweet.user.screenname;
                 tlAdp = (TimelineRecycler) replyList.getAdapter();
                 if(tlAdp != null && tlAdp.getItemCount() > 0) {
-                    tweetID = tlAdp.getItemId(0);
-                    answers = mTwitter.getAnswers(replyname, tweetID);
+                    long sinceId = tlAdp.getItemId(0);
+                    answers = mTwitter.getAnswers(replyname, tweetID, sinceId);
                     answers.addAll(tlAdp.getData());
                 } else {
-                    answers = mTwitter.getAnswers(replyname, tweetID);
+                    answers = mTwitter.getAnswers(replyname, tweetID, 1);
                 }
                 tlAdp = new TimelineRecycler(answers,ui.get());
                 tlAdp.setColor(highlight, font);
