@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +25,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private RecyclerView tweetSearch, userSearch;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
-    private int background, highlight, font_color;
+    private int highlight, font_color;
     private String error;
     boolean imageload;
 
@@ -36,11 +35,9 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         userSearch  = (RecyclerView) ui.get().findViewById(R.id.user_result);
         mTwitter = TwitterEngine.getInstance(context);
         ColorPreferences mcolor = ColorPreferences.getInstance(context);
-        background = mcolor.getColor(ColorPreferences.BACKGROUND);
         highlight = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
         font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
-        SharedPreferences settings = ui.get().getSharedPreferences("settings", 0);
-        imageload = settings.getBoolean("image_load", true);
+        imageload = mcolor.loadImage();
     }
 
     @Override
@@ -60,7 +57,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
                 tlRc = new TimelineRecycler(tweets,ui.get());
             }
-
             if(uAdp == null ||uAdp.getItemCount() == 0) {
                 List<TwitterUser> user = mTwitter.searchUsers(strSearch);
                 uAdp = new UserRecycler(user, ui.get());
@@ -86,7 +82,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
         SwipeRefreshLayout tweetReload = (SwipeRefreshLayout)connect.findViewById(R.id.searchtweets);
         ProgressBar circleLoad = (ProgressBar)connect.findViewById(R.id.search_progress);
-
         circleLoad.setVisibility(View.INVISIBLE);
         tweetSearch.setAdapter(tlRc);
         userSearch.setAdapter(uAdp);

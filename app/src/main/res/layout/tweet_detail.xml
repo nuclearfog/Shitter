@@ -63,26 +63,34 @@
                         android:layout_height="56dp"
                         android:contentDescription="@string/profile_image" />
 
-                    <ImageView
-                        android:id="@+id/tweet_verify"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_margin="4dp"
-                        android:contentDescription="@string/verify"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/verify" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/usernamedetail"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true" />
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/tweet_verify"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_marginEnd="4dp"
+                                android:contentDescription="@string/verify"
+                                android:visibility="gone"
+                                app:srcCompat="@drawable/verify" />
+
+                            <TextView
+                                android:id="@+id/usernamedetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true" />
+                        </LinearLayout>
 
                         <TextView
                             android:id="@+id/scrnamedetail"
@@ -94,7 +102,8 @@
                             android:id="@+id/timedetail"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 

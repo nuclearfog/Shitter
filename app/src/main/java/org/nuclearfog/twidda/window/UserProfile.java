@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,11 +16,13 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
+import java.text.DateFormat;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener,
-        TimelineRecycler.OnItemClicked, ProfileLoader.OnProfileFinished {
+        TimelineRecycler.OnItemClicked {
 
     private ProfileLoader mProfile, mTweets, mFavorits;
     private SwipeRefreshLayout homeReload, favoriteReload;
@@ -39,26 +40,33 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private boolean home, imageload;
     private String username = "";
     private String currentTab = "tweets";
+    int highlight, background, font_color;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.profile);
-        getExtras(getIntent().getExtras());
         Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getExtras(getIntent().getExtras());
 
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        home = userId == settings.getLong("userID", -1);
-        imageload = settings.getBoolean("image_load", true);
+        home = userId == TwitterEngine.getHomeId();
+        ColorPreferences mcolor = ColorPreferences.getInstance(this);
+        highlight  = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
+        background = mcolor.getColor(ColorPreferences.BACKGROUND);
+        font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
+        imageload = mcolor.loadImage();
         homeList = (RecyclerView) findViewById(R.id.ht_list);
+        homeList.setLayoutManager(new LinearLayoutManager(this));
+        homeList.setBackgroundColor(background);
         favoritList = (RecyclerView)findViewById(R.id.hf_list);
-        homeList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        favoritList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        favoritList.setLayoutManager(new LinearLayoutManager(this));
+        favoritList.setBackgroundColor(background);
         homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
         favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+
         TextView txtFollowing = (TextView)findViewById(R.id.following);
         TextView txtFollower  = (TextView)findViewById(R.id.follower);
         TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
@@ -68,8 +76,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         txtFollower.setOnClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
-
-        initElements();
+        getProfileInformation();
+        getProfileTweets();
     }
 
     @Override
@@ -128,10 +136,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.following:
-                getFollows(0L);
+                getConnection(0L);
                 break;
             case R.id.follower:
-                getFollows(1L);
+                getConnection(1L);
                 break;
         }
     }
@@ -193,63 +201,84 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         mTab.addTab(tab2);
     }
 
-    /**
-     * Tab Content
-     */
-    @Override
-    public void onLoaded() {
+
+    private void getProfileInformation() {
         new Thread( new Runnable() {
-                @Override
-                public void run() {
-                    ColorPreferences mcolor = ColorPreferences.getInstance(getApplicationContext());
-
-                    int highlight  = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
-                    int background = mcolor.getColor(ColorPreferences.BACKGROUND);
-                    int font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
-
-                    DatabaseAdapter mTweet = new DatabaseAdapter(getApplicationContext());
-                    DatabaseAdapter fTweet = new DatabaseAdapter(getApplicationContext());
-                    List<Tweet> userTweets = mTweet.load(DatabaseAdapter.TWEET,userId);
-                    List<Tweet> userFavorit = fTweet.load(DatabaseAdapter.FAVT,userId);
-
-                    mTweets = new ProfileLoader(UserProfile.this);
-                    mFavorits = new ProfileLoader(UserProfile.this);
-                    homeList.setBackgroundColor(background);
-                    favoritList.setBackgroundColor(background);
-
-                    if( userTweets.size() > 0 ) {
-                        TimelineRecycler tlRc = new TimelineRecycler(userTweets,UserProfile.this);
-                        tlRc.setColor(highlight,font_color);
-                        tlRc.toggleImage(imageload);
-                        homeList.setAdapter(tlRc);
-                    } else {
-                        mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
+            @Override
+            public void run() {
+                DatabaseAdapter database = new DatabaseAdapter(getApplicationContext());
+                TwitterUser user = database.getUser(userId);
+                if(user != null) {
+                    String dateString = "seit "+ DateFormat.getDateTimeInstance().format(user.created);
+                    String followerStr = ""+user.follower;
+                    String followingStr = ""+user.following;
+                    TextView txtUser = (TextView)findViewById(R.id.profile_username);
+                    TextView txtScrName = (TextView)findViewById(R.id.profile_screenname);
+                    TextView txtBio = (TextView)findViewById(R.id.bio);
+                    TextView txtCreated = (TextView)findViewById(R.id.profile_date);
+                    TextView txtFollowing = (TextView)findViewById(R.id.following);
+                    TextView txtFollower  = (TextView)findViewById(R.id.follower);
+                    findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
+                    findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
+                    TextView txtLocation = (TextView)findViewById(R.id.location);
+                    TextView txtLink = (TextView)findViewById(R.id.links);
+                    txtUser.setText(user.username);
+                    txtScrName.setText(user.screenname);
+                    txtBio.setText(user.bio);
+                    txtCreated.setText(dateString);
+                    txtFollower.setText(followerStr);
+                    txtFollowing.setText(followingStr);
+                    if(user.isVerified)
+                        findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
+                    if(user.isLocked)
+                        findViewById(R.id.profile_locked).setVisibility(View.VISIBLE);
+                    if(user.location != null && !user.location.isEmpty()) {
+                        txtLocation.setText(user.location);
+                        findViewById(R.id.location_img).setVisibility(View.VISIBLE);
                     }
-                    if( userFavorit.size() > 0 ) {
-                        TimelineRecycler tlRc = new TimelineRecycler(userFavorit,UserProfile.this);
-                        tlRc.setColor(highlight,font_color);
-                        tlRc.toggleImage(imageload);
-                        favoritList.setAdapter(tlRc);
-                    } else {
-                        mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
+                    if(user.link != null && !user.link.isEmpty()) {
+                        txtLink.setText(user.link);
+                        findViewById(R.id.link_img).setVisibility(View.VISIBLE);
                     }
+                    findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
+                    findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
                 }
-            }
-        ).run();
-    }
-
-    /**
-     * Profile Information
-     */
-    private void initElements() {
+            }}).run();
+        // Refresh
         mProfile = new ProfileLoader(this);
         mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
     }
 
-    /**
-     *  @param mode 0L = Following , 1L Follower
-     */
-    private void getFollows(long mode) {
+
+    private void getProfileTweets() {
+        DatabaseAdapter mTweet = new DatabaseAdapter(getApplicationContext());
+        DatabaseAdapter fTweet = new DatabaseAdapter(getApplicationContext());
+        List<Tweet> userTweets = mTweet.load(DatabaseAdapter.TWEET,userId);
+        List<Tweet> userFavorit = fTweet.load(DatabaseAdapter.FAVT,userId);
+
+        mTweets = new ProfileLoader(UserProfile.this);
+        mFavorits = new ProfileLoader(UserProfile.this);
+
+        if( userTweets.size() > 0 ) {
+            TimelineRecycler tlRc = new TimelineRecycler(userTweets,UserProfile.this);
+            tlRc.setColor(highlight,font_color);
+            tlRc.toggleImage(imageload);
+            homeList.setAdapter(tlRc);
+        } else {
+            mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
+        }
+        if( userFavorit.size() > 0 ) {
+            TimelineRecycler tlRc = new TimelineRecycler(userFavorit,UserProfile.this);
+            tlRc.setColor(highlight,font_color);
+            tlRc.toggleImage(imageload);
+            favoritList.setAdapter(tlRc);
+        } else {
+            mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
+        }
+    }
+
+
+    private void getConnection(long mode) {
         Intent intent = new Intent(getApplicationContext(), UserDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userId);
@@ -258,7 +287,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
-    @SuppressWarnings("ConstantConditions")
+
     private void getExtras(Bundle b) {
         userId = b.getLong("userID");
         username = b.getString("username");

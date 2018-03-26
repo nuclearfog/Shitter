@@ -2,8 +2,8 @@ package org.nuclearfog.twidda.backend.listitems;
 
 public class Tweet {
     public final TwitterUser user;
-    public final long tweetID;
     public final Tweet embedded;
+    public final long tweetID;
     public final String tweet, replyName,source;
     public final long time, replyID;
     public final int retweet, favorit;

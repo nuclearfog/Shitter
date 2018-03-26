@@ -2,9 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,9 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.InputStream;
+import com.squareup.picasso.Picasso;
 import java.lang.ref.WeakReference;
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -51,10 +47,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private TwitterEngine mTwitter;
     private TimelineRecycler tlAdp;
     private RecyclerView replyList;
-    private Bitmap profile_btm;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, retweeter;
-    private String medialinks[];
+    private String medialinks[], profile_pb;
     private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
@@ -66,12 +61,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
     public StatusLoader(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
-        SharedPreferences settings = c.getSharedPreferences("settings", 0);
-        toggleImg = settings.getBoolean("image_load", true);
         ColorPreferences mColor = ColorPreferences.getInstance(c);
         highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
         font = mColor.getColor(ColorPreferences.FONT_COLOR);
-
+        toggleImg = mColor.loadImage();
         ui = new WeakReference<>((TweetDetail)c);
         replyList = (RecyclerView) ui.get().findViewById(R.id.answer_list);
     }
@@ -86,12 +79,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         long mode = data[1];
         try {
             Tweet tweet = mTwitter.getStatus(tweetID);
-            Tweet embeddedTweet = tweet.embedded;
-            if(embeddedTweet != null) {
+            if(tweet.embedded != null) {
                 retweeter = "Retweet "+tweet.user.screenname;
                 retweeterID = tweet.user.userID;
-                tweet = mTwitter.getStatus(embeddedTweet.tweetID);
-                tweetID = embeddedTweet.tweetID;
+                tweet = tweet.embedded;
+                tweetID = tweet.tweetID;
                 rtFlag = true;
             }
             rt = tweet.retweet;
@@ -109,13 +101,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 apiName = formatString(tweet.source);
                 dateString = DateFormat.getDateTimeInstance().format(new Date(tweet.time));
                 repliedUsername = tweet.replyName;
-
-                if(toggleImg) {
-                    String pbLink = tweet.user.profileImg;
-                    InputStream iStream = new URL(pbLink).openStream();
-                    profile_btm = BitmapFactory.decodeStream(iStream);
-                    medialinks = tweet.media;
-                }
+                profile_pb = tweet.user.profileImg+"_bigger";
+                medialinks = tweet.media;
             }
             else if(mode == RETWEET) {
                 if(retweeted) {
@@ -223,8 +210,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 tweet_verify.setVisibility(View.VISIBLE);
             }
             if(toggleImg) {
-                profile_img.setImageBitmap(profile_btm);
-                if(medialinks.length != 0) {
+                Picasso.with(ui.get()).load(profile_pb).into(profile_img);
+                if(medialinks != null && medialinks.length != 0) {
                     mediabutton.setVisibility(View.VISIBLE);
                     mediabutton.setOnClickListener(this);
                 }
@@ -260,6 +247,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         }
     }
 
+
     private String formatString(String input) {
         StringBuilder output = new StringBuilder("gesendet von: ");
         boolean openTag = false;
@@ -275,6 +263,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         }
         return output.toString();
     }
+
 
     private Spannable highlight(String tweet) {
         Spannable sTweet = new SpannableStringBuilder(tweet);
@@ -312,6 +301,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         }
         return sTweet;
     }
+
 
     private Spannable spanning(Spannable sTweet, final int start, final int end) {
         sTweet.setSpan(new ClickableSpan() {
@@ -364,7 +354,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             case R.id.answer_reference_detail:
                 Intent tweet = new Intent(ui.get(), TweetDetail.class);
                 tweet.putExtra("tweetID",tweetReplyID);
-                tweet.putExtra("username", repliedUsername);
+                tweet.putExtra("username", '@'+repliedUsername);
                 ui.get().startActivity(tweet);
                 break;
 

@@ -61,7 +61,7 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
         vh.screenname.setText(user.screenname);
         vh.username.setText(user.username);
         if(loadImage) {
-            Picasso.with(parent.getContext()).load(user.profileImg).into(vh.profileImg);
+            Picasso.with(parent.getContext()).load(user.profileImg+"_mini").into(vh.profileImg);
         }
         if(user.isVerified) {
             vh.verifyIco.setVisibility(View.VISIBLE);

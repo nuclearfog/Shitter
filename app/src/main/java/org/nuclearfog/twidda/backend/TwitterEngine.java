@@ -45,6 +45,7 @@ public class TwitterEngine {
     private Context context;
     private SharedPreferences settings;
     private RequestToken reqToken;
+    private boolean login;
     private int load;
 
 
@@ -55,6 +56,7 @@ public class TwitterEngine {
      */
     private TwitterEngine(Context context) {
         settings = context.getSharedPreferences("settings", 0);
+        login = settings.getBoolean("login", false);
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
@@ -108,6 +110,7 @@ public class TwitterEngine {
         builder.setTweetModeExtended(true);
         AccessToken token = new AccessToken(key1,key2);
         twitter = new TwitterFactory( builder.build() ).getInstance(token);
+        login = true;
     }
 
 
@@ -134,12 +137,19 @@ public class TwitterEngine {
      */
     private void init() {
         String key1,key2;
-        if( settings.getBoolean("login", false) ) {
+        if( login ) {
             key1 = settings.getString("key1", " ");
             key2 = settings.getString("key2", " ");
-            twitterID = settings.getLong("userID", -1L);
             initKeys(key1,key2);
         }
+        twitterID = settings.getLong("userID", -1L);
+    }
+
+    /**
+     * @return if Twitter4J is registered
+     */
+    public boolean loggedIn() {
+        return login;
     }
 
 
@@ -420,7 +430,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public void favorite(long id, boolean active) throws TwitterException {
-        if(!active){
+        if(!active) {
             twitter.createFavorite(id);
         } else {
             twitter.destroyFavorite(id);
@@ -514,7 +524,7 @@ public class TwitterEngine {
      * @return User item
      */
     private TwitterUser getUser(User user) {
-        return new TwitterUser(user.getId(),user.getName(),user.getScreenName(),user.getMiniProfileImageURL(),
+        return new TwitterUser(user.getId(),user.getName(),user.getScreenName(),
                 user.getOriginalProfileImageURL(),user.getDescription(),user.getLocation(),user.isVerified(),
                 user.isProtected(),user.getURL(),user.getProfileBannerURL(),user.getCreatedAt().getTime(),
                 user.getFriendsCount(),user.getFollowersCount());

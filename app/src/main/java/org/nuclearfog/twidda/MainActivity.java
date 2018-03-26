@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
@@ -46,22 +46,23 @@ public class MainActivity extends AppCompatActivity implements
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private RecyclerView timelineList, trendList,mentionList;
     private MenuItem profile, tweet, search, setting;
-    private SharedPreferences settings;
     private SearchView searchQuery;
     private Toolbar toolbar;
     private TabHost tabhost;
     private String currentTab = "timeline";
     private int background, font_color, highlight;
+    private long homeId = 0L;
+    private final int REQCODE = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
-        settings = getSharedPreferences("settings", 0);
-        boolean login = settings.getBoolean("login", false);
+        TwitterEngine mTwitter = TwitterEngine.getInstance(this);
+        boolean login = mTwitter.loggedIn();
         if( !login ) {
             Intent i = new Intent(this, LoginPage.class);
-            startActivityForResult(i,1);
+            startActivityForResult(i,REQCODE);
         } else {
             login();
         }
@@ -70,10 +71,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);
-        if(returnCode == RESULT_OK) {
-            login();
-        } else {
-            finish();
+        if(reqCode == REQCODE) {
+            if(returnCode == RESULT_OK) {
+                login();
+            } else {
+                finish();
+            }
         }
     }
 
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_profile:
                 intent = new Intent(this, UserProfile.class);
                 Bundle bundle = new Bundle();
-                bundle.putLong("userID",settings.getLong("userID", -1));
+                bundle.putLong("userID",homeId);
                 bundle.putBoolean("home", true);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -269,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements
      * Login Handle
      */
     private void login() {
+        homeId = TwitterEngine.getHomeId();
         timelineList = (RecyclerView) findViewById(R.id.tl_list);
         trendList = (RecyclerView) findViewById(R.id.tr_list);
         mentionList = (RecyclerView) findViewById(R.id.m_list);

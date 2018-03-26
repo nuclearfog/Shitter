@@ -94,7 +94,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         vh.favorite.setText(favorit);
         vh.time.setText(stringTime(tweet.time));
         if(img_ldr) {
-            Picasso.with(parent.getContext()).load(tweet.user.profileImg).into(vh.profile);
+            Picasso.with(parent.getContext()).load(tweet.user.profileImg+"_mini").into(vh.profile);
         }
         if(tweet.user.isVerified) {
             vh.verify.setVisibility(View.VISIBLE);

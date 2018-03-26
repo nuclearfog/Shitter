@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
@@ -80,17 +79,18 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
-        SearchView searchQuery = (SearchView)m.findItem(R.id.new_search).getActionView();
+        final SearchView searchQuery = (SearchView)m.findItem(R.id.new_search).getActionView();
         searchQuery.setQueryHint(search);
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
                 search = s;
-                ProgressBar mCircle = (ProgressBar)findViewById(R.id.search_progress);
-                mCircle.setVisibility(View.VISIBLE);
+                searchQuery.setQueryHint(search);
+                findViewById(R.id.search_progress).setVisibility(View.VISIBLE);
                 tweetSearch.setAdapter(null);
+                userSearch.setAdapter(null);
                 getContent();
-                return false;
+                return true;
             }
             @Override
             public boolean onQueryTextChange(String s) {
@@ -144,7 +144,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 Bundle bundle = new Bundle();
                 long userID = user.userID;
+                String username = user.screenname;
                 bundle.putLong("userID",userID);
+                bundle.putString("username", username);
                 profile.putExtras(bundle);
                 startActivity(profile);
                 break;

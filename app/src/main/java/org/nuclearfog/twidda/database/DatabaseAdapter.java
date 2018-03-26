@@ -19,6 +19,7 @@ public class DatabaseAdapter {
     private List<Tweet> tweetlist;
     private Context context;
 
+
     public DatabaseAdapter(Context context) {
         dataHelper = AppDatabase.getInstance(context);
         tweetlist = new ArrayList<>();
@@ -53,8 +54,8 @@ public class DatabaseAdapter {
                     fav.put("userID", id);
                     db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_REPLACE);
                 } else if(mode == MENT) {
-                    ment.put("mTweetID", tweet.tweetID);
-                    db.insertWithOnConflict("timeline",null,ment,SQLiteDatabase.CONFLICT_IGNORE);
+                    ment.put("tweetID", tweet.tweetID);
+                    db.insertWithOnConflict("mention",null,ment,SQLiteDatabase.CONFLICT_REPLACE);
                 }
             }
         }
@@ -68,11 +69,11 @@ public class DatabaseAdapter {
         if(mode == HOME) {
             SQL_GET_HOME = "SELECT * FROM timeline " +
                     "INNER JOIN tweet ON timeline.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID DESC";
+                    "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID DESC";
         } else if(mode == MENT) {
-            SQL_GET_HOME = "SELECT * FROM timeline " +
-                    "INNER JOIN tweet ON timeline.mTweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID=user.userID ORDER BY tweetID ASC";
+            SQL_GET_HOME = "SELECT * FROM mention " +
+                    "INNER JOIN tweet ON mention.tweetID = tweet.tweetID " +
+                    "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID ASC";
         }
         else if(mode == TWEET) {
             SQL_GET_HOME = "SELECT * FROM user " +
@@ -87,7 +88,7 @@ public class DatabaseAdapter {
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
-                Tweet tweet = getTweet(cursor);
+                Tweet tweet = getStatus(cursor);
                 tweetlist.add(tweet);
             } while(cursor.moveToNext());
         }
@@ -97,7 +98,7 @@ public class DatabaseAdapter {
     }
 
 
-    public Tweet getTweet(long tweetId) {
+    public Tweet getStatus(long tweetId) {
         SQLiteDatabase search = dataHelper.getReadableDatabase();
         Tweet result = null;
         String query = "SELECT * FROM tweet " +
@@ -105,7 +106,7 @@ public class DatabaseAdapter {
                 "WHERE tweet.tweetID == " + tweetId;
         Cursor cursor = search.rawQuery(query,null);
         if(cursor.moveToFirst())
-            result = getTweet(cursor);
+            result = getStatus(cursor);
         cursor.close();
         return result;
     }
@@ -123,7 +124,7 @@ public class DatabaseAdapter {
     }
 
 
-    private Tweet getTweet(Cursor cursor) {
+    private Tweet getStatus(Cursor cursor) {
         int index;
         index = cursor.getColumnIndex("time");
         long time = cursor.getLong(index);
@@ -150,7 +151,7 @@ public class DatabaseAdapter {
         TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
         if(retweetId > 0)
-            embeddedTweet = getTweet(retweetId);
+            embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,null,
                 source,replyStatusId,embeddedTweet,retweeted,favorized);
     }
@@ -169,8 +170,6 @@ public class DatabaseAdapter {
         boolean locked = cursor.getInt(index) == 1;
         index = cursor.getColumnIndex("pbLink");
         String profileImg = cursor.getString(index);
-        index = cursor.getColumnIndex("fullpb");
-        String fullpb = cursor.getString(index);
         index = cursor.getColumnIndex("bio");
         String bio = cursor.getString(index);
         index = cursor.getColumnIndex("link");
@@ -185,15 +184,16 @@ public class DatabaseAdapter {
         int following = cursor.getInt(index);
         index = cursor.getColumnIndex("follower");
         int follower = cursor.getInt(index);
-        return new TwitterUser(userId, username,screenname,profileImg,fullpb,bio,
+        return new TwitterUser(userId, username,screenname,profileImg,bio,
                 location,isVerified,locked,link,banner,createdAt,following,follower);
     }
 
 
     private void storeStatus(Tweet tweet, SQLiteDatabase db, long retweetID) {
         ContentValues status = new ContentValues();
-        ContentValues user   = new ContentValues();
+
         TwitterUser mUser = tweet.user;
+        storeUser(mUser,db);
 
         status.put("tweetID", tweet.tweetID);
         status.put("userID", mUser.userID);
@@ -208,23 +208,27 @@ public class DatabaseAdapter {
         status.put("retweeted",tweet.retweeted);
         status.put("favorized", tweet.favorized);
 
-        user.put("userID", mUser.userID);
-        user.put("username", mUser.username);
-        user.put("scrname", mUser.screenname.substring(1));
-        user.put("pbLink", mUser.profileImg);
-        user.put("fullpb", mUser.fullpb);
-        user.put("verify", mUser.isVerified);
-        user.put("locked", mUser.isLocked);
-        user.put("bio", mUser.bio);
-        user.put("link", mUser.link);
-        user.put("location", mUser.location);
-        user.put("banner", mUser.bannerImg);
-        user.put("createdAt", mUser.created);
-        user.put("following", mUser.following);
-        user.put("follower", mUser.follower);
-
         db.insertWithOnConflict("tweet",null, status,SQLiteDatabase.CONFLICT_REPLACE);
-        db.insertWithOnConflict("user",null, user,SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+
+    private void storeUser(TwitterUser user, SQLiteDatabase db) {
+        ContentValues userColumn   = new ContentValues();
+        userColumn.put("userID", user.userID);
+        userColumn.put("username", user.username);
+        userColumn.put("scrname", user.screenname.substring(1));
+        userColumn.put("pbLink", user.profileImg);
+        userColumn.put("verify", user.isVerified);
+        userColumn.put("locked", user.isLocked);
+        userColumn.put("bio", user.bio);
+        userColumn.put("link", user.link);
+        userColumn.put("location", user.location);
+        userColumn.put("banner", user.bannerImg);
+        userColumn.put("createdAt", user.created);
+        userColumn.put("following", user.following);
+        userColumn.put("follower", user.follower);
+
+        db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_IGNORE);
     }
 
 

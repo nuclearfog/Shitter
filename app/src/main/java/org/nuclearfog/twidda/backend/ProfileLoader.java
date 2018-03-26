@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +34,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
     private String screenName, username, description, location, follower, following;
     private RecyclerView profileTweets, profileFavorits;
-    private String imageLink,/* bannerLink,*/ fullPbLink, link, dateString;
+    private String /* bannerLink,*/ profileImage, link, dateString;
     private TimelineRecycler homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
@@ -57,12 +56,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         profileTweets = (RecyclerView) ui.get().findViewById(R.id.ht_list);
         profileFavorits = (RecyclerView) ui.get().findViewById(R.id.hf_list);
         mTwitter = TwitterEngine.getInstance(context);
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        imgEnabled = settings.getBoolean("image_load",true);
         ColorPreferences mColor = ColorPreferences.getInstance(ui.get());
         highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
         font = mColor.getColor(ColorPreferences.FONT_COLOR);
+        imgEnabled = mColor.loadImage();
     }
+
+
 
     @Override
     protected Long doInBackground(Long... args) {
@@ -80,10 +80,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             if(MODE == GET_INFORMATION)
             {
-                DatabaseAdapter userdb = new DatabaseAdapter(ui.get());
-                TwitterUser user = userdb.getUser(userId);
-                if(user == null)
-                    user = mTwitter.getUser(userId);
+                TwitterUser user = mTwitter.getUser(userId);
                 screenName = user.screenname;
                 username = user.username;
                 description = user.bio;
@@ -93,9 +90,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 link = user.link;
                 follower = Integer.toString(user.follower);
                 following = Integer.toString(user.following);
-                imageLink = user.profileImg;
                 // bannerLink = user.bannerImg;
-                fullPbLink = user.fullpb;
+                profileImage = user.profileImg;
                 Date d = new Date(user.created);
                 dateString = "seit "+ DateFormat.getDateTimeInstance().format(d);
             }
@@ -206,16 +202,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 connect.findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
-                Picasso.with(context).load(imageLink).into(profile);
-              //  Picasso.with(context).load(bannerLink).into(banner); // TODO
+                Picasso.with(context).load(profileImage+"_bigger").into(profile);
                 profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new ImagePopup(context).execute(fullPbLink);
+                        new ImagePopup(context).execute(profileImage);
                     }
                 });
             }
-            ui.get().onLoaded();
         }
         else if(mode == GET_TWEETS)
         {
@@ -245,9 +239,5 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 tool.getMenu().getItem(2).setIcon(R.drawable.block);
             }
         }
-    }
-
-    public interface OnProfileFinished {
-        void onLoaded();
     }
 }

@@ -45,4 +45,6 @@
     <string name="load_factor">Ladefaktor</string>
     <string name="followback">Folgt dir</string>
     <string name="load">Anzahl Tweets</string>
+    <string name="block">Block</string>
+    <string name="follow">folgen</string>
 </resources>

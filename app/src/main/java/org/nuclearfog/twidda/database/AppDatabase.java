@@ -22,15 +22,11 @@ public class AppDatabase extends SQLiteOpenHelper
             "FOREIGN KEY (userID) REFERENCES user(userID)," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
-    private static final String retweetTable = "CREATE TABLE IF NOT EXISTS retweet ("+
-            "userID INTEGER, tweetID INTEGER UNIQUE," +
-            "FOREIGN KEY (userID) REFERENCES user(userID)," +
-            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
-
     private static final String timelineTable = "CREATE TABLE IF NOT EXISTS timeline (" +
-            "tweetID INTEGER UNIQUE, mTweetID INTEGER UNIQUE," +
-            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));" +
-            "FOREIGN KEY (mTweetID) REFERENCES tweet(tweetID));";
+            "tweetID INTEGER UNIQUE, FOREIGN KEY (tweetID) REFERENCES tweet(tweetID) );";
+
+    private static final String mentionTable = "CREATE TABLE IF NOT EXISTS mention (" +
+            "tweetID INTEGER UNIQUE, FOREIGN KEY (tweetID) REFERENCES tweet(tweetID) );";
 
     private static final String trendTable = "CREATE TABLE IF NOT EXISTS trend (" +
             "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";
@@ -48,8 +44,8 @@ public class AppDatabase extends SQLiteOpenHelper
         db.execSQL(tweetTable);
         db.execSQL(trendTable);
         db.execSQL(timelineTable);
+        db.execSQL(mentionTable);
         db.execSQL(favoriteTable);
-        db.execSQL(retweetTable);
     }
 
     @Override
@@ -58,7 +54,7 @@ public class AppDatabase extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + "tweet");
         db.execSQL("DROP TABLE IF EXISTS " + "favorit");
         db.execSQL("DROP TABLE IF EXISTS " + "timeline");
-        db.execSQL("DROP TABLE IF EXISTS " + "retweet");
+        db.execSQL("DROP TABLE IF EXISTS " + "mentionTable");
         db.execSQL("DROP TABLE IF EXISTS " + "trend");
         onCreate(db);
     }
