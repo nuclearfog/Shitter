@@ -73,7 +73,7 @@ public class DatabaseAdapter {
         } else if(mode == MENT) {
             SQL_GET_HOME = "SELECT * FROM mention " +
                     "INNER JOIN tweet ON mention.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID ASC";
+                    "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID DESC";
         }
         else if(mode == TWEET) {
             SQL_GET_HOME = "SELECT * FROM user " +

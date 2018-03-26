@@ -465,6 +465,8 @@ public class TwitterEngine {
      */
     private List<TwitterUser> convertUserList(List<User> users) {
         List <TwitterUser> result = new ArrayList<>();
+        if(users.isEmpty())
+            return result;
         try {
             for(User user : users) {
                 TwitterUser item = getUser(user);
@@ -485,6 +487,8 @@ public class TwitterEngine {
      */
     private List<Tweet> convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
+        if(statuses.isEmpty())
+            return result;
         try {
             for(Status status : statuses) {
                 Status embedded = status.getRetweetedStatus();
