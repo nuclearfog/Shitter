@@ -45,7 +45,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.profile);
+        setContentView(R.layout.profilepage);
         Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)

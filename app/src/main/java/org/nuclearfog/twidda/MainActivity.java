@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
             startActivityForResult(i,REQCODE);
         } else {
             login();
+            setTabContent();
         }
     }
 
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
         if(reqCode == REQCODE) {
             if(returnCode == RESULT_OK) {
                 login();
+                setTabContent();
             } else {
                 finish();
             }
@@ -312,8 +314,6 @@ public class MainActivity extends AppCompatActivity implements
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
-
-        setTabContent();
     }
 
     /**

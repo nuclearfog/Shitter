@@ -17,7 +17,7 @@ public class LoginPage extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle b){
         super.onCreate(b);
-        setContentView(R.layout.login);
+        setContentView(R.layout.loginpage);
         pin = findViewById(R.id.pin);
         findViewById(R.id.linkButton).setOnClickListener(this);
         findViewById(R.id.get).setOnClickListener(this);

@@ -49,7 +49,7 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
         this.parent = parent;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.useritem, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
     }

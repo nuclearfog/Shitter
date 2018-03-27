@@ -41,7 +41,7 @@ public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
         this.parent = parent;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.trend, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
     }

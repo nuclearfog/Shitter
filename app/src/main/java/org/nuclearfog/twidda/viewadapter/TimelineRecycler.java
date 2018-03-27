@@ -68,7 +68,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     @Override
     public ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
         this.parent = parent;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tweet, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
     }

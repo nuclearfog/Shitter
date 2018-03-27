@@ -36,7 +36,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.search);
+        setContentView(R.layout.searchpage);
         getExtras(getIntent().getExtras());
         int background = ColorPreferences.getInstance(this).getColor(ColorPreferences.BACKGROUND);
 

@@ -39,7 +39,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
-        setContentView(R.layout.settings);
+        setContentView(R.layout.settingpage);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)

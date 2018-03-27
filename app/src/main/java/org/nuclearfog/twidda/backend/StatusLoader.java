@@ -80,7 +80,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         try {
             Tweet tweet = mTwitter.getStatus(tweetID);
             if(tweet.embedded != null) {
-                retweeter = "Retweet "+tweet.user.screenname;
+                retweeter = tweet.user.screenname;
                 retweeterID = tweet.user.userID;
                 tweet = tweet.embedded;
                 tweetID = tweet.tweetID;
@@ -203,7 +203,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 replyName.setVisibility(View.VISIBLE);
             }
             if(rtFlag) {
-                userRetweet.setText(retweeter);
+                String retPrompt = "Retweet "+retweeter;
+                userRetweet.setText(retPrompt);
                 userRetweet.setOnClickListener(this);
                 userRetweet.setVisibility(View.VISIBLE);
             }

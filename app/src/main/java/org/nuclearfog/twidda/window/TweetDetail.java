@@ -39,7 +39,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.tweet_detail);
+        setContentView(R.layout.tweetpage);
         getExtras(getIntent().getExtras());
 
         boolean home = userID == TwitterEngine.getHomeId();
