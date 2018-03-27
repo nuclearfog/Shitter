@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements
     private String currentTab = "timeline";
     private int background, font_color, highlight;
     private long homeId = 0L;
+    private boolean settingChanged = false;
     private final int REQCODE = 666;
 
     @Override
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(intent);
                 return true;
             case R.id.action_settings:
+                settingChanged = true;
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 return true;
@@ -134,9 +136,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        setTabContent();
+        if(settingChanged) {
+            timelineList.setAdapter(null);
+            trendList.setAdapter(null);
+            mentionList.setAdapter(null);
+            setTabContent();
+        }
     }
 
     @Override
