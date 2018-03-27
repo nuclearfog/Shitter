@@ -228,7 +228,7 @@ public class DatabaseAdapter {
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
 
-        db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_IGNORE);
+        db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
 

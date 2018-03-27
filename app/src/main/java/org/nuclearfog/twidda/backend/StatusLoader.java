@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 import twitter4j.TwitterException;
@@ -33,6 +32,7 @@ import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
+import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
@@ -53,7 +53,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private String errMSG = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
-    private long tweetReplyID, userID, retweeterID;
+    private long tweetReplyID,tweetID, userID, retweeterID;
     private int rt, fav;
     private int highlight, font;
 
@@ -75,7 +75,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
      */
     @Override
     protected Long doInBackground(Long... data) {
-        long tweetID = data[0];
+        tweetID = data[0];
         long mode = data[1];
         try {
             Tweet tweet = mTwitter.getStatus(tweetID);
@@ -99,7 +99,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 userID = tweet.user.userID;
                 scrNameStr = tweet.user.screenname;
                 apiName = formatString(tweet.source);
-                dateString = DateFormat.getDateTimeInstance().format(new Date(tweet.time));
+                dateString = DateFormat.getDateTimeInstance().format(tweet.time);
                 repliedUsername = tweet.replyName;
                 profile_pb = tweet.user.profileImg+"_bigger";
                 medialinks = tweet.media;
@@ -180,6 +180,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         Button retweetButton = (Button)connect.findViewById(R.id.rt_button_detail);
         Button favoriteButton = (Button)connect.findViewById(R.id.fav_button_detail);
         Button mediabutton = (Button)connect.findViewById(R.id.image_attach);
+        Button answer = (Button) connect.findViewById(R.id.answer_button);
 
         if(mode == LOAD_TWEET) {
             tweet.setMovementMethod(LinkMovementMethod.getInstance());
@@ -218,6 +219,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             setIcons(favoriteButton, retweetButton);
             profile_img.setOnClickListener(this);
+            answer.setOnClickListener(this);
         }
         else if(mode == RETWEET) {
             String rtStr = Integer.toString(rt);
@@ -358,6 +360,15 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 ui.get().startActivity(tweet);
                 break;
 
+            case R.id.answer_button:
+                Intent tweetpop = new Intent(ui.get(), TweetPopup.class);
+                Bundle ext = new Bundle();
+                ext.putLong("TweetID", tweetID);
+                ext.putString("Addition", scrNameStr);
+                tweetpop.putExtras(ext);
+                ui.get().startActivity(tweetpop);
+                break;
+
             case R.id.image_attach:
                 new ImagePopup(ui.get()).execute(medialinks);
                 break;
@@ -366,7 +377,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 Intent rProfile = new Intent(ui.get(), UserProfile.class);
                 Bundle extras = new Bundle();
                 extras.putLong("userID",retweeterID);
-                extras.putString("username", scrNameStr);
+                extras.putString("username", retweeter);
                 rProfile.putExtras(extras);
                 ui.get().startActivity(rProfile);
                 break;

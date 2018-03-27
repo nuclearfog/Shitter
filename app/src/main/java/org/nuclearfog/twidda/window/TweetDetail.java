@@ -45,7 +45,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         boolean home = userID == TwitterEngine.getHomeId();
 
         answer_list = (RecyclerView) findViewById(R.id.answer_list);
-        Button answer = (Button) findViewById(R.id.answer_button);
         Button retweet = (Button) findViewById(R.id.rt_button_detail);
         Button favorite = (Button) findViewById(R.id.fav_button_detail);
         Button delete = (Button) findViewById(R.id.delete);
@@ -60,7 +59,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
         answerReload.setOnRefreshListener(this);
-        answer.setOnClickListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
         date.setOnClickListener(this);
@@ -91,13 +89,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         Bundle bundle = new Bundle();
         StatusLoader mStat = new StatusLoader(this);
         switch(v.getId()) {
-            case R.id.answer_button:
-                intent = new Intent(this, TweetPopup.class);
-                bundle.putLong("TweetID", tweetID);
-                bundle.putString("Addition", username);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                break;
             case R.id.rt_button_detail:
                 mStat.execute(tweetID, StatusLoader.RETWEET);
                 break;
