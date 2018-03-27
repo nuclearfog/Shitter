@@ -312,6 +312,8 @@ public class MainActivity extends AppCompatActivity implements
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
+
+        setTabContent();
     }
 
     /**
