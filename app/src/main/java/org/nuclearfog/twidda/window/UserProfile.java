@@ -175,8 +175,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             tlAdp = (TimelineRecycler) favoritList.getAdapter();
         }
         Tweet tweet = tlAdp.getData().get(position);
-        if(tweet.embedded != null)
-            tweet = tweet.embedded;
         long tweetID = tweet.tweetID;
         long userID = tweet.user.userID;
         String username = tweet.user.screenname;

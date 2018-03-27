@@ -114,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements
                 intent = new Intent(this, UserProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong("userID",homeId);
-                bundle.putBoolean("home", true);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
@@ -251,8 +250,6 @@ public class MainActivity extends AppCompatActivity implements
                 if(!mentionReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) mentionList.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-                    if(tweet.embedded != null)
-                        tweet = tweet.embedded;
                     long tweetID = tweet.tweetID;
                     long userID = tweet.user.userID;
                     String username = tweet.user.screenname;

@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.List;
 import com.squareup.picasso.Picasso;
 
+import twitter4j.TwitterException;
+
 public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
     public static final long GET_INFORMATION = 0x0;
@@ -38,6 +40,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private TimelineRecycler homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
+    private String errMsg = "";
     private int font, highlight;
     private boolean isHome = false;
     private boolean imgEnabled = false;
@@ -147,7 +150,16 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     muted = mTwitter.toggleBlock(userId);
                 }
             }
-        } catch(Exception err) {
+        } catch (TwitterException err) {
+            int errCode = err.getErrorCode();
+            if(errCode != 136 && errCode != -1){
+                errMsg = err.getMessage();
+                return FAILURE;
+            }
+            err.printStackTrace();
+        }
+        catch(Exception err) {
+            errMsg = err.getMessage();
             err.printStackTrace();
             return FAILURE;
         }
@@ -223,7 +235,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == FAILURE)
         {
-            Toast.makeText(context,"Fehler beim Laden des Profils",Toast.LENGTH_LONG).show();
+            Toast.makeText(context,"Fehler: "+errMsg,Toast.LENGTH_LONG).show();
             tweetsReload.setRefreshing(false);
             favoritsReload.setRefreshing(false);
         }
