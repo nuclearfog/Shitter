@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements
         if(reqCode == REQCODE) {
             if(returnCode == RESULT_OK) {
                 login();
-                setTabContent();
             } else {
                 finish();
             }
@@ -140,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements
             trendList.setAdapter(null);
             mentionList.setAdapter(null);
             setTabContent();
+            settingChanged = false;
         }
     }
 

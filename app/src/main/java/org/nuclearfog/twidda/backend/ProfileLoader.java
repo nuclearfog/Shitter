@@ -32,7 +32,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     public static final long GET_TWEETS      = 0x2;
     public static final long GET_FAVS        = 0x3;
     public static final long ACTION_MUTE     = 0x4;
+    public static final long LOAD_DB         = 0x5;
     private static final long FAILURE        = 0x6;
+    private static final long IGNORE         = 0x9;
 
     private String screenName, username, description, location, follower, following;
     private RecyclerView profileTweets, profileFavorits;
@@ -80,9 +82,16 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 isFollowed = connection[1];
                 muted = connection[2];
             }
-            if(MODE == GET_INFORMATION)
+            if(MODE == GET_INFORMATION || MODE == LOAD_DB)
             {
-                TwitterUser user = mTwitter.getUser(userId);
+                TwitterUser user;
+                if(MODE == LOAD_DB) {
+                    user = new DatabaseAdapter(ui.get()).getUser(userId);
+                    if(user == null)
+                        return IGNORE;
+                } else {
+                    user = mTwitter.getUser(userId);
+                }
                 screenName = user.screenname;
                 username = user.username;
                 description = user.bio;
@@ -159,9 +168,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             int errCode = err.getErrorCode();
             if(errCode != 136 && errCode != -1){
                 errMsg = err.getMessage();
-                return FAILURE;
             }
             err.printStackTrace();
+            return FAILURE;
         }
         catch(Exception err) {
             errMsg = err.getMessage();
@@ -178,23 +187,21 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             return;
         final Context context = connect;
 
-        TextView txtUser = (TextView)connect.findViewById(R.id.profile_username);
-        TextView txtScrName = (TextView)connect.findViewById(R.id.profile_screenname);
-        TextView txtBio = (TextView)connect.findViewById(R.id.bio);
-        TextView txtLocation = (TextView)connect.findViewById(R.id.location);
-        TextView txtLink = (TextView)connect.findViewById(R.id.links);
-        TextView txtCreated = (TextView)connect.findViewById(R.id.profile_date);
-        TextView txtFollowing = (TextView)connect.findViewById(R.id.following);
-        TextView txtFollower  = (TextView)connect.findViewById(R.id.follower);
-        ImageView profile  = (ImageView)connect.findViewById(R.id.profile_img);
-        //ImageView banner   = (ImageView)connect.findViewById(R.id.banner);
-        ImageView locationIcon = (ImageView)connect.findViewById(R.id.location_img);
-        connect.findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
-        connect.findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
-        SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
-        SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
+        if(mode == GET_INFORMATION || mode == LOAD_DB) {
+            TextView txtUser = (TextView)connect.findViewById(R.id.profile_username);
+            TextView txtScrName = (TextView)connect.findViewById(R.id.profile_screenname);
+            TextView txtBio = (TextView)connect.findViewById(R.id.bio);
+            TextView txtLocation = (TextView)connect.findViewById(R.id.location);
+            TextView txtLink = (TextView)connect.findViewById(R.id.links);
+            TextView txtCreated = (TextView)connect.findViewById(R.id.profile_date);
+            TextView txtFollowing = (TextView)connect.findViewById(R.id.following);
+            TextView txtFollower  = (TextView)connect.findViewById(R.id.follower);
+            ImageView profile  = (ImageView)connect.findViewById(R.id.profile_img);
+            //ImageView banner   = (ImageView)connect.findViewById(R.id.banner);
+            ImageView locationIcon = (ImageView)connect.findViewById(R.id.location_img);
+            connect.findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
+            connect.findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
 
-        if(mode == GET_INFORMATION) {
             txtUser.setText(username);
             txtScrName.setText(screenName);
             txtBio.setText(description);
@@ -231,16 +238,20 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         else if(mode == GET_TWEETS)
         {
             profileTweets.setAdapter(homeTl);
+            SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
             tweetsReload.setRefreshing(false);
         }
         else if(mode == GET_FAVS)
         {
             profileFavorits.setAdapter(homeFav);
+            SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
             favoritsReload.setRefreshing(false);
         }
         else if(mode == FAILURE)
         {
             Toast.makeText(context,"Fehler: "+errMsg,Toast.LENGTH_LONG).show();
+            SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
+            SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);
             favoritsReload.setRefreshing(false);
         }

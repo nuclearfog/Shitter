@@ -170,7 +170,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         tweetaction.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
-
+        new StatusLoader(this).execute(tweetID, StatusLoader.LOAD_DB);
         mStat = new StatusLoader(this);
         mReply = new StatusLoader(this);
         mStat.execute(tweetID, StatusLoader.LOAD_TWEET);

@@ -36,14 +36,7 @@ public class DatabaseAdapter {
 
         for(int pos = 0; pos < stats.size(); pos++) {
             Tweet tweet = stats.get(pos);
-            Tweet rtStat = tweet.embedded;
-
-            if(rtStat != null) {
-                storeStatus(rtStat, db,-1L);
-                storeStatus(tweet, db, rtStat.tweetID);
-            } else {
-                storeStatus(tweet, db, -1L);
-            }
+            storeStatus(tweet,db);
 
             if(mode != TWEET) {
                 if(mode == HOME) {
@@ -188,9 +181,24 @@ public class DatabaseAdapter {
                 location,isVerified,locked,link,banner,createdAt,following,follower);
     }
 
+    public void storeStatus(Tweet tweet) {
+        storeStatus(tweet, dataHelper.getWritableDatabase());
+    }
 
-    private void storeStatus(Tweet tweet, SQLiteDatabase db, long retweetID) {
+    public void storeUSer(TwitterUser user) {
+        storeUser(user, dataHelper.getWritableDatabase());
+    }
+
+    private void storeStatus(Tweet tweet, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
+
+        Tweet rtStat = tweet.embedded;
+        long rtId = -1;
+
+        if(rtStat != null) {
+            storeStatus(rtStat, db);
+            rtId = rtStat.tweetID;
+        }
 
         TwitterUser mUser = tweet.user;
         storeUser(mUser,db);
@@ -201,7 +209,7 @@ public class DatabaseAdapter {
         status.put("tweet", tweet.tweet);
         status.put("retweet", tweet.retweet);
         status.put("favorite", tweet.favorit);
-        status.put("retweetID", retweetID);
+        status.put("retweetID", rtId);
         status.put("source", tweet.source);
         status.put("replyID", tweet.replyID);
         status.put("replyname", tweet.replyName);

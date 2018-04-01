@@ -20,7 +20,6 @@ import twitter4j.QueryResult;
 import twitter4j.Relationship;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
-import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -36,8 +35,8 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class TwitterEngine {
 
-    private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
-    private final String TWITTER_CONSUMER_SECRET = "xxx";
+    private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
+    private final String TWITTER_CONSUMER_SECRET = "RQrf0uQus5v7IMuYgdlVeBuLw1ApRJhxcAMM8MyUVRh1nKSxnR";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;

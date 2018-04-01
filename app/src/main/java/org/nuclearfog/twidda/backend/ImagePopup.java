@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+
 import org.nuclearfog.twidda.R;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,12 +37,13 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
     @Override
     protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if(popup.getWindow() != null)
+            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         popup.setContentView(mCircle);
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                ImagePopup.this.cancel(true);
+                cancel(true);
             }
         });
         popup.show();
@@ -89,9 +91,8 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
                     left.setOnClickListener(this);
                     right.setOnClickListener(this);
                 }
-            } try {
                 popup.show();
-            } catch(Exception err){}
+            }
         } else {
             popup.dismiss();
         }

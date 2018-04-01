@@ -55,7 +55,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         background = settings.getInt("background_color", 0xff0f114a);
         font_color = settings.getInt("font_color", 0xffffffff);
         highlight = settings.getInt("highlight_color", 0xffff00ff);
-        //imageload = settings.getBoolean("image_load",true);
 
         homeList = (RecyclerView) findViewById(R.id.ht_list);
         homeList.setLayoutManager(new LinearLayoutManager(this));
@@ -202,6 +201,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         mTweets = new ProfileLoader(this);
         mFavorits = new ProfileLoader(this);
         mProfile = new ProfileLoader(this);
+        new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB, 1L);
         mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
         mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
@@ -209,7 +209,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
 
     private void getConnection(long mode) {
-        Intent intent = new Intent(getApplicationContext(), UserDetail.class);
+        Intent intent = new Intent(this, UserDetail.class);
         Bundle bundle = new Bundle();
         bundle.putLong("userID",userId);
         bundle.putLong("mode",mode);
