@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
-import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.backend.listitems.*;
 
@@ -34,10 +34,11 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         tweetSearch = (RecyclerView) ui.get().findViewById(R.id.tweet_result);
         userSearch  = (RecyclerView) ui.get().findViewById(R.id.user_result);
         mTwitter = TwitterEngine.getInstance(context);
-        ColorPreferences mcolor = ColorPreferences.getInstance(context);
-        highlight = mcolor.getColor(ColorPreferences.HIGHLIGHTING);
-        font_color = mcolor.getColor(ColorPreferences.FONT_COLOR);
-        imageload = mcolor.loadImage();
+
+        SharedPreferences settings = context.getSharedPreferences("settings", 0);
+        font_color = settings.getInt("font_color", 0xffffffff);
+        highlight = settings.getInt("highlight_color", 0xffff00ff);
+        imageload = settings.getBoolean("image_load",true);
     }
 
     @Override

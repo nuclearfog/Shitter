@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +38,9 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
         userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         Toolbar toolbar = (Toolbar) findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
-        int background = ColorPreferences.getInstance(this).getColor(ColorPreferences.BACKGROUND);
+        SharedPreferences settings = getSharedPreferences("settings", 0);
+        int background = settings.getInt("background_color", 0xff0f114a);
+
         userList.setBackgroundColor(background);
         getUsers();
     }

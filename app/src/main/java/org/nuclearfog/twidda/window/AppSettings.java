@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.window;
 
+import android.app.Dialog;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -18,22 +19,28 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorChangedListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+
 import org.nuclearfog.twidda.R;
 
 /**
  * App Settings Page
- * @see ColorPreferences
  */
 public class AppSettings extends AppCompatActivity implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener, AlertDialog.OnClickListener {
+        CompoundButton.OnCheckedChangeListener, AlertDialog.OnClickListener, Dialog.OnDismissListener, OnColorChangedListener {
 
     private EditText woeId;
     private SharedPreferences settings;
-    private ColorPreferences mColor;
     private ClipboardManager clip;
+    private Button colorButton1, colorButton2,colorButton3,colorButton4;
     private TextView load_factor;
     private CheckBox toggleImg;
+    private Dialog d;
     private int row, wId;
+    private int background, tweet, font, highlight;
+    private int mode = 0;
     private boolean imgEnabled;
 
     @Override
@@ -45,11 +52,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Button delButon = (Button) findViewById(R.id.delete_db);
-        Button colorButton1 = (Button) findViewById(R.id.color_background);
-        Button colorButton2 = (Button) findViewById(R.id.color_font);
-        Button colorButton3 = (Button) findViewById(R.id.color_tweet);
-        Button colorButton4 = (Button) findViewById(R.id.highlight_color);
+        Button delButton = (Button) findViewById(R.id.delete_db);
+        colorButton1 = (Button) findViewById(R.id.color_background);
+        colorButton2 = (Button) findViewById(R.id.color_font);
+        colorButton3 = (Button) findViewById(R.id.color_tweet);
+        colorButton4 = (Button) findViewById(R.id.highlight_color);
         Button reduce = (Button) findViewById(R.id.less);
         Button enhance = (Button) findViewById(R.id.more);
         Button clipButton = (Button) findViewById(R.id.woeid_clip);
@@ -57,7 +64,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         load_factor = (TextView)findViewById(R.id.number_row);
         woeId = (EditText) findViewById(R.id.woeid);
 
-        delButon.setOnClickListener(this);
+        delButton.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
@@ -67,11 +74,16 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         enhance.setOnClickListener(this);
         clipButton.setOnClickListener(this);
 
-        mColor = ColorPreferences.getInstance(this);
-        colorButton1.setBackgroundColor(mColor.getColor(ColorPreferences.BACKGROUND));
-        colorButton2.setBackgroundColor(mColor.getColor(ColorPreferences.FONT_COLOR));
-        colorButton3.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
-        colorButton4.setBackgroundColor( mColor.getColor(ColorPreferences.HIGHLIGHTING));
+        settings = getSharedPreferences("settings", 0);
+        background = settings.getInt("background_color", 0xff0f114a);
+        font = settings.getInt("font_color", 0xffffffff);
+        tweet = settings.getInt("tweet_color", 0xff19aae8);
+        highlight = settings.getInt("highlight_color", 0xffff00ff);
+
+        colorButton1.setBackgroundColor(background);
+        colorButton2.setBackgroundColor(font);
+        colorButton3.setBackgroundColor(tweet);
+        colorButton4.setBackgroundColor(highlight);
 
         loadSettings();
     }
@@ -105,7 +117,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick( View v ) {
         switch(v.getId()) {
             case R.id.delete_db:
                new AlertDialog.Builder(this)
@@ -115,27 +127,33 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 .show();
                 break;
             case R.id.color_background:
-                mColor.setColor(ColorPreferences.BACKGROUND);
+                setColor(background);
+                mode = 0;
                 break;
             case R.id.color_font:
-                mColor.setColor(ColorPreferences.FONT_COLOR);
+                setColor(font);
+                mode = 1;
                 break;
             case R.id.color_tweet:
-                mColor.setColor(ColorPreferences.TWEET_COLOR);
+                setColor(tweet);
+                mode = 2;
                 break;
             case R.id.highlight_color:
-                mColor.setColor(ColorPreferences.HIGHLIGHTING);
+                setColor(highlight);
+                mode = 3;
                 break;
             case R.id.less:
                 if(row > 10) {
                     row -= 10;
-                    load_factor.setText(Integer.toString(row));
+                    String out1 = Integer.toString(row);
+                    load_factor.setText(out1);
                 }
                 break;
             case R.id.more:
                 if(row < 100) {
                     row += 10;
-                    load_factor.setText(Integer.toString(row));
+                    String out2 = Integer.toString(row);
+                    load_factor.setText(out2);
                 }
                 break;
             case R.id.woeid_clip:
@@ -164,12 +182,48 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    public void onColorChanged(int color) {
+        switch(mode) {
+            case 0:
+                background = color;
+                break;
+            case 1:
+                font = color;
+                break;
+            case 2:
+                tweet = color;
+                break;
+            case 3:
+                highlight = color;
+                break;
+        }
+    }
+
+    @Override
     public void onCheckedChanged(CompoundButton b, boolean checked) {
         imgEnabled = checked;
     }
 
+    @Override
+    public void onDismiss(DialogInterface i) {
+        colorButton1.setBackgroundColor(background);
+        colorButton2.setBackgroundColor(font);
+        colorButton3.setBackgroundColor(tweet);
+        colorButton4.setBackgroundColor(highlight);
+        d.dismiss();
+    }
+
+    public void setColor(int preColor) {
+        d = ColorPickerDialogBuilder.with(this)
+                .showAlphaSlider(false).initialColor(preColor)
+                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
+                .setOnColorChangedListener(this).build();
+        d.setOnDismissListener(this);
+        d.show();
+    }
+
     private void loadSettings() {
-        settings = getApplicationContext().getSharedPreferences("settings", 0);
+        settings = getSharedPreferences("settings", 0);
         clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         row = settings.getInt("preload",10);
         wId = settings.getInt("woeid",23424829);
@@ -188,8 +242,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         edit.putInt("woeid", wId);
         edit.putInt("preload", row);
         edit.putBoolean("image_load", imgEnabled);
+        edit.putInt("background_color",background);
+        edit.putInt("font_color",font);
+        edit.putInt("tweet_color", tweet);
+        edit.putInt("highlight_color", highlight);
         edit.apply();
-        mColor.commit();
-        Toast.makeText(getApplicationContext(), "Gespeichert", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Gespeichert", Toast.LENGTH_SHORT).show();
     }
 }

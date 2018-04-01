@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -159,9 +160,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setContent() {
-        ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
-        int backgroundColor = mColor.getColor(ColorPreferences.BACKGROUND);
-        int fontColor = mColor.getColor(ColorPreferences.FONT_COLOR);
+        SharedPreferences settings = getSharedPreferences("settings", 0);
+        int backgroundColor = settings.getInt("background_color", 0xff0f114a);
+        int fontColor = settings.getInt("font_color", 0xffffffff);
         CollapsingToolbarLayout cLayout = (CollapsingToolbarLayout) findViewById(R.id.tweet_detail);
         LinearLayout tweetaction = (LinearLayout) findViewById(R.id.tweetbar);
         TextView txtTw = (TextView) findViewById(R.id.tweet_detailed);

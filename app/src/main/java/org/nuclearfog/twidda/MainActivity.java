@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,21 +19,16 @@ import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.*;
-import org.nuclearfog.twidda.database.TrendDatabase;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TrendRecycler;
-import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.LoginPage;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.UserProfile;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
-
-import java.util.List;
 
 /**
  * MainPage of the App
@@ -50,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private TabHost tabhost;
     private String currentTab = "timeline";
-    private int background, font_color, highlight;
     private long homeId = 0L;
     private boolean settingChanged = false;
     private final int REQCODE = 666;
@@ -241,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.tr_list:
                 if(!trendReload.isRefreshing()) {
                     TrendRecycler trend = (TrendRecycler) trendList.getAdapter();
-                    String search = trend.getData().getTrendname(position);
+                    String search = trend.getData().get(position).trend;
                     Intent intent = new Intent(this, SearchPage.class);
                     Bundle bundle = new Bundle();
                     if(search.startsWith("#")) {
@@ -320,50 +315,36 @@ public class MainActivity extends AppCompatActivity implements
      * Set Tab Content
      */
     private void setTabContent() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                ColorPreferences mColor = ColorPreferences.getInstance(getApplicationContext());
-                background = mColor.getColor(ColorPreferences.BACKGROUND);
-                font_color = mColor.getColor(ColorPreferences.FONT_COLOR);
-                highlight  = mColor.getColor(ColorPreferences.HIGHLIGHTING);
-                boolean imageload = mColor.loadImage();
+        SharedPreferences settings = getSharedPreferences("settings", 0);
+        int background = settings.getInt("background_color", 0xff0f114a);
+        int fontcolor = settings.getInt("font_color", 0xffffffff);
+        int highlight = settings.getInt("highlight_color", 0xffff00ff);
 
-                timelineList.setBackgroundColor(background);
-                trendList.setBackgroundColor(background);
-                mentionList.setBackgroundColor(background);
+        timelineList.setBackgroundColor(background);
+        trendList.setBackgroundColor(background);
+        mentionList.setBackgroundColor(background);
 
-                TimelineRecycler tlRc = (TimelineRecycler) timelineList.getAdapter();
-                TrendRecycler  trendRc = (TrendRecycler) trendList.getAdapter();
-                TimelineRecycler mentRc = (TimelineRecycler) mentionList.getAdapter();
+        TimelineRecycler homeRc = (TimelineRecycler) timelineList.getAdapter();
+        TrendRecycler trendRc = (TrendRecycler) trendList.getAdapter();
+        TimelineRecycler mentRc = (TimelineRecycler) mentionList.getAdapter();
 
-                if(tlRc == null || tlRc.getItemCount() == 0) {
-                    DatabaseAdapter tweetDeck = new DatabaseAdapter(getApplicationContext());
-                    List<Tweet> tweets = tweetDeck.load(DatabaseAdapter.HOME, -1L);
-                    tlRc = new TimelineRecycler(tweets, MainActivity.this);
-                    timelineList.setAdapter(tlRc);
-                }
-                if(mentRc == null || mentRc.getItemCount() == 0) {
-                    DatabaseAdapter mentDeck  = new DatabaseAdapter(getApplicationContext());
-                    List<Tweet> tweets = mentDeck.load(DatabaseAdapter.MENT,-1L);
-                    mentRc = new TimelineRecycler(tweets, MainActivity.this);
-                    mentionList.setAdapter(mentRc);
-                }
-                if(trendRc == null || trendRc.getItemCount() == 0) {
-                    TrendDatabase trendDeck = new TrendDatabase(getApplicationContext());
-                    trendRc  = new TrendRecycler(trendDeck, MainActivity.this);
-                    trendList.setAdapter(trendRc);
-                }
-
-                tlRc.setColor(highlight,font_color);
-                tlRc.toggleImage(imageload);
-                tlRc.notifyDataSetChanged();
-                trendRc.setColor(font_color);
-                trendRc.notifyDataSetChanged();
-                mentRc.setColor(highlight,font_color);
-                mentRc.toggleImage(imageload);
-                mentRc.notifyDataSetChanged();
-            }
-        }).run();
+        if(homeRc == null || homeRc.getItemCount() == 0) {
+            new MainPage(this).execute(MainPage.H_LOAD,1);
+        } else {
+            homeRc.setColor(highlight,fontcolor);
+            homeRc.notifyDataSetChanged();
+        }
+        if(mentRc == null || mentRc.getItemCount() == 0) {
+            new MainPage(this).execute(MainPage.M_LOAD,1);
+        } else {
+            mentRc.setColor(highlight, fontcolor);
+            mentRc.notifyDataSetChanged();
+        }
+        if(trendRc == null || trendRc.getItemCount() == 0) {
+            new MainPage(this).execute(MainPage.T_LOAD,1);
+        } else {
+            trendRc.setColor(fontcolor);
+            trendRc.notifyDataSetChanged();
+        }
     }
 }

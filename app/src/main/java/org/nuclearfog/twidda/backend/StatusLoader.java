@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,7 +29,6 @@ import twitter4j.TwitterException;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
@@ -61,10 +61,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
     public StatusLoader(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
-        ColorPreferences mColor = ColorPreferences.getInstance(c);
-        highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
-        font = mColor.getColor(ColorPreferences.FONT_COLOR);
-        toggleImg = mColor.loadImage();
+        SharedPreferences settings = c.getSharedPreferences("settings", 0);
+        font = settings.getInt("font_color", 0xffffffff);
+        highlight = settings.getInt("highlight_color", 0xffff00ff);
+        toggleImg = settings.getBoolean("image_load",true);
         ui = new WeakReference<>((TweetDetail)c);
         replyList = (RecyclerView) ui.get().findViewById(R.id.answer_list);
     }

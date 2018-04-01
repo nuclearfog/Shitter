@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -38,7 +39,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         super.onCreate(b);
         setContentView(R.layout.searchpage);
         getExtras(getIntent().getExtras());
-        int background = ColorPreferences.getInstance(this).getColor(ColorPreferences.BACKGROUND);
+
+        SharedPreferences settings = getSharedPreferences("settings", 0);
+        int background = settings.getInt("background_color", 0xff0f114a);
 
         Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
         tweetSearch  = (RecyclerView) findViewById(R.id.tweet_result);

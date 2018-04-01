@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -51,8 +52,9 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         Button tweetButton = (Button) findViewById(R.id.sendTweet);
         Button closeButton = (Button) findViewById(R.id.close);
         LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
-        ColorPreferences mColor = ColorPreferences.getInstance(this);
-        root.setBackgroundColor(mColor.getColor(ColorPreferences.TWEET_COLOR));
+        SharedPreferences settings = getSharedPreferences("settings", 0);
+        int tweetColor = settings.getInt("tweet_color", 0xff19aae8);
+        root.setBackgroundColor(tweetColor);
         tweet.append(addition);
 
         closeButton.setOnClickListener(this);

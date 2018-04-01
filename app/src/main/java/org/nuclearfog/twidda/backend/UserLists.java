@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.Window;
@@ -10,7 +11,6 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
-import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.backend.listitems.*;
 
@@ -41,7 +41,10 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
         userList = (RecyclerView) ui.get().findViewById(R.id.userlist);
-        imageload = ColorPreferences.getInstance(ui.get()).loadImage();
+
+        SharedPreferences settings = context.getSharedPreferences("settings", 0);
+        imageload = settings.getBoolean("image_load",true);
+
         circle = new ProgressBar(ui.get());
         popup = new Dialog(ui.get());
     }

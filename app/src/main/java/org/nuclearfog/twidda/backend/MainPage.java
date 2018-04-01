@@ -14,7 +14,6 @@ import android.widget.Toast;
 import android.content.Context;
 import android.os.AsyncTask;
 import org.nuclearfog.twidda.backend.listitems.*;
-import org.nuclearfog.twidda.window.ColorPreferences;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -24,6 +23,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     public static final int HOME = 0;
     public static final int TRND = 1;
     public static final int MENT = 2;
+    public static final int H_LOAD = 3;
+    public static final int T_LOAD = 4;
+    public static final int M_LOAD = 5;
     private static final int FAIL = -1;
 
     private WeakReference<MainActivity> ui;
@@ -34,6 +36,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private int woeid;
     private String errMsg;
     private int highlight, font;
+    private boolean image;
 
     /**
      * Main View
@@ -47,9 +50,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         timelineList = (RecyclerView)ui.get().findViewById(R.id.tl_list);
         trendList = (RecyclerView)ui.get().findViewById(R.id.tr_list);
         mentionList = (RecyclerView)ui.get().findViewById(R.id.m_list);
-        ColorPreferences mColor = ColorPreferences.getInstance(ui.get());
-        highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
-        font = mColor.getColor(ColorPreferences.FONT_COLOR);
+        highlight = settings.getInt("highlight_color", 0xffff00ff);
+        font = settings.getInt("font_color", 0xffffffff);
+        image = settings.getBoolean("image_load", true);
     }
 
     /**
@@ -61,11 +64,12 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         final int MODE = args[0];
         int page = args[1];
         long id = 1L;
+        List<Tweet> tweets;
         try {
             DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
+            TrendDatabase trendDb = new TrendDatabase(ui.get());
             switch (MODE) {
                 case HOME:
-                    List<Tweet> tweets;
                     timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
                     if(timelineAdapter != null && timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
@@ -78,14 +82,27 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     }
                     timelineAdapter = new TimelineRecycler(tweets, ui.get());
                     timelineAdapter.setColor(highlight, font);
+                    timelineAdapter.toggleImage(image);
+                    break;
+
+                case H_LOAD:
+                    DatabaseAdapter tweetDeck = new DatabaseAdapter(ui.get());
+                    tweets = tweetDeck.load(DatabaseAdapter.HOME, -1L);
+                    timelineAdapter = new TimelineRecycler(tweets, ui.get());
+                    timelineAdapter.setColor(highlight, font);
+                    timelineAdapter.toggleImage(image);
                     break;
 
                 case TRND:
+                    List<Trend> trends = mTwitter.getTrends(woeid);
+                    trendDb.store(trends);
                     trendsAdapter = (TrendRecycler) trendList.getAdapter();
-                    if(trendsAdapter != null && trendsAdapter.getItemCount() > 0)
-                        trendsAdapter.getData().setTrends( mTwitter.getTrends(woeid) );
-                    else
-                        trendsAdapter = new TrendRecycler(new TrendDatabase(mTwitter.getTrends(woeid),ui.get()), ui.get());
+                    trendsAdapter = new TrendRecycler(trends, ui.get());
+                    trendsAdapter.setColor(font);
+                    break;
+
+                case T_LOAD:
+                    trendsAdapter = new TrendRecycler(trendDb.load(), ui.get());
                     trendsAdapter.setColor(font);
                     break;
 
@@ -103,6 +120,15 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     }
                     mentionAdapter = new TimelineRecycler(mention, ui.get());
                     mentionAdapter.setColor(highlight, font);
+                    mentionAdapter.toggleImage(image);
+                    break;
+
+                case M_LOAD:
+                    DatabaseAdapter mentDeck  = new DatabaseAdapter(ui.get());
+                    tweets = mentDeck.load(DatabaseAdapter.MENT,-1L);
+                    mentionAdapter = new TimelineRecycler(tweets, ui.get());
+                    mentionAdapter.setColor(highlight, font);
+                    mentionAdapter.toggleImage(image);
                     break;
             }
         } catch (Exception e){
@@ -124,19 +150,19 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
         switch(MODE) {
             case HOME:
+            case H_LOAD:
                 timelineList.setAdapter(timelineAdapter);
                 timelineRefresh.setRefreshing(false);
                 break;
 
             case TRND:
+            case T_LOAD:
+                trendList.setAdapter(trendsAdapter);
                 trendRefresh.setRefreshing(false);
-                if(trendList.getAdapter().getItemCount() == 0)
-                    trendList.setAdapter(trendsAdapter);
-                else
-                    trendsAdapter.notifyDataSetChanged();
                 break;
 
             case MENT:
+            case M_LOAD:
                 mentionList.setAdapter(mentionAdapter);
                 mentionRefresh.setRefreshing(false);
                 break;

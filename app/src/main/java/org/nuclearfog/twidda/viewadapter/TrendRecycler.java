@@ -8,23 +8,22 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.TrendDatabase;
+import org.nuclearfog.twidda.backend.listitems.Trend;
+
+import java.util.List;
 
 public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder>
         implements View.OnClickListener {
 
     private ViewGroup parent;
-    private TrendDatabase trend;
+    private List<Trend> trendList;
     private OnItemClicked mListener;
     private int font_color = 0xFFFFFFFF;
 
-    public TrendRecycler(TrendDatabase trend, OnItemClicked mListener) {
+    public TrendRecycler(List<Trend> trendList, OnItemClicked mListener) {
         this.mListener = mListener;
-        this.trend = trend;
+        this.trendList = trendList;
     }
-
-
-    public TrendDatabase getData() { return trend; }
 
 
     public void setColor(int font_color) {
@@ -32,9 +31,12 @@ public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder
     }
 
 
+    public List<Trend> getData(){return trendList;}
+
+
     @Override
     public int getItemCount(){
-        return trend.getSize();
+        return trendList.size();
     }
 
 
@@ -49,10 +51,11 @@ public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder
 
     @Override
     public void onBindViewHolder(ItemHolder vh, int index) {
-        vh.pos.setText(trend.getTrendpos(index));
-        vh.pos.setTextColor(font_color);
-        vh.trends.setText(trend.getTrendname(index));
+        String posStr = Integer.toString(trendList.get(index).position)+'.';
+        vh.trends.setText(trendList.get(index).trend);
+        vh.pos.setText(posStr);
         vh.trends.setTextColor(font_color);
+        vh.pos.setTextColor(font_color);
     }
 
 

@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.window.ColorPreferences;
 import org.nuclearfog.twidda.window.UserProfile;
 import org.nuclearfog.twidda.backend.listitems.*;
 
@@ -59,12 +59,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         profileTweets = (RecyclerView) ui.get().findViewById(R.id.ht_list);
         profileFavorits = (RecyclerView) ui.get().findViewById(R.id.hf_list);
         mTwitter = TwitterEngine.getInstance(context);
-        ColorPreferences mColor = ColorPreferences.getInstance(ui.get());
-        highlight = mColor.getColor(ColorPreferences.HIGHLIGHTING);
-        font = mColor.getColor(ColorPreferences.FONT_COLOR);
-        imgEnabled = mColor.loadImage();
+        SharedPreferences settings = context.getSharedPreferences("settings", 0);
+        font = settings.getInt("font_color", 0xffffffff);
+        highlight = settings.getInt("highlight_color", 0xffff00ff);
+        imgEnabled = settings.getBoolean("image_load",true);
     }
-
 
 
     @Override
@@ -109,8 +108,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
                     tweets.addAll(homeTl.getData());
                 } else {
-                    tweets = mTwitter.getUserTweets(userId,args[2],id);
-                    tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
+                    tweets = new DatabaseAdapter(ui.get()).load(DatabaseAdapter.TWEET,userId);
+                    if(tweets.size() == 0) {
+                        tweets = mTwitter.getUserTweets(userId,args[2],id);
+                        tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
+                    }
                 }
                 homeTl = new TimelineRecycler(tweets,ui.get());
                 homeTl.setColor(highlight,font);
@@ -127,8 +129,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
                     favorits.addAll(homeFav.getData());
                 } else {
-                    favorits = mTwitter.getUserFavs(userId,args[2],id);
-                    tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
+                    favorits = new DatabaseAdapter(ui.get()).load(DatabaseAdapter.FAVT,userId);
+                    if(favorits.size() == 0) {
+                        favorits = mTwitter.getUserFavs(userId,args[2],id);
+                        tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
+                    }
                 }
                 homeFav = new TimelineRecycler(favorits,ui.get());
                 homeFav.setColor(highlight,font);

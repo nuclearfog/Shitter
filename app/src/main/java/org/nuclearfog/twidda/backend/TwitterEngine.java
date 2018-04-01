@@ -37,7 +37,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "1JwXJbVrvGWrc9SSKPnnEWslJ";
-    private final String TWITTER_CONSUMER_SECRET = "xxx";//TODO
+    private final String TWITTER_CONSUMER_SECRET = "xxx";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -200,8 +200,15 @@ public class TwitterEngine {
      * @return Trend Resource
      * @throws TwitterException if access is unavailable
      */
-    public Trends getTrends(int woeid) throws TwitterException {
-        return twitter.getPlaceTrends(woeid);
+    public List<Trend> getTrends(int woeid) throws TwitterException {
+        List<Trend> result = new ArrayList<>();
+        twitter4j.Trend trends[] = twitter.getPlaceTrends(woeid).getTrends();
+
+        for(int i = 0 ; i < trends.length ; i++) {
+            Trend item = new Trend(i+1, trends[i].getName(), trends[i].getURL());
+            result.add(item);
+        }
+        return result;
     }
 
 
