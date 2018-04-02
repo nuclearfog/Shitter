@@ -49,6 +49,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         popup = new Dialog(ui.get());
     }
 
+
     @Override
     protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -57,7 +58,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         popup.setContentView(circle);
         popup.show();
     }
-
 
 
     @Override
@@ -86,6 +86,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         }
         return null;
     }
+
 
     @Override
     protected void onPostExecute(Void v) {

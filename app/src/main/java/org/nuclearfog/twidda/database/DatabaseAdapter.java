@@ -16,47 +16,64 @@ public class DatabaseAdapter {
     public static final int MENT  = 4;
 
     private AppDatabase dataHelper;
-    private List<Tweet> tweetlist;
-    private Context context;
 
 
+    /**
+     * Public Cunstructor
+     * @param context Activity Context
+     */
     public DatabaseAdapter(Context context) {
         dataHelper = AppDatabase.getInstance(context);
-        tweetlist = new ArrayList<>();
-        this.context = context;
     }
 
 
-    public void store(List<Tweet> stats, int mode, long id) {
-        SQLiteDatabase db = dataHelper.getWritableDatabase();
+    /**
+     * Store Tweet List
+     * @param stats List of Tweets
+     * @param mode store in extra table
+     * @param id Owner ID of favorite table
+     */
+    public void store(final List<Tweet> stats, final int mode, final long id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = dataHelper.getWritableDatabase();
 
-        ContentValues home  = new ContentValues();
-        ContentValues fav   = new ContentValues();
-        ContentValues ment  = new ContentValues();
+                ContentValues home  = new ContentValues();
+                ContentValues fav   = new ContentValues();
+                ContentValues ment  = new ContentValues();
 
-        for(int pos = 0; pos < stats.size(); pos++) {
-            Tweet tweet = stats.get(pos);
-            storeStatus(tweet,db);
+                for(int pos = 0; pos < stats.size(); pos++) {
+                    Tweet tweet = stats.get(pos);
+                    storeStatus(tweet,db);
 
-            if(mode != TWEET) {
-                if(mode == HOME) {
-                    home.put("tweetID", tweet.tweetID);
-                    db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_REPLACE);
-                } else if(mode == FAVT) {
-                    fav.put("tweetID", tweet.tweetID);
-                    fav.put("userID", id);
-                    db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_REPLACE);
-                } else if(mode == MENT) {
-                    ment.put("tweetID", tweet.tweetID);
-                    db.insertWithOnConflict("mention",null,ment,SQLiteDatabase.CONFLICT_REPLACE);
+                    if(mode != TWEET) {
+                        if(mode == HOME) {
+                            home.put("tweetID", tweet.tweetID);
+                            db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_REPLACE);
+                        } else if(mode == FAVT) {
+                            fav.put("tweetID", tweet.tweetID);
+                            fav.put("userID", id);
+                            db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_REPLACE);
+                        } else if(mode == MENT) {
+                            ment.put("tweetID", tweet.tweetID);
+                            db.insertWithOnConflict("mention",null,ment,SQLiteDatabase.CONFLICT_REPLACE);
+                        }
+                    }
                 }
             }
-        }
-        db.close();
+        }).start();
     }
 
 
+    /**
+     * Load Tweet list from Table
+     * @param mode select table
+     * @param id User ID for user tweets and favorites
+     * @return List of Tweets
+     */
     public List<Tweet> load(int mode, long id) {
+        List<Tweet> tweetlist = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         String SQL_GET_HOME=" ";
         if(mode == HOME) {
@@ -86,11 +103,16 @@ public class DatabaseAdapter {
             } while(cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        //db.close();
         return tweetlist;
     }
 
 
+    /**
+     * get single Tweet
+     * @param tweetId ID of tweet
+     * @return Tweet or null if not found
+     */
     public Tweet getStatus(long tweetId) {
         SQLiteDatabase search = dataHelper.getReadableDatabase();
         Tweet result = null;
@@ -105,6 +127,11 @@ public class DatabaseAdapter {
     }
 
 
+    /**
+     * get single User
+     * @param userId User ID
+     * @return User or null if not found
+     */
     public TwitterUser getUser(long userId) {
         SQLiteDatabase search = dataHelper.getReadableDatabase();
         TwitterUser user = null;
@@ -114,6 +141,33 @@ public class DatabaseAdapter {
             user = getUser(cursor);
         cursor.close();
         return user;
+    }
+
+
+    /**
+     * Store single Tweet
+     * @param tweet Tweet to be stored
+     */
+    public void storeStatus(final Tweet tweet) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                storeStatus(tweet, dataHelper.getWritableDatabase());
+            }
+        }).start();
+    }
+
+    /**
+     * Store single User
+     * @param user Twitteruser to be stored
+     */
+    public void storeUser(final TwitterUser user) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                storeUser(user, dataHelper.getWritableDatabase());
+            }
+        }).start();
     }
 
 
@@ -181,17 +235,9 @@ public class DatabaseAdapter {
                 location,isVerified,locked,link,banner,createdAt,following,follower);
     }
 
-    public void storeStatus(Tweet tweet) {
-        storeStatus(tweet, dataHelper.getWritableDatabase());
-    }
-
-    public void storeUSer(TwitterUser user) {
-        storeUser(user, dataHelper.getWritableDatabase());
-    }
 
     private void storeStatus(Tweet tweet, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
-
         Tweet rtStat = tweet.embedded;
         long rtId = -1;
 
@@ -199,10 +245,8 @@ public class DatabaseAdapter {
             storeStatus(rtStat, db);
             rtId = rtStat.tweetID;
         }
-
         TwitterUser mUser = tweet.user;
         storeUser(mUser,db);
-
         status.put("tweetID", tweet.tweetID);
         status.put("userID", mUser.userID);
         status.put("time", tweet.time);
@@ -215,7 +259,6 @@ public class DatabaseAdapter {
         status.put("replyname", tweet.replyName);
         status.put("retweeted",tweet.retweeted);
         status.put("favorized", tweet.favorized);
-
         db.insertWithOnConflict("tweet",null, status,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
@@ -235,14 +278,12 @@ public class DatabaseAdapter {
         userColumn.put("createdAt", user.created);
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
-
         db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
 
     public void removeStatus(long id) {
-        SQLiteDatabase db = AppDatabase.getInstance(context).getWritableDatabase();
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.delete("tweet", "tweetID"+"="+id, null);
-        db.close();
     }
 }

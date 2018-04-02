@@ -131,7 +131,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     mentionAdapter.toggleImage(image);
                     break;
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             errMsg = e.getMessage();
             return FAIL;
         }

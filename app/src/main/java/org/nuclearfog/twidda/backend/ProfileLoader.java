@@ -91,6 +91,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                         return IGNORE;
                 } else {
                     user = mTwitter.getUser(userId);
+                    new DatabaseAdapter(ui.get()).storeUser(user);
                 }
                 screenName = user.screenname;
                 username = user.username;
@@ -166,7 +167,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
-            if(errCode != 136 && errCode != -1){
+            if(errCode != 136 && errCode != -1) {
                 errMsg = err.getMessage();
             }
             err.printStackTrace();

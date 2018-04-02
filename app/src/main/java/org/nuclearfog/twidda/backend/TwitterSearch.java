@@ -41,6 +41,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         imageload = settings.getBoolean("image_load",true);
     }
 
+
     @Override
     protected Void doInBackground(String... search) {
         String strSearch = search[0];
@@ -72,6 +73,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         }
         return null;
     }
+
 
     @Override
     protected void onPostExecute(Void v) {

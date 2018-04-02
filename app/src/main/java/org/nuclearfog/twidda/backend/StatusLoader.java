@@ -86,10 +86,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 if(tweet == null)
                     return IGNORE;
             }
-            else
+            else {
                 tweet = mTwitter.getStatus(tweetID);
-            if(MODE == LOAD_REPLY)
-                new DatabaseAdapter(ui.get()).storeStatus(tweet);
+                if(MODE == LOAD_TWEET) {
+                    new DatabaseAdapter(ui.get()).storeStatus(tweet);
+                }
+            }
             if(tweet.embedded != null) {
                 retweeter = tweet.user.screenname;
                 retweeterID = tweet.user.userID;
@@ -259,7 +261,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             Toast.makeText(ui.get(), "Tweet gelöscht", Toast.LENGTH_LONG).show();
             ui.get().finish();
         }
-        else {
+        else if(mode == ERROR) {
             Toast.makeText(ui.get(), "Fehler beim Laden: "+errMSG, Toast.LENGTH_LONG).show();
             SwipeRefreshLayout ansReload = (SwipeRefreshLayout)connect.findViewById(R.id.answer_reload);
             if(ansReload.isRefreshing()) {
