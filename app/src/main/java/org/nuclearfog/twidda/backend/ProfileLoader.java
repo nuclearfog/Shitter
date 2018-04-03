@@ -183,10 +183,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
     @Override
     protected void onPostExecute(Long mode) {
-        UserProfile connect = ui.get();
+        final UserProfile connect = ui.get();
         if(connect == null)
             return;
-        final Context context = connect;
 
         if(mode == GET_INFORMATION || mode == LOAD_DB) {
             TextView txtUser = (TextView)connect.findViewById(R.id.profile_username);
@@ -227,11 +226,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 connect.findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
-                Picasso.with(context).load(profileImage+"_bigger").into(profile);
+                Picasso.with(connect).load(profileImage+"_bigger").into(profile);
                 profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new ImagePopup(context).execute(profileImage);
+                        new ImagePopup(connect).execute(profileImage);
                     }
                 });
             }
@@ -250,7 +249,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == FAILURE)
         {
-            Toast.makeText(context,"Fehler: "+errMsg,Toast.LENGTH_LONG).show();
+            Toast.makeText(connect,"Fehler: "+errMsg,Toast.LENGTH_LONG).show();
             SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
             SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);

@@ -143,7 +143,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         MainActivity connect = ui.get();
         if(connect == null)
             return;
-        Context context = connect.getApplicationContext();
         SwipeRefreshLayout timelineRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.timeline);
         SwipeRefreshLayout trendRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.trends);
         SwipeRefreshLayout mentionRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.mention);
@@ -172,7 +171,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 timelineRefresh.setRefreshing(false);
                 trendRefresh.setRefreshing(false);
                 mentionRefresh.setRefreshing(false);
-                Toast.makeText(context, "Fehler: "+errMsg, Toast.LENGTH_LONG).show();
+                Toast.makeText(connect, "Fehler: "+errMsg, Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -52,8 +52,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             connect.setResult(Activity.RESULT_OK);
             connect.finish();
         } else if(!errMSG.isEmpty()) {
-            Context context = connect.getApplicationContext();
-            Toast.makeText(context,"Fehler: "+errMSG,Toast.LENGTH_LONG).show();
+            Toast.makeText(connect,"Fehler: "+errMSG,Toast.LENGTH_LONG).show();
         }
     }
 }

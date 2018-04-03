@@ -75,10 +75,12 @@
 
         <TextView
             android:id="@+id/number_row"
-            android:layout_width="32dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_marginStart="5dp" />
+            android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/more"
@@ -101,9 +103,10 @@
 
         <CheckBox
             android:id="@+id/toggleImg"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_weight="4"
             android:text="@string/image" />
 
     </LinearLayout>
@@ -124,12 +127,14 @@
 
         <EditText
             android:id="@+id/woeid"
-            android:layout_width="128dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:inputType="number"
-            android:labelFor="@id/textView" />
+            android:labelFor="@id/textView"
+            android:singleLine="true" />
 
         <TextView
             android:id="@+id/textView"

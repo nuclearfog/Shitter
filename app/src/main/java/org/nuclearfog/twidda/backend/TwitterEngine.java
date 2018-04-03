@@ -36,7 +36,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "xxx";
+    private final String TWITTER_CONSUMER_SECRET = "xxx";  //TODO insert your own key
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -120,9 +120,10 @@ public class TwitterEngine {
      * @throws TwitterException if twitter isn't initialized yet.
      */
     private void saveCurrentUser(String key1, String key2) throws TwitterException {
+        twitterID = twitter.getId();
         SharedPreferences.Editor e = settings.edit();
         e.putBoolean("login", true);
-        e.putLong("userID", twitter.getId());
+        e.putLong("userID",twitterID);
         e.putString("username", twitter.getScreenName());
         e.putString("key1", key1);
         e.putString("key2", key2);
