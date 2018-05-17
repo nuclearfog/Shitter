@@ -17,14 +17,13 @@
             android:id="@+id/tweet_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/tweet_toolbar">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -153,6 +152,8 @@
                 android:id="@+id/tweetbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:addStatesFromChildren="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal"
@@ -227,7 +228,7 @@
                     android:id="@+id/answer_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="true"/>
+                    android:nestedScrollingEnabled="true" />
 
             </android.support.v4.widget.SwipeRefreshLayout>
 

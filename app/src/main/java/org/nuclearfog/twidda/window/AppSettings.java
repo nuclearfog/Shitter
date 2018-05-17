@@ -8,7 +8,10 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +27,10 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.ErrorLog;
+import org.nuclearfog.twidda.viewadapter.LogAdapter;
+
+import java.util.List;
 
 /**
  * App Settings Page
@@ -47,24 +54,26 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
         setContentView(R.layout.settingpage);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_setting);
+        Toolbar toolbar = findViewById(R.id.toolbar_setting);
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Button delButton = (Button) findViewById(R.id.delete_db);
-        colorButton1 = (Button) findViewById(R.id.color_background);
-        colorButton2 = (Button) findViewById(R.id.color_font);
-        colorButton3 = (Button) findViewById(R.id.color_tweet);
-        colorButton4 = (Button) findViewById(R.id.highlight_color);
-        Button reduce = (Button) findViewById(R.id.less);
-        Button enhance = (Button) findViewById(R.id.more);
-        Button clipButton = (Button) findViewById(R.id.woeid_clip);
-        toggleImg = (CheckBox) findViewById(R.id.toggleImg);
-        load_factor = (TextView)findViewById(R.id.number_row);
-        woeId = (EditText) findViewById(R.id.woeid);
+        Button delButton = findViewById(R.id.delete_db);
+        Button errorcall = findViewById(R.id.error_call);
+        colorButton1 = findViewById(R.id.color_background);
+        colorButton2 = findViewById(R.id.color_font);
+        colorButton3 = findViewById(R.id.color_tweet);
+        colorButton4 = findViewById(R.id.highlight_color);
+        Button reduce = findViewById(R.id.less);
+        Button enhance = findViewById(R.id.more);
+        Button clipButton = findViewById(R.id.woeid_clip);
+        toggleImg = findViewById(R.id.toggleImg);
+        load_factor = findViewById(R.id.number_row);
+        woeId = findViewById(R.id.woeid);
 
         delButton.setOnClickListener(this);
+        errorcall.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
@@ -74,11 +83,11 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         enhance.setOnClickListener(this);
         clipButton.setOnClickListener(this);
 
-        settings = getSharedPreferences("settings", 0);
-        background = settings.getInt("background_color", 0xff0f114a);
-        font = settings.getInt("font_color", 0xffffffff);
-        tweet = settings.getInt("tweet_color", 0xff19aae8);
-        highlight = settings.getInt("highlight_color", 0xffff00ff);
+        settings = getSharedPreferences("settings",0);
+        background = settings.getInt("background_color",0xff0f114a);
+        font = settings.getInt("font_color",0xffffffff);
+        tweet = settings.getInt("tweet_color",0xff19aae8);
+        highlight = settings.getInt("highlight_color",0xffff00ff);
 
         colorButton1.setBackgroundColor(background);
         colorButton2.setBackgroundColor(font);
@@ -125,6 +134,18 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 .setPositiveButton(R.string.yes_confirm, this)
                 .setNegativeButton(R.string.no_confirm, this)
                 .show();
+                break;
+            case R.id.error_call:
+                List<String> messages = new ErrorLog(this).getErrorList();
+                LogAdapter adp = new LogAdapter(messages);
+                View list = LayoutInflater.from(this).inflate(R.layout.errorpage,null,false);
+                RecyclerView loglist = list.findViewById(R.id.log_list);
+                loglist.setLayoutManager(new LinearLayoutManager(this));
+                loglist.setAdapter(adp);
+                Dialog pList = new Dialog(this);
+                pList.setContentView(list);
+                pList.show();
+
                 break;
             case R.id.color_background:
                 setColor(background);

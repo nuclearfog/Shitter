@@ -6,30 +6,35 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import static android.content.DialogInterface.*;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
-import org.nuclearfog.twidda.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /**
  * Tweet Window
  * @see StatusUpload
  */
 public class TweetPopup extends AppCompatActivity implements View.OnClickListener,
-        DialogInterface.OnClickListener {
+        DialogInterface.OnClickListener, StatusUpload.TweetSender {
 
     private StatusUpload sendTweet;
+    private ProgressBar send_circle;
     private EditText tweet;
     private Button imageButton, previewBtn;
     private TextView imgcount;
@@ -45,13 +50,14 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         getExtras(getIntent().getExtras());
 
         mediaPath = new ArrayList<>();
-        imageButton = (Button) findViewById(R.id.image);
-        previewBtn  = (Button) findViewById(R.id.img_preview);
-        tweet = (EditText) findViewById(R.id.tweet_input);
-        imgcount = (TextView) findViewById(R.id.imgcount);
-        Button tweetButton = (Button) findViewById(R.id.sendTweet);
-        Button closeButton = (Button) findViewById(R.id.close);
-        LinearLayout root = (LinearLayout) findViewById(R.id.tweet_popup);
+        imageButton = findViewById(R.id.image);
+        previewBtn  = findViewById(R.id.img_preview);
+        tweet = findViewById(R.id.tweet_input);
+        imgcount = findViewById(R.id.imgcount);
+        send_circle = findViewById(R.id.tweet_sending);
+        Button tweetButton = findViewById(R.id.sendTweet);
+        Button closeButton = findViewById(R.id.close);
+        LinearLayout root = findViewById(R.id.tweet_popup);
         SharedPreferences settings = getSharedPreferences("settings", 0);
         int tweetColor = settings.getInt("tweet_color", 0xff19aae8);
         root.setBackgroundColor(tweetColor);
@@ -118,6 +124,9 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
+        if(send_circle.getVisibility() == View.VISIBLE)
+            return;
+
         switch(v.getId()){
             case R.id.sendTweet:
                 send();
@@ -147,23 +156,27 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void send() {
+    @Override
+    public void send() {
         String tweetStr = tweet.getText().toString();
         String[] paths = new String[mediaPath.size()];
         paths = mediaPath.toArray(paths);
         sendTweet = new StatusUpload(this ,paths);
-        if(inReplyId > 0) {
-            sendTweet.execute(tweetStr, inReplyId);
-        } else {
-            sendTweet.execute(tweetStr);
+        if(!tweetStr.trim().isEmpty() || paths.length > 0) {
+            if(inReplyId > 0) {
+                sendTweet.execute(tweetStr, inReplyId);
+            } else {
+                sendTweet.execute(tweetStr);
+            }
         }
     }
 
-    @SuppressWarnings("ConstantCondidions")
-    private void getExtras(Bundle b) {
-        if(b.containsKey("TweetID"))
-            inReplyId = b.getLong("TweetID");
-        if(b.containsKey("Addition"))
-            addition = b.getString("Addition")+" ";
+    private void getExtras(@Nullable Bundle b) {
+        if(b != null) {
+            if (b.containsKey("TweetID"))
+                inReplyId = b.getLong("TweetID");
+            if (b.containsKey("Addition"))
+                addition = b.getString("Addition") + " ";
+        }
     }
 }

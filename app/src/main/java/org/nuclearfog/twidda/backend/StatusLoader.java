@@ -20,20 +20,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import java.lang.ref.WeakReference;
-import java.text.DateFormat;
-import java.util.List;
 
-import twitter4j.TwitterException;
-
-import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
-import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
+
+import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Locale;
+
+import twitter4j.TwitterException;
 
 public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
 
@@ -68,7 +71,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         highlight = settings.getInt("highlight_color", 0xffff00ff);
         toggleImg = settings.getBoolean("image_load",true);
         ui = new WeakReference<>((TweetDetail)c);
-        replyList = (RecyclerView) ui.get().findViewById(R.id.answer_list);
+        replyList = ui.get().findViewById(R.id.answer_list);
     }
 
 
@@ -82,9 +85,15 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         Tweet tweet;
         try {
             if(MODE == LOAD_DB) {
-                tweet = new DatabaseAdapter(ui.get()).getStatus(tweetID);
+                DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
+                tweet = dbAdp.getStatus(tweetID);
                 if(tweet == null)
                     return IGNORE;
+
+                tlAdp = (TimelineRecycler) replyList.getAdapter();
+                List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
+                tlAdp = new TimelineRecycler(answers,ui.get());
+                tlAdp.setColor(highlight, font);
             }
             else {
                 tweet = mTwitter.getStatus(tweetID);
@@ -112,7 +121,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 userID = tweet.user.userID;
                 scrNameStr = tweet.user.screenname;
                 apiName = formatString(tweet.source);
-                dateString = DateFormat.getDateTimeInstance().format(tweet.time);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
+                dateString = sdf.format(tweet.time);
                 repliedUsername = tweet.replyName;
                 profile_pb = tweet.user.profileImg+"_bigger";
                 medialinks = tweet.media;
@@ -142,6 +152,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(MODE == LOAD_REPLY) {
                 List<Tweet> answers;
+                DatabaseAdapter twdb = new DatabaseAdapter(ui.get());
                 String replyname = tweet.user.screenname;
                 tlAdp = (TimelineRecycler) replyList.getAdapter();
                 if(tlAdp != null && tlAdp.getItemCount() > 0) {
@@ -153,6 +164,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 }
                 tlAdp = new TimelineRecycler(answers,ui.get());
                 tlAdp.setColor(highlight, font);
+                twdb.store(answers,DatabaseAdapter.TWEET,-1L);
             }
             else if(MODE == DELETE) {
                 mTwitter.deleteTweet(tweetID);
@@ -164,9 +176,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 new DatabaseAdapter(ui.get()).removeStatus(tweetID);
             }
             errMSG = e.getMessage();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(errMSG);
             return ERROR;
         } catch(Exception err) {
             errMSG = err.getMessage();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(errMSG);
             return ERROR;
         }
         return MODE;
@@ -179,15 +195,15 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             return;
 
         if(mode == LOAD_TWEET ||mode == LOAD_DB) {
-            TextView tweet = (TextView)connect.findViewById(R.id.tweet_detailed);
-            TextView username = (TextView)connect.findViewById(R.id.usernamedetail);
-            TextView scrName = (TextView)connect.findViewById(R.id.scrnamedetail);
-            TextView date = (TextView)connect.findViewById(R.id.timedetail);
-            TextView replyName = (TextView)connect.findViewById(R.id.answer_reference_detail);
-            TextView used_api = (TextView)connect.findViewById(R.id.used_api);
-            TextView txtRet = (TextView)connect.findViewById(R.id.no_rt_detail);
-            TextView txtFav = (TextView)connect.findViewById(R.id.no_fav_detail);
-            ImageView profile_img = (ImageView)connect.findViewById(R.id.profileimage_detail);
+            TextView tweet = connect.findViewById(R.id.tweet_detailed);
+            TextView username = connect.findViewById(R.id.usernamedetail);
+            TextView scrName = connect.findViewById(R.id.scrnamedetail);
+            TextView date = connect.findViewById(R.id.timedetail);
+            TextView replyName = connect.findViewById(R.id.answer_reference_detail);
+            TextView used_api = connect.findViewById(R.id.used_api);
+            TextView txtRet = connect.findViewById(R.id.no_rt_detail);
+            TextView txtFav = connect.findViewById(R.id.no_fav_detail);
+            ImageView profile_img = connect.findViewById(R.id.profileimage_detail);
 
             tweet.setMovementMethod(LinkMovementMethod.getInstance());
             tweet.setText(highlight(tweetStr));
@@ -200,6 +216,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             txtFav.setText(favStr);
             txtRet.setText(rtStr);
 
+            if(tlAdp != null) {
+                replyList.setAdapter(tlAdp);
+                String ansStr = Integer.toString(tlAdp.getItemCount());
+                TextView txtAns = connect.findViewById(R.id.no_ans_detail);
+                txtAns.setText(ansStr);
+            }
+
             if(repliedUsername != null) {
                 String reply = "antwort @"+repliedUsername;
                 replyName.setText(reply);
@@ -209,52 +232,52 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             if(rtFlag) {
                 String retPrompt = "Retweet "+retweeter;
-                TextView userRetweet = (TextView)connect.findViewById(R.id.rt_info);
+                TextView userRetweet = connect.findViewById(R.id.rt_info);
                 userRetweet.setText(retPrompt);
                 userRetweet.setOnClickListener(this);
                 userRetweet.setVisibility(View.VISIBLE);
             }
             if(verified) {
-                ImageView tweet_verify =(ImageView)connect.findViewById(R.id.tweet_verify);
+                View tweet_verify = connect.findViewById(R.id.tweet_verify);
                 tweet_verify.setVisibility(View.VISIBLE);
             }
             if(toggleImg) {
                 Picasso.with(ui.get()).load(profile_pb).into(profile_img);
                 if(medialinks != null && medialinks.length != 0) {
-                    Button mediabutton = (Button)connect.findViewById(R.id.image_attach);
+                    View mediabutton = connect.findViewById(R.id.image_attach);
                     mediabutton.setVisibility(View.VISIBLE);
                     mediabutton.setOnClickListener(this);
                 }
             }
-            Button retweetButton = (Button)connect.findViewById(R.id.rt_button_detail);
-            Button favoriteButton = (Button)connect.findViewById(R.id.fav_button_detail);
-            Button answer = (Button) connect.findViewById(R.id.answer_button);
+            Button retweetButton = connect.findViewById(R.id.rt_button_detail);
+            Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
+            Button answer = connect.findViewById(R.id.answer_button);
             setIcons(favoriteButton, retweetButton);
             profile_img.setOnClickListener(this);
             answer.setOnClickListener(this);
         }
         else if(mode == RETWEET) {
             String rtStr = Integer.toString(rt);
-            TextView txtRet = (TextView)connect.findViewById(R.id.no_rt_detail);
-            Button retweetButton = (Button)connect.findViewById(R.id.rt_button_detail);
-            Button favoriteButton = (Button)connect.findViewById(R.id.fav_button_detail);
+            TextView txtRet = connect.findViewById(R.id.no_rt_detail);
+            Button retweetButton = connect.findViewById(R.id.rt_button_detail);
+            Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
             txtRet.setText(rtStr);
             setIcons(favoriteButton, retweetButton);
         }
         else if(mode == FAVORITE) {
             String favStr = Integer.toString(fav);
-            TextView txtFav = (TextView)connect.findViewById(R.id.no_fav_detail);
-            Button retweetButton = (Button)connect.findViewById(R.id.rt_button_detail);
-            Button favoriteButton = (Button)connect.findViewById(R.id.fav_button_detail);
+            TextView txtFav = connect.findViewById(R.id.no_fav_detail);
+            Button retweetButton = connect.findViewById(R.id.rt_button_detail);
+            Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
             txtFav.setText(favStr);
             setIcons(favoriteButton, retweetButton);
         }
         else if(mode == LOAD_REPLY) {
             replyList.setAdapter(tlAdp);
-            SwipeRefreshLayout ansReload = (SwipeRefreshLayout)connect.findViewById(R.id.answer_reload);
+            SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             ansReload.setRefreshing(false);
             String ansStr = Integer.toString(tlAdp.getItemCount());
-            TextView txtAns = (TextView)connect.findViewById(R.id.no_ans_detail);
+            TextView txtAns = connect.findViewById(R.id.no_ans_detail);
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {
@@ -263,7 +286,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         }
         else if(mode == ERROR) {
             Toast.makeText(ui.get(), "Fehler beim Laden: "+errMSG, Toast.LENGTH_LONG).show();
-            SwipeRefreshLayout ansReload = (SwipeRefreshLayout)connect.findViewById(R.id.answer_reload);
+            SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             if(ansReload.isRefreshing()) {
                 ansReload.setRefreshing(false);
             }

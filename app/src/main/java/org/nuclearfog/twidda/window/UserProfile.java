@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +18,9 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.backend.ProfileLoader;
+import org.nuclearfog.twidda.backend.TwitterEngine;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
 /**
@@ -43,7 +44,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.profilepage);
-        Toolbar tool = (Toolbar) findViewById(R.id.profile_toolbar);
+        Toolbar tool = findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -56,18 +57,23 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         font_color = settings.getInt("font_color", 0xffffffff);
         highlight = settings.getInt("highlight_color", 0xffff00ff);
 
-        homeList = (RecyclerView) findViewById(R.id.ht_list);
+        homeList = findViewById(R.id.ht_list);
         homeList.setLayoutManager(new LinearLayoutManager(this));
         homeList.setBackgroundColor(background);
-        favoritList = (RecyclerView)findViewById(R.id.hf_list);
+        favoritList = findViewById(R.id.hf_list);
         favoritList.setLayoutManager(new LinearLayoutManager(this));
         favoritList.setBackgroundColor(background);
-        homeReload = (SwipeRefreshLayout) findViewById(R.id.hometweets);
-        favoriteReload = (SwipeRefreshLayout) findViewById(R.id.homefavorits);
+        homeReload = findViewById(R.id.hometweets);
+        favoriteReload = findViewById(R.id.homefavorits);
+        homeReload.setBackgroundColor(0xffff0000);
+        favoriteReload.setBackgroundColor(0xffff0000);
 
-        TextView txtFollowing = (TextView)findViewById(R.id.following);
-        TextView txtFollower  = (TextView)findViewById(R.id.follower);
-        TabHost mTab = (TabHost)findViewById(R.id.profile_tab);
+        homeReload.measure(0,0);
+        favoriteReload.measure(0,0);
+
+        TextView txtFollowing = findViewById(R.id.following);
+        TextView txtFollower  = findViewById(R.id.follower);
+        TabHost mTab = findViewById(R.id.profile_tab);
         setTabs(mTab);
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
@@ -184,6 +190,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         startActivity(intent);
     }
 
+
     private void setTabs(TabHost mTab) {
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
@@ -218,8 +225,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private void getExtras(Bundle b) {
-        userId = b.getLong("userID");
-        username = b.getString("username");
+    private void getExtras(@Nullable Bundle b) {
+        if(b != null) {
+            userId = b.getLong("userID");
+            username = b.getString("username");
+        }
     }
 }

@@ -1,10 +1,13 @@
 package org.nuclearfog.twidda.database;
 
-import org.nuclearfog.twidda.backend.listitems.*;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +17,8 @@ public class DatabaseAdapter {
     public static final int TWEET = 2;
     public static final int HOME  = 3;
     public static final int MENT  = 4;
-
+    public static final int ANS   = 5;
     private AppDatabase dataHelper;
-
 
     /**
      * Public Cunstructor
@@ -75,35 +77,42 @@ public class DatabaseAdapter {
     public List<Tweet> load(int mode, long id) {
         List<Tweet> tweetlist = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();
-        String SQL_GET_HOME=" ";
+        String SQL_GET_HOME="";
+        int limit = 0;
         if(mode == HOME) {
-            SQL_GET_HOME = "SELECT * FROM timeline " +
-                    "INNER JOIN tweet ON timeline.tweetID = tweet.tweetID " +
+            SQL_GET_HOME = "SELECT * FROM tweet " +
+                    "INNER JOIN timeline ON timeline.tweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID DESC";
-        } else if(mode == MENT) {
-            SQL_GET_HOME = "SELECT * FROM mention " +
-                    "INNER JOIN tweet ON mention.tweetID = tweet.tweetID " +
+        }
+        else if(mode == MENT) {
+            SQL_GET_HOME = "SELECT * FROM tweet " +
+                    "INNER JOIN mention ON mention.tweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID DESC";
         }
         else if(mode == TWEET) {
-            SQL_GET_HOME = "SELECT * FROM user " +
-                    "INNER JOIN tweet ON tweet.userID = user.userID"+
+            SQL_GET_HOME = "SELECT * FROM tweet " +
+                    "INNER JOIN user ON tweet.userID = user.userID"+
                     " WHERE user.userID = "+id+" ORDER BY tweetID DESC";
-        } else if(mode == FAVT) {
-            SQL_GET_HOME = "SELECT * FROM favorit " +
-                    "INNER JOIN tweet ON favorit.tweetID = tweet.tweetID " +
+        }
+        else if(mode == FAVT) {
+            SQL_GET_HOME = "SELECT * FROM tweet " +
+                    "INNER JOIN favorit ON favorit.tweetID = tweet.tweetID " +
                     "INNER JOIN user ON tweet.userID = user.userID " +
                     "WHERE favorit.userID = "+id+" ORDER BY tweetID DESC";
+        }
+        else if(mode == ANS) {
+            SQL_GET_HOME = "SELECT * FROM tweet " +
+                    "INNER JOIN user ON tweet.userID = user.userID"+
+                    " WHERE tweet.replyID = "+id+" ORDER BY tweetID DESC";
         }
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
                 tweetlist.add(tweet);
-            } while(cursor.moveToNext());
+            } while(cursor.moveToNext() && limit++ < 200);
         }
         cursor.close();
-        //db.close();
         return tweetlist;
     }
 
@@ -284,6 +293,6 @@ public class DatabaseAdapter {
 
     public void removeStatus(long id) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        db.delete("tweet", "tweetID"+"="+id, null);
+        db.delete("tweet", "tweetID="+id, null);
     }
 }

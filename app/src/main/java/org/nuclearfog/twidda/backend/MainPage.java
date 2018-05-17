@@ -1,19 +1,21 @@
 package org.nuclearfog.twidda.backend;
 
-import org.nuclearfog.twidda.database.TrendDatabase;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.MainActivity;
-import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.TrendRecycler;
-
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
-import android.content.Context;
-import android.os.AsyncTask;
-import org.nuclearfog.twidda.backend.listitems.*;
+
+import org.nuclearfog.twidda.MainActivity;
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.Trend;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.ErrorLog;
+import org.nuclearfog.twidda.database.TrendDatabase;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TrendRecycler;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -47,9 +49,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         mTwitter = TwitterEngine.getInstance(context);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         woeid = settings.getInt("woeid",23424829); // Germany WOEID
-        timelineList = (RecyclerView)ui.get().findViewById(R.id.tl_list);
-        trendList = (RecyclerView)ui.get().findViewById(R.id.tr_list);
-        mentionList = (RecyclerView)ui.get().findViewById(R.id.m_list);
+        timelineList = ui.get().findViewById(R.id.tl_list);
+        trendList = ui.get().findViewById(R.id.tr_list);
+        mentionList = ui.get().findViewById(R.id.m_list);
         highlight = settings.getInt("highlight_color", 0xffff00ff);
         font = settings.getInt("font_color", 0xffffffff);
         image = settings.getBoolean("image_load", true);
@@ -133,6 +135,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             }
         } catch (Exception e) {
             errMsg = e.getMessage();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(errMsg);
             return FAIL;
         }
         return MODE;
@@ -143,9 +147,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         MainActivity connect = ui.get();
         if(connect == null)
             return;
-        SwipeRefreshLayout timelineRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.timeline);
-        SwipeRefreshLayout trendRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.trends);
-        SwipeRefreshLayout mentionRefresh = (SwipeRefreshLayout)connect.findViewById(R.id.mention);
+        SwipeRefreshLayout timelineRefresh = connect.findViewById(R.id.timeline);
+        SwipeRefreshLayout trendRefresh = connect.findViewById(R.id.trends);
+        SwipeRefreshLayout mentionRefresh = connect.findViewById(R.id.mention);
 
         switch(MODE) {
             case HOME:

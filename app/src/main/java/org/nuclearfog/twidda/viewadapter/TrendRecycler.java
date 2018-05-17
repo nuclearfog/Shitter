@@ -1,10 +1,10 @@
 package org.nuclearfog.twidda.viewadapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
@@ -69,8 +69,8 @@ public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder
 
 
     class ItemHolder extends ViewHolder {
-        public TextView trends, pos;
-        public ItemHolder(View v) {
+        TextView trends, pos;
+        ItemHolder(View v) {
             super(v);
             pos = v.findViewById(R.id.trendpos);
             trends = v.findViewById(R.id.trendname);

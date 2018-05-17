@@ -6,14 +6,15 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.SearchPage;
-import org.nuclearfog.twidda.backend.listitems.*;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -27,12 +28,12 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
     private String error;
-    boolean imageload;
+    private boolean imageload;
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
-        tweetSearch = (RecyclerView) ui.get().findViewById(R.id.tweet_result);
-        userSearch  = (RecyclerView) ui.get().findViewById(R.id.user_result);
+        tweetSearch = ui.get().findViewById(R.id.tweet_result);
+        userSearch = ui.get().findViewById(R.id.user_result);
         mTwitter = TwitterEngine.getInstance(context);
 
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
@@ -70,6 +71,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
         } catch(Exception err) {
             error = err.getMessage();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(error);
         }
         return null;
     }
@@ -83,8 +86,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         if(error != null)
             Toast.makeText(connect, "Fehler beim Laden: "+error, Toast.LENGTH_LONG).show();
 
-        SwipeRefreshLayout tweetReload = (SwipeRefreshLayout)connect.findViewById(R.id.searchtweets);
-        ProgressBar circleLoad = (ProgressBar)connect.findViewById(R.id.search_progress);
+        SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
+        View circleLoad = connect.findViewById(R.id.search_progress);
         circleLoad.setVisibility(View.INVISIBLE);
         tweetSearch.setAdapter(tlRc);
         userSearch.setAdapter(uAdp);

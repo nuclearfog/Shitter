@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +18,10 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.listitems.*;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.backend.TwitterSearch;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 /**
@@ -43,10 +45,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         SharedPreferences settings = getSharedPreferences("settings", 0);
         int background = settings.getInt("background_color", 0xff0f114a);
 
-        Toolbar tool = (Toolbar) findViewById(R.id.search_toolbar);
-        tweetSearch  = (RecyclerView) findViewById(R.id.tweet_result);
-        userSearch   = (RecyclerView) findViewById(R.id.user_result);
-        tweetReload = (SwipeRefreshLayout) findViewById(R.id.searchtweets);
+        Toolbar tool = (Toolbar)findViewById(R.id.search_toolbar);
+        tweetSearch = findViewById(R.id.tweet_result);
+        userSearch = findViewById(R.id.user_result);
+        tweetReload = findViewById(R.id.searchtweets);
         tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         userSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         tweetSearch.setBackgroundColor(background);
@@ -55,7 +57,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-        TabHost tabhost = (TabHost)findViewById(R.id.search_tab);
+        TabHost tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);
 
@@ -183,9 +185,8 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         mSearch.execute(search);
     }
 
-
-    @SuppressWarnings("ConstantConditions")
-    private void getExtras(Bundle b) {
-        search = b.getString("search");
+    private void getExtras(@Nullable Bundle b) {
+        if(b != null) {
+        search = b.getString("search");}
     }
 }

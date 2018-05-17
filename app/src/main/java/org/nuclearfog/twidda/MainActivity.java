@@ -8,8 +8,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,18 +17,18 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
-import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.backend.listitems.*;
-import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.MainPage;
+import org.nuclearfog.twidda.backend.Registration;
+import org.nuclearfog.twidda.backend.TwitterEngine;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TrendRecycler;
+import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
 import org.nuclearfog.twidda.window.SearchPage;
-import org.nuclearfog.twidda.window.UserProfile;
-import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
+import org.nuclearfog.twidda.window.UserProfile;
 
 /**
  * MainPage of the App
@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements
         if(reqCode == REQCODE) {
             if(returnCode == RESULT_OK) {
                 login();
+                setTabContent();
             } else {
                 finish();
             }
@@ -269,19 +270,20 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
     /**
      * Login Handle
      */
     private void login() {
         homeId = TwitterEngine.getHomeId();
-        timelineList = (RecyclerView) findViewById(R.id.tl_list);
-        trendList = (RecyclerView) findViewById(R.id.tr_list);
-        mentionList = (RecyclerView) findViewById(R.id.m_list);
-        timelineReload = (SwipeRefreshLayout) findViewById(R.id.timeline);
-        trendReload = (SwipeRefreshLayout) findViewById(R.id.trends);
-        mentionReload = (SwipeRefreshLayout) findViewById(R.id.mention);
-        tabhost = (TabHost)findViewById(R.id.main_tabhost);
-        toolbar = (Toolbar) findViewById(R.id.profile_toolbar);
+        timelineList = findViewById(R.id.tl_list);
+        trendList = findViewById(R.id.tr_list);
+        mentionList = findViewById(R.id.m_list);
+        timelineReload = findViewById(R.id.timeline);
+        trendReload = findViewById(R.id.trends);
+        mentionReload = findViewById(R.id.mention);
+        tabhost = findViewById(R.id.main_tabhost);
+        toolbar = findViewById(R.id.profile_toolbar);
         timelineList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         trendList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mentionList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

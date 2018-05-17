@@ -11,17 +11,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.UserProfile;
-import org.nuclearfog.twidda.backend.listitems.*;
 
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import com.squareup.picasso.Picasso;
+import java.util.Locale;
 
 import twitter4j.TwitterException;
 
@@ -58,8 +62,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
      */
     public ProfileLoader(Context context) {
         ui = new WeakReference<>((UserProfile)context);
-        profileTweets = (RecyclerView) ui.get().findViewById(R.id.ht_list);
-        profileFavorits = (RecyclerView) ui.get().findViewById(R.id.hf_list);
+        profileTweets = ui.get().findViewById(R.id.ht_list);
+        profileFavorits = ui.get().findViewById(R.id.hf_list);
         mTwitter = TwitterEngine.getInstance(context);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         font = settings.getInt("font_color", 0xffffffff);
@@ -105,7 +109,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 // bannerLink = user.bannerImg;
                 profileImage = user.profileImg;
                 Date d = new Date(user.created);
-                dateString = "seit "+ DateFormat.getDateTimeInstance().format(d);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
+                dateString = "seit "+ sdf.format(d);
             }
             else if(MODE == GET_TWEETS)
             {
@@ -119,7 +124,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     tweets.addAll(homeTl.getData());
                 } else {
                     tweets = new DatabaseAdapter(ui.get()).load(DatabaseAdapter.TWEET,userId);
-                    if(tweets.size() == 0) {
+                    if(tweets.size() < 10) {
                         tweets = mTwitter.getUserTweets(userId,args[2],id);
                         tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
                     }
@@ -140,7 +145,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     favorits.addAll(homeFav.getData());
                 } else {
                     favorits = new DatabaseAdapter(ui.get()).load(DatabaseAdapter.FAVT,userId);
-                    if(favorits.size() == 0) {
+                    if(favorits.size() < 10) {
                         favorits = mTwitter.getUserFavs(userId,args[2],id);
                         tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
                     }
@@ -176,6 +181,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         catch(Exception err) {
             errMsg = err.getMessage();
             err.printStackTrace();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(errMsg);
             return FAILURE;
         }
         return MODE;
@@ -188,17 +195,17 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             return;
 
         if(mode == GET_INFORMATION || mode == LOAD_DB) {
-            TextView txtUser = (TextView)connect.findViewById(R.id.profile_username);
-            TextView txtScrName = (TextView)connect.findViewById(R.id.profile_screenname);
-            TextView txtBio = (TextView)connect.findViewById(R.id.bio);
-            TextView txtLocation = (TextView)connect.findViewById(R.id.location);
-            TextView txtLink = (TextView)connect.findViewById(R.id.links);
-            TextView txtCreated = (TextView)connect.findViewById(R.id.profile_date);
-            TextView txtFollowing = (TextView)connect.findViewById(R.id.following);
-            TextView txtFollower  = (TextView)connect.findViewById(R.id.follower);
-            ImageView profile  = (ImageView)connect.findViewById(R.id.profile_img);
-            //ImageView banner   = (ImageView)connect.findViewById(R.id.banner);
-            ImageView locationIcon = (ImageView)connect.findViewById(R.id.location_img);
+            TextView txtUser = connect.findViewById(R.id.profile_username);
+            TextView txtScrName = connect.findViewById(R.id.profile_screenname);
+            TextView txtBio = connect.findViewById(R.id.bio);
+            TextView txtLocation = connect.findViewById(R.id.location);
+            TextView txtLink = connect.findViewById(R.id.links);
+            TextView txtCreated = connect.findViewById(R.id.profile_date);
+            TextView txtFollowing = connect.findViewById(R.id.following);
+            TextView txtFollower  = connect.findViewById(R.id.follower);
+            ImageView profile = connect.findViewById(R.id.profile_img);
+            //ImageView banner = connect.findViewById(R.id.banner);
+            ImageView locationIcon = connect.findViewById(R.id.location_img);
             connect.findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
             connect.findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
 
@@ -238,25 +245,25 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         else if(mode == GET_TWEETS)
         {
             profileTweets.setAdapter(homeTl);
-            SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
+            SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             tweetsReload.setRefreshing(false);
         }
         else if(mode == GET_FAVS)
         {
             profileFavorits.setAdapter(homeFav);
-            SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
+            SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
             favoritsReload.setRefreshing(false);
         }
         else if(mode == FAILURE)
         {
             Toast.makeText(connect,"Fehler: "+errMsg,Toast.LENGTH_LONG).show();
-            SwipeRefreshLayout tweetsReload = (SwipeRefreshLayout)connect.findViewById(R.id.hometweets);
-            SwipeRefreshLayout favoritsReload = (SwipeRefreshLayout)connect.findViewById(R.id.homefavorits);
+            SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
+            SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);
             favoritsReload.setRefreshing(false);
         }
         if(!isHome) {
-            Toolbar tool = (Toolbar) connect.findViewById(R.id.profile_toolbar);
+            Toolbar tool = connect.findViewById(R.id.profile_toolbar);
             if(isFollowing) {
                 tool.getMenu().getItem(1).setIcon(R.drawable.follow_enabled);
             } else {

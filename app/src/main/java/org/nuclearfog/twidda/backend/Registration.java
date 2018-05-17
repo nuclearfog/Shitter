@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.window.LoginPage;
 
 import java.lang.ref.WeakReference;
@@ -38,6 +40,8 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             }
         } catch ( Exception e ) {
             errMSG = e.getMessage();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(errMSG);
         }
         return false;
     }

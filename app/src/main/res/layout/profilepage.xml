@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,8 +13,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/tweet_toolbar">
 
             <LinearLayout
@@ -40,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="10dp">
 
                     <ImageView
                         android:id="@+id/profile_img"
@@ -123,6 +121,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="2dp"
                                 android:background="@drawable/following"
+                                android:contentDescription="@string/following"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -138,6 +137,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginEnd="2dp"
                                 android:background="@drawable/follower"
+                                android:contentDescription="@string/follower"
                                 android:visibility="invisible" />
 
                             <TextView
@@ -216,65 +216,56 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:fitsSystemWindows="true"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
 
-        <LinearLayout
+
+        <TabHost
+            android:id="@+id/profile_tab"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="false"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <TabHost
-                android:id="@+id/profile_tab"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <TabWidget
+                    android:id="@android:id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content" />
 
-                    <TabWidget
-                        android:id="@android:id/tabs"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <FrameLayout
-                        android:id="@android:id/tabcontent"
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/hometweets"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <android.support.v4.widget.SwipeRefreshLayout
-                            android:id="@+id/hometweets"
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/ht_list"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent" />
+                    </android.support.v4.widget.SwipeRefreshLayout>
 
-                            <android.support.v7.widget.RecyclerView
-                                android:id="@+id/ht_list"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
-                        </android.support.v4.widget.SwipeRefreshLayout>
+                    <android.support.v4.widget.SwipeRefreshLayout
+                        android:id="@+id/homefavorits"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                        <android.support.v4.widget.SwipeRefreshLayout
-                            android:id="@+id/homefavorits"
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/hf_list"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent" />
+                    </android.support.v4.widget.SwipeRefreshLayout>
 
-                            <android.support.v7.widget.RecyclerView
-                                android:id="@+id/hf_list"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent" />
-                        </android.support.v4.widget.SwipeRefreshLayout>
+                </FrameLayout>
 
-                    </FrameLayout>
+            </LinearLayout>
 
-                </LinearLayout>
-
-            </TabHost>
-
-        </LinearLayout>
-
+        </TabHost>
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

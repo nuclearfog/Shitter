@@ -47,4 +47,11 @@
     <string name="load">Anzahl Tweets</string>
     <string name="block">Block</string>
     <string name="follow">folgen</string>
+    <string name="retry">Wiederholen</string>
+    <string name="cancel">Verwerfen</string>
+    <string name="limit">Limit</string>
+    <string name="errorstack_button">Fehlerspeicher</string>
+    <string name="color_settings">Farbeinstellungen</string>
+    <string name="data_load">Datenverbrauch</string>
+    <string name="trend_setting">Trendeinstellung</string>
 </resources>

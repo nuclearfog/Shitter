@@ -12,6 +12,7 @@
         android:layout_marginBottom="40dp"
         android:background="@android:color/darker_gray"
         android:text="@string/register_link"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:textSize="12sp" />
 
     <LinearLayout
@@ -53,6 +54,7 @@
         android:layout_margin="30dp"
         android:background="@android:color/darker_gray"
         android:text="@string/verifierbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:textSize="12sp" />
 
 </LinearLayout>

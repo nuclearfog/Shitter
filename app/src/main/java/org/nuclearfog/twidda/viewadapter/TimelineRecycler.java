@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.viewadapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -10,11 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.listitems.*;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     private int highlight = 0xFFFFFFFF;
     private int font_color = 0xFFFFFFFF;
     private boolean img_ldr = true;
+
 
     /**
      * @param mListener Item Click Listener
@@ -66,11 +68,12 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
 
 
     @Override
-    public ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
+    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewtype) {
         this.parent = parent;
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
+
     }
 
 
@@ -180,10 +183,10 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
 
 
     class ItemHolder extends ViewHolder {
-        public TextView username, screenname, tweet, retweet;
-        public TextView favorite, retweeter, time;
-        public ImageView profile, verify;
-        public ItemHolder(View v) {
+        public final TextView username, screenname, tweet, retweet;
+        public final TextView favorite, retweeter, time;
+        public final ImageView profile, verify;
+        ItemHolder(View v) {
             super(v);
             username = v.findViewById(R.id.username);
             screenname = v.findViewById(R.id.screenname);
@@ -196,7 +199,6 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
             verify = v.findViewById(R.id.list_verify);
         }
     }
-
 
     /**
      * Custom Click Listener

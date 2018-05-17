@@ -8,21 +8,22 @@ android {
         minSdkVersion 22
         targetSdkVersion 22
         versionCode 1
-        versionName '1.3'
+        versionName '1.4'
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
         }
     }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:26+'
-    compile 'com.android.support:design:26+'
-    compile(name: 'colorpicker', ext: 'aar')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:cardview-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation files('libs/colorpicker.aar')
     implementation files('libs/picasso-2.5.2.jar')
     implementation files('libs/twitter4j-core-4.0.6.jar')
     implementation files('libs/twitter4j-core-4.0.6-sources.jar')

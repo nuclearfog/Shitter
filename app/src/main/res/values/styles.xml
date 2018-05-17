@@ -24,4 +24,11 @@
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
+    <style name="CardViewStyle" parent="CardView">
+        <item name="cardBackgroundColor">#4f000000</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardUseCompatPadding">true</item>
+    </style>
+
 </resources>

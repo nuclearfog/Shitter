@@ -16,13 +16,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import static android.content.DialogInterface.*;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.backend.listitems.*;
-import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+
+import static android.content.DialogInterface.BUTTON_NEGATIVE;
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /**
  * Detailed Tweet Window
@@ -45,14 +47,14 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
         boolean home = userID == TwitterEngine.getHomeId();
 
-        answer_list = (RecyclerView) findViewById(R.id.answer_list);
-        Button retweet = (Button) findViewById(R.id.rt_button_detail);
-        Button favorite = (Button) findViewById(R.id.fav_button_detail);
-        Button delete = (Button) findViewById(R.id.delete);
-        SwipeRefreshLayout answerReload = (SwipeRefreshLayout) findViewById(R.id.answer_reload);
-        TextView txtRt = (TextView) findViewById(R.id.no_rt_detail);
-        TextView txtFav = (TextView) findViewById(R.id.no_fav_detail);
-        TextView date = (TextView) findViewById(R.id.timedetail);
+        answer_list = findViewById(R.id.answer_list);
+        Button retweet = findViewById(R.id.rt_button_detail);
+        Button favorite = findViewById(R.id.fav_button_detail);
+        Button delete = findViewById(R.id.delete);
+        SwipeRefreshLayout answerReload = findViewById(R.id.answer_reload);
+        TextView txtRt = findViewById(R.id.no_rt_detail);
+        TextView txtFav = findViewById(R.id.no_fav_detail);
+        TextView date = findViewById(R.id.timedetail);
         answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if(home) {
             delete.setVisibility(View.VISIBLE);
@@ -163,9 +165,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         SharedPreferences settings = getSharedPreferences("settings", 0);
         int backgroundColor = settings.getInt("background_color", 0xff0f114a);
         int fontColor = settings.getInt("font_color", 0xffffffff);
-        CollapsingToolbarLayout cLayout = (CollapsingToolbarLayout) findViewById(R.id.tweet_detail);
-        LinearLayout tweetaction = (LinearLayout) findViewById(R.id.tweetbar);
-        TextView txtTw = (TextView) findViewById(R.id.tweet_detailed);
+        CollapsingToolbarLayout cLayout = findViewById(R.id.tweet_detail);
+        LinearLayout tweetaction = findViewById(R.id.tweetbar);
+        TextView txtTw = findViewById(R.id.tweet_detailed);
         cLayout.setBackgroundColor(backgroundColor);
         tweetaction.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
@@ -177,10 +179,11 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void getExtras(Bundle b) {
-        tweetID = b.getLong("tweetID");
-        userID = b.getLong("userID");
-        username = b.getString("username");
+        if(b != null) {
+            tweetID = b.getLong("tweetID");
+            userID = b.getLong("userID");
+            username = b.getString("username");
+        }
     }
 }

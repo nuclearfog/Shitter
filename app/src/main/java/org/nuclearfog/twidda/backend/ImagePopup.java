@@ -15,17 +15,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.ErrorLog;
+
 import java.io.InputStream;
 import java.net.URL;
 
-public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Button.OnClickListener {
+public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
 
     private ImageView mImg;
     private Dialog popup;
     private Bitmap imgArray[];
     private ProgressBar mCircle;
+    private Context c;
     private LayoutInflater inf;
-    private Button left, right;
     private int index = 0;
     private int position = 0;
 
@@ -33,6 +35,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
         popup = new Dialog(c);
         mCircle = new ProgressBar(c);
         inf = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.c = c;
     }
 
     @Override
@@ -73,6 +76,8 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
         } catch (Exception err) {
             Log.e("shitter:","Image download failed!");
             err.printStackTrace();
+            ErrorLog errorLog = new ErrorLog(c);
+            errorLog.add(err.getMessage());
             return false;
         }
     }
@@ -85,38 +90,35 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> implements Butt
             setImage(imgArray[position]);
             popup.setContentView(content);
             if(index > 0) {
-                left = content.findViewById(R.id.image_left);
-                right = content.findViewById(R.id.image_right);
+                final Button left = content.findViewById(R.id.image_left);
+                final Button right = content.findViewById(R.id.image_right);
                 if(index > 1) {
                     left.setVisibility(View.INVISIBLE);
                     right.setVisibility(View.VISIBLE);
-                    left.setOnClickListener(this);
-                    right.setOnClickListener(this);
+                    left.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(position == 1)
+                                left.setVisibility(View.INVISIBLE);
+                            right.setVisibility(View.VISIBLE);
+                            position--;
+                        }
+                    });
+                    right.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(position == index-2)
+                                right.setVisibility(View.INVISIBLE);
+                            left.setVisibility(View.VISIBLE);
+                            position++;
+                        }
+                    });
                 }
                 popup.show();
             }
         } else {
             popup.dismiss();
         }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.image_left:
-                if(position == 1)
-                    left.setVisibility(View.INVISIBLE);
-                right.setVisibility(View.VISIBLE);
-                position--;
-                break;
-            case R.id.image_right:
-                if(position == index-2)
-                    right.setVisibility(View.INVISIBLE);
-                left.setVisibility(View.VISIBLE);
-                position++;
-                break;
-        }
-        setImage(imgArray[position]);
     }
 
     private void setImage(Bitmap btm) {

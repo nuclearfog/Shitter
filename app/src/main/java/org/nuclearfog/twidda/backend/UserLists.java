@@ -10,9 +10,10 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.UserDetail;
-import org.nuclearfog.twidda.backend.listitems.*;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -40,7 +41,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     public UserLists(Context context) {
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
-        userList = (RecyclerView) ui.get().findViewById(R.id.userlist);
+        userList = ui.get().findViewById(R.id.userlist);
 
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imageload = settings.getBoolean("image_load",true);
@@ -83,6 +84,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         }
         catch(Exception err) {
             errmsg = "Fehler: "+err.getMessage();
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(errmsg);
         }
         return null;
     }
@@ -95,7 +98,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         if(errmsg == null) {
             userList.setAdapter(usrAdp);
         } else {
-            Toast.makeText(ui.get().getApplicationContext(),errmsg,Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(),errmsg,Toast.LENGTH_LONG).show();
         }
         popup.dismiss();
     }

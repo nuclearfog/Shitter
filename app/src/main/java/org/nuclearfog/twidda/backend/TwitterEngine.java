@@ -1,12 +1,14 @@
 package org.nuclearfog.twidda.backend;
 
-import org.nuclearfog.twidda.backend.listitems.*;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+
+import org.nuclearfog.twidda.backend.listitems.Trend;
+import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "xxx";  //TODO insert your own key
+    private final String TWITTER_CONSUMER_SECRET = "get your own key!";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -474,15 +476,15 @@ public class TwitterEngine {
         List <TwitterUser> result = new ArrayList<>();
         if(users.isEmpty())
             return result;
-        try {
-            for(User user : users) {
-                TwitterUser item = getUser(user);
-                result.add(item);
+            for (User user : users) {
+                try {
+                    TwitterUser item = getUser(user);
+                    result.add(item);
+                } catch (Exception err) {
+                    // Bug in Twitter4J caused by 'withheld accounts'
+                    // because of empty profile image URL
+                }
             }
-        } catch (Exception err) {
-            // Bug in Twitter4J caused by 'withheld accounts'
-            // because of empty profile image URL
-        }
         return result;
     }
 
@@ -496,8 +498,9 @@ public class TwitterEngine {
         List<Tweet> result = new ArrayList<>();
         if(statuses.isEmpty())
             return result;
-        try {
-            for(Status status : statuses) {
+
+        for(Status status : statuses) {
+            try {
                 Status embedded = status.getRetweetedStatus();
                 if(embedded != null) {
                     Tweet retweet = getTweet(embedded, null);
@@ -507,10 +510,10 @@ public class TwitterEngine {
                     Tweet tweet = getTweet(status, null);
                     result.add(tweet);
                 }
+            } catch (Exception err) {
+                // Bug in Twitter4J caused by 'withheld accounts'
+                // because of empty profile image URL
             }
-        } catch (Exception err) {
-            // Bug in Twitter4J caused by 'withheld accounts'
-            // because of empty profile image URL
         }
         return result;
     }

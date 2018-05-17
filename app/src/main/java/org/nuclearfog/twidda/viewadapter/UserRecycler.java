@@ -1,8 +1,5 @@
 package org.nuclearfog.twidda.viewadapter;
 
-import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.listitems.*;
-
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -10,8 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.List;
+
 import com.squareup.picasso.Picasso;
+
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+
+import java.util.List;
 
 public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> implements View.OnClickListener {
 
@@ -88,7 +90,7 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     class ItemHolder extends ViewHolder {
         ImageView profileImg, verifyIco, lockIco;
         TextView username, screenname;
-        public ItemHolder(View v) {
+        ItemHolder(View v) {
             super(v);
             username = v.findViewById(R.id.username_detail);
             screenname = v.findViewById(R.id.screenname_detail);
