@@ -24,7 +24,7 @@ import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
 /**
- * User Profile Class uses AsyncTask
+ * User Profile Activity
  * @see ProfileLoader
  */
 public class UserProfile extends AppCompatActivity implements View.OnClickListener,

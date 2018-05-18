@@ -27,7 +27,7 @@ import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
 /**
- * Detailed Tweet Window
+ * Detailed Tweet Activity
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements View.OnClickListener,

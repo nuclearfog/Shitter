@@ -37,6 +37,7 @@ public class ErrorLog {
     public List<String> getErrorList() {
         SQLiteDatabase mData = dataHelper.getReadableDatabase();
         List<String> list = new ArrayList<>();
+        int limit = 0;
         String query = "SELECT * FROM error ORDER BY time DESC";
         Cursor cursor = mData.rawQuery(query, null);
         if(cursor.moveToFirst()) {
@@ -49,7 +50,7 @@ public class ErrorLog {
                 String dateString = sdf.format(new Date(time));
                 list.add(dateString+" : "+message);
 
-            } while(cursor.moveToNext());
+            } while(cursor.moveToNext() && limit++ < 100);
         }
         cursor.close();
         return list;

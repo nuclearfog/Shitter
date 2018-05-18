@@ -33,7 +33,7 @@ import org.nuclearfog.twidda.viewadapter.LogAdapter;
 import java.util.List;
 
 /**
- * App Settings Page
+ * App Settings Activity
  */
 public class AppSettings extends AppCompatActivity implements View.OnClickListener,
         CompoundButton.OnCheckedChangeListener, AlertDialog.OnClickListener, Dialog.OnDismissListener, OnColorChangedListener {

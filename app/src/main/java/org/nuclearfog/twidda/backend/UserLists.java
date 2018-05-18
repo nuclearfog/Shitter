@@ -1,11 +1,10 @@
 package org.nuclearfog.twidda.backend;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.view.Window;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -29,8 +28,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
     private RecyclerView userList;
-    private Dialog popup;
-    private ProgressBar circle;
     private String errmsg;
     private boolean imageload;
 
@@ -45,19 +42,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
 
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imageload = settings.getBoolean("image_load",true);
-
-        circle = new ProgressBar(ui.get());
-        popup = new Dialog(ui.get());
-    }
-
-
-    @Override
-    protected void onPreExecute() {
-        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if(popup.getWindow() != null)
-            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        popup.setContentView(circle);
-        popup.show();
     }
 
 
@@ -95,11 +79,15 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     protected void onPostExecute(Void v) {
         if(ui.get() == null)
             return;
+
+        ProgressBar mProgress = ui.get().findViewById(R.id.userlist_progress);
+        mProgress.setVisibility(View.INVISIBLE);
+
         if(errmsg == null) {
             userList.setAdapter(usrAdp);
-        } else {
+        }
+        else {
             Toast.makeText(ui.get(),errmsg,Toast.LENGTH_LONG).show();
         }
-        popup.dismiss();
     }
 }

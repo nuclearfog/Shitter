@@ -12,13 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.nuclearfog.twidda.backend.UserLists;
-import org.nuclearfog.twidda.backend.listitems.*;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.UserLists;
+import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 /**
- * Get Follow Connections from an User
+ * User List Activity
  * @see UserLists
  */
 public class UserDetail extends AppCompatActivity implements UserRecycler.OnItemClicked {
@@ -34,9 +34,9 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
         setContentView(R.layout.userpage);
         getExtras(getIntent().getExtras());
 
-        userList = (RecyclerView) findViewById(R.id.userlist);
+        userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.user_toolbar);
+        Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
         SharedPreferences settings = getSharedPreferences("settings", 0);
         int background = settings.getInt("background_color", 0xff0f114a);

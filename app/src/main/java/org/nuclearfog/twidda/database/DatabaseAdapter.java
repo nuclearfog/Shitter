@@ -75,7 +75,7 @@ public class DatabaseAdapter {
      * @return List of Tweets
      */
     public List<Tweet> load(int mode, long id) {
-        List<Tweet> tweetlist = new ArrayList<>();
+        List<Tweet> tweetList = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         String SQL_GET_HOME="";
         int limit = 0;
@@ -109,11 +109,11 @@ public class DatabaseAdapter {
         if(cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
-                tweetlist.add(tweet);
+                tweetList.add(tweet);
             } while(cursor.moveToNext() && limit++ < 200);
         }
         cursor.close();
-        return tweetlist;
+        return tweetList;
     }
 
 
@@ -208,7 +208,7 @@ public class DatabaseAdapter {
         Tweet embeddedTweet = null;
         if(retweetId > 0)
             embeddedTweet = getStatus(retweetId);
-        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,null,
+        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,null/*TODO*/,
                 source,replyStatusId,embeddedTweet,retweeted,favorized);
     }
 
@@ -291,8 +291,13 @@ public class DatabaseAdapter {
     }
 
 
-    public void removeStatus(long id) {
-        SQLiteDatabase db = dataHelper.getWritableDatabase();
-        db.delete("tweet", "tweetID="+id, null);
+    public void removeStatus(final long id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = dataHelper.getWritableDatabase();
+                db.delete("tweet", "tweetID="+id, null);
+            }
+        }).start();
     }
 }

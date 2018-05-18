@@ -45,7 +45,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         SharedPreferences settings = getSharedPreferences("settings", 0);
         int background = settings.getInt("background_color", 0xff0f114a);
 
-        Toolbar tool = (Toolbar)findViewById(R.id.search_toolbar);
+        Toolbar tool = findViewById(R.id.search_toolbar);
         tweetSearch = findViewById(R.id.tweet_result);
         userSearch = findViewById(R.id.user_result);
         tweetReload = findViewById(R.id.searchtweets);
