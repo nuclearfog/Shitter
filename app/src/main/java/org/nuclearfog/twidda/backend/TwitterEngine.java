@@ -38,12 +38,11 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "RQrf0uQus5v7IMuYgdlVeBuLw1ApRJhxcAMM8MyUVRh1nKSxnE";
+    private final String TWITTER_CONSUMER_SECRET = "insert your own key";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
     private Twitter twitter;
-    private Context context;
     private SharedPreferences settings;
     private RequestToken reqToken;
     private boolean login;
@@ -64,7 +63,6 @@ public class TwitterEngine {
         Configuration configuration = builder.build();
         TwitterFactory factory = new TwitterFactory(configuration);
         twitter = factory.getInstance();
-        this.context = context;
     }
 
 
@@ -72,7 +70,7 @@ public class TwitterEngine {
      * get RequestToken and Open Twitter Registration Website
      * @throws TwitterException if Connection is unavailable
      */
-    public void request() throws TwitterException {
+    public void request(Context context) throws TwitterException {
         if(reqToken == null)
             reqToken = twitter.getOAuthRequestToken();
         String redirectURL = reqToken.getAuthenticationURL();
@@ -145,6 +143,13 @@ public class TwitterEngine {
             initKeys(key1,key2);
         }
         twitterID = settings.getLong("userID", -1L);
+    }
+
+    /**
+     * set amount of tweets to be loaded
+     */
+    private void setLoad() {
+        load = settings.getInt("preload", 10);
     }
 
     /**
@@ -588,7 +593,7 @@ public class TwitterEngine {
             mTwitter = new TwitterEngine(context);
             mTwitter.init();
         }
-        mTwitter.load = mTwitter.settings.getInt("preload", 10);
+        mTwitter.setLoad();
         return mTwitter;
     }
 }

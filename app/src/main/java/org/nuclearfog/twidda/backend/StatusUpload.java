@@ -18,8 +18,6 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
-    private View load;
-    private EditText tweet;
     private String[] path;
 
     /**
@@ -29,13 +27,14 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
     public StatusUpload(Context context, String[] path) {
         ui = new WeakReference<>((TweetPopup)context);
         mTwitter = TwitterEngine.getInstance(context);
-        load = ui.get().findViewById(R.id.tweet_sending);
-        tweet = (EditText) ui.get().findViewById(R.id.tweet_input);
+
         this.path = path;
     }
 
     @Override
     protected void onPreExecute() {
+        EditText tweet = ui.get().findViewById(R.id.tweet_input);
+        View load = ui.get().findViewById(R.id.tweet_sending);
         load.setVisibility(View.VISIBLE);
         tweet.setFocusable(false);
     }
@@ -80,6 +79,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
             builder.setTitle("Fehler").setMessage("Tweet wurde nicht gesendet!")
                     .setPositiveButton(R.string.retry, this)
                     .setNegativeButton(R.string.cancel, this).show();
+            View load = ui.get().findViewById(R.id.tweet_sending);
             load.setVisibility(View.INVISIBLE);
         }
     }

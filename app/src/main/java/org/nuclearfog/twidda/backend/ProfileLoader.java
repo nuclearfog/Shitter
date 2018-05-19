@@ -41,15 +41,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private static final long IGNORE         = 0x9;
 
     private String screenName, username, description, location, follower, following;
-    private RecyclerView profileTweets, profileFavorits;
     private String /* bannerLink,*/ profileImage, link, dateString;
     private TimelineRecycler homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
     private String errMsg = "";
     private int font, highlight;
+    private boolean imgEnabled;
     private boolean isHome = false;
-    private boolean imgEnabled = false;
     private boolean isFollowing = false;
     private boolean isFollowed = false;
     private boolean isVerified = false;
@@ -62,13 +61,16 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
      */
     public ProfileLoader(Context context) {
         ui = new WeakReference<>((UserProfile)context);
-        profileTweets = ui.get().findViewById(R.id.ht_list);
-        profileFavorits = ui.get().findViewById(R.id.hf_list);
         mTwitter = TwitterEngine.getInstance(context);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         font = settings.getInt("font_color", 0xffffffff);
         highlight = settings.getInt("highlight_color", 0xffff00ff);
         imgEnabled = settings.getBoolean("image_load",true);
+
+        RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
+        RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
+        homeTl = (TimelineRecycler) profileTweets.getAdapter();
+        homeFav = (TimelineRecycler) profileFavorits.getAdapter();
     }
 
 
@@ -116,7 +118,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             {
                 DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> tweets;
-                homeTl = (TimelineRecycler) profileTweets.getAdapter();
+
                 if(homeTl != null && homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
@@ -137,7 +139,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             {
                 DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> favorits;
-                homeFav = (TimelineRecycler) profileFavorits.getAdapter();
                 if(homeFav != null && homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
@@ -244,12 +245,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == GET_TWEETS)
         {
+            RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
             profileTweets.setAdapter(homeTl);
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             tweetsReload.setRefreshing(false);
         }
         else if(mode == GET_FAVS)
         {
+            RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
             profileFavorits.setAdapter(homeFav);
             SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
             favoritsReload.setRefreshing(false);

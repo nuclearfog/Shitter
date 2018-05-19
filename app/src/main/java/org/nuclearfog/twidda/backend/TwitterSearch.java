@@ -23,7 +23,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     private TimelineRecycler tlRc;
     private UserRecycler uAdp;
-    private RecyclerView tweetSearch, userSearch;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
@@ -32,14 +31,17 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
-        tweetSearch = ui.get().findViewById(R.id.tweet_result);
-        userSearch = ui.get().findViewById(R.id.user_result);
         mTwitter = TwitterEngine.getInstance(context);
 
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         font_color = settings.getInt("font_color", 0xffffffff);
         highlight = settings.getInt("highlight_color", 0xffff00ff);
         imageload = settings.getBoolean("image_load",true);
+
+        RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
+        RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
+        tlRc = (TimelineRecycler) tweetSearch.getAdapter();
+        uAdp = (UserRecycler) userSearch.getAdapter();
     }
 
 
@@ -48,9 +50,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         String strSearch = search[0];
         long id = 1L;
         try {
-            tlRc = (TimelineRecycler) tweetSearch.getAdapter();
-            uAdp = (UserRecycler) userSearch.getAdapter();
-
             if(tlRc != null && tlRc.getItemCount() > 0) {
                 id = tlRc.getItemId(0);
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
@@ -89,6 +88,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
         View circleLoad = connect.findViewById(R.id.search_progress);
         circleLoad.setVisibility(View.INVISIBLE);
+        RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
+        RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
         tweetSearch.setAdapter(tlRc);
         userSearch.setAdapter(uAdp);
         tweetReload.setRefreshing(false);

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,24 +19,22 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.ErrorLog;
 
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 
 public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
 
-    private ImageView mImg;
+    private WeakReference<Context> ui;
     private Dialog popup;
     private Bitmap imgArray[];
-    private ProgressBar mCircle;
-    private Context c;
     private LayoutInflater inf;
     private int index = 0;
     private int position = 0;
 
     public ImagePopup(Context c) {
         popup = new Dialog(c);
-        mCircle = new ProgressBar(c);
+        ui = new WeakReference<>(c);
         inf = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.c = c;
     }
 
     @Override
@@ -43,6 +42,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if(popup.getWindow() != null)
             popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        ProgressBar mCircle = new ProgressBar(ui.get());
         popup.setContentView(mCircle);
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -76,18 +76,19 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
         } catch (Exception err) {
             Log.e("shitter:","Image download failed!");
             err.printStackTrace();
-            ErrorLog errorLog = new ErrorLog(c);
+            ErrorLog errorLog = new ErrorLog(ui.get());
             errorLog.add(err.getMessage());
             return false;
         }
     }
 
     @Override
+    @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean result) {
         if(result) {
-            View content = inf.inflate(R.layout.imagepreview,null);
-            mImg = content.findViewById(R.id.fullSizeImage);
-            setImage(imgArray[position]);
+            View content = inf.inflate(R.layout.imagepreview,null,false);
+            ImageView mImg = content.findViewById(R.id.fullSizeImage);
+            setImage(imgArray[position], mImg);
             popup.setContentView(content);
             if(index > 0) {
                 final Button left = content.findViewById(R.id.image_left);
@@ -121,7 +122,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
         }
     }
 
-    private void setImage(Bitmap btm) {
+    private void setImage(Bitmap btm, ImageView mImg) {
         int height = (int)(btm.getHeight() / (btm.getWidth() / 640.0));
         btm = Bitmap.createScaledBitmap( btm,640,height, false);
         mImg.setImageBitmap(btm);

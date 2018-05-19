@@ -51,7 +51,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
     private TwitterEngine mTwitter;
     private TimelineRecycler tlAdp;
-    private RecyclerView replyList;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, retweeter;
     private String medialinks[], profile_pb;
@@ -71,7 +70,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         highlight = settings.getInt("highlight_color", 0xffff00ff);
         toggleImg = settings.getBoolean("image_load",true);
         ui = new WeakReference<>((TweetDetail)c);
-        replyList = ui.get().findViewById(R.id.answer_list);
+        RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
+        tlAdp = (TimelineRecycler) replyList.getAdapter();
     }
 
 
@@ -90,7 +90,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 if(tweet == null)
                     return IGNORE;
 
-                tlAdp = (TimelineRecycler) replyList.getAdapter();
                 List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
                 tlAdp = new TimelineRecycler(answers,ui.get());
                 tlAdp.setColor(highlight, font);
@@ -154,7 +153,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 List<Tweet> answers;
                 DatabaseAdapter twdb = new DatabaseAdapter(ui.get());
                 String replyname = tweet.user.screenname;
-                tlAdp = (TimelineRecycler) replyList.getAdapter();
                 if(tlAdp != null && tlAdp.getItemCount() > 0) {
                     long sinceId = tlAdp.getItemId(0);
                     answers = mTwitter.getAnswers(replyname, tweetID, sinceId);
@@ -217,7 +215,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             txtRet.setText(rtStr);
 
             if(tlAdp != null) {
-                replyList.setAdapter(tlAdp);
                 String ansStr = Integer.toString(tlAdp.getItemCount());
                 TextView txtAns = connect.findViewById(R.id.no_ans_detail);
                 txtAns.setText(ansStr);
@@ -273,7 +270,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             setIcons(favoriteButton, retweetButton);
         }
         else if(mode == LOAD_REPLY) {
-            replyList.setAdapter(tlAdp);
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             ansReload.setRefreshing(false);
             String ansStr = Integer.toString(tlAdp.getItemCount());

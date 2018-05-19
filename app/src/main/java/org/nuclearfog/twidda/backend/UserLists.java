@@ -27,7 +27,6 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
-    private RecyclerView userList;
     private String errmsg;
     private boolean imageload;
 
@@ -38,7 +37,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     public UserLists(Context context) {
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
-        userList = ui.get().findViewById(R.id.userlist);
+        RecyclerView userList = ui.get().findViewById(R.id.userlist);
+        usrAdp = (UserRecycler) userList.getAdapter();
 
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         imageload = settings.getBoolean("image_load",true);
@@ -51,7 +51,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         long mode = data[1];
         long cursor = data[2];
         try {
-            usrAdp = (UserRecycler) userList.getAdapter();
+
             if(mode == FOLLOWING) {
                 List<TwitterUser> user = mTwitter.getFollowing(id,cursor);
                 usrAdp = new UserRecycler(user,ui.get());
@@ -84,6 +84,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         mProgress.setVisibility(View.INVISIBLE);
 
         if(errmsg == null) {
+            RecyclerView userList = ui.get().findViewById(R.id.userlist);
             userList.setAdapter(usrAdp);
         }
         else {

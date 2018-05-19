@@ -32,7 +32,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
     private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
-    private RecyclerView timelineList, trendList, mentionList;
+
     private TimelineRecycler timelineAdapter, mentionAdapter;
     private TrendRecycler trendsAdapter;
     private int woeid;
@@ -49,17 +49,19 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         mTwitter = TwitterEngine.getInstance(context);
         SharedPreferences settings = context.getSharedPreferences("settings", 0);
         woeid = settings.getInt("woeid",23424829); // Germany WOEID
-        timelineList = ui.get().findViewById(R.id.tl_list);
-        trendList = ui.get().findViewById(R.id.tr_list);
-        mentionList = ui.get().findViewById(R.id.m_list);
         highlight = settings.getInt("highlight_color", 0xffff00ff);
         font = settings.getInt("font_color", 0xffffffff);
         image = settings.getBoolean("image_load", true);
+
+        RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
+        RecyclerView mentionList = ui.get().findViewById(R.id.m_list);
+        timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
+        mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
     }
 
     /**
      * @param args [0] Execution Mode: (0)HomeTL, (1)Trend, (2)Mention
-     * @return success
+     * @return Mode
      */
     @Override
     protected Integer doInBackground(Integer... args) {
@@ -72,7 +74,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             TrendDatabase trendDb = new TrendDatabase(ui.get());
             switch (MODE) {
                 case HOME:
-                    timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
+
                     if(timelineAdapter != null && timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
                         tweets = mTwitter.getHome(page,id);
@@ -98,7 +100,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 case TRND:
                     List<Trend> trends = mTwitter.getTrends(woeid);
                     trendDb.store(trends);
-                    trendsAdapter = (TrendRecycler) trendList.getAdapter();
+
                     trendsAdapter = new TrendRecycler(trends, ui.get());
                     trendsAdapter.setColor(font);
                     break;
@@ -110,7 +112,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
                 case MENT:
                     List<Tweet> mention;
-                    mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
                     if(mentionAdapter != null && mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
                         mention = mTwitter.getMention(page,id);
@@ -150,6 +151,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         SwipeRefreshLayout timelineRefresh = connect.findViewById(R.id.timeline);
         SwipeRefreshLayout trendRefresh = connect.findViewById(R.id.trends);
         SwipeRefreshLayout mentionRefresh = connect.findViewById(R.id.mention);
+        RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
+        RecyclerView mentionList = ui.get().findViewById(R.id.m_list);
+        RecyclerView trendList = ui.get().findViewById(R.id.tr_list);
 
         switch(MODE) {
             case HOME:
@@ -171,11 +175,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case FAIL:
+                Toast.makeText(connect, "Fehler: "+errMsg, Toast.LENGTH_LONG).show();
             default:
                 timelineRefresh.setRefreshing(false);
                 trendRefresh.setRefreshing(false);
                 mentionRefresh.setRefreshing(false);
-                Toast.makeText(connect, "Fehler: "+errMsg, Toast.LENGTH_LONG).show();
         }
     }
 }

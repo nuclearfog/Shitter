@@ -33,7 +33,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         String pin = twitterPin[0];
         try {
             if( pin.trim().isEmpty() ) {
-                mTwitter.request();
+                mTwitter.request(ui.get());
             } else {
                 mTwitter.initialize(pin);
                 return true;
