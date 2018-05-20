@@ -54,9 +54,24 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         image = settings.getBoolean("image_load", true);
 
         RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
+        RecyclerView trendList = ui.get().findViewById(R.id.tr_list);
         RecyclerView mentionList = ui.get().findViewById(R.id.m_list);
         timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
+        trendsAdapter = (TrendRecycler) trendList.getAdapter();
         mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
+
+        if(timelineAdapter == null) {
+            timelineAdapter = new TimelineRecycler(ui.get());
+            timelineList.setAdapter(timelineAdapter);
+        }
+        if(trendsAdapter == null) {
+            trendsAdapter = new TrendRecycler(ui.get());
+            trendList.setAdapter(trendsAdapter);
+        }
+        if(mentionAdapter == null) {
+            mentionAdapter = new TimelineRecycler(ui.get());
+            mentionList.setAdapter(mentionAdapter);
+        }
     }
 
     /**
@@ -75,7 +90,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             switch (MODE) {
                 case HOME:
 
-                    if(timelineAdapter != null && timelineAdapter.getItemCount() > 0) {
+                    if(timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
                         tweets = mTwitter.getHome(page,id);
                         tweetDb.store(tweets, DatabaseAdapter.HOME,-1L);
@@ -84,35 +99,38 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                         tweets = mTwitter.getHome(page,id);
                         tweetDb.store(tweets, DatabaseAdapter.HOME,-1L);
                     }
-                    timelineAdapter = new TimelineRecycler(tweets, ui.get());
+                    timelineAdapter.setData(tweets);
                     timelineAdapter.setColor(highlight, font);
                     timelineAdapter.toggleImage(image);
                     break;
 
                 case H_LOAD:
+
                     DatabaseAdapter tweetDeck = new DatabaseAdapter(ui.get());
                     tweets = tweetDeck.load(DatabaseAdapter.HOME, -1L);
-                    timelineAdapter = new TimelineRecycler(tweets, ui.get());
+                    timelineAdapter.setData(tweets);
                     timelineAdapter.setColor(highlight, font);
                     timelineAdapter.toggleImage(image);
                     break;
 
                 case TRND:
+
                     List<Trend> trends = mTwitter.getTrends(woeid);
                     trendDb.store(trends);
-
-                    trendsAdapter = new TrendRecycler(trends, ui.get());
+                    trendsAdapter.setData(trends);
                     trendsAdapter.setColor(font);
                     break;
 
                 case T_LOAD:
-                    trendsAdapter = new TrendRecycler(trendDb.load(), ui.get());
+
+                    trendsAdapter.setData(trendDb.load());
                     trendsAdapter.setColor(font);
                     break;
 
                 case MENT:
+
                     List<Tweet> mention;
-                    if(mentionAdapter != null && mentionAdapter.getItemCount() != 0) {
+                    if(mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
                         mention = mTwitter.getMention(page,id);
                         tweetDb.store(mention, DatabaseAdapter.MENT,-1L);
@@ -121,23 +139,26 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                         mention = mTwitter.getMention(page,id);
                         tweetDb.store(mention, DatabaseAdapter.MENT,-1L);
                     }
-                    mentionAdapter = new TimelineRecycler(mention, ui.get());
+                    mentionAdapter.setData(mention);
                     mentionAdapter.setColor(highlight, font);
                     mentionAdapter.toggleImage(image);
                     break;
 
                 case M_LOAD:
+
                     DatabaseAdapter mentDeck  = new DatabaseAdapter(ui.get());
-                    tweets = mentDeck.load(DatabaseAdapter.MENT,-1L);
-                    mentionAdapter = new TimelineRecycler(tweets, ui.get());
+                    mention = mentDeck.load(DatabaseAdapter.MENT,-1L);
+                    mentionAdapter.setData(mention);
                     mentionAdapter.setColor(highlight, font);
                     mentionAdapter.toggleImage(image);
                     break;
             }
         } catch (Exception e) {
             errMsg = e.getMessage();
-            ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(errMsg);
+            if(ui.get() != null) {
+                ErrorLog errorLog = new ErrorLog(ui.get());
+                errorLog.add(errMsg);
+            }
             return FAIL;
         }
         return MODE;
@@ -151,26 +172,24 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         SwipeRefreshLayout timelineRefresh = connect.findViewById(R.id.timeline);
         SwipeRefreshLayout trendRefresh = connect.findViewById(R.id.trends);
         SwipeRefreshLayout mentionRefresh = connect.findViewById(R.id.mention);
-        RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
-        RecyclerView mentionList = ui.get().findViewById(R.id.m_list);
-        RecyclerView trendList = ui.get().findViewById(R.id.tr_list);
+
 
         switch(MODE) {
             case HOME:
             case H_LOAD:
-                timelineList.setAdapter(timelineAdapter);
+                timelineAdapter.notifyDataSetChanged();
                 timelineRefresh.setRefreshing(false);
                 break;
 
             case TRND:
             case T_LOAD:
-                trendList.setAdapter(trendsAdapter);
+                trendsAdapter.notifyDataSetChanged();
                 trendRefresh.setRefreshing(false);
                 break;
 
             case MENT:
             case M_LOAD:
-                mentionList.setAdapter(mentionAdapter);
+                mentionAdapter.notifyDataSetChanged();
                 mentionRefresh.setRefreshing(false);
                 break;
 

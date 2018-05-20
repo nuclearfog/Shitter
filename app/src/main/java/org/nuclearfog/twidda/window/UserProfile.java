@@ -125,12 +125,15 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 intent.putExtras(extra);
                 startActivity(intent);
                 return true;
+
             case R.id.profile_follow:
                 mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
                 return true;
+
             case R.id.profile_block:
                 mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
                 return true;
+
             default: return false;
         }
     }

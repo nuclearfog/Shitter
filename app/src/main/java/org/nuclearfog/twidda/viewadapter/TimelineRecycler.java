@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.viewadapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -18,6 +19,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +32,11 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     private int font_color = 0xFFFFFFFF;
     private boolean img_ldr = true;
 
+
+    public TimelineRecycler(OnItemClicked mListener) {
+        tweets = new ArrayList<>();
+        this.mListener = mListener;
+    }
 
     /**
      * @param mListener Item Click Listener
@@ -55,6 +62,11 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     }
 
 
+    public void setData(List<Tweet> tweets) {
+        this.tweets = tweets;
+    }
+
+
     @Override
     public int getItemCount(){
         return tweets.size();
@@ -67,8 +79,9 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     }
 
 
+    @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(ViewGroup parent, int viewtype) {
+    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewtype) {
         this.parent = parent;
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent,false);
         v.setOnClickListener(this);
@@ -78,7 +91,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
 
 
     @Override
-    public void onBindViewHolder(ItemHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
         String retweet = Integer.toString(tweet.retweet);
         String favorit = Integer.toString(tweet.favorit);

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.viewadapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +22,16 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ItemHolder> {
     @Override
     public int getItemCount(){return messages.size();}
 
+
+    @NonNull
     @Override
-    public LogAdapter.ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
+    public LogAdapter.ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int index) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_error, parent,false);
         return new ItemHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(LogAdapter.ItemHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         vh.message.setText(messages.get(index));
         vh.message.setTextColor(0xffff0000);
     }

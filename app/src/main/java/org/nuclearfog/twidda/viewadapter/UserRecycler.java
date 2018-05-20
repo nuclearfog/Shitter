@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.viewadapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> implements View.OnClickListener {
@@ -22,8 +24,20 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     private ViewGroup parent;
     private boolean loadImage = true;
 
+
+    public UserRecycler(OnItemClicked mListener) {
+        mUser = new ArrayList<>();
+        this.mListener = mListener;
+    }
+
+
     public UserRecycler(List<TwitterUser> mUser, OnItemClicked mListener) {
         this.mListener = mListener;
+        this.mUser = mUser;
+    }
+
+
+    public void setData(List<TwitterUser> mUser) {
         this.mUser = mUser;
     }
 
@@ -48,8 +62,9 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
     }
 
 
+    @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(ViewGroup parent, int index) {
+    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int index) {
         this.parent = parent;
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent,false);
         v.setOnClickListener(this);
@@ -58,7 +73,7 @@ public class UserRecycler extends RecyclerView.Adapter<UserRecycler.ItemHolder> 
 
 
     @Override
-    public void onBindViewHolder(ItemHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         TwitterUser user = mUser.get(index);
         vh.screenname.setText(user.screenname);
         vh.username.setText(user.username);

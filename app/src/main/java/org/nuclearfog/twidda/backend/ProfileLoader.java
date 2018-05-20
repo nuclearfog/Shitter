@@ -71,6 +71,15 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
         homeTl = (TimelineRecycler) profileTweets.getAdapter();
         homeFav = (TimelineRecycler) profileFavorits.getAdapter();
+
+        if(homeTl == null) {
+            homeTl = new TimelineRecycler(ui.get());
+            profileTweets.setAdapter(homeTl);
+        }
+        if(homeFav == null) {
+            homeFav = new TimelineRecycler(ui.get());
+            profileFavorits.setAdapter(homeFav);
+        }
     }
 
 
@@ -119,19 +128,19 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> tweets;
 
-                if(homeTl != null && homeTl.getItemCount() > 0) {
+                if(homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
                     tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
                     tweets.addAll(homeTl.getData());
                 } else {
-                    tweets = new DatabaseAdapter(ui.get()).load(DatabaseAdapter.TWEET,userId);
+                    tweets = tweetDb.load(DatabaseAdapter.TWEET,userId);
                     if(tweets.size() < 10) {
                         tweets = mTwitter.getUserTweets(userId,args[2],id);
                         tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
                     }
                 }
-                homeTl = new TimelineRecycler(tweets,ui.get());
+                homeTl.setData(tweets);
                 homeTl.setColor(highlight,font);
                 homeTl.toggleImage(imgEnabled);
             }
@@ -139,37 +148,30 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             {
                 DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> favorits;
-                if(homeFav != null && homeFav.getItemCount() > 0) {
+
+                if(homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
                     tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
                     favorits.addAll(homeFav.getData());
                 } else {
-                    favorits = new DatabaseAdapter(ui.get()).load(DatabaseAdapter.FAVT,userId);
+                    favorits = tweetDb.load(DatabaseAdapter.FAVT,userId);
                     if(favorits.size() < 10) {
                         favorits = mTwitter.getUserFavs(userId,args[2],id);
                         tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
                     }
                 }
-                homeFav = new TimelineRecycler(favorits,ui.get());
+                homeFav.setData(favorits);
                 homeFav.setColor(highlight,font);
                 homeFav.toggleImage(imgEnabled);
             }
             else if(MODE == ACTION_FOLLOW)
             {
-                if(isFollowing) {
-                    isFollowing = mTwitter.toggleFollow(userId);
-                } else {
-                    isFollowing = mTwitter.toggleFollow(userId);
-                }
+                isFollowing = mTwitter.toggleFollow(userId);
             }
             else if(MODE == ACTION_MUTE)
             {
-                if(muted) {
-                    muted = mTwitter.toggleBlock(userId);
-                } else {
-                    muted = mTwitter.toggleBlock(userId);
-                }
+                muted = mTwitter.toggleBlock(userId);
             }
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
@@ -245,17 +247,31 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == GET_TWEETS)
         {
-            RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
-            profileTweets.setAdapter(homeTl);
+            homeTl.notifyDataSetChanged();
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             tweetsReload.setRefreshing(false);
         }
         else if(mode == GET_FAVS)
         {
-            RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
-            profileFavorits.setAdapter(homeFav);
+            homeFav.notifyDataSetChanged();
             SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
             favoritsReload.setRefreshing(false);
+        }
+        else if(mode == ACTION_FOLLOW) {
+            String text;
+            if(isFollowing)
+                text = "gefolgt!";
+            else
+                text = "entfolgt!";
+            Toast.makeText(ui.get(),text,Toast.LENGTH_LONG).show();
+        }
+        else if(mode == ACTION_MUTE) {
+            String text;
+            if(muted)
+                text = "gesperrt!";
+            else
+                text = "entsperrt!";
+            Toast.makeText(ui.get(),text,Toast.LENGTH_LONG).show();
         }
         else if(mode == FAILURE)
         {

@@ -38,7 +38,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "insert your own key";
+    private final String TWITTER_CONSUMER_SECRET = "GET YOUR OWN KEY";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -288,7 +288,7 @@ public class TwitterEngine {
      *  @throws TwitterException if Access is unavailable
      */
     public boolean toggleFollow(long id) throws TwitterException {
-        if(getConnection(id)[1]) {
+        if(getConnection(id)[0]) {
             twitter.destroyFriendship(id);
             return false;
         } else {
@@ -559,8 +559,9 @@ public class TwitterEngine {
         String medialinks[] = new String[mediaEntities.length];
         byte i = 0;
         for(MediaEntity media : mediaEntities) {
-            medialinks[i++] = media.getMediaURL();
+            medialinks[i++] = media.getMediaURLHttps();
         }
+
         return medialinks;
     }
 

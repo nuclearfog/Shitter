@@ -72,6 +72,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         ui = new WeakReference<>((TweetDetail)c);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         tlAdp = (TimelineRecycler) replyList.getAdapter();
+        if(tlAdp == null) {
+            tlAdp = new TimelineRecycler(ui.get());
+            replyList.setAdapter(tlAdp);
+        }
     }
 
 
@@ -89,17 +93,17 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 tweet = dbAdp.getStatus(tweetID);
                 if(tweet == null)
                     return IGNORE;
-
                 List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
                 tlAdp = new TimelineRecycler(answers,ui.get());
                 tlAdp.setColor(highlight, font);
-            }
-            else {
+            } else {
                 tweet = mTwitter.getStatus(tweetID);
                 if(MODE == LOAD_TWEET) {
                     new DatabaseAdapter(ui.get()).storeStatus(tweet);
                 }
             }
+
+
             if(tweet.embedded != null) {
                 retweeter = tweet.user.screenname;
                 retweeterID = tweet.user.userID;
@@ -153,14 +157,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 List<Tweet> answers;
                 DatabaseAdapter twdb = new DatabaseAdapter(ui.get());
                 String replyname = tweet.user.screenname;
-                if(tlAdp != null && tlAdp.getItemCount() > 0) {
+                if(tlAdp.getItemCount() > 0) {
                     long sinceId = tlAdp.getItemId(0);
                     answers = mTwitter.getAnswers(replyname, tweetID, sinceId);
                     answers.addAll(tlAdp.getData());
                 } else {
                     answers = mTwitter.getAnswers(replyname, tweetID, tweetID);
                 }
-                tlAdp = new TimelineRecycler(answers,ui.get());
+                tlAdp.setData(answers);
                 tlAdp.setColor(highlight, font);
                 twdb.store(answers,DatabaseAdapter.TWEET,-1L);
             }
@@ -201,6 +205,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             TextView used_api = connect.findViewById(R.id.used_api);
             TextView txtRet = connect.findViewById(R.id.no_rt_detail);
             TextView txtFav = connect.findViewById(R.id.no_fav_detail);
+            TextView txtAns = connect.findViewById(R.id.no_ans_detail);
             ImageView profile_img = connect.findViewById(R.id.profileimage_detail);
 
             tweet.setMovementMethod(LinkMovementMethod.getInstance());
@@ -211,14 +216,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             used_api.setText(apiName);
             String favStr = Integer.toString(fav);
             String rtStr = Integer.toString(rt);
+            String ansStr = Integer.toString(tlAdp.getItemCount());
             txtFav.setText(favStr);
             txtRet.setText(rtStr);
-
-            if(tlAdp != null) {
-                String ansStr = Integer.toString(tlAdp.getItemCount());
-                TextView txtAns = connect.findViewById(R.id.no_ans_detail);
-                txtAns.setText(ansStr);
-            }
+            txtAns.setText(ansStr);
 
             if(repliedUsername != null) {
                 String reply = "antwort @"+repliedUsername;
@@ -274,6 +275,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             ansReload.setRefreshing(false);
             String ansStr = Integer.toString(tlAdp.getItemCount());
             TextView txtAns = connect.findViewById(R.id.no_ans_detail);
+            tlAdp.notifyDataSetChanged();
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -30,18 +29,19 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private String errmsg;
     private boolean imageload;
 
-
     /**
      *@see UserDetail
      */
     public UserLists(Context context) {
+        SharedPreferences settings = context.getSharedPreferences("settings", 0);
+        imageload = settings.getBoolean("image_load",true);
+
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = ui.get().findViewById(R.id.userlist);
-        usrAdp = (UserRecycler) userList.getAdapter();
 
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        imageload = settings.getBoolean("image_load",true);
+        usrAdp = new UserRecycler(ui.get());
+        userList.setAdapter(usrAdp);
     }
 
 
@@ -51,18 +51,18 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         long mode = data[1];
         long cursor = data[2];
         try {
-
+            List<TwitterUser> user;
             if(mode == FOLLOWING) {
-                List<TwitterUser> user = mTwitter.getFollowing(id,cursor);
-                usrAdp = new UserRecycler(user,ui.get());
+                user = mTwitter.getFollowing(id,cursor);
+                usrAdp.setData(user);
             }
             else if(mode == FOLLOWERS) {
-                List<TwitterUser> user = mTwitter.getFollower(id,cursor);
-                usrAdp = new UserRecycler(user,ui.get());
+                user = mTwitter.getFollower(id,cursor);
+                usrAdp.setData(user);
             }
             else if(mode == RETWEETER) {
-                List<TwitterUser> user = mTwitter.getRetweeter(id,cursor);
-                usrAdp = new UserRecycler(user,ui.get());
+                user = mTwitter.getRetweeter(id,cursor);
+                usrAdp.setData(user);
             }
             usrAdp.toggleImage(imageload);
         }
@@ -80,12 +80,11 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         if(ui.get() == null)
             return;
 
-        ProgressBar mProgress = ui.get().findViewById(R.id.userlist_progress);
+        View mProgress = ui.get().findViewById(R.id.userlist_progress);
         mProgress.setVisibility(View.INVISIBLE);
 
         if(errmsg == null) {
-            RecyclerView userList = ui.get().findViewById(R.id.userlist);
-            userList.setAdapter(usrAdp);
+            usrAdp.notifyDataSetChanged();
         }
         else {
             Toast.makeText(ui.get(),errmsg,Toast.LENGTH_LONG).show();

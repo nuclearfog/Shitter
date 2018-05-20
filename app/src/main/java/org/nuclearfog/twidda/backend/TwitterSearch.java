@@ -21,8 +21,8 @@ import java.util.List;
 
 public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
-    private TimelineRecycler tlRc;
-    private UserRecycler uAdp;
+    private TimelineRecycler searchAdapter;
+    private UserRecycler userAdapter;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
@@ -40,8 +40,17 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
         RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
         RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
-        tlRc = (TimelineRecycler) tweetSearch.getAdapter();
-        uAdp = (UserRecycler) userSearch.getAdapter();
+        searchAdapter = (TimelineRecycler) tweetSearch.getAdapter();
+        userAdapter = (UserRecycler) userSearch.getAdapter();
+
+        if(searchAdapter == null) {
+            searchAdapter = new TimelineRecycler(ui.get());
+            tweetSearch.setAdapter(searchAdapter);
+        }
+        if(userAdapter == null) {
+            userAdapter = new UserRecycler(ui.get());
+            userSearch.setAdapter(userAdapter);
+        }
     }
 
 
@@ -50,23 +59,23 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         String strSearch = search[0];
         long id = 1L;
         try {
-            if(tlRc != null && tlRc.getItemCount() > 0) {
-                id = tlRc.getItemId(0);
+            if(searchAdapter.getItemCount() > 0) {
+                id = searchAdapter.getItemId(0);
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
-                tweets.addAll(tlRc.getData());
-                tlRc = new TimelineRecycler(tweets,ui.get());
+                tweets.addAll(searchAdapter.getData());
+                searchAdapter.setData(tweets);
             } else {
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
-                tlRc = new TimelineRecycler(tweets,ui.get());
+                searchAdapter.setData(tweets);
             }
-            if(uAdp == null ||uAdp.getItemCount() == 0) {
+            if(userAdapter.getItemCount() == 0) {
                 List<TwitterUser> user = mTwitter.searchUsers(strSearch);
-                uAdp = new UserRecycler(user, ui.get());
+                userAdapter.setData(user);
             }
 
-            tlRc.setColor(highlight,font_color);
-            tlRc.toggleImage(imageload);
-            uAdp.toggleImage(imageload);
+            searchAdapter.setColor(highlight,font_color);
+            searchAdapter.toggleImage(imageload);
+            userAdapter.toggleImage(imageload);
 
         } catch(Exception err) {
             error = err.getMessage();
@@ -88,10 +97,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
         View circleLoad = connect.findViewById(R.id.search_progress);
         circleLoad.setVisibility(View.INVISIBLE);
-        RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
-        RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
-        tweetSearch.setAdapter(tlRc);
-        userSearch.setAdapter(uAdp);
+        searchAdapter.notifyDataSetChanged();
+        userAdapter.notifyDataSetChanged();
         tweetReload.setRefreshing(false);
     }
 }
