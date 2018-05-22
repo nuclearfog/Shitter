@@ -38,7 +38,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "GET YOUR OWN KEY";
+    private final String TWITTER_CONSUMER_SECRET = "RQrf0uQus5v7IMuYgdlVeBuLw1ApRJhxcAMM8MyUVRh1nKSxnR";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -149,7 +149,7 @@ public class TwitterEngine {
      * set amount of tweets to be loaded
      */
     private void setLoad() {
-        load = settings.getInt("preload", 10);
+        load = settings.getInt("preload", 20);
     }
 
     /**

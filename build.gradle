@@ -14,7 +14,7 @@ allprojects {
     repositories {
         jcenter()
         google()
-        flatDir{ dirs 'libs'}
+        //flatDir{ dirs 'libs'}
     }
 }
 

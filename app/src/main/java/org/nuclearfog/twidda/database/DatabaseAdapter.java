@@ -180,6 +180,36 @@ public class DatabaseAdapter {
     }
 
 
+    /**
+     * Delete Status
+     * @param id Status id
+     */
+    public void removeStatus(final long id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase db = dataHelper.getWritableDatabase();
+                db.delete("tweet", "tweetID="+id, null);
+            }
+        }).start();
+    }
+
+    /**
+     * Check if Tweet exists in Database
+     * @param id Tweet ID
+     * @return true if found
+     */
+    public boolean containStatus(long id) {
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        String query = "SELECT EXISTS(SELECT tweetID FROM tweet WHERE tweetID="+id+" LIMIT 1);";
+        Cursor c = db.rawQuery(query,null);
+        c.moveToFirst();
+        boolean found = c.getInt(0) == 1;
+        c.close();
+        return found;
+    }
+
+
     private Tweet getStatus(Cursor cursor) {
         int index;
         index = cursor.getColumnIndex("time");
@@ -288,16 +318,5 @@ public class DatabaseAdapter {
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
         db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_REPLACE);
-    }
-
-
-    public void removeStatus(final long id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = dataHelper.getWritableDatabase();
-                db.delete("tweet", "tweetID="+id, null);
-            }
-        }).start();
     }
 }

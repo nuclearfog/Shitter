@@ -35,6 +35,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeList, favoritList;
     private long userId;
+    private TabHost mTab;
     private boolean home;
     private String username = "";
     private String currentTab = "tweets";
@@ -73,8 +74,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         TextView txtFollowing = findViewById(R.id.following);
         TextView txtFollower  = findViewById(R.id.follower);
-        TabHost mTab = findViewById(R.id.profile_tab);
-        setTabs(mTab);
+        mTab = findViewById(R.id.profile_tab);
+        setTabs();
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
         txtFollower.setOnClickListener(this);
@@ -85,12 +86,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        mProfile.cancel(true);
-        if(mTweets != null)
-            mTweets.cancel(true);
-        if(mFavorits != null)
-            mFavorits.cancel(true);
-        super.onBackPressed();
+        if(currentTab.equals("tweets")) {
+            super.onBackPressed();
+        } else {
+            mTab.setCurrentTab(0);
+        }
     }
 
     /**
@@ -100,6 +100,16 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         overridePendingTransition(0,0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mProfile.cancel(true);
+        if(mTweets != null)
+            mTweets.cancel(true);
+        if(mFavorits != null)
+            mFavorits.cancel(true);
+        super.onDestroy();
     }
 
     @Override
@@ -194,7 +204,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private void setTabs(TabHost mTab) {
+    private void setTabs() {
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);

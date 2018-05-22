@@ -25,7 +25,7 @@
     </style>
 
     <style name="CardViewStyle" parent="CardView">
-        <item name="cardBackgroundColor">#4f000000</item>
+        <item name="cardBackgroundColor">#40000000</item>
         <item name="cardCornerRadius">4dp</item>
         <item name="cardElevation">2dp</item>
         <item name="cardUseCompatPadding">true</item>

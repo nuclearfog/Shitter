@@ -55,7 +55,7 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
      * Home Button
      */
     @Override
-    protected void onUserLeaveHint(){
+    protected void onUserLeaveHint() {
         super.onUserLeaveHint();
         overridePendingTransition(0,0);
     }

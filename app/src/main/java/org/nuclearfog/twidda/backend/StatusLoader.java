@@ -99,7 +99,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             } else {
                 tweet = mTwitter.getStatus(tweetID);
                 if(MODE == LOAD_TWEET) {
-                    new DatabaseAdapter(ui.get()).storeStatus(tweet);
+                    DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
+                    if(dbAdp.containStatus(tweetID))
+                        dbAdp.storeStatus(tweet);
                 }
             }
 
@@ -155,7 +157,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(MODE == LOAD_REPLY) {
                 List<Tweet> answers;
-                DatabaseAdapter twdb = new DatabaseAdapter(ui.get());
+                DatabaseAdapter mData = new DatabaseAdapter(ui.get());
                 String replyname = tweet.user.screenname;
                 if(tlAdp.getItemCount() > 0) {
                     long sinceId = tlAdp.getItemId(0);
@@ -166,7 +168,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 }
                 tlAdp.setData(answers);
                 tlAdp.setColor(highlight, font);
-                twdb.store(answers,DatabaseAdapter.TWEET,-1L);
+                if(mData.containStatus(tweetID))
+                    mData.store(answers,DatabaseAdapter.TWEET,-1L);
             }
             else if(MODE == DELETE) {
                 mTwitter.deleteTweet(tweetID);

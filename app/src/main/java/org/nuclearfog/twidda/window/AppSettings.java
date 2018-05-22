@@ -138,7 +138,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
             case R.id.error_call:
                 List<String> messages = new ErrorLog(this).getErrorList();
                 LogAdapter adp = new LogAdapter(messages);
-                View list = LayoutInflater.from(this).inflate(R.layout.errorpage,null,false);
+                View list = LayoutInflater.from(this).inflate(R.layout.errorpage,null);
                 RecyclerView loglist = list.findViewById(R.id.log_list);
                 loglist.setLayoutManager(new LinearLayoutManager(this));
                 loglist.setAdapter(adp);
@@ -244,9 +244,8 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     private void loadSettings() {
-        settings = getSharedPreferences("settings", 0);
         clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        row = settings.getInt("preload",10);
+        row = settings.getInt("preload",20);
         wId = settings.getInt("woeid",23424829);
         imgEnabled = settings.getBoolean("image_load",true);
 

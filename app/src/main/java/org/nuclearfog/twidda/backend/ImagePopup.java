@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -74,7 +73,6 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             }
             return true;
         } catch (Exception err) {
-            Log.e("shitter:","Image download failed!");
             err.printStackTrace();
             ErrorLog errorLog = new ErrorLog(ui.get());
             errorLog.add(err.getMessage());

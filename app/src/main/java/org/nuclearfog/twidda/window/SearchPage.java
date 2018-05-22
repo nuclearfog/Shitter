@@ -34,6 +34,8 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     private RecyclerView tweetSearch,userSearch;
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
+    private TabHost tabhost;
+    private String currenttab = "search_result";
     private String search = "";
 
     @Override
@@ -57,13 +59,24 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-        TabHost tabhost = findViewById(R.id.search_tab);
+        tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);
 
         tabhost.setOnTabChangedListener(this);
         tweetReload.setOnRefreshListener(this);
         getContent();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if(currenttab.equals("user_result")) {
+            tabhost.setCurrentTab(0);
+        }
+        else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -165,8 +178,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     public void onTabChanged(String tabId) {
-        if(tabId.equals("user_result"))
+        currenttab = tabId;
+        if(tabId.equals("user_result")) {
             tweetReload.setRefreshing(false);
+        }
     }
 
     private void setTabs(TabHost tabhost) {

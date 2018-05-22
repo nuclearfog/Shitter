@@ -22,7 +22,6 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ItemHolder> {
     @Override
     public int getItemCount(){return messages.size();}
 
-
     @NonNull
     @Override
     public LogAdapter.ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int index) {
@@ -36,7 +35,6 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ItemHolder> {
         vh.message.setTextColor(0xffff0000);
     }
 
-
     class ItemHolder extends RecyclerView.ViewHolder {
         public final TextView message;
         ItemHolder(View v) {
@@ -44,5 +42,4 @@ public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ItemHolder> {
             message = v.findViewById(R.id.errortext);
         }
     }
-
 }
