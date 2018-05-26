@@ -16,6 +16,8 @@ import org.nuclearfog.twidda.window.UserDetail;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import twitter4j.TwitterException;
+
 public class UserLists extends AsyncTask <Long, Void, Void> {
 
     public static final long FOLLOWING = 0L;
@@ -66,7 +68,13 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
             }
             usrAdp.toggleImage(imageload);
         }
-        catch(Exception err) {
+        catch(TwitterException err) {
+            int errCode = err.getErrorCode();
+            if(errCode == 420) {
+                int retry = err.getRetryAfter();
+                errmsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            }
+        } catch(Exception err) {
             errmsg = "Fehler: "+err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());
             errorLog.add(errmsg);

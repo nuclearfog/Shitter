@@ -88,7 +88,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         final long MODE = data[1];
         Tweet tweet;
         try {
-            if(MODE == LOAD_DB) {
+            if(MODE == LOAD_DB || MODE == LOAD_REPLY) {
                 DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
                 tweet = dbAdp.getStatus(tweetID);
                 if(tweet == null)
@@ -104,7 +104,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                         dbAdp.storeStatus(tweet);
                 }
             }
-
 
             if(tweet.embedded != null) {
                 retweeter = tweet.user.screenname;
@@ -177,12 +176,17 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
         }catch(TwitterException e) {
             int err = e.getErrorCode();
-            if(err == 144) { // gelöscht
+            if(err == 144) {
                 new DatabaseAdapter(ui.get()).removeStatus(tweetID);
+                errMSG = "Tweet nicht gefunden!\nID:"+tweetID;
+            } else if(err == 420) {
+                int retry = e.getRetryAfter();
+                errMSG = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            } else {
+                errMSG = e.getMessage();
+                ErrorLog errorLog = new ErrorLog(ui.get());
+                errorLog.add(errMSG);
             }
-            errMSG = e.getMessage();
-            ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(errMSG);
             return ERROR;
         } catch(Exception err) {
             errMSG = err.getMessage();
@@ -224,8 +228,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             txtRet.setText(rtStr);
             txtAns.setText(ansStr);
 
-            if(repliedUsername != null) {
-                String reply = "antwort @"+repliedUsername;
+            if(tweetReplyID > 0) {
+                String reply = "antwort";
+                if(repliedUsername != null)
+                    reply += '@'+repliedUsername;
+
                 replyName.setText(reply);
                 replyName.setVisibility(View.VISIBLE);
                 replyName.setOnClickListener(this);

@@ -19,6 +19,8 @@ import org.nuclearfog.twidda.window.SearchPage;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import twitter4j.TwitterException;
+
 public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     private TimelineRecycler searchAdapter;
@@ -77,6 +79,12 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             searchAdapter.toggleImage(imageload);
             userAdapter.toggleImage(imageload);
 
+        } catch (TwitterException err) {
+            int errCode = err.getErrorCode();
+            if(errCode == 420) {
+                int retry = err.getRetryAfter();
+                error = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            }
         } catch(Exception err) {
             error = err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());

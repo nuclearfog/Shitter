@@ -175,10 +175,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
-            if(errCode != 136 && errCode != -1) {
+            if(errCode == 420) {
+                int retry = err.getRetryAfter();
+                errMsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            }
+            else if(errCode != 136 && errCode != -1) {
                 errMsg = err.getMessage();
             }
-            err.printStackTrace();
             return FAILURE;
         }
         catch(Exception err) {

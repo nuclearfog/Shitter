@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "org.nuclearfog.twidda"
         minSdkVersion 22
-        targetSdkVersion 22
+        targetSdkVersion 27
         versionCode 1
         versionName '1.4'
         vectorDrawables.useSupportLibrary = true
@@ -32,4 +32,5 @@ dependencies {
 
 repositories {
     jcenter()
+    google()
 }

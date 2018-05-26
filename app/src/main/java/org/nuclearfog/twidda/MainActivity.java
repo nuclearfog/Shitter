@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements
     private String currentTab = "timeline";
     private long homeId = 0L;
     private boolean settingChanged = false;
-    private final int REQCODE = 666;
+    private final int REQCODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
