@@ -38,14 +38,6 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         this.mListener = mListener;
     }
 
-    /**
-     * @param mListener Item Click Listener
-     */
-    public TimelineRecycler(List<Tweet> tweets, OnItemClicked mListener) {
-        this.tweets = tweets;
-        this.mListener = mListener;
-    }
-
 
     public void setColor(int highlight, int font_color) {
         this.highlight = highlight;

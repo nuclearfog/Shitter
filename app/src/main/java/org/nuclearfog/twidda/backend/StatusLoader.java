@@ -94,7 +94,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 if(tweet == null)
                     return IGNORE;
                 List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
-                tlAdp = new TimelineRecycler(answers,ui.get());
+                tlAdp.setData(answers);
                 tlAdp.setColor(highlight, font);
             } else {
                 tweet = mTwitter.getStatus(tweetID);

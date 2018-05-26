@@ -32,7 +32,8 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.userpage);
-        getExtras(getIntent().getExtras());
+        if(getIntent().getExtras() != null)
+            getExtras(getIntent().getExtras());
 
         userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));

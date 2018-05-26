@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -286,14 +287,20 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         if(!isHome) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);
+            MenuItem followIcon = tool.getMenu().getItem(1);
+            MenuItem blockIcon = tool.getMenu().getItem(2);
             if(isFollowing) {
-                tool.getMenu().getItem(1).setIcon(R.drawable.follow_enabled);
+                followIcon.setIcon(R.drawable.follow_enabled);
+                followIcon.setTitle("entfolgen");
             } else {
-                tool.getMenu().getItem(1).setIcon(R.drawable.follow);
+                followIcon.setIcon(R.drawable.follow);
+                followIcon.setTitle("folgen");
             } if(muted) {
-                tool.getMenu().getItem(2).setIcon(R.drawable.block_enabled);
+                blockIcon.setIcon(R.drawable.block_enabled);
+                blockIcon.setTitle("entblocken");
             } else {
-                tool.getMenu().getItem(2).setIcon(R.drawable.block);
+                blockIcon.setIcon(R.drawable.block);
+                blockIcon.setTitle("block");
             }
         }
     }
