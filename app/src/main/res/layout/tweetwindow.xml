@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tweet_popup"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -40,21 +39,10 @@
         android:gravity="end"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="40dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/imgcount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="5dp"
-                android:layout_weight="1"
-                android:textColor="@android:color/holo_red_dark"
-                android:textSize="14sp" />
+        <FrameLayout
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="20dp">
 
             <Button
                 android:id="@+id/img_preview"
@@ -64,14 +52,22 @@
                 android:background="@drawable/preview"
                 android:visibility="invisible" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/imgcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="24sp" />
+
+        </FrameLayout>
 
         <Button
             android:id="@+id/image"
             style="@style/Widget.AppCompat.Button"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/image" />
 
         <Button
@@ -79,7 +75,7 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/tweet" />
 
         <Button

@@ -27,7 +27,6 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     private Dialog popup;
     private Bitmap imgArray[];
     private LayoutInflater inf;
-    private int index = 0;
     private int position = 0;
 
     public ImagePopup(Context c) {
@@ -60,15 +59,13 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
                 return false;
             imgArray = new Bitmap[size];
             if(links[0].startsWith("/")) {
-                for(String link : links) {
-                    if(link != null)
-                        imgArray[index++] = BitmapFactory.decodeFile(link);
+                for(int index = 0 ; index < size ; index++) {
+                    imgArray[index] = BitmapFactory.decodeFile(links[index]);
                 }
-            }
-            else {
-                for(String link : links) {
-                    InputStream mediaStream = new URL(link).openStream();
-                    imgArray[index++] = BitmapFactory.decodeStream(mediaStream);
+            } else {
+                for(int index = 0 ; index < size ; index++) {
+                    InputStream mediaStream = new URL(links[index]).openStream();
+                    imgArray[index] = BitmapFactory.decodeStream(mediaStream);
                 }
             }
             return true;
@@ -85,13 +82,14 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     protected void onPostExecute(Boolean result) {
         if(result) {
             View content = inf.inflate(R.layout.imagepreview,null,false);
-            ImageView mImg = content.findViewById(R.id.fullSizeImage);
+            final ImageView mImg = content.findViewById(R.id.fullSizeImage);
             setImage(imgArray[position], mImg);
             popup.setContentView(content);
-            if(index > 0) {
+            final int size = imgArray.length;
+            if(size > 0) {
                 final Button left = content.findViewById(R.id.image_left);
                 final Button right = content.findViewById(R.id.image_right);
-                if(index > 1) {
+                if(size > 1) {
                     left.setVisibility(View.INVISIBLE);
                     right.setVisibility(View.VISIBLE);
                     left.setOnClickListener(new View.OnClickListener() {
@@ -100,16 +98,16 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
                             if(position == 1)
                                 left.setVisibility(View.INVISIBLE);
                             right.setVisibility(View.VISIBLE);
-                            position--;
+                            setImage(imgArray[--position], mImg);
                         }
                     });
                     right.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(position == index-2)
+                            if(position == size-2)
                                 right.setVisibility(View.INVISIBLE);
                             left.setVisibility(View.VISIBLE);
-                            position++;
+                            setImage(imgArray[++position], mImg);
                         }
                     });
                 }
