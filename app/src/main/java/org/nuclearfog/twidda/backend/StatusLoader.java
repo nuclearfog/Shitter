@@ -47,7 +47,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     public static final long LOAD_TWEET = 3;
     public static final long LOAD_REPLY = 4;
     public static final long LOAD_DB = 5;
-    private static final long IGNORE = 6;
 
     private TwitterEngine mTwitter;
     private TimelineRecycler tlAdp;
@@ -86,13 +85,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     protected Long doInBackground(Long... data) {
         tweetID = data[0];
         final long MODE = data[1];
-        Tweet tweet;
+
         try {
-            if(MODE == LOAD_DB || MODE == LOAD_REPLY) {
+            Tweet tweet;
+            if( MODE == LOAD_DB ) {
                 DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
                 tweet = dbAdp.getStatus(tweetID);
-                if(tweet == null)
-                    return IGNORE;
                 List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
                 tlAdp.setData(answers);
                 tlAdp.setColor(highlight, font);
@@ -383,14 +381,20 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
 
     private void setIcons(Button favoriteButton, Button retweetButton) {
-        if(favorited)
+        if(favorited) {
             favoriteButton.setBackgroundResource(R.drawable.favorite_enabled);
-        else
+            Toast.makeText(ui.get(), "Zu Favoriten hinzugefügt", Toast.LENGTH_SHORT).show();
+        }else {
             favoriteButton.setBackgroundResource(R.drawable.favorite);
-        if(retweeted)
+            Toast.makeText(ui.get(), "Favorit entfernt", Toast.LENGTH_SHORT).show();
+        }
+        if(retweeted) {
             retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
-        else
+            Toast.makeText(ui.get(), "Tweet retweetet", Toast.LENGTH_SHORT).show();
+        } else {
             retweetButton.setBackgroundResource(R.drawable.retweet);
+            Toast.makeText(ui.get(), "Retweet entfernt", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
