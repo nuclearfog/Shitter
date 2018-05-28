@@ -38,7 +38,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "";//TODO get your own key!
+    private final String TWITTER_CONSUMER_SECRET = "xxx";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -389,6 +389,7 @@ public class TwitterEngine {
     public Tweet getStatus(long id) throws TwitterException {
         Status status = twitter.showStatus(id);
         Status retweet = status.getRetweetedStatus();
+
         if(retweet != null ) {
             Tweet embedded = getTweet(retweet,null);
             return getTweet(status,embedded);
@@ -400,15 +401,15 @@ public class TwitterEngine {
 
     /**
      * Get Answer Tweets
-     * @param name name of receiver
      * @param tweetId tweet ID
      * @param sinceId last tweet
      * @return List of Answers
      * @throws TwitterException if Access is unavailable
      */
-    public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws TwitterException {
+    public List<Tweet> getAnswers(long tweetId, long sinceId) throws TwitterException {
+        Status status = twitter.showStatus(tweetId);
+        String name = status.getUser().getScreenName();
         List<Status> answers = new ArrayList<>();
-        name = name.substring(1);
         Query query = new Query("to:"+name+" since_id:"+sinceId+" -filter:retweets");
         query.setCount(load);
         QueryResult result = twitter.search(query);
@@ -425,14 +426,21 @@ public class TwitterEngine {
     /**
      * Retweet Action
      * @param id Tweet ID
-     * @param active current retweet Status
+     * @return Retweet state
      * @throws TwitterException if Access is unavailable
      */
-    public void retweet(long id, boolean active) throws TwitterException {
-        if(!active) {
-            twitter.retweetStatus(id);
+    public boolean retweet(long id) throws TwitterException {
+        Status status = twitter.showStatus(id);
+        long retweeterID = status.getCurrentUserRetweetId();
+        if(status.isRetweeted()) {
+            if(retweeterID > 0)
+                deleteTweet(retweeterID);
+            else
+                deleteTweet(id);
+            return false;
         } else {
-            deleteTweet(id);
+            twitter.retweetStatus(id);
+            return true;
         }
     }
 
@@ -440,14 +448,17 @@ public class TwitterEngine {
     /**
      * Favorite Action
      * @param id Tweet ID
-     * @param active current Favorite Status
+     * @return favorite state
      * @throws TwitterException if Access is unavailable
      */
-    public void favorite(long id, boolean active) throws TwitterException {
-        if(!active) {
-            twitter.createFavorite(id);
-        } else {
+    public boolean favorite(long id) throws TwitterException {
+        Status status = twitter.showStatus(id);
+        if(status.isFavorited()) {
             twitter.destroyFavorite(id);
+            return false;
+        } else {
+            twitter.createFavorite(id);
+            return true;
         }
     }
 
@@ -534,7 +545,7 @@ public class TwitterEngine {
         return new Tweet(status.getId(),status.getRetweetCount(),status.getFavoriteCount(),user,
                 status.getText(),status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
                 getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),
-                retweetedStat, status.isRetweetedByMe(), status.isFavorited());
+                retweetedStat, status.isRetweeted(), status.isFavorited());
     }
 
 

@@ -47,6 +47,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     public static final long LOAD_TWEET = 3;
     public static final long LOAD_REPLY = 4;
     public static final long LOAD_DB = 5;
+    private static final long IGNORE = 6;
 
     private TwitterEngine mTwitter;
     private TimelineRecycler tlAdp;
@@ -85,37 +86,30 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     protected Long doInBackground(Long... data) {
         tweetID = data[0];
         final long MODE = data[1];
-
         try {
-            Tweet tweet;
-            if( MODE == LOAD_DB ) {
-                DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
-                tweet = dbAdp.getStatus(tweetID);
-                List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
-                tlAdp.setData(answers);
-                tlAdp.setColor(highlight, font);
-            } else {
-                tweet = mTwitter.getStatus(tweetID);
-                if(MODE == LOAD_TWEET) {
+            if(MODE == LOAD_TWEET || MODE == LOAD_DB) {
+                Tweet tweet;
+                if( MODE == LOAD_DB ) {
+                    DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
+                    tweet = dbAdp.getStatus(tweetID);
+                    List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
+                    tlAdp.setData(answers);
+                    tlAdp.setColor(highlight, font);
+                    if(tweet == null)
+                        return IGNORE; // NOT FOUND
+                } else {
+                    tweet = mTwitter.getStatus(tweetID);
                     DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
                     if(dbAdp.containStatus(tweetID))
                         dbAdp.storeStatus(tweet);
                 }
-            }
-
-            if(tweet.embedded != null) {
-                retweeter = tweet.user.screenname;
-                retweeterID = tweet.user.userID;
-                tweet = tweet.embedded;
-                tweetID = tweet.tweetID;
-                rtFlag = true;
-            }
-            rt = tweet.retweet;
-            fav = tweet.favorit;
-            retweeted = tweet.retweeted;
-            favorited = tweet.favorized;
-
-            if(MODE == LOAD_TWEET || MODE == LOAD_DB) {
+                if (tweet.embedded != null) {
+                    retweeter = tweet.user.screenname;
+                    retweeterID = tweet.user.userID;
+                    tweet = tweet.embedded;
+                    tweetID = tweet.tweetID;
+                    rtFlag = true;
+                }
                 tweetReplyID = tweet.replyID;
                 verified = tweet.user.isVerified;
                 tweetStr = tweet.tweet;
@@ -123,45 +117,31 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 userID = tweet.user.userID;
                 scrNameStr = tweet.user.screenname;
                 apiName = formatString(tweet.source);
+                rt = tweet.retweet;
+                fav = tweet.favorit;
+                retweeted = tweet.retweeted;
+                favorited = tweet.favorized;
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
                 dateString = sdf.format(tweet.time);
                 repliedUsername = tweet.replyName;
-                profile_pb = tweet.user.profileImg+"_bigger";
+                profile_pb = tweet.user.profileImg + "_bigger";
                 medialinks = tweet.media;
             }
             else if(MODE == RETWEET) {
-                if(retweeted) {
-                    mTwitter.retweet(tweetID, true);
-                    new DatabaseAdapter(ui.get()).removeStatus(tweetID);
-                    retweeted = false;
-                    rt--;
-                } else {
-                    mTwitter.retweet(tweetID, false);
-                    retweeted = true;
-                    rt++;
-                }
+                retweeted = mTwitter.retweet(tweetID);
             }
             else if(MODE == FAVORITE) {
-                if(favorited) {
-                    mTwitter.favorite(tweetID, true);
-                    favorited = false;
-                    fav--;
-                } else {
-                    mTwitter.favorite(tweetID, false);
-                    favorited = true;
-                    fav++;
-                }
+                favorited = mTwitter.favorite(tweetID);
             }
             else if(MODE == LOAD_REPLY) {
                 List<Tweet> answers;
                 DatabaseAdapter mData = new DatabaseAdapter(ui.get());
-                String replyname = tweet.user.screenname;
                 if(tlAdp.getItemCount() > 0) {
                     long sinceId = tlAdp.getItemId(0);
-                    answers = mTwitter.getAnswers(replyname, tweetID, sinceId);
+                    answers = mTwitter.getAnswers(tweetID, sinceId);
                     answers.addAll(tlAdp.getData());
                 } else {
-                    answers = mTwitter.getAnswers(replyname, tweetID, tweetID);
+                    answers = mTwitter.getAnswers(tweetID, tweetID);
                 }
                 tlAdp.setData(answers);
                 tlAdp.setColor(highlight, font);
@@ -219,9 +199,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             scrName.setText(scrNameStr);
             date.setText(dateString);
             used_api.setText(apiName);
+
+            String ansStr = Integer.toString(tlAdp.getItemCount());
             String favStr = Integer.toString(fav);
             String rtStr = Integer.toString(rt);
-            String ansStr = Integer.toString(tlAdp.getItemCount());
             txtFav.setText(favStr);
             txtRet.setText(rtStr);
             txtAns.setText(ansStr);
@@ -263,20 +244,27 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             answer.setOnClickListener(this);
         }
         else if(mode == RETWEET) {
-            String rtStr = Integer.toString(rt);
-            TextView txtRet = connect.findViewById(R.id.no_rt_detail);
+            String toastMsg;
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
-            txtRet.setText(rtStr);
             setIcons(favoriteButton, retweetButton);
+            if(retweeted) {
+                toastMsg = "retweeted";
+            } else {
+                toastMsg = "retweet entfernt!";
+            }
+            Toast.makeText(ui.get(), toastMsg, Toast.LENGTH_SHORT).show();
         }
         else if(mode == FAVORITE) {
-            String favStr = Integer.toString(fav);
-            TextView txtFav = connect.findViewById(R.id.no_fav_detail);
+            String toastMsg;
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
-            txtFav.setText(favStr);
             setIcons(favoriteButton, retweetButton);
+            if(favorited)
+                toastMsg = "zu favoriten hinzugefügt!";
+            else
+                toastMsg = "aus favoriten entfernt!";
+            Toast.makeText(ui.get(), toastMsg, Toast.LENGTH_SHORT).show();
         }
         else if(mode == LOAD_REPLY) {
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
@@ -383,17 +371,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private void setIcons(Button favoriteButton, Button retweetButton) {
         if(favorited) {
             favoriteButton.setBackgroundResource(R.drawable.favorite_enabled);
-            Toast.makeText(ui.get(), "Zu Favoriten hinzugefügt", Toast.LENGTH_SHORT).show();
         }else {
             favoriteButton.setBackgroundResource(R.drawable.favorite);
-            Toast.makeText(ui.get(), "Favorit entfernt", Toast.LENGTH_SHORT).show();
         }
         if(retweeted) {
             retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
-            Toast.makeText(ui.get(), "Tweet retweetet", Toast.LENGTH_SHORT).show();
         } else {
             retweetButton.setBackgroundResource(R.drawable.retweet);
-            Toast.makeText(ui.get(), "Retweet entfernt", Toast.LENGTH_SHORT).show();
         }
     }
 
