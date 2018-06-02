@@ -92,7 +92,7 @@ public class DatabaseAdapter {
         else if(mode == TWEET) {
             SQL_GET_HOME = "SELECT * FROM tweet " +
                     "INNER JOIN user ON tweet.userID = user.userID"+
-                    " WHERE user.userID = "+id+" ORDER BY tweetID DESC";
+                    " WHERE user.userID = "+id+" AND statusregister < 4 ORDER BY tweetID DESC";
         }
         else if(mode == FAVT) {
             SQL_GET_HOME = "SELECT * FROM tweet " +
@@ -224,22 +224,27 @@ public class DatabaseAdapter {
         long tweetId = cursor.getLong(index);
         index = cursor.getColumnIndex("retweetID");
         long retweetId = cursor.getLong(index);
-        index = cursor.getColumnIndex("retweeted");
-        boolean retweeted = cursor.getInt(index) == 1;
-        index = cursor.getColumnIndex("favorized");
-        boolean favorized = cursor.getInt(index) == 1;
         index = cursor.getColumnIndex("replyname");
         String replyname = cursor.getString(index);
         index = cursor.getColumnIndex("replyID");
         long replyStatusId = cursor.getLong(index);
         index = cursor.getColumnIndex("source");
         String source = cursor.getString(index);
+        index = cursor.getColumnIndex("media");
+        String medialinks = cursor.getString(index);
+        index = cursor.getColumnIndex("statusregister");
+        int statusregister = cursor.getInt(index);
+        boolean favorited = (statusregister & 1) == 1;
+        boolean retweeted = (statusregister & 2) == 2;
+        boolean profileflag = (statusregister & 4) == 4;
+        String[] medias = parseMedia(medialinks);
+
         TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
         if(retweetId > 0)
             embeddedTweet = getStatus(retweetId);
-        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,null/*TODO*/,
-                source,replyStatusId,embeddedTweet,retweeted,favorized);
+        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,medias,
+                source,replyStatusId,embeddedTweet,retweeted,favorited,profileflag);
     }
 
 
@@ -296,8 +301,25 @@ public class DatabaseAdapter {
         status.put("source", tweet.source);
         status.put("replyID", tweet.replyID);
         status.put("replyname", tweet.replyName);
-        status.put("retweeted",tweet.retweeted);
-        status.put("favorized", tweet.favorized);
+
+        String[] medialinks = tweet.media;
+        StringBuilder media = new StringBuilder();
+
+        for(String link : medialinks) {
+            media.append(link);
+            media.append(";");
+        }
+        status.put("media",media.toString());
+
+        int statusregister = 0;
+        if(tweet.favorized)
+            statusregister += 1;
+        if(tweet.retweeted)
+            statusregister += 2;
+        if(tweet.profileflag)
+            statusregister += 4;
+
+        status.put("statusregister",statusregister);
         db.insertWithOnConflict("tweet",null, status,SQLiteDatabase.CONFLICT_REPLACE);
     }
 
@@ -318,5 +340,20 @@ public class DatabaseAdapter {
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
         db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+
+    private String[] parseMedia(String media) {
+        int index;
+        List<String> links = new ArrayList<>();
+        do {
+            index = media.indexOf(';');
+            if(index > 0 && index < media.length()) {
+                links.add(media.substring(0,index));
+                media = media.substring(index+1);
+            }
+        } while(index >0);
+        String[] result = new String[links.size()];
+        return links.toArray(result);
     }
 }

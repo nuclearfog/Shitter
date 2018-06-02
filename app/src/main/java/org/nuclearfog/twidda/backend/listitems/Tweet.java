@@ -8,11 +8,11 @@ public class Tweet {
     public final long time, replyID;
     public final int retweet, favorit;
     public final String[] media;
-    public final boolean retweeted, favorized;
+    public final boolean retweeted, favorized, profileflag;
 
     public Tweet(long tweetID, int retweet, int favorit, TwitterUser user, String tweet, long time,
                  String replyName, String[] media, String source, long replyID, Tweet embedded,
-                 boolean retweeted, boolean favorized) {
+                 boolean retweeted, boolean favorized, boolean profileflag) {
         this.tweetID = tweetID;
         this.user = user;
         this.retweet = retweet;
@@ -26,5 +26,6 @@ public class Tweet {
         this.source = source;
         this.retweeted = retweeted;
         this.favorized = favorized;
+        this.profileflag = profileflag;
     }
 }
