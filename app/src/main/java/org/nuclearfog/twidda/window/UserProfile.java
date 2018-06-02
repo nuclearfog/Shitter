@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -38,8 +40,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private TabHost mTab;
     private boolean home;
     private String username = "";
-    private String currentTab = "tweets";
+    private View lastView;
     int highlight, background, font_color;
+    private int tabIndex = 0;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -86,7 +89,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        if(currentTab.equals("tweets")) {
+        if(tabIndex == 0) {
             super.onBackPressed();
         } else {
             mTab.setCurrentTab(0);
@@ -163,12 +166,12 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onRefresh() {
-        switch(currentTab) {
-            case "tweets":
+        switch(tabIndex) {
+            case 0:
                 mTweets = new ProfileLoader(this);
                 mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
                 break;
-            case "favorites":
+            case 1:
                 mFavorits = new ProfileLoader(this);
                 mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
                 break;
@@ -179,7 +182,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     public void onTabChanged(String tabId) {
         homeReload.setRefreshing(false);
         favoriteReload.setRefreshing(false);
-        currentTab = tabId;
+        animate();
+        tabIndex = mTab.getCurrentTab();
     }
 
     @Override
@@ -214,6 +218,32 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         tab2.setContent(R.id.homefavorits);
         tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.favorite));
         mTab.addTab(tab2);
+        lastView = mTab.getCurrentView();
+    }
+
+    private void animate() {
+        final int ANIM_DUR = 300;
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
+
+        Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation leftOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, -1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        Animation rightOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, 1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        leftIn.setDuration(ANIM_DUR);
+        rightIn.setDuration(ANIM_DUR);
+        leftOut.setDuration(ANIM_DUR);
+        rightOut.setDuration(ANIM_DUR);
+
+        View currentView = mTab.getCurrentView();
+
+        if( mTab.getCurrentTab() > tabIndex ) {
+            lastView.setAnimation(leftOut);
+            currentView.setAnimation(rightIn);
+        } else {
+            lastView.setAnimation(rightOut);
+            currentView.setAnimation(leftIn);
+        }
+        lastView = mTab.getCurrentView();
     }
 
 

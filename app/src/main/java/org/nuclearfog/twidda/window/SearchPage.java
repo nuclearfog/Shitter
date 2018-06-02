@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
@@ -35,8 +37,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
     private TabHost tabhost;
-    private String currenttab = "search_result";
+    private View lastView;
     private String search = "";
+    private int tabIndex = 0;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -71,10 +74,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     public void onBackPressed() {
-        if(currenttab.equals("user_result")) {
+        if(tabIndex == 1) {
             tabhost.setCurrentTab(0);
-        }
-        else {
+        } else {
             super.onBackPressed();
         }
     }
@@ -178,8 +180,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     public void onTabChanged(String tabId) {
-        currenttab = tabId;
-        if(tabId.equals("user_result")) {
+        animate();
+        tabIndex = tabhost.getCurrentTab();
+        if(tabIndex == 1) {
             tweetReload.setRefreshing(false);
         }
     }
@@ -193,6 +196,32 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         tab2.setContent(R.id.user_result);
         tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.user));
         tabhost.addTab(tab2);
+        lastView = tabhost.getCurrentView();
+    }
+
+    private void animate() {
+        final int ANIM_DUR = 300;
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
+
+        Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation leftOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, -1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        Animation rightOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, 1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        leftIn.setDuration(ANIM_DUR);
+        rightIn.setDuration(ANIM_DUR);
+        leftOut.setDuration(ANIM_DUR);
+        rightOut.setDuration(ANIM_DUR);
+
+        View currentView = tabhost.getCurrentView();
+
+        if( tabhost.getCurrentTab() > tabIndex ) {
+            lastView.setAnimation(leftOut);
+            currentView.setAnimation(rightIn);
+        } else {
+            lastView.setAnimation(rightOut);
+            currentView.setAnimation(leftIn);
+        }
+        lastView = tabhost.getCurrentView();
     }
 
     private void getContent() {

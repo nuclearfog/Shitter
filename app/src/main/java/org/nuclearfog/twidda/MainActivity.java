@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
@@ -43,9 +45,10 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView timelineList, trendList,mentionList;
     private MenuItem profile, tweet, search, setting;
     private SearchView searchQuery;
+    private View lastTab;
     private Toolbar toolbar;
     private TabHost tabhost;
-    private String currentTab = "timeline";
+    private int tabIndex = 0;
     private long homeId = 0L;
     private boolean settingChanged = false;
     private final int REQCODE = 1;
@@ -61,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements
             startActivityForResult(i,REQCODE);
         } else {
             login();
-            setTabContent();
         }
     }
 
@@ -71,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements
         if(reqCode == REQCODE) {
             if(returnCode == RESULT_OK) {
                 login();
-                setTabContent();
             } else {
                 finish();
             }
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        if( currentTab.equals("timeline") ) {
+        if( tabIndex == 0) {
             super.onBackPressed();
         }else {
             tabhost.setCurrentTab(0);
@@ -171,14 +172,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onRefresh() {
         MainPage homeView = new MainPage(MainActivity.this);
-        switch (currentTab) {
-            case "timeline":
+        switch (tabIndex) {
+            case 0:
                 homeView.execute(MainPage.HOME,1);
                 break;
-            case "trends":
+            case 1:
                 homeView.execute(MainPage.TRND,1);
                 break;
-            case "mention":
+            case 2:
                 homeView.execute(MainPage.MENT,1);
                 break;
         }
@@ -190,7 +191,9 @@ public class MainActivity extends AppCompatActivity implements
         trendReload.setRefreshing(false);
         timelineReload.setRefreshing(false);
         searchQuery.onActionViewCollapsed();
-        currentTab = tabId;
+        animate();
+        tabIndex = tabhost.getCurrentTab();
+
         switch(tabId) {
             case "timeline":
                 searchQuery.onActionViewCollapsed();
@@ -311,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
+        setTabContent();
     }
 
     /**
@@ -348,5 +352,31 @@ public class MainActivity extends AppCompatActivity implements
             trendRc.setColor(fontcolor);
             trendRc.notifyDataSetChanged();
         }
+        lastTab = tabhost.getCurrentView();
+    }
+
+    private void animate() {
+        final int ANIM_DUR = 300;
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
+
+        Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation leftOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, -1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        Animation rightOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, 1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        leftIn.setDuration(ANIM_DUR);
+        rightIn.setDuration(ANIM_DUR);
+        leftOut.setDuration(ANIM_DUR);
+        rightOut.setDuration(ANIM_DUR);
+
+        View currentTab = tabhost.getCurrentView();
+
+        if( tabhost.getCurrentTab() > tabIndex ) {
+            lastTab.setAnimation(leftOut);
+            currentTab.setAnimation(rightIn);
+        } else {
+            lastTab.setAnimation(rightOut);
+            currentTab.setAnimation(leftIn);
+        }
+        lastTab = tabhost.getCurrentView();
     }
 }
