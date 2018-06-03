@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.window;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
@@ -11,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,18 +36,17 @@ import java.util.List;
  * App Settings Activity
  */
 public class AppSettings extends AppCompatActivity implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener, AlertDialog.OnClickListener, Dialog.OnDismissListener, OnColorChangedListener {
+        CompoundButton.OnCheckedChangeListener, OnColorChangedListener {
 
     private EditText woeId;
     private SharedPreferences settings;
     private ClipboardManager clip;
-    private Button colorButton1, colorButton2,colorButton3,colorButton4;
     private CheckBox toggleImg;
-    private Dialog d;
-    private int row, wId;
-    private int background, tweet, font, highlight;
-    private int mode = 0;
+    private Button colorButton1,colorButton2,colorButton3,colorButton4;
+    private int background,tweet,font,highlight;
     private boolean imgEnabled;
+    private int row, wId;
+    private int mode = 0;
 
     @Override
     protected void onCreate(Bundle savedInst) {
@@ -57,6 +56,8 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
         Button delButton = findViewById(R.id.delete_db);
         Button errorcall = findViewById(R.id.error_call);
@@ -68,7 +69,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         Button load_popup = findViewById(R.id.load_dialog);
         toggleImg = findViewById(R.id.toggleImg);
         woeId = findViewById(R.id.woeid);
-
+        load();
 
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
@@ -80,18 +81,10 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         toggleImg.setOnCheckedChangeListener(this);
         clipButton.setOnClickListener(this);
 
-        settings = getSharedPreferences("settings",0);
-        background = settings.getInt("background_color",0xff0f114a);
-        font = settings.getInt("font_color",0xffffffff);
-        tweet = settings.getInt("tweet_color",0xff19aae8);
-        highlight = settings.getInt("highlight_color",0xffff00ff);
-
         colorButton1.setBackgroundColor(background);
         colorButton2.setBackgroundColor(font);
         colorButton3.setBackgroundColor(tweet);
         colorButton4.setBackgroundColor(highlight);
-
-        loadSettings();
     }
 
     /**
@@ -123,26 +116,30 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    @SuppressLint("InflateParams")
     public void onClick( View v ) {
         switch(v.getId()) {
             case R.id.delete_db:
                new AlertDialog.Builder(this)
                 .setMessage("Datenbank löschen?")
-                .setPositiveButton(R.string.yes_confirm, this)
-                .setNegativeButton(R.string.no_confirm, this)
+                .setNegativeButton(R.string.no_confirm, null)
+                .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteDatabase("database.db");
+                    }
+                })
                 .show();
                 break;
             case R.id.error_call:
                 List<String> messages = new ErrorLog(this).getErrorList();
                 LogAdapter adp = new LogAdapter(messages);
-                View list = LayoutInflater.from(this).inflate(R.layout.errorpage,null);
-                RecyclerView loglist = list.findViewById(R.id.log_list);
+                RecyclerView loglist = new RecyclerView(this);
                 loglist.setLayoutManager(new LinearLayoutManager(this));
                 loglist.setAdapter(adp);
                 Dialog pList = new Dialog(this);
-                pList.setContentView(list);
+                pList.setContentView(loglist);
                 pList.show();
-
                 break;
             case R.id.color_background:
                 setColor(background);
@@ -172,28 +169,24 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 }
                 break;
             case R.id.load_dialog:
-                Dialog d = new Dialog(this);
-                NumberPicker np = new NumberPicker(this);
-                np.setMaxValue(1000);
-                np.setMinValue(100);
-                np.setValue(row);
-                d.setContentView(np);
-                d.show();
-
+                Dialog load_popup = new Dialog(this);
+                final NumberPicker load = new NumberPicker(this);
+                load.setMaxValue(100);
+                load.setMinValue(10);
+                load.setValue(row);
+                load.setWrapSelectorWheel(false);
+                load_popup.setContentView(load);
+                load_popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        row = load.getValue();
+                    }
+                });
+                load_popup.show();
                 break;
         }
     }
 
-    @Override
-    public void onClick(DialogInterface d, int id) {
-        switch(id) {
-            case DialogInterface.BUTTON_POSITIVE:
-                deleteDatabase("database.db");
-                break;
-            case DialogInterface.BUTTON_NEGATIVE:
-                break;
-        }
-    }
 
     @Override
     public void onColorChanged(int color) {
@@ -218,30 +211,33 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         imgEnabled = checked;
     }
 
-    @Override
-    public void onDismiss(DialogInterface i) {
-        colorButton1.setBackgroundColor(background);
-        colorButton2.setBackgroundColor(font);
-        colorButton3.setBackgroundColor(tweet);
-        colorButton4.setBackgroundColor(highlight);
-        d.dismiss();
-    }
 
     public void setColor(int preColor) {
-        d = ColorPickerDialogBuilder.with(this)
+        Dialog d = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
                 .setOnColorChangedListener(this).build();
-        d.setOnDismissListener(this);
+        d.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                colorButton1.setBackgroundColor(background);
+                colorButton2.setBackgroundColor(font);
+                colorButton3.setBackgroundColor(tweet);
+                colorButton4.setBackgroundColor(highlight);
+            }
+        });
         d.show();
     }
 
-    private void loadSettings() {
-        clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+    private void load() {
+        settings = getSharedPreferences("settings",0);
+        background = settings.getInt("background_color",0xff0f114a);
+        font = settings.getInt("font_color",0xffffffff);
+        tweet = settings.getInt("tweet_color",0xff19aae8);
+        highlight = settings.getInt("highlight_color",0xffff00ff);
         row = settings.getInt("preload",20);
         wId = settings.getInt("woeid",23424829);
         imgEnabled = settings.getBoolean("image_load",true);
-
         String location = Integer.toString(wId);
         woeId.setText(location);
         toggleImg.setChecked(imgEnabled);

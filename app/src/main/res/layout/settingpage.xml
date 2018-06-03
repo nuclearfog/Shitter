@@ -19,7 +19,6 @@
         android:textSize="18sp" />
 
     <View
-        android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="?android:attr/listDivider" />
@@ -85,7 +84,6 @@
         android:textSize="18sp" />
 
     <View
-        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="?android:attr/listDivider" />
@@ -121,7 +119,6 @@
         android:textSize="18sp" />
 
     <View
-        android:id="@+id/divider3"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="?android:attr/listDivider" />
@@ -135,8 +132,8 @@
 
         <Button
             android:id="@+id/woeid_clip"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginEnd="5dp"
             android:layout_marginStart="20dp"
             android:background="@drawable/copy" />
@@ -160,6 +157,18 @@
             android:text="@string/woeid" />
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/database"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -186,6 +195,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:text="@string/errorstack_button" />
+
     </LinearLayout>
 
 </LinearLayout>

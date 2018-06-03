@@ -180,7 +180,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 int retry = err.getRetryAfter();
                 errMsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
             }
-            else if(errCode != 136 && errCode != -1) {
+            else if(errCode != 136) {
                 errMsg = err.getMessage();
             }
             return FAILURE;

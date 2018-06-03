@@ -54,4 +54,8 @@
     <string name="color_settings">Farbeinstellungen</string>
     <string name="data_load">Datenverbrauch</string>
     <string name="trend_setting">Trendeinstellung</string>
+    <string name="animation">Animation</string>
+    <string name="anim_time">Animationszeit</string>
+    <string name="activated">Aktiviert</string>
+    <string name="database">Speicher</string>
 </resources>
