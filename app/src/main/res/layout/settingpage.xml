@@ -93,43 +93,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/number_row"
-            android:layout_width="24dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginStart="10dp"
-            android:singleLine="true" />
-
-        <LinearLayout
+        <Button
+            android:id="@+id/load_dialog"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/more"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/plus" />
-
-            <Button
-                android:id="@+id/less"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="@drawable/minus" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/load_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/limit" />
+            android:layout_height="35dp"
+            android:text="@string/load_factor" />
 
         <CheckBox
             android:id="@+id/toggleImg"

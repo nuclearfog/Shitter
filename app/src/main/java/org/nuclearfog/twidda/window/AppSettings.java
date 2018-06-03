@@ -19,7 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -42,7 +42,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     private SharedPreferences settings;
     private ClipboardManager clip;
     private Button colorButton1, colorButton2,colorButton3,colorButton4;
-    private TextView load_factor;
     private CheckBox toggleImg;
     private Dialog d;
     private int row, wId;
@@ -65,13 +64,13 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_tweet);
         colorButton4 = findViewById(R.id.highlight_color);
-        Button reduce = findViewById(R.id.less);
-        Button enhance = findViewById(R.id.more);
         Button clipButton = findViewById(R.id.woeid_clip);
+        Button load_popup = findViewById(R.id.load_dialog);
         toggleImg = findViewById(R.id.toggleImg);
-        load_factor = findViewById(R.id.number_row);
         woeId = findViewById(R.id.woeid);
 
+
+        load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
         errorcall.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
@@ -79,8 +78,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
-        reduce.setOnClickListener(this);
-        enhance.setOnClickListener(this);
         clipButton.setOnClickListener(this);
 
         settings = getSharedPreferences("settings",0);
@@ -163,20 +160,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                 setColor(highlight);
                 mode = 3;
                 break;
-            case R.id.less:
-                if(row > 10) {
-                    row -= 10;
-                    String out1 = Integer.toString(row);
-                    load_factor.setText(out1);
-                }
-                break;
-            case R.id.more:
-                if(row < 100) {
-                    row += 10;
-                    String out2 = Integer.toString(row);
-                    load_factor.setText(out2);
-                }
-                break;
             case R.id.woeid_clip:
                 if(clip != null && clip.hasPrimaryClip()) {
                     String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
@@ -187,6 +170,16 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
                         Toast.makeText(getApplicationContext(),"Falsches Format!",Toast.LENGTH_LONG).show();
                     }
                 }
+                break;
+            case R.id.load_dialog:
+                Dialog d = new Dialog(this);
+                NumberPicker np = new NumberPicker(this);
+                np.setMaxValue(1000);
+                np.setMinValue(100);
+                np.setValue(row);
+                d.setContentView(np);
+                d.show();
+
                 break;
         }
     }
@@ -252,8 +245,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         String location = Integer.toString(wId);
         woeId.setText(location);
         toggleImg.setChecked(imgEnabled);
-        String load = Integer.toString(row);
-        load_factor.setText(load);
     }
 
     private void save() {

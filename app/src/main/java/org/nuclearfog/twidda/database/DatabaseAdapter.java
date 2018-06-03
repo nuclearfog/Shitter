@@ -92,7 +92,7 @@ public class DatabaseAdapter {
         else if(mode == TWEET) {
             SQL_GET_HOME = "SELECT * FROM tweet " +
                     "INNER JOIN user ON tweet.userID = user.userID"+
-                    " WHERE user.userID = "+id+" AND statusregister < 4 ORDER BY tweetID DESC";
+                    " WHERE user.userID = "+id+" ORDER BY tweetID DESC";
         }
         else if(mode == FAVT) {
             SQL_GET_HOME = "SELECT * FROM tweet " +
@@ -107,10 +107,18 @@ public class DatabaseAdapter {
         }
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
-            do {
-                Tweet tweet = getStatus(cursor);
-                tweetList.add(tweet);
-            } while(cursor.moveToNext() && limit++ < 200);
+            if(mode == TWEET) {
+                do {
+                    Tweet tweet = getStatus(cursor);
+                    if (tweet.profileflag)
+                        tweetList.add(tweet);
+                } while (cursor.moveToNext());
+            } else {
+                do {
+                    Tweet tweet = getStatus(cursor);
+                    tweetList.add(tweet);
+                } while (cursor.moveToNext() && limit++ < 200);
+            }
         }
         cursor.close();
         return tweetList;
@@ -352,7 +360,7 @@ public class DatabaseAdapter {
                 links.add(media.substring(0,index));
                 media = media.substring(index+1);
             }
-        } while(index >0);
+        } while(index > 0);
         String[] result = new String[links.size()];
         return links.toArray(result);
     }
