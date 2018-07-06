@@ -22,12 +22,6 @@ public class AppDatabase extends SQLiteOpenHelper
             "FOREIGN KEY (userID) REFERENCES user(userID)," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
-    private static final String timelineTable = "CREATE TABLE IF NOT EXISTS timeline (" +
-            "tweetID INTEGER UNIQUE, FOREIGN KEY (tweetID) REFERENCES tweet(tweetID) );";
-
-    private static final String mentionTable = "CREATE TABLE IF NOT EXISTS mention (" +
-            "tweetID INTEGER UNIQUE, FOREIGN KEY (tweetID) REFERENCES tweet(tweetID) );";
-
     private static final String trendTable = "CREATE TABLE IF NOT EXISTS trend (" +
             "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";
 
@@ -45,8 +39,6 @@ public class AppDatabase extends SQLiteOpenHelper
         db.execSQL(userTable);
         db.execSQL(tweetTable);
         db.execSQL(trendTable);
-        db.execSQL(timelineTable);
-        db.execSQL(mentionTable);
         db.execSQL(favoriteTable);
         db.execSQL(errorTable);
     }

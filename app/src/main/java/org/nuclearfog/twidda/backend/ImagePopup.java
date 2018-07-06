@@ -119,8 +119,10 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     }
 
     private void setImage(Bitmap btm, ImageView mImg) {
-        int height = (int)(btm.getHeight() / (btm.getWidth() / 640.0));
-        btm = Bitmap.createScaledBitmap( btm,640,height, false);
-        mImg.setImageBitmap(btm);
+        if(btm != null) {
+            int height = (int) (btm.getHeight() / (btm.getWidth() / 640.0));
+            btm = Bitmap.createScaledBitmap(btm, 640, height, false);
+            mImg.setImageBitmap(btm);
+        }
     }
 }

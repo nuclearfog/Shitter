@@ -38,7 +38,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
-    private final String TWITTER_CONSUMER_SECRET = "xxx";
+    private final String TWITTER_CONSUMER_SECRET = "RQrf0uQus5v7IMuYgdlVeBuLw1ApRJhxcAMM8MyUVRh1nKSxnR";
 
     private static TwitterEngine mTwitter;
     private static long twitterID = -1L;
@@ -145,12 +145,14 @@ public class TwitterEngine {
         twitterID = settings.getLong("userID", -1L);
     }
 
+
     /**
      * set amount of tweets to be loaded
      */
     private void setLoad() {
         load = settings.getInt("preload", 20);
     }
+
 
     /**
      * @return if Twitter4J is registered
@@ -168,7 +170,8 @@ public class TwitterEngine {
      * @throws TwitterException if access is unavailable
      */
     public List<Tweet> getHome(int page, long lastId) throws TwitterException {
-        return convertStatusList(twitter.getHomeTimeline(new Paging(page,load,lastId)));
+        List<Status> homeTweets = twitter.getHomeTimeline(new Paging(page,load,lastId));
+        return convertStatusList(homeTweets);
     }
 
 
@@ -180,7 +183,8 @@ public class TwitterEngine {
      * @throws TwitterException if access is unavailable
      */
     public List<Tweet> getMention(int page, long id) throws TwitterException {
-        return convertStatusList(twitter.getMentionsTimeline(new Paging(page,/*load*/5,id)));
+        List<Status> mentions = twitter.getMentionsTimeline(new Paging(page,/*load*/5,id));
+        return convertStatusList(mentions);
     }
 
 
@@ -197,7 +201,8 @@ public class TwitterEngine {
         q.setCount(load);
         q.setSinceId(id);
         QueryResult result = twitter.search(q);
-        return convertStatusList(result.getTweets());
+        List<Status> results = result.getTweets();
+        return convertStatusList(results);
     }
 
 
@@ -239,7 +244,7 @@ public class TwitterEngine {
      */
     public List<Tweet> getUserTweets(long userId, long page, long id) throws TwitterException {
         List<Status> result = twitter.getUserTimeline(userId, new Paging((int)page,load, id));
-        return convertStatusList(result,true);
+        return convertStatusList(result);
     }
 
 
@@ -251,7 +256,8 @@ public class TwitterEngine {
      * @throws TwitterException if access is unavailable
      */
     public List<Tweet> getUserFavs(long userId, long page, long id) throws TwitterException {
-        return convertStatusList(twitter.getFavorites(userId,new Paging((int)page,load,id)));
+        List<Status> favorits = twitter.getFavorites(userId,new Paging((int)page,load,id));
+        return convertStatusList(favorits);
     }
 
 
@@ -506,23 +512,13 @@ public class TwitterEngine {
     }
 
 
+
     /**
      * convert #twitter4j.Status to Tweet List
      * @param statuses Twitter4J status List
      * @return TwitterStatus
      */
-    private List<Tweet> convertStatusList(List<Status> statuses) {
-        return convertStatusList(statuses, false);
-    }
-
-
-    /**
-     * convert #twitter4j.Status to Tweet List
-     * @param statuses Twitter4J status List
-     * @param profileflag attach tweets to an User
-     * @return TwitterStatus
-     */
-    private List<Tweet> convertStatusList(List<Status> statuses, boolean profileflag) {
+    private List<Tweet>convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
         if(statuses.isEmpty())
             return result;
@@ -532,10 +528,10 @@ public class TwitterEngine {
                 Status embedded = status.getRetweetedStatus();
                 if(embedded != null) {
                     Tweet retweet = getTweet(embedded, null);
-                    Tweet tweet = getTweet(status, retweet, profileflag);
+                    Tweet tweet = getTweet(status, retweet);
                     result.add(tweet);
                 } else {
-                    Tweet tweet = getTweet(status, null, profileflag);
+                    Tweet tweet = getTweet(status,null);
                     result.add(tweet);
                 }
             } catch (Exception err) {
@@ -552,22 +548,12 @@ public class TwitterEngine {
      * @param retweetedStat embedded Status
      * @return Tweet item
      */
-    private Tweet getTweet(Status status, Tweet retweetedStat) {
-        return getTweet(status, retweetedStat, false);
-    }
-
-    /**
-     * @param status twitter4j.Status
-     * @param retweetedStat embedded Status
-     * @param profileflag attach tweet to an User
-     * @return Tweet item
-     */
-    private Tweet getTweet(Status status, Tweet retweetedStat, boolean profileflag) {
+    private Tweet getTweet(Status status,Tweet retweetedStat){
         TwitterUser user = getUser(status.getUser());
         return new Tweet(status.getId(),status.getRetweetCount(),status.getFavoriteCount(),user,
                 status.getText(),status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
                 getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),
-                retweetedStat, status.isRetweeted(), status.isFavorited(),profileflag);
+                retweetedStat, status.isRetweeted(), status.isFavorited());
     }
 
     /**
@@ -593,7 +579,6 @@ public class TwitterEngine {
         for(MediaEntity media : mediaEntities) {
             medialinks[i++] = media.getMediaURLHttps();
         }
-
         return medialinks;
     }
 

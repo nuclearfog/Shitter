@@ -132,13 +132,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 if(homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
-                    tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
+                    tweetDb.storeUserTweets(tweets);
                     tweets.addAll(homeTl.getData());
                 } else {
-                    tweets = tweetDb.load(DatabaseAdapter.TWEET,userId);
-                    if(tweets.size() < 10) {
+                    tweets = tweetDb.getUserTweets(userId);
+                    if(tweets.size() == 0) {
                         tweets = mTwitter.getUserTweets(userId,args[2],id);
-                        tweetDb.store(tweets, DatabaseAdapter.TWEET, userId);
+                        tweetDb.storeUserTweets(tweets);
                     }
                 }
                 homeTl.setData(tweets);
@@ -153,13 +153,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 if(homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
-                    tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
+                    tweetDb.storeUserFavs(favorits,userId);
                     favorits.addAll(homeFav.getData());
                 } else {
-                    favorits = tweetDb.load(DatabaseAdapter.FAVT,userId);
-                    if(favorits.size() < 10) {
+                    favorits = tweetDb.getUserFavs(userId);
+                    if(favorits.size() == 0) {
                         favorits = mTwitter.getUserFavs(userId,args[2],id);
-                        tweetDb.store(favorits, DatabaseAdapter.FAVT, userId);
+                        tweetDb.storeUserFavs(favorits,userId);
                     }
                 }
                 homeFav.setData(favorits);

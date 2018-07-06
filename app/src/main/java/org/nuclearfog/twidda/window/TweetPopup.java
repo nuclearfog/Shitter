@@ -1,9 +1,12 @@
 package org.nuclearfog.twidda.window;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -135,8 +138,19 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                 showClosingMsg();
                 break;
             case R.id.image:
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 0);
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+                    if(check == PackageManager.PERMISSION_GRANTED) {
+                        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(i, 0);
+                    }
+                    else {
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    }
+                } else {
+                    Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(i, 0);
+                }
                 break;
             case R.id.img_preview:
                 new ImagePopup(this).execute(mediaPath.toArray(new String[mediaPath.size()]));

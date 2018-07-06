@@ -87,21 +87,20 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         tweetID = data[0];
         final long MODE = data[1];
         try {
+            Tweet tweet;
+            DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
             if(MODE == LOAD_TWEET || MODE == LOAD_DB) {
-                Tweet tweet;
                 if( MODE == LOAD_DB ) {
-                    DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
                     tweet = dbAdp.getStatus(tweetID);
-                    List<Tweet> answers = dbAdp.load(DatabaseAdapter.ANS, tweetID);
+                    List<Tweet> answers = dbAdp.getAnswers(tweetID);
                     tlAdp.setData(answers);
                     tlAdp.setColor(highlight, font);
                     if(tweet == null)
                         return IGNORE; // NOT FOUND
                 } else {
                     tweet = mTwitter.getStatus(tweetID);
-                    DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
                     if(dbAdp.containStatus(tweetID))
-                        dbAdp.storeStatus(tweet);
+                        dbAdp.updateStatus(tweet);
                 }
                 if (tweet.embedded != null) {
                     retweeter = tweet.user.screenname;
@@ -135,7 +134,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(MODE == LOAD_REPLY) {
                 List<Tweet> answers;
-                DatabaseAdapter mData = new DatabaseAdapter(ui.get());
                 if(tlAdp.getItemCount() > 0) {
                     long sinceId = tlAdp.getItemId(0);
                     answers = mTwitter.getAnswers(tweetID, sinceId);
@@ -145,8 +143,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 }
                 tlAdp.setData(answers);
                 tlAdp.setColor(highlight, font);
-                if(mData.containStatus(tweetID))
-                    mData.store(answers,DatabaseAdapter.TWEET,-1L);
+                if(answers.size() > 0 && dbAdp.containStatus(tweetID))
+                    dbAdp.storeReplies(answers);
             }
             else if(MODE == DELETE) {
                 mTwitter.deleteTweet(tweetID);
@@ -208,7 +206,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             txtAns.setText(ansStr);
 
             if(tweetReplyID > 0) {
-                String reply = "antwort";
+                String reply = "antwort ";
                 if(repliedUsername != null)
                     reply += '@'+repliedUsername;
 

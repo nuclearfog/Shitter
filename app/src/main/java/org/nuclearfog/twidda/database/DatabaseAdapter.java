@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
@@ -11,114 +12,134 @@ import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
+
 public class DatabaseAdapter {
 
-    public static final int FAVT  = 1;
-    public static final int TWEET = 2;
-    public static final int HOME  = 3;
-    public static final int MENT  = 4;
-    public static final int ANS   = 5;
     private AppDatabase dataHelper;
 
-    /**
-     * Public Cunstructor
-     * @param context Activity Context
-     */
     public DatabaseAdapter(Context context) {
         dataHelper = AppDatabase.getInstance(context);
     }
 
+    /**
+     * Nutzer Tweets speichern
+     * @param stats Tweet Liste
+     */
+    public void storeUserTweets(List<Tweet> stats) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        int statusregister = 1 << 4;
+        for(int pos = 0; pos < stats.size(); pos++) {
+            Tweet tweet = stats.get(pos);
+            storeStatus(tweet,statusregister,db);
+        }
+    }
 
     /**
-     * Store Tweet List
-     * @param stats List of Tweets
-     * @param mode store in extra table
-     * @param id Owner ID of favorite table
+     * Nutzer Favoriten Speichern
+     * @param fav Tweet Liste
+     * @param ownerId User ID
      */
-    public void store(final List<Tweet> stats, final int mode, final long id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = dataHelper.getWritableDatabase();
+    public void storeUserFavs(List<Tweet> fav, long ownerId){
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        for(int pos = 0; pos < fav.size(); pos++) {
+            Tweet tweet = fav.get(pos);
+            storeStatus(tweet,0,db);
+            ContentValues favTable  = new ContentValues();
+            favTable.put("tweetID", tweet.tweetID);
+            favTable.put("userID", ownerId);
+            db.insertWithOnConflict("favorit",null,favTable,CONFLICT_IGNORE);
+        }
+    }
 
-                ContentValues home  = new ContentValues();
-                ContentValues fav   = new ContentValues();
-                ContentValues ment  = new ContentValues();
+    /**
+     * Home Timeline speichern
+     * @param home Tweet Liste
+     */
+    public void storeHomeTimeline(List<Tweet> home){
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        int statusregister = 1 << 2;
+        for(int pos = 0; pos < home.size(); pos++) {
+            Tweet tweet = home.get(pos);
+            storeStatus(tweet,statusregister,db);
+        }
+    }
 
-                for(int pos = 0; pos < stats.size(); pos++) {
-                    Tweet tweet = stats.get(pos);
-                    storeStatus(tweet,db);
+    /**
+     * Erwähnungen speichern
+     * @param mentions Tweet Liste
+     */
+    public void storeMentions(List<Tweet> mentions) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        int statusregister = 1 << 3;
+        for(int pos = 0; pos < mentions.size(); pos++) {
+            Tweet tweet = mentions.get(pos);
+            storeStatus(tweet,statusregister,db);
+        }
+    }
 
-                    if(mode != TWEET) {
-                        if(mode == HOME) {
-                            home.put("tweetID", tweet.tweetID);
-                            db.insertWithOnConflict("timeline",null,home,SQLiteDatabase.CONFLICT_REPLACE);
-                        } else if(mode == FAVT) {
-                            fav.put("tweetID", tweet.tweetID);
-                            fav.put("userID", id);
-                            db.insertWithOnConflict("favorit",null,fav,SQLiteDatabase.CONFLICT_REPLACE);
-                        } else if(mode == MENT) {
-                            ment.put("tweetID", tweet.tweetID);
-                            db.insertWithOnConflict("mention",null,ment,SQLiteDatabase.CONFLICT_REPLACE);
-                        }
-                    }
-                }
-            }
-        }).start();
+    /**
+     * Tweet Antworten speicher
+     * @param replies Tweet Antworten Liste
+     */
+    public void storeReplies(List<Tweet> replies) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        int statusregister = 1 << 5;
+        for(int pos = 0; pos < replies.size(); pos++) {
+            Tweet tweet = replies.get(pos);
+            storeStatus(tweet,statusregister,db);
+        }
+    }
+
+    /**
+     * Nutzer speichern
+     * @param user Nutzer Information
+     */
+    public void storeUser(TwitterUser user) {
+        storeUser(user, dataHelper.getWritableDatabase());
     }
 
 
     /**
-     * Load Tweet list from Table
-     * @param mode select table
-     * @param id User ID for user tweets and favorites
-     * @return List of Tweets
+     * Lade Home Timeline
+     * @return Tweet Liste
      */
-    public List<Tweet> load(int mode, long id) {
-        List<Tweet> tweetList = new ArrayList<>();
+    public List<Tweet> getHomeTimeline() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
-        String SQL_GET_HOME="";
-        int limit = 0;
-        if(mode == HOME) {
-            SQL_GET_HOME = "SELECT * FROM tweet " +
-                    "INNER JOIN timeline ON timeline.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID DESC";
-        }
-        else if(mode == MENT) {
-            SQL_GET_HOME = "SELECT * FROM tweet " +
-                    "INNER JOIN mention ON mention.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID = user.userID ORDER BY tweetID DESC";
-        }
-        else if(mode == TWEET) {
-            SQL_GET_HOME = "SELECT * FROM tweet " +
-                    "INNER JOIN user ON tweet.userID = user.userID"+
-                    " WHERE user.userID = "+id+" ORDER BY tweetID DESC";
-        }
-        else if(mode == FAVT) {
-            SQL_GET_HOME = "SELECT * FROM tweet " +
-                    "INNER JOIN favorit ON favorit.tweetID = tweet.tweetID " +
-                    "INNER JOIN user ON tweet.userID = user.userID " +
-                    "WHERE favorit.userID = "+id+" ORDER BY tweetID DESC";
-        }
-        else if(mode == ANS) {
-            SQL_GET_HOME = "SELECT * FROM tweet " +
-                    "INNER JOIN user ON tweet.userID = user.userID"+
-                    " WHERE tweet.replyID = "+id+" ORDER BY tweetID DESC";
-        }
+        List<Tweet> tweetList = new ArrayList<>();
+        String SQL_GET_HOME = "SELECT * FROM tweet " +
+                "INNER JOIN user ON tweet.userID=user.userID " +
+                "WHERE statusregister&(1<<2)>0 " +
+                "ORDER BY tweetID DESC";
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
-            if(mode == TWEET) {
-                do {
-                    Tweet tweet = getStatus(cursor);
-                    if (tweet.profileflag)
-                        tweetList.add(tweet);
-                } while (cursor.moveToNext());
-            } else {
-                do {
-                    Tweet tweet = getStatus(cursor);
-                    tweetList.add(tweet);
-                } while (cursor.moveToNext() && limit++ < 200);
-            }
+            do {
+                Tweet tweet = getStatus(cursor);
+                tweetList.add(tweet);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return tweetList;
+    }
+
+    /**
+     * Erwähnungen laden
+     * @return Tweet Liste
+     */
+    public List<Tweet> getMentions() {
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        List<Tweet> tweetList = new ArrayList<>();
+        String SQL_GET_HOME = "SELECT * FROM tweet " +
+                "INNER JOIN user ON tweet.userID=user.userID " +
+                "WHERE statusregister&(1<<3)>0 " +
+                "ORDER BY tweetID DESC";
+        Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
+        if(cursor.moveToFirst()) {
+            do {
+                Tweet tweet = getStatus(cursor);
+                tweetList.add(tweet);
+            } while (cursor.moveToNext());
         }
         cursor.close();
         return tweetList;
@@ -126,16 +147,91 @@ public class DatabaseAdapter {
 
 
     /**
-     * get single Tweet
-     * @param tweetId ID of tweet
-     * @return Tweet or null if not found
+     * Tweet Liste eines Nutzers
+     * @param userID Nutzer ID
+     * @return Tweet Liste des Users
      */
+    public List<Tweet> getUserTweets(long userID) {
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        List<Tweet> tweetList = new ArrayList<>();
+        String SQL_GET_HOME = "SELECT * FROM tweet " +
+                "INNER JOIN user ON tweet.userID = user.userID "+
+                "WHERE statusregister&(1<<4)>0 " +
+                "AND user.userID ="+userID+" ORDER BY tweetID DESC";
+
+        Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
+
+        if(cursor.moveToFirst()) {
+            do {
+                Tweet tweet = getStatus(cursor);
+                tweetList.add(tweet);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return tweetList;
+    }
+
+    /**
+     * Lade Favorisierte Tweets eines Nutzers
+     * @param userID Nutzer ID
+     * @return Favoriten des Nutzers
+     */
+    public List<Tweet> getUserFavs(long userID) {
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        List<Tweet> tweetList = new ArrayList<>();
+        String SQL_GET_HOME = "SELECT * FROM tweet " +
+                "INNER JOIN user ON tweet.userID = user.userID " +
+                "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
+                "WHERE favorit.userID ="+userID + " ORDER BY tweetID DESC";
+        Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
+        if(cursor.moveToFirst()) {
+            do {
+                Tweet tweet = getStatus(cursor);
+                tweetList.add(tweet);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return tweetList;
+    }
+
+
+    /**
+     * Lade Antworten
+     * @param tweetId Tweet ID
+     * @return Antworten zur Tweet ID
+     */
+    public List<Tweet> getAnswers(long tweetId) {
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        List<Tweet> tweetList = new ArrayList<>();
+        String SQL_GET_HOME = "SELECT * FROM tweet " +
+                "INNER JOIN user ON tweet.userID = user.userID " +
+                "WHERE tweet.replyID="+tweetId+"AND statusregister&(1<<5)>0 " +
+                "ORDER BY tweetID DESC";
+
+        Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
+        if(cursor.moveToFirst()) {
+            do {
+                Tweet tweet = getStatus(cursor);
+                tweetList.add(tweet);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return tweetList;
+    }
+
+    /**
+     * Lade Tweet
+     * @param tweetId Tweet ID
+     * @return Gefundener Tweet oder NULL falls nicht vorhanden
+     */
+    @Nullable
     public Tweet getStatus(long tweetId) {
         SQLiteDatabase search = dataHelper.getReadableDatabase();
         Tweet result = null;
         String query = "SELECT * FROM tweet " +
                 "INNER JOIN user ON user.userID = tweet.userID " +
                 "WHERE tweet.tweetID == " + tweetId;
+
         Cursor cursor = search.rawQuery(query,null);
         if(cursor.moveToFirst())
             result = getStatus(cursor);
@@ -143,12 +239,12 @@ public class DatabaseAdapter {
         return result;
     }
 
-
     /**
-     * get single User
-     * @param userId User ID
-     * @return User or null if not found
+     * Lade Nutzer Information
+     * @param userId Nutzer ID
+     * @return Nutzer Informationen oder NULL falls nicht vorhanden
      */
+    @Nullable
     public TwitterUser getUser(long userId) {
         SQLiteDatabase search = dataHelper.getReadableDatabase();
         TwitterUser user = null;
@@ -160,37 +256,22 @@ public class DatabaseAdapter {
         return user;
     }
 
-
     /**
-     * Store single Tweet
-     * @param tweet Tweet to be stored
+     * Aktualisiere Tweet (nur Retweet & Favorit anzahl)
+     * @param tweet Tweet
      */
-    public void storeStatus(final Tweet tweet) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                storeStatus(tweet, dataHelper.getWritableDatabase());
-            }
-        }).start();
-    }
-
-    /**
-     * Store single User
-     * @param user Twitteruser to be stored
-     */
-    public void storeUser(final TwitterUser user) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                storeUser(user, dataHelper.getWritableDatabase());
-            }
-        }).start();
+    public void updateStatus(Tweet tweet) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        ContentValues status = new ContentValues();
+        status.put("retweet", tweet.retweet);
+        status.put("favorite", tweet.favorit);
+        db.update("tweet",status,"tweet.tweetID = "+tweet.tweetID,null);
     }
 
 
     /**
-     * Delete Status
-     * @param id Status id
+     * Lösche Tweet
+     * @param id Tweet ID
      */
     public void removeStatus(final long id) {
         new Thread(new Runnable() {
@@ -202,20 +283,24 @@ public class DatabaseAdapter {
         }).start();
     }
 
+
     /**
-     * Check if Tweet exists in Database
+     * Suche Tweet in Datenbank
      * @param id Tweet ID
-     * @return true if found
+     * @return True falls gefunden, ansonsten False
      */
     public boolean containStatus(long id) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         String query = "SELECT EXISTS(SELECT tweetID FROM tweet WHERE tweetID="+id+" LIMIT 1);";
         Cursor c = db.rawQuery(query,null);
-        c.moveToFirst();
-        boolean found = c.getInt(0) == 1;
+        if(c.moveToFirst()) {
+            c.close();
+            return c.getInt(0) == 1;
+        }
         c.close();
-        return found;
+        return false;
     }
+
 
 
     private Tweet getStatus(Cursor cursor) {
@@ -244,7 +329,7 @@ public class DatabaseAdapter {
         int statusregister = cursor.getInt(index);
         boolean favorited = (statusregister & 1) == 1;
         boolean retweeted = (statusregister & 2) == 2;
-        boolean profileflag = (statusregister & 4) == 4;
+
         String[] medias = parseMedia(medialinks);
 
         TwitterUser user = getUser(cursor);
@@ -252,7 +337,7 @@ public class DatabaseAdapter {
         if(retweetId > 0)
             embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,medias,
-                source,replyStatusId,embeddedTweet,retweeted,favorited,profileflag);
+                source,replyStatusId,embeddedTweet,retweeted,favorited);
     }
 
 
@@ -288,47 +373,42 @@ public class DatabaseAdapter {
     }
 
 
-    private void storeStatus(Tweet tweet, SQLiteDatabase db) {
+
+    private void storeStatus(Tweet tweet, int statusregister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
         Tweet rtStat = tweet.embedded;
-        long rtId = -1;
-
+        long rtId = 1L;
         if(rtStat != null) {
-            storeStatus(rtStat, db);
+            storeStatus(rtStat,0, db);
             rtId = rtStat.tweetID;
         }
+
         TwitterUser mUser = tweet.user;
         storeUser(mUser,db);
         status.put("tweetID", tweet.tweetID);
         status.put("userID", mUser.userID);
         status.put("time", tweet.time);
         status.put("tweet", tweet.tweet);
-        status.put("retweet", tweet.retweet);
-        status.put("favorite", tweet.favorit);
         status.put("retweetID", rtId);
         status.put("source", tweet.source);
         status.put("replyID", tweet.replyID);
         status.put("replyname", tweet.replyName);
-
+        status.put("retweet", tweet.retweet);
+        status.put("favorite", tweet.favorit);
         String[] medialinks = tweet.media;
         StringBuilder media = new StringBuilder();
-
         for(String link : medialinks) {
             media.append(link);
             media.append(";");
         }
         status.put("media",media.toString());
+        if (tweet.favorized)
+            statusregister |= 1;
+        if (tweet.retweeted)
+            statusregister |= 1 << 1;
 
-        int statusregister = 0;
-        if(tweet.favorized)
-            statusregister += 1;
-        if(tweet.retweeted)
-            statusregister += 2;
-        if(tweet.profileflag)
-            statusregister += 4;
-
-        status.put("statusregister",statusregister);
-        db.insertWithOnConflict("tweet",null, status,SQLiteDatabase.CONFLICT_REPLACE);
+        status.put("statusregister", statusregister);
+        db.insertWithOnConflict("tweet",null, status, CONFLICT_REPLACE);
     }
 
 
@@ -347,7 +427,7 @@ public class DatabaseAdapter {
         userColumn.put("createdAt", user.created);
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
-        db.insertWithOnConflict("user",null, userColumn,SQLiteDatabase.CONFLICT_REPLACE);
+        db.insertWithOnConflict("user",null, userColumn, CONFLICT_REPLACE);
     }
 
 

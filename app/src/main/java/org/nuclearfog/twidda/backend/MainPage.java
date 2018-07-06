@@ -95,11 +95,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     if(timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
                         tweets = mTwitter.getHome(page,id);
-                        tweetDb.store(tweets, DatabaseAdapter.HOME,-1L);
+                        tweetDb.storeHomeTimeline(tweets);
                         tweets.addAll(timelineAdapter.getData());
                     } else {
                         tweets = mTwitter.getHome(page,id);
-                        tweetDb.store(tweets, DatabaseAdapter.HOME,-1L);
+                        tweetDb.storeHomeTimeline(tweets);
                     }
                     timelineAdapter.setData(tweets);
                     timelineAdapter.setColor(highlight, font);
@@ -109,7 +109,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 case H_LOAD:
 
                     DatabaseAdapter tweetDeck = new DatabaseAdapter(ui.get());
-                    tweets = tweetDeck.load(DatabaseAdapter.HOME, -1L);
+                    tweets = tweetDeck.getHomeTimeline();
                     timelineAdapter.setData(tweets);
                     timelineAdapter.setColor(highlight, font);
                     timelineAdapter.toggleImage(image);
@@ -135,11 +135,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     if(mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
                         mention = mTwitter.getMention(page,id);
-                        tweetDb.store(mention, DatabaseAdapter.MENT,-1L);
+                        tweetDb.storeMentions(mention);
                         mention.addAll(mentionAdapter.getData());
                     } else {
                         mention = mTwitter.getMention(page,id);
-                        tweetDb.store(mention, DatabaseAdapter.MENT,-1L);
+                        tweetDb.storeMentions(mention);
                     }
                     mentionAdapter.setData(mention);
                     mentionAdapter.setColor(highlight, font);
@@ -149,7 +149,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 case M_LOAD:
 
                     DatabaseAdapter mentDeck  = new DatabaseAdapter(ui.get());
-                    mention = mentDeck.load(DatabaseAdapter.MENT,-1L);
+                    mention = mentDeck.getMentions();
                     mentionAdapter.setData(mention);
                     mentionAdapter.setColor(highlight, font);
                     mentionAdapter.toggleImage(image);
