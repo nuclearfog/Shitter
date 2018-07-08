@@ -34,6 +34,7 @@ public class DatabaseAdapter {
             Tweet tweet = stats.get(pos);
             storeStatus(tweet,statusregister,db);
         }
+        db.close();
     }
 
     /**
@@ -51,6 +52,7 @@ public class DatabaseAdapter {
             favTable.put("userID", ownerId);
             db.insertWithOnConflict("favorit",null,favTable,CONFLICT_IGNORE);
         }
+        db.close();
     }
 
     /**
@@ -64,6 +66,7 @@ public class DatabaseAdapter {
             Tweet tweet = home.get(pos);
             storeStatus(tweet,statusregister,db);
         }
+        db.close();
     }
 
     /**
@@ -77,6 +80,7 @@ public class DatabaseAdapter {
             Tweet tweet = mentions.get(pos);
             storeStatus(tweet,statusregister,db);
         }
+        db.close();
     }
 
     /**
@@ -90,6 +94,7 @@ public class DatabaseAdapter {
             Tweet tweet = replies.get(pos);
             storeStatus(tweet,statusregister,db);
         }
+        db.close();
     }
 
     /**
@@ -97,7 +102,9 @@ public class DatabaseAdapter {
      * @param user Nutzer Information
      */
     public void storeUser(TwitterUser user) {
-        storeUser(user, dataHelper.getWritableDatabase());
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        storeUser(user, db);
+        db.close();
     }
 
 
@@ -120,6 +127,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return tweetList;
     }
 
@@ -142,6 +150,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return tweetList;
     }
 
@@ -168,6 +177,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return tweetList;
     }
 
@@ -191,6 +201,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return tweetList;
     }
 
@@ -205,9 +216,8 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE tweet.replyID="+tweetId+"AND statusregister&(1<<5)>0 " +
+                "WHERE tweet.replyID="+tweetId+" AND statusregister&(1<<5)>0 " +
                 "ORDER BY tweetID DESC";
-
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
@@ -216,6 +226,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        db.close();
         return tweetList;
     }
 
@@ -226,16 +237,16 @@ public class DatabaseAdapter {
      */
     @Nullable
     public Tweet getStatus(long tweetId) {
-        SQLiteDatabase search = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
         Tweet result = null;
         String query = "SELECT * FROM tweet " +
                 "INNER JOIN user ON user.userID = tweet.userID " +
                 "WHERE tweet.tweetID == " + tweetId;
-
-        Cursor cursor = search.rawQuery(query,null);
+        Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst())
             result = getStatus(cursor);
         cursor.close();
+        db.close();
         return result;
     }
 
@@ -246,13 +257,14 @@ public class DatabaseAdapter {
      */
     @Nullable
     public TwitterUser getUser(long userId) {
-        SQLiteDatabase search = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
         TwitterUser user = null;
         String query = "SELECT * FROM user WHERE userID ="+ userId;
-        Cursor cursor = search.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst())
             user = getUser(cursor);
         cursor.close();
+        db.close();
         return user;
     }
 
@@ -266,6 +278,7 @@ public class DatabaseAdapter {
         status.put("retweet", tweet.retweet);
         status.put("favorite", tweet.favorit);
         db.update("tweet",status,"tweet.tweetID = "+tweet.tweetID,null);
+        db.close();
     }
 
 
@@ -279,6 +292,7 @@ public class DatabaseAdapter {
             public void run() {
                 SQLiteDatabase db = dataHelper.getWritableDatabase();
                 db.delete("tweet", "tweetID="+id, null);
+                db.close();
             }
         }).start();
     }
@@ -293,12 +307,10 @@ public class DatabaseAdapter {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         String query = "SELECT EXISTS(SELECT tweetID FROM tweet WHERE tweetID="+id+" LIMIT 1);";
         Cursor c = db.rawQuery(query,null);
-        if(c.moveToFirst()) {
-            c.close();
-            return c.getInt(0) == 1;
-        }
+        boolean result = c.moveToFirst();
         c.close();
-        return false;
+        db.close();
+        return result;
     }
 
 
@@ -374,7 +386,7 @@ public class DatabaseAdapter {
 
 
 
-    private void storeStatus(Tweet tweet, int statusregister, SQLiteDatabase db) {
+    private void storeStatus(Tweet tweet, int newStatusregister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
         Tweet rtStat = tweet.embedded;
         long rtId = 1L;
@@ -382,7 +394,6 @@ public class DatabaseAdapter {
             storeStatus(rtStat,0, db);
             rtId = rtStat.tweetID;
         }
-
         TwitterUser mUser = tweet.user;
         storeUser(mUser,db);
         status.put("tweetID", tweet.tweetID);
@@ -402,6 +413,8 @@ public class DatabaseAdapter {
             media.append(";");
         }
         status.put("media",media.toString());
+        int statusregister = getStatusregister(db,tweet.tweetID);
+        statusregister |= newStatusregister;
         if (tweet.favorized)
             statusregister |= 1;
         if (tweet.retweeted)
@@ -409,6 +422,19 @@ public class DatabaseAdapter {
 
         status.put("statusregister", statusregister);
         db.insertWithOnConflict("tweet",null, status, CONFLICT_REPLACE);
+    }
+
+
+    private int getStatusregister(SQLiteDatabase db, long tweetID) {
+        String query = "SELECT statusregister FROM tweet WHERE tweetID="+tweetID+" LIMIT 1;";
+        Cursor c = db.rawQuery(query,null);
+        int result = 0;
+        if(c.moveToFirst()) {
+            int pos = c.getColumnIndex("statusregister");
+            result = c.getInt(pos);
+        }
+        c.close();
+        return result;
     }
 
 
