@@ -152,12 +152,13 @@
                 android:id="@+id/tweetbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 android:addStatesFromChildren="false"
                 android:gravity="center_vertical|center_horizontal"
                 android:orientation="horizontal"
-                android:padding="5dp">
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="5dp">
 
                 <Button
                     android:id="@+id/answer_button"

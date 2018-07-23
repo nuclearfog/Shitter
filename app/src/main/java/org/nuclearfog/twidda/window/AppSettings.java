@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +25,7 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.LogAdapter;
 
@@ -39,7 +38,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         CompoundButton.OnCheckedChangeListener, OnColorChangedListener {
 
     private EditText woeId;
-    private SharedPreferences settings;
+    private GlobalSettings settings;
     private ClipboardManager clip;
     private CheckBox toggleImg;
     private Button colorButton1,colorButton2,colorButton3,colorButton4;
@@ -56,6 +55,8 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        settings = GlobalSettings.getInstance(this);
 
         clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
@@ -230,14 +231,13 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     private void load() {
-        settings = getSharedPreferences("settings",0);
-        background = settings.getInt("background_color",0xff0f114a);
-        font = settings.getInt("font_color",0xffffffff);
-        tweet = settings.getInt("tweet_color",0xff19aae8);
-        highlight = settings.getInt("highlight_color",0xffff00ff);
-        row = settings.getInt("preload",20);
-        wId = settings.getInt("woeid",23424829);
-        imgEnabled = settings.getBoolean("image_load",true);
+        background = settings.getBackgroundColor();
+        font = settings.getFontColor();
+        tweet = settings.getTweetColor();
+        highlight = settings.getHighlightColor();
+        row = settings.getRowLimit();
+        wId = settings.getWoeId();
+        imgEnabled = settings.loadImages();
         String location = Integer.toString(wId);
         woeId.setText(location);
         toggleImg.setChecked(imgEnabled);
@@ -245,15 +245,13 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
     private void save() {
         wId = Integer.parseInt(woeId.getText().toString());
-        Editor edit  = settings.edit();
-        edit.putInt("woeid", wId);
-        edit.putInt("preload", row);
-        edit.putBoolean("image_load", imgEnabled);
-        edit.putInt("background_color",background);
-        edit.putInt("font_color",font);
-        edit.putInt("tweet_color", tweet);
-        edit.putInt("highlight_color", highlight);
-        edit.apply();
-        Toast.makeText(this, "Gespeichert", Toast.LENGTH_SHORT).show();
+        settings.setBackgroundColor(background);
+        settings.setHighlightColor(highlight);
+        settings.setTweetColor(tweet);
+        settings.setFontColor(font);
+        settings.setImageLoad(imgEnabled);
+        settings.setWoeId(wId);
+        settings.setRowLimit(row);
+        Toast.makeText(getApplicationContext(),"Gespeichert", Toast.LENGTH_SHORT).show();
     }
 }

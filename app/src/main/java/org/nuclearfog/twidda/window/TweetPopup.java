@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
@@ -20,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
 
@@ -40,7 +40,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
     private ProgressBar send_circle;
     private EditText tweet;
     private Button imageButton, previewBtn;
-    private TextView imgcount;
+    private TextView imgCount;
     private long inReplyId =-1L;
     private String addition="";
     private int imgIndex = 0;
@@ -56,13 +56,13 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
         imageButton = findViewById(R.id.image);
         previewBtn  = findViewById(R.id.img_preview);
         tweet = findViewById(R.id.tweet_input);
-        imgcount = findViewById(R.id.imgcount);
+        imgCount = findViewById(R.id.imgcount);
         send_circle = findViewById(R.id.tweet_sending);
         Button tweetButton = findViewById(R.id.sendTweet);
         Button closeButton = findViewById(R.id.close);
         LinearLayout root = findViewById(R.id.tweet_popup);
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        int tweetColor = settings.getInt("tweet_color", 0xff19aae8);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        int tweetColor = settings.getTweetColor();
         root.setBackgroundColor(tweetColor);
         tweet.append(addition);
 
@@ -102,7 +102,7 @@ public class TweetPopup extends AppCompatActivity implements View.OnClickListene
                     int index = c.getColumnIndex(mode[0]);
                     mediaPath.add(c.getString(index));
                     String count = Integer.toString(++imgIndex);
-                    imgcount.setText(count);
+                    imgCount.setText(count);
                 }
                 if(imgIndex == 4) {
                     imageButton.setVisibility(View.INVISIBLE);

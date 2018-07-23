@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.TwitterEngine;
@@ -45,23 +45,25 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerView timelineList, trendList,mentionList;
     private MenuItem profile, tweet, search, setting;
     private SearchView searchQuery;
+    private GlobalSettings settings;
     private View lastTab;
     private Toolbar toolbar;
     private TabHost tabhost;
     private int tabIndex = 0;
     private long homeId = 0L;
     private boolean settingChanged = false;
-    private final int REQCODE = 1;
+    private final int REQ_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
         TwitterEngine mTwitter = TwitterEngine.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         boolean login = mTwitter.loggedIn();
         if( !login ) {
             Intent i = new Intent(this, LoginPage.class);
-            startActivityForResult(i,REQCODE);
+            startActivityForResult(i,REQ_CODE);
         } else {
             login();
         }
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);
-        if(reqCode == REQCODE) {
+        if(reqCode == REQ_CODE) {
             if(returnCode == RESULT_OK) {
                 login();
             } else {
@@ -143,12 +145,6 @@ public class MainActivity extends AppCompatActivity implements
             setTabContent();
             settingChanged = false;
         }
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(0,0);
     }
 
     /**
@@ -321,10 +317,9 @@ public class MainActivity extends AppCompatActivity implements
      * Set Tab Content
      */
     private void setTabContent() {
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        int background = settings.getInt("background_color", 0xff0f114a);
-        int fontcolor = settings.getInt("font_color", 0xffffffff);
-        int highlight = settings.getInt("highlight_color", 0xffff00ff);
+        int background = settings.getBackgroundColor();
+        int fontcolor = settings.getFontColor();
+        int highlight = settings.getHighlightColor();
 
         timelineList.setBackgroundColor(background);
         trendList.setBackgroundColor(background);

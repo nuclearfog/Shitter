@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.window;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -18,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
@@ -71,7 +71,8 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
-        mStat.cancel(true);
+        if(mStat != null)
+            mStat.cancel(true);
         if(mReply != null)
             mReply.cancel(true);
         super.onDestroy();
@@ -162,9 +163,9 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setContent() {
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        int backgroundColor = settings.getInt("background_color", 0xff0f114a);
-        int fontColor = settings.getInt("font_color", 0xffffffff);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        int backgroundColor = settings.getBackgroundColor();
+        int fontColor = settings.getFontColor();
         CollapsingToolbarLayout cLayout = findViewById(R.id.tweet_detail);
         LinearLayout tweetaction = findViewById(R.id.tweetbar);
         TextView txtTw = findViewById(R.id.tweet_detailed);

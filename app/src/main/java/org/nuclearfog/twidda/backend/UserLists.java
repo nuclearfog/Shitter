@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -35,8 +34,8 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
      *@see UserDetail
      */
     public UserLists(Context context) {
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        imageload = settings.getBoolean("image_load",true);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        imageload = settings.loadImages();
 
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);

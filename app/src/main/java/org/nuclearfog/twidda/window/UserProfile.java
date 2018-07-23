@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +19,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
@@ -56,24 +56,26 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         home = userId == TwitterEngine.getHomeId();
 
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        background = settings.getInt("background_color", 0xff0f114a);
-        font_color = settings.getInt("font_color", 0xffffffff);
-        highlight = settings.getInt("highlight_color", 0xffff00ff);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        background = settings.getBackgroundColor();
+        font_color = settings.getFontColor();
+        highlight = settings.getHighlightColor();
 
         homeList = findViewById(R.id.ht_list);
         homeList.setLayoutManager(new LinearLayoutManager(this));
         homeList.setBackgroundColor(background);
+
         favoritList = findViewById(R.id.hf_list);
         favoritList.setLayoutManager(new LinearLayoutManager(this));
         favoritList.setBackgroundColor(background);
-        homeReload = findViewById(R.id.hometweets);
-        favoriteReload = findViewById(R.id.homefavorits);
-        homeReload.setBackgroundColor(0xffff0000);
-        favoriteReload.setBackgroundColor(0xffff0000);
 
-        homeReload.measure(0,0);
-        favoriteReload.measure(0,0);
+        homeReload = findViewById(R.id.hometweets);
+        homeReload.setBackgroundColor(0xffff0000);
+        //homeReload.measure(0,0); //TODO
+
+        favoriteReload = findViewById(R.id.homefavorits);
+        favoriteReload.setBackgroundColor(0xffff0000);
+        //favoriteReload.measure(0,0);
 
         TextView txtFollowing = findViewById(R.id.following);
         TextView txtFollower  = findViewById(R.id.follower);
@@ -107,7 +109,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onDestroy() {
-        mProfile.cancel(true);
+        if(mProfile != null)
+            mProfile.cancel(true);
         if(mTweets != null)
             mTweets.cancel(true);
         if(mFavorits != null)

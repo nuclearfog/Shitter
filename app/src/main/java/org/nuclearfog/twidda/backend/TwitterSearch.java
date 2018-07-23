@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -29,16 +28,16 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
     private String error;
-    private boolean imageload;
+    private boolean imageLoad;
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
         mTwitter = TwitterEngine.getInstance(context);
 
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        font_color = settings.getInt("font_color", 0xffffffff);
-        highlight = settings.getInt("highlight_color", 0xffff00ff);
-        imageload = settings.getBoolean("image_load",true);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        font_color = settings.getFontColor();
+        highlight = settings.getHighlightColor();
+        imageLoad = settings.loadImages();
 
         RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
         RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
@@ -76,15 +75,19 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             }
 
             searchAdapter.setColor(highlight,font_color);
-            searchAdapter.toggleImage(imageload);
-            userAdapter.toggleImage(imageload);
+            searchAdapter.toggleImage(imageLoad);
+            userAdapter.toggleImage(imageLoad);
 
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
                 int retry = err.getRetryAfter();
                 error = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            } else {
+                error = err.getErrorMessage();
             }
+            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorLog.add(error);
         } catch(Exception err) {
             error = err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());

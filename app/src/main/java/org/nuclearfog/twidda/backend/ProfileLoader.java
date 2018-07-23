@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -32,10 +31,10 @@ import twitter4j.TwitterException;
 
 public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
-    public static final long GET_INFORMATION = 0x0;
-    public static final long ACTION_FOLLOW   = 0x1;
-    public static final long GET_TWEETS      = 0x2;
-    public static final long GET_FAVS        = 0x3;
+    public static final long GET_INFORMATION = 0x0; //Profilinformation
+    public static final long ACTION_FOLLOW   = 0x1; // Folgen/Entfolgen
+    public static final long GET_TWEETS      = 0x2; // Tweets Laden
+    public static final long GET_FAVS        = 0x3; // Favoriten Laden
     public static final long ACTION_MUTE     = 0x4;
     public static final long LOAD_DB         = 0x5;
     private static final long FAILURE        = 0x6;
@@ -63,10 +62,10 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     public ProfileLoader(Context context) {
         ui = new WeakReference<>((UserProfile)context);
         mTwitter = TwitterEngine.getInstance(context);
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        font = settings.getInt("font_color", 0xffffffff);
-        highlight = settings.getInt("highlight_color", 0xffff00ff);
-        imgEnabled = settings.getBoolean("image_load",true);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        font = settings.getFontColor();
+        highlight = settings.getHighlightColor();
+        imgEnabled = settings.loadImages();
 
         RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
         RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
@@ -123,6 +122,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 Date d = new Date(user.created);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
                 dateString = "seit "+ sdf.format(d);
+                description = description.replace('\n', ' ');
             }
             else if(MODE == GET_TWEETS)
             {

@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -65,10 +64,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
     public StatusLoader(Context c) {
         mTwitter = TwitterEngine.getInstance(c);
-        SharedPreferences settings = c.getSharedPreferences("settings", 0);
-        font = settings.getInt("font_color", 0xffffffff);
-        highlight = settings.getInt("highlight_color", 0xffff00ff);
-        toggleImg = settings.getBoolean("image_load",true);
+        GlobalSettings settings = GlobalSettings.getInstance(c);
+        font = settings.getFontColor();
+        highlight = settings.getHighlightColor();
+        toggleImg = settings.loadImages();
         ui = new WeakReference<>((TweetDetail)c);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         tlAdp = (TimelineRecycler) replyList.getAdapter();

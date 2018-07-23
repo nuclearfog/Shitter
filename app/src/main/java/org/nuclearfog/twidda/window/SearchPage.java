@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +19,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.TwitterSearch;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
@@ -47,21 +47,24 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         setContentView(R.layout.searchpage);
         getExtras(getIntent().getExtras());
 
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        int background = settings.getInt("background_color", 0xff0f114a);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        int background = settings.getBackgroundColor();
 
         Toolbar tool = findViewById(R.id.search_toolbar);
-        tweetSearch = findViewById(R.id.tweet_result);
-        userSearch = findViewById(R.id.user_result);
-        tweetReload = findViewById(R.id.searchtweets);
-        tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        userSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        tweetSearch.setBackgroundColor(background);
-        userSearch.setBackgroundColor(background);
-
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        tweetSearch = findViewById(R.id.tweet_result);
+        tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        tweetSearch.setBackgroundColor(background);
+
+        userSearch = findViewById(R.id.user_result);
+        userSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        userSearch.setBackgroundColor(background);
+
+        tweetReload = findViewById(R.id.searchtweets);
+
         tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);
@@ -83,7 +86,8 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     protected void onDestroy() {
-        mSearch.cancel(true);
+        if(mSearch != null)
+            mSearch.cancel(true);
         super.onDestroy();
     }
 

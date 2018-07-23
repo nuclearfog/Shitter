@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
@@ -39,8 +39,8 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
         userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-        int background = settings.getInt("background_color", 0xff0f114a);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        int background = settings.getBackgroundColor();
 
         userList.setBackgroundColor(background);
         getUsers();
@@ -48,7 +48,8 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     protected void onDestroy() {
-        uList.cancel(true);
+        if(uList != null)
+            uList.cancel(true);
         super.onDestroy();
     }
 

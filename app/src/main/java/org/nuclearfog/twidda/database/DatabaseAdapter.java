@@ -17,6 +17,7 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
+    private static int LIMIT = 100;
     private AppDatabase dataHelper;
 
     public DatabaseAdapter(Context context) {
@@ -118,7 +119,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&(1<<2)>0 " +
-                "ORDER BY tweetID DESC";
+                "ORDER BY tweetID DESC LIMIT "+LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
@@ -141,7 +142,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&(1<<3)>0 " +
-                "ORDER BY tweetID DESC";
+                "ORDER BY tweetID DESC LIMIT "+LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
@@ -166,7 +167,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID "+
                 "WHERE statusregister&(1<<4)>0 " +
-                "AND user.userID ="+userID+" ORDER BY tweetID DESC";
+                "AND user.userID ="+userID+" ORDER BY tweetID DESC LIMIT "+LIMIT;
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
 
@@ -192,7 +193,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
-                "WHERE favorit.userID ="+userID + " ORDER BY tweetID DESC";
+                "WHERE favorit.userID ="+userID + " ORDER BY tweetID DESC LIMIT "+LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
@@ -217,7 +218,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "WHERE tweet.replyID="+tweetId+" AND statusregister&(1<<5)>0 " +
-                "ORDER BY tweetID DESC";
+                "ORDER BY tweetID DESC LIMIT "+LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
@@ -241,7 +242,7 @@ public class DatabaseAdapter {
         Tweet result = null;
         String query = "SELECT * FROM tweet " +
                 "INNER JOIN user ON user.userID = tweet.userID " +
-                "WHERE tweet.tweetID == " + tweetId;
+                "WHERE tweet.tweetID == " + tweetId + " LIMIT 1";
         Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst())
             result = getStatus(cursor);
@@ -259,7 +260,7 @@ public class DatabaseAdapter {
     public TwitterUser getUser(long userId) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         TwitterUser user = null;
-        String query = "SELECT * FROM user WHERE userID ="+ userId;
+        String query = "SELECT * FROM user WHERE userID ="+ userId+" LIMIT 1";
         Cursor cursor = db.rawQuery(query, null);
         if(cursor.moveToFirst())
             user = getUser(cursor);
@@ -287,14 +288,9 @@ public class DatabaseAdapter {
      * @param id Tweet ID
      */
     public void removeStatus(final long id) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = dataHelper.getWritableDatabase();
-                db.delete("tweet", "tweetID="+id, null);
-                db.close();
-            }
-        }).start();
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.delete("tweet", "tweetID="+id, null);
+        db.close();
     }
 
 
@@ -346,7 +342,7 @@ public class DatabaseAdapter {
 
         TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
-        if(retweetId > 0)
+        if(retweetId > 1)
             embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,medias,
                 source,replyStatusId,embeddedTweet,retweeted,favorited);

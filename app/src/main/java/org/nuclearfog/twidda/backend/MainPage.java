@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -49,11 +48,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     public MainPage(Context context) {
         ui = new WeakReference<>((MainActivity)context);
         mTwitter = TwitterEngine.getInstance(context);
-        SharedPreferences settings = context.getSharedPreferences("settings", 0);
-        woeid = settings.getInt("woeid",23424829); // Germany WOEID
-        highlight = settings.getInt("highlight_color", 0xffff00ff);
-        font = settings.getInt("font_color", 0xffffffff);
-        image = settings.getBoolean("image_load", true);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        woeid = settings.getWoeId();
+        highlight = settings.getHighlightColor();
+        font = settings.getFontColor();
+        image = settings.loadImages();
 
         RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
         RecyclerView trendList = ui.get().findViewById(R.id.tr_list);

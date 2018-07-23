@@ -25,12 +25,14 @@ public class ErrorLog {
         item.put("time", time);
         item.put("message", message);
         mData.insertWithOnConflict("error",null,item,SQLiteDatabase.CONFLICT_IGNORE);
+        mData.close();
 
     }
 
     public void remove(long time) {
         SQLiteDatabase mData = dataHelper.getWritableDatabase();
         mData.delete("error", "time = "+time, null);
+        mData.close();
     }
 
     public List<String> getErrorList() {
@@ -52,6 +54,7 @@ public class ErrorLog {
             } while(cursor.moveToNext() && limit++ < 100);
         }
         cursor.close();
+        mData.close();
         return list;
     }
 }
