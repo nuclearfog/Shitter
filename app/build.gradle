@@ -8,17 +8,16 @@ android {
         minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
-        versionName '1.6.4'
+        versionName '1.7'
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
             debuggable false
-            //minifyEnabled = true
+            //minifyEnabled = true //BUGGY
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            //minifyEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

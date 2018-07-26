@@ -91,25 +91,27 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
         startActivity(intent);
     }
 
-    @SuppressWarnings("ConstantConditions")
+
     private void getUsers() {
         uList = new UserLists(UserDetail.this);
-        if(mode == 0L){
-            getSupportActionBar().setTitle(R.string.following);
-            uList.execute(userID, UserLists.FOLLOWING, -1L);
-        } else if(mode == 1L){
-            getSupportActionBar().setTitle(R.string.follower);
-            uList.execute(userID, UserLists.FOLLOWERS, -1L);
-        } else if(mode == 2L){
-            getSupportActionBar().setTitle(R.string.retweet);
-            uList.execute(tweetID, UserLists.RETWEETER, -1L);
-        } else if(mode == 3L){
-            getSupportActionBar().setTitle(R.string.favorite);
-            uList.execute(tweetID, UserLists.FAVORISER, -1L);
+        if(getSupportActionBar() != null) {
+            if (mode == 0L) {
+                getSupportActionBar().setTitle(R.string.following);
+                uList.execute(userID, UserLists.FOLLOWING, -1L);
+            } else if (mode == 1L) {
+                getSupportActionBar().setTitle(R.string.follower);
+                uList.execute(userID, UserLists.FOLLOWERS, -1L);
+            } else if (mode == 2L) {
+                getSupportActionBar().setTitle(R.string.retweet);
+                uList.execute(tweetID, UserLists.RETWEETER, -1L);
+            } else if (mode == 3L) {
+                getSupportActionBar().setTitle(R.string.favorite);
+                uList.execute(tweetID, UserLists.FAVORISER, -1L);
+            }
         }
     }
 
-    @SuppressWarnings("ConstantCondidions")
+
     private void getExtras(Bundle b) {
         userID  = b.getLong("userID");
         tweetID = b.getLong("tweetID");

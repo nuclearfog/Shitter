@@ -2,7 +2,6 @@
     <string name="app_name">Shitter</string>
     <string name="prompt_token">Pin eingeben</string>
     <string name="action_sign_in">Login</string>
-    <string name="error_field_required">This field is required</string>
     <string name="profile_image">profilbild</string>
     <string name="login">Login</string>
     <string name="pin">PIN</string>
@@ -14,7 +13,6 @@
     <string name="back">Back</string>
     <string name="image">Bilder Laden</string>
     <string name="delete_database">Datenbank Löschen</string>
-    <string name="connection_failure">Fehler beim Abruf der Daten!</string>
     <string name="search">Suche</string>
     <string name="tweet_image">TwitterBild</string>
     <string name="trend">Trends</string>
@@ -27,7 +25,6 @@
     <string name="link">Webseite</string>
     <string name="location">Ort</string>
     <string name="save">Speichern</string>
-    <string name="tweet_image_enclosure">Image Enclosure</string>
     <string name="background">Hintergrund</string>
     <string name="font">Schrift</string>
     <string name="popup">Popup</string>
@@ -39,7 +36,6 @@
     <string name="verify">Verifiziert</string>
     <string name="yes_confirm">Ja</string>
     <string name="no_confirm">Nein</string>
-    <string name="downarrow">Pfeil nach unten</string>
     <string name="fullimg">Vollbild</string>
     <string name="profile_locked">Privates Profil</string>
     <string name="load_factor">Ladefaktor</string>
