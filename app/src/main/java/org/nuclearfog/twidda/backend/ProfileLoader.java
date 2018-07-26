@@ -31,14 +31,14 @@ import twitter4j.TwitterException;
 
 public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
-    public static final long GET_INFORMATION = 0x0; //Profilinformation
-    public static final long ACTION_FOLLOW   = 0x1; // Folgen/Entfolgen
-    public static final long GET_TWEETS      = 0x2; // Tweets Laden
-    public static final long GET_FAVS        = 0x3; // Favoriten Laden
-    public static final long ACTION_MUTE     = 0x4;
-    public static final long LOAD_DB         = 0x5;
-    private static final long FAILURE        = 0x6;
-    private static final long IGNORE         = 0x9;
+    public static final long GET_INFORMATION = 0; //Profilinformation
+    public static final long ACTION_FOLLOW   = 1; // Folgen/Entfolgen
+    public static final long GET_TWEETS      = 2; // Tweets Laden
+    public static final long GET_FAVS        = 3; // Favoriten Laden
+    public static final long ACTION_MUTE     = 4;
+    public static final long LOAD_DB         = 5;
+    private static final long FAILURE        = 6;
+    private static final long IGNORE         = 7;
 
     private String screenName, username, description, location, follower, following;
     private String /* bannerLink,*/ profileImage, link, dateString;
@@ -90,7 +90,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         long id = 1L;
         try {
             isHome = TwitterEngine.getHomeId() == userId;
-            if(!isHome)
+            if(!isHome && MODE != LOAD_DB)
             {
                 boolean connection[] = mTwitter.getConnection(userId);
                 isFollowing = connection[0];
@@ -287,20 +287,23 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         if(!isHome) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);
-            MenuItem followIcon = tool.getMenu().getItem(1);
-            MenuItem blockIcon = tool.getMenu().getItem(2);
-            if(isFollowing) {
-                followIcon.setIcon(R.drawable.follow_enabled);
-                followIcon.setTitle("entfolgen");
-            } else {
-                followIcon.setIcon(R.drawable.follow);
-                followIcon.setTitle("folgen");
-            } if(muted) {
-                blockIcon.setIcon(R.drawable.block_enabled);
-                blockIcon.setTitle("entblocken");
-            } else {
-                blockIcon.setIcon(R.drawable.block);
-                blockIcon.setTitle("block");
+            if(tool.getMenu().size() >= 2) {
+                MenuItem followIcon = tool.getMenu().getItem(1);
+                MenuItem blockIcon = tool.getMenu().getItem(2);
+                if (isFollowing) {
+                    followIcon.setIcon(R.drawable.follow_enabled);
+                    followIcon.setTitle("entfolgen");
+                } else {
+                    followIcon.setIcon(R.drawable.follow);
+                    followIcon.setTitle("folgen");
+                }
+                if (muted) {
+                    blockIcon.setIcon(R.drawable.block_enabled);
+                    blockIcon.setTitle("entblocken");
+                } else {
+                    blockIcon.setIcon(R.drawable.block);
+                    blockIcon.setTitle("block");
+                }
             }
         }
     }

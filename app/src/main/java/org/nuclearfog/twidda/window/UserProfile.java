@@ -251,10 +251,10 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
 
     private void getProfileTweets() {
+        new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB, 1L);
         mTweets = new ProfileLoader(this);
         mFavorits = new ProfileLoader(this);
         mProfile = new ProfileLoader(this);
-        new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB, 1L);
         mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
         mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
