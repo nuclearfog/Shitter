@@ -18,13 +18,13 @@ public class GlobalSettings {
     private boolean loadImage;
     private int row;
 
-    private int woeid;
+    private int woeId;
 
 
 
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences("settings",0);
-        woeid = settings.getInt("world_id",23424829);
+        woeId = settings.getInt("world_id",23424829);
         background_color = settings.getInt("background_color", 0xff0f114a);
         highlight_color = settings.getInt("highlight_color", 0xffff00ff);
         font_color = settings.getInt("font_color", 0xffffffff);
@@ -55,7 +55,7 @@ public class GlobalSettings {
     }
 
     public int getWoeId() {
-        return woeid;
+        return woeId;
     }
 
     public int getRowLimit() {
@@ -101,7 +101,7 @@ public class GlobalSettings {
     public void setWoeId(int id) {
         Editor edit  = settings.edit();
         edit.putInt("world_id", id);
-        woeid = id;
+        woeId = id;
         edit.apply();
     }
 
