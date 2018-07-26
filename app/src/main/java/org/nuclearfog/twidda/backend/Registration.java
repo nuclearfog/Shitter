@@ -14,14 +14,9 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
-    private String errMSG = "";
+    private String errorMessage;
 
-    /**
-     * Register App for Account access
-     * @see LoginPage
-     * @see TwitterEngine used to Store Twitter instance
-     * @param context current Activity's Context.
-     */
+
     public Registration(Context context) {
         ui = new WeakReference<>((LoginPage)context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -39,9 +34,9 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                 return true;
             }
         } catch ( Exception e ) {
-            errMSG = e.getMessage();
+            errorMessage = e.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(errMSG);
+            errorLog.add(errorMessage);
         }
         return false;
     }
@@ -55,8 +50,8 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         if(success) {
             connect.setResult(Activity.RESULT_OK);
             connect.finish();
-        } else if(!errMSG.isEmpty()) {
-            Toast.makeText(connect,"Fehler: "+errMSG,Toast.LENGTH_LONG).show();
+        } else if(errorMessage != null) {
+            Toast.makeText(connect,"Fehler: "+errorMessage,Toast.LENGTH_LONG).show();
         }
     }
 }

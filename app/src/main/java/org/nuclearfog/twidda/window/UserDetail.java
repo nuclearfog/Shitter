@@ -47,10 +47,10 @@ public class UserDetail extends AppCompatActivity implements UserRecycler.OnItem
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         if(uList != null)
             uList.cancel(true);
-        super.onDestroy();
+        super.onPause();
     }
 
     /**

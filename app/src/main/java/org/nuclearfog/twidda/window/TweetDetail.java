@@ -70,12 +70,12 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         if(mStat != null)
             mStat.cancel(true);
         if(mReply != null)
             mReply.cancel(true);
-        super.onDestroy();
+        super.onPause();
     }
 
     /**

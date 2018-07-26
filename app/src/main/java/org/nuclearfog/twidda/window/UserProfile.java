@@ -71,11 +71,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
 
         homeReload = findViewById(R.id.hometweets);
         homeReload.setBackgroundColor(0xffff0000);
-        //homeReload.measure(0,0); //TODO
 
         favoriteReload = findViewById(R.id.homefavorits);
         favoriteReload.setBackgroundColor(0xffff0000);
-        //favoriteReload.measure(0,0);
 
         TextView txtFollowing = findViewById(R.id.following);
         TextView txtFollower  = findViewById(R.id.follower);
@@ -88,6 +86,18 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         favoriteReload.setOnRefreshListener(this);
         getProfileTweets();
     }
+
+    @Override
+    protected void onPause() {
+        if(mProfile != null)
+            mProfile.cancel(true);
+        if(mTweets != null)
+            mTweets.cancel(true);
+        if(mFavorits != null)
+            mFavorits.cancel(true);
+        super.onPause();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -107,16 +117,6 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         overridePendingTransition(0,0);
     }
 
-    @Override
-    protected void onDestroy() {
-        if(mProfile != null)
-            mProfile.cancel(true);
-        if(mTweets != null)
-            mTweets.cancel(true);
-        if(mFavorits != null)
-            mFavorits.cancel(true);
-        super.onDestroy();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {

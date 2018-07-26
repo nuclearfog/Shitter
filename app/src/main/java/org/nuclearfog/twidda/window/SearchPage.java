@@ -26,10 +26,7 @@ import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
-/**
- * SearchPage Tweets and Users
- * @see TwitterSearch
- */
+
 public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener, TimelineRecycler.OnItemClicked {
 
@@ -85,10 +82,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         if(mSearch != null)
             mSearch.cancel(true);
-        super.onDestroy();
+        super.onPause();
     }
 
     /**

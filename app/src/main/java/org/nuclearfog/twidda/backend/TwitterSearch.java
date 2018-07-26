@@ -27,7 +27,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
-    private String error;
+    private String errorMessage;
     private boolean imageLoad;
 
     public TwitterSearch(Context context) {
@@ -82,16 +82,16 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
                 int retry = err.getRetryAfter();
-                error = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
             } else {
-                error = err.getErrorMessage();
+                errorMessage = err.getErrorMessage();
             }
             ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(error);
+            errorLog.add(errorMessage);
         } catch(Exception err) {
-            error = err.getMessage();
+            errorMessage = err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(error);
+            errorLog.add(errorMessage);
         }
         return null;
     }
@@ -102,8 +102,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         SearchPage connect = ui.get();
         if(connect == null)
             return;
-        if(error != null)
-            Toast.makeText(connect, "Fehler beim Laden: "+error, Toast.LENGTH_LONG).show();
+        if(errorMessage != null)
+            Toast.makeText(connect,"Fehler beim Laden: "+errorMessage,Toast.LENGTH_LONG).show();
 
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
         View circleLoad = connect.findViewById(R.id.search_progress);

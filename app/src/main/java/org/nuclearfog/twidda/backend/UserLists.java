@@ -27,15 +27,15 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
-    private String errmsg;
-    private boolean imageload;
+    private String errorMessage;
+    private boolean imageLoad;
 
     /**
      *@see UserDetail
      */
     public UserLists(Context context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        imageload = settings.loadImages();
+        imageLoad = settings.loadImages();
 
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -65,18 +65,21 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
                 user = mTwitter.getRetweeter(id,cursor);
                 usrAdp.setData(user);
             }
-            usrAdp.toggleImage(imageload);
+            usrAdp.toggleImage(imageLoad);
         }
         catch(TwitterException err) {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
                 int retry = err.getRetryAfter();
-                errmsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            } else {
+                errorMessage = "Fehler: "+err.getMessage();
             }
+
         } catch(Exception err) {
-            errmsg = "Fehler: "+err.getMessage();
+            errorMessage = "Fehler: "+err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(errmsg);
+            errorLog.add(errorMessage);
         }
         return null;
     }
@@ -90,11 +93,11 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
         View mProgress = ui.get().findViewById(R.id.userlist_progress);
         mProgress.setVisibility(View.INVISIBLE);
 
-        if(errmsg == null) {
+        if(errorMessage == null) {
             usrAdp.notifyDataSetChanged();
         }
         else {
-            Toast.makeText(ui.get(),errmsg,Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(),errorMessage,Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -20,10 +20,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
     private TwitterEngine mTwitter;
     private String[] path;
 
-    /**
-     * @param context Context of #TweetPopup
-     * @param path Internal Path of the Image
-     */
+
     public StatusUpload(Context context, String[] path) {
         ui = new WeakReference<>((TweetPopup)context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -39,11 +36,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
         tweet.setFocusable(false);
     }
 
-    /**
-     * @param args Argument + Text
-     *             args[0] = TWEET TEXT String
-     *             args[1] = REPLY TWEET ID
-     */
+
     @Override
     protected Boolean doInBackground(Object... args) {
         try {

@@ -39,21 +39,21 @@ import twitter4j.TwitterException;
 
 public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
 
-    private static final long ERROR = -1;
-    public static final long RETWEET = 0;
-    public static final long FAVORITE = 1;
-    public static final long DELETE = 2;
+    private static final long ERROR     =-1;
+    public static final long RETWEET    = 0;
+    public static final long FAVORITE   = 1;
+    public static final long DELETE     = 2;
     public static final long LOAD_TWEET = 3;
     public static final long LOAD_REPLY = 4;
-    public static final long LOAD_DB = 5;
-    private static final long IGNORE = 6;
+    public static final long LOAD_DB    = 5;
+    private static final long IGNORE    = 6;
 
     private TwitterEngine mTwitter;
     private TimelineRecycler tlAdp;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, retweeter;
     private String medialinks[], profile_pb;
-    private String errMSG = "";
+    private String errorMessage = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
     private long tweetReplyID,tweetID, userID, retweeterID;
@@ -153,20 +153,20 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             int err = e.getErrorCode();
             if(err == 144) {
                 new DatabaseAdapter(ui.get()).removeStatus(tweetID);
-                errMSG = "Tweet nicht gefunden!\nID:"+tweetID;
+                errorMessage = "Tweet nicht gefunden!\nID:"+tweetID;
             } else if(err == 420) {
                 int retry = e.getRetryAfter();
-                errMSG = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
             } else {
-                errMSG = e.getMessage();
+                errorMessage = e.getMessage();
                 ErrorLog errorLog = new ErrorLog(ui.get());
-                errorLog.add(errMSG);
+                errorLog.add(errorMessage);
             }
             return ERROR;
         } catch(Exception err) {
-            errMSG = err.getMessage();
+            errorMessage = err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(errMSG);
+            errorLog.add(errorMessage);
             return ERROR;
         }
         return MODE;
@@ -276,7 +276,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             ui.get().finish();
         }
         else if(mode == ERROR) {
-            Toast.makeText(ui.get(), "Fehler beim Laden: "+errMSG, Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(),"Fehler beim Laden: "+errorMessage,Toast.LENGTH_LONG).show();
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             if(ansReload.isRefreshing()) {
                 ansReload.setRefreshing(false);

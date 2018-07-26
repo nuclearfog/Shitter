@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements
     private MenuItem profile, tweet, search, setting;
     private SearchView searchQuery;
     private GlobalSettings settings;
+    private MainPage home;
     private View lastTab;
     private Toolbar toolbar;
     private TabHost tabhost;
@@ -136,6 +137,14 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onPause() {
+        if(home != null) {
+            home.cancel(true);
+        }
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if(settingChanged) {
@@ -160,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onBackPressed() {
         if( tabIndex == 0) {
             super.onBackPressed();
+            overridePendingTransition(0,0);
         }else {
             tabhost.setCurrentTab(0);
         }
@@ -167,16 +177,16 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-        MainPage homeView = new MainPage(MainActivity.this);
+        home = new MainPage(MainActivity.this);
         switch (tabIndex) {
             case 0:
-                homeView.execute(MainPage.HOME,1);
+                home.execute(MainPage.HOME,1);
                 break;
             case 1:
-                homeView.execute(MainPage.TRND,1);
+                home.execute(MainPage.TRND,1);
                 break;
             case 2:
-                homeView.execute(MainPage.MENT,1);
+                home.execute(MainPage.MENT,1);
                 break;
         }
     }

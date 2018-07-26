@@ -55,11 +55,7 @@ public class AppDatabase extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    /**
-     * Singleton Method
-     * @param context Application Context
-     * @return mData Object of this class
-     */
+
     public static synchronized AppDatabase getInstance(Context context) {
         if (mData == null) {
             mData = new AppDatabase(context);
