@@ -15,14 +15,8 @@ Twitter4j 4.0.6
 picasso 2.5.2
 flask colorpicker
 
-<div class="row">
-  <div class="column">
-    <img src="shitter_1.jpg" style="width:100%">
-  </div>
-  <div class="column">
-    <img src="shitter_2.jpg" style="width:100%">
-  </div>
-  <div class="column">
-    <img src="shitter_3.jpg" style="width:100%">
-  </div>
-</div>
+<p float="left">
+	<img src="shitter_1.jpg"/>
+	<img src="shitter_2.jpg"/>
+	<img src="shitter_3.jpg"/>
+</p>
