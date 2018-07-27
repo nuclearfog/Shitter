@@ -98,7 +98,7 @@
             android:id="@+id/load_dialog"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:text="@string/load_factor" />
 
         <CheckBox
@@ -130,6 +130,12 @@
         android:orientation="horizontal"
         android:padding="5dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:text="@string/woeid" />
+
         <Button
             android:id="@+id/woeid_clip"
             android:layout_width="24dp"
@@ -146,15 +152,7 @@
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:inputType="number"
-            android:labelFor="@id/textView"
             android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            android:text="@string/woeid" />
 
     </LinearLayout>
 

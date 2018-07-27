@@ -56,7 +56,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private String errorMessage = "";
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
-    private long tweetReplyID,tweetID, userID, retweeterID;
+    private long tweetReplyID,tweetID, userID, retweeterID, homeId;
     private int rtCount, favCount;
     private int highlight, font;
 
@@ -68,6 +68,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
+        homeId = settings.getUserId();
         ui = new WeakReference<>((TweetDetail)c);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         answerAdapter = (TimelineRecycler) replyList.getAdapter();
@@ -99,6 +100,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             } else {
                 tweet = mTwitter.getStatus(tweetID);
             }
+
             if (tweet.embedded != null) {
                 retweeter = tweet.user.screenname;
                 retweeterID = tweet.user.userID;
@@ -130,7 +132,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                     rtCount++;
                     retweeted = true;
                 } else {
-                    if(rtCount>0)
+                    if(rtCount > 0)
                         rtCount--;
                     retweeted = false;
                 }
@@ -141,9 +143,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                     favCount++;
                     favorited = true;
                 } else {
-                    if(rtCount>0)
+                    if(favCount > 0)
                         favCount--;
                     favorited = false;
+                    database.removeFavorite(tweetID,homeId);
                 }
             }
             else if(MODE == LOAD_REPLY) {
@@ -162,7 +165,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
             else if(MODE == DELETE) {
                 mTwitter.deleteTweet(tweetID);
-                new DatabaseAdapter(ui.get()).removeStatus(tweetID);
+                database.removeStatus(tweetID);
             }
             if(MODE == LOAD_TWEET || MODE == RETWEET || MODE == FAVORITE) {
                 if(database.containStatus(tweetID))

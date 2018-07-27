@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -127,7 +126,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:drawableLeft="@drawable/following"
+                                android:drawableStart="@drawable/following"
                                 android:drawablePadding="2dp" />
 
                             <TextView
@@ -135,7 +134,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:drawableLeft="@drawable/follower"
+                                android:drawableStart="@drawable/follower"
                                 android:drawablePadding="2dp" />
                         </LinearLayout>
 
@@ -155,7 +154,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
-                    android:drawableLeft="@drawable/location"
+                    android:drawableStart="@drawable/location"
                     android:drawablePadding="2dp"
                     android:singleLine="true"
                     android:textSize="12sp"
@@ -167,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:autoLink="web"
-                    android:drawableLeft="@drawable/link"
+                    android:drawableStart="@drawable/link"
                     android:drawablePadding="2dp"
                     android:linksClickable="true"
                     android:singleLine="true"

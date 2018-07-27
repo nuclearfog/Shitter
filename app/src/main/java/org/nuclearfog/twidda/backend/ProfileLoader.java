@@ -41,7 +41,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private static final long IGNORE         = 7;
 
     private String screenName, username, description, location, follower, following;
-    private String /* bannerLink,*/ profileImage, link, dateString;
+    private String profileImage, link, dateString;
     private TimelineRecycler homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
@@ -54,7 +54,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private boolean isFollowed = false;
     private boolean isVerified = false;
     private boolean isLocked = false;
-    private boolean muted = false;
+    private boolean blocked = false;
 
     /**
      * @param context Context to Activity
@@ -91,55 +91,53 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         long id = 1L;
         try {
             isHome = homeId == userId;
-            if(!isHome && MODE != LOAD_DB)
+            if(!isHome && (MODE==ACTION_FOLLOW||MODE==ACTION_MUTE||MODE==GET_INFORMATION))
             {
                 boolean connection[] = mTwitter.getConnection(userId);
                 isFollowing = connection[0];
                 isFollowed = connection[1];
-                muted = connection[2];
+                blocked = connection[2];
             }
-            if(MODE == GET_INFORMATION || MODE == LOAD_DB)
-            {
-                TwitterUser user;
-                if(MODE == LOAD_DB) {
-                    user = new DatabaseAdapter(ui.get()).getUser(userId);
-                    if(user == null)
-                        return IGNORE;
-                } else {
-                    user = mTwitter.getUser(userId);
-                    new DatabaseAdapter(ui.get()).storeUser(user);
-                }
-                screenName = user.screenname;
-                username = user.username;
-                description = user.bio;
-                location = user.location;
-                isVerified = user.isVerified;
-                isLocked = user.isLocked;
-                link = user.link;
-                follower = Integer.toString(user.follower);
-                following = Integer.toString(user.following);
-                // bannerLink = user.bannerImg;
-                profileImage = user.profileImg;
-                Date d = new Date(user.created);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
-                dateString = "seit "+ sdf.format(d);
-                description = description.replace('\n', ' ');
+
+            TwitterUser user;
+            DatabaseAdapter database = new DatabaseAdapter(ui.get());
+            if(MODE == GET_INFORMATION) {
+                user = mTwitter.getUser(userId);
+                database.storeUser(user);
+            } else {
+                user = database.getUser(userId);
+                if(user == null)
+                    return IGNORE;
             }
-            else if(MODE == GET_TWEETS)
+            screenName = user.screenname;
+            username = user.username;
+            description = user.bio;
+            location = user.location;
+            isVerified = user.isVerified;
+            isLocked = user.isLocked;
+            link = user.link;
+            follower = Integer.toString(user.follower);
+            following = Integer.toString(user.following);
+            profileImage = user.profileImg;
+            Date d = new Date(user.created);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
+            dateString = "seit "+ sdf.format(d);
+            description = description.replace('\n', ' ');
+
+            if(MODE == GET_TWEETS)
             {
-                DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> tweets;
 
                 if(homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
-                    tweetDb.storeUserTweets(tweets);
+                    database.storeUserTweets(tweets);
                     tweets.addAll(homeTl.getData());
                 } else {
-                    tweets = tweetDb.getUserTweets(userId);
-                    if(tweets.size() == 0) {
+                    tweets = database.getUserTweets(userId);
+                    if(tweets.size() == 0 && !isLocked) {
                         tweets = mTwitter.getUserTweets(userId,args[2],id);
-                        tweetDb.storeUserTweets(tweets);
+                        database.storeUserTweets(tweets);
                     }
                 }
                 homeTl.setData(tweets);
@@ -148,19 +146,18 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == GET_FAVS)
             {
-                DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
                 List<Tweet> favorits;
 
                 if(homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
-                    tweetDb.storeUserFavs(favorits,userId);
+                    database.storeUserFavs(favorits,userId);
                     favorits.addAll(homeFav.getData());
                 } else {
-                    favorits = tweetDb.getUserFavs(userId);
-                    if(favorits.size() == 0) {
+                    favorits = database.getUserFavs(userId);
+                    if(favorits.size() == 0 && !isLocked) {
                         favorits = mTwitter.getUserFavs(userId,args[2],id);
-                        tweetDb.storeUserFavs(favorits,userId);
+                        database.storeUserFavs(favorits,userId);
                     }
                 }
                 homeFav.setData(favorits);
@@ -169,11 +166,23 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == ACTION_FOLLOW)
             {
-                isFollowing = mTwitter.toggleFollow(userId);
+                if(isFollowing) {
+                    mTwitter.followAction(userId,false);
+                    isFollowing = false;
+                } else {
+                    mTwitter.followAction(userId,true);
+                    isFollowing = true;
+                }
             }
             else if(MODE == ACTION_MUTE)
             {
-                muted = mTwitter.toggleBlock(userId);
+                if(blocked) {
+                    mTwitter.blockAction(userId,false);
+                    blocked = false;
+                } else {
+                    mTwitter.blockAction(userId,true);
+                    blocked = true;
+                }
             }
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
@@ -268,7 +277,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == ACTION_MUTE) {
             String text;
-            if(muted)
+            if(blocked)
                 text = "gesperrt!";
             else
                 text = "entsperrt!";
@@ -282,7 +291,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             tweetsReload.setRefreshing(false);
             favoritsReload.setRefreshing(false);
         }
-        if(!isHome) {
+        if(!isHome && (mode==ACTION_FOLLOW||mode==ACTION_MUTE||mode==GET_INFORMATION)) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);
             if(tool.getMenu().size() >= 2) {
                 MenuItem followIcon = tool.getMenu().getItem(1);
@@ -294,12 +303,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     followIcon.setIcon(R.drawable.follow);
                     followIcon.setTitle("folgen");
                 }
-                if (muted) {
+                if (blocked) {
                     blockIcon.setIcon(R.drawable.block_enabled);
                     blockIcon.setTitle("entblocken");
+                    followIcon.setVisible(false);
                 } else {
                     blockIcon.setIcon(R.drawable.block);
                     blockIcon.setTitle("block");
+                    followIcon.setVisible(true);
                 }
             }
         }

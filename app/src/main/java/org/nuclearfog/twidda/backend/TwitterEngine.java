@@ -277,34 +277,30 @@ public class TwitterEngine {
 
     /**
      *  Switch following User
-     *  @param id Uder ID
-     *  @return follow status
+     *  @param userId User ID
+     *  @param action using action
      *  @throws TwitterException if Access is unavailable
      */
-    public boolean toggleFollow(long id) throws TwitterException {
-        if(getConnection(id)[0]) {
-            twitter.destroyFriendship(id);
-            return false;
+    public void followAction(long userId, boolean action) throws TwitterException {
+        if(action) {
+            twitter.createFriendship(userId);
         } else {
-            twitter.createFriendship(id);
-            return true;
+            twitter.destroyFriendship(userId);
         }
     }
 
 
     /**
      * Switch blocking User
-     * @param id User ID
-     * @return Block Status
+     * @param userId User ID
+     * @param action using action
      * @throws TwitterException if Access is unavailable
      */
-    public boolean toggleBlock(long id) throws TwitterException {
-        if(getConnection(id)[2]){
-            twitter.destroyBlock(id);
-            return false;
+    public void blockAction(long userId, boolean action) throws TwitterException {
+        if(action){
+            twitter.createBlock(userId);
         } else {
-            twitter.createBlock(id);
-            return true;
+            twitter.destroyBlock(userId);
         }
     }
 
@@ -504,7 +500,7 @@ public class TwitterEngine {
             try {
                 Status embedded = status.getRetweetedStatus();
                 if(embedded != null) {
-                    Tweet retweet = getTweet(embedded, null);
+                    Tweet retweet = getTweet(embedded,null);
                     Tweet tweet = getTweet(status, retweet);
                     result.add(tweet);
                 } else {

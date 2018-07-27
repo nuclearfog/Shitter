@@ -48,7 +48,7 @@ public class DatabaseAdapter {
         for(int pos = 0; pos < fav.size(); pos++) {
             Tweet tweet = fav.get(pos);
             storeStatus(tweet,0,db);
-            ContentValues favTable  = new ContentValues();
+            ContentValues favTable = new ContentValues();
             favTable.put("tweetID", tweet.tweetID);
             favTable.put("userID", ownerId);
             db.insertWithOnConflict("favorit",null,favTable,CONFLICT_IGNORE);
@@ -285,9 +285,15 @@ public class DatabaseAdapter {
      * Lösche Tweet
      * @param id Tweet ID
      */
-    public void removeStatus(final long id) {
+    public void removeStatus(long id) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.delete("tweet", "tweetID="+id, null);
+        db.close();
+    }
+
+    public void removeFavorite(long tweetId,long ownerId) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.delete("favorit","tweetID="+tweetId+" AND userID="+ownerId,null);
         db.close();
     }
 

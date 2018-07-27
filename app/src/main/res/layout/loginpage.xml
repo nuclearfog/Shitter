@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:background="@android:color/transparent"
-            android:drawableLeft="@drawable/key"
             android:drawablePadding="2dp"
+            android:drawableStart="@drawable/key"
             android:hint="@string/pin"
             android:inputType="numberPassword"
             android:singleLine="true" />

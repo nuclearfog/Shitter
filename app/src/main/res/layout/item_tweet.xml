@@ -100,15 +100,8 @@
                 android:id="@+id/retweeter"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="5dp"
                 android:singleLine="true"
                 android:textSize="12sp" />
-
-            <Button
-                android:id="@+id/retweet"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:background="@drawable/retweet" />
 
             <TextView
                 android:id="@+id/retweet_number"
@@ -116,15 +109,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="4"
+                android:drawablePadding="2dp"
+                android:drawableStart="@drawable/retweet"
                 android:singleLine="true"
                 android:textSize="12sp" />
-
-            <Button
-                android:id="@+id/favorite"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/favorite" />
 
             <TextView
                 android:id="@+id/favorite_number"
@@ -132,6 +120,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="4"
+                android:drawablePadding="2dp"
+                android:drawableStart="@drawable/favorite_tweet"
                 android:singleLine="true"
                 android:textSize="12sp" />
 
