@@ -20,3 +20,5 @@ flask colorpicker
 	<img src="shitter_2.jpg"/>
 	<img src="shitter_3.jpg"/>
 </p>
+
+my Twitter: twitter.com/nuclearfog
