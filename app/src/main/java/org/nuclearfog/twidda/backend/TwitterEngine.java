@@ -419,7 +419,7 @@ public class TwitterEngine {
      */
     public void retweet(Tweet tweet) throws TwitterException {
         if(tweet.retweeted) {
-            if(tweet.retweetId > 0)
+            if(tweet.retweetId > tweet.tweetID)
                 deleteTweet(tweet.retweetId);
             else
                 deleteTweet(tweet.tweetID);

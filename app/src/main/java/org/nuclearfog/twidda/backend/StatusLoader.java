@@ -135,6 +135,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                     if(rtCount > 0)
                         rtCount--;
                     retweeted = false;
+                    database.removeStatus(tweet.retweetId);
                 }
             }
             else if(MODE == FAVORITE) {

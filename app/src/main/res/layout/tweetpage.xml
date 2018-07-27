@@ -168,8 +168,8 @@
 
                 <Button
                     android:id="@+id/answer_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:background="@drawable/chat" />
 
                 <TextView
@@ -185,8 +185,8 @@
 
                 <Button
                     android:id="@+id/rt_button_detail"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:background="@drawable/retweet" />
 
                 <TextView
@@ -202,8 +202,8 @@
 
                 <Button
                     android:id="@+id/fav_button_detail"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:background="@drawable/favorite" />
 
                 <TextView
@@ -219,8 +219,8 @@
 
                 <Button
                     android:id="@+id/delete"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
                     android:background="@drawable/cross"
                     android:visibility="invisible" />
 
