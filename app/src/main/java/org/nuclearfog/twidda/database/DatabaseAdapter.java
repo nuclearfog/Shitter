@@ -271,17 +271,15 @@ public class DatabaseAdapter {
 
     /**
      * Aktualisiere Tweet (nur Retweet & Favorit anzahl)
-     * @param tweet Tweet
      */
-    public void updateStatus(Tweet tweet) {
+    public void updateStatus(long tweetId, int retweet, int favorite, boolean retweeted, boolean favorited) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues status = new ContentValues();
-        status.put("retweet", tweet.retweet);
-        status.put("favorite", tweet.favorit);
-        db.update("tweet",status,"tweet.tweetID = "+tweet.tweetID,null);
+        status.put("retweet", retweet);
+        status.put("favorite", favorite);
+        db.update("tweet",status,"tweet.tweetID = "+tweetId,null);
         db.close();
     }
-
 
     /**
      * Lösche Tweet
@@ -329,6 +327,8 @@ public class DatabaseAdapter {
         String replyname = cursor.getString(index);
         index = cursor.getColumnIndex("replyID");
         long replyStatusId = cursor.getLong(index);
+        index = cursor.getColumnIndex("retweeterID");
+        long retweeterId = cursor.getLong(index);
         index = cursor.getColumnIndex("source");
         String source = cursor.getString(index);
         index = cursor.getColumnIndex("media");
@@ -345,7 +345,7 @@ public class DatabaseAdapter {
         if(retweetId > 1)
             embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,medias,
-                source,replyStatusId,embeddedTweet,retweeted,favorited);
+                source,replyStatusId,embeddedTweet,retweeterId,retweeted,favorited);
     }
 
 
@@ -401,6 +401,7 @@ public class DatabaseAdapter {
         status.put("replyID", tweet.replyID);
         status.put("replyname", tweet.replyName);
         status.put("retweet", tweet.retweet);
+        status.put("retweeterID", tweet.retweetId);
         status.put("favorite", tweet.favorit);
         String[] medialinks = tweet.media;
         StringBuilder media = new StringBuilder();

@@ -29,12 +29,6 @@ public class ErrorLog {
 
     }
 
-    public void remove(long time) {
-        SQLiteDatabase mData = dataHelper.getWritableDatabase();
-        mData.delete("error", "time = "+time, null);
-        mData.close();
-    }
-
     public List<String> getErrorList() {
         SQLiteDatabase mData = dataHelper.getReadableDatabase();
         List<String> list = new ArrayList<>();

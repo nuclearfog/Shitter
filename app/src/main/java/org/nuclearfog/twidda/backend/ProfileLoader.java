@@ -212,10 +212,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             TextView txtFollowing = connect.findViewById(R.id.following);
             TextView txtFollower  = connect.findViewById(R.id.follower);
             ImageView profile = connect.findViewById(R.id.profile_img);
-            //ImageView banner = connect.findViewById(R.id.banner);
-            ImageView locationIcon = connect.findViewById(R.id.location_img);
-            connect.findViewById(R.id.following_icon).setVisibility(View.VISIBLE);
-            connect.findViewById(R.id.follower_icon).setVisibility(View.VISIBLE);
 
             txtUser.setText(username);
             txtScrName.setText(screenName);
@@ -225,11 +221,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             txtCreated.setText(dateString);
             if(location!= null && !location.isEmpty()) {
                 txtLocation.setText(location);
-                locationIcon.setVisibility(View.VISIBLE);
+                txtLocation.setVisibility(View.VISIBLE);
             }
             if(link != null && !link.isEmpty()) {
                 txtLink.setText(link);
-                connect.findViewById(R.id.link_img).setVisibility(View.VISIBLE);
+                txtLink.setVisibility(View.VISIBLE);
             }
             if(isVerified) {
                 connect.findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);

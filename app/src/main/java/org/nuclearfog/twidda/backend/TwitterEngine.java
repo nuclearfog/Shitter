@@ -382,9 +382,9 @@ public class TwitterEngine {
      */
     public Tweet getStatus(long id) throws TwitterException {
         Status status = twitter.showStatus(id);
-        Status retweet = status.getRetweetedStatus();
-
+        Status retweet = status.getRetweetedStatus(); // Bug getretweetedstatus does not have a currentUserRetweetId
         if(retweet != null ) {
+            retweet = twitter.showStatus(retweet.getId()); // reload full retweet
             Tweet embedded = getTweet(retweet,null);
             return getTweet(status,embedded);
         } else {
@@ -395,14 +395,13 @@ public class TwitterEngine {
 
     /**
      * Get Answer Tweets
+     * @param name screen name of receiver
      * @param tweetId tweet ID
      * @param sinceId last tweet
      * @return List of Answers
      * @throws TwitterException if Access is unavailable
      */
-    public List<Tweet> getAnswers(long tweetId, long sinceId) throws TwitterException {
-        Status status = twitter.showStatus(tweetId);
-        String name = status.getUser().getScreenName();
+    public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws TwitterException {
         List<Status> answers = new ArrayList<>();
         Query query = new Query("to:"+name+" since_id:"+sinceId+" -filter:retweets");
         query.setCount(load);
@@ -419,40 +418,31 @@ public class TwitterEngine {
 
     /**
      * Retweet Action
-     * @param id Tweet ID
-     * @return Retweet state
+     * @param tweet Tweet
      * @throws TwitterException if Access is unavailable
      */
-    public boolean retweet(long id) throws TwitterException {
-        Status status = twitter.showStatus(id);
-        long retweeterID = status.getCurrentUserRetweetId();
-        if(status.isRetweeted()) {
-            if(retweeterID > 0)
-                deleteTweet(retweeterID);
+    public void retweet(Tweet tweet) throws TwitterException {
+        if(tweet.retweeted) {
+            if(tweet.retweetId > 0)
+                deleteTweet(tweet.retweetId);
             else
-                deleteTweet(id);
-            return false;
+                deleteTweet(tweet.tweetID);
         } else {
-            twitter.retweetStatus(id);
-            return true;
+            twitter.retweetStatus(tweet.tweetID);
         }
     }
 
 
     /**
      * Favorite Action
-     * @param id Tweet ID
-     * @return favorite state
+     * @param tweet Tweet
      * @throws TwitterException if Access is unavailable
      */
-    public boolean favorite(long id) throws TwitterException {
-        Status status = twitter.showStatus(id);
-        if(status.isFavorited()) {
-            twitter.destroyFavorite(id);
-            return false;
+    public void favorite(Tweet tweet) throws TwitterException {
+        if(tweet.favorized) {
+            twitter.destroyFavorite(tweet.tweetID);
         } else {
-            twitter.createFavorite(id);
-            return true;
+            twitter.createFavorite(tweet.tweetID);
         }
     }
 
@@ -540,7 +530,7 @@ public class TwitterEngine {
         return new Tweet(status.getId(),status.getRetweetCount(),status.getFavoriteCount(),user,
                 status.getText(),status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
                 getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),
-                retweetedStat, status.isRetweeted(), status.isFavorited());
+                retweetedStat,status.getCurrentUserRetweetId(), status.isRetweeted(), status.isFavorited());
     }
 
     /**

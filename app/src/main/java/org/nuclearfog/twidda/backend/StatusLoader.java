@@ -49,7 +49,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private static final long IGNORE    = 6;
 
     private TwitterEngine mTwitter;
-    private TimelineRecycler tlAdp;
+    private TimelineRecycler answerAdapter;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, retweeter;
     private String medialinks[], profile_pb;
@@ -57,7 +57,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private boolean retweeted, favorited, toggleImg, verified;
     private boolean rtFlag = false;
     private long tweetReplyID,tweetID, userID, retweeterID;
-    private int rt, fav;
+    private int rtCount, favCount;
     private int highlight, font;
 
     private WeakReference<TweetDetail> ui;
@@ -70,10 +70,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         toggleImg = settings.loadImages();
         ui = new WeakReference<>((TweetDetail)c);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
-        tlAdp = (TimelineRecycler) replyList.getAdapter();
-        if(tlAdp == null) {
-            tlAdp = new TimelineRecycler(ui.get());
-            replyList.setAdapter(tlAdp);
+        answerAdapter = (TimelineRecycler) replyList.getAdapter();
+        if(answerAdapter == null) {
+            answerAdapter = new TimelineRecycler(ui.get());
+            replyList.setAdapter(answerAdapter);
         }
     }
 
@@ -87,69 +87,89 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         final long MODE = data[1];
         try {
             Tweet tweet;
-            DatabaseAdapter dbAdp = new DatabaseAdapter(ui.get());
-            if(MODE == LOAD_TWEET || MODE == LOAD_DB) {
-                if( MODE == LOAD_DB ) {
-                    tweet = dbAdp.getStatus(tweetID);
-                    List<Tweet> answers = dbAdp.getAnswers(tweetID);
-                    tlAdp.setData(answers);
-                    tlAdp.setColor(highlight, font);
-                    if(tweet == null)
-                        return IGNORE; // NOT FOUND
-                } else {
-                    tweet = mTwitter.getStatus(tweetID);
-                    if(dbAdp.containStatus(tweetID))
-                        dbAdp.updateStatus(tweet);
-                }
-                if (tweet.embedded != null) {
-                    retweeter = tweet.user.screenname;
-                    retweeterID = tweet.user.userID;
-                    tweet = tweet.embedded;
-                    tweetID = tweet.tweetID;
-                    rtFlag = true;
-                }
-                tweetReplyID = tweet.replyID;
-                verified = tweet.user.isVerified;
-                tweetStr = tweet.tweet;
-                usernameStr = tweet.user.username;
-                userID = tweet.user.userID;
-                scrNameStr = tweet.user.screenname;
-                apiName = formatString(tweet.source);
-                rt = tweet.retweet;
-                fav = tweet.favorit;
-                retweeted = tweet.retweeted;
-                favorited = tweet.favorized;
-                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
-                dateString = sdf.format(tweet.time);
-                repliedUsername = tweet.replyName;
-                profile_pb = tweet.user.profileImg + "_bigger";
-                medialinks = tweet.media;
+            DatabaseAdapter database = new DatabaseAdapter(ui.get());
+
+            if( MODE == LOAD_DB ) {
+                tweet = database.getStatus(tweetID);
+                List<Tweet> answers = database.getAnswers(tweetID);
+                answerAdapter.setData(answers);
+                answerAdapter.setColor(highlight, font);
+                if(tweet == null)
+                    return IGNORE; // NOT FOUND
+            } else {
+                tweet = mTwitter.getStatus(tweetID);
             }
-            else if(MODE == RETWEET) {
-                retweeted = mTwitter.retweet(tweetID);
+            if (tweet.embedded != null) {
+                retweeter = tweet.user.screenname;
+                retweeterID = tweet.user.userID;
+                tweet = tweet.embedded;
+                tweetID = tweet.tweetID;
+                rtFlag = true;
+            }
+
+            tweetReplyID = tweet.replyID;
+            verified = tweet.user.isVerified;
+            tweetStr = tweet.tweet;
+            usernameStr = tweet.user.username;
+            userID = tweet.user.userID;
+            scrNameStr = tweet.user.screenname;
+            apiName = formatString(tweet.source);
+            rtCount = tweet.retweet;
+            favCount = tweet.favorit;
+            retweeted = tweet.retweeted;
+            favorited = tweet.favorized;
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
+            dateString = sdf.format(tweet.time);
+            repliedUsername = tweet.replyName;
+            profile_pb = tweet.user.profileImg + "_bigger";
+            medialinks = tweet.media;
+
+            if(MODE == RETWEET) {
+                mTwitter.retweet(tweet);
+                if(!retweeted) {
+                    rtCount++;
+                    retweeted = true;
+                } else {
+                    if(rtCount>0)
+                        rtCount--;
+                    retweeted = false;
+                }
             }
             else if(MODE == FAVORITE) {
-                favorited = mTwitter.favorite(tweetID);
+                mTwitter.favorite(tweet);
+                if(!favorited) {
+                    favCount++;
+                    favorited = true;
+                } else {
+                    if(rtCount>0)
+                        favCount--;
+                    favorited = false;
+                }
             }
             else if(MODE == LOAD_REPLY) {
                 List<Tweet> answers;
-                if(tlAdp.getItemCount() > 0) {
-                    long sinceId = tlAdp.getItemId(0);
-                    answers = mTwitter.getAnswers(tweetID, sinceId);
-                    answers.addAll(tlAdp.getData());
+                if(answerAdapter.getItemCount() > 0) {
+                    long sinceId = answerAdapter.getItemId(0);
+                    answers = mTwitter.getAnswers(scrNameStr, tweetID, sinceId);
+                    answers.addAll(answerAdapter.getData());
                 } else {
-                    answers = mTwitter.getAnswers(tweetID, tweetID);
+                    answers = mTwitter.getAnswers(scrNameStr, tweetID, tweetID);
                 }
-                tlAdp.setData(answers);
-                tlAdp.setColor(highlight, font);
-                if(answers.size() > 0 && dbAdp.containStatus(tweetID))
-                    dbAdp.storeReplies(answers);
+                answerAdapter.setData(answers);
+                answerAdapter.setColor(highlight, font);
+                if(answers.size() > 0 && database.containStatus(tweetID))
+                    database.storeReplies(answers);
             }
             else if(MODE == DELETE) {
                 mTwitter.deleteTweet(tweetID);
                 new DatabaseAdapter(ui.get()).removeStatus(tweetID);
             }
-        }catch(TwitterException e) {
+            if(MODE == LOAD_TWEET || MODE == RETWEET || MODE == FAVORITE) {
+                if(database.containStatus(tweetID))
+                    database.updateStatus(tweetID,rtCount,favCount,retweeted,favorited);
+            }
+        }
+        catch(TwitterException e) {
             int err = e.getErrorCode();
             if(err == 144) {
                 new DatabaseAdapter(ui.get()).removeStatus(tweetID);
@@ -163,7 +183,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 errorLog.add(errorMessage);
             }
             return ERROR;
-        } catch(Exception err) {
+        }
+        catch(Exception err) {
             errorMessage = err.getMessage();
             ErrorLog errorLog = new ErrorLog(ui.get());
             errorLog.add(errorMessage);
@@ -197,9 +218,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             date.setText(dateString);
             used_api.setText(apiName);
 
-            String ansStr = Integer.toString(tlAdp.getItemCount());
-            String favStr = Integer.toString(fav);
-            String rtStr = Integer.toString(rt);
+            String ansStr = Integer.toString(answerAdapter.getItemCount());
+            String favStr = Integer.toString(favCount);
+            String rtStr = Integer.toString(rtCount);
             txtFav.setText(favStr);
             txtRet.setText(rtStr);
             txtAns.setText(ansStr);
@@ -244,7 +265,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             String toastMsg;
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
+            TextView txtRet = connect.findViewById(R.id.no_rt_detail);
             setIcons(favoriteButton, retweetButton);
+            String rtStr = Integer.toString(rtCount);
+            txtRet.setText(rtStr);
             if(retweeted) {
                 toastMsg = "retweeted";
             } else {
@@ -256,19 +280,23 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             String toastMsg;
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
+            TextView txtFav = connect.findViewById(R.id.no_fav_detail);
             setIcons(favoriteButton, retweetButton);
-            if(favorited)
+            String favStr = Integer.toString(favCount);
+            txtFav.setText(favStr);
+            if(favorited) {
                 toastMsg = "zu favoriten hinzugefügt!";
-            else
+            } else {
                 toastMsg = "aus favoriten entfernt!";
+            }
             Toast.makeText(ui.get(), toastMsg, Toast.LENGTH_SHORT).show();
         }
         else if(mode == LOAD_REPLY) {
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             ansReload.setRefreshing(false);
-            String ansStr = Integer.toString(tlAdp.getItemCount());
+            String ansStr = Integer.toString(answerAdapter.getItemCount());
             TextView txtAns = connect.findViewById(R.id.no_ans_detail);
-            tlAdp.notifyDataSetChanged();
+            answerAdapter.notifyDataSetChanged();
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {
@@ -411,12 +439,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 break;
 
             case R.id.rt_info:
-                Intent rProfile = new Intent(ui.get(), UserProfile.class);
+                Intent retweetProfile = new Intent(ui.get(), UserProfile.class);
                 Bundle extras = new Bundle();
                 extras.putLong("userID",retweeterID);
                 extras.putString("username", retweeter);
-                rProfile.putExtras(extras);
-                ui.get().startActivity(rProfile);
+                retweetProfile.putExtras(extras);
+                ui.get().startActivity(retweetProfile);
                 break;
         }
     }
