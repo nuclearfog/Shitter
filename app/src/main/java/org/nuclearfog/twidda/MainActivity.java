@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements
      * Login Handle
      */
     private void login() {
-        homeId = TwitterEngine.getHomeId();
+        homeId = settings.getUserId();
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
         mentionList = findViewById(R.id.m_list);

@@ -21,7 +21,6 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
@@ -54,9 +53,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         getExtras(getIntent().getExtras());
 
-        home = userId == TwitterEngine.getHomeId();
-
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        home = userId == settings.getUserId();
         background = settings.getBackgroundColor();
         font_color = settings.getFontColor();
         highlight = settings.getHighlightColor();

@@ -1,9 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.listitems.Trend;
@@ -41,9 +38,9 @@ public class TwitterEngine {
     private final String TWITTER_CONSUMER_SECRET = "xxx";
 
     private static TwitterEngine mTwitter;
-    private static long twitterID = -1L;
+    private long twitterID = -1L;
     private Twitter twitter;
-    private SharedPreferences settings;
+    private GlobalSettings settings;
     private RequestToken reqToken;
     private boolean login;
     private int load;
@@ -55,8 +52,8 @@ public class TwitterEngine {
      * @see #getInstance
      */
     private TwitterEngine(Context context) {
-        settings = context.getSharedPreferences("settings", 0);
-        login = settings.getBoolean("login", false);
+        settings = GlobalSettings.getInstance(context);
+        login = settings.getLogin();
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
@@ -67,16 +64,14 @@ public class TwitterEngine {
 
 
     /**
-     * get RequestToken and Open Twitter Registration Website
-     * @throws TwitterException if Connection is unavailable
+     * Request Registration Website
+     * @return Link to App Registration
+     * @throws TwitterException if internet connection is unavailable
      */
-    public void request(Context context) throws TwitterException {
+    public String request() throws TwitterException {
         if(reqToken == null)
             reqToken = twitter.getOAuthRequestToken();
-        String redirectURL = reqToken.getAuthenticationURL();
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(redirectURL));
-        context.startActivity(i);
+        return reqToken.getAuthenticationURL();
     }
 
 
@@ -121,13 +116,7 @@ public class TwitterEngine {
      */
     private void saveCurrentUser(String key1, String key2) throws TwitterException {
         twitterID = twitter.getId();
-        SharedPreferences.Editor e = settings.edit();
-        e.putBoolean("login", true);
-        e.putLong("userID",twitterID);
-        e.putString("username", twitter.getScreenName());
-        e.putString("key1", key1);
-        e.putString("key2", key2);
-        e.apply();
+        settings.setConnection(key1, key2, twitterID);
     }
 
 
@@ -136,13 +125,11 @@ public class TwitterEngine {
      * & initialize Twitter
      */
     private void init() {
-        String key1,key2;
         if( login ) {
-            key1 = settings.getString("key1", " ");
-            key2 = settings.getString("key2", " ");
-            initKeys(key1,key2);
+            String keys[] = settings.getKeys();
+            initKeys(keys[0],keys[1]);
         }
-        twitterID = settings.getLong("userID", -1L);
+        twitterID = settings.getUserId();
     }
 
 
@@ -150,7 +137,7 @@ public class TwitterEngine {
      * set amount of tweets to be loaded
      */
     private void setLoad() {
-        load = settings.getInt("preload", 20);
+        load = settings.getRowLimit();
     }
 
 
@@ -589,15 +576,6 @@ public class TwitterEngine {
      */
     public void deleteTweet(long id) throws TwitterException {
         twitter.destroyStatus(id);
-    }
-
-
-    /**
-     * Return User ID
-     * @return result
-     */
-    public static long getHomeId() {
-        return twitterID;
     }
 
 

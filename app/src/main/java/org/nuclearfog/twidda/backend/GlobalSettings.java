@@ -16,10 +16,13 @@ public class GlobalSettings {
     private int tweet_color;
 
     private boolean loadImage;
+    private boolean loggedIn;
     private int row;
 
     private int woeId;
 
+    private String key1, key2;
+    private long userId;
 
 
     private GlobalSettings(Context context) {
@@ -31,6 +34,10 @@ public class GlobalSettings {
         tweet_color = settings.getInt("tweet_color",0xff19aae8);
         row = settings.getInt("preload",20);
         loadImage = settings.getBoolean("image_load", true);
+        loggedIn = settings.getBoolean("login", false);
+        key1 = settings.getString("key1", "");
+        key2 = settings.getString("key2", "");
+        userId = settings.getLong("userID", -1L);
     }
 
     public int getBackgroundColor() {
@@ -49,7 +56,6 @@ public class GlobalSettings {
         return tweet_color;
     }
 
-
     public boolean loadImages() {
         return loadImage;
     }
@@ -60,6 +66,19 @@ public class GlobalSettings {
 
     public int getRowLimit() {
         return row;
+    }
+
+    public boolean getLogin() { return loggedIn;}
+
+    public String[] getKeys() {
+        String out[] = new String[2];
+        out[0] = key1;
+        out[1] = key2;
+        return out;
+    }
+
+    public long getUserId(){
+        return userId;
     }
 
 
@@ -110,6 +129,26 @@ public class GlobalSettings {
         edit.putInt("preload", limit);
         row = limit;
         edit.apply();
+    }
+
+    public void setLogin(boolean login) {
+        Editor edit  = settings.edit();
+        edit.putBoolean("preload", login);
+        loggedIn = login;
+        edit.apply();
+    }
+
+    public void setConnection(String key1, String key2, Long userId) {
+        Editor e = settings.edit();
+        loggedIn = true;
+        this.key1 = key1;
+        this.key2 = key2;
+        this.userId = userId;
+        e.putBoolean("login", true);
+        e.putLong("userID", userId);
+        e.putString("key1", key1);
+        e.putString("key2", key2);
+        e.apply();
     }
 
 

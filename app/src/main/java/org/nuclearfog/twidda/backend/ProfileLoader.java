@@ -47,6 +47,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private TwitterEngine mTwitter;
     private String errMsg = "";
     private int font, highlight;
+    private long homeId;
     private boolean imgEnabled;
     private boolean isHome = false;
     private boolean isFollowing = false;
@@ -66,7 +67,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         imgEnabled = settings.loadImages();
-
+        homeId = settings.getUserId();
         RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
         RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
         homeTl = (TimelineRecycler) profileTweets.getAdapter();
@@ -89,7 +90,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         final long MODE = args[1];
         long id = 1L;
         try {
-            isHome = TwitterEngine.getHomeId() == userId;
+            isHome = homeId == userId;
             if(!isHome && MODE != LOAD_DB)
             {
                 boolean connection[] = mTwitter.getConnection(userId);

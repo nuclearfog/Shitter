@@ -19,7 +19,6 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.StatusLoader;
-import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 
@@ -37,6 +36,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     private long tweetID;
     private long userID;
     private StatusLoader mStat, mReply;
+    private GlobalSettings settings;
     private String username = "";
 
     @Override
@@ -45,7 +45,8 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.tweetpage);
         getExtras(getIntent().getExtras());
 
-        boolean home = userID == TwitterEngine.getHomeId();
+        settings = GlobalSettings.getInstance(this);
+        boolean home = userID == settings.getUserId();
 
         answer_list = findViewById(R.id.answer_list);
         Button retweet = findViewById(R.id.rt_button_detail);
@@ -163,7 +164,6 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
     }
 
     private void setContent() {
-        GlobalSettings settings = GlobalSettings.getInstance(this);
         int backgroundColor = settings.getBackgroundColor();
         int fontColor = settings.getFontColor();
         CollapsingToolbarLayout cLayout = findViewById(R.id.tweet_detail);

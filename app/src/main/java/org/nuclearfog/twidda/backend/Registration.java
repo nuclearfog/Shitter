@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -15,6 +17,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
     private String errorMessage;
+    private String redirectionURL = "";
 
 
     public Registration(Context context) {
@@ -28,7 +31,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         String pin = twitterPin[0];
         try {
             if( pin.trim().isEmpty() ) {
-                mTwitter.request(ui.get());
+                redirectionURL = mTwitter.request();
             } else {
                 mTwitter.initialize(pin);
                 return true;
@@ -50,7 +53,12 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         if(success) {
             connect.setResult(Activity.RESULT_OK);
             connect.finish();
-        } else if(errorMessage != null) {
+        } else {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(redirectionURL));
+            connect.startActivity(i);
+        }
+        if(errorMessage != null) {
             Toast.makeText(connect,"Fehler: "+errorMessage,Toast.LENGTH_LONG).show();
         }
     }
