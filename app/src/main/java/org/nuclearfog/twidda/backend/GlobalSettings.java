@@ -29,13 +29,14 @@ public class GlobalSettings {
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences("settings",0);
         woeId = settings.getInt("world_id",1);
+        woeIdPos = settings.getInt("world_id_pos",1);
         background_color = settings.getInt("background_color",0xff0f114a);
         highlight_color = settings.getInt("highlight_color",0xffff00ff);
         font_color = settings.getInt("font_color",0xffffffff);
         tweet_color = settings.getInt("tweet_color",0xff19aae8);
         row = settings.getInt("preload",20);
         loadImage = settings.getBoolean("image_load",true);
-        loggedIn = settings.getBoolean("login", false);
+        loggedIn = settings.getBoolean("login",false);
         key1 = settings.getString("key1","");
         key2 = settings.getString("key2","");
         userId = settings.getLong("userID",-1L);
