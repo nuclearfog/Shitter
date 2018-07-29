@@ -5,7 +5,6 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/barlayout_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent">
@@ -17,7 +16,6 @@
             app:toolbarId="@+id/tweet_toolbar">
 
             <LinearLayout
-                android:id="@+id/profile_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -30,7 +28,6 @@
                     android:layout_height="@dimen/bar_wide" />
 
                 <ImageView
-                    android:id="@+id/banner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/banner" />

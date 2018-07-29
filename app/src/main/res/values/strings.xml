@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Shitter</string>
-    <string name="prompt_token">Pin eingeben</string>
-    <string name="action_sign_in">Login</string>
     <string name="profile_image">profilbild</string>
-    <string name="login">Login</string>
     <string name="pin">PIN</string>
     <string name="verifierbutton">Verifizieren</string>
     <string name="register_link">Link</string>
@@ -14,24 +11,14 @@
     <string name="image">Bilder Laden</string>
     <string name="delete_database">Datenbank Löschen</string>
     <string name="search">Suche</string>
-    <string name="tweet_image">TwitterBild</string>
-    <string name="trend">Trends</string>
     <string name="following">Following</string>
     <string name="follower">Follower</string>
     <string name="retweet">Retweet</string>
     <string name="favorite">Favorite</string>
-    <string name="woe_id">WOE ID</string>
     <string name="banner">Profilbanner</string>
-    <string name="link">Webseite</string>
-    <string name="location">Ort</string>
-    <string name="save">Speichern</string>
     <string name="background">Hintergrund</string>
     <string name="font">Schrift</string>
     <string name="popup">Popup</string>
-    <string name="woeid">WOEID Standort</string>
-    <string name="get_link">Link</string>
-    <string name="delete_tweet">Löschen</string>
-    <string name="refresh_dummy">Aktualisieren</string>
     <string name="highlight">Highlight</string>
     <string name="verify">Verifiziert</string>
     <string name="yes_confirm">Ja</string>
@@ -40,18 +27,13 @@
     <string name="profile_locked">Privates Profil</string>
     <string name="load_factor">Ladefaktor</string>
     <string name="followback">Folgt dir</string>
-    <string name="load">Anzahl Tweets</string>
     <string name="block">Block</string>
     <string name="follow">folgen</string>
     <string name="retry">Wiederholen</string>
     <string name="cancel">Verwerfen</string>
-    <string name="limit">Limit</string>
     <string name="errorstack_button">Fehlerspeicher</string>
     <string name="color_settings">Farbeinstellungen</string>
     <string name="data_load">Datenverbrauch</string>
     <string name="trend_setting">Trendeinstellung</string>
-    <string name="animation">Animation</string>
-    <string name="anim_time">Animationszeit</string>
-    <string name="activated">Aktiviert</string>
     <string name="database">Speicher</string>
 </resources>
