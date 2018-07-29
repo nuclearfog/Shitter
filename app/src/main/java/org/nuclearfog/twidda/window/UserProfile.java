@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -80,6 +79,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         TextView txtFollower  = findViewById(R.id.follower);
         mTab = findViewById(R.id.profile_tab);
         setTabs();
+
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
         txtFollower.setOnClickListener(this);
@@ -107,15 +107,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         } else {
             mTab.setCurrentTab(0);
         }
-    }
-
-    /**
-     * Home Button
-     */
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        overridePendingTransition(0,0);
     }
 
 
@@ -216,11 +207,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("", ContextCompat.getDrawable(getApplicationContext(),R.drawable.home));
+        tab1.setIndicator("", getDrawable(R.drawable.home));
         mTab.addTab(tab1);
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
         tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.favorite));
+        tab2.setIndicator("",getDrawable(R.drawable.favorite));
         mTab.addTab(tab2);
         lastView = mTab.getCurrentView();
     }

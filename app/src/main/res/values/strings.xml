@@ -15,7 +15,6 @@
     <string name="follower">Follower</string>
     <string name="retweet">Retweet</string>
     <string name="favorite">Favorite</string>
-    <string name="banner">Profilbanner</string>
     <string name="background">Hintergrund</string>
     <string name="font">Schrift</string>
     <string name="popup">Popup</string>
@@ -25,7 +24,7 @@
     <string name="no_confirm">Nein</string>
     <string name="fullimg">Vollbild</string>
     <string name="profile_locked">Privates Profil</string>
-    <string name="load_factor">Ladefaktor</string>
+    <string name="load_factor">Anzahl Tweets</string>
     <string name="followback">Folgt dir</string>
     <string name="block">Block</string>
     <string name="follow">folgen</string>

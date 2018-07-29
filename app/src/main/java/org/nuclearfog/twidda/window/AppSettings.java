@@ -84,15 +84,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         woeId.setOnItemSelectedListener(this);
     }
 
-    /**
-     * Home Button
-     */
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        overridePendingTransition(0,0);
-    }
-
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
         getMenuInflater().inflate(R.menu.setting, m);

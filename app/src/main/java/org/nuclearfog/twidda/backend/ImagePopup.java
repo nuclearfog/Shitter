@@ -70,7 +70,6 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             }
             return true;
         } catch (Exception err) {
-            err.printStackTrace();
             ErrorLog errorLog = new ErrorLog(ui.get());
             errorLog.add(err.getMessage());
             return false;

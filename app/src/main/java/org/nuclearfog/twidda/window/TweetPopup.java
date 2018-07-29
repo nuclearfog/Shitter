@@ -75,15 +75,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         showClosingMsg();
     }
 
-    /**
-     * Home Button
-     */
-    @Override
-    protected void onUserLeaveHint(){
-        super.onUserLeaveHint();
-        overridePendingTransition(0,0);
-    }
-
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);

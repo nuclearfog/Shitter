@@ -2,7 +2,6 @@ package org.nuclearfog.twidda;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +29,6 @@ import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
-
 
 public class MainActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener,
@@ -149,15 +147,6 @@ public class MainActivity extends AppCompatActivity implements
             setTabContent();
             settingChanged = false;
         }
-    }
-
-    /**
-     * Home Button
-     */
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        overridePendingTransition(0,0);
     }
 
     @Override
@@ -297,15 +286,15 @@ public class MainActivity extends AppCompatActivity implements
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
-        tab1.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.home));
+        tab1.setIndicator("",getDrawable(R.drawable.home));
         tabhost.addTab(tab1);
         TabSpec tab2 = tabhost.newTabSpec("trends");
         tab2.setContent(R.id.trends);
-        tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.hash));
+        tab2.setIndicator("",getDrawable(R.drawable.hash));
         tabhost.addTab(tab2);
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setContent(R.id.mention);
-        tab3.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.mention));
+        tab3.setIndicator("",getDrawable(R.drawable.mention));
         tabhost.addTab(tab3);
 
         tabhost.setOnTabChangedListener(this);

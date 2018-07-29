@@ -51,15 +51,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         super.onPause();
     }
 
-    /**
-     * Home Button
-     */
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        overridePendingTransition(0,0);
-    }
-
     @Override
     public boolean onCreateOptionsMenu( Menu m ) {
         getMenuInflater().inflate(R.menu.user, m);
@@ -89,7 +80,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         startActivity(intent);
     }
 
-
     private void getUsers() {
         uList = new UserLists(UserDetail.this);
         if(getSupportActionBar() != null) {
@@ -108,7 +98,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
             }
         }
     }
-
 
     private void getExtras(Bundle b) {
         userID  = b.getLong("userID");

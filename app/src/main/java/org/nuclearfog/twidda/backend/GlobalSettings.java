@@ -29,7 +29,7 @@ public class GlobalSettings {
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences("settings",0);
         woeId = settings.getInt("world_id",1);
-        woeIdPos = settings.getInt("world_id_pos",1);
+        woeIdPos = settings.getInt("world_id_pos",0);
         background_color = settings.getInt("background_color",0xff0f114a);
         highlight_color = settings.getInt("highlight_color",0xffff00ff);
         font_color = settings.getInt("font_color",0xffffffff);
@@ -132,13 +132,6 @@ public class GlobalSettings {
         Editor edit  = settings.edit();
         edit.putInt("preload", limit);
         row = limit;
-        edit.apply();
-    }
-
-    public void setLogin(boolean login) {
-        Editor edit  = settings.edit();
-        edit.putBoolean("preload", login);
-        loggedIn = login;
         edit.apply();
     }
 

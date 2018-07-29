@@ -91,15 +91,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         super.onPause();
     }
 
-    /**
-     * Home Button
-     */
-    @Override
-    protected void onUserLeaveHint(){
-        super.onUserLeaveHint();
-        overridePendingTransition(0,0);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
