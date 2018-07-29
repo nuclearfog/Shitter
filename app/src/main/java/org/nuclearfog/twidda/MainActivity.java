@@ -20,7 +20,6 @@ import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.MainPage;
-import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -32,11 +31,7 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
-/**
- * MainPage of the App
- * @see Registration Registing App in Twitter
- * @see MainPage show Home Window
- */
+
 public class MainActivity extends AppCompatActivity implements
         SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener,
         TimelineRecycler.OnItemClicked, TrendRecycler.OnItemClicked
@@ -280,9 +275,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    /**
-     * Login Handle
-     */
     private void login() {
         homeId = settings.getUserId();
         timelineList = findViewById(R.id.tl_list);
@@ -323,9 +315,7 @@ public class MainActivity extends AppCompatActivity implements
         setTabContent();
     }
 
-    /**
-     * Set Tab Content
-     */
+
     private void setTabContent() {
         int background = settings.getBackgroundColor();
         int fontcolor = settings.getFontColor();
@@ -359,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements
         }
         lastTab = tabhost.getCurrentView();
     }
+
 
     private void animate() {
         final int ANIM_DUR = 300;

@@ -20,6 +20,7 @@ public class GlobalSettings {
     private int row;
 
     private int woeId;
+    private int woeIdPos;
 
     private String key1, key2;
     private long userId;
@@ -27,17 +28,17 @@ public class GlobalSettings {
 
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences("settings",0);
-        woeId = settings.getInt("world_id",23424829);
-        background_color = settings.getInt("background_color", 0xff0f114a);
-        highlight_color = settings.getInt("highlight_color", 0xffff00ff);
-        font_color = settings.getInt("font_color", 0xffffffff);
+        woeId = settings.getInt("world_id",1);
+        background_color = settings.getInt("background_color",0xff0f114a);
+        highlight_color = settings.getInt("highlight_color",0xffff00ff);
+        font_color = settings.getInt("font_color",0xffffffff);
         tweet_color = settings.getInt("tweet_color",0xff19aae8);
         row = settings.getInt("preload",20);
-        loadImage = settings.getBoolean("image_load", true);
+        loadImage = settings.getBoolean("image_load",true);
         loggedIn = settings.getBoolean("login", false);
-        key1 = settings.getString("key1", "");
-        key2 = settings.getString("key2", "");
-        userId = settings.getLong("userID", -1L);
+        key1 = settings.getString("key1","");
+        key2 = settings.getString("key2","");
+        userId = settings.getLong("userID",-1L);
     }
 
     public int getBackgroundColor() {
@@ -63,6 +64,8 @@ public class GlobalSettings {
     public int getWoeId() {
         return woeId;
     }
+
+    public int getWoeIdSelection(){return woeIdPos;}
 
     public int getRowLimit() {
         return row;
@@ -117,10 +120,10 @@ public class GlobalSettings {
         edit.apply();
     }
 
-    public void setWoeId(int id) {
+    public void setWoeId(long id) {
         Editor edit  = settings.edit();
-        edit.putInt("world_id", id);
-        woeId = id;
+        edit.putInt("world_id",(int)id);
+        woeId = (int)id;
         edit.apply();
     }
 
@@ -135,6 +138,13 @@ public class GlobalSettings {
         Editor edit  = settings.edit();
         edit.putBoolean("preload", login);
         loggedIn = login;
+        edit.apply();
+    }
+
+    public void setWoeIdSelection(int pos) {
+        Editor edit  = settings.edit();
+        edit.putInt("world_id_pos", pos);
+        woeIdPos = pos;
         edit.apply();
     }
 

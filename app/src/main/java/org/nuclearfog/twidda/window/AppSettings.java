@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.window;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -13,11 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -28,21 +30,23 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.LogAdapter;
+import org.nuclearfog.twidda.viewadapter.WorldIdAdapter;
 
 import java.util.List;
 
 
-public class AppSettings extends AppCompatActivity implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener, OnColorChangedListener {
+public class AppSettings extends AppCompatActivity implements OnClickListener,
+        OnCheckedChangeListener, OnColorChangedListener, OnItemSelectedListener {
 
-    private EditText woeId;
     private GlobalSettings settings;
-    private ClipboardManager clip;
     private CheckBox toggleImg;
     private Button colorButton1,colorButton2,colorButton3,colorButton4;
+    private Spinner woeId;
     private int background,tweet,font,highlight;
     private boolean imgEnabled;
-    private int row, wId;
+    private long wId;
+    private int row;
+    private int woeIdPos;
     private int mode = 0;
 
     @Override
@@ -56,30 +60,28 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
 
         settings = GlobalSettings.getInstance(this);
 
-        clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
         Button delButton = findViewById(R.id.delete_db);
-        Button errorcall = findViewById(R.id.error_call);
+        Button errorCall = findViewById(R.id.error_call);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_tweet);
         colorButton4 = findViewById(R.id.highlight_color);
-        Button clipButton = findViewById(R.id.woeid_clip);
+        woeId = findViewById(R.id.woeid);
         Button load_popup = findViewById(R.id.load_dialog);
         toggleImg = findViewById(R.id.toggleImg);
-        woeId = findViewById(R.id.woeid);
         load();
 
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
-        errorcall.setOnClickListener(this);
+        errorCall.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
-        clipButton.setOnClickListener(this);
+        woeId.setOnItemSelectedListener(this);
 
+        woeId.setSelection(woeIdPos);
         colorButton1.setBackgroundColor(background);
         colorButton2.setBackgroundColor(font);
         colorButton3.setBackgroundColor(tweet);
@@ -115,7 +117,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
-    @SuppressLint("InflateParams")
     public void onClick( View v ) {
         switch(v.getId()) {
             case R.id.delete_db:
@@ -155,17 +156,6 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
             case R.id.highlight_color:
                 setColor(highlight);
                 mode = 3;
-                break;
-            case R.id.woeid_clip:
-                if(clip != null && clip.hasPrimaryClip()) {
-                    String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
-                    if(text.matches("\\d++\n?")) {
-                        woeId.setText(text);
-                        Toast.makeText(getApplicationContext(),"Eingefügt!",Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(),"Falsches Format!",Toast.LENGTH_LONG).show();
-                    }
-                }
                 break;
             case R.id.load_dialog:
                 Dialog load_popup = new Dialog(this);
@@ -211,6 +201,17 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        wId = id;
+        woeIdPos = position;
+    }
+
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent){}
+
+
     public void setColor(int preColor) {
         Dialog d = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)
@@ -236,13 +237,14 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         row = settings.getRowLimit();
         wId = settings.getWoeId();
         imgEnabled = settings.loadImages();
-        String location = Integer.toString(wId);
-        woeId.setText(location);
         toggleImg.setChecked(imgEnabled);
+        woeIdPos = settings.getWoeIdSelection();
+
+        WorldIdAdapter mWorld = new WorldIdAdapter(this);
+        woeId.setAdapter(mWorld);
     }
 
     private void save() {
-        wId = Integer.parseInt(woeId.getText().toString());
         settings.setBackgroundColor(background);
         settings.setHighlightColor(highlight);
         settings.setTweetColor(tweet);
@@ -250,6 +252,7 @@ public class AppSettings extends AppCompatActivity implements View.OnClickListen
         settings.setImageLoad(imgEnabled);
         settings.setWoeId(wId);
         settings.setRowLimit(row);
-        Toast.makeText(getApplicationContext(),"Gespeichert", Toast.LENGTH_SHORT).show();
+        settings.setWoeIdSelection(woeIdPos);
+        Toast.makeText(getApplicationContext(),"Gespeichert",Toast.LENGTH_SHORT).show();
     }
 }
