@@ -16,12 +16,10 @@ import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
+import org.nuclearfog.twidda.viewadapter.UserRecycler.OnItemClicked;
 
-/**
- * User List Activity
- * @see UserLists
- */
-public class UserDetail extends AppCompatActivity implements UserRecycler.OnItemClicked {
+
+public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     private long userID, tweetID;
     private long mode;

@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,6 +23,7 @@ import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
@@ -29,8 +32,8 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
  * Detailed Tweet Activity
  * @see StatusLoader
  */
-public class TweetDetail extends AppCompatActivity implements View.OnClickListener,
-        TimelineRecycler.OnItemClicked, DialogInterface.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class TweetDetail extends AppCompatActivity implements OnClickListener,
+        OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener {
 
     private RecyclerView answer_list;
     private long tweetID;
@@ -97,9 +100,11 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
             case R.id.rt_button_detail:
                 mStat.execute(tweetID, StatusLoader.RETWEET);
                 break;
+
             case R.id.fav_button_detail:
                 mStat.execute(tweetID, StatusLoader.FAVORITE);
                 break;
+
             case R.id.no_rt_detail:
                 intent = new Intent(this, UserDetail.class);
                 bundle.putLong("tweetID",tweetID);
@@ -107,6 +112,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
+
             case R.id.no_fav_detail:
                 intent = new Intent(this, UserDetail.class);
                 bundle.putLong("tweetID",tweetID);
@@ -114,6 +120,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
+
             case R.id.delete:
                 AlertDialog.Builder alerta = new AlertDialog.Builder(this);
                 alerta.setMessage("Tweet löschen?");
@@ -121,6 +128,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
                 alerta.setNegativeButton(R.string.no_confirm, this);
                 alerta.show();
                 break;
+
             case R.id.timedetail:
                 intent = new Intent(Intent.ACTION_VIEW);
                 String tweetlink = "https://twitter.com/"+username+"/status/"+tweetID;
@@ -135,6 +143,7 @@ public class TweetDetail extends AppCompatActivity implements View.OnClickListen
         switch(id){
             case BUTTON_NEGATIVE:
                 break;
+
             case BUTTON_POSITIVE:
                 new StatusLoader(this).execute(tweetID, StatusLoader.DELETE);
                 break;

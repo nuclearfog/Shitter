@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -11,7 +12,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 
 
-public class LoginPage extends Activity implements View.OnClickListener {
+public class LoginPage extends Activity implements OnClickListener {
 
     private EditText pin;
 

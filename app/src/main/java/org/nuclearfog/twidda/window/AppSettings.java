@@ -16,8 +16,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -36,14 +34,13 @@ import java.util.List;
 
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,
-        OnCheckedChangeListener, OnColorChangedListener, OnItemSelectedListener {
+        OnColorChangedListener, OnItemSelectedListener {
 
     private GlobalSettings settings;
     private CheckBox toggleImg;
     private Button colorButton1,colorButton2,colorButton3,colorButton4;
     private Spinner woeId;
     private int background,tweet,font,highlight;
-    private boolean imgEnabled;
     private long wId;
     private int row;
     private int woeIdPos;
@@ -62,14 +59,20 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
         Button delButton = findViewById(R.id.delete_db);
         Button errorCall = findViewById(R.id.error_call);
+        Button load_popup = findViewById(R.id.load_dialog);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_tweet);
         colorButton4 = findViewById(R.id.highlight_color);
-        woeId = findViewById(R.id.woeid);
-        Button load_popup = findViewById(R.id.load_dialog);
         toggleImg = findViewById(R.id.toggleImg);
+        woeId = findViewById(R.id.woeid);
         load();
+
+        woeId.setSelection(woeIdPos);
+        colorButton1.setBackgroundColor(background);
+        colorButton2.setBackgroundColor(font);
+        colorButton3.setBackgroundColor(tweet);
+        colorButton4.setBackgroundColor(highlight);
 
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
@@ -78,14 +81,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
-        toggleImg.setOnCheckedChangeListener(this);
         woeId.setOnItemSelectedListener(this);
-
-        woeId.setSelection(woeIdPos);
-        colorButton1.setBackgroundColor(background);
-        colorButton2.setBackgroundColor(font);
-        colorButton3.setBackgroundColor(tweet);
-        colorButton4.setBackgroundColor(highlight);
     }
 
     /**
@@ -131,32 +127,38 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 })
                 .show();
                 break;
+
             case R.id.error_call:
                 List<String> messages = new ErrorLog(this).getErrorList();
                 LogAdapter adp = new LogAdapter(messages);
-                RecyclerView loglist = new RecyclerView(this);
-                loglist.setLayoutManager(new LinearLayoutManager(this));
-                loglist.setAdapter(adp);
+                RecyclerView logList = new RecyclerView(this);
+                logList.setLayoutManager(new LinearLayoutManager(this));
+                logList.setAdapter(adp);
                 Dialog pList = new Dialog(this);
-                pList.setContentView(loglist);
+                pList.setContentView(logList);
                 pList.show();
                 break;
+
             case R.id.color_background:
                 setColor(background);
                 mode = 0;
                 break;
+
             case R.id.color_font:
                 setColor(font);
                 mode = 1;
                 break;
+
             case R.id.color_tweet:
                 setColor(tweet);
                 mode = 2;
                 break;
+
             case R.id.highlight_color:
                 setColor(highlight);
                 mode = 3;
                 break;
+
             case R.id.load_dialog:
                 Dialog load_popup = new Dialog(this);
                 final NumberPicker load = new NumberPicker(this);
@@ -195,11 +197,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         }
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton b, boolean checked) {
-        imgEnabled = checked;
-    }
-
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -236,12 +233,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         highlight = settings.getHighlightColor();
         row = settings.getRowLimit();
         wId = settings.getWoeId();
-        imgEnabled = settings.loadImages();
-        toggleImg.setChecked(imgEnabled);
+        toggleImg.setChecked( settings.loadImages() );
         woeIdPos = settings.getWoeIdSelection();
-
-        WorldIdAdapter mWorld = new WorldIdAdapter(this);
-        woeId.setAdapter(mWorld);
+        woeId.setAdapter( new WorldIdAdapter(this) );
     }
 
     private void save() {
@@ -249,7 +243,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         settings.setHighlightColor(highlight);
         settings.setTweetColor(tweet);
         settings.setFontColor(font);
-        settings.setImageLoad(imgEnabled);
+        settings.setImageLoad( toggleImg.isChecked() );
         settings.setWoeId(wId);
         settings.setRowLimit(row);
         settings.setWoeIdSelection(woeIdPos);

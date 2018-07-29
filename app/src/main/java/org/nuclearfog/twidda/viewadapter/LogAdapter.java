@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.viewadapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,7 @@ import org.nuclearfog.twidda.R;
 
 import java.util.List;
 
-public class LogAdapter extends RecyclerView.Adapter<LogAdapter.ItemHolder> {
+public class LogAdapter extends Adapter<LogAdapter.ItemHolder> {
 
     private List<String> messages;
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
@@ -24,11 +26,12 @@ import org.nuclearfog.twidda.backend.TwitterSearch;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 
 public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
-        SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener, TimelineRecycler.OnItemClicked {
+        OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
     private RecyclerView tweetSearch,userSearch;
     private SwipeRefreshLayout tweetReload;

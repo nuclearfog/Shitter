@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,12 +30,9 @@ import java.util.List;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
-/**
- * Tweet Window
- * @see StatusUpload
- */
-public class TweetPopup extends AppCompatActivity implements View.OnClickListener,
-        DialogInterface.OnClickListener, StatusUpload.TweetSender {
+
+public class TweetPopup extends AppCompatActivity implements OnClickListener,
+        DialogInterface.OnClickListener, StatusUpload.OnTweetSending {
 
     private StatusUpload sendTweet;
     private ProgressBar send_circle;

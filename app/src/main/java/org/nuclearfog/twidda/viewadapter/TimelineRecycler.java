@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +25,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> implements View.OnClickListener {
+public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> implements OnClickListener {
+
     private ViewGroup parent;
     private OnItemClicked mListener;
     private List<Tweet> tweets;
@@ -75,7 +77,7 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     @Override
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.parent = parent;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet,parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
 

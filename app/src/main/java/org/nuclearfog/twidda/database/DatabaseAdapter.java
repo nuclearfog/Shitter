@@ -275,8 +275,14 @@ public class DatabaseAdapter {
     public void updateStatus(long tweetId, int retweet, int favorite, boolean retweeted, boolean favorited) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues status = new ContentValues();
+        int register = getStatRegister(db,tweetId);
+        if(retweeted)
+            register |= 2;
+        if(favorited)
+            register |= 1;
         status.put("retweet", retweet);
         status.put("favorite", favorite);
+        status.put("statusregister", register);
         db.update("tweet",status,"tweet.tweetID = "+tweetId,null);
         db.close();
     }
@@ -416,7 +422,7 @@ public class DatabaseAdapter {
             media.append(";");
         }
         status.put("media",media.toString());
-        int statusregister = getStatusregister(db,tweet.tweetID);
+        int statusregister = getStatRegister(db,tweet.tweetID);
         statusregister |= newStatusregister;
         if (tweet.favorized)
             statusregister |= 1;
@@ -428,7 +434,7 @@ public class DatabaseAdapter {
     }
 
 
-    private int getStatusregister(SQLiteDatabase db, long tweetID) {
+    private int getStatRegister(SQLiteDatabase db, long tweetID) {
         String query = "SELECT statusregister FROM tweet WHERE tweetID="+tweetID+" LIMIT 1;";
         Cursor c = db.rawQuery(query,null);
         int result = 0;

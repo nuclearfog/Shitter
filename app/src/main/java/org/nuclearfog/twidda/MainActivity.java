@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setTabContent() {
         int background = settings.getBackgroundColor();
-        int fontcolor = settings.getFontColor();
+        int fontColor = settings.getFontColor();
         int highlight = settings.getHighlightColor();
 
         timelineList.setBackgroundColor(background);
@@ -332,19 +332,19 @@ public class MainActivity extends AppCompatActivity implements
         if(homeRc == null || homeRc.getItemCount() == 0) {
             new MainPage(this).execute(MainPage.H_LOAD,1);
         } else {
-            homeRc.setColor(highlight,fontcolor);
+            homeRc.setColor(highlight,fontColor);
             homeRc.notifyDataSetChanged();
         }
         if(mentRc == null || mentRc.getItemCount() == 0) {
             new MainPage(this).execute(MainPage.M_LOAD,1);
         } else {
-            mentRc.setColor(highlight, fontcolor);
+            mentRc.setColor(highlight,fontColor);
             mentRc.notifyDataSetChanged();
         }
         if(trendRc == null || trendRc.getItemCount() == 0) {
             new MainPage(this).execute(MainPage.T_LOAD,1);
         } else {
-            trendRc.setColor(fontcolor);
+            trendRc.setColor(fontColor);
             trendRc.notifyDataSetChanged();
         }
         lastTab = tabhost.getCurrentView();

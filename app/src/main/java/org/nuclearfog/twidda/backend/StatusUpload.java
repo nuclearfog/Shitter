@@ -92,7 +92,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
         }
     }
 
-    public interface TweetSender {
+    public interface OnTweetSending {
         void send();
     }
 }

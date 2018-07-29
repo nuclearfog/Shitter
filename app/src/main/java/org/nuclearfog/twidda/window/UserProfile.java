@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
@@ -23,18 +26,18 @@ import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 
 /**
  * User Profile Activity
  * @see ProfileLoader
  */
-public class UserProfile extends AppCompatActivity implements View.OnClickListener,
-        SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener,
-        TimelineRecycler.OnItemClicked {
+public class UserProfile extends AppCompatActivity implements OnClickListener,
+        OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
-    private ProfileLoader mProfile, mTweets, mFavorits;
+    private ProfileLoader mProfile, mTweets, mFavorites;
     private SwipeRefreshLayout homeReload, favoriteReload;
-    private RecyclerView homeList, favoritList;
+    private RecyclerView homeList, favoriteList;
     private long userId;
     private TabHost mTab;
     private boolean home;
@@ -63,9 +66,9 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         homeList.setLayoutManager(new LinearLayoutManager(this));
         homeList.setBackgroundColor(background);
 
-        favoritList = findViewById(R.id.hf_list);
-        favoritList.setLayoutManager(new LinearLayoutManager(this));
-        favoritList.setBackgroundColor(background);
+        favoriteList = findViewById(R.id.hf_list);
+        favoriteList.setLayoutManager(new LinearLayoutManager(this));
+        favoriteList.setBackgroundColor(background);
 
         homeReload = findViewById(R.id.hometweets);
         homeReload.setBackgroundColor(0xffff0000);
@@ -91,8 +94,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
             mProfile.cancel(true);
         if(mTweets != null)
             mTweets.cancel(true);
-        if(mFavorits != null)
-            mFavorits.cancel(true);
+        if(mFavorites != null)
+            mFavorites.cancel(true);
         super.onPause();
     }
 
@@ -173,8 +176,8 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
                 mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
                 break;
             case 1:
-                mFavorits = new ProfileLoader(this);
-                mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
+                mFavorites = new ProfileLoader(this);
+                mFavorites.execute(userId, ProfileLoader.GET_FAVS,1L);
                 break;
         }
     }
@@ -193,7 +196,7 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
         if(parent.getId() == R.id.ht_list) {
             tlAdp = (TimelineRecycler) homeList.getAdapter();
         } else {
-            tlAdp = (TimelineRecycler) favoritList.getAdapter();
+            tlAdp = (TimelineRecycler) favoriteList.getAdapter();
         }
         Tweet tweet = tlAdp.getData().get(position);
         long tweetID = tweet.tweetID;
@@ -251,11 +254,11 @@ public class UserProfile extends AppCompatActivity implements View.OnClickListen
     private void getProfileTweets() {
         new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB, 1L);
         mTweets = new ProfileLoader(this);
-        mFavorits = new ProfileLoader(this);
+        mFavorites = new ProfileLoader(this);
         mProfile = new ProfileLoader(this);
         mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
-        mFavorits.execute(userId, ProfileLoader.GET_FAVS,1L);
+        mFavorites.execute(userId, ProfileLoader.GET_FAVS,1L);
     }
 
 

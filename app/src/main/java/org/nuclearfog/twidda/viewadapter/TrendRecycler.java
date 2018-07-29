@@ -2,9 +2,11 @@ package org.nuclearfog.twidda.viewadapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -14,8 +16,8 @@ import org.nuclearfog.twidda.backend.listitems.Trend;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder>
-        implements View.OnClickListener {
+public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
+        implements OnClickListener {
 
     private ViewGroup parent;
     private List<Trend> trendList;
@@ -26,12 +28,6 @@ public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder
     public TrendRecycler(OnItemClicked mListener) {
         trendList = new ArrayList<>();
         this.mListener = mListener;
-    }
-
-
-    public TrendRecycler(List<Trend> trendList, OnItemClicked mListener) {
-        this.mListener = mListener;
-        this.trendList = trendList;
     }
 
 
@@ -58,7 +54,7 @@ public class TrendRecycler extends RecyclerView.Adapter<TrendRecycler.ItemHolder
     @Override
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int index) {
         this.parent = parent;
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend,parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
     }
