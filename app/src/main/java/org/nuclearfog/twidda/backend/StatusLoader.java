@@ -106,15 +106,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tweet = mTwitter.getStatus(tweetID);
                 if(database.containStatus(tweetID)) {
                     database.updateStatus(tweet);
-                    if(tweet.embedded != null) {
-                        database.updateStatus(tweet.embedded);
-                    }
                 }
-            }
-
-            if (tweet.embedded != null) {
-                tweet = tweet.embedded;
-                tweetID = tweet.tweetID;
             }
 
             tweetReplyID = tweet.replyID;

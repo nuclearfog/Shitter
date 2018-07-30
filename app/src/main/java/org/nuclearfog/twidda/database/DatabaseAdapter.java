@@ -396,13 +396,15 @@ public class DatabaseAdapter {
 
     private void storeStatus(Tweet tweet, int newStatusregister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
+        TwitterUser mUser = tweet.user;
         Tweet rtStat = tweet.embedded;
         long rtId = 1L;
+
         if(rtStat != null) {
             storeStatus(rtStat,0, db);
             rtId = rtStat.tweetID;
         }
-        TwitterUser mUser = tweet.user;
+
         storeUser(mUser,db);
         status.put("tweetID", tweet.tweetID);
         status.put("userID", mUser.userID);
@@ -413,8 +415,8 @@ public class DatabaseAdapter {
         status.put("replyID", tweet.replyID);
         status.put("replyname", tweet.replyName);
         status.put("retweet", tweet.retweet);
-        status.put("retweeterID", tweet.retweetId);
         status.put("favorite", tweet.favorit);
+        status.put("retweeterID", tweet.retweetId);
         status.put("replyUserID", tweet.replyUserId);
         String[] medialinks = tweet.media;
         StringBuilder media = new StringBuilder();

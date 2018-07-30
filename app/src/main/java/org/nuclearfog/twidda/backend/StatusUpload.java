@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.EditText;
@@ -14,7 +15,7 @@ import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
 
-public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements AlertDialog.OnClickListener {
+public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements OnClickListener {
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
