@@ -26,29 +26,13 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/answer_reference_detail"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="2dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/rt_info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/answer_reference_detail"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

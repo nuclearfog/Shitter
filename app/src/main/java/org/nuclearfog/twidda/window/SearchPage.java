@@ -141,14 +141,17 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                 if(!tweetReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) tweetSearch.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-                    long tweetID = tweet.tweetID;
-                    long userID = tweet.user.userID;
-                    String username = tweet.user.screenname;
-                    Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+
+                    Intent intent = new Intent(this,TweetDetail.class);
                     Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    bundle.putString("username", username);
+
+                    if(tweet.embedded != null) {
+                        tweet = tweet.embedded;
+                    }
+                    bundle.putLong("tweetID",tweet.tweetID);
+                    bundle.putLong("userID",tweet.user.userID);
+                    bundle.putString("username", tweet.user.screenname);
+
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -226,6 +229,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     private void getExtras(@Nullable Bundle b) {
         if(b != null) {
-        search = b.getString("search");}
+            search = b.getString("search");
+        }
     }
 }

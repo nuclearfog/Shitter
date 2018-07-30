@@ -14,12 +14,12 @@ public class AppDatabase extends SQLiteOpenHelper
 
     private static final String tweetTable = "CREATE TABLE IF NOT EXISTS tweet ("+
             "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweetID INTEGER, replyID INTEGER, retweeterID INTEGER,"+
-            "replyname TEXT, time INTEGER, tweet TEXT, media TEXT, retweet INTEGER, favorite INTEGER,"+
+            "replyname TEXT, replyUserID INTEGER, time INTEGER, tweet TEXT, media TEXT, retweet INTEGER, favorite INTEGER,"+
             "statusregister INTEGER, source TEXT, FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String favoriteTable = "CREATE TABLE IF NOT EXISTS favorit (" +
-            "userID INTEGER, tweetID INTEGER UNIQUE," +
-            "FOREIGN KEY (userID) REFERENCES user(userID)," +
+            "ownerID INTEGER, tweetID INTEGER UNIQUE," +
+            "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
     private static final String trendTable = "CREATE TABLE IF NOT EXISTS trend (" +

@@ -185,7 +185,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         SwipeRefreshLayout trendRefresh = connect.findViewById(R.id.trends);
         SwipeRefreshLayout mentionRefresh = connect.findViewById(R.id.mention);
 
-
         switch(MODE) {
             case HOME:
             case H_LOAD:

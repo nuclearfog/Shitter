@@ -13,10 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
@@ -32,20 +29,25 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         DialogInterface.OnClickListener, StatusUpload.OnTweetSending {
 
     private StatusUpload sendTweet;
-    private ProgressBar send_circle;
-    private EditText tweet;
-    private Button imageButton, previewBtn;
-    private TextView imgCount;
-    private long inReplyId =-1L;
-    private String addition="";
-    private int imgIndex = 0;
+    private View send_circle;
     private List<String> mediaPath;
+    private View imageButton, previewBtn;
+    private TextView imgCount;
+    private EditText tweet;
+    private String addition="";
+    private long inReplyId =-1L;
+    private int imgIndex = 0;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.tweetwindow);
         getExtras(getIntent().getExtras());
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+
+        View tweetButton = findViewById(R.id.sendTweet);
+        View closeButton = findViewById(R.id.close);
+        View root = findViewById(R.id.tweet_popup);
 
         mediaPath = new ArrayList<>();
         imageButton = findViewById(R.id.image);
@@ -53,10 +55,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
         send_circle = findViewById(R.id.tweet_sending);
-        Button tweetButton = findViewById(R.id.sendTweet);
-        Button closeButton = findViewById(R.id.close);
-        LinearLayout root = findViewById(R.id.tweet_popup);
-        GlobalSettings settings = GlobalSettings.getInstance(this);
         int tweetColor = settings.getTweetColor();
         root.setBackgroundColor(tweetColor);
         tweet.append(addition);
@@ -125,7 +123,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
                         startActivityForResult(i, 0);
                     }
                     else {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
                     }
                 } else {
                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);

@@ -51,7 +51,6 @@ public class WorldIdAdapter extends ArrayAdapter {
         }
         TextView country = view.findViewById(android.R.id.text1);
         country.setText(getItem(position));
-
         return view;
     }
 }

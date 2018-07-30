@@ -27,8 +27,6 @@ import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
-import org.nuclearfog.twidda.window.TweetPopup;
-import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -37,7 +35,7 @@ import java.util.Locale;
 
 import twitter4j.TwitterException;
 
-public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.OnClickListener {
+public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     private static final long ERROR     =-1;
     public static final long RETWEET    = 0;
@@ -53,12 +51,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
     private DatabaseAdapter database;
     private ErrorLog errorLog;
     private String usernameStr, scrNameStr, tweetStr, dateString;
-    private String repliedUsername, apiName, retweeter;
-    private String medialinks[], profile_pb;
+    private String repliedUsername, apiName, profile_pb;
+    private String medialinks[];
     private String errorMessage = "";
     private boolean retweeted, favorited, toggleImg, verified;
-    private boolean rtFlag = false;
-    private long tweetReplyID,tweetID, userID, retweeterID, homeId;
+    private long tweetReplyID, homeId, replyUserId;
     private int rtCount, favCount;
     private int highlight, font;
 
@@ -88,7 +85,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
      */
     @Override
     protected Long doInBackground(Long... data) {
-        tweetID = data[0];
+        long tweetID = data[0];
         final long MODE = data[1];
         try {
             Tweet tweet;
@@ -116,18 +113,15 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
 
             if (tweet.embedded != null) {
-                retweeter = tweet.user.screenname;
-                retweeterID = tweet.user.userID;
                 tweet = tweet.embedded;
                 tweetID = tweet.tweetID;
-                rtFlag = true;
             }
 
             tweetReplyID = tweet.replyID;
             verified = tweet.user.isVerified;
             tweetStr = tweet.tweet;
+
             usernameStr = tweet.user.username;
-            userID = tweet.user.userID;
             scrNameStr = tweet.user.screenname;
             apiName = formatString(tweet.source);
             rtCount = tweet.retweet;
@@ -137,6 +131,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
             dateString = sdf.format(tweet.time);
             repliedUsername = tweet.replyName;
+            replyUserId = tweet.replyUserId;
             profile_pb = tweet.user.profileImg + "_bigger";
             medialinks = tweet.media;
 
@@ -206,7 +201,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         if(connect == null)
             return;
 
-        if(mode == LOAD_TWEET ||mode == LOAD_DB) {
+        if(mode == LOAD_TWEET || mode == LOAD_DB) {
             TextView tweet = connect.findViewById(R.id.tweet_detailed);
             TextView username = connect.findViewById(R.id.usernamedetail);
             TextView scrName = connect.findViewById(R.id.scrnamedetail);
@@ -232,22 +227,24 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             txtRet.setText(rtStr);
             txtAns.setText(ansStr);
 
-            if(tweetReplyID > 0) {
-                String reply = "antwort ";
-                if(repliedUsername != null)
-                    reply += '@'+repliedUsername;
-
+            if(tweetReplyID > 1) {
+                String reply = "antwort @"+repliedUsername;
                 replyName.setText(reply);
                 replyName.setVisibility(View.VISIBLE);
-                replyName.setOnClickListener(this);
-                replyName.setVisibility(View.VISIBLE);
-            }
-            if(rtFlag) {
-                String retPrompt = "Retweet "+retweeter;
-                TextView userRetweet = connect.findViewById(R.id.rt_info);
-                userRetweet.setText(retPrompt);
-                userRetweet.setOnClickListener(this);
-                userRetweet.setVisibility(View.VISIBLE);
+                replyName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ui.get(),TweetDetail.class);
+                        Bundle bundle = new Bundle();
+
+                        bundle.putLong("tweetID",tweetReplyID);
+                        bundle.putLong("userID",replyUserId);
+                        bundle.putString("username",repliedUsername);
+
+                        intent.putExtras(bundle);
+                        ui.get().startActivity(intent);
+                    }
+                });
             }
             if(verified) {
                 View tweet_verify = connect.findViewById(R.id.tweet_verify);
@@ -258,21 +255,23 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 if(medialinks != null && medialinks.length != 0) {
                     View mediabutton = connect.findViewById(R.id.image_attach);
                     mediabutton.setVisibility(View.VISIBLE);
-                    mediabutton.setOnClickListener(this);
+                    mediabutton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            new ImagePopup(ui.get()).execute(medialinks);
+                        }
+                    });
                 }
             }
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
-            Button answer = connect.findViewById(R.id.answer_button);
             setIcons(favoriteButton, retweetButton);
-            profile_img.setOnClickListener(this);
-            answer.setOnClickListener(this);
         }
         else if(mode == RETWEET) {
             String toastMsg;
+            TextView txtRet = connect.findViewById(R.id.no_rt_detail);
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
-            TextView txtRet = connect.findViewById(R.id.no_rt_detail);
             setIcons(favoriteButton, retweetButton);
             String rtStr = Integer.toString(rtCount);
             txtRet.setText(rtStr);
@@ -291,11 +290,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             setIcons(favoriteButton, retweetButton);
             String favStr = Integer.toString(favCount);
             txtFav.setText(favStr);
-            if(favorited) {
+            if(favorited)
                 toastMsg = "zu favoriten hinzugefügt!";
-            } else {
+            else
                 toastMsg = "aus favoriten entfernt!";
-            }
             Toast.makeText(ui.get(), toastMsg, Toast.LENGTH_SHORT).show();
         }
         else if(mode == LOAD_REPLY) {
@@ -401,58 +399,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
 
     private void setIcons(Button favoriteButton, Button retweetButton) {
-        if(favorited) {
+        if(favorited)
             favoriteButton.setBackgroundResource(R.drawable.favorite_enabled);
-        }else {
+        else
             favoriteButton.setBackgroundResource(R.drawable.favorite);
-        }
-        if(retweeted) {
+        if(retweeted)
             retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
-        } else {
+        else
             retweetButton.setBackgroundResource(R.drawable.retweet);
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.profileimage_detail:
-                Intent profile = new Intent(ui.get(), UserProfile.class);
-                Bundle b = new Bundle();
-                b.putLong("userID",userID);
-                b.putString("username", scrNameStr);
-                profile.putExtras(b);
-                ui.get().startActivity(profile);
-                break;
-
-            case R.id.answer_reference_detail:
-                Intent tweet = new Intent(ui.get(), TweetDetail.class);
-                tweet.putExtra("tweetID",tweetReplyID);
-                tweet.putExtra("username", '@'+repliedUsername);
-                ui.get().startActivity(tweet);
-                break;
-
-            case R.id.answer_button:
-                Intent tweetpop = new Intent(ui.get(), TweetPopup.class);
-                Bundle ext = new Bundle();
-                ext.putLong("TweetID", tweetID);
-                ext.putString("Addition", scrNameStr);
-                tweetpop.putExtras(ext);
-                ui.get().startActivity(tweetpop);
-                break;
-
-            case R.id.image_attach:
-                new ImagePopup(ui.get()).execute(medialinks);
-                break;
-
-            case R.id.rt_info:
-                Intent retweetProfile = new Intent(ui.get(), UserProfile.class);
-                Bundle extras = new Bundle();
-                extras.putLong("userID",retweeterID);
-                extras.putString("username", retweeter);
-                retweetProfile.putExtras(extras);
-                ui.get().startActivity(retweetProfile);
-                break;
-        }
     }
 }

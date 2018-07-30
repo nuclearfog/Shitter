@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -99,9 +100,11 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         }
     }
 
-    private void getExtras(Bundle b) {
-        userID  = b.getLong("userID");
-        tweetID = b.getLong("tweetID");
-        mode = b.getLong("mode");
+    private void getExtras(@Nullable Bundle b) {
+        if(b != null) {
+            userID  = b.getLong("userID");
+            tweetID = b.getLong("tweetID");
+            mode = b.getLong("mode");
+        }
     }
 }

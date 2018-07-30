@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -14,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -36,11 +36,12 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener {
 
     private RecyclerView answer_list;
-    private long tweetID;
-    private long userID;
     private StatusLoader mStat, mReply;
     private GlobalSettings settings;
-    private String username = "";
+    private String username;
+    private long userID;
+    private long tweetID;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -52,13 +53,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         boolean home = userID == settings.getUserId();
 
         answer_list = findViewById(R.id.answer_list);
-        Button retweet = findViewById(R.id.rt_button_detail);
-        Button favorite = findViewById(R.id.fav_button_detail);
-        Button delete = findViewById(R.id.delete);
+        View retweet = findViewById(R.id.rt_button_detail);
+        View favorite = findViewById(R.id.fav_button_detail);
+        View delete = findViewById(R.id.delete);
+        View txtRt = findViewById(R.id.no_rt_detail);
+        View txtFav = findViewById(R.id.no_fav_detail);
+        View date = findViewById(R.id.timedetail);
+        View profile_img = findViewById(R.id.profileimage_detail);
         SwipeRefreshLayout answerReload = findViewById(R.id.answer_reload);
-        TextView txtRt = findViewById(R.id.no_rt_detail);
-        TextView txtFav = findViewById(R.id.no_fav_detail);
-        TextView date = findViewById(R.id.timedetail);
         answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if(home) {
             delete.setVisibility(View.VISIBLE);
@@ -70,6 +72,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         txtRt.setOnClickListener(this);
         date.setOnClickListener(this);
         delete.setOnClickListener(this);
+        profile_img.setOnClickListener(this);
         setContent();
     }
 
@@ -126,6 +129,24 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 intent.setData(Uri.parse(tweetlink));
                 startActivity(intent);
                 break;
+
+            case R.id.profileimage_detail:
+                Intent profile = new Intent(this, UserProfile.class);
+                Bundle b = new Bundle();
+                b.putLong("userID",userID);
+                b.putString("username", username);
+                profile.putExtras(b);
+                startActivity(profile);
+                break;
+
+            case R.id.answer_button:
+                Intent tweetPopup = new Intent(this, TweetPopup.class);
+                Bundle ext = new Bundle();
+                ext.putLong("TweetID", tweetID);
+                ext.putString("Addition", username);
+                tweetPopup.putExtras(ext);
+                startActivity(tweetPopup);
+                break;
         }
     }
 
@@ -145,14 +166,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public void onItemClick(View view, ViewGroup parent, int position) {
         TimelineRecycler tlAdp = (TimelineRecycler) answer_list.getAdapter();
         Tweet tweet = tlAdp.getData().get(position);
-        long userID = tweet.user.userID;
-        long tweetID = tweet.tweetID;
-        String username = tweet.user.screenname;
-        Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+
+        Intent intent = new Intent(this,TweetDetail.class);
         Bundle bundle = new Bundle();
-        bundle.putLong("userID",userID);
-        bundle.putLong("tweetID",tweetID);
-        bundle.putString("username", username);
+
+        bundle.putLong("tweetID",tweet.tweetID);
+        bundle.putLong("userID",tweet.user.userID);
+        bundle.putString("username", tweet.user.screenname);
+
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -180,7 +201,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
     }
 
-    private void getExtras(Bundle b) {
+    private void getExtras(@Nullable Bundle b) {
         if(b != null) {
             tweetID = b.getLong("tweetID");
             userID = b.getLong("userID");

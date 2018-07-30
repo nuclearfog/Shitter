@@ -215,14 +215,17 @@ public class MainActivity extends AppCompatActivity implements
                 if(!timelineReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) timelineList.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-                    long tweetID = tweet.tweetID;
-                    long userID = tweet.user.userID;
-                    String username = tweet.user.screenname;
-                    Intent intent = new Intent(this, TweetDetail.class);
+
+                    Intent intent = new Intent(this,TweetDetail.class);
                     Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    bundle.putString("username",username);
+
+                    if(tweet.embedded != null) {
+                        tweet = tweet.embedded;
+                    }
+                    bundle.putLong("tweetID",tweet.tweetID);
+                    bundle.putLong("userID",tweet.user.userID);
+                    bundle.putString("username", tweet.user.screenname);
+
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -248,14 +251,17 @@ public class MainActivity extends AppCompatActivity implements
                 if(!mentionReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) mentionList.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-                    long tweetID = tweet.tweetID;
-                    long userID = tweet.user.userID;
-                    String username = tweet.user.screenname;
-                    Intent intent = new Intent(this, TweetDetail.class);
+
+                    Intent intent = new Intent(this,TweetDetail.class);
                     Bundle bundle = new Bundle();
-                    bundle.putLong("tweetID",tweetID);
-                    bundle.putLong("userID",userID);
-                    bundle.putString("username",username);
+
+                    if(tweet.embedded != null) {
+                        tweet = tweet.embedded;
+                    }
+                    bundle.putLong("tweetID",tweet.tweetID);
+                    bundle.putLong("userID",tweet.user.userID);
+                    bundle.putString("username", tweet.user.screenname);
+
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

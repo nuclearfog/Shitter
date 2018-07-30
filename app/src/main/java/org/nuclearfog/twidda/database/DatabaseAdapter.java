@@ -50,7 +50,7 @@ public class DatabaseAdapter {
             storeStatus(tweet,0,db);
             ContentValues favTable = new ContentValues();
             favTable.put("tweetID", tweet.tweetID);
-            favTable.put("userID", ownerId);
+            favTable.put("ownerID", ownerId);
             db.insertWithOnConflict("favorit",null,favTable,CONFLICT_IGNORE);
         }
         db.close();
@@ -193,7 +193,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
-                "WHERE favorit.userID ="+userID + " ORDER BY tweetID DESC LIMIT "+LIMIT;
+                "WHERE favorit.ownerID ="+userID + " ORDER BY tweetID DESC LIMIT "+LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
         if(cursor.moveToFirst()) {
             do {
@@ -297,7 +297,7 @@ public class DatabaseAdapter {
 
     public void removeFavorite(long tweetId,long ownerId) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        db.delete("favorit","tweetID="+tweetId+" AND userID="+ownerId,null);
+        db.delete("favorit","tweetID="+tweetId+" AND ownerID="+ownerId,null);
         db.close();
     }
 
@@ -343,6 +343,8 @@ public class DatabaseAdapter {
         String source = cursor.getString(index);
         index = cursor.getColumnIndex("media");
         String medialinks = cursor.getString(index);
+        index = cursor.getColumnIndex("replyUserID");
+        long replyUserId = cursor.getLong(index);
         index = cursor.getColumnIndex("statusregister");
         int statusregister = cursor.getInt(index);
         boolean favorited = (statusregister & 1) == 1;
@@ -354,7 +356,7 @@ public class DatabaseAdapter {
         Tweet embeddedTweet = null;
         if(retweetId > 1)
             embeddedTweet = getStatus(retweetId);
-        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname,medias,
+        return new Tweet(tweetId,retweet,favorit,user,tweettext,time,replyname, replyUserId,medias,
                 source,replyStatusId,embeddedTweet,retweeterId,retweeted,favorited);
     }
 
@@ -413,6 +415,7 @@ public class DatabaseAdapter {
         status.put("retweet", tweet.retweet);
         status.put("retweeterID", tweet.retweetId);
         status.put("favorite", tweet.favorit);
+        status.put("replyUserID", tweet.replyUserId);
         String[] medialinks = tweet.media;
         StringBuilder media = new StringBuilder();
         for(String link : medialinks) {

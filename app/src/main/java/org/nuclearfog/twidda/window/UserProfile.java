@@ -18,7 +18,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
@@ -75,8 +74,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         favoriteReload = findViewById(R.id.homefavorits);
         favoriteReload.setBackgroundColor(0xffff0000);
 
-        TextView txtFollowing = findViewById(R.id.following);
-        TextView txtFollower  = findViewById(R.id.follower);
+        View txtFollowing = findViewById(R.id.following);
+        View txtFollower  = findViewById(R.id.follower);
         mTab = findViewById(R.id.profile_tab);
         setTabs();
 
@@ -190,14 +189,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             tlAdp = (TimelineRecycler) favoriteList.getAdapter();
         }
         Tweet tweet = tlAdp.getData().get(position);
-        long tweetID = tweet.tweetID;
-        long userID = tweet.user.userID;
-        String username = tweet.user.screenname;
-        Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+
+
+        Intent intent = new Intent(this,TweetDetail.class);
         Bundle bundle = new Bundle();
-        bundle.putLong("tweetID",tweetID);
-        bundle.putLong("userID",userID);
-        bundle.putString("username", username);
+
+        if(tweet.embedded != null) {
+            tweet = tweet.embedded;
+        }
+        bundle.putLong("tweetID",tweet.tweetID);
+        bundle.putLong("userID",tweet.user.userID);
+        bundle.putString("username", tweet.user.screenname);
+
         intent.putExtras(bundle);
         startActivity(intent);
     }

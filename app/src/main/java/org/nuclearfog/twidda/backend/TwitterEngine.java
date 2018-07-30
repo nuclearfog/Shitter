@@ -29,9 +29,6 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
-/**
- * Stores Twitter Object
- */
 public class TwitterEngine {
 
     private final String TWITTER_CONSUMER_KEY = "0EKRHWYcakpCkl8Lr4OcBFMZb";
@@ -48,8 +45,6 @@ public class TwitterEngine {
 
     /**
      * Singleton Constructor
-     * @param context Current Activity's Context
-     * @see #getInstance
      */
     private TwitterEngine(Context context) {
         settings = GlobalSettings.getInstance(context);
@@ -532,7 +527,7 @@ public class TwitterEngine {
             favorite = status.getFavoriteCount();
         }
         return new Tweet(status.getId(),retweet,favorite,user,status.getText(),
-                status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
+                status.getCreatedAt().getTime(),status.getInReplyToScreenName(),status.getInReplyToUserId(),
                 getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),
                 retweetedStat,status.getCurrentUserRetweetId(),status.isRetweeted(),status.isFavorited());
     }
