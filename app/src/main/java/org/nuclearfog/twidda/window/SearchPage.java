@@ -145,9 +145,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                     Intent intent = new Intent(this,TweetDetail.class);
                     Bundle bundle = new Bundle();
 
-                    if(tweet.embedded != null) {
-                        tweet = tweet.embedded;
-                    }
                     bundle.putLong("tweetID",tweet.tweetID);
                     bundle.putLong("userID",tweet.user.userID);
                     bundle.putString("username", tweet.user.screenname);
@@ -159,12 +156,12 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
             case R.id.user_result:
                 UserRecycler uAdp = (UserRecycler) userSearch.getAdapter();
                 TwitterUser user = uAdp.getData().get(position);
+
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 Bundle bundle = new Bundle();
-                long userID = user.userID;
-                String username = user.screenname;
-                bundle.putLong("userID",userID);
-                bundle.putString("username", username);
+
+                bundle.putLong("userID",user.userID);
+                bundle.putString("username", user.screenname);
                 profile.putExtras(bundle);
                 startActivity(profile);
                 break;

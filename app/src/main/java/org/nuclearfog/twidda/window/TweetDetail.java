@@ -15,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
@@ -60,6 +59,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View txtFav = findViewById(R.id.no_fav_detail);
         View date = findViewById(R.id.timedetail);
         View profile_img = findViewById(R.id.profileimage_detail);
+        View answer = findViewById(R.id.answer_button);
         SwipeRefreshLayout answerReload = findViewById(R.id.answer_reload);
         answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if(home) {
@@ -73,6 +73,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         date.setOnClickListener(this);
         delete.setOnClickListener(this);
         profile_img.setOnClickListener(this);
+        answer.setOnClickListener(this);
         setContent();
     }
 
@@ -188,10 +189,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         int backgroundColor = settings.getBackgroundColor();
         int fontColor = settings.getFontColor();
         CollapsingToolbarLayout cLayout = findViewById(R.id.tweet_detail);
-        LinearLayout tweetaction = findViewById(R.id.tweetbar);
+        View tweet = findViewById(R.id.tweetbar);
         TextView txtTw = findViewById(R.id.tweet_detailed);
         cLayout.setBackgroundColor(backgroundColor);
-        tweetaction.setBackgroundColor(backgroundColor);
+        tweet.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
         new StatusLoader(this).execute(tweetID, StatusLoader.LOAD_DB);

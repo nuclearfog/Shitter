@@ -253,9 +253,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             if(toggleImg) {
                 Picasso.with(ui.get()).load(profile_pb).into(profile_img);
                 if(medialinks != null && medialinks.length != 0) {
-                    View mediabutton = connect.findViewById(R.id.image_attach);
-                    mediabutton.setVisibility(View.VISIBLE);
-                    mediabutton.setOnClickListener(new View.OnClickListener() {
+                    View mediaButton = connect.findViewById(R.id.image_attach);
+                    mediaButton.setVisibility(View.VISIBLE);
+                    mediaButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             new ImagePopup(ui.get()).execute(medialinks);

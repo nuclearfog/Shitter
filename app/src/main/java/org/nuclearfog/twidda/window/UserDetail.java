@@ -103,8 +103,10 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
     private void getExtras(@Nullable Bundle b) {
         if(b != null) {
             userID  = b.getLong("userID");
-            tweetID = b.getLong("tweetID");
             mode = b.getLong("mode");
+            if(b.containsKey("tweetID")) {
+                tweetID = b.getLong("tweetID");
+            }
         }
     }
 }
