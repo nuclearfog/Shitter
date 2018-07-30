@@ -196,7 +196,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             return FAILURE;
         }
         catch(Exception err) {
-            errMsg = err.getMessage();
+            errMsg = "Profile Load: "+err.getMessage();
             err.printStackTrace();
             ErrorLog errorLog = new ErrorLog(ui.get());
             errorLog.add(errMsg);
@@ -285,7 +285,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == FAILURE)
         {
-            Toast.makeText(connect,"Fehler: "+errMsg,Toast.LENGTH_LONG).show();
+            Toast.makeText(connect,errMsg,Toast.LENGTH_LONG).show();
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);

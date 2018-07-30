@@ -17,7 +17,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class UserLists extends AsyncTask <Long, Void, Void> {
+public class UserLists extends AsyncTask <Long, Void, Boolean> {
 
     public static final long FOLLOWING = 0L;
     public static final long FOLLOWERS = 1L;
@@ -27,6 +27,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
+    private ErrorLog errorLog;
     private String errorMessage;
     private boolean imageLoad;
 
@@ -36,6 +37,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
     public UserLists(Context context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         imageLoad = settings.loadImages();
+        errorLog = new ErrorLog(context);
 
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -47,7 +49,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
 
 
     @Override
-    protected Void doInBackground(Long... data) {
+    protected Boolean doInBackground(Long... data) {
         long id = data[0];
         long mode = data[1];
         long cursor = data[2];
@@ -66,6 +68,7 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
                 usrAdp.setData(user);
             }
             usrAdp.toggleImage(imageLoad);
+            return true;
         }
         catch(TwitterException err) {
             int errCode = err.getErrorCode();
@@ -75,28 +78,25 @@ public class UserLists extends AsyncTask <Long, Void, Void> {
             } else {
                 errorMessage = "Fehler: "+err.getMessage();
             }
-
+            return false;
         } catch(Exception err) {
-            errorMessage = "Fehler: "+err.getMessage();
-            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorMessage = "Userlist: "+err.getMessage();
             errorLog.add(errorMessage);
+            return false;
         }
-        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Void v) {
+    protected void onPostExecute(Boolean success) {
         if(ui.get() == null)
             return;
-
         View mProgress = ui.get().findViewById(R.id.userlist_progress);
         mProgress.setVisibility(View.INVISIBLE);
 
-        if(errorMessage == null) {
+        if(success) {
             usrAdp.notifyDataSetChanged();
-        }
-        else {
+        } else {
             Toast.makeText(ui.get(),errorMessage,Toast.LENGTH_LONG).show();
         }
     }

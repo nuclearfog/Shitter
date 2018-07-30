@@ -18,13 +18,14 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
+    private ErrorLog errorLog;
     private String[] path;
 
 
     public StatusUpload(Context context, String[] path) {
         ui = new WeakReference<>((TweetPopup)context);
         mTwitter = TwitterEngine.getInstance(context);
-
+        errorLog = new ErrorLog(context);
         this.path = path;
     }
 
@@ -52,8 +53,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements Al
             }
             return true;
         } catch(Exception err) {
-            ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(err.getMessage());
+            errorLog.add("Status Upload: "+err.getMessage());
             return false;
         }
     }

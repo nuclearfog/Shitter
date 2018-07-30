@@ -36,6 +36,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
     private TimelineRecycler timelineAdapter, mentionAdapter;
     private TrendRecycler trendsAdapter;
+    private ErrorLog errorLog;
     private int woeId;
     private String errMsg;
     private int highlight, font;
@@ -49,6 +50,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         ui = new WeakReference<>((MainActivity)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        errorLog = new ErrorLog(context);
         woeId = settings.getWoeId();
         highlight = settings.getHighlightColor();
         font = settings.getFontColor();
@@ -155,17 +157,18 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     break;
             }
         } catch(TwitterException e) {
-            errMsg = e.getMessage();
             int errCode = e.getErrorCode();
             if(errCode == 420) {
                 int retry = e.getRetryAfter();
                 errMsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+            } else {
+                errMsg = "Fehler: "+e.getMessage();
             }
+            return FAIL;
         }
         catch (Exception e) {
-            errMsg = e.getMessage();
+            errMsg = "Main Page: "+e.getMessage();
             if(ui.get() != null) {
-                ErrorLog errorLog = new ErrorLog(ui.get());
                 errorLog.add(errMsg);
             }
             return FAIL;
@@ -203,7 +206,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case FAIL:
-                Toast.makeText(connect, "Fehler: "+errMsg, Toast.LENGTH_LONG).show();
+                Toast.makeText(connect,errMsg, Toast.LENGTH_LONG).show();
             default:
                 timelineRefresh.setRefreshing(false);
                 trendRefresh.setRefreshing(false);

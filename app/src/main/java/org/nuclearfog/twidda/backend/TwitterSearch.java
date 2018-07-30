@@ -25,6 +25,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private TimelineRecycler searchAdapter;
     private UserRecycler userAdapter;
     private TwitterEngine mTwitter;
+    private ErrorLog errorLog;
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
     private String errorMessage;
@@ -33,6 +34,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
         mTwitter = TwitterEngine.getInstance(context);
+        errorLog = new ErrorLog(context);
 
         GlobalSettings settings = GlobalSettings.getInstance(context);
         font_color = settings.getFontColor();
@@ -84,13 +86,10 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
                 int retry = err.getRetryAfter();
                 errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
             } else {
-                errorMessage = err.getErrorMessage();
+                errorMessage = "Fehler beim Laden: "+err.getErrorMessage();
             }
-            ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(errorMessage);
         } catch(Exception err) {
-            errorMessage = err.getMessage();
-            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorMessage = "Twitter search: "+err.getMessage();
             errorLog.add(errorMessage);
         }
         return null;
@@ -102,8 +101,9 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         SearchPage connect = ui.get();
         if(connect == null)
             return;
-        if(errorMessage != null)
-            Toast.makeText(connect,"Fehler beim Laden: "+errorMessage,Toast.LENGTH_LONG).show();
+        if(errorMessage != null) {
+            Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();
+        }
 
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
         View circleLoad = connect.findViewById(R.id.search_progress);

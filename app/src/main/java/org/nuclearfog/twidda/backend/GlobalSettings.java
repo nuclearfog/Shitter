@@ -66,13 +66,17 @@ public class GlobalSettings {
         return woeId;
     }
 
-    public int getWoeIdSelection(){return woeIdPos;}
+    public int getWoeIdSelection(){
+        return woeIdPos;
+    }
 
     public int getRowLimit() {
         return row;
     }
 
-    public boolean getLogin() { return loggedIn;}
+    public boolean getLogin() {
+        return loggedIn;
+    }
 
     public String[] getKeys() {
         String out[] = new String[2];

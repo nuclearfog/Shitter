@@ -27,12 +27,14 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     private Dialog popup;
     private Bitmap imgArray[];
     private LayoutInflater inf;
+    private ErrorLog errorLog;
     private int position = 0;
 
-    public ImagePopup(Context c) {
-        popup = new Dialog(c);
-        ui = new WeakReference<>(c);
-        inf = (LayoutInflater)c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public ImagePopup(Context context) {
+        popup = new Dialog(context);
+        ui = new WeakReference<>(context);
+        inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        errorLog = new ErrorLog(context);
     }
 
     @Override
@@ -70,8 +72,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             }
             return true;
         } catch (Exception err) {
-            ErrorLog errorLog = new ErrorLog(ui.get());
-            errorLog.add(err.getMessage());
+            errorLog.add("Image load: "+err.getMessage());
             return false;
         }
     }

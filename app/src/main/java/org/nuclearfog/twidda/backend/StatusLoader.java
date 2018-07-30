@@ -50,6 +50,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
     private TwitterEngine mTwitter;
     private TimelineRecycler answerAdapter;
+    private DatabaseAdapter database;
+    private ErrorLog errorLog;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, retweeter;
     private String medialinks[], profile_pb;
@@ -62,16 +64,18 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
 
     private WeakReference<TweetDetail> ui;
 
-    public StatusLoader(Context c) {
-        mTwitter = TwitterEngine.getInstance(c);
-        GlobalSettings settings = GlobalSettings.getInstance(c);
+    public StatusLoader(Context context) {
+        mTwitter = TwitterEngine.getInstance(context);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
         font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
         homeId = settings.getUserId();
-        ui = new WeakReference<>((TweetDetail)c);
+        ui = new WeakReference<>((TweetDetail)context);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         answerAdapter = (TimelineRecycler) replyList.getAdapter();
+        database = new DatabaseAdapter(ui.get());
+        errorLog = new ErrorLog(context);
         if(answerAdapter == null) {
             answerAdapter = new TimelineRecycler(ui.get());
             replyList.setAdapter(answerAdapter);
@@ -87,9 +91,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         tweetID = data[0];
         final long MODE = data[1];
         try {
-            DatabaseAdapter database = new DatabaseAdapter(ui.get());
             Tweet tweet;
-
             if(MODE == DELETE) {
                 mTwitter.deleteTweet(tweetID);
                 database.removeStatus(tweetID);
@@ -178,23 +180,20 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             }
         }
         catch(TwitterException e) {
-            int err = e.getErrorCode();
-            if(err == 144) {
-                new DatabaseAdapter(ui.get()).removeStatus(tweetID);
+            int errCode = e.getErrorCode();
+            if(errCode == 144) {
+                database.removeStatus(tweetID);
                 errorMessage = "Tweet nicht gefunden!\nID:"+tweetID;
-            } else if(err == 420) {
+            } else if(errCode == 420) {
                 int retry = e.getRetryAfter();
                 errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
             } else {
-                errorMessage = e.getMessage();
-                ErrorLog errorLog = new ErrorLog(ui.get());
-                errorLog.add(errorMessage);
+                errorMessage = "Fehler: "+e.getMessage();
             }
             return ERROR;
         }
         catch(Exception err) {
-            errorMessage = err.getMessage();
-            ErrorLog errorLog = new ErrorLog(ui.get());
+            errorMessage = "Status load: "+err.getMessage();
             errorLog.add(errorMessage);
             return ERROR;
         }
@@ -312,7 +311,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
             ui.get().finish();
         }
         else if(mode == ERROR) {
-            Toast.makeText(ui.get(),"Fehler beim Laden: "+errorMessage,Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(),errorMessage,Toast.LENGTH_LONG).show();
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             if(ansReload.isRefreshing()) {
                 ansReload.setRefreshing(false);

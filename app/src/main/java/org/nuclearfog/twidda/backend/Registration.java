@@ -12,10 +12,13 @@ import org.nuclearfog.twidda.window.LoginPage;
 
 import java.lang.ref.WeakReference;
 
+import twitter4j.TwitterException;
+
 public class Registration extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
+    private ErrorLog errorLog;
     private String errorMessage;
     private String redirectionURL = "";
 
@@ -23,6 +26,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     public Registration(Context context) {
         ui = new WeakReference<>((LoginPage)context);
         mTwitter = TwitterEngine.getInstance(context);
+        errorLog = new ErrorLog(context);
     }
 
 
@@ -36,9 +40,11 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                 mTwitter.initialize(pin);
                 return true;
             }
-        } catch ( Exception e ) {
-            errorMessage = e.getMessage();
-            ErrorLog errorLog = new ErrorLog(ui.get());
+        } catch(TwitterException e) {
+            errorMessage = e.getErrorMessage();
+        }
+        catch ( Exception e ) {
+            errorMessage = "Registration: "+e.getMessage();
             errorLog.add(errorMessage);
         }
         return false;
@@ -59,7 +65,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             connect.startActivity(i);
         }
         if(errorMessage != null) {
-            Toast.makeText(connect,"Fehler: "+errorMessage,Toast.LENGTH_LONG).show();
+            Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();
         }
     }
 }
