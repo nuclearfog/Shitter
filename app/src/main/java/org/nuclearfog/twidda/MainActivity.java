@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
-        if(home != null) {
+        if( home != null && !home.isCancelled() ) {
             home.cancel(true);
         }
         super.onPause();

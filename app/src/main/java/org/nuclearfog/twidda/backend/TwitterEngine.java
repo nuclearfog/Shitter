@@ -523,10 +523,18 @@ public class TwitterEngine {
      */
     private Tweet getTweet(Status status,Tweet retweetedStat){
         TwitterUser user = getUser(status.getUser());
-        return new Tweet(status.getId(),status.getRetweetCount(),status.getFavoriteCount(),user,
-                status.getText(),status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
+        int retweet, favorite;
+        if(retweetedStat != null) {
+            retweet = retweetedStat.retweet;
+            favorite = retweetedStat.favorit;
+        } else {
+            retweet = status.getRetweetCount();
+            favorite = status.getFavoriteCount();
+        }
+        return new Tweet(status.getId(),retweet,favorite,user,status.getText(),
+                status.getCreatedAt().getTime(),status.getInReplyToScreenName(),
                 getMediaLinks(status),status.getSource(),status.getInReplyToStatusId(),
-                retweetedStat,status.getCurrentUserRetweetId(), status.isRetweeted(), status.isFavorited());
+                retweetedStat,status.getCurrentUserRetweetId(),status.isRetweeted(),status.isFavorited());
     }
 
     /**

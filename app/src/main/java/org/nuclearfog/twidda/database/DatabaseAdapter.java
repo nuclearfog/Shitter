@@ -269,21 +269,19 @@ public class DatabaseAdapter {
         return user;
     }
 
-    /**
-     * Aktualisiere Tweet (nur Retweet & Favorit anzahl)
-     */
-    public void updateStatus(long tweetId, int retweet, int favorite, boolean retweeted, boolean favorited) {
+
+    public void updateStatus(Tweet tweet) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues status = new ContentValues();
-        int register = getStatRegister(db,tweetId);
-        if(retweeted)
+        int register = getStatRegister(db,tweet.tweetID);
+        if(tweet.retweeted)
             register |= 2;
-        if(favorited)
+        if(tweet.favorized)
             register |= 1;
-        status.put("retweet", retweet);
-        status.put("favorite", favorite);
-        status.put("statusregister", register);
-        db.update("tweet",status,"tweet.tweetID = "+tweetId,null);
+        status.put("retweet",tweet.retweet);
+        status.put("favorite",tweet.favorit);
+        status.put("statusregister",register);
+        db.update("tweet",status,"tweet.tweetID="+tweet.tweetID,null);
         db.close();
     }
 

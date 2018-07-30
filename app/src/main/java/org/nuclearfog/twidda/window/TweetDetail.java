@@ -75,9 +75,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onPause() {
-        if(mStat != null)
+        if(mStat != null && mStat.isCancelled())
             mStat.cancel(true);
-        if(mReply != null)
+        if(mReply != null && mReply.isCancelled())
             mReply.cancel(true);
         super.onPause();
     }

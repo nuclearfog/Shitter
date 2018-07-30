@@ -27,9 +27,6 @@ import org.nuclearfog.twidda.backend.StatusUpload;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.DialogInterface.BUTTON_NEGATIVE;
-import static android.content.DialogInterface.BUTTON_POSITIVE;
-
 
 public class TweetPopup extends AppCompatActivity implements OnClickListener,
         DialogInterface.OnClickListener, StatusUpload.OnTweetSending {
@@ -103,15 +100,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(DialogInterface d, int id) {
-        switch(id) {
-            case BUTTON_POSITIVE:
-                if(sendTweet != null)
-                    sendTweet.cancel(true);
-                finish();
-                break;
-            case BUTTON_NEGATIVE:
-                break;
-        }
+        if(sendTweet != null)
+            sendTweet.cancel(true);
+        finish();
     }
 
     @Override
@@ -151,8 +142,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         if( !addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             AlertDialog.Builder alerta = new AlertDialog.Builder(this);
             alerta.setMessage("Tweet verwerfen?");
-            alerta.setPositiveButton(R.string.yes_confirm, this);
-            alerta.setNegativeButton(R.string.no_confirm, this);
+            alerta.setPositiveButton(R.string.yes_confirm,this);
+            alerta.setNegativeButton(R.string.no_confirm,null);
             alerta.show();
         } else {
             finish();

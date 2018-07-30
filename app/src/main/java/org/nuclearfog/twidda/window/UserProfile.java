@@ -90,11 +90,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onPause() {
-        if(mProfile != null)
+        if(mProfile != null && !mProfile.isCancelled())
             mProfile.cancel(true);
-        if(mTweets != null)
+        if(mTweets != null && !mTweets.isCancelled())
             mTweets.cancel(true);
-        if(mFavorites != null)
+        if(mFavorites != null && !mFavorites.isCancelled())
             mFavorites.cancel(true);
         super.onPause();
     }

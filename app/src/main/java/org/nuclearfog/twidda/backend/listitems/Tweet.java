@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.listitems;
 
+import android.support.annotation.Nullable;
+
 public class Tweet {
     public final TwitterUser user;
     public final Tweet embedded;
@@ -12,7 +14,7 @@ public class Tweet {
 
 
     public Tweet(long tweetID, int retweet, int favorit, TwitterUser user, String tweet, long time,
-                 String replyName, String[] media, String source, long replyID, Tweet embedded,
+                 String replyName, String[] media, String source, long replyID,@Nullable Tweet embedded,
                  long retweetId, boolean retweeted, boolean favorized) {
         this.tweetID = tweetID;
         this.user = user;

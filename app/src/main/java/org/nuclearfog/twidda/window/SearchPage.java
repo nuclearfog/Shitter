@@ -86,7 +86,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     protected void onPause() {
-        if(mSearch != null)
+        if(mSearch != null && mSearch.isCancelled())
             mSearch.cancel(true);
         super.onPause();
     }

@@ -87,8 +87,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
         tweetID = data[0];
         final long MODE = data[1];
         try {
-            Tweet tweet;
             DatabaseAdapter database = new DatabaseAdapter(ui.get());
+            Tweet tweet;
+
+            if(MODE == DELETE) {
+                mTwitter.deleteTweet(tweetID);
+                database.removeStatus(tweetID);
+                return DELETE;
+            }
 
             if( MODE == LOAD_DB ) {
                 tweet = database.getStatus(tweetID);
@@ -99,6 +105,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                     return IGNORE; // NOT FOUND
             } else {
                 tweet = mTwitter.getStatus(tweetID);
+                if(database.containStatus(tweetID)) {
+                    database.updateStatus(tweet);
+                    if(tweet.embedded != null) {
+                        database.updateStatus(tweet.embedded);
+                    }
+                }
             }
 
             if (tweet.embedded != null) {
@@ -163,14 +175,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> implements View.On
                 answerAdapter.setColor(highlight, font);
                 if(answers.size() > 0 && database.containStatus(tweetID))
                     database.storeReplies(answers);
-            }
-            else if(MODE == DELETE) {
-                mTwitter.deleteTweet(tweetID);
-                database.removeStatus(tweetID);
-            }
-            if(MODE == LOAD_TWEET || MODE == RETWEET || MODE == FAVORITE) {
-                if(database.containStatus(tweetID))
-                    database.updateStatus(tweetID,rtCount,favCount,retweeted,favorited);
             }
         }
         catch(TwitterException e) {
