@@ -197,7 +197,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent){}
+    public void onNothingSelected(AdapterView<?> parent) {
+        woeId.setSelection(woeIdPos);
+    }
 
 
     public void setColor(int preColor) {

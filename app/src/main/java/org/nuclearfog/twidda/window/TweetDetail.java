@@ -36,6 +36,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     private RecyclerView answer_list;
     private StatusLoader mStat, mReply;
+    private SwipeRefreshLayout answerReload;
     private GlobalSettings settings;
     private String username;
     private long userID;
@@ -60,7 +61,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View date = findViewById(R.id.timedetail);
         View profile_img = findViewById(R.id.profileimage_detail);
         View answer = findViewById(R.id.answer_button);
-        SwipeRefreshLayout answerReload = findViewById(R.id.answer_reload);
+        answerReload = findViewById(R.id.answer_reload);
         answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if(home) {
             delete.setVisibility(View.VISIBLE);
@@ -79,10 +80,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onPause() {
-        if(mStat != null && mStat.isCancelled())
+        if (mStat != null && mStat.isCancelled()) {
             mStat.cancel(true);
-        if(mReply != null && mReply.isCancelled())
+        }
+        if (mReply != null && mReply.isCancelled()) {
             mReply.cancel(true);
+            answerReload.setRefreshing(false);
+        }
         super.onPause();
     }
 
