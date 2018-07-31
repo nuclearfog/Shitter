@@ -18,7 +18,7 @@ public class AppDatabase extends SQLiteOpenHelper
             "statusregister INTEGER, source TEXT, FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String favoriteTable = "CREATE TABLE IF NOT EXISTS favorit (" +
-            "ownerID INTEGER, tweetID INTEGER UNIQUE," +
+            "ownerID INTEGER, tweetID INTEGER PRIMARY KEY," +
             "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
@@ -38,8 +38,10 @@ public class AppDatabase extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(userTable);
         db.execSQL(tweetTable);
-        db.execSQL(trendTable);
+
         db.execSQL(favoriteTable);
+
+        db.execSQL(trendTable);
         db.execSQL(errorTable);
     }
 
@@ -47,12 +49,11 @@ public class AppDatabase extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + "user");
         db.execSQL("DROP TABLE IF EXISTS " + "tweet");
+
         db.execSQL("DROP TABLE IF EXISTS " + "favorit");
-        db.execSQL("DROP TABLE IF EXISTS " + "timeline");
-        db.execSQL("DROP TABLE IF EXISTS " + "mentionTable");
+
         db.execSQL("DROP TABLE IF EXISTS " + "trend");
         db.execSQL("DROP TABLE IF EXISTS " + "error");
-        onCreate(db);
     }
 
 

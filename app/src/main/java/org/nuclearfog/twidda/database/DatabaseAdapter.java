@@ -36,7 +36,6 @@ public class DatabaseAdapter {
 
     /**
      * Nutzer speichern
-     *
      * @param user Nutzer Information
      */
     public void storeUser(TwitterUser user) {
@@ -47,7 +46,6 @@ public class DatabaseAdapter {
 
     /**
      * Home Timeline speichern
-     *
      * @param home Tweet Liste
      */
     public void storeHomeTimeline(List<Tweet> home) {
@@ -61,7 +59,6 @@ public class DatabaseAdapter {
 
     /**
      * Erwähnungen speichern
-     *
      * @param mentions Tweet Liste
      */
     public void storeMentions(List<Tweet> mentions) {
@@ -328,7 +325,14 @@ public class DatabaseAdapter {
      */
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        db.delete("favorit", "tweetID=" + tweetId + " AND ownerID="+homeId,null);//todo change flag
+        db.delete("favorit", "tweetID=" + tweetId + " AND ownerID=" + homeId, null);
+
+        int register = getStatRegister(db, tweetId);
+        register &= ~favoritedmask;
+
+        ContentValues status = new ContentValues();
+        status.put("statusregister", register);
+        db.update("tweet", status, "tweet.tweetID=" + tweetId, null);
         db.close();
     }
 
@@ -377,8 +381,8 @@ public class DatabaseAdapter {
         long replyUserId = cursor.getLong(index);
         index = cursor.getColumnIndex("statusregister");
         int statusregister = cursor.getInt(index);
-        boolean favorited = (statusregister & 1) == 1;
-        boolean retweeted = (statusregister & 2) == 2;
+        boolean favorited = (statusregister & 1) == favoritedmask;
+        boolean retweeted = (statusregister & 2) == retweetedmask;
 
         String[] medias = parseMedia(medialinks);
 
@@ -423,7 +427,7 @@ public class DatabaseAdapter {
     }
 
 
-    private void storeStatus(Tweet tweet, int newStatusregister, SQLiteDatabase db) {
+    private void storeStatus(Tweet tweet, int newStatusRegister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
         TwitterUser mUser = tweet.user;
         Tweet rtStat = tweet.embedded;
@@ -455,14 +459,19 @@ public class DatabaseAdapter {
         }
         status.put("media",media.toString());
         int statusregister = getStatRegister(db,tweet.tweetID);
-        statusregister |= newStatusregister;
+        statusregister |= newStatusRegister;
         if (tweet.favorized)
-            statusregister |= 1;
+            statusregister |= favoritedmask;
+        else
+            statusregister &= ~favoritedmask;
+
         if (tweet.retweeted)
-            statusregister |= 1 << 1;
+            statusregister |= retweetedmask;
+        else
+            statusregister &= ~retweetedmask;
 
         status.put("statusregister", statusregister);
-        db.insertWithOnConflict("tweet",null, status, CONFLICT_REPLACE);
+        db.insertWithOnConflict("tweet", null, status, CONFLICT_IGNORE);
     }
 
 

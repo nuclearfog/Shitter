@@ -2,6 +2,10 @@ package org.nuclearfog.twidda.window;
 
 import android.app.Activity;
 import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,14 +14,15 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
+import org.nuclearfog.twidda.backend.Registration.OnConnect;
 
 
-public class LoginPage extends Activity implements OnClickListener {
+public class LoginPage extends Activity implements OnClickListener, OnConnect {
 
     private EditText pin;
 
     @Override
-    protected void onCreate(Bundle b){
+    protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.loginpage);
         pin = findViewById(R.id.pin);
@@ -61,6 +66,20 @@ public class LoginPage extends Activity implements OnClickListener {
                     }
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void connect(String link) {
+        ConnectivityManager mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (mConnect != null && mConnect.getActiveNetworkInfo() != null) {
+            if (mConnect.getActiveNetworkInfo().isConnected()) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(link));
+                startActivity(i);
+            }
+        } else {
+            Toast.makeText(this, "Keine Verbindung!", Toast.LENGTH_SHORT).show();
         }
     }
 }

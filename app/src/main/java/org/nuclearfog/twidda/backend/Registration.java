@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -59,17 +57,16 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         if(success) {
             connect.setResult(Activity.RESULT_OK);
             connect.finish();
-        } else {
-            try {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(redirectionURL));
-                connect.startActivity(i);
-            } catch (Exception err) {
-                Toast.makeText(connect, "Keine Verbindung!", Toast.LENGTH_LONG).show();
-            }
-        }
-        if(errorMessage != null) {
+        } else if (errorMessage != null) {
             Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();
+        } else {
+            ui.get().connect(redirectionURL);
         }
+
+    }
+
+    public interface OnConnect {
+        void connect(String link);
     }
 }
+
