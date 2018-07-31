@@ -471,7 +471,7 @@ public class DatabaseAdapter {
             statusregister &= ~retweetedmask;
 
         status.put("statusregister", statusregister);
-        db.insertWithOnConflict("tweet", null, status, CONFLICT_IGNORE);
+        db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
     }
 
 
