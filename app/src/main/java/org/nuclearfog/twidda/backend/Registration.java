@@ -60,9 +60,13 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             connect.setResult(Activity.RESULT_OK);
             connect.finish();
         } else {
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(redirectionURL));
-            connect.startActivity(i);
+            try {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(redirectionURL));
+                connect.startActivity(i);
+            } catch (Exception err) {
+                Toast.makeText(connect, "Keine Verbindung!", Toast.LENGTH_LONG).show();
+            }
         }
         if(errorMessage != null) {
             Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();

@@ -130,6 +130,17 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onPause() {
+        if (home != null && !home.isCancelled()) {
+            home.cancel(true);
+            timelineReload.setRefreshing(false);
+            trendReload.setRefreshing(false);
+            mentionReload.setRefreshing(false);
+        }
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if(settingChanged) {

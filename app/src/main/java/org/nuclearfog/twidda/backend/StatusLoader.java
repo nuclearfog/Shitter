@@ -50,12 +50,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private TimelineRecycler answerAdapter;
     private DatabaseAdapter database;
     private ErrorLog errorLog;
+    private SimpleDateFormat sdf;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, profile_pb;
     private String medialinks[];
     private String errorMessage = "";
     private boolean retweeted, favorited, toggleImg, verified;
-    private long tweetReplyID, homeId, replyUserId;
+    private long tweetReplyID, replyUserId;
     private int rtCount, favCount;
     private int highlight, font;
 
@@ -64,10 +65,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     public StatusLoader(Context context) {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
         font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
-        homeId = settings.getUserId();
         ui = new WeakReference<>((TweetDetail)context);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         answerAdapter = (TimelineRecycler) replyList.getAdapter();
@@ -120,7 +121,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             favCount = tweet.favorit;
             retweeted = tweet.retweeted;
             favorited = tweet.favorized;
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
             dateString = sdf.format(tweet.time);
             repliedUsername = tweet.replyName;
             replyUserId = tweet.replyUserId;
@@ -144,11 +144,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 if(!favorited) {
                     favCount++;
                     favorited = true;
+                    database.storeFavorite(tweet);
                 } else {
                     if(favCount > 0)
                         favCount--;
                     favorited = false;
-                    database.removeFavorite(tweetID,homeId);
+                    database.removeFavorite(tweetID);
                 }
             }
             else if(MODE == LOAD_REPLY) {

@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
@@ -37,6 +40,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private RecyclerView answer_list;
     private StatusLoader mStat, mReply;
     private SwipeRefreshLayout answerReload;
+    private ConnectivityManager mConnect;
     private GlobalSettings settings;
     private String username;
     private long userID;
@@ -51,6 +55,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
         settings = GlobalSettings.getInstance(this);
         boolean home = userID == settings.getUserId();
+        mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         answer_list = findViewById(R.id.answer_list);
         View retweet = findViewById(R.id.rt_button_detail);
@@ -129,10 +134,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 break;
 
             case R.id.timedetail:
-                intent = new Intent(Intent.ACTION_VIEW);
-                String tweetlink = "https://twitter.com/"+username+"/status/"+tweetID;
-                intent.setData(Uri.parse(tweetlink));
-                startActivity(intent);
+                if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                    intent = new Intent(Intent.ACTION_VIEW);
+                    String tweetlink = "https://twitter.com/" + username + "/status/" + tweetID;
+                    intent.setData(Uri.parse(tweetlink));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "Keine Verbindung!", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.profileimage_detail:
