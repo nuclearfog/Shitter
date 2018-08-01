@@ -16,7 +16,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.Registration.OnConnect;
 
-
 public class LoginPage extends Activity implements OnClickListener, OnConnect {
 
     private EditText pin;
@@ -74,9 +73,9 @@ public class LoginPage extends Activity implements OnClickListener, OnConnect {
         ConnectivityManager mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnect != null && mConnect.getActiveNetworkInfo() != null) {
             if (mConnect.getActiveNetworkInfo().isConnected()) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(link));
-                startActivity(i);
+                Intent browser = new Intent(Intent.ACTION_VIEW);
+                browser.setData(Uri.parse(link));
+                startActivity(browser);
             }
         } else {
             Toast.makeText(this, "Keine Verbindung!", Toast.LENGTH_SHORT).show();

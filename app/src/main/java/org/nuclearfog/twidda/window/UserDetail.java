@@ -19,7 +19,6 @@ import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler.OnItemClicked;
 
-
 public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     private long userID, tweetID;
@@ -103,7 +102,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     private void getExtras(@Nullable Bundle b) {
         if(b != null) {
-            userID  = b.getLong("userID");
+            userID = b.getLong("userID");
             mode = b.getLong("mode");
             if(b.containsKey("tweetID")) {
                 tweetID = b.getLong("tweetID");

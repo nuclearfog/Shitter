@@ -23,7 +23,7 @@ public class AppDatabase extends SQLiteOpenHelper
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
     private static final String trendTable = "CREATE TABLE IF NOT EXISTS trend (" +
-            "trendpos INTEGER PRIMARY KEY, trendname TEXT, trendlink TEXT);";
+            "woeID INTEGER, trendpos INTEGER, trendname TEXT, trendlink TEXT);";
 
     private static final String errorTable = "CREATE TABLE IF NOT EXISTS error (" +
             "time INTEGER PRIMARY KEY, message TEXT);";

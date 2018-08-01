@@ -119,14 +119,14 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 case TRND:
 
                     List<Trend> trends = mTwitter.getTrends(woeId);
-                    trendDb.store(trends);
+                    trendDb.store(trends, woeId);
                     trendsAdapter.setData(trends);
                     trendsAdapter.setColor(font);
                     break;
 
                 case T_LOAD:
 
-                    trendsAdapter.setData(trendDb.load());
+                    trendsAdapter.setData(trendDb.load(woeId));
                     trendsAdapter.setColor(font);
                     break;
 

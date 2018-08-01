@@ -39,28 +39,22 @@
         android:gravity="end"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/imgcount"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/img_preview"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="20dp">
-
-            <Button
-                android:id="@+id/img_preview"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:background="@drawable/preview"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/imgcount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textColor="@android:color/holo_red_dark"
-                android:textSize="24sp" />
-
-        </FrameLayout>
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/preview"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/image"

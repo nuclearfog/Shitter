@@ -32,7 +32,6 @@ import org.nuclearfog.twidda.viewadapter.WorldIdAdapter;
 
 import java.util.List;
 
-
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnColorChangedListener, OnItemSelectedListener {
 

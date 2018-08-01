@@ -46,18 +46,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private long userID;
     private long tweetID;
 
-
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.tweetpage);
+
         getExtras(getIntent().getExtras());
 
         settings = GlobalSettings.getInstance(this);
         boolean home = userID == settings.getUserId();
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        answer_list = findViewById(R.id.answer_list);
         View retweet = findViewById(R.id.rt_button_detail);
         View favorite = findViewById(R.id.fav_button_detail);
         View delete = findViewById(R.id.delete);
@@ -67,6 +66,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View profile_img = findViewById(R.id.profileimage_detail);
         View answer = findViewById(R.id.answer_button);
         answerReload = findViewById(R.id.answer_reload);
+        answer_list = findViewById(R.id.answer_list);
         answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if(home) {
             delete.setVisibility(View.VISIBLE);

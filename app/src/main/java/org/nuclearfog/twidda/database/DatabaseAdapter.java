@@ -18,14 +18,15 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
-    private static int LIMIT = 100;
-    private AppDatabase dataHelper;
+    private final int LIMIT = 100;
     private final int favoritedmask = 1;
     private final int retweetedmask = 1 << 1;
     private final int hometlmask = 1 << 2;
     private final int mentionmask = 1 << 3;
     private final int usertweetmask = 1 << 4;
     private final int replymask = 1 << 5;
+
+    private AppDatabase dataHelper;
     private long homeId;
 
     public DatabaseAdapter(Context context) {

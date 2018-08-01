@@ -29,9 +29,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         DialogInterface.OnClickListener, StatusUpload.OnTweetSending {
 
     private StatusUpload sendTweet;
+    private View imageButton, previewBtn;
     private View send_circle;
     private List<String> mediaPath;
-    private View imageButton, previewBtn;
     private TextView imgCount;
     private EditText tweet;
     private String addition="";
@@ -112,9 +112,11 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
             case R.id.sendTweet:
                 send();
                 break;
+
             case R.id.close:
                 showClosingMsg();
                 break;
+
             case R.id.image:
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -130,6 +132,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
                     startActivityForResult(i, 0);
                 }
                 break;
+
             case R.id.img_preview:
                 new ImagePopup(this).execute(mediaPath.toArray(new String[mediaPath.size()]));
                 break;

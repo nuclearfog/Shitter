@@ -36,29 +36,28 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ProfileLoader mProfile, mTweets, mFavorites;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeList, favoriteList;
-    private long userId;
+
     private TabHost mTab;
-    private boolean home;
-    private String username = "";
     private View lastView;
-    int highlight, background, font_color;
+    private long userId;
+    private boolean home;
     private int tabIndex = 0;
+    private String username = "";
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.profilepage);
+        getExtras(getIntent().getExtras());
+
         Toolbar tool = findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getExtras(getIntent().getExtras());
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
-        background = settings.getBackgroundColor();
-        font_color = settings.getFontColor();
-        highlight = settings.getHighlightColor();
+        int background = settings.getBackgroundColor();
 
         homeList = findViewById(R.id.ht_list);
         homeList.setLayoutManager(new LinearLayoutManager(this));
@@ -84,13 +83,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         txtFollower.setOnClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
+
         getProfileTweets();
     }
 
     @Override
     protected void onPause() {
-        if(mProfile != null && !mProfile.isCancelled())
+        if (mProfile != null && !mProfile.isCancelled()) {
             mProfile.cancel(true);
+        }
         if (mTweets != null && !mTweets.isCancelled()) {
             mTweets.cancel(true);
             homeReload.setRefreshing(false);
@@ -192,12 +193,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         } else {
             tlAdp = (TimelineRecycler) favoriteList.getAdapter();
         }
-        Tweet tweet = tlAdp.getData().get(position);
-
 
         Intent intent = new Intent(this,TweetDetail.class);
         Bundle bundle = new Bundle();
 
+        Tweet tweet = tlAdp.getData().get(position);
         if(tweet.embedded != null) {
             tweet = tweet.embedded;
         }
@@ -229,8 +229,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
         Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
         Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation leftOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, -1.0f,DIMENS, 0.0f,DIMENS,0.0f);
-        Animation rightOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, 1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        Animation leftOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
+        Animation rightOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
         leftIn.setDuration(ANIM_DUR);
         rightIn.setDuration(ANIM_DUR);
         leftOut.setDuration(ANIM_DUR);
@@ -273,7 +273,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private void getExtras(@Nullable Bundle b) {
         if(b != null) {
             userId = b.getLong("userID");
-            username = b.getString("username");
+            if (b.containsKey("username"))
+                username = b.getString("username");
         }
     }
 }

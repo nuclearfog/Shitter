@@ -189,6 +189,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         tab1.setContent(R.id.searchtweets);
         tab1.setIndicator("", ContextCompat.getDrawable(getApplicationContext(),R.drawable.search));
         tabhost.addTab(tab1);
+
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
         tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.user));

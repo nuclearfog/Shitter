@@ -283,15 +283,20 @@ public class MainActivity extends AppCompatActivity implements
         mentionReload = findViewById(R.id.mention);
         tabhost = findViewById(R.id.main_tabhost);
         toolbar = findViewById(R.id.profile_toolbar);
-        timelineList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        trendList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mentionList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        timelineList.setLayoutManager(new LinearLayoutManager(this));
         timelineList.setHasFixedSize(true);
+
+        trendList.setLayoutManager(new LinearLayoutManager(this));
         trendList.setHasFixedSize(true);
+
+        mentionList.setLayoutManager(new LinearLayoutManager(this));
         mentionList.setHasFixedSize(true);
+
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
