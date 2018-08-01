@@ -47,7 +47,8 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                cancel(true);
+                if (!isCancelled())
+                    cancel(true);
             }
         });
         popup.show();
