@@ -51,7 +51,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     @Override
     protected void onPause() {
-        if (uList != null && uList.isCancelled()) {
+        if (uList != null && !uList.isCancelled()) {
             uList.cancel(true);
         }
         super.onPause();

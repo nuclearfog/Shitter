@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
+import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -34,10 +35,11 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
-        OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener {
+        OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener, StatusLoader.OnMediaClick {
 
     private RecyclerView answer_list;
     private StatusLoader mStat, mReply;
+    private ImagePopup mediaContent;
     private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
@@ -89,12 +91,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onPause() {
-        if (mStat != null && mStat.isCancelled()) {
+        if (mStat != null && !mStat.isCancelled()) {
             mStat.cancel(true);
         }
-        if (mReply != null && mReply.isCancelled()) {
+        if (mReply != null && !mReply.isCancelled()) {
             mReply.cancel(true);
             answerReload.setRefreshing(false);
+        }
+        if (mediaContent != null && !mediaContent.isCancelled()) {
+            mediaContent.cancel(true);
         }
         super.onPause();
     }
@@ -200,6 +205,12 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public void onRefresh() {
         mReply = new StatusLoader(this);
         mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
+    }
+
+    @Override
+    public void onMediaClicked(String mediaLinks[]) {
+        mediaContent = new ImagePopup(this);
+        mediaContent.execute(mediaLinks);
     }
 
     private void setContent() {

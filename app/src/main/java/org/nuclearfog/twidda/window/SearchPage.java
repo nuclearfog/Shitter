@@ -87,7 +87,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     protected void onPause() {
-        if (mSearch != null && mSearch.isCancelled()) {
+        if (mSearch != null && !mSearch.isCancelled()) {
             mSearch.cancel(true);
             tweetReload.setRefreshing(false);
         }

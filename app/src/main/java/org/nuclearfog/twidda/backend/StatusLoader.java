@@ -190,7 +190,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     @Override
     protected void onPostExecute(Long mode) {
-        TweetDetail connect = ui.get();
+        final TweetDetail connect = ui.get();
         if(connect == null)
             return;
 
@@ -251,7 +251,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     mediaButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            new ImagePopup(ui.get()).execute(medialinks);
+                            connect.onMediaClicked(medialinks);
                         }
                     });
                 }
@@ -400,5 +400,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
         else
             retweetButton.setBackgroundResource(R.drawable.retweet);
+    }
+
+    public interface OnMediaClick {
+        void onMediaClicked(String medialinks[]);
     }
 }
