@@ -20,6 +20,7 @@ public class TrendDatabase {
 
     /**
      * Load trend List
+     * @param woeId Yahoo World ID
      * @return list of trends
      */
     public List<Trend> load(int woeId) {
@@ -46,6 +47,7 @@ public class TrendDatabase {
     /**
      * Speichere Twitter Trends
      * @param trends List of Trends
+     * @param woeId Yahoo World ID
      */
     public void store(final List<Trend> trends, int woeId) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();

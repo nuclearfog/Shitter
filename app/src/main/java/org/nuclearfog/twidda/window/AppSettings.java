@@ -190,8 +190,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        wId = id;
         woeIdPos = position;
+        wId = id;
     }
 
 

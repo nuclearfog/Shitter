@@ -109,9 +109,11 @@ public class MainActivity extends AppCompatActivity implements
                 intent = new Intent(this, UserProfile.class);
                 Bundle bundle = new Bundle();
                 bundle.putLong("userID",homeId);
+                bundle.putString("username", "");
                 intent.putExtras(bundle);
                 startActivity(intent);
                 return true;
+
             case R.id.action_tweet:
                 intent = new Intent(this, TweetPopup.class);
                 Bundle b = new Bundle();
@@ -119,14 +121,14 @@ public class MainActivity extends AppCompatActivity implements
                 intent.putExtras(b);
                 startActivity(intent);
                 return true;
+
             case R.id.action_settings:
                 settingChanged = true;
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 return true;
-            default:
-                return false;
         }
+        return false;
     }
 
     @Override

@@ -37,7 +37,9 @@ public class UserRecycler extends Adapter<UserRecycler.ItemHolder> implements On
     }
 
 
-    public List<TwitterUser> getData(){return mUser; }
+    public List<TwitterUser> getData() {
+        return mUser;
+    }
 
 
     public void toggleImage(boolean image) {
@@ -52,7 +54,7 @@ public class UserRecycler extends Adapter<UserRecycler.ItemHolder> implements On
 
 
     @Override
-    public long getItemId(int pos){
+    public long getItemId(int pos) {
         return mUser.get(pos).userID;
     }
 

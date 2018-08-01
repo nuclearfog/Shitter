@@ -62,13 +62,13 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
 
 
     @Override
-    public int getItemCount(){
+    public int getItemCount() {
         return tweets.size();
     }
 
 
     @Override
-    public long getItemId(int pos){
+    public long getItemId(int pos) {
         return tweets.get(pos).tweetID;
     }
 

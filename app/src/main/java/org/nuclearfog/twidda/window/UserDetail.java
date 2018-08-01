@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,17 +20,23 @@ import org.nuclearfog.twidda.viewadapter.UserRecycler.OnItemClicked;
 
 public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
-    private long userID, tweetID;
-    private long mode;
     private RecyclerView userList;
     private UserLists uList;
+    private long mode = -1;
+    private long userID = 0;
+    private long tweetID = 0;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        b = getIntent().getExtras();
+        if (b != null) {
+            userID = b.getLong("userID");
+            mode = b.getLong("mode");
+            if (b.containsKey("tweetID"))
+                tweetID = b.getLong("tweetID");
+        }
         setContentView(R.layout.userpage);
-        if(getIntent().getExtras() != null)
-            getExtras(getIntent().getExtras());
 
         userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -96,16 +101,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
             } else if (mode == 3L) {
                 getSupportActionBar().setTitle(R.string.favorite);
                 uList.execute(tweetID, UserLists.FAVORISER, -1L);
-            }
-        }
-    }
-
-    private void getExtras(@Nullable Bundle b) {
-        if(b != null) {
-            userID = b.getLong("userID");
-            mode = b.getLong("mode");
-            if(b.containsKey("tweetID")) {
-                tweetID = b.getLong("tweetID");
             }
         }
     }

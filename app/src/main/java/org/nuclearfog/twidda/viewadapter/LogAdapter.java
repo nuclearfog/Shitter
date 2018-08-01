@@ -21,7 +21,9 @@ public class LogAdapter extends Adapter<LogAdapter.ItemHolder> {
     }
 
     @Override
-    public int getItemCount(){return messages.size();}
+    public int getItemCount() {
+        return messages.size();
+    }
 
     @NonNull
     @Override

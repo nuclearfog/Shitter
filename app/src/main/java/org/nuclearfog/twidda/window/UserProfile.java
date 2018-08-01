@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -39,16 +38,20 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     private TabHost mTab;
     private View lastView;
-    private long userId;
     private boolean home;
+    private long userId = 0;
     private int tabIndex = 0;
     private String username = "";
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        b = getIntent().getExtras();
+        if (b != null) {
+            userId = b.getLong("userID");
+            username = b.getString("username");
+        }
         setContentView(R.layout.profilepage);
-        getExtras(getIntent().getExtras());
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
@@ -267,14 +270,5 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         bundle.putLong("mode",mode);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-
-    private void getExtras(@Nullable Bundle b) {
-        if(b != null) {
-            userId = b.getLong("userID");
-            if (b.containsKey("username"))
-                username = b.getString("username");
-        }
     }
 }

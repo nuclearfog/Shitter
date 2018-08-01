@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -42,16 +41,21 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
-    private String username;
-    private long userID;
-    private long tweetID;
+    private String username = "";
+    private long userID = 0;
+    private long tweetID = 0;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.tweetpage);
 
-        getExtras(getIntent().getExtras());
+        b = getIntent().getExtras();
+        if (b != null) {
+            tweetID = b.getLong("tweetID");
+            userID = b.getLong("userID");
+            username = b.getString("username");
+        }
+        setContentView(R.layout.tweetpage);
 
         settings = GlobalSettings.getInstance(this);
         boolean home = userID == settings.getUserId();
@@ -213,13 +217,5 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         mReply = new StatusLoader(this);
         mStat.execute(tweetID, StatusLoader.LOAD_TWEET);
         mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
-    }
-
-    private void getExtras(@Nullable Bundle b) {
-        if(b != null) {
-            tweetID = b.getLong("tweetID");
-            userID = b.getLong("userID");
-            username = b.getString("username");
-        }
     }
 }

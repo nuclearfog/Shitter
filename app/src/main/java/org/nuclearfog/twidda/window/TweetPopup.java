@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -34,15 +33,22 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
     private List<String> mediaPath;
     private TextView imgCount;
     private EditText tweet;
-    private String addition="";
-    private long inReplyId =-1L;
+    private String addition = "";
+    private long inReplyId = -1L;
     private int imgIndex = 0;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        b = getIntent().getExtras();
+        if (b != null) {
+            if (b.containsKey("TweetID"))
+                inReplyId = b.getLong("TweetID");
+            if (b.containsKey("Addition"))
+                addition = b.getString("Addition") + " ";
+        }
         setContentView(R.layout.tweetwindow);
-        getExtras(getIntent().getExtras());
+
         GlobalSettings settings = GlobalSettings.getInstance(this);
 
         View tweetButton = findViewById(R.id.sendTweet);
@@ -55,8 +61,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
         send_circle = findViewById(R.id.tweet_sending);
-        int tweetColor = settings.getTweetColor();
-        root.setBackgroundColor(tweetColor);
+        root.setBackgroundColor(settings.getTweetColor());
         tweet.append(addition);
 
         closeButton.setOnClickListener(this);
@@ -163,15 +168,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
             } else {
                 sendTweet.execute(tweetStr);
             }
-        }
-    }
-
-    private void getExtras(@Nullable Bundle b) {
-        if(b != null) {
-            if (b.containsKey("TweetID"))
-                inReplyId = b.getLong("TweetID");
-            if (b.containsKey("Addition"))
-                addition = b.getString("Addition") + " ";
         }
     }
 }

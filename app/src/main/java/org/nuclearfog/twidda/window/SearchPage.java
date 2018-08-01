@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -29,7 +28,6 @@ import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
-
 public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
@@ -44,8 +42,11 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        b = getIntent().getExtras();
+        if (b != null) {
+            search = b.getString("search");
+        }
         setContentView(R.layout.searchpage);
-        getExtras(getIntent().getExtras());
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         int background = settings.getBackgroundColor();
@@ -225,11 +226,5 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     private void getContent() {
         mSearch = new TwitterSearch(this);
         mSearch.execute(search);
-    }
-
-    private void getExtras(@Nullable Bundle b) {
-        if(b != null) {
-            search = b.getString("search");
-        }
     }
 }

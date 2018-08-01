@@ -41,11 +41,13 @@ public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
     }
 
 
-    public List<Trend> getData(){return trendList;}
+    public List<Trend> getData() {
+        return trendList;
+    }
 
 
     @Override
-    public int getItemCount(){
+    public int getItemCount() {
         return trendList.size();
     }
 
