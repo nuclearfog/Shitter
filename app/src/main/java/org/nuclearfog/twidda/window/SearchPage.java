@@ -35,7 +35,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
     private TabHost tabhost;
-    private View lastView;
+    private View lastView, reload;
     private String search = "";
     private int tabIndex = 0;
 
@@ -65,7 +65,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         userSearch.setBackgroundColor(background);
 
         tweetReload = findViewById(R.id.searchtweets);
-
+        reload = findViewById(R.id.search_progress);
         tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);
@@ -90,6 +90,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         if (mSearch != null && !mSearch.isCancelled()) {
             mSearch.cancel(true);
             tweetReload.setRefreshing(false);
+            reload.setVisibility(View.INVISIBLE);
         }
         super.onPause();
     }
@@ -204,8 +205,8 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
         Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
         Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation leftOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, -1.0f,DIMENS, 0.0f,DIMENS,0.0f);
-        Animation rightOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, 1.0f,DIMENS, 0.0f,DIMENS,0.0f);
+        Animation leftOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
+        Animation rightOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
         leftIn.setDuration(ANIM_DUR);
         rightIn.setDuration(ANIM_DUR);
         leftOut.setDuration(ANIM_DUR);

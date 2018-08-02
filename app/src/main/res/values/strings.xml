@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Shitter</string>
+    <string name="app_name" translatable="false">Shitter</string>
     <string name="profile_image">profile image</string>
-    <string name="pin">PIN</string>
-    <string name="verifierbutton">login</string>
-    <string name="tweet">Tweet</string>
+    <string name="pin" translatable="false">PIN</string>
+    <string name="verifierbutton" translatable="false">login</string>
+    <string name="tweet" translatable="false">Tweet</string>
     <string name="settings">Settings</string>
     <string name="back">Back</string>
-    <string name="following">Following</string>
-    <string name="follower">Follower</string>
+    <string name="following" translatable="false">Following</string>
+    <string name="follower" translatable="false">Follower</string>
     <string name="retweet">Retweet</string>
     <string name="favorite">Favorite</string>
     <string name="background">Background</string>
     <string name="font">Font</string>
-    <string name="popup">Popup</string>
+    <string name="popup" translatable="false">Popup</string>
     <string name="highlight">Highlight</string>
     <string name="verify">verified</string>
     <string name="yes_confirm">Yes</string>
@@ -21,7 +21,7 @@
     <string name="fullimg">big image</string>
     <string name="profile_locked">locked</string>
     <string name="load_factor">tweet count</string>
-    <string name="block">Block</string>
+    <string name="block" translatable="false">Block</string>
     <string name="follow">follow</string>
     <string name="retry">retry</string>
     <string name="cancel">cancel!</string>

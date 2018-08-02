@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Shitter</string>
     <string name="font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
     <string name="verify">verifiziert</string>
@@ -10,7 +9,6 @@
     <string name="profile_locked">Privat</string>
     <string name="load_factor">Anzahl Tweets</string>
     <string name="followback">Folgt dir</string>
-    <string name="block">Block</string>
     <string name="follow">folgen</string>
     <string name="retry">wiederholen</string>
     <string name="cancel">verwerfen</string>
@@ -21,21 +19,15 @@
     <string name="database">Datenbank</string>
     <string name="profile">Profil</string>
     <string name="register_link">app registrieren</string>
-    <string name="verifierbutton">Login</string>
-    <string name="pin">PIN</string>
     <string name="profile_image">profilbild</string>
-    <string name="tweet">Tweet</string>
     <string name="settings">Einstellungen</string>
     <string name="back">Zurück</string>
     <string name="image">Bilder Laden</string>
     <string name="delete_database">Datenbank Löschen</string>
     <string name="search">Suche</string>
-    <string name="following">following</string>
-    <string name="follower">follower</string>
     <string name="retweet">Retweet</string>
     <string name="favorite">favorisieren</string>
     <string name="background">Hintergrund</string>
-    <string name="popup">Popup</string>
     <string name="should_cancel_tweet">Tweet verwerfen?</string>
     <string name="delete_tweet">Tweet löschen?</string>
     <string name="connection_failed">Verbindung fehlgeschlagen</string>
