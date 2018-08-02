@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Shitter</string>
     <string name="profile_image">profile image</string>
@@ -23,7 +24,7 @@
     <string name="block">Block</string>
     <string name="follow">follow</string>
     <string name="retry">retry</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">cancel!</string>
     <string name="errorstack_button">error messages</string>
     <string name="color_settings">Color Settings</string>
     <string name="followback">follows you</string>
