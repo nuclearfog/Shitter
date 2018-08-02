@@ -45,7 +45,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private TimelineRecycler homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
-    private String errMsg = "";
+    private ErrorLog errorLog;
     private int font, highlight;
     private long homeId;
     private boolean imgEnabled;
@@ -55,6 +55,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private boolean isVerified = false;
     private boolean isLocked = false;
     private boolean blocked = false;
+    private int retryAfter = 0;
 
     /**
      * @param context Context to Activity
@@ -64,6 +65,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         ui = new WeakReference<>((UserProfile)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        errorLog = new ErrorLog(ui.get());
         font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         imgEnabled = settings.loadImages();
@@ -187,18 +189,16 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
-                int retry = err.getRetryAfter();
-                errMsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                retryAfter = err.getRetryAfter();
             }
             else if(errCode != 136) {
-                errMsg = err.getMessage();
+                String errMsg = "E: " + err.getMessage();
+                errorLog.add(errMsg);
             }
             return FAILURE;
         }
         catch(Exception err) {
-            errMsg = "Profile Load: "+err.getMessage();
-            err.printStackTrace();
-            ErrorLog errorLog = new ErrorLog(ui.get());
+            String errMsg = "E: Profile Load, " + err.getMessage();
             errorLog.add(errMsg);
             return FAILURE;
         }
@@ -285,11 +285,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         else if(mode == FAILURE)
         {
-            Toast.makeText(connect,errMsg,Toast.LENGTH_LONG).show();
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);
             favoritsReload.setRefreshing(false);
+
+            if (retryAfter > 0) {
+                Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+            }
         }
         if(!isHome && (mode==ACTION_FOLLOW||mode==ACTION_MUTE||mode==GET_INFORMATION)) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);

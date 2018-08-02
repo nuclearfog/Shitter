@@ -41,6 +41,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private String errMsg;
     private int highlight, font;
     private boolean image;
+    private int retryAfter = 0;
 
     /**
      * Main View
@@ -159,15 +160,15 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         } catch(TwitterException e) {
             int errCode = e.getErrorCode();
             if(errCode == 420) {
-                int retry = e.getRetryAfter();
-                errMsg = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                retryAfter = e.getRetryAfter();
             } else {
-                errMsg = "Fehler: "+e.getMessage();
+                String errMsg = "E: " + e.getMessage();
+                errorLog.add(errMsg);
             }
             return FAIL;
         }
         catch (Exception e) {
-            errMsg = "Main Page: "+e.getMessage();
+            String errMsg = "E: Main Page, " + e.getMessage();
             if(ui.get() != null) {
                 errorLog.add(errMsg);
             }
@@ -205,7 +206,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case FAIL:
-                Toast.makeText(connect,errMsg, Toast.LENGTH_LONG).show();
+                if (retryAfter > 0)
+                    Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
             default:
                 timelineRefresh.setRefreshing(false);
                 trendRefresh.setRefreshing(false);

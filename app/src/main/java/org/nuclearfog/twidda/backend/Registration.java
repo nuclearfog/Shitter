@@ -39,10 +39,11 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                 return true;
             }
         } catch(TwitterException e) {
-            errorMessage = e.getErrorMessage();
+            errorMessage = "E: " + e.getErrorMessage();
+            errorLog.add(errorMessage);
         }
         catch ( Exception e ) {
-            errorMessage = "Registration: "+e.getMessage();
+            errorMessage = "E: Registration, " + e.getMessage();
             errorLog.add(errorMessage);
         }
         return false;

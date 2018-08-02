@@ -73,7 +73,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             }
             return true;
         } catch (Exception err) {
-            errorLog.add("Image load: "+err.getMessage());
+            errorLog.add("E: " + err.getMessage());
             return false;
         }
     }

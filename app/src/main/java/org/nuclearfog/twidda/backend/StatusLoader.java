@@ -403,6 +403,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     }
 
     public interface OnMediaClick {
-        void onMediaClicked(String medialinks[]);
+        void onMediaClicked(String mediaLinks[]);
     }
 }

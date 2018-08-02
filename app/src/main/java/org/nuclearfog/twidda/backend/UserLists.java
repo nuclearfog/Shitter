@@ -28,8 +28,8 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private TwitterEngine mTwitter;
     private UserRecycler usrAdp;
     private ErrorLog errorLog;
-    private String errorMessage;
     private boolean imageLoad;
+    private int retryAfter = 0;
 
     /**
      *@see UserDetail
@@ -73,14 +73,14 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         catch(TwitterException err) {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
-                int retry = err.getRetryAfter();
-                errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                retryAfter = err.getRetryAfter();
             } else {
-                errorMessage = "Fehler: "+err.getMessage();
+                String errorMessage = "E: " + err.getMessage();
+                errorLog.add(errorMessage);
             }
             return false;
         } catch(Exception err) {
-            errorMessage = "Userlist: "+err.getMessage();
+            String errorMessage = "E: Userlist, " + err.getMessage();
             errorLog.add(errorMessage);
             return false;
         }
@@ -97,7 +97,8 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         if(success) {
             usrAdp.notifyDataSetChanged();
         } else {
-            Toast.makeText(ui.get(),errorMessage,Toast.LENGTH_LONG).show();
+            if (retryAfter > 0)
+                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
         }
     }
 }

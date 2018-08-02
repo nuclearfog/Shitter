@@ -107,7 +107,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         switch(v.getId()) {
             case R.id.delete_db:
                new AlertDialog.Builder(this)
-                .setMessage("Datenbank löschen?")
+                       .setMessage(R.string.delete_database_popup)
                 .setNegativeButton(R.string.no_confirm, null)
                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -239,6 +239,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         settings.setWoeId(wId);
         settings.setRowLimit(row);
         settings.setWoeIdSelection(woeIdPos);
-        Toast.makeText(getApplicationContext(),"Gespeichert",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.saved, Toast.LENGTH_SHORT).show();
     }
 }

@@ -147,7 +147,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
     private void showClosingMsg() {
         if( !addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-            alerta.setMessage("Tweet verwerfen?");
+            alerta.setMessage(R.string.should_cancel_tweet);
             alerta.setPositiveButton(R.string.yes_confirm,this);
             alerta.setNegativeButton(R.string.no_confirm,null);
             alerta.show();

@@ -49,7 +49,7 @@ public class LoginPage extends Activity implements OnClickListener, OnConnect {
                 if(!twitterPin.trim().isEmpty()) {
                     new Registration(this).execute(twitterPin);
                 } else {
-                    Toast.makeText(getApplicationContext(),"PIN eingeben!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.enter_pin, Toast.LENGTH_LONG).show();
                 }
                 break;
 
@@ -59,9 +59,9 @@ public class LoginPage extends Activity implements OnClickListener, OnConnect {
                     String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
                     if(text.matches("\\d++\n?")) {
                         pin.setText(text);
-                        Toast.makeText(getApplicationContext(),"Eingefügt!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.pin_added, Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(getApplicationContext(),"Falsches Format!",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), R.string.false_format, Toast.LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -78,7 +78,7 @@ public class LoginPage extends Activity implements OnClickListener, OnConnect {
                 startActivity(browser);
             }
         } else {
-            Toast.makeText(this, "Keine Verbindung!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
         }
     }
 }

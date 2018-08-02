@@ -54,7 +54,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
             }
             return true;
         } catch(Exception err) {
-            errorLog.add("Status Upload: "+err.getMessage());
+            errorLog.add("E: Upload, " + err.getMessage());
             return false;
         }
     }
@@ -66,11 +66,11 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
             return;
         Context context = connect.getApplicationContext();
         if(success) {
-            Toast.makeText(context, "gesendet!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.tweet_sent, Toast.LENGTH_LONG).show();
             connect.finish();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
-            builder.setTitle("Fehler").setMessage("Tweet wurde nicht gesendet!")
+            builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
                     .setPositiveButton(R.string.retry, this)
                     .setNegativeButton(R.string.cancel, this).show();
             View load = ui.get().findViewById(R.id.tweet_sending);

@@ -136,7 +136,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
             case R.id.delete:
                 AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-                alerta.setMessage("Tweet löschen?");
+                alerta.setMessage(R.string.delete_tweet);
                 alerta.setPositiveButton(R.string.yes_confirm, this);
                 alerta.setNegativeButton(R.string.no_confirm, this);
                 alerta.show();
@@ -145,11 +145,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             case R.id.timedetail:
                 if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                     intent = new Intent(Intent.ACTION_VIEW);
-                    String tweetlink = "https://twitter.com/" + username + "/status/" + tweetID;
-                    intent.setData(Uri.parse(tweetlink));
+                    String tweetLink = "https://twitter.com/" + username + "/status/" + tweetID;
+                    intent.setData(Uri.parse(tweetLink));
                     startActivity(intent);
                 } else {
-                    Toast.makeText(this, "Keine Verbindung!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 }
                 break;
 

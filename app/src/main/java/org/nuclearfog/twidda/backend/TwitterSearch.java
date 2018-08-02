@@ -28,8 +28,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private ErrorLog errorLog;
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
-    private String errorMessage;
     private boolean imageLoad;
+    private int retryAfter = 0;
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
@@ -83,13 +83,13 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
-                int retry = err.getRetryAfter();
-                errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
+                retryAfter = err.getRetryAfter();
             } else {
-                errorMessage = "Fehler beim Laden: "+err.getErrorMessage();
+                String errorMessage = "E: " + err.getErrorMessage();
+                errorLog.add(errorMessage);
             }
         } catch(Exception err) {
-            errorMessage = "Twitter search: "+err.getMessage();
+            String errorMessage = "E: Twitter search, " + err.getMessage();
             errorLog.add(errorMessage);
         }
         return null;
@@ -101,8 +101,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         SearchPage connect = ui.get();
         if(connect == null)
             return;
-        if(errorMessage != null) {
-            Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();
+        if (retryAfter > 0) {
+            Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
         }
 
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
