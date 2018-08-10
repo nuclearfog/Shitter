@@ -17,7 +17,8 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
     private ErrorLog errorLog;
-    private String errorMessage;
+    private boolean failure = false;
+    private String errorMessage = "E: Registration, ";
     private String redirectionURL = "";
 
 
@@ -39,12 +40,14 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                 return true;
             }
         } catch(TwitterException e) {
-            errorMessage = "E: " + e.getErrorMessage();
+            errorMessage += e.getErrorMessage();
             errorLog.add(errorMessage);
+            failure = true;
         }
         catch ( Exception e ) {
-            errorMessage = "E: Registration, " + e.getMessage();
+            errorMessage += e.getMessage();
             errorLog.add(errorMessage);
+            failure = true;
         }
         return false;
     }
@@ -58,10 +61,10 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         if(success) {
             connect.setResult(Activity.RESULT_OK);
             connect.finish();
-        } else if (errorMessage != null) {
+        } else if (failure) {
             Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();
         } else {
-            ui.get().connect(redirectionURL);
+            connect.connect(redirectionURL);
         }
 
     }

@@ -55,6 +55,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private boolean isVerified = false;
     private boolean isLocked = false;
     private boolean blocked = false;
+    private String errMsg = "E: Profile Load, ";
     private int retryAfter = 0;
 
     /**
@@ -192,13 +193,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 retryAfter = err.getRetryAfter();
             }
             else if(errCode != 136) {
-                String errMsg = "E: " + err.getMessage();
+                errMsg += err.getMessage();
                 errorLog.add(errMsg);
             }
             return FAILURE;
         }
         catch(Exception err) {
-            String errMsg = "E: Profile Load, " + err.getMessage();
+            errMsg += err.getMessage();
             errorLog.add(errMsg);
             return FAILURE;
         }

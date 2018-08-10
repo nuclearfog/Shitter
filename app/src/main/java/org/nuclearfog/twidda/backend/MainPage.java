@@ -38,9 +38,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private TrendRecycler trendsAdapter;
     private ErrorLog errorLog;
     private int woeId;
-    private String errMsg;
     private int highlight, font;
     private boolean image;
+    private String errMsg = "E: Main Page, ";
     private int retryAfter = 0;
 
     /**
@@ -162,16 +162,13 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             if(errCode == 420) {
                 retryAfter = e.getRetryAfter();
             } else {
-                String errMsg = "E: " + e.getMessage();
-                errorLog.add(errMsg);
+                errMsg += e.getMessage();
             }
             return FAIL;
         }
         catch (Exception e) {
-            String errMsg = "E: Main Page, " + e.getMessage();
-            if(ui.get() != null) {
-                errorLog.add(errMsg);
-            }
+            errMsg += e.getMessage();
+            errorLog.add(errMsg);
             return FAIL;
         }
         return MODE;
@@ -206,8 +203,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case FAIL:
-                if (retryAfter > 0)
-                    Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+                if (retryAfter > 0) {
+                    Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
+                }
             default:
                 timelineRefresh.setRefreshing(false);
                 trendRefresh.setRefreshing(false);

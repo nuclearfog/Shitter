@@ -54,7 +54,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, profile_pb;
     private String medialinks[];
-    private String errorMessage = "";
+    private String errorMessage = "Status load: ";
     private boolean retweeted, favorited, toggleImg, verified;
     private long tweetReplyID, replyUserId;
     private int rtCount, favCount;
@@ -162,6 +162,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     answers = mTwitter.getAnswers(scrNameStr, tweetID, tweetID);
                 }
                 answerAdapter.setData(answers);
+                answerAdapter.toggleImage(toggleImg);
                 answerAdapter.setColor(highlight, font);
                 if(answers.size() > 0 && database.containStatus(tweetID))
                     database.storeReplies(answers);
@@ -170,18 +171,18 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         catch(TwitterException e) {
             int errCode = e.getErrorCode();
             if(errCode == 144) {
-                database.removeStatus(tweetID);
+                database.removeStatus(tweetID); //TODO
                 errorMessage = "Tweet nicht gefunden!\nID:"+tweetID;
             } else if(errCode == 420) {
-                int retry = e.getRetryAfter();
+                int retry = e.getRetryAfter(); //TODO
                 errorMessage = "Rate limit erreicht!\n Weiter in "+retry+" Sekunden";
             } else {
-                errorMessage = "Fehler: "+e.getMessage();
+                errorMessage += e.getMessage();
             }
             return ERROR;
         }
         catch(Exception err) {
-            errorMessage = "Status load: "+err.getMessage();
+            errorMessage += err.getMessage();
             errorLog.add(errorMessage);
             return ERROR;
         }
@@ -245,16 +246,16 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             }
             if(toggleImg) {
                 Picasso.with(ui.get()).load(profile_pb).into(profile_img);
-                if(medialinks != null && medialinks.length != 0) {
-                    View mediaButton = connect.findViewById(R.id.image_attach);
-                    mediaButton.setVisibility(View.VISIBLE);
-                    mediaButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            connect.onMediaClicked(medialinks);
-                        }
-                    });
-                }
+            }
+            if (medialinks != null && medialinks.length != 0) {
+                View mediaButton = connect.findViewById(R.id.image_attach);
+                mediaButton.setVisibility(View.VISIBLE);
+                mediaButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        connect.onMediaClicked(medialinks);
+                    }
+                });
             }
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);

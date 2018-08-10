@@ -48,4 +48,5 @@
     <string name="error_sending_tweet">error while sending</string>
     <string name="tweet_sent">tweet sent</string>
     <string name="error">Error!</string>
+    <string name="tweet_delete">Delete</string>
 </resources>

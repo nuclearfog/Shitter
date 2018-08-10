@@ -13,6 +13,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -43,13 +46,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
     private String username = "";
+    private boolean isHome;
     private long userID = 0;
     private long tweetID = 0;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-
         b = getIntent().getExtras();
         if (b != null) {
             tweetID = b.getLong("tweetID");
@@ -58,13 +61,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         }
         setContentView(R.layout.tweetpage);
 
+        Toolbar tool = findViewById(R.id.tweet_toolbar);
+        setSupportActionBar(tool);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         settings = GlobalSettings.getInstance(this);
-        boolean home = userID == settings.getUserId();
+        isHome = userID == settings.getUserId();
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         View retweet = findViewById(R.id.rt_button_detail);
         View favorite = findViewById(R.id.fav_button_detail);
-        View delete = findViewById(R.id.delete);
         View txtRt = findViewById(R.id.no_rt_detail);
         View txtFav = findViewById(R.id.no_fav_detail);
         View date = findViewById(R.id.timedetail);
@@ -73,16 +80,12 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         answerReload = findViewById(R.id.answer_reload);
         answer_list = findViewById(R.id.answer_list);
         answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        if(home) {
-            delete.setVisibility(View.VISIBLE);
-        }
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
         answerReload.setOnRefreshListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
         date.setOnClickListener(this);
-        delete.setOnClickListener(this);
         profile_img.setOnClickListener(this);
         answer.setOnClickListener(this);
         setContent();
@@ -101,6 +104,31 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             mediaContent.cancel(true);
         }
         super.onPause();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.tweet, m); //TODO add more
+        if (isHome) {
+            m.findItem(R.id.delete_tweet).setVisible(true);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_tweet:
+                AlertDialog.Builder alerta = new AlertDialog.Builder(this);
+                alerta.setMessage(R.string.delete_tweet);
+                alerta.setPositiveButton(R.string.yes_confirm, this);
+                alerta.setNegativeButton(R.string.no_confirm, this);
+                alerta.show();
+                return true;
+
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -133,18 +161,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 startActivity(intent);
                 break;
 
-            case R.id.delete:
-                AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-                alerta.setMessage(R.string.delete_tweet);
-                alerta.setPositiveButton(R.string.yes_confirm, this);
-                alerta.setNegativeButton(R.string.no_confirm, this);
-                alerta.show();
-                break;
-
             case R.id.timedetail:
                 if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                     intent = new Intent(Intent.ACTION_VIEW);
-                    String tweetLink = "https://twitter.com/" + username + "/status/" + tweetID;
+                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
                     intent.setData(Uri.parse(tweetLink));
                     startActivity(intent);
                 } else {

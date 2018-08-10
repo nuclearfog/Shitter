@@ -29,6 +29,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private UserRecycler usrAdp;
     private ErrorLog errorLog;
     private boolean imageLoad;
+    private String errorMessage = "E: Userlist, ";
     private int retryAfter = 0;
 
     /**
@@ -75,12 +76,12 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
             if(errCode == 420) {
                 retryAfter = err.getRetryAfter();
             } else {
-                String errorMessage = "E: " + err.getMessage();
+                errorMessage += err.getMessage();
                 errorLog.add(errorMessage);
             }
             return false;
         } catch(Exception err) {
-            String errorMessage = "E: Userlist, " + err.getMessage();
+            errorMessage += err.getMessage();
             errorLog.add(errorMessage);
             return false;
         }
@@ -98,7 +99,9 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
             usrAdp.notifyDataSetChanged();
         } else {
             if (retryAfter > 0)
-                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
         }
     }
 }

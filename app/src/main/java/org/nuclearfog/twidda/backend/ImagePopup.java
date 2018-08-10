@@ -29,6 +29,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     private LayoutInflater inf;
     private ErrorLog errorLog;
     private int position = 0;
+    private String errMsg = "E: Image Popup, ";
 
     public ImagePopup(Context context) {
         popup = new Dialog(context);
@@ -73,7 +74,8 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             }
             return true;
         } catch (Exception err) {
-            errorLog.add("E: " + err.getMessage());
+            errMsg += err.getMessage();
+            errorLog.add(errMsg);
             return false;
         }
     }

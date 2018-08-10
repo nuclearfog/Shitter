@@ -10,10 +10,10 @@
         android:background="@android:color/transparent">
 
         <android.support.design.widget.CollapsingToolbarLayout
+
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/tweet_toolbar">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
                 android:layout_width="match_parent"

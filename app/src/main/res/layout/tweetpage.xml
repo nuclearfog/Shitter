@@ -3,21 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:fitsSystemWindows="false">
+        android:background="@android:color/transparent">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/tweet_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:toolbarId="@+id/tweet_toolbar">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -25,6 +22,11 @@
                 android:layout_margin="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/tweet_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/bar_wide" />
 
                 <TextView
                     android:id="@+id/answer_reference_detail"
@@ -152,8 +154,8 @@
 
                 <Button
                     android:id="@+id/answer_button"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:background="@drawable/chat" />
 
                 <TextView
@@ -169,8 +171,8 @@
 
                 <Button
                     android:id="@+id/rt_button_detail"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:background="@drawable/retweet" />
 
                 <TextView
@@ -186,8 +188,8 @@
 
                 <Button
                     android:id="@+id/fav_button_detail"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:layout_width="24dp"
+                    android:layout_height="20dp"
                     android:background="@drawable/favorite" />
 
                 <TextView
@@ -200,13 +202,6 @@
                     android:ems="10"
                     android:singleLine="true"
                     android:textSize="12sp" />
-
-                <Button
-                    android:id="@+id/delete"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:background="@drawable/cross"
-                    android:visibility="invisible" />
 
             </LinearLayout>
 

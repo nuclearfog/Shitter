@@ -20,7 +20,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class TwitterSearch extends AsyncTask<String, Void, Void> {
+public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
     private TimelineRecycler searchAdapter;
     private UserRecycler userAdapter;
@@ -29,6 +29,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     private WeakReference<SearchPage> ui;
     private int highlight, font_color;
     private boolean imageLoad;
+    private String errorMessage = "E: Twitter search, ";
     private int retryAfter = 0;
 
     public TwitterSearch(Context context) {
@@ -58,7 +59,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
 
     @Override
-    protected Void doInBackground(String... search) {
+    protected Boolean doInBackground(String... search) {
         String strSearch = search[0];
         long id = 1L;
         try {
@@ -79,32 +80,35 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             searchAdapter.setColor(highlight,font_color);
             searchAdapter.toggleImage(imageLoad);
             userAdapter.toggleImage(imageLoad);
+            return true;
 
         } catch (TwitterException err) {
             int errCode = err.getErrorCode();
             if(errCode == 420) {
                 retryAfter = err.getRetryAfter();
             } else {
-                String errorMessage = "E: " + err.getErrorMessage();
+                errorMessage += err.getMessage();
                 errorLog.add(errorMessage);
             }
         } catch(Exception err) {
-            String errorMessage = "E: Twitter search, " + err.getMessage();
+            errorMessage += err.getMessage();
             errorLog.add(errorMessage);
         }
-        return null;
+        return false;
     }
 
 
     @Override
-    protected void onPostExecute(Void v) {
+    protected void onPostExecute(Boolean success) {
         SearchPage connect = ui.get();
         if(connect == null)
             return;
-        if (retryAfter > 0) {
-            Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+        if (!success) {
+            if (retryAfter > 0)
+                Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
         }
-
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
         View circleLoad = connect.findViewById(R.id.search_progress);
         circleLoad.setVisibility(View.INVISIBLE);
