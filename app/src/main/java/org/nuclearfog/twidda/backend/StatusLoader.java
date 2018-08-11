@@ -31,7 +31,6 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import twitter4j.TwitterException;
 
@@ -65,7 +64,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     public StatusLoader(Context context) {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
+        sdf = settings.getDateFormatter();
         font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();

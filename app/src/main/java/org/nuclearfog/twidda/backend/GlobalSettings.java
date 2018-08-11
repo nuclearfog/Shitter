@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 public class GlobalSettings {
 
     private static GlobalSettings ourInstance;
 
     private SharedPreferences settings;
+
+    private SimpleDateFormat sdf;
 
     private int background_color;
     private int font_color;
@@ -40,6 +45,7 @@ public class GlobalSettings {
         key1 = settings.getString("key1","");
         key2 = settings.getString("key2","");
         userId = settings.getLong("userID",-1L);
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY); // TODO editable date format
     }
 
     public int getBackgroundColor() {
@@ -87,6 +93,10 @@ public class GlobalSettings {
 
     public long getUserId(){
         return userId;
+    }
+
+    public SimpleDateFormat getDateFormatter() {
+        return sdf;
     }
 
 

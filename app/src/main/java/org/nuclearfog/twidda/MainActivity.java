@@ -3,6 +3,7 @@ package org.nuclearfog.twidda;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.backend.GlobalSettings;
@@ -30,8 +32,7 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
-public class MainActivity extends AppCompatActivity implements
-        SwipeRefreshLayout.OnRefreshListener, TabHost.OnTabChangeListener,
+public class MainActivity extends AppCompatActivity implements OnRefreshListener, OnTabChangeListener,
         TimelineRecycler.OnItemClicked, TrendRecycler.OnItemClicked
 {
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
@@ -55,21 +56,61 @@ public class MainActivity extends AppCompatActivity implements
         TwitterEngine mTwitter = TwitterEngine.getInstance(this);
         settings = GlobalSettings.getInstance(this);
         boolean login = mTwitter.loggedIn();
+
         if( !login ) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i,REQ_CODE);
-        } else {
-            login();
         }
+
+        homeId = settings.getUserId();
+        timelineList = findViewById(R.id.tl_list);
+        trendList = findViewById(R.id.tr_list);
+        mentionList = findViewById(R.id.m_list);
+        timelineReload = findViewById(R.id.timeline);
+        trendReload = findViewById(R.id.trends);
+        mentionReload = findViewById(R.id.mention);
+        tabhost = findViewById(R.id.main_tabhost);
+        toolbar = findViewById(R.id.profile_toolbar);
+
+        timelineList.setLayoutManager(new LinearLayoutManager(this));
+        timelineList.setHasFixedSize(true);
+
+        trendList.setLayoutManager(new LinearLayoutManager(this));
+        trendList.setHasFixedSize(true);
+
+        mentionList.setLayoutManager(new LinearLayoutManager(this));
+        mentionList.setHasFixedSize(true);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        tabhost.setup();
+        TabSpec tab1 = tabhost.newTabSpec("timeline");
+        tab1.setContent(R.id.timeline);
+        tab1.setIndicator("", getDrawable(R.drawable.home));
+        tabhost.addTab(tab1);
+        TabSpec tab2 = tabhost.newTabSpec("trends");
+        tab2.setContent(R.id.trends);
+        tab2.setIndicator("", getDrawable(R.drawable.hash));
+        tabhost.addTab(tab2);
+        TabSpec tab3 = tabhost.newTabSpec("mention");
+        tab3.setContent(R.id.mention);
+        tab3.setIndicator("", getDrawable(R.drawable.mention));
+        tabhost.addTab(tab3);
+
+        tabhost.setOnTabChangedListener(this);
+        timelineReload.setOnRefreshListener(this);
+        trendReload.setOnRefreshListener(this);
+        mentionReload.setOnRefreshListener(this);
+        setTabContent();
     }
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);
         if(reqCode == REQ_CODE) {
-            if(returnCode == RESULT_OK) {
-                login();
-            } else {
+            if (returnCode != RESULT_OK) {
                 finish();
             }
         }
@@ -272,52 +313,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
         }
-    }
-
-
-    private void login() {
-        homeId = settings.getUserId();
-        timelineList = findViewById(R.id.tl_list);
-        trendList = findViewById(R.id.tr_list);
-        mentionList = findViewById(R.id.m_list);
-        timelineReload = findViewById(R.id.timeline);
-        trendReload = findViewById(R.id.trends);
-        mentionReload = findViewById(R.id.mention);
-        tabhost = findViewById(R.id.main_tabhost);
-        toolbar = findViewById(R.id.profile_toolbar);
-
-        timelineList.setLayoutManager(new LinearLayoutManager(this));
-        timelineList.setHasFixedSize(true);
-
-        trendList.setLayoutManager(new LinearLayoutManager(this));
-        trendList.setHasFixedSize(true);
-
-        mentionList.setLayoutManager(new LinearLayoutManager(this));
-        mentionList.setHasFixedSize(true);
-
-        setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        tabhost.setup();
-        TabSpec tab1 = tabhost.newTabSpec("timeline");
-        tab1.setContent(R.id.timeline);
-        tab1.setIndicator("",getDrawable(R.drawable.home));
-        tabhost.addTab(tab1);
-        TabSpec tab2 = tabhost.newTabSpec("trends");
-        tab2.setContent(R.id.trends);
-        tab2.setIndicator("",getDrawable(R.drawable.hash));
-        tabhost.addTab(tab2);
-        TabSpec tab3 = tabhost.newTabSpec("mention");
-        tab3.setContent(R.id.mention);
-        tab3.setIndicator("",getDrawable(R.drawable.mention));
-        tabhost.addTab(tab3);
-
-        tabhost.setOnTabChangedListener(this);
-        timelineReload.setOnRefreshListener(this);
-        trendReload.setOnRefreshListener(this);
-        mentionReload.setOnRefreshListener(this);
-        setTabContent();
     }
 
 

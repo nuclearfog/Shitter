@@ -25,7 +25,6 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import twitter4j.TwitterException;
 
@@ -44,9 +43,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private String profileImage, link, dateString;
     private TimelineRecycler homeTl, homeFav;
     private WeakReference<UserProfile> ui;
+    private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
     private ErrorLog errorLog;
-    private int font, highlight;
     private long homeId;
     private boolean imgEnabled;
     private boolean isHome = false;
@@ -66,9 +65,10 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         ui = new WeakReference<>((UserProfile)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        sdf = settings.getDateFormatter();
         errorLog = new ErrorLog(ui.get());
-        font = settings.getFontColor();
-        highlight = settings.getHighlightColor();
+        int font = settings.getFontColor();
+        int highlight = settings.getHighlightColor();
         imgEnabled = settings.loadImages();
         homeId = settings.getUserId();
         RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
@@ -78,10 +78,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
         if(homeTl == null) {
             homeTl = new TimelineRecycler(ui.get());
+            homeTl.setColor(highlight, font);
+            homeTl.toggleImage(imgEnabled);
             profileTweets.setAdapter(homeTl);
         }
         if(homeFav == null) {
             homeFav = new TimelineRecycler(ui.get());
+            homeFav.setColor(highlight, font);
+            homeFav.toggleImage(imgEnabled);
             profileFavorits.setAdapter(homeFav);
         }
     }
@@ -122,12 +126,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             follower = Integer.toString(user.follower);
             following = Integer.toString(user.following);
             profileImage = user.profileImg;
-            Date d = new Date(user.created);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
-            dateString = "seit "+ sdf.format(d);
+            Date time = new Date(user.created);
+            dateString = "seit " + sdf.format(time);
             description = description.replace('\n', ' ');
 
-            if(MODE == GET_TWEETS)
+            if (MODE == GET_TWEETS && !isLocked)
             {
                 List<Tweet> tweets;
 
@@ -144,18 +147,15 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     }
                 }
                 homeTl.setData(tweets);
-                homeTl.setColor(highlight,font);
-                homeTl.toggleImage(imgEnabled);
-            }
-            else if(MODE == GET_FAVS)
+            } else if (MODE == GET_FAVS && !isLocked)
             {
                 List<Tweet> favorits;
-
                 if(homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
                     database.storeUserFavs(favorits,userId);
                     favorits.addAll(homeFav.getData());
+
                 } else {
                     favorits = database.getUserFavs(userId);
                     if(favorits.size() == 0 && !isLocked) {
@@ -164,8 +164,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     }
                 }
                 homeFav.setData(favorits);
-                homeFav.setColor(highlight,font);
-                homeFav.toggleImage(imgEnabled);
             }
             else if(MODE == ACTION_FOLLOW)
             {
