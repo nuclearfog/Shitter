@@ -49,4 +49,5 @@
     <string name="tweet_sent">tweet sent</string>
     <string name="error">Error!</string>
     <string name="tweet_delete">Delete</string>
+    <string name="get_tweetlink">Open in Browser</string>
 </resources>

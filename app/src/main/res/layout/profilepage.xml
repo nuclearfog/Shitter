@@ -18,7 +18,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
@@ -118,16 +119,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:drawableStart="@drawable/following"
-                                android:drawablePadding="2dp" />
+                                android:drawablePadding="4dp"
+                                android:drawableStart="@drawable/following" />
 
                             <TextView
                                 android:id="@+id/follower"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:drawableStart="@drawable/follower"
-                                android:drawablePadding="2dp" />
+                                android:drawablePadding="4dp"
+                                android:drawableStart="@drawable/follower" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -145,9 +146,8 @@
                     android:id="@+id/location"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
+                    android:drawablePadding="4dp"
                     android:drawableStart="@drawable/location"
-                    android:drawablePadding="2dp"
                     android:singleLine="true"
                     android:textSize="12sp"
                     android:visibility="gone" />
@@ -156,10 +156,9 @@
                     android:id="@+id/links"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
                     android:autoLink="web"
+                    android:drawablePadding="4dp"
                     android:drawableStart="@drawable/link"
-                    android:drawablePadding="2dp"
                     android:linksClickable="true"
                     android:singleLine="true"
                     android:textSize="12sp"
@@ -169,6 +168,8 @@
                     android:id="@+id/profile_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/calendar"
                     android:singleLine="true"
                     android:textSize="12sp" />
 
@@ -232,6 +233,7 @@
             </LinearLayout>
 
         </TabHost>
+
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -74,7 +74,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View favorite = findViewById(R.id.fav_button_detail);
         View txtRt = findViewById(R.id.no_rt_detail);
         View txtFav = findViewById(R.id.no_fav_detail);
-        View date = findViewById(R.id.timedetail);
         View profile_img = findViewById(R.id.profileimage_detail);
         View answer = findViewById(R.id.answer_button);
         answerReload = findViewById(R.id.answer_reload);
@@ -85,7 +84,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         answerReload.setOnRefreshListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
-        date.setOnClickListener(this);
         profile_img.setOnClickListener(this);
         answer.setOnClickListener(this);
         setContent();
@@ -126,6 +124,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 alerta.show();
                 return true;
 
+            case R.id.tweet_link:
+                if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    intent.setData(Uri.parse(tweetLink));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
             default:
                 return false;
         }
@@ -159,17 +168,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 bundle.putLong("mode",3L);
                 intent.putExtras(bundle);
                 startActivity(intent);
-                break;
-
-            case R.id.timedetail:
-                if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                    intent = new Intent(Intent.ACTION_VIEW);
-                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
-                    intent.setData(Uri.parse(tweetLink));
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
-                }
                 break;
 
             case R.id.profileimage_detail:

@@ -71,7 +71,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         ui = new WeakReference<>((TweetDetail)context);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         answerAdapter = (TimelineRecycler) replyList.getAdapter();
-        database = new DatabaseAdapter(ui.get());
+        database = new DatabaseAdapter(context);
         errorLog = new ErrorLog(context);
         if(answerAdapter == null) {
             answerAdapter = new TimelineRecycler(ui.get());

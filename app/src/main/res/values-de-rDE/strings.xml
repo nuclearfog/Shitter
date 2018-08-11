@@ -41,4 +41,5 @@
     <string name="tweet_sent">Tweet gesendet</string>
     <string name="error">Fehler!</string>
     <string name="tweet_delete">Tweet löschen</string>
+    <string name="get_tweetlink">Im Browser öffnen</string>
 </resources>
