@@ -12,39 +12,47 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.ErrorLog;
 
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 
 public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
 
-    private WeakReference<Context> ui;
     private Dialog popup;
     private Bitmap imgArray[];
-    private LayoutInflater inf;
+    private LayoutInflater inflater;
     private ErrorLog errorLog;
     private int position = 0;
     private String errMsg = "E: Image Popup, ";
 
     public ImagePopup(Context context) {
         popup = new Dialog(context);
-        ui = new WeakReference<>(context);
-        inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater = LayoutInflater.from(context);
         errorLog = new ErrorLog(context);
     }
 
     @Override
+    @SuppressLint("InflateParams")
     protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        popup.setCanceledOnTouchOutside(false);
         if(popup.getWindow() != null)
             popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        ProgressBar mCircle = new ProgressBar(ui.get());
-        popup.setContentView(mCircle);
+        View load = inflater.inflate(R.layout.item_load, null, false);
+        View cancelButton = load.findViewById(R.id.kill_button);
+        popup.setContentView(load);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+                if (!isCancelled())
+                    cancel(true);
+            }
+        });
         popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
@@ -84,10 +92,11 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean result) {
         if(result) {
-            View content = inf.inflate(R.layout.imagepreview,null,false);
+            View content = inflater.inflate(R.layout.imagepreview, null, false);
             final ImageView mImg = content.findViewById(R.id.fullSizeImage);
             setImage(imgArray[position], mImg);
             popup.setContentView(content);
+            popup.setCanceledOnTouchOutside(true);
             final int size = imgArray.length;
             if(size > 0) {
                 final Button left = content.findViewById(R.id.image_left);

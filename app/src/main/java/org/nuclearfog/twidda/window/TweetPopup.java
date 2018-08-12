@@ -23,13 +23,11 @@ import org.nuclearfog.twidda.backend.StatusUpload;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TweetPopup extends AppCompatActivity implements OnClickListener,
         DialogInterface.OnClickListener, StatusUpload.OnTweetSending {
 
     private StatusUpload sendTweet;
     private View imageButton, previewBtn;
-    private View send_circle;
     private List<String> mediaPath;
     private TextView imgCount;
     private EditText tweet;
@@ -60,7 +58,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         previewBtn  = findViewById(R.id.img_preview);
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
-        send_circle = findViewById(R.id.tweet_sending);
         root.setBackgroundColor(settings.getTweetColor());
         tweet.append(addition);
 
@@ -110,9 +107,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if(send_circle.getVisibility() == View.VISIBLE)
-            return;
-
         switch(v.getId()){
             case R.id.sendTweet:
                 send();

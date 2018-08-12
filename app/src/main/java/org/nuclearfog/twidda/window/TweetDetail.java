@@ -26,6 +26,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusLoader;
+import org.nuclearfog.twidda.backend.StatusLoader.OnMediaClick;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
@@ -37,7 +38,7 @@ import static android.content.DialogInterface.BUTTON_POSITIVE;
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
-        OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener, StatusLoader.OnMediaClick {
+        OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener, OnMediaClick {
 
     private RecyclerView answer_list;
     private StatusLoader mStat, mReply;
@@ -106,7 +107,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.tweet, m); //TODO add more
+        getMenuInflater().inflate(R.menu.tweet, m);
         if (isHome) {
             m.findItem(R.id.delete_tweet).setVisible(true);
         }

@@ -1,9 +1,14 @@
 package org.nuclearfog.twidda.backend;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -26,8 +31,10 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
 
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
+    private LayoutInflater inflater;
     private UserRecycler usrAdp;
     private ErrorLog errorLog;
+    private Dialog popup;
     private boolean imageLoad;
     private String errorMessage = "E: Userlist, ";
     private int returnCode = 0;
@@ -39,6 +46,8 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         imageLoad = settings.loadImages();
         errorLog = new ErrorLog(context);
+        inflater = LayoutInflater.from(context);
+        popup = new Dialog(context);
 
         ui = new WeakReference<>((UserDetail)context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -46,6 +55,35 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
 
         usrAdp = new UserRecycler(ui.get());
         userList.setAdapter(usrAdp);
+    }
+
+    @Override
+    @SuppressLint("InflateParams")
+    protected void onPreExecute() {
+        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        popup.setCanceledOnTouchOutside(false);
+        if (popup.getWindow() != null)
+            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        View load = inflater.inflate(R.layout.item_load, null, false);
+        View cancelButton = load.findViewById(R.id.kill_button);
+        popup.setContentView(load);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+                if (!isCancelled())
+                    cancel(true);
+            }
+        });
+        popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (!isCancelled())
+                    cancel(true);
+            }
+        });
+        popup.show();
     }
 
 
@@ -87,11 +125,10 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
 
 
     @Override
+    @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean success) {
         if(ui.get() == null)
             return;
-        View mProgress = ui.get().findViewById(R.id.userlist_progress);
-        mProgress.setVisibility(View.INVISIBLE);
 
         if(success) {
             usrAdp.notifyDataSetChanged();
@@ -101,5 +138,6 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
             else
                 Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
         }
+        popup.dismiss();
     }
 }

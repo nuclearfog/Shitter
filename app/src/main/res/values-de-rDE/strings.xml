@@ -11,7 +11,7 @@
     <string name="followback">Folgt dir</string>
     <string name="follow">folgen</string>
     <string name="retry">wiederholen</string>
-    <string name="cancel">verwerfen</string>
+    <string name="cancel">abbrechen</string>
     <string name="errorstack_button">fehlermeldungen</string>
     <string name="color_settings">Farb einstellungen</string>
     <string name="data_load">Datenverbrauch</string>
@@ -44,7 +44,7 @@
     <string name="get_tweetlink">Im Browser öffnen</string>
     <string name="tweet_not_found">Tweet wurde nicht gefunden</string>
     <string name="unfollow">entfolgen</string>
-    <string name="block" translatable="false">blocken</string>
+    <string name="block">blocken</string>
     <string name="unblock">entblocken</string>
     <string name="followed">gefolgt!</string>
     <string name="unfollowed">entfolgt!</string>
@@ -57,4 +57,6 @@
     <string name="tweet_removed">Tweet gelöscht!</string>
     <string name="answering">antwort @</string>
     <string name="sent_from">"gesendet von: "</string>
+    <string name="progress_kill">abbrechen</string>
+    <string name="save">speichern</string>
 </resources>

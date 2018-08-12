@@ -5,7 +5,7 @@
     <item
         android:id="@+id/save_settings"
         android:icon="@drawable/save"
-        android:title="save"
+        android:title="@string/save"
         app:showAsAction="always" />
     <item
         android:id="@+id/back_settings"

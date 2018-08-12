@@ -64,4 +64,6 @@
     <string name="tweet_removed">Tweet removed!</string>
     <string name="answering">answering @</string>
     <string name="sent_from">sent from:</string>
+    <string name="progress_kill">stop loading</string>
+    <string name="save">save</string>
 </resources>

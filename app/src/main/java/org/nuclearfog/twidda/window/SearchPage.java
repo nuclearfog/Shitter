@@ -1,8 +1,9 @@
 package org.nuclearfog.twidda.window;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
@@ -22,6 +24,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.TwitterSearch;
+import org.nuclearfog.twidda.backend.TwitterSearch.OnDismiss;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -29,13 +32,14 @@ import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
-        OnRefreshListener, OnTabChangeListener, OnItemClicked {
+        OnRefreshListener, OnTabChangeListener, OnItemClicked, OnDismiss {
 
     private RecyclerView tweetSearch,userSearch;
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
     private TabHost tabhost;
-    private View lastView, reload;
+    private Dialog popup;
+    private View lastView;
     private String search = "";
     private int tabIndex = 0;
 
@@ -56,6 +60,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        popup = new Dialog(this);
         tweetSearch = findViewById(R.id.tweet_result);
         tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         tweetSearch.setBackgroundColor(background);
@@ -65,7 +70,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         userSearch.setBackgroundColor(background);
 
         tweetReload = findViewById(R.id.searchtweets);
-        reload = findViewById(R.id.search_progress);
         tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
         setTabs(tabhost);
@@ -75,6 +79,16 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         getContent();
     }
 
+    @Override
+    protected void onPause() {
+        if (mSearch != null && !mSearch.isCancelled()) {
+            mSearch.cancel(true);
+            tweetReload.setRefreshing(false);
+        }
+        if (popup.isShowing())
+            popup.dismiss();
+        super.onPause();
+    }
 
     @Override
     public void onBackPressed() {
@@ -86,16 +100,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     }
 
     @Override
-    protected void onPause() {
-        if (mSearch != null && !mSearch.isCancelled()) {
-            mSearch.cancel(true);
-            tweetReload.setRefreshing(false);
-            reload.setVisibility(View.INVISIBLE);
-        }
-        super.onPause();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
         final SearchView searchQuery = (SearchView)m.findItem(R.id.new_search).getActionView();
@@ -103,12 +107,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                search = s;
-                searchQuery.setQueryHint(search);
-                findViewById(R.id.search_progress).setVisibility(View.VISIBLE);
-                tweetSearch.setAdapter(null);
-                userSearch.setAdapter(null);
-                getContent();
+                Intent intent = new Intent(getApplicationContext(), SearchPage.class);
+                intent.putExtra("search", s);
+                startActivity(intent);
                 return true;
             }
             @Override
@@ -152,6 +153,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                     startActivity(intent);
                 }
                 break;
+
             case R.id.user_result:
                 UserRecycler uAdp = (UserRecycler) userSearch.getAdapter();
                 TwitterUser user = uAdp.getData().get(position);
@@ -166,7 +168,8 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     public void onRefresh() {
-        getContent();
+        mSearch = new TwitterSearch(this);
+        mSearch.execute(search);
     }
 
     @Override
@@ -181,12 +184,12 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     private void setTabs(TabHost tabhost) {
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
         tab1.setContent(R.id.searchtweets);
-        tab1.setIndicator("", ContextCompat.getDrawable(getApplicationContext(),R.drawable.search));
+        tab1.setIndicator("", getDrawable(R.drawable.search));
         tabhost.addTab(tab1);
 
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
-        tab2.setIndicator("",ContextCompat.getDrawable(getApplicationContext(),R.drawable.user));
+        tab2.setIndicator("", getDrawable(R.drawable.user));
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
     }
@@ -216,8 +219,33 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         lastView = tabhost.getCurrentView();
     }
 
+    @SuppressLint("InflateParams")
     private void getContent() {
+        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        popup.setCanceledOnTouchOutside(false);
+        if (popup.getWindow() != null)
+            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        View load = getLayoutInflater().inflate(R.layout.item_load, null, false);
+        View cancelButton = load.findViewById(R.id.kill_button);
+        popup.setContentView(load);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mSearch != null && !mSearch.isCancelled())
+                    mSearch.cancel(true);
+                popup.dismiss();
+            }
+        });
+        popup.show();
+
         mSearch = new TwitterSearch(this);
         mSearch.execute(search);
+    }
+
+    @Override
+    public void dismiss() {
+        if (popup != null)
+            popup.dismiss();
     }
 }

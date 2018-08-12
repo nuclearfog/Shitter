@@ -1,12 +1,15 @@
 package org.nuclearfog.twidda.backend;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.view.Window;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -19,23 +22,48 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
+    private LayoutInflater inflater;
     private ErrorLog errorLog;
+    private Dialog popup;
     private String[] path;
 
 
     public StatusUpload(Context context, String[] path) {
         ui = new WeakReference<>((TweetPopup)context);
         mTwitter = TwitterEngine.getInstance(context);
+        inflater = LayoutInflater.from(context);
         errorLog = new ErrorLog(context);
+        popup = new Dialog(context);
         this.path = path;
     }
 
     @Override
+    @SuppressLint("InflateParams")
     protected void onPreExecute() {
-        EditText tweet = ui.get().findViewById(R.id.tweet_input);
-        View load = ui.get().findViewById(R.id.tweet_sending);
-        load.setVisibility(View.VISIBLE);
-        tweet.setFocusable(false);
+        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        popup.setCanceledOnTouchOutside(false);
+        if (popup.getWindow() != null)
+            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        View load = inflater.inflate(R.layout.item_load, null, false);
+        View cancelButton = load.findViewById(R.id.kill_button);
+        popup.setContentView(load);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popup.dismiss();
+                if (!isCancelled())
+                    cancel(true);
+            }
+        });
+        popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (!isCancelled())
+                    cancel(true);
+            }
+        });
+        popup.show();
     }
 
 
@@ -64,33 +92,23 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         TweetPopup connect = ui.get();
         if(connect == null)
             return;
-        Context context = connect.getApplicationContext();
+
+        popup.dismiss();
         if(success) {
-            Toast.makeText(context, R.string.tweet_sent, Toast.LENGTH_LONG).show();
+            Toast.makeText(connect, R.string.tweet_sent, Toast.LENGTH_LONG).show();
             connect.finish();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
             builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
                     .setPositiveButton(R.string.retry, this)
-                    .setNegativeButton(R.string.cancel, this).show();
-            View load = ui.get().findViewById(R.id.tweet_sending);
-            load.setVisibility(View.INVISIBLE);
+                    .setNegativeButton(R.string.cancel, null).show();
         }
     }
 
     @Override
     public void onClick(DialogInterface d, int id) {
         TweetPopup tweetPopup = ui.get();
-        switch(id) {
-            case DialogInterface.BUTTON_POSITIVE:
-                if(tweetPopup != null)
-                    tweetPopup.send();
-                break;
-            case DialogInterface.BUTTON_NEGATIVE:
-                if(tweetPopup != null)
-                    tweetPopup.finish();
-                break;
-        }
+        tweetPopup.send();
     }
 
     public interface OnTweetSending {

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -109,10 +108,13 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
             }
         }
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
-        View circleLoad = connect.findViewById(R.id.search_progress);
-        circleLoad.setVisibility(View.INVISIBLE);
         searchAdapter.notifyDataSetChanged();
         userAdapter.notifyDataSetChanged();
         tweetReload.setRefreshing(false);
+        connect.dismiss();
+    }
+
+    public interface OnDismiss {
+        void dismiss();
     }
 }
