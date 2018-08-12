@@ -90,16 +90,16 @@ public class TwitterEngine {
      *
      * @param twitterPin PIN for accessing account
      * @throws TwitterException     if pin is false
-     * @throws NullPointerException if Request-Token is not set
      * @see #initKeys(String, String)
      */
-    public void initialize(String twitterPin) throws TwitterException, NullPointerException {
-        if (reqToken == null) throw new NullPointerException("empty request token");
-        AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
-        String key1 = accessToken.getToken();
-        String key2 = accessToken.getTokenSecret();
-        initKeys(key1, key2);
-        saveCurrentUser(key1, key2);
+    public void initialize(String twitterPin) throws TwitterException {
+        if (reqToken != null) {
+            AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
+            String key1 = accessToken.getToken();
+            String key2 = accessToken.getTokenSecret();
+            initKeys(key1, key2);
+            saveCurrentUser(key1, key2);
+        }
     }
 
     /**

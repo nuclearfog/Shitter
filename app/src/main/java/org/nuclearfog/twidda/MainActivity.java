@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private Toolbar toolbar;
     private TabHost tabhost;
     private int tabIndex = 0;
-    private long homeId = 0L;
     private boolean settingChanged = false;
     private final int REQ_CODE = 1;
 
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             startActivityForResult(i,REQ_CODE);
         }
 
-        homeId = settings.getUserId();
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
         mentionList = findViewById(R.id.m_list);
@@ -144,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         Intent intent;
         switch(item.getItemId()) {
             case R.id.action_profile:
+                long homeId = settings.getUserId();
                 intent = new Intent(this, UserProfile.class);
                 intent.putExtra("userID", homeId);
                 intent.putExtra("username", "");
