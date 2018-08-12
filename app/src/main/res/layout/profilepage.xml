@@ -120,7 +120,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:drawablePadding="4dp"
-                                android:drawableStart="@drawable/following" />
+                                android:drawableStart="@drawable/following"
+                                android:visibility="invisible" />
 
                             <TextView
                                 android:id="@+id/follower"
@@ -128,7 +129,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:drawablePadding="4dp"
-                                android:drawableStart="@drawable/follower" />
+                                android:drawableStart="@drawable/follower"
+                                android:visibility="invisible" />
                         </LinearLayout>
 
                     </LinearLayout>
@@ -171,7 +173,8 @@
                     android:drawablePadding="4dp"
                     android:drawableStart="@drawable/calendar"
                     android:singleLine="true"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="invisible" />
 
             </LinearLayout>
 

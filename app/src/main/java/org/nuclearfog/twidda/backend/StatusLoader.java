@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -53,11 +52,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, profile_pb;
     private String medialinks[];
-    private String errorMessage = "Status load: ";
     private boolean retweeted, favorited, toggleImg, verified;
     private long tweetReplyID, replyUserId;
     private int rtCount, favCount;
     private int highlight, font;
+    private String errorMessage = "Status load: ";
     private int returnCode = 0;
 
     private WeakReference<TweetDetail> ui;
@@ -218,21 +217,18 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             txtAns.setText(ansStr);
 
             if(tweetReplyID > 1) {
-                String reply = "antwort @"+repliedUsername;
+                String reply = connect.getString(R.string.answering);
+                reply += repliedUsername;
                 replyName.setText(reply);
                 replyName.setVisibility(View.VISIBLE);
                 replyName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ui.get(),TweetDetail.class);
-                        Bundle bundle = new Bundle();
-
-                        bundle.putLong("tweetID",tweetReplyID);
-                        bundle.putLong("userID",replyUserId);
-                        bundle.putString("username",repliedUsername);
-
-                        intent.putExtras(bundle);
-                        ui.get().startActivity(intent);
+                        intent.putExtra("tweetID", tweetReplyID);
+                        intent.putExtra("userID", replyUserId);
+                        intent.putExtra("username", repliedUsername);
+                        connect.startActivity(intent);
                     }
                 });
             }
@@ -258,33 +254,33 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             setIcons(favoriteButton, retweetButton);
         }
         else if(mode == RETWEET) {
-            String toastMsg;
             TextView txtRet = connect.findViewById(R.id.no_rt_detail);
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
             setIcons(favoriteButton, retweetButton);
             String rtStr = Integer.toString(rtCount);
             txtRet.setText(rtStr);
+            int textId;
             if(retweeted) {
-                toastMsg = "retweeted";
+                textId = R.string.retweeted;
             } else {
-                toastMsg = "retweet entfernt!";
+                textId = R.string.unretweet;
             }
-            Toast.makeText(ui.get(), toastMsg, Toast.LENGTH_SHORT).show();
+            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
         }
         else if(mode == FAVORITE) {
-            String toastMsg;
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
             Button favoriteButton = connect.findViewById(R.id.fav_button_detail);
             TextView txtFav = connect.findViewById(R.id.no_fav_detail);
             setIcons(favoriteButton, retweetButton);
             String favStr = Integer.toString(favCount);
             txtFav.setText(favStr);
+            int textId;
             if(favorited)
-                toastMsg = "zu favoriten hinzugefügt!";
+                textId = R.string.favorited;
             else
-                toastMsg = "aus favoriten entfernt!";
-            Toast.makeText(ui.get(), toastMsg, Toast.LENGTH_SHORT).show();
+                textId = R.string.unfavorited;
+            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
         }
         else if(mode == LOAD_REPLY) {
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
@@ -295,7 +291,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {
-            Toast.makeText(ui.get(), "Tweet gelöscht", Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
             ui.get().finish();
         }
         else if(mode == ERROR) {
@@ -314,20 +310,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     }
 
 
-    private String formatString(String input) {
-        StringBuilder output = new StringBuilder("gesendet von: ");
-        boolean openTag = false;
-        for(int i = 0 ; i < input.length() ; i++){
-            char current = input.charAt(i);
-            if(current == '>' && !openTag){
-                openTag = true;
-            } else if(current == '<'){
-                openTag = false;
-            } else if(openTag) {
-                output.append(current);
-            }
-        }
-        return output.toString();
+    private String formatString(String text) {
+        String prefix = ui.get().getString(R.string.sent_from);
+        text = text.substring(text.indexOf('>') + 1);
+        text = text.substring(0, text.indexOf('<'));
+        return prefix + text;
     }
 
 
@@ -377,15 +364,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 Spanned s = (Spanned) tv.getText();
                 String search = s.subSequence(start, end).toString();
                 Intent intent = new Intent(ui.get(), SearchPage.class);
-                Bundle bundle = new Bundle();
                 if(search.startsWith("#"))
-                    bundle.putString("Addition", search);
-                bundle.putString("search", search);
-                intent.putExtras(bundle);
+                    intent.putExtra("Addition", search);
+                intent.putExtra("search", search);
                 ui.get().startActivity(intent);
             }
             @Override
-            public void updateDrawState(TextPaint ds){
+            public void updateDrawState(TextPaint ds) {
                 ds.setColor(highlight);
                 ds.setUnderlineText(false);
             }

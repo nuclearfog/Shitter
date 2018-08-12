@@ -21,7 +21,7 @@
     <string name="fullimg">big image</string>
     <string name="profile_locked">locked</string>
     <string name="load_factor">tweet count</string>
-    <string name="block" translatable="false">Block</string>
+    <string name="block">Block</string>
     <string name="follow">follow</string>
     <string name="retry">retry</string>
     <string name="cancel">cancel!</string>
@@ -51,4 +51,17 @@
     <string name="tweet_delete">Delete</string>
     <string name="get_tweetlink">Open in Browser</string>
     <string name="tweet_not_found">Tweet not found</string>
+    <string name="unfollow">unfollow</string>
+    <string name="unblock">unblock</string>
+    <string name="followed">followed</string>
+    <string name="unfollowed">unfollowed!</string>
+    <string name="blocked">blocked</string>
+    <string name="unblocked">unblocked</string>
+    <string name="favorited">favorited!</string>
+    <string name="unfavorited">favorite removed!</string>
+    <string name="retweeted">retweeted!</string>
+    <string name="unretweet">retweet removed!</string>
+    <string name="tweet_removed">Tweet removed!</string>
+    <string name="answering">answering @</string>
+    <string name="sent_from">sent from:</string>
 </resources>

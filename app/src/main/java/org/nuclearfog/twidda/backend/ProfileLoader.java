@@ -225,6 +225,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             txtFollower.setText(follower);
             txtFollowing.setText(following);
             txtCreated.setText(dateString);
+            txtFollower.setVisibility(View.VISIBLE);
+            txtFollowing.setVisibility(View.VISIBLE);
+            txtCreated.setVisibility(View.VISIBLE);
             if(location!= null && !location.isEmpty()) {
                 txtLocation.setText(location);
                 txtLocation.setVisibility(View.VISIBLE);
@@ -265,20 +268,20 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             favoritsReload.setRefreshing(false);
         }
         else if(mode == ACTION_FOLLOW) {
-            String text;
+            int textId;
             if(isFollowing)
-                text = "gefolgt!";
+                textId = R.string.followed;
             else
-                text = "entfolgt!";
-            Toast.makeText(ui.get(),text,Toast.LENGTH_LONG).show();
+                textId = R.string.unfollowed;
+            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
         }
         else if(mode == ACTION_MUTE) {
-            String text;
+            int textId;
             if(blocked)
-                text = "gesperrt!";
+                textId = R.string.blocked;
             else
-                text = "entsperrt!";
-            Toast.makeText(ui.get(),text,Toast.LENGTH_LONG).show();
+                textId = R.string.unblocked;
+            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
         }
         else if(mode == FAILURE)
         {
@@ -300,18 +303,18 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 MenuItem blockIcon = tool.getMenu().getItem(2);
                 if (isFollowing) {
                     followIcon.setIcon(R.drawable.follow_enabled);
-                    followIcon.setTitle("entfolgen");
+                    followIcon.setTitle(R.string.unfollow);
                 } else {
                     followIcon.setIcon(R.drawable.follow);
-                    followIcon.setTitle("folgen");
+                    followIcon.setTitle(R.string.follow);
                 }
                 if (blocked) {
                     blockIcon.setIcon(R.drawable.block_enabled);
-                    blockIcon.setTitle("entblocken");
+                    blockIcon.setTitle(R.string.unblock);
                     followIcon.setVisible(false);
                 } else {
                     blockIcon.setIcon(R.drawable.block);
-                    blockIcon.setTitle("block");
+                    blockIcon.setTitle(R.string.block);
                     followIcon.setVisible(true);
                 }
             }
