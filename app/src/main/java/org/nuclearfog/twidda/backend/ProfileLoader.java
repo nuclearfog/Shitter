@@ -66,7 +66,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         sdf = settings.getDateFormatter();
-        errorLog = new ErrorLog(ui.get());
+        errorLog = new ErrorLog(context);
         int font = settings.getFontColor();
         int highlight = settings.getHighlightColor();
         imgEnabled = settings.loadImages();
