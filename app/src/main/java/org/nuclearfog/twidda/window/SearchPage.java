@@ -126,12 +126,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         switch(id) {
             case R.id.search_tweet:
             intent = new Intent(this, TweetPopup.class);
-            Bundle b = new Bundle();
-            b.putLong("TweetID", -1);
+                intent.putExtra("TweetID", -1);
             if(search.startsWith("#")) {
-                b.putString("Addition", search);
+                intent.putExtra("Addition", search);
             }
-            intent.putExtras(b);
             startActivity(intent);
             break;
         }
@@ -140,20 +138,17 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @Override
     public void onItemClick(View view, ViewGroup parent, int position) {
+        Intent intent;
         switch(parent.getId()) {
             case R.id.tweet_result:
                 if(!tweetReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) tweetSearch.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
 
-                    Intent intent = new Intent(this,TweetDetail.class);
-                    Bundle bundle = new Bundle();
-
-                    bundle.putLong("tweetID",tweet.tweetID);
-                    bundle.putLong("userID",tweet.user.userID);
-                    bundle.putString("username", tweet.user.screenname);
-
-                    intent.putExtras(bundle);
+                    intent = new Intent(this, TweetDetail.class);
+                    intent.putExtra("tweetID", tweet.tweetID);
+                    intent.putExtra("userID", tweet.user.userID);
+                    intent.putExtra("username", tweet.user.screenname);
                     startActivity(intent);
                 }
                 break;
@@ -161,13 +156,10 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                 UserRecycler uAdp = (UserRecycler) userSearch.getAdapter();
                 TwitterUser user = uAdp.getData().get(position);
 
-                Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                Bundle bundle = new Bundle();
-
-                bundle.putLong("userID",user.userID);
-                bundle.putString("username", user.screenname);
-                profile.putExtras(bundle);
-                startActivity(profile);
+                intent = new Intent(getApplicationContext(), UserProfile.class);
+                intent.putExtra("userID", user.userID);
+                intent.putExtra("username", user.screenname);
+                startActivity(intent);
                 break;
         }
     }

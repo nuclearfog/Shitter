@@ -138,14 +138,6 @@ public class TwitterEngine {
         load = settings.getRowLimit();
     }
 
-
-    /**
-     * @return if Twitter4J is registered
-     */
-    public boolean loggedIn() {
-        return login;
-    }
-
     /**
      * recall Keys from Shared-Preferences
      * & initialize Twitter

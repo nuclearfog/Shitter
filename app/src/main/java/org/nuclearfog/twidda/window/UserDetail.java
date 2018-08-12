@@ -78,30 +78,32 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         TwitterUser user = uAdp.getData().get(position);
         long userID = user.userID;
         String username = user.screenname;
-        Intent intent = new Intent(getApplicationContext(), UserProfile.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong("userID",userID);
-        bundle.putString("username", username);
-        intent.putExtras(bundle);
+        Intent intent = new Intent(this, UserProfile.class);
+        intent.putExtra("userID", userID);
+        intent.putExtra("username", username);
         startActivity(intent);
     }
 
     private void getUsers() {
         uList = new UserLists(UserDetail.this);
-        if(getSupportActionBar() != null) {
-            if (mode == 0L) {
-                getSupportActionBar().setTitle(R.string.following);
-                uList.execute(userID, UserLists.FOLLOWING, -1L);
-            } else if (mode == 1L) {
-                getSupportActionBar().setTitle(R.string.follower);
-                uList.execute(userID, UserLists.FOLLOWERS, -1L);
-            } else if (mode == 2L) {
-                getSupportActionBar().setTitle(R.string.retweet);
-                uList.execute(tweetID, UserLists.RETWEETER, -1L);
-            } else if (mode == 3L) {
-                getSupportActionBar().setTitle(R.string.favorite);
-                uList.execute(tweetID, UserLists.FAVORISER, -1L);
-            }
+        String title = "";
+
+        if (mode == 0L) {
+            title = getString(R.string.following);
+            uList.execute(userID, UserLists.FOLLOWING, -1L);
+        } else if (mode == 1L) {
+            title = getString(R.string.follower);
+            uList.execute(userID, UserLists.FOLLOWERS, -1L);
+        } else if (mode == 2L) {
+            title = getString(R.string.retweet);
+            uList.execute(tweetID, UserLists.RETWEETER, -1L);
+        } else if (mode == 3L) {
+            title = getString(R.string.favorite);
+            uList.execute(tweetID, UserLists.FAVORISER, -1L);
+        }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
         }
     }
 }

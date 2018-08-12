@@ -133,11 +133,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         mProfile = new ProfileLoader(this);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
-                Bundle extra = new Bundle();
                 intent = new Intent(this, TweetPopup.class);
                 if(!home)
-                    extra.putString("Addition", username);
-                intent.putExtras(extra);
+                    intent.putExtra("Addition", username);
                 startActivity(intent);
                 return true;
 
@@ -197,18 +195,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             tlAdp = (TimelineRecycler) favoriteList.getAdapter();
         }
 
-        Intent intent = new Intent(this,TweetDetail.class);
-        Bundle bundle = new Bundle();
-
         Tweet tweet = tlAdp.getData().get(position);
         if(tweet.embedded != null) {
             tweet = tweet.embedded;
         }
-        bundle.putLong("tweetID",tweet.tweetID);
-        bundle.putLong("userID",tweet.user.userID);
-        bundle.putString("username", tweet.user.screenname);
 
-        intent.putExtras(bundle);
+        Intent intent = new Intent(this, TweetDetail.class);
+        intent.putExtra("tweetID", tweet.tweetID);
+        intent.putExtra("userID", tweet.user.userID);
+        intent.putExtra("username", tweet.user.screenname);
         startActivity(intent);
     }
 
@@ -265,10 +260,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     private void getConnection(long mode) {
         Intent intent = new Intent(this, UserDetail.class);
-        Bundle bundle = new Bundle();
-        bundle.putLong("userID",userId);
-        bundle.putLong("mode",mode);
-        intent.putExtras(bundle);
+        intent.putExtra("userID", userId);
+        intent.putExtra("mode", mode);
         startActivity(intent);
     }
 }

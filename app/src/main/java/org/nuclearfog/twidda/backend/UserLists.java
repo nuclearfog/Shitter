@@ -30,7 +30,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private ErrorLog errorLog;
     private boolean imageLoad;
     private String errorMessage = "E: Userlist, ";
-    private int retryAfter = 0;
+    private int returnCode = 0;
 
     /**
      *@see UserDetail
@@ -72,10 +72,8 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
             return true;
         }
         catch(TwitterException err) {
-            int errCode = err.getErrorCode();
-            if(errCode == 420) {
-                retryAfter = err.getRetryAfter();
-            } else {
+            returnCode = err.getErrorCode();
+            if (returnCode != 420) {
                 errorMessage += err.getMessage();
                 errorLog.add(errorMessage);
             }
@@ -98,7 +96,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         if(success) {
             usrAdp.notifyDataSetChanged();
         } else {
-            if (retryAfter > 0)
+            if (returnCode == 420)
                 Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();

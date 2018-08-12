@@ -42,4 +42,5 @@
     <string name="error">Fehler!</string>
     <string name="tweet_delete">Tweet löschen</string>
     <string name="get_tweetlink">Im Browser öffnen</string>
+    <string name="tweet_not_found">Tweet wurde nicht gefunden</string>
 </resources>

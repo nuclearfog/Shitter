@@ -55,7 +55,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private boolean isLocked = false;
     private boolean blocked = false;
     private String errMsg = "E: Profile Load, ";
-    private int retryAfter = 0;
+    private int returnCode = 0;
 
     /**
      * @param context Context to Activity
@@ -186,11 +186,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 }
             }
         } catch (TwitterException err) {
-            int errCode = err.getErrorCode();
-            if(errCode == 420) {
-                retryAfter = err.getRetryAfter();
-            }
-            else if(errCode != 136) {
+            returnCode = err.getErrorCode();
+
+            if (returnCode != 136) {
                 errMsg += err.getMessage();
                 errorLog.add(errMsg);
             }
@@ -285,12 +283,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         else if(mode == FAILURE)
         {
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
-            SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
+            SwipeRefreshLayout favoriteReload = connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);
-            favoritsReload.setRefreshing(false);
+            favoriteReload.setRefreshing(false);
 
-            if (retryAfter > 0) {
+            if (returnCode == 420) {
                 Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
             }
         }
         if(!isHome && (mode==ACTION_FOLLOW||mode==ACTION_MUTE||mode==GET_INFORMATION)) {

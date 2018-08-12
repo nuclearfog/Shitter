@@ -21,7 +21,6 @@ import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.MainPage;
-import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TrendRecycler;
@@ -53,9 +52,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainpage);
-        TwitterEngine mTwitter = TwitterEngine.getInstance(this);
+
         settings = GlobalSettings.getInstance(this);
-        boolean login = mTwitter.loggedIn();
+        boolean login = settings.getLogin();
 
         if( !login ) {
             Intent i = new Intent(this, LoginPage.class);
@@ -128,9 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             @Override
             public boolean onQueryTextSubmit(String s) {
                 Intent intent = new Intent(getApplicationContext(), SearchPage.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("search", s);
-                intent.putExtras(bundle);
+                intent.putExtra("search", s);
                 startActivity(intent);
                 return false;
             }
@@ -148,18 +145,14 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         switch(item.getItemId()) {
             case R.id.action_profile:
                 intent = new Intent(this, UserProfile.class);
-                Bundle bundle = new Bundle();
-                bundle.putLong("userID",homeId);
-                bundle.putString("username", "");
-                intent.putExtras(bundle);
+                intent.putExtra("userID", homeId);
+                intent.putExtra("username", "");
                 startActivity(intent);
                 return true;
 
             case R.id.action_tweet:
                 intent = new Intent(this, TweetPopup.class);
-                Bundle b = new Bundle();
-                b.putLong("TweetID", -1);
-                intent.putExtras(b);
+                intent.putExtra("TweetID", -1);
                 startActivity(intent);
                 return true;
 
@@ -168,8 +161,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 return true;
+
+            default:
+                return false;
         }
-        return false;
     }
 
     @Override
@@ -238,12 +233,14 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 tweet.setVisible(true);
                 setting.setVisible(false);
                 break;
+
             case "trends":
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
                 setting.setVisible(true);
                 break;
+
             case "mention":
                 searchQuery.onActionViewCollapsed();
                 profile.setVisible(false);
@@ -261,54 +258,46 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 if(!timelineReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) timelineList.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-
-                    Intent intent = new Intent(this,TweetDetail.class);
-                    Bundle bundle = new Bundle();
-
                     if(tweet.embedded != null) {
                         tweet = tweet.embedded;
                     }
-                    bundle.putLong("tweetID",tweet.tweetID);
-                    bundle.putLong("userID",tweet.user.userID);
-                    bundle.putString("username", tweet.user.screenname);
 
-                    intent.putExtras(bundle);
+                    Intent intent = new Intent(this, TweetDetail.class);
+                    intent.putExtra("tweetID", tweet.tweetID);
+                    intent.putExtra("userID", tweet.user.userID);
+                    intent.putExtra("username", tweet.user.screenname);
                     startActivity(intent);
                 }
                 break;
+
             case R.id.tr_list:
                 if(!trendReload.isRefreshing()) {
                     TrendRecycler trend = (TrendRecycler) trendList.getAdapter();
                     String search = trend.getData().get(position).trend;
                     Intent intent = new Intent(this, SearchPage.class);
-                    Bundle bundle = new Bundle();
                     if(search.startsWith("#")) {
-                        bundle.putString("Addition", search);
-                        bundle.putString("search", search);
+                        intent.putExtra("Addition", search);
+                        intent.putExtra("search", search);
                     } else {
                         search = '\"'+ search + '\"';
-                        bundle.putString("search", search);
+                        intent.putExtra("search", search);
                     }
-                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 break;
+
             case R.id.m_list:
                 if(!mentionReload.isRefreshing()) {
                     TimelineRecycler tlAdp = (TimelineRecycler) mentionList.getAdapter();
                     Tweet tweet = tlAdp.getData().get(position);
-
-                    Intent intent = new Intent(this,TweetDetail.class);
-                    Bundle bundle = new Bundle();
-
                     if(tweet.embedded != null) {
                         tweet = tweet.embedded;
                     }
-                    bundle.putLong("tweetID",tweet.tweetID);
-                    bundle.putLong("userID",tweet.user.userID);
-                    bundle.putString("username", tweet.user.screenname);
 
-                    intent.putExtras(bundle);
+                    Intent intent = new Intent(this, TweetDetail.class);
+                    intent.putExtra("tweetID", tweet.tweetID);
+                    intent.putExtra("userID", tweet.user.userID);
+                    intent.putExtra("username", tweet.user.screenname);
                     startActivity(intent);
                 }
                 break;
@@ -325,27 +314,27 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         trendList.setBackgroundColor(background);
         mentionList.setBackgroundColor(background);
 
-        TimelineRecycler homeRc = (TimelineRecycler) timelineList.getAdapter();
-        TrendRecycler trendRc = (TrendRecycler) trendList.getAdapter();
-        TimelineRecycler mentRc = (TimelineRecycler) mentionList.getAdapter();
+        TimelineRecycler hAdapter = (TimelineRecycler) timelineList.getAdapter();
+        TrendRecycler tAdapter = (TrendRecycler) trendList.getAdapter();
+        TimelineRecycler mAdapter = (TimelineRecycler) mentionList.getAdapter();
 
-        if(homeRc == null || homeRc.getItemCount() == 0) {
+        if (hAdapter == null || hAdapter.getItemCount() == 0) {
             new MainPage(this).execute(MainPage.H_LOAD,1);
         } else {
-            homeRc.setColor(highlight,fontColor);
-            homeRc.notifyDataSetChanged();
+            hAdapter.setColor(highlight, fontColor);
+            hAdapter.notifyDataSetChanged();
         }
-        if(mentRc == null || mentRc.getItemCount() == 0) {
-            new MainPage(this).execute(MainPage.M_LOAD,1);
-        } else {
-            mentRc.setColor(highlight,fontColor);
-            mentRc.notifyDataSetChanged();
-        }
-        if(trendRc == null || trendRc.getItemCount() == 0) {
+        if (tAdapter == null || tAdapter.getItemCount() == 0) {
             new MainPage(this).execute(MainPage.T_LOAD,1);
         } else {
-            trendRc.setColor(fontColor);
-            trendRc.notifyDataSetChanged();
+            tAdapter.setColor(fontColor);
+            tAdapter.notifyDataSetChanged();
+        }
+        if (mAdapter == null || mAdapter.getItemCount() == 0) {
+            new MainPage(this).execute(MainPage.M_LOAD, 1);
+        } else {
+            mAdapter.setColor(highlight, fontColor);
+            mAdapter.notifyDataSetChanged();
         }
         lastTab = tabhost.getCurrentView();
     }

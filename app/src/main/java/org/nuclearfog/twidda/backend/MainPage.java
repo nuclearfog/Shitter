@@ -41,7 +41,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private int highlight, font;
     private boolean image;
     private String errMsg = "E: Main Page, ";
-    private int retryAfter = 0;
+    private int returnCode = 0;
 
     /**
      * Main View
@@ -158,10 +158,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     break;
             }
         } catch(TwitterException e) {
-            int errCode = e.getErrorCode();
-            if(errCode == 420) {
-                retryAfter = e.getRetryAfter();
-            } else {
+            returnCode = e.getErrorCode();
+            if (returnCode != 420) {
                 errMsg += e.getMessage();
             }
             return FAIL;
@@ -203,7 +201,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case FAIL:
-                if (retryAfter > 0) {
+                if (returnCode == 420) {
                     Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();

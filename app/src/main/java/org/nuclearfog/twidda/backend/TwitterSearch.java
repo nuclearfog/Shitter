@@ -30,7 +30,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
     private int highlight, font_color;
     private boolean imageLoad;
     private String errorMessage = "E: Twitter search, ";
-    private int retryAfter = 0;
+    private int returnCode = 0;
 
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
@@ -83,10 +83,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
             return true;
 
         } catch (TwitterException err) {
-            int errCode = err.getErrorCode();
-            if(errCode == 420) {
-                retryAfter = err.getRetryAfter();
-            } else {
+            returnCode = err.getErrorCode();
+            if (returnCode != 420) {
                 errorMessage += err.getMessage();
                 errorLog.add(errorMessage);
             }
@@ -104,10 +102,11 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         if(connect == null)
             return;
         if (!success) {
-            if (retryAfter > 0)
+            if (returnCode == 420) {
                 Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
-            else
+            } else {
                 Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
+            }
         }
         SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
         View circleLoad = connect.findViewById(R.id.search_progress);
