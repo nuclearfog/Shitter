@@ -237,7 +237,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tweet_verify.setVisibility(View.VISIBLE);
             }
             if(toggleImg) {
-                Picasso.with(ui.get()).load(profile_pb).into(profile_img);
+                Picasso.get().load(profile_pb).into(profile_img);
             }
             if (medialinks != null && medialinks.length != 0) {
                 View mediaButton = connect.findViewById(R.id.image_attach);

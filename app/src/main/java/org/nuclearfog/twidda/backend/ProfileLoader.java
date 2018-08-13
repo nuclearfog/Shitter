@@ -246,7 +246,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 connect.findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
             if(imgEnabled) {
-                Picasso.with(connect).load(profileImage+"_bigger").into(profile);
+                Picasso.get().load(profileImage + "_bigger").into(profile);
                 profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

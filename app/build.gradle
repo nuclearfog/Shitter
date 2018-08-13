@@ -27,10 +27,10 @@ android {
 }
 
 dependencies {
-    implementation files('libs/colorpicker.aar')
-    implementation files('libs/picasso-2.5.2.jar')
-    implementation files('libs/twitter4j-core-4.0.6.jar')
-    implementation files('libs/twitter4j-core-4.0.6-sources.jar')
+    implementation 'org.twitter4j:twitter4j-core:4.0.6'
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
