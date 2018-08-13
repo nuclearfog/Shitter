@@ -22,7 +22,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     private RecyclerView userList;
     private UserLists uList;
-    private long mode = -1;
+    private int mode = -1;
     private long userID = 0;
     private long tweetID = 0;
 
@@ -32,7 +32,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         b = getIntent().getExtras();
         if (b != null) {
             userID = b.getLong("userID");
-            mode = b.getLong("mode");
+            mode = b.getInt("mode");
             if (b.containsKey("tweetID"))
                 tweetID = b.getLong("tweetID");
         }
@@ -47,6 +47,13 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
         userList.setBackgroundColor(background);
         getUsers();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (uList != null && !uList.isCancelled())
+            uList.cancel(true);
+        super.onDestroy();
     }
 
     @Override
@@ -70,6 +77,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         TwitterUser user = uAdp.getData().get(position);
         long userID = user.userID;
         String username = user.screenname;
+
         Intent intent = new Intent(this, UserProfile.class);
         intent.putExtra("userID", userID);
         intent.putExtra("username", username);
@@ -78,24 +86,32 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     private void getUsers() {
         uList = new UserLists(UserDetail.this);
-        String title = "";
+        int titleId = 0;
 
-        if (mode == 0L) {
-            title = getString(R.string.following);
-            uList.execute(userID, UserLists.FOLLOWING, -1L);
-        } else if (mode == 1L) {
-            title = getString(R.string.follower);
-            uList.execute(userID, UserLists.FOLLOWERS, -1L);
-        } else if (mode == 2L) {
-            title = getString(R.string.retweet);
-            uList.execute(tweetID, UserLists.RETWEETER, -1L);
-        } else if (mode == 3L) {
-            title = getString(R.string.favorite);
-            uList.execute(tweetID, UserLists.FAVORISER, -1L);
+        switch (mode) {
+            case 0:
+                titleId = R.string.following;
+                uList.execute(userID, UserLists.FOLLOWING, -1L);
+                break;
+
+            case 1:
+                titleId = R.string.follower;
+                uList.execute(userID, UserLists.FOLLOWERS, -1L);
+                break;
+
+            case 2:
+                titleId = R.string.retweet;
+                uList.execute(tweetID, UserLists.RETWEETER, -1L);
+                break;
+
+            case 3:
+                titleId = R.string.favorite;
+                uList.execute(tweetID, UserLists.FAVORISER, -1L);
+                break;
         }
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
+            getSupportActionBar().setTitle(titleId);
         }
     }
 }

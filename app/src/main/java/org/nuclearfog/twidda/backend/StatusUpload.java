@@ -18,6 +18,8 @@ import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
 
+import twitter4j.TwitterException;
+
 public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements OnClickListener {
 
     private WeakReference<TweetPopup> ui;
@@ -81,7 +83,13 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
                 mTwitter.sendStatus(tweet,id,path);
             }
             return true;
-        } catch(Exception err) {
+        } catch (TwitterException err) {
+            int returnCode = err.getErrorCode();
+            if (returnCode > 0) {
+                errorLog.add("E: Upload, " + err.getMessage());
+            }
+            return false;
+        } catch (Exception err) {
             errorLog.add("E: Upload, " + err.getMessage());
             return false;
         }

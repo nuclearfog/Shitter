@@ -155,10 +155,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.following:
-                getConnection(0L);
+                getConnection(0);
                 break;
             case R.id.follower:
-                getConnection(1L);
+                getConnection(1);
                 break;
         }
     }
@@ -258,7 +258,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     }
 
 
-    private void getConnection(long mode) {
+    private void getConnection(int mode) {
         Intent intent = new Intent(this, UserDetail.class);
         intent.putExtra("userID", userId);
         intent.putExtra("mode", mode);

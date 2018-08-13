@@ -156,14 +156,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             case R.id.no_rt_detail:
                 intent = new Intent(this, UserDetail.class);
                 intent.putExtra("tweetID", tweetID);
-                intent.putExtra("mode", 2L);
+                intent.putExtra("mode", 2);
                 startActivity(intent);
                 break;
 
             case R.id.no_fav_detail:
                 intent = new Intent(this, UserDetail.class);
                 intent.putExtra("tweetID", tweetID);
-                intent.putExtra("mode", 3L);
+                intent.putExtra("mode", 3);
                 startActivity(intent);
                 break;
 

@@ -23,8 +23,7 @@ import org.nuclearfog.twidda.backend.StatusUpload;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TweetPopup extends AppCompatActivity implements OnClickListener,
-        DialogInterface.OnClickListener, StatusUpload.OnTweetSending {
+public class TweetPopup extends AppCompatActivity implements OnClickListener, StatusUpload.OnTweetSending {
 
     private StatusUpload sendTweet;
     private View imageButton, previewBtn;
@@ -77,33 +76,27 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
         super.onActivityResult(reqCode,returnCode,i);
         if(returnCode == RESULT_OK){
             String[] mode = {MediaStore.Images.Media.DATA};
-            if(i.getData() == null)
-                return;
-            Cursor c = getContentResolver().query(i.getData(),mode,null,null,null);
-            if(c != null && c.moveToFirst()) {
-                if(imgIndex == 0) {
-                    previewBtn.setVisibility(View.VISIBLE);
+            if (i.getData() != null) {
+                Cursor c = getContentResolver().query(i.getData(), mode, null, null, null);
+                if (c != null && c.moveToFirst()) {
+                    if (imgIndex == 0) {
+                        previewBtn.setVisibility(View.VISIBLE);
+                    }
+                    if (imgIndex < 4) {
+                        int index = c.getColumnIndex(mode[0]);
+                        mediaPath.add(c.getString(index));
+                        String count = Integer.toString(++imgIndex);
+                        imgCount.setText(count);
+                    }
+                    if (imgIndex == 4) {
+                        imageButton.setVisibility(View.INVISIBLE);
+                    }
+                    c.close();
                 }
-                if(imgIndex  < 4) {
-                    int index = c.getColumnIndex(mode[0]);
-                    mediaPath.add(c.getString(index));
-                    String count = Integer.toString(++imgIndex);
-                    imgCount.setText(count);
-                }
-                if(imgIndex == 4) {
-                    imageButton.setVisibility(View.INVISIBLE);
-                }
-                c.close();
             }
         }
     }
 
-    @Override
-    public void onClick(DialogInterface d, int id) {
-        if(sendTweet != null)
-            sendTweet.cancel(true);
-        finish();
-    }
 
     @Override
     public void onClick(View v) {
@@ -139,11 +132,19 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener,
 
     private void showClosingMsg() {
         if( !addition.equals(tweet.getText().toString()) || imgIndex > 0) {
-            AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-            alerta.setMessage(R.string.should_cancel_tweet);
-            alerta.setPositiveButton(R.string.yes_confirm,this);
-            alerta.setNegativeButton(R.string.no_confirm,null);
-            alerta.show();
+            AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
+            closeDialog.setMessage(R.string.should_cancel_tweet);
+            closeDialog.setNegativeButton(R.string.no_confirm, null);
+            closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (sendTweet != null && !sendTweet.isCancelled())
+                        sendTweet.cancel(true);
+                    finish();
+                }
+            });
+
+            closeDialog.show();
         } else {
             finish();
         }

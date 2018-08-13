@@ -36,6 +36,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
 
     private TimelineRecycler timelineAdapter, mentionAdapter;
     private TrendRecycler trendsAdapter;
+    private DatabaseAdapter tweetDb;
     private ErrorLog errorLog;
     private int woeId;
     private int highlight, font;
@@ -51,6 +52,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         ui = new WeakReference<>((MainActivity)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        tweetDb = new DatabaseAdapter(ui.get());
         errorLog = new ErrorLog(context);
         woeId = settings.getWoeId();
         highlight = settings.getHighlightColor();
@@ -89,7 +91,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         long id = 1L;
         List<Tweet> tweets;
         try {
-            DatabaseAdapter tweetDb = new DatabaseAdapter(ui.get());
             TrendDatabase trendDb = new TrendDatabase(ui.get());
             switch (MODE) {
                 case HOME:
