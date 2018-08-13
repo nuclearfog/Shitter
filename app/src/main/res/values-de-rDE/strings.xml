@@ -12,7 +12,6 @@
     <string name="follow">folgen</string>
     <string name="retry">wiederholen</string>
     <string name="cancel">abbrechen</string>
-    <string name="errorstack_button">fehlermeldungen</string>
     <string name="color_settings">Farb einstellungen</string>
     <string name="data_load">Datenverbrauch</string>
     <string name="trend_setting">Trendeinstellung</string>
@@ -59,4 +58,5 @@
     <string name="sent_from">"gesendet von: "</string>
     <string name="progress_kill">abbrechen</string>
     <string name="save">speichern</string>
+    <string name="error_log">error log</string>
 </resources>

@@ -25,7 +25,7 @@
     <string name="follow">follow</string>
     <string name="retry">retry</string>
     <string name="cancel">cancel!</string>
-    <string name="errorstack_button">error messages</string>
+    <string name="error_log">error logs</string>
     <string name="color_settings">Color Settings</string>
     <string name="followback">follows you</string>
     <string name="data_load">data consumption</string>
@@ -66,4 +66,5 @@
     <string name="sent_from">sent from:</string>
     <string name="progress_kill">stop loading</string>
     <string name="save">save</string>
+    <string name="woeid">World-ID</string>
 </resources>
