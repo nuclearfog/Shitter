@@ -8,6 +8,8 @@
         <item>USA</item>
         <item>Mexico</item>
         <item>Algeria</item>
+        <!--Last Element should stay here-->
+        <item>custom</item>
     </string-array>
 
     <integer-array name="woeId">
@@ -17,6 +19,7 @@
         <item>23424977</item>
         <item>23424900</item>
         <item>23424740</item>
+        <item>0</item>
     </integer-array>
 
 </resources>

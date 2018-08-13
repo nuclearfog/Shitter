@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -39,10 +40,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private CheckBox toggleImg;
     private Button colorButton1,colorButton2,colorButton3,colorButton4;
     private Spinner woeId;
+    private EditText woeIdText;
     private int background,tweet,font,highlight;
     private long wId;
     private int row;
     private int woeIdPos;
+    private boolean customWoeId;
     private int mode = 0;
 
     @Override
@@ -64,6 +67,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton3 = findViewById(R.id.color_tweet);
         colorButton4 = findViewById(R.id.highlight_color);
         toggleImg = findViewById(R.id.toggleImg);
+        woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
         load();
 
@@ -81,6 +85,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
         woeId.setOnItemSelectedListener(this);
+
+        if (customWoeId) {
+            String text = Long.toString(wId);
+            woeIdText.setVisibility(View.VISIBLE);
+            woeIdText.setText(text);
+        }
     }
 
     @Override
@@ -190,8 +200,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (position == parent.getCount() - 1) {
+            woeIdText.setVisibility(View.VISIBLE);
+            customWoeId = true;
+            wId = 1;
+        } else {
+            woeIdText.setVisibility(View.INVISIBLE);
+            woeIdText.setText("");
+            customWoeId = false;
+            wId = id;
+        }
         woeIdPos = position;
-        wId = id;
     }
 
 
@@ -227,6 +246,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         wId = settings.getWoeId();
         toggleImg.setChecked( settings.loadImages() );
         woeIdPos = settings.getWoeIdSelection();
+        customWoeId = settings.customWoeIdset();
         woeId.setAdapter( new WorldIdAdapter(this) );
     }
 
@@ -235,10 +255,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         settings.setHighlightColor(highlight);
         settings.setTweetColor(tweet);
         settings.setFontColor(font);
-        settings.setImageLoad( toggleImg.isChecked() );
-        settings.setWoeId(wId);
+        settings.setImageLoad(toggleImg.isChecked());
         settings.setRowLimit(row);
         settings.setWoeIdSelection(woeIdPos);
-        Toast.makeText(getApplicationContext(), R.string.saved, Toast.LENGTH_SHORT).show();
+        settings.setCustomWoeId(customWoeId);
+        String woeText = woeIdText.getText().toString();
+        if (customWoeId && !woeText.isEmpty())
+            wId = Long.parseLong(woeText);
+        settings.setWoeId(wId);
+        Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
     }
 }

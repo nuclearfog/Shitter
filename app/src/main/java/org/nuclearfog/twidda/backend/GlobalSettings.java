@@ -22,6 +22,7 @@ public class GlobalSettings {
 
     private boolean loadImage;
     private boolean loggedIn;
+    private boolean customWorldId;
     private int row;
 
     private int woeId;
@@ -34,6 +35,7 @@ public class GlobalSettings {
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences("settings",0);
         woeId = settings.getInt("world_id",1);
+        customWorldId = settings.getBoolean("custom_woeId", false);
         woeIdPos = settings.getInt("world_id_pos",0);
         background_color = settings.getInt("background_color",0xff0f114a);
         highlight_color = settings.getInt("highlight_color",0xffff00ff);
@@ -70,6 +72,10 @@ public class GlobalSettings {
 
     public int getWoeId() {
         return woeId;
+    }
+
+    public boolean customWoeIdset() {
+        return customWorldId;
     }
 
     public int getWoeIdSelection(){
@@ -139,6 +145,13 @@ public class GlobalSettings {
         Editor edit  = settings.edit();
         edit.putInt("world_id",(int)id);
         woeId = (int)id;
+        edit.apply();
+    }
+
+    public void setCustomWoeId(boolean customWoeId) {
+        Editor edit = settings.edit();
+        edit.putBoolean("custom_woeId", customWoeId);
+        customWorldId = customWoeId;
         edit.apply();
     }
 

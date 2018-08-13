@@ -6,7 +6,7 @@
         android:id="@+id/save_settings"
         android:icon="@drawable/save"
         android:title="@string/save"
-        app:showAsAction="ifRoom|always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/back_settings"
         android:checkable="false"

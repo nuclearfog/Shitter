@@ -66,5 +66,5 @@
     <string name="sent_from">sent from:</string>
     <string name="progress_kill">stop loading</string>
     <string name="save">save</string>
-    <string name="woeid">World-ID</string>
+    <string name="woeid">World ID</string>
 </resources>
