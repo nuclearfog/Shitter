@@ -188,8 +188,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
-
-            if (returnCode != 136) {
+            if (returnCode != 136 && returnCode != -1) {
                 errMsg += err.getMessage();
                 errorLog.add(errMsg);
             }
