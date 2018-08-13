@@ -45,6 +45,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
+    private DatabaseAdapter database;
     private ErrorLog errorLog;
     private long homeId;
     private boolean imgEnabled;
@@ -65,6 +66,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         ui = new WeakReference<>((UserProfile)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        database = new DatabaseAdapter(ui.get());
         sdf = settings.getDateFormatter();
         errorLog = new ErrorLog(context);
         int font = settings.getFontColor();
@@ -107,7 +109,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
 
             TwitterUser user;
-            DatabaseAdapter database = new DatabaseAdapter(ui.get());
             if(MODE == GET_INFORMATION) {
                 user = mTwitter.getUser(userId);
                 database.storeUser(user);
@@ -127,7 +128,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             following = Integer.toString(user.following);
             profileImage = user.profileImg;
             Date time = new Date(user.created);
-            dateString = "seit " + sdf.format(time);
+            dateString = sdf.format(time);
             description = description.replace('\n', ' ');
 
             if (MODE == GET_TWEETS && !isLocked)
