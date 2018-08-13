@@ -188,7 +188,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
-            if (returnCode != 136 && returnCode != -1) {
+            if (returnCode > 0 && returnCode != 136) {
                 errMsg += err.getMessage();
                 errorLog.add(errMsg);
             }
@@ -292,7 +292,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
             if (returnCode == 420) {
                 Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
-            } else {
+            } else if (returnCode > 0 && returnCode != 136) {
                 Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
             }
         }

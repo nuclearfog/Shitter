@@ -50,14 +50,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
     }
 
     @Override
-    protected void onPause() {
-        if (uList != null && !uList.isCancelled()) {
-            uList.cancel(true);
-        }
-        super.onPause();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu( Menu m ) {
         getMenuInflater().inflate(R.menu.user, m);
         return true;

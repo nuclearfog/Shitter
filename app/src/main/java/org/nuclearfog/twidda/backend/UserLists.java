@@ -111,7 +111,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         }
         catch(TwitterException err) {
             returnCode = err.getErrorCode();
-            if (returnCode != 420) {
+            if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
                 errorLog.add(errorMessage);
             }
@@ -135,7 +135,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         } else {
             if (returnCode == 420)
                 Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-            else
+            else if (returnCode > 0)
                 Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
         }
         popup.dismiss();

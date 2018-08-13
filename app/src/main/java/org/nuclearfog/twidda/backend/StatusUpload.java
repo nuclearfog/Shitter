@@ -107,8 +107,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
 
     @Override
     public void onClick(DialogInterface d, int id) {
-        TweetPopup tweetPopup = ui.get();
-        tweetPopup.send();
+        ui.get().send();
     }
 
     public interface OnTweetSending {

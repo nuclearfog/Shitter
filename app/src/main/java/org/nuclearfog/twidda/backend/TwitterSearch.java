@@ -83,7 +83,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
-            if (returnCode != 420 && returnCode != -1) {
+            if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
                 errorLog.add(errorMessage);
             }
@@ -103,7 +103,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         if (!success) {
             if (returnCode == 420) {
                 Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
-            } else {
+            } else if (returnCode > 0) {
                 Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
             }
         }

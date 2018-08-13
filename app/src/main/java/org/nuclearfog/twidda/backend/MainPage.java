@@ -159,7 +159,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             }
         } catch(TwitterException e) {
             returnCode = e.getErrorCode();
-            if (returnCode != 420) {
+            if (returnCode > 0 && returnCode != 420) {
                 errMsg += e.getMessage();
             }
             return FAIL;
@@ -201,10 +201,12 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 break;
 
             case FAIL:
-                if (returnCode == 420) {
-                    Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
+                if (returnCode > 0) {
+                    if (returnCode == 420) {
+                        Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
+                    }
                 }
             default:
                 timelineRefresh.setRefreshing(false);

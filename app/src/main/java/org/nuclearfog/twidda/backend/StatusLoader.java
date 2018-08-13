@@ -169,12 +169,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         }
         catch(TwitterException e) {
             returnCode = e.getErrorCode();
-            if (returnCode == 144) {
-                database.removeStatus(tweetID);
-            } else if (returnCode != 136) {
-                errorMessage += e.getMessage();
+            if (returnCode > 0) {
+                if (returnCode == 144)
+                    database.removeStatus(tweetID);
+                else if (returnCode != 136)
+                    errorMessage += e.getMessage();
+                return ERROR;
             }
-            return ERROR;
         }
         catch(Exception err) {
             errorMessage += err.getMessage();
@@ -295,12 +296,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             ui.get().finish();
         }
         else if(mode == ERROR) {
-            if (returnCode == 420) {
-                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
-            } else if (returnCode == 144) {
-                Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
+            if (returnCode > 0) {
+                if (returnCode == 420) {
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+                } else if (returnCode == 144) {
+                    Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
+                } else if (returnCode != 136) {
+                    Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
+                }
             }
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
             if(ansReload.isRefreshing()) {

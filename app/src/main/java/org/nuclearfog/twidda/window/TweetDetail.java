@@ -40,7 +40,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     private RecyclerView answer_list;
     private StatusLoader mStat, mReply;
-    private ImagePopup mediaContent;
     private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
@@ -96,9 +95,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (mReply != null && !mReply.isCancelled()) {
             mReply.cancel(true);
             answerReload.setRefreshing(false);
-        }
-        if (mediaContent != null && !mediaContent.isCancelled()) {
-            mediaContent.cancel(true);
         }
         super.onPause();
     }
@@ -207,7 +203,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onMediaClicked(String mediaLinks[]) {
-        mediaContent = new ImagePopup(this);
+        ImagePopup mediaContent = new ImagePopup(this);
         mediaContent.execute(mediaLinks);
     }
 
