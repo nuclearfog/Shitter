@@ -31,14 +31,12 @@ import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
-
 /**
  * Detailed Tweet Activity
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
-        OnItemClicked, DialogInterface.OnClickListener, OnRefreshListener, OnMediaClick {
+        OnItemClicked, OnRefreshListener, OnMediaClick {
 
     private RecyclerView answer_list;
     private StatusLoader mStat, mReply;
@@ -118,11 +116,16 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_tweet:
-                AlertDialog.Builder alerta = new AlertDialog.Builder(this);
-                alerta.setMessage(R.string.delete_tweet);
-                alerta.setPositiveButton(R.string.yes_confirm, this);
-                alerta.setNegativeButton(R.string.no_confirm, this);
-                alerta.show();
+                AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+                deleteDialog.setMessage(R.string.delete_tweet);
+                deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new StatusLoader(getApplicationContext()).execute(tweetID, StatusLoader.DELETE);
+                    }
+                });
+                deleteDialog.setNegativeButton(R.string.no_confirm, null);
+                deleteDialog.show();
                 return true;
 
             case R.id.tweet_link:
@@ -182,12 +185,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 startActivity(intent);
                 break;
         }
-    }
-
-    @Override
-    public void onClick(DialogInterface d, int id) {
-        if (id == BUTTON_POSITIVE)
-            new StatusLoader(this).execute(tweetID, StatusLoader.DELETE);
     }
 
     @Override
