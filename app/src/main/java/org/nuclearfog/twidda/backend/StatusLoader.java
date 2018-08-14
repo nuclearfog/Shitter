@@ -174,8 +174,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     database.removeStatus(tweetID);
                 else if (returnCode != 136)
                     errorMessage += e.getMessage();
-                return ERROR;
             }
+            return ERROR;
         }
         catch(Exception err) {
             errorMessage += err.getMessage();
