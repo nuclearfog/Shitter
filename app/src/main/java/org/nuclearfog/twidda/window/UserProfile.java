@@ -180,8 +180,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onTabChanged(String tabId) {
-        homeReload.setRefreshing(false);
-        favoriteReload.setRefreshing(false);
         animate();
         tabIndex = mTab.getCurrentTab();
     }
@@ -234,14 +232,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         leftOut.setDuration(ANIM_DUR);
         rightOut.setDuration(ANIM_DUR);
 
-        View currentView = mTab.getCurrentView();
+        View currentTab = mTab.getCurrentView();
 
         if( mTab.getCurrentTab() > tabIndex ) {
             lastView.setAnimation(leftOut);
-            currentView.setAnimation(rightIn);
+            currentTab.setAnimation(rightIn);
         } else {
             lastView.setAnimation(rightOut);
-            currentView.setAnimation(leftIn);
+            currentTab.setAnimation(leftIn);
         }
         lastView = mTab.getCurrentView();
     }

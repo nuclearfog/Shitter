@@ -82,12 +82,23 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     @Override
     protected void onPause() {
         if (mSearch != null && !mSearch.isCancelled()) {
-            mSearch.cancel(true);
-            tweetReload.setRefreshing(false);
+            if (tweetReload.isRefreshing()) {
+                mSearch.cancel(true);
+                tweetReload.setRefreshing(false);
+            }
         }
         if (popup.isShowing())
             popup.dismiss();
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mSearch != null && !mSearch.isCancelled()) {
+            mSearch.cancel(true);
+            tweetReload.setRefreshing(false);
+        }
+        super.onDestroy();
     }
 
     @Override
@@ -176,9 +187,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = tabhost.getCurrentTab();
-        if(tabIndex == 1) {
-            tweetReload.setRefreshing(false);
-        }
     }
 
     private void setTabs(TabHost tabhost) {

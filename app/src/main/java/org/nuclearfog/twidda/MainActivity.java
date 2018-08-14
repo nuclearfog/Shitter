@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private MenuItem profile, tweet, search, setting;
     private SearchView searchQuery;
     private GlobalSettings settings;
-    private MainPage home;
+    private MainPage home, trend, mention;
     private View lastTab;
     private Toolbar toolbar;
     private TabHost tabhost;
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         super.onActivityResult(reqCode,returnCode,i);
         if(reqCode == REQ_CODE) {
             if (returnCode != RESULT_OK) {
+                overridePendingTransition(0, 0);
                 finish();
             }
         }
@@ -151,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.action_tweet:
                 intent = new Intent(this, TweetPopup.class);
-                intent.putExtra("TweetID", -1);
                 startActivity(intent);
                 return true;
 
@@ -171,7 +171,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (home != null && !home.isCancelled()) {
             home.cancel(true);
             timelineReload.setRefreshing(false);
+        }
+        if (trend != null && !trend.isCancelled()) {
+            trend.cancel(true);
             trendReload.setRefreshing(false);
+        }
+        if (mention != null && !mention.isCancelled()) {
+            mention.cancel(true);
             mentionReload.setRefreshing(false);
         }
         super.onPause();
@@ -201,25 +207,24 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
-        home = new MainPage(MainActivity.this);
         switch (tabIndex) {
             case 0:
+                home = new MainPage(MainActivity.this);
                 home.execute(MainPage.HOME,1);
                 break;
             case 1:
-                home.execute(MainPage.TRND,1);
+                trend = new MainPage(MainActivity.this);
+                trend.execute(MainPage.TRND, 1);
                 break;
             case 2:
-                home.execute(MainPage.MENT,1);
+                mention = new MainPage(MainActivity.this);
+                mention.execute(MainPage.MENT, 1);
                 break;
         }
     }
 
     @Override
     public void onTabChanged(String tabId) {
-        mentionReload.setRefreshing(false);
-        trendReload.setRefreshing(false);
-        timelineReload.setRefreshing(false);
         searchQuery.onActionViewCollapsed();
         animate();
         tabIndex = tabhost.getCurrentTab();
@@ -276,11 +281,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     Intent intent = new Intent(this, SearchPage.class);
                     if(search.startsWith("#")) {
                         intent.putExtra("Addition", search);
-                        intent.putExtra("search", search);
                     } else {
-                        search = '\"'+ search + '\"';
-                        intent.putExtra("search", search);
+                        search = '\"' + search + '\"';
                     }
+                    intent.putExtra("search", search);
                     startActivity(intent);
                 }
                 break;
@@ -292,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     if(tweet.embedded != null) {
                         tweet = tweet.embedded;
                     }
-
                     Intent intent = new Intent(this, TweetDetail.class);
                     intent.putExtra("tweetID", tweet.tweetID);
                     intent.putExtra("userID", tweet.user.userID);
