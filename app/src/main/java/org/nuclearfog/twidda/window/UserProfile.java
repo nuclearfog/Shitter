@@ -121,6 +121,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if(!home) {
             m.findItem(R.id.profile_follow).setVisible(true);
             m.findItem(R.id.profile_block).setVisible(true);
+            m.findItem(R.id.profile_mute).setVisible(true);
         }
         return true;
     }
@@ -141,6 +142,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 return true;
 
             case R.id.profile_block:
+                mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                return true;
+
+            case R.id.profile_mute:
                 mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
                 return true;
 

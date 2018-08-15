@@ -66,5 +66,9 @@
     <string name="sent_from">sent from:</string>
     <string name="progress_kill">stop loading</string>
     <string name="save">save</string>
-    <string name="woeid">World ID</string>
+    <string name="woeid" translatable="false">World ID</string>
+    <string name="mute">mute</string>
+    <string name="unmute">un-mute</string>
+    <string name="muted">muted</string>
+    <string name="unmuted">un-muted</string>
 </resources>

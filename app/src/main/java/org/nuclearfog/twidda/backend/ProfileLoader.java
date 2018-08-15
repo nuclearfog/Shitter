@@ -34,10 +34,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     public static final long ACTION_FOLLOW   = 1; // Folgen/Entfolgen
     public static final long GET_TWEETS      = 2; // Tweets Laden
     public static final long GET_FAVS        = 3; // Favoriten Laden
-    public static final long ACTION_MUTE     = 4;
-    public static final long LOAD_DB         = 5;
-    private static final long FAILURE        = 6;
-    private static final long IGNORE         = 7;
+    public static final long ACTION_BLOCK = 4;
+    public static final long ACTION_MUTE = 5;
+    public static final long LOAD_DB = 6;
+    private static final long FAILURE = 7;
+    private static final long IGNORE = 8;
 
     private String screenName, username, description, location, follower, following;
     private String profileImage, link, dateString;
@@ -54,7 +55,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private boolean isFollowed = false;
     private boolean isVerified = false;
     private boolean isLocked = false;
-    private boolean blocked = false;
+    private boolean isBlocked = false;
+    private boolean isMuted = false;
     private String errMsg = "E: Profile Load, ";
     private int returnCode = 0;
 
@@ -100,12 +102,13 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         long id = 1L;
         try {
             isHome = homeId == userId;
-            if(!isHome && (MODE==ACTION_FOLLOW||MODE==ACTION_MUTE||MODE==GET_INFORMATION))
+            if (!isHome && (MODE == ACTION_FOLLOW || MODE == ACTION_BLOCK || MODE == ACTION_MUTE || MODE == GET_INFORMATION))
             {
                 boolean connection[] = mTwitter.getConnection(userId);
                 isFollowing = connection[0];
                 isFollowed = connection[1];
-                blocked = connection[2];
+                isBlocked = connection[2];
+                isMuted = connection[3];
             }
 
             TwitterUser user;
@@ -168,23 +171,16 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
             else if(MODE == ACTION_FOLLOW)
             {
-                if(isFollowing) {
-                    mTwitter.followAction(userId,false);
-                    isFollowing = false;
-                } else {
-                    mTwitter.followAction(userId,true);
-                    isFollowing = true;
-                }
+                isFollowing = !isFollowing;
+                mTwitter.followAction(userId, isFollowing);
+            } else if (MODE == ACTION_BLOCK) {
+                isBlocked = !isBlocked;
+                mTwitter.blockAction(userId, isBlocked);
             }
             else if(MODE == ACTION_MUTE)
             {
-                if(blocked) {
-                    mTwitter.blockAction(userId,false);
-                    blocked = false;
-                } else {
-                    mTwitter.blockAction(userId,true);
-                    blocked = true;
-                }
+                isMuted = !isMuted;
+                mTwitter.muteAction(userId, isMuted);
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
@@ -273,18 +269,22 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 textId = R.string.followed;
             else
                 textId = R.string.unfollowed;
-            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
-        }
-        else if(mode == ACTION_MUTE) {
+            Toast.makeText(connect, textId, Toast.LENGTH_SHORT).show();
+        } else if (mode == ACTION_BLOCK) {
             int textId;
-            if(blocked)
+            if (isBlocked)
                 textId = R.string.blocked;
             else
                 textId = R.string.unblocked;
+            Toast.makeText(connect, textId, Toast.LENGTH_SHORT).show();
+        } else if (mode == ACTION_MUTE) {
+            int textId;
+            if (isMuted)
+                textId = R.string.muted;
+            else
+                textId = R.string.unmuted;
             Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
-        }
-        else if(mode == FAILURE)
-        {
+        } else if(mode == FAILURE) {
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             SwipeRefreshLayout favoriteReload = connect.findViewById(R.id.homefavorits);
             tweetsReload.setRefreshing(false);
@@ -296,11 +296,12 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
             }
         }
-        if(!isHome && (mode==ACTION_FOLLOW||mode==ACTION_MUTE||mode==GET_INFORMATION)) {
+        if (!isHome && (mode == ACTION_FOLLOW || mode == ACTION_BLOCK || mode == ACTION_MUTE || mode == GET_INFORMATION)) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);
             if(tool.getMenu().size() >= 2) {
                 MenuItem followIcon = tool.getMenu().getItem(1);
                 MenuItem blockIcon = tool.getMenu().getItem(2);
+                MenuItem muteIcon = tool.getMenu().getItem(3);
                 if (isFollowing) {
                     followIcon.setIcon(R.drawable.follow_enabled);
                     followIcon.setTitle(R.string.unfollow);
@@ -308,14 +309,17 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     followIcon.setIcon(R.drawable.follow);
                     followIcon.setTitle(R.string.follow);
                 }
-                if (blocked) {
-                    blockIcon.setIcon(R.drawable.block_enabled);
+                if (isBlocked) {
                     blockIcon.setTitle(R.string.unblock);
                     followIcon.setVisible(false);
                 } else {
-                    blockIcon.setIcon(R.drawable.block);
                     blockIcon.setTitle(R.string.block);
                     followIcon.setVisible(true);
+                }
+                if (isMuted) {
+                    muteIcon.setTitle(R.string.unmute);
+                } else {
+                    muteIcon.setTitle(R.string.mute);
                 }
             }
         }

@@ -16,7 +16,10 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile_block"
-        android:icon="@drawable/block"
         android:title="@string/block"
+        android:visible="false" />
+    <item
+        android:id="@+id/profile_mute"
+        android:title="@string/mute"
         android:visible="false" />
 </menu>

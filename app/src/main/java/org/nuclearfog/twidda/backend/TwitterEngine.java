@@ -269,10 +269,11 @@ public class TwitterEngine {
      */
     public boolean[] getConnection(long id) throws TwitterException {
         Relationship connect = twitter.showFriendship(twitterID, id);
-        boolean connection[] = new boolean[3];
+        boolean connection[] = new boolean[4];
         connection[0] = connect.isSourceFollowingTarget();
         connection[1] = connect.isTargetFollowingSource();
         connection[2] = connect.isSourceBlockingTarget();
+        connection[3] = connect.isSourceMutingTarget();
         return connection;
     }
 
@@ -303,6 +304,21 @@ public class TwitterEngine {
             twitter.createBlock(userId);
         } else {
             twitter.destroyBlock(userId);
+        }
+    }
+
+    /**
+     * Switch muting User
+     *
+     * @param userId User ID
+     * @param action using action
+     * @throws TwitterException if Access is unavailable
+     */
+    public void muteAction(long userId, boolean action) throws TwitterException {
+        if (action) {
+            twitter.createMute(userId);
+        } else {
+            twitter.destroyMute(userId);
         }
     }
 
