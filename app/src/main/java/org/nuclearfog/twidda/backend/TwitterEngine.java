@@ -547,9 +547,13 @@ public class TwitterEngine {
             retweet = status.getRetweetCount();
             favorite = status.getFavoriteCount();
         }
+        String api = status.getSource();
+        api = api.substring(api.indexOf('>') + 1);
+        api = api.substring(0, api.indexOf('<'));
+
         return new Tweet(status.getId(), retweet, favorite, user, status.getText(),
                 status.getCreatedAt().getTime(), status.getInReplyToScreenName(), status.getInReplyToUserId(),
-                getMediaLinks(status), status.getSource(), status.getInReplyToStatusId(),
+                getMediaLinks(status), api, status.getInReplyToStatusId(),
                 retweetedStat, status.getCurrentUserRetweetId(), status.isRetweeted(), status.isFavorited());
     }
 

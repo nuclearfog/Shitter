@@ -7,15 +7,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class AppDatabase extends SQLiteOpenHelper
 {
     private static final String userTable = "CREATE TABLE IF NOT EXISTS user ("+
-            "userID INTEGER PRIMARY KEY, username TEXT, fullpb TEXT," +
-            "scrname  TEXT, pbLink TEXT, banner TEXT, bio TEXT,"+
-            "location TEXT, link TEXT, verify INTEGER, locked INTEGER," +
+            "userID INTEGER PRIMARY KEY, username VARCHAR(50),scrname VARCHAR(15)," +
+            "pbLink TEXT,banner TEXT,bio TEXT,location TEXT,link TEXT,userregister INTEGER," +
             "createdAt INTEGER, following INTEGER, follower INTEGER);";
 
     private static final String tweetTable = "CREATE TABLE IF NOT EXISTS tweet ("+
             "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweetID INTEGER, replyID INTEGER, retweeterID INTEGER,"+
             "replyname TEXT, replyUserID INTEGER, time INTEGER, tweet TEXT, media TEXT, retweet INTEGER, favorite INTEGER,"+
-            "statusregister INTEGER, source TEXT, FOREIGN KEY (userID) REFERENCES user(userID));";
+            "statusregister INTEGER, source VARCHAR(32), FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String favoriteTable = "CREATE TABLE IF NOT EXISTS favorit (" +
             "ownerID INTEGER, tweetID INTEGER PRIMARY KEY," +

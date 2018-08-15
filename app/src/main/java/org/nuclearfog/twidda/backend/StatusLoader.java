@@ -52,6 +52,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, profile_pb;
     private String medialinks[];
+    private String prefix;
     private boolean retweeted, favorited, toggleImg, verified;
     private long tweetReplyID, replyUserId;
     private int rtCount, favCount;
@@ -73,6 +74,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         answerAdapter = (TimelineRecycler) replyList.getAdapter();
         database = new DatabaseAdapter(context);
         errorLog = new ErrorLog(context);
+        prefix = context.getString(R.string.sent_from);
         if(answerAdapter == null) {
             answerAdapter = new TimelineRecycler(ui.get());
             replyList.setAdapter(answerAdapter);
@@ -115,7 +117,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
             usernameStr = tweet.user.username;
             scrNameStr = tweet.user.screenname;
-            apiName = formatString(tweet.source);
+            apiName = prefix + tweet.source;
             rtCount = tweet.retweet;
             favCount = tweet.favorit;
             retweeted = tweet.retweeted;
@@ -310,14 +312,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 ansReload.setRefreshing(false);
             }
         }
-    }
-
-
-    private String formatString(String text) {
-        String prefix = ui.get().getString(R.string.sent_from);
-        text = text.substring(text.indexOf('>') + 1);
-        text = text.substring(0, text.indexOf('<'));
-        return prefix + text;
     }
 
 
