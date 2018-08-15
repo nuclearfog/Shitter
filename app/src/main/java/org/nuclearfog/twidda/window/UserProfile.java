@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -128,29 +129,32 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mProfile = new ProfileLoader(this);
-        switch(item.getItemId()) {
-            case R.id.profile_tweet:
-                Intent intent = new Intent(this, TweetPopup.class);
-                if(!home)
-                    intent.putExtra("Addition", username);
-                startActivity(intent);
-                return true;
+        if (mProfile != null && mProfile.getStatus() != AsyncTask.Status.RUNNING) {
+            switch (item.getItemId()) {
+                case R.id.profile_tweet:
+                    Intent intent = new Intent(this, TweetPopup.class);
+                    if (!home)
+                        intent.putExtra("Addition", username);
+                    startActivity(intent);
+                    return true;
 
-            case R.id.profile_follow:
-                mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
-                return true;
+                case R.id.profile_follow:
+                    mProfile = new ProfileLoader(this);
+                    mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
+                    return true;
 
-            case R.id.profile_block:
-                mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
-                return true;
+                case R.id.profile_block:
+                    mProfile = new ProfileLoader(this);
+                    mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                    return true;
 
-            case R.id.profile_mute:
-                mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
-                return true;
-
-            default: return false;
+                case R.id.profile_mute:
+                    mProfile = new ProfileLoader(this);
+                    mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
+                    return true;
+            }
         }
+        return false;
     }
 
     @Override
@@ -183,6 +187,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = mTab.getCurrentTab();
+        switch (tabIndex) {
+            case 0:
+                favoriteList.smoothScrollToPosition(0);
+                break;
+            case 1:
+                homeList.smoothScrollToPosition(0);
+                break;
+        }
     }
 
     @Override
