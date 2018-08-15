@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
         android:background="@android:color/darker_gray"
+        android:padding="10dp"
         android:text="@string/register_link"
         android:textSize="12sp" />
 
@@ -31,6 +32,7 @@
             android:drawableStart="@drawable/key"
             android:hint="@string/pin"
             android:inputType="numberPassword"
+            android:padding="5dp"
             android:singleLine="true" />
 
         <Button
@@ -44,12 +46,13 @@
 
     <Button
         android:id="@+id/get"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
         android:background="@android:color/darker_gray"
+        android:padding="10dp"
         android:text="@string/verifierbutton"
-        style="@style/Widget.AppCompat.Button.Borderless"
         android:textSize="12sp" />
 
 </LinearLayout>
