@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private RecyclerView timelineList, trendList,mentionList;
     private MenuItem profile, tweet, search, setting;
-    private SearchView searchQuery;
     private GlobalSettings settings;
     private MainPage home, trend, mention;
     private View lastTab;
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tweet = m.findItem(R.id.action_tweet);
         search = m.findItem(R.id.action_search);
         setting = m.findItem(R.id.action_settings);
-        searchQuery = (SearchView)m.findItem(R.id.action_search).getActionView();
+        SearchView searchQuery = (SearchView) m.findItem(R.id.action_search).getActionView();
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -157,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.action_settings:
                 settingChanged = true;
+                search.collapseActionView();
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 return true;
@@ -225,13 +225,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onTabChanged(String tabId) {
-        searchQuery.onActionViewCollapsed();
         animate();
         tabIndex = tabhost.getCurrentTab();
 
         switch(tabId) {
             case "timeline":
-                searchQuery.onActionViewCollapsed();
+                search.collapseActionView();
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
@@ -246,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case "mention":
-                searchQuery.onActionViewCollapsed();
+                search.collapseActionView();
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);
@@ -260,47 +259,52 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         switch(parent.getId()) {
             case R.id.tl_list:
                 if(!timelineReload.isRefreshing()) {
-                    TimelineRecycler tlAdp = (TimelineRecycler) timelineList.getAdapter();
-                    Tweet tweet = tlAdp.getData().get(position);
-                    if(tweet.embedded != null) {
-                        tweet = tweet.embedded;
+                    TimelineRecycler timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
+                    if (timelineAdapter != null) {
+                        Tweet tweet = timelineAdapter.getData().get(position);
+                        if (tweet.embedded != null) {
+                            tweet = tweet.embedded;
+                        }
+                        Intent intent = new Intent(this, TweetDetail.class);
+                        intent.putExtra("tweetID", tweet.tweetID);
+                        intent.putExtra("userID", tweet.user.userID);
+                        intent.putExtra("username", tweet.user.screenname);
+                        startActivity(intent);
                     }
-
-                    Intent intent = new Intent(this, TweetDetail.class);
-                    intent.putExtra("tweetID", tweet.tweetID);
-                    intent.putExtra("userID", tweet.user.userID);
-                    intent.putExtra("username", tweet.user.screenname);
-                    startActivity(intent);
                 }
                 break;
 
             case R.id.tr_list:
                 if(!trendReload.isRefreshing()) {
-                    TrendRecycler trend = (TrendRecycler) trendList.getAdapter();
-                    String search = trend.getData().get(position).trend;
-                    Intent intent = new Intent(this, SearchPage.class);
-                    if(search.startsWith("#")) {
-                        intent.putExtra("Addition", search);
-                    } else {
-                        search = '\"' + search + '\"';
+                    TrendRecycler trendAdapter = (TrendRecycler) trendList.getAdapter();
+                    if (trendAdapter != null) {
+                        String search = trendAdapter.getData().get(position).trend;
+                        Intent intent = new Intent(this, SearchPage.class);
+                        if (search.startsWith("#")) {
+                            intent.putExtra("Addition", search);
+                        } else {
+                            search = '\"' + search + '\"';
+                        }
+                        intent.putExtra("search", search);
+                        startActivity(intent);
                     }
-                    intent.putExtra("search", search);
-                    startActivity(intent);
                 }
                 break;
 
             case R.id.m_list:
                 if(!mentionReload.isRefreshing()) {
-                    TimelineRecycler tlAdp = (TimelineRecycler) mentionList.getAdapter();
-                    Tweet tweet = tlAdp.getData().get(position);
-                    if(tweet.embedded != null) {
-                        tweet = tweet.embedded;
+                    TimelineRecycler mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
+                    if (mentionAdapter != null) {
+                        Tweet tweet = mentionAdapter.getData().get(position);
+                        if (tweet.embedded != null) {
+                            tweet = tweet.embedded;
+                        }
+                        Intent intent = new Intent(this, TweetDetail.class);
+                        intent.putExtra("tweetID", tweet.tweetID);
+                        intent.putExtra("userID", tweet.user.userID);
+                        intent.putExtra("username", tweet.user.screenname);
+                        startActivity(intent);
                     }
-                    Intent intent = new Intent(this, TweetDetail.class);
-                    intent.putExtra("tweetID", tweet.tweetID);
-                    intent.putExtra("userID", tweet.user.userID);
-                    intent.putExtra("username", tweet.user.screenname);
-                    startActivity(intent);
                 }
                 break;
         }
@@ -321,19 +325,22 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         TimelineRecycler mAdapter = (TimelineRecycler) mentionList.getAdapter();
 
         if (hAdapter == null || hAdapter.getItemCount() == 0) {
-            new MainPage(this).execute(MainPage.H_LOAD,1);
+            home = new MainPage(this);
+            home.execute(MainPage.H_LOAD, 1);
         } else {
             hAdapter.setColor(highlight, fontColor);
             hAdapter.notifyDataSetChanged();
         }
         if (tAdapter == null || tAdapter.getItemCount() == 0) {
-            new MainPage(this).execute(MainPage.T_LOAD,1);
+            trend = new MainPage(this);
+            trend.execute(MainPage.T_LOAD, 1);
         } else {
             tAdapter.setColor(fontColor);
             tAdapter.notifyDataSetChanged();
         }
         if (mAdapter == null || mAdapter.getItemCount() == 0) {
-            new MainPage(this).execute(MainPage.M_LOAD, 1);
+            mention = new MainPage(this);
+            mention.execute(MainPage.M_LOAD, 1);
         } else {
             mAdapter.setColor(highlight, fontColor);
             mAdapter.notifyDataSetChanged();
