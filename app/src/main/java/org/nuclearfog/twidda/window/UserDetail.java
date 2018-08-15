@@ -50,10 +50,10 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         if (uList != null && !uList.isCancelled())
             uList.cancel(true);
-        super.onDestroy();
+        super.onPause();
     }
 
     @Override
@@ -73,15 +73,17 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     @Override
     public void onItemClick(View view, ViewGroup parent, int position) {
-        UserRecycler uAdp = (UserRecycler) userList.getAdapter();
-        TwitterUser user = uAdp.getData().get(position);
-        long userID = user.userID;
-        String username = user.screenname;
+        UserRecycler userListAdapter = (UserRecycler) userList.getAdapter();
+        if (userListAdapter != null) {
+            TwitterUser user = userListAdapter.getData().get(position);
+            long userID = user.userID;
+            String username = user.screenname;
 
-        Intent intent = new Intent(this, UserProfile.class);
-        intent.putExtra("userID", userID);
-        intent.putExtra("username", username);
-        startActivity(intent);
+            Intent intent = new Intent(this, UserProfile.class);
+            intent.putExtra("userID", userID);
+            intent.putExtra("username", username);
+            startActivity(intent);
+        }
     }
 
     private void getUsers() {

@@ -29,7 +29,6 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
     private Dialog popup;
     private String[] path;
 
-
     public StatusUpload(Context context, String[] path) {
         ui = new WeakReference<>((TweetPopup)context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -54,20 +53,17 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
             @Override
             public void onClick(View v) {
                 popup.dismiss();
-                if (!isCancelled())
-                    cancel(true);
             }
         });
-        popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onCancel(DialogInterface dialog) {
+            public void onDismiss(DialogInterface dialog) {
                 if (!isCancelled())
                     cancel(true);
             }
         });
         popup.show();
     }
-
 
     @Override
     protected Boolean doInBackground(Object... args) {

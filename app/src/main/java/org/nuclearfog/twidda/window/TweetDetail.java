@@ -89,19 +89,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onPause() {
+        if (mStat != null && !mStat.isCancelled()) {
+            mStat.cancel(true);
+        }
         if (mReply != null && !mReply.isCancelled()) {
             mReply.cancel(true);
             answerReload.setRefreshing(false);
         }
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mStat != null && !mStat.isCancelled()) {
-            mStat.cancel(true);
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -190,14 +185,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemClick(View view, ViewGroup parent, int position) {
-        TimelineRecycler tlAdp = (TimelineRecycler) answer_list.getAdapter();
-        Tweet tweet = tlAdp.getData().get(position);
-
-        Intent intent = new Intent(this,TweetDetail.class);
-        intent.putExtra("tweetID", tweet.tweetID);
-        intent.putExtra("userID", tweet.user.userID);
-        intent.putExtra("username", tweet.user.screenname);
-        startActivity(intent);
+        TimelineRecycler timeLineAdapter = (TimelineRecycler) answer_list.getAdapter();
+        if (timeLineAdapter != null) {
+            Tweet tweet = timeLineAdapter.getData().get(position);
+            Intent intent = new Intent(this, TweetDetail.class);
+            intent.putExtra("tweetID", tweet.tweetID);
+            intent.putExtra("userID", tweet.user.userID);
+            intent.putExtra("username", tweet.user.screenname);
+            startActivity(intent);
+        }
     }
 
     @Override

@@ -82,23 +82,12 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     @Override
     protected void onPause() {
         if (mSearch != null && !mSearch.isCancelled()) {
-            if (tweetReload.isRefreshing()) {
-                mSearch.cancel(true);
-                tweetReload.setRefreshing(false);
-            }
+            mSearch.cancel(true);
+            tweetReload.setRefreshing(false);
         }
         if (popup.isShowing())
             popup.dismiss();
         super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mSearch != null && !mSearch.isCancelled()) {
-            mSearch.cancel(true);
-            tweetReload.setRefreshing(false);
-        }
-        super.onDestroy();
     }
 
     @Override
@@ -154,25 +143,29 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         switch(parent.getId()) {
             case R.id.tweet_result:
                 if(!tweetReload.isRefreshing()) {
-                    TimelineRecycler tlAdp = (TimelineRecycler) tweetSearch.getAdapter();
-                    Tweet tweet = tlAdp.getData().get(position);
+                    TimelineRecycler tweetAdapter = (TimelineRecycler) tweetSearch.getAdapter();
+                    if (tweetAdapter != null) {
+                        Tweet tweet = tweetAdapter.getData().get(position);
 
-                    intent = new Intent(this, TweetDetail.class);
-                    intent.putExtra("tweetID", tweet.tweetID);
-                    intent.putExtra("userID", tweet.user.userID);
-                    intent.putExtra("username", tweet.user.screenname);
-                    startActivity(intent);
+                        intent = new Intent(this, TweetDetail.class);
+                        intent.putExtra("tweetID", tweet.tweetID);
+                        intent.putExtra("userID", tweet.user.userID);
+                        intent.putExtra("username", tweet.user.screenname);
+                        startActivity(intent);
+                    }
                 }
                 break;
 
             case R.id.user_result:
-                UserRecycler uAdp = (UserRecycler) userSearch.getAdapter();
-                TwitterUser user = uAdp.getData().get(position);
+                UserRecycler userAdapter = (UserRecycler) userSearch.getAdapter();
+                if (userAdapter != null) {
+                    TwitterUser user = userAdapter.getData().get(position);
 
-                intent = new Intent(getApplicationContext(), UserProfile.class);
-                intent.putExtra("userID", user.userID);
-                intent.putExtra("username", user.screenname);
-                startActivity(intent);
+                    intent = new Intent(getApplicationContext(), UserProfile.class);
+                    intent.putExtra("userID", user.userID);
+                    intent.putExtra("username", user.screenname);
+                    startActivity(intent);
+                }
                 break;
         }
     }
@@ -229,6 +222,9 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
     @SuppressLint("InflateParams")
     private void getContent() {
+        mSearch = new TwitterSearch(this);
+        mSearch.execute(search);
+
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         popup.setCanceledOnTouchOutside(false);
         if (popup.getWindow() != null)
@@ -236,7 +232,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         View load = getLayoutInflater().inflate(R.layout.item_load, null, false);
         View cancelButton = load.findViewById(R.id.kill_button);
         popup.setContentView(load);
-
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -246,9 +241,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
             }
         });
         popup.show();
-
-        mSearch = new TwitterSearch(this);
-        mSearch.execute(search);
     }
 
     @Override

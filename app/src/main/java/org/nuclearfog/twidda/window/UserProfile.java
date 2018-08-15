@@ -106,7 +106,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         super.onPause();
     }
 
-
     @Override
     public void onBackPressed() {
         if(tabIndex == 0) {
@@ -115,7 +114,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             mTab.setCurrentTab(0);
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
@@ -129,11 +127,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         mProfile = new ProfileLoader(this);
         switch(item.getItemId()) {
             case R.id.profile_tweet:
-                intent = new Intent(this, TweetPopup.class);
+                Intent intent = new Intent(this, TweetPopup.class);
                 if(!home)
                     intent.putExtra("Addition", username);
                 startActivity(intent);
@@ -163,7 +160,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         }
     }
 
-
     @Override
     public void onRefresh() {
         switch(tabIndex) {
@@ -186,25 +182,24 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemClick(View v, ViewGroup parent, int position){
-        TimelineRecycler tlAdp;
+        TimelineRecycler tweetAdapter;
         if(parent.getId() == R.id.ht_list) {
-            tlAdp = (TimelineRecycler) homeList.getAdapter();
+            tweetAdapter = (TimelineRecycler) homeList.getAdapter();
         } else {
-            tlAdp = (TimelineRecycler) favoriteList.getAdapter();
+            tweetAdapter = (TimelineRecycler) favoriteList.getAdapter();
         }
-
-        Tweet tweet = tlAdp.getData().get(position);
-        if(tweet.embedded != null) {
-            tweet = tweet.embedded;
+        if (tweetAdapter != null) {
+            Tweet tweet = tweetAdapter.getData().get(position);
+            if (tweet.embedded != null) {
+                tweet = tweet.embedded;
+            }
+            Intent intent = new Intent(this, TweetDetail.class);
+            intent.putExtra("tweetID", tweet.tweetID);
+            intent.putExtra("userID", tweet.user.userID);
+            intent.putExtra("username", tweet.user.screenname);
+            startActivity(intent);
         }
-
-        Intent intent = new Intent(this, TweetDetail.class);
-        intent.putExtra("tweetID", tweet.tweetID);
-        intent.putExtra("userID", tweet.user.userID);
-        intent.putExtra("username", tweet.user.screenname);
-        startActivity(intent);
     }
-
 
     private void setTabs() {
         mTab.setup();
@@ -244,17 +239,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         lastView = mTab.getCurrentView();
     }
 
-
     private void getProfileTweets() {
         new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB, 1L);
+        mProfile = new ProfileLoader(this);
         mTweets = new ProfileLoader(this);
         mFavorites = new ProfileLoader(this);
-        mProfile = new ProfileLoader(this);
         mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
         mFavorites.execute(userId, ProfileLoader.GET_FAVS,1L);
     }
-
 
     private void getConnection(int mode) {
         Intent intent = new Intent(this, UserDetail.class);

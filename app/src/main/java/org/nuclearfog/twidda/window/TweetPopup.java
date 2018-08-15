@@ -19,11 +19,12 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
+import org.nuclearfog.twidda.backend.StatusUpload.OnTweetSending;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TweetPopup extends AppCompatActivity implements OnClickListener, StatusUpload.OnTweetSending {
+public class TweetPopup extends AppCompatActivity implements OnClickListener, OnTweetSending {
 
     private StatusUpload sendTweet;
     private View imageButton, previewBtn;
@@ -143,7 +144,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, St
                     finish();
                 }
             });
-
             closeDialog.show();
         } else {
             finish();
