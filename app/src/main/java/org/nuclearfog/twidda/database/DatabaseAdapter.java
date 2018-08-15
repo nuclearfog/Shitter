@@ -18,12 +18,12 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
-    private final int LIMIT = 100;
+    private final int LIMIT = 50;
     private final int favoritedMask = 1;
     private final int retweetedMask = 1 << 1;
     private final int homeMask = 1 << 2;
     private final int mentionMask = 1 << 3;
-    private final int usertweetMask = 1 << 4;
+    private final int userTweetMask = 1 << 4;
     private final int replyMask = 1 << 5;
 
     private final int verifiedMask = 1;
@@ -82,7 +82,7 @@ public class DatabaseAdapter {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         for(int pos = 0; pos < stats.size(); pos++) {
             Tweet tweet = stats.get(pos);
-            storeStatus(tweet, usertweetMask, db);
+            storeStatus(tweet, userTweetMask, db);
         }
         db.close();
     }
@@ -203,7 +203,7 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet "+
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE statusregister&" + usertweetMask + ">0 " +
+                "WHERE statusregister&" + userTweetMask + ">0 " +
                 "AND user.userID ="+userID+" ORDER BY tweetID DESC LIMIT "+LIMIT;
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME,null);
