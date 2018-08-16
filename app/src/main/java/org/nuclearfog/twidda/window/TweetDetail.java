@@ -117,7 +117,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new StatusLoader(getApplicationContext()).execute(tweetID, StatusLoader.DELETE);
+                        new StatusLoader(TweetDetail.this).execute(tweetID, StatusLoader.DELETE);
                     }
                 });
                 deleteDialog.setNegativeButton(R.string.no_confirm, null);
