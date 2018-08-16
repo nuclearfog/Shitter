@@ -23,4 +23,5 @@
         android:layout_height="32dp"
         android:background="@drawable/right"
         android:visibility="invisible" />
+
 </LinearLayout>

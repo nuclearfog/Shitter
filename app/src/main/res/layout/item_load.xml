@@ -18,4 +18,5 @@
         android:layout_gravity="center"
         android:contentDescription="@string/progress_kill"
         android:src="@drawable/cross" />
+
 </FrameLayout>

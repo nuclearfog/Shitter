@@ -261,6 +261,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         mProfile = new ProfileLoader(this);
         mTweets = new ProfileLoader(this);
         mFavorites = new ProfileLoader(this);
+        homeReload.setRefreshing(true);
+        favoriteReload.setRefreshing(true);
         mProfile.execute(userId, ProfileLoader.GET_INF);
         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
         mFavorites.execute(userId, ProfileLoader.GET_FAVORS, 1L);

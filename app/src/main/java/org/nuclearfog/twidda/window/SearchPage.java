@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.window;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
@@ -24,7 +22,6 @@ import android.widget.TabHost.OnTabChangeListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.TwitterSearch;
-import org.nuclearfog.twidda.backend.TwitterSearch.OnDismiss;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
@@ -32,13 +29,12 @@ import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 
 public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
-        OnRefreshListener, OnTabChangeListener, OnItemClicked, OnDismiss {
+        OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
     private RecyclerView tweetSearch,userSearch;
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
     private TabHost tabhost;
-    private Dialog popup;
     private View lastView;
     private String search = "";
     private int tabIndex = 0;
@@ -60,7 +56,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        popup = new Dialog(this);
         tweetSearch = findViewById(R.id.tweet_result);
         tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         tweetSearch.setBackgroundColor(background);
@@ -85,8 +80,6 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
             mSearch.cancel(true);
             tweetReload.setRefreshing(false);
         }
-        if (popup.isShowing())
-            popup.dismiss();
         super.onPause();
     }
 
@@ -223,29 +216,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     @SuppressLint("InflateParams")
     private void getContent() {
         mSearch = new TwitterSearch(this);
+        tweetReload.setRefreshing(true);
         mSearch.execute(search);
-
-        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.setCanceledOnTouchOutside(false);
-        if (popup.getWindow() != null)
-            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        View load = getLayoutInflater().inflate(R.layout.item_load, null, false);
-        View cancelButton = load.findViewById(R.id.kill_button);
-        popup.setContentView(load);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mSearch != null && !mSearch.isCancelled())
-                    mSearch.cancel(true);
-                popup.dismiss();
-            }
-        });
-        popup.show();
-    }
-
-    @Override
-    public void dismiss() {
-        if (popup != null)
-            popup.dismiss();
     }
 }

@@ -111,10 +111,5 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         searchAdapter.notifyDataSetChanged();
         userAdapter.notifyDataSetChanged();
         tweetReload.setRefreshing(false);
-        connect.dismiss();
-    }
-
-    public interface OnDismiss {
-        void dismiss();
     }
 }

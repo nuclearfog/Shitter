@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:singleLine="true"
             android:textSize="20sp" />
+
     </LinearLayout>
 
 </android.support.v7.widget.CardView>
-
