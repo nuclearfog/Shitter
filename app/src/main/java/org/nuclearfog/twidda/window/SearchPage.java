@@ -138,7 +138,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
     }
 
     @Override
-    public void onItemClick(View view, ViewGroup parent, int position) {
+    public void onItemClick(ViewGroup parent, int position) {
         Intent intent;
         switch(parent.getId()) {
             case R.id.tweet_result:

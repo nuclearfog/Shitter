@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
@@ -72,7 +71,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
     }
 
     @Override
-    public void onItemClick(View view, ViewGroup parent, int position) {
+    public void onItemClick(ViewGroup parent, int position) {
         UserRecycler userListAdapter = (UserRecycler) userList.getAdapter();
         if (userListAdapter != null) {
             TwitterUser user = userListAdapter.getData().get(position);

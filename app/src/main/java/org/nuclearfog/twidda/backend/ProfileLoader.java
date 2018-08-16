@@ -30,13 +30,20 @@ import twitter4j.TwitterException;
 
 public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
-    public static final long GET_INFORMATION = 0; //Profilinformation
-    public static final long ACTION_FOLLOW   = 1; // Folgen/Entfolgen
-    public static final long GET_TWEETS      = 2; // Tweets Laden
-    public static final long GET_FAVS        = 3; // Favoriten Laden
+    // GET INFORMATION
+    public static final long GET_INF = 0;
+    public static final long LOAD_DB = 1;
+
+    // GET USER TWEETS
+    public static final long GET_TWEETS = 2;
+    public static final long GET_FAVORS = 3;
+
+    // USER ACTION
+    public static final long ACTION_FOLLOW = 6;
     public static final long ACTION_BLOCK = 4;
     public static final long ACTION_MUTE = 5;
-    public static final long LOAD_DB = 6;
+
+    // INTERN FLAGS
     private static final long FAILURE = 7;
     private static final long IGNORE = 8;
 
@@ -102,7 +109,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         long id = 1L;
         try {
             isHome = homeId == userId;
-            if (!isHome && (MODE == ACTION_FOLLOW || MODE == ACTION_BLOCK || MODE == ACTION_MUTE || MODE == GET_INFORMATION))
+            if (!isHome && (MODE == ACTION_FOLLOW || MODE == ACTION_BLOCK || MODE == ACTION_MUTE || MODE == GET_INF))
             {
                 boolean connection[] = mTwitter.getConnection(userId);
                 isFollowing = connection[0];
@@ -112,7 +119,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             }
 
             TwitterUser user;
-            if(MODE == GET_INFORMATION) {
+            if (MODE == GET_INF) {
                 user = mTwitter.getUser(userId);
                 database.storeUser(user);
             } else {
@@ -137,7 +144,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             if (MODE == GET_TWEETS && !isLocked)
             {
                 List<Tweet> tweets;
-
                 if(homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
@@ -151,7 +157,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     }
                 }
                 homeTl.setData(tweets);
-            } else if (MODE == GET_FAVS && !isLocked)
+            } else if (MODE == GET_FAVORS && !isLocked)
             {
                 List<Tweet> favorits;
                 if(homeFav.getItemCount() > 0) {
@@ -203,8 +209,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         final UserProfile connect = ui.get();
         if(connect == null)
             return;
-
-        if(mode == GET_INFORMATION || mode == LOAD_DB) {
+        if (mode == GET_INF || mode == LOAD_DB) {
             TextView txtUser = connect.findViewById(R.id.profile_username);
             TextView txtScrName = connect.findViewById(R.id.profile_screenname);
             TextView txtBio = connect.findViewById(R.id.bio);
@@ -250,18 +255,14 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                     }
                 });
             }
-        }
-        else if(mode == GET_TWEETS)
-        {
+        } else if (mode == GET_TWEETS) {
             homeTl.notifyDataSetChanged();
             SwipeRefreshLayout tweetsReload = connect.findViewById(R.id.hometweets);
             tweetsReload.setRefreshing(false);
-        }
-        else if(mode == GET_FAVS)
-        {
+        } else if (mode == GET_FAVORS) {
             homeFav.notifyDataSetChanged();
-            SwipeRefreshLayout favoritsReload = connect.findViewById(R.id.homefavorits);
-            favoritsReload.setRefreshing(false);
+            SwipeRefreshLayout favorReload = connect.findViewById(R.id.homefavorits);
+            favorReload.setRefreshing(false);
         }
         else if(mode == ACTION_FOLLOW) {
             int textId;
@@ -296,7 +297,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
                 Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
             }
         }
-        if (!isHome && (mode == ACTION_FOLLOW || mode == ACTION_BLOCK || mode == ACTION_MUTE || mode == GET_INFORMATION)) {
+        if (!isHome && (mode == ACTION_FOLLOW || mode == ACTION_BLOCK || mode == ACTION_MUTE || mode == GET_INF)) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);
             if(tool.getMenu().size() >= 2) {
                 MenuItem followIcon = tool.getMenu().getItem(1);

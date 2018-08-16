@@ -77,7 +77,7 @@ public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
         ViewGroup p = TrendRecycler.this.parent;
         RecyclerView rv = (RecyclerView) p;
         int position = rv.getChildLayoutPosition(view);
-        mListener.onItemClick(view, p, position);
+        mListener.onItemClick(p, position);
     }
 
 
@@ -95,6 +95,6 @@ public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
      * Custom Click Listener
      */
     public interface OnItemClicked {
-        void onItemClick(View v, ViewGroup parent, int position);
+        void onItemClick(ViewGroup parent, int position);
     }
 }

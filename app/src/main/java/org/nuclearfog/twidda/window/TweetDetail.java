@@ -184,7 +184,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
     @Override
-    public void onItemClick(View view, ViewGroup parent, int position) {
+    public void onItemClick(ViewGroup parent, int position) {
         TimelineRecycler timeLineAdapter = (TimelineRecycler) answer_list.getAdapter();
         if (timeLineAdapter != null) {
             Tweet tweet = timeLineAdapter.getData().get(position);

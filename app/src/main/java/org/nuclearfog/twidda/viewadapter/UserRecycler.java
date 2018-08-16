@@ -95,7 +95,7 @@ public class UserRecycler extends Adapter<UserRecycler.ItemHolder> implements On
         ViewGroup p = UserRecycler.this.parent;
         RecyclerView rv = (RecyclerView) p;
         int position = rv.getChildLayoutPosition(view);
-        mListener.onItemClick(view, p, position);
+        mListener.onItemClick(p, position);
     }
 
 
@@ -114,6 +114,6 @@ public class UserRecycler extends Adapter<UserRecycler.ItemHolder> implements On
 
 
     public interface OnItemClicked {
-        void onItemClick(View v, ViewGroup parent, int position);
+        void onItemClick(ViewGroup parent, int position);
     }
 }

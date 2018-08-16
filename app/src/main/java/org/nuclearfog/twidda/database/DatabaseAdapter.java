@@ -45,7 +45,6 @@ public class DatabaseAdapter {
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         storeUser(user, db);
-        db.close();
     }
 
     /**
@@ -58,7 +57,6 @@ public class DatabaseAdapter {
             Tweet tweet = home.get(pos);
             storeStatus(tweet, homeMask, db);
         }
-        db.close();
     }
 
     /**
@@ -71,7 +69,6 @@ public class DatabaseAdapter {
             Tweet tweet = mentions.get(pos);
             storeStatus(tweet, mentionMask, db);
         }
-        db.close();
     }
 
     /**
@@ -84,7 +81,6 @@ public class DatabaseAdapter {
             Tweet tweet = stats.get(pos);
             storeStatus(tweet, userTweetMask, db);
         }
-        db.close();
     }
 
     /**
@@ -102,7 +98,6 @@ public class DatabaseAdapter {
             favTable.put("ownerID", ownerId);
             db.insertWithOnConflict("favorit",null,favTable,CONFLICT_IGNORE);
         }
-        db.close();
     }
 
     /**
@@ -115,7 +110,6 @@ public class DatabaseAdapter {
             Tweet tweet = replies.get(pos);
             storeStatus(tweet, replyMask, db);
         }
-        db.close();
     }
 
     /**
@@ -125,7 +119,6 @@ public class DatabaseAdapter {
     public void storeFavorite(Tweet tweet) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         storeStatus(tweet, favoritedMask, db);
-        db.close();
     }
 
     /**
@@ -143,7 +136,6 @@ public class DatabaseAdapter {
         if (cursor.moveToFirst())
             user = getUser(cursor);
         cursor.close();
-        db.close();
         return user;
     }
 
@@ -166,7 +158,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
         return tweetList;
     }
 
@@ -189,7 +180,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
         return tweetList;
     }
 
@@ -215,7 +205,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
         return tweetList;
     }
 
@@ -239,7 +228,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
         return tweetList;
     }
 
@@ -259,7 +247,6 @@ public class DatabaseAdapter {
         if(cursor.moveToFirst())
             result = getStatus(cursor);
         cursor.close();
-        db.close();
         return result;
     }
 
@@ -283,7 +270,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
         return tweetList;
     }
 
@@ -309,7 +295,6 @@ public class DatabaseAdapter {
         status.put("favorite",tweet.favorit);
         status.put("statusregister",register);
         db.update("tweet",status,"tweet.tweetID="+tweet.tweetID,null);
-        db.close();
     }
 
     /**
@@ -319,7 +304,6 @@ public class DatabaseAdapter {
     public void removeStatus(long id) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.delete("tweet","tweetID="+id,null);
-        db.close();
     }
 
     /**
@@ -337,7 +321,6 @@ public class DatabaseAdapter {
         ContentValues status = new ContentValues();
         status.put("statusregister", register);
         db.update("tweet", status, "tweet.tweetID=" + tweetId, null);
-        db.close();
     }
 
     /**
@@ -351,7 +334,6 @@ public class DatabaseAdapter {
         Cursor c = db.rawQuery(query,null);
         boolean result = c.moveToFirst();
         c.close();
-        db.close();
         return result;
     }
 

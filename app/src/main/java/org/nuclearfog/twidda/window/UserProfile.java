@@ -178,7 +178,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 break;
             case 1:
                 mFavorites = new ProfileLoader(this);
-                mFavorites.execute(userId, ProfileLoader.GET_FAVS,1L);
+                mFavorites.execute(userId, ProfileLoader.GET_FAVORS, 1L);
                 break;
         }
     }
@@ -198,7 +198,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     }
 
     @Override
-    public void onItemClick(View v, ViewGroup parent, int position){
+    public void onItemClick(ViewGroup parent, int position) {
         TimelineRecycler tweetAdapter;
         if(parent.getId() == R.id.ht_list) {
             tweetAdapter = (TimelineRecycler) homeList.getAdapter();
@@ -257,13 +257,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     }
 
     private void getProfileTweets() {
-        new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB, 1L);
+        new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB);
         mProfile = new ProfileLoader(this);
         mTweets = new ProfileLoader(this);
         mFavorites = new ProfileLoader(this);
-        mProfile.execute(userId, ProfileLoader.GET_INFORMATION,1L);
+        mProfile.execute(userId, ProfileLoader.GET_INF);
         mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
-        mFavorites.execute(userId, ProfileLoader.GET_FAVS,1L);
+        mFavorites.execute(userId, ProfileLoader.GET_FAVORS, 1L);
     }
 
     private void getConnection(int mode) {

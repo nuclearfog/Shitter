@@ -46,13 +46,6 @@ public class AppDatabase extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + "user");
-        db.execSQL("DROP TABLE IF EXISTS " + "tweet");
-
-        db.execSQL("DROP TABLE IF EXISTS " + "favorit");
-
-        db.execSQL("DROP TABLE IF EXISTS " + "trend");
-        db.execSQL("DROP TABLE IF EXISTS " + "error");
     }
 
 

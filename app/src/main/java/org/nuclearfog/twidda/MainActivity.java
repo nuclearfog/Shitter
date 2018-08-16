@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     }
 
     @Override
-    public void onItemClick(View v, ViewGroup parent, int position) {
+    public void onItemClick(ViewGroup parent, int position) {
         switch(parent.getId()) {
             case R.id.tl_list:
                 if(!timelineReload.isRefreshing()) {
