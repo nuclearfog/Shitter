@@ -38,7 +38,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         setContentView(R.layout.userpage);
 
         userList = findViewById(R.id.userlist);
-        userList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        userList.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
         GlobalSettings settings = GlobalSettings.getInstance(this);

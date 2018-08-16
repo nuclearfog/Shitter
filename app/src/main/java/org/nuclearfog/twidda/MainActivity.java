@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Intent intent = new Intent(getApplicationContext(), SearchPage.class);
+                Intent intent = new Intent(MainActivity.this, SearchPage.class);
                 intent.putExtra("search", s);
                 startActivity(intent);
                 return false;

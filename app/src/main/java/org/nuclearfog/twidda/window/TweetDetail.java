@@ -76,7 +76,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View answer = findViewById(R.id.answer_button);
         answerReload = findViewById(R.id.answer_reload);
         answer_list = findViewById(R.id.answer_list);
-        answer_list.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        answer_list.setLayoutManager(new LinearLayoutManager(this));
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
         answerReload.setOnRefreshListener(this);

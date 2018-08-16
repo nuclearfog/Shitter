@@ -62,11 +62,11 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
 
         popup = new Dialog(this);
         tweetSearch = findViewById(R.id.tweet_result);
-        tweetSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         tweetSearch.setBackgroundColor(background);
 
         userSearch = findViewById(R.id.user_result);
-        userSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        userSearch.setLayoutManager(new LinearLayoutManager(this));
         userSearch.setBackgroundColor(background);
 
         tweetReload = findViewById(R.id.searchtweets);
@@ -107,7 +107,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Intent intent = new Intent(getApplicationContext(), SearchPage.class);
+                Intent intent = new Intent(SearchPage.this, SearchPage.class);
                 intent.putExtra("search", s);
                 startActivity(intent);
                 return true;
@@ -161,7 +161,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                 if (userAdapter != null) {
                     TwitterUser user = userAdapter.getData().get(position);
 
-                    intent = new Intent(getApplicationContext(), UserProfile.class);
+                    intent = new Intent(this, UserProfile.class);
                     intent.putExtra("userID", user.userID);
                     intent.putExtra("username", user.screenname);
                     startActivity(intent);
