@@ -62,14 +62,14 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
 
 
     @Override
-    public int getItemCount() {
-        return tweets.size();
+    public long getItemId(int pos) {
+        return tweets.get(pos).tweetID;
     }
 
 
     @Override
-    public long getItemId(int pos) {
-        return tweets.get(pos).tweetID;
+    public int getItemCount() {
+        return tweets.size();
     }
 
 
@@ -80,7 +80,6 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet,parent,false);
         v.setOnClickListener(this);
         return new ItemHolder(v);
-
     }
 
 
@@ -116,10 +115,10 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
 
     @Override
     public void onClick(View view) {
-        ViewGroup p = TimelineRecycler.this.parent;
+        ViewGroup p = parent;
         RecyclerView rv = (RecyclerView) p;
         int position = rv.getChildLayoutPosition(view);
-        mListener.onItemClick(view, p, position);
+        mListener.onItemClick(p, position);
     }
 
 
@@ -136,15 +135,15 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
             return SimpleDateFormat.getDateInstance().format(tweetDate);
         }
         if(weeks > 0)
-            return "vor "+weeks+" w";
+            return weeks + " w";
         if(days > 0)
-            return "vor "+days+" d";
+            return days + " d";
         if(hours > 0)
-            return "vor "+hours+" h";
+            return hours + " h";
         if(minutes > 0)
-            return "vor "+minutes+" m";
+            return minutes + " m";
         else
-            return "vor "+seconds+" s";
+            return seconds + " s";
     }
 
 
@@ -211,6 +210,6 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
      * Custom Click Listener
      */
     public interface OnItemClicked {
-        void onItemClick(View v, ViewGroup parent, int position);
+        void onItemClick(ViewGroup parent, int position);
     }
 }
