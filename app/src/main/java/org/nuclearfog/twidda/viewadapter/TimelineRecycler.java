@@ -61,6 +61,12 @@ public class TimelineRecycler extends Adapter<TimelineRecycler.ItemHolder> imple
     }
 
 
+    public void addNew(List<Tweet> newTweets) {
+        newTweets.addAll(tweets);
+        tweets = newTweets;
+    }
+
+
     @Override
     public long getItemId(int pos) {
         return tweets.get(pos).tweetID;

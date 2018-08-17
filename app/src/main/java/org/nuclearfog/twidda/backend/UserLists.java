@@ -35,7 +35,6 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private UserRecycler usrAdp;
     private ErrorLog errorLog;
     private Dialog popup;
-    private boolean imageLoad;
     private String errorMessage = "E: Userlist, ";
     private int returnCode = 0;
 
@@ -44,7 +43,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
      */
     public UserLists(Context context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        imageLoad = settings.loadImages();
+        boolean imageLoad = settings.loadImages();
         errorLog = new ErrorLog(context);
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);
@@ -54,6 +53,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         RecyclerView userList = ui.get().findViewById(R.id.userlist);
 
         usrAdp = new UserRecycler(ui.get());
+        usrAdp.toggleImage(imageLoad);
         userList.setAdapter(usrAdp);
     }
 
@@ -106,7 +106,6 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
                 user = mTwitter.getRetweeter(id,cursor);
                 usrAdp.setData(user);
             }
-            usrAdp.toggleImage(imageLoad);
             return true;
         }
         catch(TwitterException err) {

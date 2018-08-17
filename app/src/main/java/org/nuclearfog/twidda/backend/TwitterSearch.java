@@ -26,8 +26,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
     private TwitterEngine mTwitter;
     private ErrorLog errorLog;
     private WeakReference<SearchPage> ui;
-    private int highlight, font_color;
-    private boolean imageLoad;
     private String errorMessage = "E: Twitter search, ";
     private int returnCode = 0;
 
@@ -37,9 +35,9 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         errorLog = new ErrorLog(context);
 
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        font_color = settings.getFontColor();
-        highlight = settings.getHighlightColor();
-        imageLoad = settings.loadImages();
+        int font_color = settings.getFontColor();
+        int highlight = settings.getHighlightColor();
+        boolean imageLoad = settings.loadImages();
 
         RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
         RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
@@ -49,10 +47,13 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         if(searchAdapter == null) {
             searchAdapter = new TimelineRecycler(ui.get());
             tweetSearch.setAdapter(searchAdapter);
+            searchAdapter.setColor(highlight, font_color);
+            searchAdapter.toggleImage(imageLoad);
         }
         if(userAdapter == null) {
             userAdapter = new UserRecycler(ui.get());
             userSearch.setAdapter(userAdapter);
+            userAdapter.toggleImage(imageLoad);
         }
     }
 
@@ -65,8 +66,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
             if(searchAdapter.getItemCount() > 0) {
                 id = searchAdapter.getItemId(0);
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
-                tweets.addAll(searchAdapter.getData());
-                searchAdapter.setData(tweets);
+                searchAdapter.addNew(tweets);
             } else {
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
                 searchAdapter.setData(tweets);
@@ -75,10 +75,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
                 List<TwitterUser> user = mTwitter.searchUsers(strSearch);
                 userAdapter.setData(user);
             }
-
-            searchAdapter.setColor(highlight,font_color);
-            searchAdapter.toggleImage(imageLoad);
-            userAdapter.toggleImage(imageLoad);
             return true;
 
         } catch (TwitterException err) {

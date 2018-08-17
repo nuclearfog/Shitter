@@ -75,9 +75,9 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         ui = new WeakReference<>((UserProfile)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        database = new DatabaseAdapter(ui.get());
-        sdf = settings.getDateFormatter();
+        database = new DatabaseAdapter(context);
         errorLog = new ErrorLog(context);
+        sdf = settings.getDateFormatter();
         int font = settings.getFontColor();
         int highlight = settings.getHighlightColor();
         imgEnabled = settings.loadImages();
@@ -141,50 +141,47 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             dateString = sdf.format(time);
             description = description.replace('\n', ' ');
 
-            if (MODE == GET_TWEETS && !isLocked)
+            if (MODE == GET_TWEETS && (!isLocked || isFollowed))
             {
                 List<Tweet> tweets;
                 if(homeTl.getItemCount() > 0) {
                     id = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(userId,args[2],id);
+                    homeTl.addNew(tweets);
                     database.storeUserTweets(tweets);
-                    tweets.addAll(homeTl.getData());
                 } else {
                     tweets = database.getUserTweets(userId);
-                    if(tweets.size() == 0 && !isLocked) {
+                    if (tweets.size() == 0) {
                         tweets = mTwitter.getUserTweets(userId,args[2],id);
+                        homeTl.setData(tweets);
                         database.storeUserTweets(tweets);
-                    }
+                    } else
+                        homeTl.setData(tweets);
                 }
-                homeTl.setData(tweets);
-            } else if (MODE == GET_FAVORS && !isLocked)
+            } else if (MODE == GET_FAVORS && (!isLocked || isFollowed))
             {
                 List<Tweet> favorits;
                 if(homeFav.getItemCount() > 0) {
                     id = homeFav.getItemId(0);
                     favorits = mTwitter.getUserFavs(userId,args[2],id);
+                    homeFav.addNew(favorits);
                     database.storeUserFavs(favorits,userId);
-                    favorits.addAll(homeFav.getData());
-
                 } else {
                     favorits = database.getUserFavs(userId);
-                    if(favorits.size() == 0 && !isLocked) {
+                    if (favorits.size() == 0) {
                         favorits = mTwitter.getUserFavs(userId,args[2],id);
+                        homeFav.setData(favorits);
                         database.storeUserFavs(favorits,userId);
-                    }
+                    } else
+                        homeFav.setData(favorits);
                 }
-                homeFav.setData(favorits);
-            }
-            else if(MODE == ACTION_FOLLOW)
-            {
+            } else if (MODE == ACTION_FOLLOW) {
                 isFollowing = !isFollowing;
                 mTwitter.followAction(userId, isFollowing);
             } else if (MODE == ACTION_BLOCK) {
                 isBlocked = !isBlocked;
                 mTwitter.blockAction(userId, isBlocked);
-            }
-            else if(MODE == ACTION_MUTE)
-            {
+            } else if (MODE == ACTION_MUTE) {
                 isMuted = !isMuted;
                 mTwitter.muteAction(userId, isMuted);
             }

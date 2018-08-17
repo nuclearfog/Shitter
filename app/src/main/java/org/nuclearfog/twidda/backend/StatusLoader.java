@@ -53,10 +53,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private String repliedUsername, apiName, profile_pb;
     private String medialinks[];
     private String prefix;
+    private int highlight;
     private boolean retweeted, favorited, toggleImg, verified;
     private long tweetReplyID, replyUserId;
     private int rtCount, favCount;
-    private int highlight, font;
     private String errorMessage = "Status load: ";
     private int returnCode = 0;
 
@@ -66,7 +66,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         sdf = settings.getDateFormatter();
-        font = settings.getFontColor();
+        int font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
         ui = new WeakReference<>((TweetDetail)context);
@@ -78,6 +78,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         if(answerAdapter == null) {
             answerAdapter = new TimelineRecycler(ui.get());
             replyList.setAdapter(answerAdapter);
+            answerAdapter.toggleImage(toggleImg);
+            answerAdapter.setColor(highlight, font);
         }
     }
 
@@ -101,7 +103,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tweet = database.getStatus(tweetID);
                 List<Tweet> answers = database.getAnswers(tweetID);
                 answerAdapter.setData(answers);
-                answerAdapter.setColor(highlight, font);
                 if(tweet == null)
                     return IGNORE; // NOT FOUND
             } else {
@@ -158,13 +159,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 if(answerAdapter.getItemCount() > 0) {
                     long sinceId = answerAdapter.getItemId(0);
                     answers = mTwitter.getAnswers(scrNameStr, tweetID, sinceId);
-                    answers.addAll(answerAdapter.getData());
+                    answerAdapter.addNew(answers);
                 } else {
                     answers = mTwitter.getAnswers(scrNameStr, tweetID, tweetID);
+                    answerAdapter.setData(answers);
                 }
-                answerAdapter.setData(answers);
-                answerAdapter.toggleImage(toggleImg);
-                answerAdapter.setColor(highlight, font);
                 if(answers.size() > 0 && database.containStatus(tweetID))
                     database.storeReplies(answers);
             }

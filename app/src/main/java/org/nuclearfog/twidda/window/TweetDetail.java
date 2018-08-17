@@ -220,10 +220,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         txtTw.setTextColor(fontColor);
         new StatusLoader(this).execute(tweetID, StatusLoader.LOAD_DB);
         mStat = new StatusLoader(this);
-
-        answerReload.setRefreshing(true);
         mReply = new StatusLoader(this);
         mStat.execute(tweetID, StatusLoader.LOAD_TWEET);
+        answerReload.setRefreshing(true);
         mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
     }
 }

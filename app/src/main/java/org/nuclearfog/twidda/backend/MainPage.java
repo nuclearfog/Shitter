@@ -37,10 +37,9 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private TimelineRecycler timelineAdapter, mentionAdapter;
     private TrendRecycler trendsAdapter;
     private DatabaseAdapter tweetDb;
+    private TrendDatabase trendDb;
     private ErrorLog errorLog;
     private int woeId;
-    private int highlight, font;
-    private boolean image;
     private String errMsg = "E: Main Page, ";
     private int returnCode = 0;
 
@@ -52,12 +51,13 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         ui = new WeakReference<>((MainActivity)context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        tweetDb = new DatabaseAdapter(ui.get());
+        tweetDb = new DatabaseAdapter(context);
+        trendDb = new TrendDatabase(context);
         errorLog = new ErrorLog(context);
         woeId = settings.getWoeId();
-        highlight = settings.getHighlightColor();
-        font = settings.getFontColor();
-        image = settings.loadImages();
+        int highlight = settings.getHighlightColor();
+        int font = settings.getFontColor();
+        boolean image = settings.loadImages();
 
         RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
         RecyclerView trendList = ui.get().findViewById(R.id.tr_list);
@@ -69,14 +69,19 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         if(timelineAdapter == null) {
             timelineAdapter = new TimelineRecycler(ui.get());
             timelineList.setAdapter(timelineAdapter);
+            timelineAdapter.setColor(highlight, font);
+            timelineAdapter.toggleImage(image);
         }
         if(trendsAdapter == null) {
             trendsAdapter = new TrendRecycler(ui.get());
             trendList.setAdapter(trendsAdapter);
+            trendsAdapter.setColor(font);
         }
         if(mentionAdapter == null) {
             mentionAdapter = new TimelineRecycler(ui.get());
             mentionList.setAdapter(mentionAdapter);
+            mentionAdapter.setColor(highlight, font);
+            mentionAdapter.toggleImage(image);
         }
     }
 
@@ -91,31 +96,24 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         long id = 1L;
         List<Tweet> tweets;
         try {
-            TrendDatabase trendDb = new TrendDatabase(ui.get());
             switch (MODE) {
                 case HOME:
 
                     if(timelineAdapter.getItemCount() > 0) {
                         id = timelineAdapter.getItemId(0);
                         tweets = mTwitter.getHome(page,id);
-                        tweetDb.storeHomeTimeline(tweets);
-                        tweets.addAll(timelineAdapter.getData());
+                        timelineAdapter.addNew(tweets);
                     } else {
                         tweets = mTwitter.getHome(page,id);
-                        tweetDb.storeHomeTimeline(tweets);
+                        timelineAdapter.setData(tweets);
                     }
-                    timelineAdapter.setData(tweets);
-                    timelineAdapter.setColor(highlight, font);
-                    timelineAdapter.toggleImage(image);
+                    tweetDb.storeHomeTimeline(tweets);
                     break;
 
                 case H_LOAD:
 
-                    DatabaseAdapter tweetDeck = new DatabaseAdapter(ui.get());
-                    tweets = tweetDeck.getHomeTimeline();
+                    tweets = tweetDb.getHomeTimeline();
                     timelineAdapter.setData(tweets);
-                    timelineAdapter.setColor(highlight, font);
-                    timelineAdapter.toggleImage(image);
                     break;
 
                 case TRND:
@@ -123,13 +121,11 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     List<Trend> trends = mTwitter.getTrends(woeId);
                     trendDb.store(trends, woeId);
                     trendsAdapter.setData(trends);
-                    trendsAdapter.setColor(font);
                     break;
 
                 case T_LOAD:
 
                     trendsAdapter.setData(trendDb.load(woeId));
-                    trendsAdapter.setColor(font);
                     break;
 
                 case MENT:
@@ -138,24 +134,18 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     if(mentionAdapter.getItemCount() != 0) {
                         id = mentionAdapter.getItemId(0);
                         mention = mTwitter.getMention(page,id);
-                        tweetDb.storeMentions(mention);
-                        mention.addAll(mentionAdapter.getData());
+                        mentionAdapter.addNew(mention);
                     } else {
                         mention = mTwitter.getMention(page,id);
-                        tweetDb.storeMentions(mention);
+                        mentionAdapter.setData(mention);
                     }
-                    mentionAdapter.setData(mention);
-                    mentionAdapter.setColor(highlight, font);
-                    mentionAdapter.toggleImage(image);
+                    tweetDb.storeMentions(mention);
                     break;
 
                 case M_LOAD:
 
-                    DatabaseAdapter mentDeck  = new DatabaseAdapter(ui.get());
-                    mention = mentDeck.getMentions();
+                    mention = tweetDb.getMentions();
                     mentionAdapter.setData(mention);
-                    mentionAdapter.setColor(highlight, font);
-                    mentionAdapter.toggleImage(image);
                     break;
             }
         } catch(TwitterException e) {
