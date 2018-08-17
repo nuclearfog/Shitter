@@ -44,7 +44,9 @@ public class DatabaseAdapter {
      */
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         storeUser(user, db);
+        commit(db);
     }
 
     /**
@@ -53,10 +55,12 @@ public class DatabaseAdapter {
      */
     public void storeHomeTimeline(List<Tweet> home) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         for (int pos = 0; pos < home.size(); pos++) {
             Tweet tweet = home.get(pos);
             storeStatus(tweet, homeMask, db);
         }
+        commit(db);
     }
 
     /**
@@ -65,10 +69,12 @@ public class DatabaseAdapter {
      */
     public void storeMentions(List<Tweet> mentions) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         for (int pos = 0; pos < mentions.size(); pos++) {
             Tweet tweet = mentions.get(pos);
             storeStatus(tweet, mentionMask, db);
         }
+        commit(db);
     }
 
     /**
@@ -77,10 +83,12 @@ public class DatabaseAdapter {
      */
     public void storeUserTweets(List<Tweet> stats) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         for(int pos = 0; pos < stats.size(); pos++) {
             Tweet tweet = stats.get(pos);
             storeStatus(tweet, userTweetMask, db);
         }
+        commit(db);
     }
 
     /**
@@ -90,6 +98,7 @@ public class DatabaseAdapter {
      */
     public void storeUserFavs(List<Tweet> fav, long ownerId){
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         for(int pos = 0; pos < fav.size(); pos++) {
             Tweet tweet = fav.get(pos);
             storeStatus(tweet,0,db);
@@ -98,6 +107,7 @@ public class DatabaseAdapter {
             favTable.put("ownerID", ownerId);
             db.insertWithOnConflict("favorit",null,favTable,CONFLICT_IGNORE);
         }
+        commit(db);
     }
 
     /**
@@ -106,10 +116,12 @@ public class DatabaseAdapter {
      */
     public void storeReplies(List<Tweet> replies) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         for(int pos = 0; pos < replies.size(); pos++) {
             Tweet tweet = replies.get(pos);
             storeStatus(tweet, replyMask, db);
         }
+        commit(db);
     }
 
     /**
@@ -118,7 +130,9 @@ public class DatabaseAdapter {
      */
     public void storeFavorite(Tweet tweet) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         storeStatus(tweet, favoritedMask, db);
+        commit(db);
     }
 
     /**
@@ -496,6 +510,12 @@ public class DatabaseAdapter {
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
         db.insertWithOnConflict("user",null, userColumn, CONFLICT_REPLACE);
+    }
+
+    private void commit(SQLiteDatabase db) {
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
     }
 
 
