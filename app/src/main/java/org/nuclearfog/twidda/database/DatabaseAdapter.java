@@ -293,6 +293,7 @@ public class DatabaseAdapter {
      */
     public void updateStatus(Tweet tweet) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         ContentValues status = new ContentValues();
         int register = getStatRegister(db,tweet.tweetID);
         if (tweet.retweeted)
@@ -309,6 +310,7 @@ public class DatabaseAdapter {
         status.put("favorite",tweet.favorit);
         status.put("statusregister",register);
         db.update("tweet",status,"tweet.tweetID="+tweet.tweetID,null);
+        commit(db);
     }
 
     /**
@@ -317,7 +319,9 @@ public class DatabaseAdapter {
      */
     public void removeStatus(long id) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         db.delete("tweet","tweetID="+id,null);
+        commit(db);
     }
 
     /**
@@ -327,6 +331,7 @@ public class DatabaseAdapter {
      */
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
         db.delete("favorit", "tweetID=" + tweetId + " AND ownerID=" + homeId, null);
 
         int register = getStatRegister(db, tweetId);
@@ -335,6 +340,7 @@ public class DatabaseAdapter {
         ContentValues status = new ContentValues();
         status.put("statusregister", register);
         db.update("tweet", status, "tweet.tweetID=" + tweetId, null);
+        commit(db);
     }
 
     /**
