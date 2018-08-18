@@ -13,7 +13,6 @@ import android.view.Window;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
@@ -25,7 +24,6 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
-    private ErrorLog errorLog;
     private Dialog popup;
     private String[] path;
 
@@ -33,7 +31,6 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         ui = new WeakReference<>((TweetPopup)context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);
-        errorLog = new ErrorLog(context);
         popup = new Dialog(context);
         this.path = path;
     }
@@ -82,11 +79,9 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         } catch (TwitterException err) {
             int returnCode = err.getErrorCode();
             if (returnCode > 0) {
-                errorLog.add("E: Upload, " + err.getMessage());
             }
             return false;
         } catch (Exception err) {
-            errorLog.add("E: Upload, " + err.getMessage());
             return false;
         }
     }

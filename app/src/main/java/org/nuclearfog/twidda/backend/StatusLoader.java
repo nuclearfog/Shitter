@@ -22,7 +22,6 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
@@ -47,7 +46,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private TwitterEngine mTwitter;
     private TimelineRecycler answerAdapter;
     private DatabaseAdapter database;
-    private ErrorLog errorLog;
     private SimpleDateFormat sdf;
     private String usernameStr, scrNameStr, tweetStr, dateString;
     private String repliedUsername, apiName, profile_pb;
@@ -73,7 +71,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         answerAdapter = (TimelineRecycler) replyList.getAdapter();
         database = new DatabaseAdapter(context);
-        errorLog = new ErrorLog(context);
         prefix = context.getString(R.string.sent_from);
         if(answerAdapter == null) {
             answerAdapter = new TimelineRecycler(ui.get());
@@ -180,7 +177,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         }
         catch(Exception err) {
             errorMessage += err.getMessage();
-            errorLog.add(errorMessage);
             return ERROR;
         }
         return MODE;

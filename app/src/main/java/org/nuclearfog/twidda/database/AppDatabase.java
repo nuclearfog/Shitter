@@ -24,9 +24,6 @@ public class AppDatabase extends SQLiteOpenHelper
     private static final String trendTable = "CREATE TABLE IF NOT EXISTS trend (" +
             "woeID INTEGER, trendpos INTEGER, trendname TEXT, trendlink TEXT);";
 
-    private static final String errorTable = "CREATE TABLE IF NOT EXISTS error (" +
-            "time INTEGER PRIMARY KEY, message TEXT);";
-
     private static AppDatabase mData;
 
     private AppDatabase(Context context) {
@@ -41,7 +38,6 @@ public class AppDatabase extends SQLiteOpenHelper
         db.execSQL(favoriteTable);
 
         db.execSQL(trendTable);
-        db.execSQL(errorTable);
     }
 
     @Override

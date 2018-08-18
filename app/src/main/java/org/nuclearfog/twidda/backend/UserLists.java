@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.UserDetail;
 
@@ -33,7 +32,6 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
     private UserRecycler usrAdp;
-    private ErrorLog errorLog;
     private Dialog popup;
     private String errorMessage = "E: Userlist, ";
     private int returnCode = 0;
@@ -44,7 +42,6 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     public UserLists(Context context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         boolean imageLoad = settings.loadImages();
-        errorLog = new ErrorLog(context);
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);
 
@@ -112,12 +109,10 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
-                errorLog.add(errorMessage);
             }
             return false;
         } catch(Exception err) {
             errorMessage += err.getMessage();
-            errorLog.add(errorMessage);
             return false;
         }
     }
@@ -128,7 +123,6 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if(ui.get() == null)
             return;
-
         if(success) {
             usrAdp.notifyDataSetChanged();
         } else {

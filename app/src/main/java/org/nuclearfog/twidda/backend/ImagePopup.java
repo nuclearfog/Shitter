@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.ErrorLog;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -24,14 +23,12 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     private Dialog popup;
     private Bitmap imgArray[];
     private LayoutInflater inflater;
-    private ErrorLog errorLog;
     private int position = 0;
     private String errMsg = "E: Image Popup, ";
 
     public ImagePopup(Context context) {
         popup = new Dialog(context);
         inflater = LayoutInflater.from(context);
-        errorLog = new ErrorLog(context);
     }
 
     @Override
@@ -83,7 +80,6 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             return true;
         } catch (Exception err) {
             errMsg += err.getMessage();
-            errorLog.add(errMsg);
             return false;
         }
     }

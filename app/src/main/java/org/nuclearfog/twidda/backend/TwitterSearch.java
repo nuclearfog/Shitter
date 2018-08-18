@@ -9,7 +9,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.UserRecycler;
 import org.nuclearfog.twidda.window.SearchPage;
@@ -24,7 +23,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
     private TimelineRecycler searchAdapter;
     private UserRecycler userAdapter;
     private TwitterEngine mTwitter;
-    private ErrorLog errorLog;
     private WeakReference<SearchPage> ui;
     private String errorMessage = "E: Twitter search, ";
     private int returnCode = 0;
@@ -32,7 +30,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
     public TwitterSearch(Context context) {
         ui = new WeakReference<>((SearchPage)context);
         mTwitter = TwitterEngine.getInstance(context);
-        errorLog = new ErrorLog(context);
 
         GlobalSettings settings = GlobalSettings.getInstance(context);
         int font_color = settings.getFontColor();
@@ -81,11 +78,9 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
-                errorLog.add(errorMessage);
             }
         } catch(Exception err) {
             errorMessage += err.getMessage();
-            errorLog.add(errorMessage);
         }
         return false;
     }

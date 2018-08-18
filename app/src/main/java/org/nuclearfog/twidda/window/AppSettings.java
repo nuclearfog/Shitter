@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,11 +25,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
-import org.nuclearfog.twidda.database.ErrorLog;
-import org.nuclearfog.twidda.viewadapter.LogAdapter;
 import org.nuclearfog.twidda.viewadapter.WorldIdAdapter;
-
-import java.util.List;
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnColorChangedListener, OnItemSelectedListener {
@@ -60,7 +54,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         settings = GlobalSettings.getInstance(this);
 
         Button delButton = findViewById(R.id.delete_db);
-        Button errorCall = findViewById(R.id.error_call);
         Button load_popup = findViewById(R.id.load_dialog);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
@@ -79,7 +72,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
-        errorCall.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
@@ -126,17 +118,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                     }
                 })
                 .show();
-                break;
-
-            case R.id.error_call:
-                List<String> messages = new ErrorLog(this).getErrorList();
-                LogAdapter adp = new LogAdapter(messages);
-                RecyclerView logList = new RecyclerView(this);
-                logList.setLayoutManager(new LinearLayoutManager(this));
-                logList.setAdapter(adp);
-                Dialog pList = new Dialog(this);
-                pList.setContentView(logList);
-                pList.show();
                 break;
 
             case R.id.color_background:

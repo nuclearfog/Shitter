@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.window.LoginPage;
 
 import java.lang.ref.WeakReference;
@@ -16,7 +15,6 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
-    private ErrorLog errorLog;
     private boolean failure = false;
     private String errorMessage = "E: Registration, ";
     private String redirectionURL = "";
@@ -25,7 +23,6 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     public Registration(Context context) {
         ui = new WeakReference<>((LoginPage)context);
         mTwitter = TwitterEngine.getInstance(context);
-        errorLog = new ErrorLog(context);
     }
 
 
@@ -41,12 +38,10 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             }
         } catch(TwitterException e) {
             errorMessage += e.getErrorMessage();
-            errorLog.add(errorMessage);
             failure = true;
         }
         catch ( Exception e ) {
             errorMessage += e.getMessage();
-            errorLog.add(errorMessage);
             failure = true;
         }
         return false;

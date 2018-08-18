@@ -181,15 +181,6 @@
             android:background="@android:color/holo_red_dark"
             android:text="@string/delete_database" />
 
-        <Button
-            android:id="@+id/error_call"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/button_height"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:text="@string/error_log" />
-
     </LinearLayout>
 
 </LinearLayout>

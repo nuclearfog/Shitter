@@ -58,7 +58,6 @@
     <string name="sent_from">"gesendet von: "</string>
     <string name="progress_kill">abbrechen</string>
     <string name="save">speichern</string>
-    <string name="error_log">error log</string>
     <string name="mute">Stummschalten</string>
     <string name="unmute">Stummschaltung aufheben</string>
     <string name="muted">stummgeschaltet!</string>

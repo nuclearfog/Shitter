@@ -17,7 +17,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.window.UserProfile;
 
@@ -54,7 +53,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
     private DatabaseAdapter database;
-    private ErrorLog errorLog;
     private long homeId;
     private boolean imgEnabled;
     private boolean isHome = false;
@@ -76,7 +74,6 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         database = new DatabaseAdapter(context);
-        errorLog = new ErrorLog(context);
         sdf = settings.getDateFormatter();
         int font = settings.getFontColor();
         int highlight = settings.getHighlightColor();
@@ -189,13 +186,11 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 136) {
                 errMsg += err.getMessage();
-                errorLog.add(errMsg);
             }
             return FAILURE;
         }
         catch(Exception err) {
             errMsg += err.getMessage();
-            errorLog.add(errMsg);
             return FAILURE;
         }
         return MODE;

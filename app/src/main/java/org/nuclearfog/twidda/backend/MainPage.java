@@ -11,7 +11,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.ErrorLog;
 import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
 import org.nuclearfog.twidda.viewadapter.TrendRecycler;
@@ -38,7 +37,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private TrendRecycler trendsAdapter;
     private DatabaseAdapter tweetDb;
     private TrendDatabase trendDb;
-    private ErrorLog errorLog;
     private int woeId;
     private String errMsg = "E: Main Page, ";
     private int returnCode = 0;
@@ -53,7 +51,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         tweetDb = new DatabaseAdapter(context);
         trendDb = new TrendDatabase(context);
-        errorLog = new ErrorLog(context);
         woeId = settings.getWoeId();
         int highlight = settings.getHighlightColor();
         int font = settings.getFontColor();
@@ -157,7 +154,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         }
         catch (Exception e) {
             errMsg += e.getMessage();
-            errorLog.add(errMsg);
             return FAIL;
         }
         return MODE;
