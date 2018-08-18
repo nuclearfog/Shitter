@@ -53,6 +53,7 @@ public class TrendDatabase {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         ContentValues trendcolumn = new ContentValues();
         String query = "DELETE FROM trend WHERE woeID=" + woeId;
+        db.beginTransaction();
         db.execSQL(query); //Alte Einträge löschen
         for(int pos = 0; pos < trends.size(); pos++) {
             Trend trend = trends.get(pos);
@@ -62,6 +63,8 @@ public class TrendDatabase {
             trendcolumn.put("trendlink", trend.link);
             db.insertWithOnConflict("trend",null, trendcolumn,SQLiteDatabase.CONFLICT_REPLACE);
         }
+        db.setTransactionSuccessful();
+        db.endTransaction();
         db.close();
     }
 }
