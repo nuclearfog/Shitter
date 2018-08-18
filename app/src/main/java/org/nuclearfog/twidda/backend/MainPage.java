@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.MainActivity;
@@ -153,7 +154,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
             return FAIL;
         }
         catch (Exception e) {
-            errMsg += e.getMessage();
+            Log.e("Main Page", e.getMessage());
             return FAIL;
         }
         return MODE;

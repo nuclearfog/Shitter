@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -24,7 +25,6 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     private Bitmap imgArray[];
     private LayoutInflater inflater;
     private int position = 0;
-    private String errMsg = "E: Image Popup, ";
 
     public ImagePopup(Context context) {
         popup = new Dialog(context);
@@ -79,7 +79,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
             }
             return true;
         } catch (Exception err) {
-            errMsg += err.getMessage();
+            Log.e("Image Popup", err.getMessage());
             return false;
         }
     }

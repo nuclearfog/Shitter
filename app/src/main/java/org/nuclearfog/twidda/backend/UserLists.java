@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -112,7 +113,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
             }
             return false;
         } catch(Exception err) {
-            errorMessage += err.getMessage();
+            Log.e("User List", err.getMessage());
             return false;
         }
     }

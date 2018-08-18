@@ -11,6 +11,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -176,7 +177,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             return ERROR;
         }
         catch(Exception err) {
-            errorMessage += err.getMessage();
+            Log.e("Status Loader", err.getMessage());
             return ERROR;
         }
         return MODE;
@@ -264,7 +265,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             } else {
                 textId = R.string.unretweet;
             }
-            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(connect, textId, Toast.LENGTH_SHORT).show();
         }
         else if(mode == FAVORITE) {
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
@@ -278,7 +279,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 textId = R.string.favorited;
             else
                 textId = R.string.unfavorited;
-            Toast.makeText(ui.get(), textId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(connect, textId, Toast.LENGTH_SHORT).show();
         }
         else if(mode == LOAD_REPLY) {
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
@@ -289,17 +290,17 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             txtAns.setText(ansStr);
         }
         else if(mode == DELETE) {
-            Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-            ui.get().finish();
+            Toast.makeText(connect, R.string.tweet_removed, Toast.LENGTH_SHORT).show();
+            connect.finish();
         }
         else if(mode == ERROR) {
             if (returnCode > 0) {
                 if (returnCode == 420) {
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+                    Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
                 } else if (returnCode == 144) {
-                    Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(connect, R.string.tweet_not_found, Toast.LENGTH_LONG).show();
                 } else if (returnCode != 136) {
-                    Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
+                    Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
                 }
             }
             SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);

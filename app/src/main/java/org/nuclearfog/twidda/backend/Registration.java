@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.window.LoginPage;
@@ -41,7 +42,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             failure = true;
         }
         catch ( Exception e ) {
-            errorMessage += e.getMessage();
+            Log.e("Registration", e.getMessage());
             failure = true;
         }
         return false;

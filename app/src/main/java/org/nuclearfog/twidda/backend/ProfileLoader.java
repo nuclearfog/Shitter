@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -190,7 +191,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
             return FAILURE;
         }
         catch(Exception err) {
-            errMsg += err.getMessage();
+            Log.e("ProfileLoader", err.getMessage());
             return FAILURE;
         }
         return MODE;

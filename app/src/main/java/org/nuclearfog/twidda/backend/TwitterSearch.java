@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -80,7 +81,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
                 errorMessage += err.getMessage();
             }
         } catch(Exception err) {
-            errorMessage += err.getMessage();
+            Log.e("Twitter Search", err.getMessage());
         }
         return false;
     }

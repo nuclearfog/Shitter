@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -77,11 +78,9 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
             }
             return true;
         } catch (TwitterException err) {
-            int returnCode = err.getErrorCode();
-            if (returnCode > 0) {
-            }
             return false;
         } catch (Exception err) {
+            Log.e("Status Upload", err.getMessage());
             return false;
         }
     }
