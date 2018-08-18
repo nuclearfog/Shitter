@@ -144,7 +144,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 if(!favorited) {
                     favCount++;
                     favorited = true;
-                    database.storeFavorite(tweet);
+                    database.storeFavorite(tweetID);
                 } else {
                     if(favCount > 0)
                         favCount--;

@@ -30,5 +30,5 @@
 -dontwarn javax.**
 -keep class javax.** {*;}
 
--dontwarn org.**
--keep class org.** {*;}
+-dontwarn org.conscrypt**
+-keep class org.conscrypt** {*;}

@@ -69,4 +69,3 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         void connect(String link);
     }
 }
-

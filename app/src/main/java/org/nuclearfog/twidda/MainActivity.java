@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private TabHost tabhost;
     private int tabIndex = 0;
     private boolean settingChanged = false;
-    private final int REQ_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
         if( !login ) {
             Intent i = new Intent(this, LoginPage.class);
-            startActivityForResult(i,REQ_CODE);
+            startActivityForResult(i, 1);
         }
 
         timelineList = findViewById(R.id.tl_list);
@@ -105,11 +104,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode,returnCode,i);
-        if(reqCode == REQ_CODE) {
-            if (returnCode != RESULT_OK) {
-                overridePendingTransition(0, 0);
-                finish();
-            }
+        if (returnCode == RESULT_CANCELED) {
+            overridePendingTransition(0, 0);
+            finish();
         }
     }
 

@@ -146,7 +146,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                     mentionAdapter.setData(mention);
                     break;
             }
-        } catch(TwitterException e) {
+        } catch (TwitterException e) {
             returnCode = e.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
                 errMsg += e.getMessage();
