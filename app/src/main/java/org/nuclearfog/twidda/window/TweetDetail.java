@@ -28,8 +28,8 @@ import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.OnMediaClick;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
 /**
  * Detailed Tweet Activity
@@ -185,7 +185,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        TimelineRecycler timeLineAdapter = (TimelineRecycler) answer_list.getAdapter();
+        TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
         if (timeLineAdapter != null) {
             Tweet tweet = timeLineAdapter.getData().get(position);
             Intent intent = new Intent(this, TweetDetail.class);

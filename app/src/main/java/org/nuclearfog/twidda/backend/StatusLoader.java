@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
 
@@ -45,7 +45,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private static final long IGNORE    = 6;
 
     private TwitterEngine mTwitter;
-    private TimelineRecycler answerAdapter;
+    private TimelineAdapter answerAdapter;
     private DatabaseAdapter database;
     private SimpleDateFormat sdf;
     private String usernameStr, scrNameStr, tweetStr, dateString;
@@ -70,11 +70,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         toggleImg = settings.loadImages();
         ui = new WeakReference<>((TweetDetail)context);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
-        answerAdapter = (TimelineRecycler) replyList.getAdapter();
+        answerAdapter = (TimelineAdapter) replyList.getAdapter();
         database = new DatabaseAdapter(context);
         prefix = context.getString(R.string.sent_from);
         if(answerAdapter == null) {
-            answerAdapter = new TimelineRecycler(ui.get());
+            answerAdapter = new TimelineAdapter(ui.get());
             replyList.setAdapter(answerAdapter);
             answerAdapter.toggleImage(toggleImg);
             answerAdapter.setColor(highlight, font);

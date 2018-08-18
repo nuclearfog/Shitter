@@ -58,6 +58,11 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>
 
+        <activity
+            android:name=".window.DirectMessage"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

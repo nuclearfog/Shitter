@@ -22,8 +22,8 @@ import android.widget.TabHost.TabSpec;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.TrendRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
 import org.nuclearfog.twidda.window.SearchPage;
@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 public class MainActivity extends AppCompatActivity implements OnRefreshListener, OnTabChangeListener,
-        TimelineRecycler.OnItemClicked, TrendRecycler.OnItemClicked
+        TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked
 {
     private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
     private RecyclerView timelineList, trendList,mentionList;
@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         switch(parent.getId()) {
             case R.id.tl_list:
                 if(!timelineReload.isRefreshing()) {
-                    TimelineRecycler timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
+                    TimelineAdapter timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
                     if (timelineAdapter != null) {
                         Tweet tweet = timelineAdapter.getData().get(position);
                         if (tweet.embedded != null) {
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.tr_list:
                 if(!trendReload.isRefreshing()) {
-                    TrendRecycler trendAdapter = (TrendRecycler) trendList.getAdapter();
+                    TrendAdapter trendAdapter = (TrendAdapter) trendList.getAdapter();
                     if (trendAdapter != null) {
                         String search = trendAdapter.getData().get(position).trend;
                         Intent intent = new Intent(this, SearchPage.class);
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.m_list:
                 if(!mentionReload.isRefreshing()) {
-                    TimelineRecycler mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
+                    TimelineAdapter mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
                     if (mentionAdapter != null) {
                         Tweet tweet = mentionAdapter.getData().get(position);
                         if (tweet.embedded != null) {
@@ -317,9 +317,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         trendList.setBackgroundColor(background);
         mentionList.setBackgroundColor(background);
 
-        TimelineRecycler hAdapter = (TimelineRecycler) timelineList.getAdapter();
-        TrendRecycler tAdapter = (TrendRecycler) trendList.getAdapter();
-        TimelineRecycler mAdapter = (TimelineRecycler) mentionList.getAdapter();
+        TimelineAdapter hAdapter = (TimelineAdapter) timelineList.getAdapter();
+        TrendAdapter tAdapter = (TrendAdapter) trendList.getAdapter();
+        TimelineAdapter mAdapter = (TimelineAdapter) mentionList.getAdapter();
 
         if (hAdapter == null || hAdapter.getItemCount() == 0) {
             home = new MainPage(this);

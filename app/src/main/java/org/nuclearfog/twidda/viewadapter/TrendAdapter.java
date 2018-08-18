@@ -16,16 +16,14 @@ import org.nuclearfog.twidda.backend.listitems.Trend;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
-        implements OnClickListener {
+public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
-    private ViewGroup parent;
     private List<Trend> trendList;
     private OnItemClicked mListener;
     private int font_color = 0xFFFFFFFF;
 
 
-    public TrendRecycler(OnItemClicked mListener) {
+    public TrendAdapter(OnItemClicked mListener) {
         trendList = new ArrayList<>();
         this.mListener = mListener;
     }
@@ -54,10 +52,16 @@ public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int index) {
-        this.parent = parent;
+    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int index) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend,parent,false);
-        v.setOnClickListener(this);
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerView rv = (RecyclerView) parent;
+                int position = rv.getChildLayoutPosition(v);
+                mListener.onItemClick(parent, position);
+            }
+        });
         return new ItemHolder(v);
     }
 
@@ -69,15 +73,6 @@ public class TrendRecycler extends Adapter<TrendRecycler.ItemHolder>
         vh.pos.setText(posStr);
         vh.trends.setTextColor(font_color);
         vh.pos.setTextColor(font_color);
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        ViewGroup p = TrendRecycler.this.parent;
-        RecyclerView rv = (RecyclerView) p;
-        int position = rv.getChildLayoutPosition(view);
-        mListener.onItemClick(p, position);
     }
 
 

@@ -23,8 +23,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
 /**
  * User Profile Activity
@@ -123,6 +123,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             m.findItem(R.id.profile_follow).setVisible(true);
             m.findItem(R.id.profile_block).setVisible(true);
             m.findItem(R.id.profile_mute).setVisible(true);
+
+        } else {
+            m.findItem(R.id.profile_message).setVisible(true);
         }
         return true;
     }
@@ -151,6 +154,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 case R.id.profile_mute:
                     mProfile = new ProfileLoader(this);
                     mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
+                    return true;
+
+                case R.id.profile_message:
+                    Intent dm = new Intent(this, DirectMessage.class);
+                    startActivity(dm);
                     return true;
             }
         }
@@ -199,11 +207,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        TimelineRecycler tweetAdapter;
+        TimelineAdapter tweetAdapter;
         if(parent.getId() == R.id.ht_list) {
-            tweetAdapter = (TimelineRecycler) homeList.getAdapter();
+            tweetAdapter = (TimelineAdapter) homeList.getAdapter();
         } else {
-            tweetAdapter = (TimelineRecycler) favoriteList.getAdapter();
+            tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
         }
         if (tweetAdapter != null) {
             Tweet tweet = tweetAdapter.getData().get(position);

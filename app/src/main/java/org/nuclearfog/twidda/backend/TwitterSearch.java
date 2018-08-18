@@ -10,8 +10,8 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.UserRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.SearchPage;
 
 import java.lang.ref.WeakReference;
@@ -21,8 +21,8 @@ import twitter4j.TwitterException;
 
 public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
-    private TimelineRecycler searchAdapter;
-    private UserRecycler userAdapter;
+    private TimelineAdapter searchAdapter;
+    private UserAdapter userAdapter;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
     private String errorMessage = "E: Twitter search, ";
@@ -39,17 +39,17 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
         RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
         RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
-        searchAdapter = (TimelineRecycler) tweetSearch.getAdapter();
-        userAdapter = (UserRecycler) userSearch.getAdapter();
+        searchAdapter = (TimelineAdapter) tweetSearch.getAdapter();
+        userAdapter = (UserAdapter) userSearch.getAdapter();
 
         if(searchAdapter == null) {
-            searchAdapter = new TimelineRecycler(ui.get());
+            searchAdapter = new TimelineAdapter(ui.get());
             tweetSearch.setAdapter(searchAdapter);
             searchAdapter.setColor(highlight, font_color);
             searchAdapter.toggleImage(imageLoad);
         }
         if(userAdapter == null) {
-            userAdapter = new UserRecycler(ui.get());
+            userAdapter = new UserAdapter(ui.get());
             userSearch.setAdapter(userAdapter);
             userAdapter.toggleImage(imageLoad);
         }

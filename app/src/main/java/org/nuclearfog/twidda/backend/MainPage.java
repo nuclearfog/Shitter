@@ -13,8 +13,8 @@ import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.TrendDatabase;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.TrendRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -34,8 +34,8 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
 
-    private TimelineRecycler timelineAdapter, mentionAdapter;
-    private TrendRecycler trendsAdapter;
+    private TimelineAdapter timelineAdapter, mentionAdapter;
+    private TrendAdapter trendsAdapter;
     private DatabaseAdapter tweetDb;
     private TrendDatabase trendDb;
     private int woeId;
@@ -60,23 +60,23 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
         RecyclerView trendList = ui.get().findViewById(R.id.tr_list);
         RecyclerView mentionList = ui.get().findViewById(R.id.m_list);
-        timelineAdapter = (TimelineRecycler) timelineList.getAdapter();
-        trendsAdapter = (TrendRecycler) trendList.getAdapter();
-        mentionAdapter = (TimelineRecycler) mentionList.getAdapter();
+        timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
+        trendsAdapter = (TrendAdapter) trendList.getAdapter();
+        mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
 
         if(timelineAdapter == null) {
-            timelineAdapter = new TimelineRecycler(ui.get());
+            timelineAdapter = new TimelineAdapter(ui.get());
             timelineList.setAdapter(timelineAdapter);
             timelineAdapter.setColor(highlight, font);
             timelineAdapter.toggleImage(image);
         }
         if(trendsAdapter == null) {
-            trendsAdapter = new TrendRecycler(ui.get());
+            trendsAdapter = new TrendAdapter(ui.get());
             trendList.setAdapter(trendsAdapter);
             trendsAdapter.setColor(font);
         }
         if(mentionAdapter == null) {
-            mentionAdapter = new TimelineRecycler(ui.get());
+            mentionAdapter = new TimelineAdapter(ui.get());
             mentionList.setAdapter(mentionAdapter);
             mentionAdapter.setColor(highlight, font);
             mentionAdapter.toggleImage(image);

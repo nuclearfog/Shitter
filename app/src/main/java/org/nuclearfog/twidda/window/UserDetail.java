@@ -14,8 +14,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.viewadapter.UserRecycler;
-import org.nuclearfog.twidda.viewadapter.UserRecycler.OnItemClicked;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
+import org.nuclearfog.twidda.viewadapter.UserAdapter.OnItemClicked;
 
 public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
@@ -72,7 +72,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        UserRecycler userListAdapter = (UserRecycler) userList.getAdapter();
+        UserAdapter userListAdapter = (UserAdapter) userList.getAdapter();
         if (userListAdapter != null) {
             TwitterUser user = userListAdapter.getData().get(position);
             long userID = user.userID;

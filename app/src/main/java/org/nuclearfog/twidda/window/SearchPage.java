@@ -24,11 +24,11 @@ import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.TwitterSearch;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler.OnItemClicked;
-import org.nuclearfog.twidda.viewadapter.UserRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
-public class SearchPage extends AppCompatActivity implements UserRecycler.OnItemClicked,
+public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemClicked,
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
     private RecyclerView tweetSearch,userSearch;
@@ -136,7 +136,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
         switch(parent.getId()) {
             case R.id.tweet_result:
                 if(!tweetReload.isRefreshing()) {
-                    TimelineRecycler tweetAdapter = (TimelineRecycler) tweetSearch.getAdapter();
+                    TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
                     if (tweetAdapter != null) {
                         Tweet tweet = tweetAdapter.getData().get(position);
 
@@ -150,7 +150,7 @@ public class SearchPage extends AppCompatActivity implements UserRecycler.OnItem
                 break;
 
             case R.id.user_result:
-                UserRecycler userAdapter = (UserRecycler) userSearch.getAdapter();
+                UserAdapter userAdapter = (UserAdapter) userSearch.getAdapter();
                 if (userAdapter != null) {
                     TwitterUser user = userAdapter.getData().get(position);
 

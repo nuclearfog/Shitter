@@ -70,4 +70,5 @@
     <string name="unmute">un-mute</string>
     <string name="muted">muted</string>
     <string name="unmuted">un-muted</string>
+    <string name="directmessage">Direct Message</string>
 </resources>

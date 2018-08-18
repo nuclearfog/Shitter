@@ -2,7 +2,9 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import org.nuclearfog.twidda.backend.listitems.Message;
 import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.DirectMessage;
 import twitter4j.IDs;
 import twitter4j.MediaEntity;
 import twitter4j.Paging;
@@ -31,7 +34,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterEngine {
 
-    private final String TWITTER_CONSUMER_KEY = "sLk5M5KVJ7fOeCrRaytZCDAj3";
+    private final String TWITTER_CONSUMER_KEY = "xxx";
     private final String TWITTER_CONSUMER_SECRET = "xxx";
 
     private static TwitterEngine mTwitter;
@@ -481,6 +484,50 @@ public class TwitterEngine {
     }
 
     /**
+     * get Single Directmessage
+     *
+     * @param id DM ID
+     * @throws TwitterException if access is unavailable
+     */
+    public Message getMessage(long id) throws TwitterException {
+        return getMessage(twitter.showDirectMessage(id));
+    }
+
+    /**
+     * get list of Direct Messages
+     *
+     * @return DM List
+     * @throws TwitterException if access is unavailable
+     */
+    public List<Message> getMessages() throws TwitterException {
+        List<DirectMessage> dmList = twitter.getDirectMessages(load);
+        List<Message> result = new ArrayList<>();
+        for (DirectMessage dm : dmList) {
+            result.add(getMessage(dm));
+        }
+        return result;
+    }
+
+    /**
+     * Send direct message
+     *
+     * @param id   UserID
+     * @param msg  Message Text
+     * @param path media path
+     * @throws TwitterException if access is unavailable
+     */
+    public void sendMessage(long id, String msg, @Nullable String path) throws TwitterException {
+        if (path != null && !path.trim().isEmpty()) {
+            UploadedMedia media = twitter.uploadMedia(new File(path));
+            long mediaId = media.getMediaId();
+            twitter.sendDirectMessage(id, msg, mediaId);
+        } else {
+            twitter.sendDirectMessage(id, msg);
+        }
+    }
+
+
+    /**
      * convert #twitter4j.User to TwitterUser List
      *
      * @param users Twitter4J user List
@@ -566,6 +613,17 @@ public class TwitterEngine {
                 user.getOriginalProfileImageURL(), user.getDescription(), user.getLocation(), user.isVerified(),
                 user.isProtected(), user.getURL(), user.getProfileBannerURL(), user.getCreatedAt().getTime(),
                 user.getFriendsCount(), user.getFollowersCount());
+    }
+
+    /**
+     * @param dm Twitter4J directmessage
+     * @return dm item
+     */
+    private Message getMessage(DirectMessage dm) throws TwitterException {
+        TwitterUser sender = getUser(twitter.showUser(dm.getSenderId()));
+        TwitterUser receiver = getUser(twitter.showUser(dm.getRecipientId()));
+        long time = dm.getCreatedAt().getTime();
+        return new Message(dm.getId(), sender, receiver, time,dm.getText());
     }
 
 

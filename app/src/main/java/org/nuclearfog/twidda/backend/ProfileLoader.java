@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.viewadapter.TimelineRecycler;
+import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
@@ -49,7 +49,7 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
 
     private String screenName, username, description, location, follower, following;
     private String profileImage, link, dateString;
-    private TimelineRecycler homeTl, homeFav;
+    private TimelineAdapter homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
@@ -82,17 +82,17 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         homeId = settings.getUserId();
         RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
         RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
-        homeTl = (TimelineRecycler) profileTweets.getAdapter();
-        homeFav = (TimelineRecycler) profileFavorits.getAdapter();
+        homeTl = (TimelineAdapter) profileTweets.getAdapter();
+        homeFav = (TimelineAdapter) profileFavorits.getAdapter();
 
         if(homeTl == null) {
-            homeTl = new TimelineRecycler(ui.get());
+            homeTl = new TimelineAdapter(ui.get());
             homeTl.setColor(highlight, font);
             homeTl.toggleImage(imgEnabled);
             profileTweets.setAdapter(homeTl);
         }
         if(homeFav == null) {
-            homeFav = new TimelineRecycler(ui.get());
+            homeFav = new TimelineAdapter(ui.get());
             homeFav.setColor(highlight, font);
             homeFav.toggleImage(imgEnabled);
             profileFavorits.setAdapter(homeFav);

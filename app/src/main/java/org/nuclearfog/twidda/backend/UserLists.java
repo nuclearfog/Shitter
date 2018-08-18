@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.viewadapter.UserRecycler;
+import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.UserDetail;
 
 import java.lang.ref.WeakReference;
@@ -32,7 +32,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
-    private UserRecycler usrAdp;
+    private UserAdapter usrAdp;
     private Dialog popup;
     private String errorMessage = "E: Userlist, ";
     private int returnCode = 0;
@@ -50,7 +50,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = ui.get().findViewById(R.id.userlist);
 
-        usrAdp = new UserRecycler(ui.get());
+        usrAdp = new UserAdapter(ui.get());
         usrAdp.toggleImage(imageLoad);
         userList.setAdapter(usrAdp);
     }
