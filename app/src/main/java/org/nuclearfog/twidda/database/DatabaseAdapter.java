@@ -44,8 +44,26 @@ public class DatabaseAdapter {
      */
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+        ContentValues userColumn = new ContentValues();
+        int userRegister = 0;
+        if (user.isVerified)
+            userRegister |= verifiedMask;
+        if (user.isLocked)
+            userRegister |= lockedMask;
+        userColumn.put("userID", user.userID);
+        userColumn.put("username", user.username);
+        userColumn.put("scrname", user.screenname.substring(1));
+        userColumn.put("pbLink", user.profileImg);
+        userColumn.put("userregister", userRegister);
+        userColumn.put("bio", user.bio);
+        userColumn.put("link", user.link);
+        userColumn.put("location", user.location);
+        userColumn.put("banner", user.bannerImg);
+        userColumn.put("createdAt", user.created);
+        userColumn.put("following", user.following);
+        userColumn.put("follower", user.follower);
         db.beginTransaction();
-        storeUser(user, db);
+        db.insertWithOnConflict("user", null, userColumn, CONFLICT_REPLACE);
         commit(db);
     }
 
@@ -126,12 +144,24 @@ public class DatabaseAdapter {
 
     /**
      * Speichere Tweet in Favoriten Tabelle
-     * @param tweet Tweet
+     * @param tweetID Tweet ID
      */
-    public void storeFavorite(Tweet tweet) {
+    public void storeFavorite(long tweetID) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
+
+        ContentValues favTable = new ContentValues();
+        ContentValues status = new ContentValues();
+
+        int register = getStatRegister(db, tweetID);
+        register |= favoritedMask;
+
+        favTable.put("tweetID", tweetID);
+        favTable.put("ownerID", homeId);
+        status.put("statusregister", register);
+
         db.beginTransaction();
-        storeStatus(tweet, favoritedMask, db);
+        db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
+        db.update("tweet", status, "tweet.tweetID=" + tweetID, null);
         commit(db);
     }
 
@@ -293,7 +323,6 @@ public class DatabaseAdapter {
      */
     public void updateStatus(Tweet tweet) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        db.beginTransaction();
         ContentValues status = new ContentValues();
         int register = getStatRegister(db,tweet.tweetID);
         if (tweet.retweeted)
@@ -305,10 +334,11 @@ public class DatabaseAdapter {
             register |= favoritedMask;
         else
             register &= ~favoritedMask;
-
         status.put("retweet",tweet.retweet);
         status.put("favorite",tweet.favorit);
         status.put("statusregister",register);
+
+        db.beginTransaction();
         db.update("tweet",status,"tweet.tweetID="+tweet.tweetID,null);
         commit(db);
     }
@@ -321,6 +351,7 @@ public class DatabaseAdapter {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.beginTransaction();
         db.delete("tweet","tweetID="+id,null);
+        db.delete("favorit", "tweetID=" + id + " AND ownerID=" + homeId, null);
         commit(db);
     }
 
@@ -331,14 +362,13 @@ public class DatabaseAdapter {
      */
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        db.beginTransaction();
-        db.delete("favorit", "tweetID=" + tweetId + " AND ownerID=" + homeId, null);
-
         int register = getStatRegister(db, tweetId);
         register &= ~favoritedMask;
-
         ContentValues status = new ContentValues();
         status.put("statusregister", register);
+
+        db.beginTransaction();
+        db.delete("favorit", "tweetID=" + tweetId + " AND ownerID=" + homeId, null);
         db.update("tweet", status, "tweet.tweetID=" + tweetId, null);
         commit(db);
     }
@@ -356,7 +386,6 @@ public class DatabaseAdapter {
         c.close();
         return result;
     }
-
 
 
     private Tweet getStatus(Cursor cursor) {
@@ -436,7 +465,7 @@ public class DatabaseAdapter {
 
     private void storeStatus(Tweet tweet, int newStatusRegister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
-        TwitterUser mUser = tweet.user;
+        TwitterUser user = tweet.user;
         Tweet rtStat = tweet.embedded;
         long rtId = 1L;
 
@@ -445,58 +474,7 @@ public class DatabaseAdapter {
             rtId = rtStat.tweetID;
         }
 
-        storeUser(mUser,db);
-        status.put("tweetID", tweet.tweetID);
-        status.put("userID", mUser.userID);
-        status.put("time", tweet.time);
-        status.put("tweet", tweet.tweet);
-        status.put("retweetID", rtId);
-        status.put("source", tweet.source);
-        status.put("replyID", tweet.replyID);
-        status.put("replyname", tweet.replyName);
-        status.put("retweet", tweet.retweet);
-        status.put("favorite", tweet.favorit);
-        status.put("retweeterID", tweet.retweetId);
-        status.put("replyUserID", tweet.replyUserId);
-        String[] medialinks = tweet.media;
-        StringBuilder media = new StringBuilder();
-        for(String link : medialinks) {
-            media.append(link);
-            media.append(";");
-        }
-        status.put("media",media.toString());
-        int statusregister = getStatRegister(db,tweet.tweetID);
-        statusregister |= newStatusRegister;
-        if (tweet.favorized)
-            statusregister |= favoritedMask;
-        else
-            statusregister &= ~favoritedMask;
-
-        if (tweet.retweeted)
-            statusregister |= retweetedMask;
-        else
-            statusregister &= ~retweetedMask;
-
-        status.put("statusregister", statusregister);
-        db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
-    }
-
-
-    private int getStatRegister(SQLiteDatabase db, long tweetID) {
-        String query = "SELECT statusregister FROM tweet WHERE tweetID="+tweetID+" LIMIT 1;";
-        Cursor c = db.rawQuery(query,null);
-        int result = 0;
-        if(c.moveToFirst()) {
-            int pos = c.getColumnIndex("statusregister");
-            result = c.getInt(pos);
-        }
-        c.close();
-        return result;
-    }
-
-
-    private void storeUser(TwitterUser user, SQLiteDatabase db) {
-        ContentValues userColumn   = new ContentValues();
+        ContentValues userColumn = new ContentValues();
         int userRegister = 0;
         if (user.isVerified)
             userRegister |= verifiedMask;
@@ -515,8 +493,55 @@ public class DatabaseAdapter {
         userColumn.put("createdAt", user.created);
         userColumn.put("following", user.following);
         userColumn.put("follower", user.follower);
-        db.insertWithOnConflict("user",null, userColumn, CONFLICT_REPLACE);
+
+        status.put("tweetID", tweet.tweetID);
+        status.put("userID", user.userID);
+        status.put("time", tweet.time);
+        status.put("tweet", tweet.tweet);
+        status.put("retweetID", rtId);
+        status.put("source", tweet.source);
+        status.put("replyID", tweet.replyID);
+        status.put("replyname", tweet.replyName);
+        status.put("retweet", tweet.retweet);
+        status.put("favorite", tweet.favorit);
+        status.put("retweeterID", tweet.retweetId);
+        status.put("replyUserID", tweet.replyUserId);
+        String[] mediaLinks = tweet.media;
+        StringBuilder media = new StringBuilder();
+        for (String link : mediaLinks) {
+            media.append(link);
+            media.append(";");
+        }
+        status.put("media",media.toString());
+        int statusRegister = getStatRegister(db, tweet.tweetID);
+        statusRegister |= newStatusRegister;
+        if (tweet.favorized)
+            statusRegister |= favoritedMask;
+        else
+            statusRegister &= ~favoritedMask;
+        if (tweet.retweeted)
+            statusRegister |= retweetedMask;
+        else
+            statusRegister &= ~retweetedMask;
+        status.put("statusregister", statusRegister);
+
+        db.insertWithOnConflict("user", null, userColumn, CONFLICT_IGNORE);
+        db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
     }
+
+
+    private int getStatRegister(SQLiteDatabase db, long tweetID) {
+        String query = "SELECT statusregister FROM tweet WHERE tweetID="+tweetID+" LIMIT 1;";
+        Cursor c = db.rawQuery(query,null);
+        int result = 0;
+        if(c.moveToFirst()) {
+            int pos = c.getColumnIndex("statusregister");
+            result = c.getInt(pos);
+        }
+        c.close();
+        return result;
+    }
+
 
     private void commit(SQLiteDatabase db) {
         db.setTransactionSuccessful();
