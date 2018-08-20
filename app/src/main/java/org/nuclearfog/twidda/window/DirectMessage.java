@@ -32,6 +32,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
         dmList = findViewById(R.id.messagelist);
         dmList.setLayoutManager(new LinearLayoutManager(this));
+        dmList.setHasFixedSize(true);
 
         refresh.setRefreshing(true);
         refresh.setOnRefreshListener(this);
@@ -52,7 +53,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     }
 
     @Override
-    public void onSeleted(int index) {
+    public void onSelected(int index) {
     }
 
     @Override

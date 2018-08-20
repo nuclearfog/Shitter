@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -292,30 +293,30 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         }
         if (!isHome && (mode == ACTION_FOLLOW || mode == ACTION_BLOCK || mode == ACTION_MUTE || mode == GET_INF)) {
             Toolbar tool = connect.findViewById(R.id.profile_toolbar);
-            if(tool.getMenu().size() >= 2) {
-                MenuItem followIcon = tool.getMenu().getItem(1);
-                MenuItem blockIcon = tool.getMenu().getItem(2);
-                MenuItem muteIcon = tool.getMenu().getItem(3);
-                if (isFollowing) {
-                    followIcon.setIcon(R.drawable.follow_enabled);
-                    followIcon.setTitle(R.string.unfollow);
-                } else {
-                    followIcon.setIcon(R.drawable.follow);
-                    followIcon.setTitle(R.string.follow);
-                }
-                if (isBlocked) {
-                    blockIcon.setTitle(R.string.unblock);
-                    followIcon.setVisible(false);
-                } else {
-                    blockIcon.setTitle(R.string.block);
-                    followIcon.setVisible(true);
-                }
-                if (isMuted) {
-                    muteIcon.setTitle(R.string.unmute);
-                } else {
-                    muteIcon.setTitle(R.string.mute);
-                }
+            Menu m = tool.getMenu();
+            MenuItem followIcon = m.findItem(R.id.profile_follow);
+            MenuItem blockIcon = m.findItem(R.id.profile_block);
+            MenuItem muteIcon = m.findItem(R.id.profile_mute);
+            if (isFollowing) {
+                followIcon.setIcon(R.drawable.follow_enabled);
+                followIcon.setTitle(R.string.unfollow);
+            } else {
+                followIcon.setIcon(R.drawable.follow);
+                followIcon.setTitle(R.string.follow);
             }
+            if (isBlocked) {
+                blockIcon.setTitle(R.string.unblock);
+                followIcon.setVisible(false);
+            } else {
+                blockIcon.setTitle(R.string.block);
+                followIcon.setVisible(true);
+            }
+            if (isMuted) {
+                muteIcon.setTitle(R.string.unmute);
+            } else {
+                muteIcon.setTitle(R.string.mute);
+            }
+
         }
     }
 }

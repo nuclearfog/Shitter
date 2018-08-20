@@ -62,5 +62,5 @@
     <string name="unmute">Stummschaltung aufheben</string>
     <string name="muted">stummgeschaltet!</string>
     <string name="unmuted">Stummschaltung aufgehoben!</string>
-    <string name="directmessage">Direkt Message</string>
+    <string name="directmessage">Direktnachrichten</string>
 </resources>

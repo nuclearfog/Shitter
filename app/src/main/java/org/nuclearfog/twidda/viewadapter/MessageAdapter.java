@@ -57,27 +57,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
 
     @NonNull
-    public MessageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int index) {
+    @Override
+    public MessageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
-        MessageHolder item = new MessageHolder(v);
-        Message message = messages.get(index);
-
-        TwitterUser sender = message.sender;
-        String name = '@' + sender.username + ' ' + sender.screenname;
-        String time = stringTime(message.time);
-
-        item.message.setText(message.message);
-        item.username.setText(name);
-        item.createdAt.setText(time);
-        if (loadImage)
-            Picasso.get().load(sender.profileImg + "_mini").into(item.profile_img);
-
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onSeleted(position);
+                mListener.onSelected(position);
             }
         });
         return new MessageHolder(v);
@@ -86,7 +74,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
+        Message message = messages.get(index);
 
+        TwitterUser sender = message.sender;
+        String name = sender.username + ' ' + sender.screenname;
+        String time = stringTime(message.time);
+
+        vh.message.setText(message.message);
+        vh.username.setText(name);
+        vh.createdAt.setText(time);
+        if (loadImage)
+            Picasso.get().load(sender.profileImg + "_mini").into(vh.profile_img);
     }
 
     private String stringTime(long mills) {
@@ -115,7 +113,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
 
     public interface OnItemSelected {
-        void onSeleted(int pos);
+        void onSelected(int pos);
     }
 
     class MessageHolder extends ViewHolder {

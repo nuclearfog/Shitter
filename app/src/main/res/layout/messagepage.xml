@@ -7,10 +7,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/dm_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_wide"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+        android:layout_height="@dimen/bar_wide" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/dm_reload"
