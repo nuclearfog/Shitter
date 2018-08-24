@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.GlobalSettings;
+import org.nuclearfog.twidda.backend.listitems.Message;
+import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 
@@ -44,26 +46,8 @@ public class DatabaseAdapter {
      */
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
-        ContentValues userColumn = new ContentValues();
-        int userRegister = 0;
-        if (user.isVerified)
-            userRegister |= verifiedMask;
-        if (user.isLocked)
-            userRegister |= lockedMask;
-        userColumn.put("userID", user.userID);
-        userColumn.put("username", user.username);
-        userColumn.put("scrname", user.screenname.substring(1));
-        userColumn.put("pbLink", user.profileImg);
-        userColumn.put("userregister", userRegister);
-        userColumn.put("bio", user.bio);
-        userColumn.put("link", user.link);
-        userColumn.put("location", user.location);
-        userColumn.put("banner", user.bannerImg);
-        userColumn.put("createdAt", user.created);
-        userColumn.put("following", user.following);
-        userColumn.put("follower", user.follower);
         db.beginTransaction();
-        db.insertWithOnConflict("user", null, userColumn, CONFLICT_REPLACE);
+        storeUser(user, db);
         commit(db);
     }
 
@@ -74,8 +58,7 @@ public class DatabaseAdapter {
     public void storeHomeTimeline(List<Tweet> home) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.beginTransaction();
-        for (int pos = 0; pos < home.size(); pos++) {
-            Tweet tweet = home.get(pos);
+        for (Tweet tweet : home) {
             storeStatus(tweet, homeMask, db);
         }
         commit(db);
@@ -88,8 +71,7 @@ public class DatabaseAdapter {
     public void storeMentions(List<Tweet> mentions) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.beginTransaction();
-        for (int pos = 0; pos < mentions.size(); pos++) {
-            Tweet tweet = mentions.get(pos);
+        for (Tweet tweet : mentions) {
             storeStatus(tweet, mentionMask, db);
         }
         commit(db);
@@ -102,8 +84,7 @@ public class DatabaseAdapter {
     public void storeUserTweets(List<Tweet> stats) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.beginTransaction();
-        for(int pos = 0; pos < stats.size(); pos++) {
-            Tweet tweet = stats.get(pos);
+        for (Tweet tweet : stats) {
             storeStatus(tweet, userTweetMask, db);
         }
         commit(db);
@@ -117,8 +98,7 @@ public class DatabaseAdapter {
     public void storeUserFavs(List<Tweet> fav, long ownerId){
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.beginTransaction();
-        for(int pos = 0; pos < fav.size(); pos++) {
-            Tweet tweet = fav.get(pos);
+        for (Tweet tweet : fav) {
             storeStatus(tweet,0,db);
             ContentValues favTable = new ContentValues();
             favTable.put("tweetID", tweet.tweetID);
@@ -135,8 +115,7 @@ public class DatabaseAdapter {
     public void storeReplies(List<Tweet> replies) {
         SQLiteDatabase db = dataHelper.getWritableDatabase();
         db.beginTransaction();
-        for(int pos = 0; pos < replies.size(); pos++) {
-            Tweet tweet = replies.get(pos);
+        for (Tweet tweet : replies) {
             storeStatus(tweet, replyMask, db);
         }
         commit(db);
@@ -162,6 +141,50 @@ public class DatabaseAdapter {
         db.beginTransaction();
         db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
         db.update("tweet", status, "tweet.tweetID=" + tweetID, null);
+        commit(db);
+    }
+
+    /**
+     * Speichere Twitter Trends
+     *
+     * @param trends List of Trends
+     * @param woeId  Yahoo World ID
+     */
+    public void store(final List<Trend> trends, int woeId) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        ContentValues trendColumn = new ContentValues();
+        String query = "DELETE FROM trend WHERE woeID=" + woeId;
+        db.beginTransaction();
+        db.execSQL(query); //Alte Einträge löschen
+        for (Trend trend : trends) {
+            trendColumn.put("woeID", woeId);
+            trendColumn.put("trendpos", trend.position);
+            trendColumn.put("trendname", trend.trend);
+            trendColumn.put("trendlink", trend.link);
+            db.insertWithOnConflict("trend", null, trendColumn, CONFLICT_REPLACE);
+        }
+        commit(db);
+    }
+
+    /**
+     * speicher direktnachrichten
+     *
+     * @param messages Direktnachrichten liste
+     */
+    public void storeMessage(List<Message> messages) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        ContentValues messageColumn = new ContentValues();
+        db.beginTransaction();
+        for (Message message : messages) {
+            messageColumn.put("messageID", message.messageId);
+            messageColumn.put("time", message.time);
+            messageColumn.put("senderID", message.sender.userID);
+            messageColumn.put("senderID", message.receiver.userID);
+            messageColumn.put("message", message.message);
+            storeUser(message.sender, db);
+            storeUser(message.receiver, db);
+            db.insertWithOnConflict("message", null, messageColumn, CONFLICT_REPLACE);
+        }
         commit(db);
     }
 
@@ -374,6 +397,69 @@ public class DatabaseAdapter {
     }
 
     /**
+     * Load trend List
+     *
+     * @param woeId Yahoo World ID
+     * @return list of trends
+     */
+    public List<Trend> load(int woeId) {
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        List<Trend> trends = new ArrayList<>();
+        String query = "SELECT * FROM trend WHERE woeID=" + woeId + " ORDER BY trendpos ASC";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int index = cursor.getColumnIndex("trendpos");
+                int position = cursor.getInt(index);
+                index = cursor.getColumnIndex("trendname");
+                String name = cursor.getString(index);
+                index = cursor.getColumnIndex("trendlink");
+                String link = cursor.getString(index);
+                trends.add(new Trend(position, name, link));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return trends;
+    }
+
+
+    /**
+     * Direkt nachrichten laden
+     *
+     * @return Liste Direktnachrichten
+     */
+    public List<Message> getMessages() {
+        List<Message> result = new ArrayList<>();
+        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        String query = "SELECT * FROM message ORDER BY messageID DESC";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int index = cursor.getColumnIndex("senderID");
+                long senderID = cursor.getLong(index);
+                index = cursor.getColumnIndex("receiverID");
+                long receiverID = cursor.getLong(index);
+                index = cursor.getColumnIndex("message");
+                String message = cursor.getString(index);
+                index = cursor.getColumnIndex("time");
+                long time = cursor.getLong(index);
+                index = cursor.getColumnIndex("messageID");
+                long messageId = cursor.getLong(index);
+
+                TwitterUser sender = getUser(senderID);
+                TwitterUser receiver = getUser(receiverID);
+
+                result.add(new Message(messageId, sender, receiver, time, message));
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    /**
      * Suche Tweet in Datenbank
      * @param id Tweet ID
      * @return True falls gefunden, ansonsten False
@@ -384,6 +470,7 @@ public class DatabaseAdapter {
         Cursor c = db.rawQuery(query,null);
         boolean result = c.moveToFirst();
         c.close();
+        db.close();
         return result;
     }
 
@@ -460,6 +547,28 @@ public class DatabaseAdapter {
         boolean isLocked = (userRegister & lockedMask) > 0;
         return new TwitterUser(userId, username,screenname,profileImg,bio,
                 location, isVerified, isLocked, link, banner, createdAt, following, follower);
+    }
+
+    private void storeUser(TwitterUser user, SQLiteDatabase db) {
+        ContentValues userColumn = new ContentValues();
+        int userRegister = 0;
+        if (user.isVerified)
+            userRegister |= verifiedMask;
+        if (user.isLocked)
+            userRegister |= lockedMask;
+        userColumn.put("userID", user.userID);
+        userColumn.put("username", user.username);
+        userColumn.put("scrname", user.screenname.substring(1));
+        userColumn.put("pbLink", user.profileImg);
+        userColumn.put("userregister", userRegister);
+        userColumn.put("bio", user.bio);
+        userColumn.put("link", user.link);
+        userColumn.put("location", user.location);
+        userColumn.put("banner", user.bannerImg);
+        userColumn.put("createdAt", user.created);
+        userColumn.put("following", user.following);
+        userColumn.put("follower", user.follower);
+        db.insertWithOnConflict("user", null, userColumn, CONFLICT_REPLACE);
     }
 
 

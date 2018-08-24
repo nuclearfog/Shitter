@@ -8,17 +8,19 @@ import android.util.Log;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Message;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.window.DirectMessage;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class MessageLoader extends AsyncTask<Long, Void, Long> {
+public class MessageLoader extends AsyncTask<Void, Void, Void> {
 
     private WeakReference<DirectMessage> ui;
     private MessageAdapter mAdapter;
     private TwitterEngine twitter;
+    private DatabaseAdapter mData;
 
     public MessageLoader(Context context) {
         ui = new WeakReference<>((DirectMessage) context);
@@ -28,6 +30,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
         RecyclerView dm_list = ui.get().findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
+        mData = new DatabaseAdapter(context);
 
         if (mAdapter == null) {
             mAdapter = new MessageAdapter(ui.get());
@@ -37,18 +40,28 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
     }
 
     @Override
-    protected Long doInBackground(Long... params) {
+    protected Void doInBackground(Void... param) {
         try {
-            List<Message> msg = twitter.getMessages();
-            mAdapter.setData(msg);
+            if (mAdapter.getItemCount() > 0) {
+                List<Message> msg = twitter.getMessages();
+                mAdapter.setData(msg);
+                mData.storeMessage(msg);
+            } else {
+                List<Message> msg = mData.getMessages();
+                if (msg.size() == 0) {
+                    msg = twitter.getMessages();
+                    mData.storeMessage(msg);
+                }
+                mAdapter.setData(msg);
+            }
         } catch (Exception err) {
             Log.e("Direct Message", err.getMessage());
         }
-        return 1L;
+        return null;
     }
 
     @Override
-    protected void onPostExecute(Long param) {
+    protected void onPostExecute(Void param) {
         if (ui.get() == null)
             return;
 

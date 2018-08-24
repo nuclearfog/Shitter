@@ -117,10 +117,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
     class MessageHolder extends ViewHolder {
-        public final ImageView profile_img;
-        public final TextView username;
-        public final TextView createdAt;
-        public final TextView message;
+        final ImageView profile_img;
+        final TextView username;
+        final TextView createdAt;
+        final TextView message;
 
         MessageHolder(View v) {
             super(v);

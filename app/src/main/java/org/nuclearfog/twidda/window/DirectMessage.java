@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.viewadapter.MessageAdapter.OnItemSelected;
 
 public class DirectMessage extends AppCompatActivity implements OnItemSelected, OnRefreshListener {
 
-    private RecyclerView dmList;
     private MessageLoader mLoader;
 
     @Override
@@ -22,15 +21,13 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
         super.onCreate(b);
 
         setContentView(R.layout.messagepage);
-
-        dmList = findViewById(R.id.messagelist);
         Toolbar tool = findViewById(R.id.dm_toolbar);
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.directmessage);
         SwipeRefreshLayout refresh = findViewById(R.id.dm_reload);
 
-        dmList = findViewById(R.id.messagelist);
+        RecyclerView dmList = findViewById(R.id.messagelist);
         dmList.setLayoutManager(new LinearLayoutManager(this));
         dmList.setHasFixedSize(true);
 

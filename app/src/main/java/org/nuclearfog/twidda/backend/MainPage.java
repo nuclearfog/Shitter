@@ -12,7 +12,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.TrendDatabase;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 
@@ -37,7 +36,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
     private DatabaseAdapter tweetDb;
-    private TrendDatabase trendDb;
     private int woeId;
     private String errMsg = "E: Main Page, ";
     private int returnCode = 0;
@@ -51,7 +49,6 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         tweetDb = new DatabaseAdapter(context);
-        trendDb = new TrendDatabase(context);
         woeId = settings.getWoeId();
         int highlight = settings.getHighlightColor();
         int font = settings.getFontColor();
@@ -117,13 +114,13 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
                 case TRND:
 
                     List<Trend> trends = mTwitter.getTrends(woeId);
-                    trendDb.store(trends, woeId);
+                    tweetDb.store(trends, woeId);
                     trendsAdapter.setData(trends);
                     break;
 
                 case T_LOAD:
 
-                    trendsAdapter.setData(trendDb.load(woeId));
+                    trendsAdapter.setData(tweetDb.load(woeId));
                     break;
 
                 case MENT:
