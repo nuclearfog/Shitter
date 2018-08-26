@@ -179,11 +179,11 @@ public class DatabaseAdapter {
             messageColumn.put("messageID", message.messageId);
             messageColumn.put("time", message.time);
             messageColumn.put("senderID", message.sender.userID);
-            messageColumn.put("senderID", message.receiver.userID);
+            messageColumn.put("receiverID", message.receiver.userID);
             messageColumn.put("message", message.message);
             storeUser(message.sender, db);
             storeUser(message.receiver, db);
-            db.insertWithOnConflict("message", null, messageColumn, CONFLICT_REPLACE);
+            db.insertWithOnConflict("message", null, messageColumn, CONFLICT_IGNORE);
         }
         commit(db);
     }
@@ -197,13 +197,9 @@ public class DatabaseAdapter {
     @Nullable
     public TwitterUser getUser(long userId) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
-        TwitterUser user = null;
-        String query = "SELECT * FROM user WHERE userID=" + userId + " LIMIT 1";
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst())
-            user = getUser(cursor);
-        cursor.close();
-        return user;
+        TwitterUser result = getUser(userId, db);
+        db.close();
+        return result;
     }
 
     /**
@@ -447,8 +443,8 @@ public class DatabaseAdapter {
                 index = cursor.getColumnIndex("messageID");
                 long messageId = cursor.getLong(index);
 
-                TwitterUser sender = getUser(senderID);
-                TwitterUser receiver = getUser(receiverID);
+                TwitterUser sender = getUser(senderID, db);
+                TwitterUser receiver = getUser(receiverID, db);
 
                 result.add(new Message(messageId, sender, receiver, time, message));
 
@@ -516,6 +512,15 @@ public class DatabaseAdapter {
                 source,replyStatusId,embeddedTweet,retweeterId,retweeted,favorited);
     }
 
+    private TwitterUser getUser(long userId, SQLiteDatabase db) {
+        TwitterUser user = null;
+        String query = "SELECT * FROM user WHERE userID=" + userId + " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst())
+            user = getUser(cursor);
+        cursor.close();
+        return user;
+    }
 
     private TwitterUser getUser(Cursor cursor){
         int index = cursor.getColumnIndex("userID");

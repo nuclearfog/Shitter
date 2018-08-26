@@ -1,12 +1,12 @@
 package org.nuclearfog.twidda.window;
 
-import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.Registration.OnConnect;
 
-public class LoginPage extends Activity implements OnClickListener, OnConnect {
+public class LoginPage extends AppCompatActivity implements OnClickListener, OnConnect {
 
     private EditText pin;
 

@@ -2,6 +2,7 @@ package org.nuclearfog.twidda;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tweet = m.findItem(R.id.action_tweet);
         search = m.findItem(R.id.action_search);
         setting = m.findItem(R.id.action_settings);
-        SearchView searchQuery = (SearchView) m.findItem(R.id.action_search).getActionView();
+        SearchView searchQuery = (SearchView) MenuItemCompat.getActionView(m.findItem(R.id.action_search));
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.action_settings:
                 settingChanged = true;
-                search.collapseActionView();
+                MenuItemCompat.collapseActionView(search);
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 return true;
@@ -227,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
         switch(tabId) {
             case "timeline":
-                search.collapseActionView();
+                MenuItemCompat.collapseActionView(search);
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
@@ -242,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case "mention":
-                search.collapseActionView();
+                MenuItemCompat.collapseActionView(search);
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);

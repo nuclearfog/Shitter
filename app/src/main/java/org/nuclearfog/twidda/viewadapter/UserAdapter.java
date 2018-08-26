@@ -97,8 +97,8 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     }
 
     class ItemHolder extends ViewHolder {
-        ImageView profileImg, verifyIco, lockIco;
-        TextView username, screenname;
+        final ImageView profileImg, verifyIco, lockIco;
+        final TextView username, screenname;
 
         ItemHolder(View v) {
             super(v);

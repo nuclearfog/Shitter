@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -95,7 +96,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
-        final SearchView searchQuery = (SearchView)m.findItem(R.id.new_search).getActionView();
+        final SearchView searchQuery = (SearchView) MenuItemCompat.getActionView(m.findItem(R.id.new_search));
         searchQuery.setQueryHint(search);
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

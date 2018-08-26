@@ -485,7 +485,6 @@ public class TwitterEngine {
 
     /**
      * get Single Directmessage
-     *
      * @param id DM ID
      * @throws TwitterException if access is unavailable
      */
@@ -495,7 +494,6 @@ public class TwitterEngine {
 
     /**
      * get list of Direct Messages
-     *
      * @return DM List
      * @throws TwitterException if access is unavailable
      */
@@ -510,9 +508,8 @@ public class TwitterEngine {
 
     /**
      * Send direct message
-     *
-     * @param id   UserID
-     * @param msg  Message Text
+     * @param id UserID
+     * @param msg Message Text
      * @param path media path
      * @throws TwitterException if access is unavailable
      */
@@ -529,7 +526,6 @@ public class TwitterEngine {
 
     /**
      * convert #twitter4j.User to TwitterUser List
-     *
      * @param users Twitter4J user List
      * @return TwitterUser
      */
@@ -623,7 +619,7 @@ public class TwitterEngine {
         TwitterUser sender = getUser(twitter.showUser(dm.getSenderId()));
         TwitterUser receiver = getUser(twitter.showUser(dm.getRecipientId()));
         long time = dm.getCreatedAt().getTime();
-        return new Message(dm.getId(), sender, receiver, time,dm.getText());
+        return new Message(dm.getId(), sender, receiver, time, dm.getText());
     }
 
 

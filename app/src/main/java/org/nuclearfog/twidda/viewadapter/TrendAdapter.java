@@ -77,7 +77,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
 
     class ItemHolder extends ViewHolder {
-        TextView trends, pos;
+        final TextView trends, pos;
         ItemHolder(View v) {
             super(v);
             pos = v.findViewById(R.id.trendpos);

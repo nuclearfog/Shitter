@@ -198,9 +198,9 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     }
 
     class ItemHolder extends ViewHolder {
-        public final TextView username, screenname, tweet, retweet;
-        public final TextView favorite, retweeter, time;
-        public final ImageView profile, verify;
+        final TextView username, screenname, tweet, retweet;
+        final TextView favorite, retweeter, time;
+        final ImageView profile, verify;
 
         ItemHolder(View v) {
             super(v);
