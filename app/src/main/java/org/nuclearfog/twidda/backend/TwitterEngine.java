@@ -616,9 +616,16 @@ public class TwitterEngine {
      * @return dm item
      */
     private Message getMessage(DirectMessage dm) throws TwitterException {
-        TwitterUser sender = getUser(twitter.showUser(dm.getSenderId()));
-        TwitterUser receiver = getUser(twitter.showUser(dm.getRecipientId()));
+        TwitterUser sender, receiver;
+        sender = getUser(twitter.showUser(dm.getSenderId()));
+
+        if (dm.getSenderId() != dm.getRecipientId()) {
+            receiver = getUser(twitter.showUser(dm.getRecipientId()));
+        } else {
+            receiver = sender;
+        }
         long time = dm.getCreatedAt().getTime();
+
         return new Message(dm.getId(), sender, receiver, time, dm.getText());
     }
 

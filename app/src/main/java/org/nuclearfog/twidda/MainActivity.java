@@ -2,7 +2,6 @@ package org.nuclearfog.twidda;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private MenuItem profile, tweet, search, setting;
     private GlobalSettings settings;
     private MainPage home, trend, mention;
+    private SearchView searchQuery;
     private View lastTab;
     private Toolbar toolbar;
     private TabHost tabhost;
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tweet = m.findItem(R.id.action_tweet);
         search = m.findItem(R.id.action_search);
         setting = m.findItem(R.id.action_settings);
-        SearchView searchQuery = (SearchView) MenuItemCompat.getActionView(m.findItem(R.id.action_search));
+        searchQuery = (SearchView) search.getActionView();
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.action_settings:
                 settingChanged = true;
-                MenuItemCompat.collapseActionView(search);
+                search.collapseActionView();
                 intent = new Intent(this, AppSettings.class);
                 startActivity(intent);
                 return true;
@@ -228,11 +228,11 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
         switch(tabId) {
             case "timeline":
-                MenuItemCompat.collapseActionView(search);
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
                 setting.setVisible(false);
+                search.collapseActionView();
                 break;
 
             case "trends":
@@ -243,11 +243,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case "mention":
-                MenuItemCompat.collapseActionView(search);
+                searchQuery.onActionViewCollapsed();
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);
                 setting.setVisible(true);
+                search.collapseActionView();
                 break;
         }
     }
@@ -349,25 +350,27 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     private void animate() {
         final int ANIM_DUR = 300;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
 
-        Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation leftOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, -1.0f,DIMENS, 0.0f,DIMENS,0.0f);
-        Animation rightOut = new TranslateAnimation(DIMENS,0.0f,DIMENS, 1.0f,DIMENS, 0.0f,DIMENS,0.0f);
-        leftIn.setDuration(ANIM_DUR);
-        rightIn.setDuration(ANIM_DUR);
-        leftOut.setDuration(ANIM_DUR);
-        rightOut.setDuration(ANIM_DUR);
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
+        final float LEFT = -1.0f;
+        final float RIGHT = 1.0f;
+        final float NULL = 0.0f;
+        Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+        Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+        Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
+        Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
+        lIn.setDuration(ANIM_DUR);
+        rIn.setDuration(ANIM_DUR);
+        lOut.setDuration(ANIM_DUR);
+        rOut.setDuration(ANIM_DUR);
 
         View currentTab = tabhost.getCurrentView();
-
         if( tabhost.getCurrentTab() > tabIndex ) {
-            lastTab.setAnimation(leftOut);
-            currentTab.setAnimation(rightIn);
+            lastTab.setAnimation(lOut);
+            currentTab.setAnimation(rIn);
         } else {
-            lastTab.setAnimation(rightOut);
-            currentTab.setAnimation(leftIn);
+            lastTab.setAnimation(rOut);
+            currentTab.setAnimation(lIn);
         }
         lastTab = tabhost.getCurrentView();
     }

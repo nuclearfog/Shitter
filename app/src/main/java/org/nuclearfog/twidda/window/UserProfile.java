@@ -38,7 +38,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private RecyclerView homeList, favoriteList;
 
     private TabHost mTab;
-    private View lastView;
+    private View lastTab;
     private boolean home;
     private long userId = 0;
     private int tabIndex = 0;
@@ -236,32 +236,34 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tab2.setContent(R.id.homefavorits);
         tab2.setIndicator("",getDrawable(R.drawable.favorite));
         mTab.addTab(tab2);
-        lastView = mTab.getCurrentView();
+        lastTab = mTab.getCurrentView();
     }
 
     private void animate() {
         final int ANIM_DUR = 300;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
 
-        Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation leftOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
-        Animation rightOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
-        leftIn.setDuration(ANIM_DUR);
-        rightIn.setDuration(ANIM_DUR);
-        leftOut.setDuration(ANIM_DUR);
-        rightOut.setDuration(ANIM_DUR);
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
+        final float LEFT = -1.0f;
+        final float RIGHT = 1.0f;
+        final float NULL = 0.0f;
+        Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+        Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+        Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
+        Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
+        lIn.setDuration(ANIM_DUR);
+        rIn.setDuration(ANIM_DUR);
+        lOut.setDuration(ANIM_DUR);
+        rOut.setDuration(ANIM_DUR);
 
         View currentTab = mTab.getCurrentView();
-
         if( mTab.getCurrentTab() > tabIndex ) {
-            lastView.setAnimation(leftOut);
-            currentTab.setAnimation(rightIn);
+            lastTab.setAnimation(lOut);
+            currentTab.setAnimation(rIn);
         } else {
-            lastView.setAnimation(rightOut);
-            currentTab.setAnimation(leftIn);
+            lastTab.setAnimation(rOut);
+            currentTab.setAnimation(lIn);
         }
-        lastView = mTab.getCurrentView();
+        lastTab = mTab.getCurrentView();
     }
 
     private void getProfileTweets() {

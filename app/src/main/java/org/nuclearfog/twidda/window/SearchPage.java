@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
@@ -96,7 +95,8 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
-        final SearchView searchQuery = (SearchView) MenuItemCompat.getActionView(m.findItem(R.id.new_search));
+        MenuItem mSearch = m.findItem(R.id.new_search);
+        SearchView searchQuery = (SearchView) mSearch.getActionView();
         searchQuery.setQueryHint(search);
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -116,17 +116,13 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        int id = item.getItemId();
-        switch(id) {
-            case R.id.search_tweet:
-            intent = new Intent(this, TweetPopup.class);
-                intent.putExtra("TweetID", -1);
-            if(search.startsWith("#")) {
+        if (item.getItemId() == R.id.search_tweet) {
+            Intent intent = new Intent(this, TweetPopup.class);
+            intent.putExtra("TweetID", -1);
+            if (search.startsWith("#")) {
                 intent.putExtra("Addition", search);
             }
             startActivity(intent);
-            break;
         }
         return true;
     }

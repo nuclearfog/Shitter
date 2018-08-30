@@ -13,7 +13,6 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Message;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,16 +74,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
         Message message = messages.get(index);
-
-        TwitterUser sender = message.sender;
-        String name = sender.username + ' ' + sender.screenname;
-        String time = stringTime(message.time);
-
         vh.message.setText(message.message);
-        vh.username.setText(name);
-        vh.createdAt.setText(time);
+        vh.username.setText(message.sender.username);
+        vh.screenname.setText(message.sender.screenname);
+        vh.createdAt.setText(stringTime(message.time));
         if (loadImage)
-            Picasso.get().load(sender.profileImg + "_mini").into(vh.profile_img);
+            Picasso.get().load(message.sender.profileImg + "_mini").into(vh.profile_img);
     }
 
     private String stringTime(long mills) {
@@ -119,6 +114,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     class MessageHolder extends ViewHolder {
         final ImageView profile_img;
         final TextView username;
+        final TextView screenname;
         final TextView createdAt;
         final TextView message;
 
@@ -126,6 +122,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             super(v);
             profile_img = v.findViewById(R.id.dm_profileImg);
             username = v.findViewById(R.id.dm_username);
+            screenname = v.findViewById(R.id.dm_screenname);
             createdAt = v.findViewById(R.id.dm_time);
             message = v.findViewById(R.id.dm_message);
         }
