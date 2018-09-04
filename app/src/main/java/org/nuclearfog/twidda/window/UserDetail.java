@@ -11,9 +11,9 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter.OnItemClicked;
 

@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 

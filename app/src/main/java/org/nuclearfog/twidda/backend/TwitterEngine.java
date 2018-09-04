@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.backend.listitems.Message;
 import org.nuclearfog.twidda.backend.listitems.Trend;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
 import java.util.ArrayList;

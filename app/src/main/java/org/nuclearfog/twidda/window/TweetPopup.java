@@ -16,10 +16,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
 import org.nuclearfog.twidda.backend.StatusUpload.OnTweetSending;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
 import java.util.List;

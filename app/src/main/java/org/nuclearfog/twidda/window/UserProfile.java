@@ -20,9 +20,9 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.GlobalSettings;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 

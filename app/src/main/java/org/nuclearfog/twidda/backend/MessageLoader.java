@@ -9,6 +9,7 @@ import android.util.Log;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Message;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.window.DirectMessage;
 
@@ -42,18 +43,19 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... param) {
         try {
+            List<Message> msg;
             if (mAdapter.getItemCount() > 0) {
-                List<Message> msg = twitter.getMessages();
-                mAdapter.setData(msg);
+                msg = twitter.getMessages();
                 mData.storeMessage(msg);
+                msg = mData.getMessages();
             } else {
-                List<Message> msg = mData.getMessages();
+                msg = mData.getMessages();
                 if (msg.size() == 0) {
                     msg = twitter.getMessages();
                     mData.storeMessage(msg);
                 }
-                mAdapter.setData(msg);
             }
+            mAdapter.setData(msg);
         } catch (Exception err) {
             Log.e("Direct Message", err.getMessage());
         }
