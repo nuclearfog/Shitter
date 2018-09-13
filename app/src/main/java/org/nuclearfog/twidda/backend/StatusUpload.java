@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
@@ -28,8 +27,8 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
     private Dialog popup;
     private String[] path;
 
-    public StatusUpload(Context context, String[] path) {
-        ui = new WeakReference<>((TweetPopup)context);
+    public StatusUpload(TweetPopup context, String[] path) {
+        ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);

@@ -119,13 +119,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
+        m.findItem(R.id.profile_message).setVisible(true);
         if(!home) {
             m.findItem(R.id.profile_follow).setVisible(true);
             m.findItem(R.id.profile_block).setVisible(true);
             m.findItem(R.id.profile_mute).setVisible(true);
-
-        } else {
-            m.findItem(R.id.profile_message).setVisible(true);
         }
         return true;
     }
@@ -157,8 +155,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     return true;
 
                 case R.id.profile_message:
-                    Intent dm = new Intent(this, DirectMessage.class);
-                    startActivity(dm);
+                    if (home) {
+                        Intent dm = new Intent(this, DirectMessage.class);
+                        startActivity(dm);
+                    } else {
+                        Intent sendDm = new Intent(this, MessagePopup.class);
+                        sendDm.putExtra("username", username);
+                        startActivity(sendDm);
+                    }
                     return true;
             }
         }

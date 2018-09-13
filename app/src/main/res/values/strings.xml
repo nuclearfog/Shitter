@@ -71,4 +71,7 @@
     <string name="muted">muted</string>
     <string name="unmuted">un-muted</string>
     <string name="directmessage">Direct Message</string>
+    <string name="username">username</string>
+    <string name="dmessage">Message</string>
+    <string name="dmsend">Directmessage sent!</string>
 </resources>

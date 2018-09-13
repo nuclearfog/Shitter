@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
@@ -41,13 +40,13 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     /**
      *@see UserDetail
      */
-    public UserLists(Context context) {
+    public UserLists(UserDetail context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         boolean imageLoad = settings.loadImages();
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);
 
-        ui = new WeakReference<>((UserDetail)context);
+        ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = ui.get().findViewById(R.id.userlist);
 

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,8 +20,8 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     private String redirectionURL = "";
 
 
-    public Registration(Context context) {
-        ui = new WeakReference<>((LoginPage)context);
+    public Registration(LoginPage context) {
+        ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
     }
 

@@ -31,17 +31,21 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         this.mListener = listener;
     }
 
+
     public List<Message> getData() {
         return messages;
     }
+
 
     public void setData(List<Message> messages) {
         this.messages = messages;
     }
 
+
     public void setImageLoad(boolean loadImage) {
         this.loadImage = loadImage;
     }
+
 
     @Override
     public long getItemId(int pos) {
@@ -82,6 +86,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             Picasso.get().load(message.sender.profileImg + "_mini").into(vh.profile_img);
     }
 
+
     private String stringTime(long mills) {
         Calendar now = Calendar.getInstance();
         long diff = now.getTimeInMillis() - mills;
@@ -107,10 +112,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public interface OnItemSelected {
-        void onSelected(int pos);
-    }
-
     class MessageHolder extends ViewHolder {
         final ImageView profile_img;
         final TextView username;
@@ -126,5 +127,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             createdAt = v.findViewById(R.id.dm_time);
             message = v.findViewById(R.id.dm_message);
         }
+    }
+
+
+    public interface OnItemSelected {
+        void onSelected(int pos);
     }
 }

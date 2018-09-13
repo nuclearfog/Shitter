@@ -3,11 +3,11 @@ package org.nuclearfog.twidda.window;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,6 +24,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
 public class TweetPopup extends AppCompatActivity implements OnClickListener, OnTweetSending {
 
     private StatusUpload sendTweet;
@@ -38,6 +40,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        setContentView(R.layout.tweetwindow);
+
         b = getIntent().getExtras();
         if (b != null) {
             if (b.containsKey("TweetID"))
@@ -45,7 +49,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
             if (b.containsKey("Addition"))
                 addition = b.getString("Addition") + " ";
         }
-        setContentView(R.layout.tweetwindow);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
 
@@ -98,6 +101,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults[0] == PERMISSION_GRANTED)
+            getMedia();
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -111,18 +120,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
                 break;
 
             case R.id.image:
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-                    if(check == PackageManager.PERMISSION_GRANTED) {
-                        startActivityForResult(i, 0);
-                    }
-                    else {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
-                    }
-                } else {
-                    startActivityForResult(i, 0);
-                }
+                getMedia();
                 break;
 
             case R.id.img_preview:
@@ -162,6 +160,21 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
             } else {
                 sendTweet.execute(tweetStr);
             }
+        }
+    }
+
+    private void getMedia() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (check == PERMISSION_GRANTED) {
+                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, 0);
+            } else {
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            }
+        } else {
+            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, 0);
         }
     }
 }

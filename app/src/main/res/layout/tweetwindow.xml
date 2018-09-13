@@ -9,8 +9,8 @@
 
     <EditText
         android:id="@+id/tweet_input"
-        android:layout_width="300dp"
-        android:layout_height="200dp"
+        android:layout_width="@dimen/text_input_width"
+        android:layout_height="@dimen/text_input_height"
         android:layout_marginLeft="5dip"
         android:layout_marginRight="5dip"
         android:layout_marginTop="5dip"

@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -29,8 +28,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
     private String errorMessage = "E: Twitter search, ";
     private int returnCode = 0;
 
-    public TwitterSearch(Context context) {
-        ui = new WeakReference<>((SearchPage)context);
+    public TwitterSearch(SearchPage context) {
+        ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
 
         GlobalSettings settings = GlobalSettings.getInstance(context);

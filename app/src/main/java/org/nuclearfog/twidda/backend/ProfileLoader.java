@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -72,8 +71,8 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
      * @param context Context to Activity
      * @see UserProfile
      */
-    public ProfileLoader(Context context) {
-        ui = new WeakReference<>((UserProfile)context);
+    public ProfileLoader(UserProfile context) {
+        ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         database = new DatabaseAdapter(context);

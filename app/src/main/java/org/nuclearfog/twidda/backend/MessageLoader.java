@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -23,8 +22,8 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
     private TwitterEngine twitter;
     private DatabaseAdapter mData;
 
-    public MessageLoader(Context context) {
-        ui = new WeakReference<>((DirectMessage) context);
+    public MessageLoader(DirectMessage context) {
+        ui = new WeakReference<>(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         boolean loadImages = settings.loadImages();
 

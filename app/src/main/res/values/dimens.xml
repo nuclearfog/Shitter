@@ -4,4 +4,7 @@
     <dimen name="button_height">40dp</dimen>
     <dimen name="profile_image">64dp</dimen>
     <dimen name="profile_small">32dp</dimen>
+    <dimen name="text_input_width">300dp</dimen>
+    <dimen name="text_input_height">200dp</dimen>
+    <dimen name="name_input_height">32dp</dimen>
 </resources>

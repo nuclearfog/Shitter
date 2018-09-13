@@ -63,4 +63,7 @@
     <string name="muted">stummgeschaltet!</string>
     <string name="unmuted">Stummschaltung aufgehoben!</string>
     <string name="directmessage">Direktnachrichten</string>
+    <string name="username">Username</string>
+    <string name="dmessage">Nachricht</string>
+    <string name="dmsend">Direktnachricht gesendet!</string>
 </resources>

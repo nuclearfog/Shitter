@@ -38,6 +38,7 @@ public class TwitterEngine {
     private final String TWITTER_CONSUMER_KEY = "xxx";
     private final String TWITTER_CONSUMER_SECRET = "xxx";
 
+
     private static TwitterEngine mTwitter;
     private long twitterID = -1L;
     private Twitter twitter;
@@ -485,15 +486,6 @@ public class TwitterEngine {
     }
 
     /**
-     * get Single Directmessage
-     * @param id DM ID
-     * @throws TwitterException if access is unavailable
-     */
-    public Message getMessage(long id) throws TwitterException {
-        return getMessage(twitter.showDirectMessage(id));
-    }
-
-    /**
      * get list of Direct Messages
      * @return DM List
      * @throws TwitterException if access is unavailable
@@ -509,12 +501,13 @@ public class TwitterEngine {
 
     /**
      * Send direct message
-     * @param id UserID
+     * @param username receiver name
      * @param msg Message Text
      * @param path media path
      * @throws TwitterException if access is unavailable
      */
-    public void sendMessage(long id, String msg, @Nullable String path) throws TwitterException {
+    public void sendMessage(String username, String msg, @Nullable String path) throws TwitterException {
+        long id = twitter.showUser(username).getId();
         if (path != null && !path.trim().isEmpty()) {
             UploadedMedia media = twitter.uploadMedia(new File(path));
             long mediaId = media.getMediaId();

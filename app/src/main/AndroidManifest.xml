@@ -38,6 +38,11 @@
             android:screenOrientation="portrait"/>
 
         <activity
+            android:name=".window.MessagePopup"
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparency" />
+
+        <activity
             android:name=".window.AppSettings"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait"/>

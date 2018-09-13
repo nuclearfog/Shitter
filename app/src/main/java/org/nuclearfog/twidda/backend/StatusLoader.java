@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -34,7 +33,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class StatusLoader extends AsyncTask<Long, Void, Long> {
+public class StatusLoader extends AsyncTask<Long, Long, Long> {
 
     private static final long ERROR     =-1;
     public static final long RETWEET    = 0;
@@ -62,14 +61,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     private WeakReference<TweetDetail> ui;
 
-    public StatusLoader(Context context) {
+    public StatusLoader(TweetDetail context) {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         sdf = settings.getDateFormatter();
         int font = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
-        ui = new WeakReference<>((TweetDetail)context);
+        ui = new WeakReference<>(context);
         RecyclerView replyList = ui.get().findViewById(R.id.answer_list);
         answerAdapter = (TimelineAdapter) replyList.getAdapter();
         database = new DatabaseAdapter(context);
@@ -182,6 +181,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             return ERROR;
         }
         return MODE;
+    }
+
+
+    @Override
+    protected void onProgressUpdate(Long... v) {
+
+
     }
 
     @Override
