@@ -51,15 +51,15 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         LoginPage connect = ui.get();
-        if(connect == null)
-            return;
-        if(success) {
-            connect.setResult(Activity.RESULT_OK);
-            connect.finish();
-        } else if (failure) {
-            Toast.makeText(connect,errorMessage,Toast.LENGTH_LONG).show();
-        } else {
-            connect.connect(redirectionURL);
+        if (connect != null) {
+            if (success) {
+                connect.setResult(Activity.RESULT_OK);
+                connect.finish();
+            } else if (failure) {
+                Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
+            } else {
+                connect.connect(redirectionURL);
+            }
         }
 
     }

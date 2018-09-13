@@ -39,7 +39,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClicked, OnRefreshListener, OnMediaClick {
 
     private RecyclerView answer_list;
-    private StatusLoader mStat, mReply;
+    private StatusLoader mStat;
     private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
@@ -91,9 +91,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     protected void onPause() {
         if (mStat != null && !mStat.isCancelled()) {
             mStat.cancel(true);
-        }
-        if (mReply != null && !mReply.isCancelled()) {
-            mReply.cancel(true);
             answerReload.setRefreshing(false);
         }
         super.onPause();
@@ -198,8 +195,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
-        mReply = new StatusLoader(this);
-        mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
+        mStat = new StatusLoader(this);
+        mStat.execute(tweetID);
     }
 
     @Override
@@ -218,11 +215,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         tweet.setBackgroundColor(backgroundColor);
         answer_list.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
-        new StatusLoader(this).execute(tweetID, StatusLoader.LOAD_DB);
-        mStat = new StatusLoader(this);
-        mReply = new StatusLoader(this);
-        mStat.execute(tweetID, StatusLoader.LOAD_TWEET);
         answerReload.setRefreshing(true);
-        mReply.execute(tweetID, StatusLoader.LOAD_REPLY);
+        mStat = new StatusLoader(this);
+        mStat.execute(tweetID);
     }
 }

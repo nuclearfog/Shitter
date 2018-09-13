@@ -437,32 +437,47 @@ public class TwitterEngine {
     /**
      * Retweet Action
      *
-     * @param tweet Tweet
+     * @param tweetId Tweet ID
      * @throws TwitterException if Access is unavailable
      */
-    public void retweet(Tweet tweet) throws TwitterException {
+    public Tweet retweet(long tweetId) throws TwitterException {
+        Tweet tweet = getStatus(tweetId);
+        int retweet = tweet.retweet;
+
         if (tweet.retweeted) {
+            retweet--;
             if (tweet.retweetId > tweet.tweetID)
                 deleteTweet(tweet.retweetId);
             else
                 deleteTweet(tweet.tweetID);
         } else {
+            retweet++;
             twitter.retweetStatus(tweet.tweetID);
         }
+        return new Tweet(tweetId, retweet, tweet.favorit, tweet.user, tweet.tweet,
+                tweet.time, tweet.replyName, tweet.replyUserId, tweet.media, tweet.source,
+                tweet.replyID, tweet.embedded, tweet.retweetId, !tweet.retweeted, tweet.favorized);
     }
 
     /**
      * Favorite Action
      *
-     * @param tweet Tweet
+     * @param tweetId Tweet ID
      * @throws TwitterException if Access is unavailable
      */
-    public void favorite(Tweet tweet) throws TwitterException {
+    public Tweet favorite(long tweetId) throws TwitterException {
+        Tweet tweet = getStatus(tweetId);
+        int favorite = tweet.favorit;
         if (tweet.favorized) {
+            favorite--;
             twitter.destroyFavorite(tweet.tweetID);
         } else {
+            favorite++;
             twitter.createFavorite(tweet.tweetID);
         }
+        return new Tweet(tweetId, tweet.retweet, favorite, tweet.user, tweet.tweet,
+                tweet.time, tweet.replyName, tweet.replyUserId, tweet.media, tweet.source,
+                tweet.replyID, tweet.embedded, tweet.retweetId, tweet.retweeted, !tweet.favorized);
     }
 
     /**

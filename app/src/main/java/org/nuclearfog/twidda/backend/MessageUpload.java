@@ -75,16 +75,14 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() == null)
-            return;
-
-        popup.dismiss();
-
-        if (success) {
-            Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
-            ui.get().finish();
-        } else {
-            Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_SHORT).show();
+        if (ui.get() != null) {
+            popup.dismiss();
+            if (success) {
+                Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
+                ui.get().finish();
+            } else {
+                Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

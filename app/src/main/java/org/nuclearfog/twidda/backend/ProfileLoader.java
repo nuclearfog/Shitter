@@ -81,19 +81,19 @@ public class ProfileLoader extends AsyncTask<Long,Void,Long> {
         int highlight = settings.getHighlightColor();
         imgEnabled = settings.loadImages();
         homeId = settings.getUserId();
-        RecyclerView profileTweets = ui.get().findViewById(R.id.ht_list);
-        RecyclerView profileFavorits = ui.get().findViewById(R.id.hf_list);
+        RecyclerView profileTweets = context.findViewById(R.id.ht_list);
+        RecyclerView profileFavorits = context.findViewById(R.id.hf_list);
         homeTl = (TimelineAdapter) profileTweets.getAdapter();
         homeFav = (TimelineAdapter) profileFavorits.getAdapter();
 
         if(homeTl == null) {
-            homeTl = new TimelineAdapter(ui.get());
+            homeTl = new TimelineAdapter(context);
             homeTl.setColor(highlight, font);
             homeTl.toggleImage(imgEnabled);
             profileTweets.setAdapter(homeTl);
         }
         if(homeFav == null) {
-            homeFav = new TimelineAdapter(ui.get());
+            homeFav = new TimelineAdapter(context);
             homeFav.setColor(highlight, font);
             homeFav.toggleImage(imgEnabled);
             profileFavorits.setAdapter(homeFav);

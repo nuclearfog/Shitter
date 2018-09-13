@@ -19,7 +19,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
+public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     private TimelineAdapter searchAdapter;
     private UserAdapter userAdapter;
@@ -37,19 +37,19 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         int highlight = settings.getHighlightColor();
         boolean imageLoad = settings.loadImages();
 
-        RecyclerView tweetSearch = ui.get().findViewById(R.id.tweet_result);
-        RecyclerView userSearch = ui.get().findViewById(R.id.user_result);
+        RecyclerView tweetSearch = context.findViewById(R.id.tweet_result);
+        RecyclerView userSearch = context.findViewById(R.id.user_result);
         searchAdapter = (TimelineAdapter) tweetSearch.getAdapter();
         userAdapter = (UserAdapter) userSearch.getAdapter();
 
         if(searchAdapter == null) {
-            searchAdapter = new TimelineAdapter(ui.get());
+            searchAdapter = new TimelineAdapter(context);
             tweetSearch.setAdapter(searchAdapter);
             searchAdapter.setColor(highlight, font_color);
             searchAdapter.toggleImage(imageLoad);
         }
         if(userAdapter == null) {
-            userAdapter = new UserAdapter(ui.get());
+            userAdapter = new UserAdapter(context);
             userSearch.setAdapter(userAdapter);
             userAdapter.toggleImage(imageLoad);
         }
@@ -57,7 +57,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(String... search) {
+    protected Void doInBackground(String... search) {
         String strSearch = search[0];
         long id = 1L;
         try {
@@ -69,12 +69,13 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
                 List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
                 searchAdapter.setData(tweets);
             }
+            publishProgress();
+
             if(userAdapter.getItemCount() == 0) {
                 List<TwitterUser> user = mTwitter.searchUsers(strSearch);
                 userAdapter.setData(user);
+                publishProgress();
             }
-            return true;
-
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
@@ -83,25 +84,28 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         } catch(Exception err) {
             Log.e("Twitter Search", err.getMessage());
         }
-        return false;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        SearchPage connect = ui.get();
-        if(connect == null)
-            return;
-        if (!success) {
-            if (returnCode == 420) {
-                Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
-            } else if (returnCode > 0) {
-                Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
-            }
-        }
-        SwipeRefreshLayout tweetReload = connect.findViewById(R.id.searchtweets);
+    protected void onProgressUpdate(Void... v) {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
         searchAdapter.notifyDataSetChanged();
         userAdapter.notifyDataSetChanged();
         tweetReload.setRefreshing(false);
+    }
+
+
+    @Override
+    protected void onPostExecute(Void v) {
+        if (ui.get() != null) {
+            if (returnCode == 420)
+                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+            else if (returnCode > 0)
+                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
+        }
     }
 }

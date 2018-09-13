@@ -48,9 +48,9 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
 
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
-        RecyclerView userList = ui.get().findViewById(R.id.userlist);
+        RecyclerView userList = context.findViewById(R.id.userlist);
 
-        usrAdp = new UserAdapter(ui.get());
+        usrAdp = new UserAdapter(context);
         usrAdp.toggleImage(imageLoad);
         userList.setAdapter(usrAdp);
     }

@@ -87,18 +87,17 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
     @Override
     protected void onPostExecute(Boolean success) {
         TweetPopup connect = ui.get();
-        if(connect == null)
-            return;
-
-        popup.dismiss();
-        if(success) {
-            Toast.makeText(connect, R.string.tweet_sent, Toast.LENGTH_LONG).show();
-            connect.finish();
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
-            builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
-                    .setPositiveButton(R.string.retry, this)
-                    .setNegativeButton(R.string.cancel, null).show();
+        if (connect != null) {
+            popup.dismiss();
+            if (success) {
+                Toast.makeText(connect, R.string.tweet_sent, Toast.LENGTH_LONG).show();
+                connect.finish();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
+                builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
+                        .setPositiveButton(R.string.retry, this)
+                        .setNegativeButton(R.string.cancel, null).show();
+            }
         }
     }
 

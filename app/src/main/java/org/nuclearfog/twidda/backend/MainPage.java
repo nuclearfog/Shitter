@@ -54,26 +54,26 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         int font = settings.getFontColor();
         boolean image = settings.loadImages();
 
-        RecyclerView timelineList = ui.get().findViewById(R.id.tl_list);
-        RecyclerView trendList = ui.get().findViewById(R.id.tr_list);
-        RecyclerView mentionList = ui.get().findViewById(R.id.m_list);
+        RecyclerView timelineList = context.findViewById(R.id.tl_list);
+        RecyclerView trendList = context.findViewById(R.id.tr_list);
+        RecyclerView mentionList = context.findViewById(R.id.m_list);
         timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
         trendsAdapter = (TrendAdapter) trendList.getAdapter();
         mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
 
         if(timelineAdapter == null) {
-            timelineAdapter = new TimelineAdapter(ui.get());
+            timelineAdapter = new TimelineAdapter(context);
             timelineList.setAdapter(timelineAdapter);
             timelineAdapter.setColor(highlight, font);
             timelineAdapter.toggleImage(image);
         }
         if(trendsAdapter == null) {
-            trendsAdapter = new TrendAdapter(ui.get());
+            trendsAdapter = new TrendAdapter(context);
             trendList.setAdapter(trendsAdapter);
             trendsAdapter.setColor(font);
         }
         if(mentionAdapter == null) {
-            mentionAdapter = new TimelineAdapter(ui.get());
+            mentionAdapter = new TimelineAdapter(context);
             mentionList.setAdapter(mentionAdapter);
             mentionAdapter.setColor(highlight, font);
             mentionAdapter.toggleImage(image);

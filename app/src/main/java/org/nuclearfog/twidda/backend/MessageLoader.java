@@ -27,13 +27,13 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         boolean loadImages = settings.loadImages();
 
-        RecyclerView dm_list = ui.get().findViewById(R.id.messagelist);
+        RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
         mData = new DatabaseAdapter(context);
 
         if (mAdapter == null) {
-            mAdapter = new MessageAdapter(ui.get());
+            mAdapter = new MessageAdapter(context);
             mAdapter.setImageLoad(loadImages);
             dm_list.setAdapter(mAdapter);
         }
@@ -63,11 +63,10 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void param) {
-        if (ui.get() == null)
-            return;
-
-        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
-        mAdapter.notifyDataSetChanged();
-        mRefresh.setRefreshing(false);
+        if (ui.get() == null) {
+            SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
+            mAdapter.notifyDataSetChanged();
+            mRefresh.setRefreshing(false);
+        }
     }
 }

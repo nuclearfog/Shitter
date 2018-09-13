@@ -461,7 +461,7 @@ public class DatabaseAdapter {
      */
     public boolean containStatus(long id) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
-        String query = "SELECT EXISTS(SELECT tweetID FROM tweet WHERE tweetID="+id+" LIMIT 1);";
+        String query = "SELECT tweetID FROM tweet WHERE tweetID=" + id + " LIMIT 1;";
         Cursor c = db.rawQuery(query,null);
         boolean result = c.moveToFirst();
         c.close();
