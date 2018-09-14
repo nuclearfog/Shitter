@@ -37,10 +37,11 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                 return true;
             }
         } catch (TwitterException e) {
-            errorMessage += e.getErrorMessage();
+            errorMessage += e.getMessage();
             failure = true;
         } catch (Exception e) {
-            Log.e("Registration", e.getMessage());
+            errorMessage += e.getMessage();
+            Log.e("Registration", errorMessage);
             failure = true;
         }
         return false;
@@ -49,19 +50,18 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        LoginPage connect = ui.get();
-        if (connect != null) {
+        if (ui.get() != null) {
             if (success) {
-                connect.setResult(Activity.RESULT_OK);
-                connect.finish();
+                ui.get().setResult(Activity.RESULT_OK);
+                ui.get().finish();
             } else if (failure) {
-                Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
             } else {
-                connect.connect(redirectionURL);
+                ui.get().connect(redirectionURL);
             }
         }
-
     }
+
 
     public interface OnConnect {
         void connect(String link);

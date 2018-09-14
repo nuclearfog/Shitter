@@ -38,9 +38,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private RecyclerView timelineList, trendList, mentionList;
     private GlobalSettings settings;
     private MainPage home;
-    private SearchView searchQuery;
     private View lastTab;
-    private Toolbar toolbar;
     private TabHost tabhost;
     private int tabIndex = 0;
     private boolean settingChanged = false;
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         trendReload = findViewById(R.id.trends);
         mentionReload = findViewById(R.id.mention);
         tabhost = findViewById(R.id.main_tabhost);
-        toolbar = findViewById(R.id.profile_toolbar);
+        Toolbar toolbar = findViewById(R.id.profile_toolbar);
 
         timelineList.setLayoutManager(new LinearLayoutManager(this));
         timelineList.setHasFixedSize(true);
@@ -135,9 +133,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
-        toolbar.inflateMenu(R.menu.home);
+        getMenuInflater().inflate(R.menu.home, m);
         MenuItem search = m.findItem(R.id.action_search);
-        searchQuery = (SearchView) search.getActionView();
+        SearchView searchQuery = (SearchView) search.getActionView();
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -146,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(intent);
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -162,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         MenuItem tweet = m.findItem(R.id.action_tweet);
         MenuItem search = m.findItem(R.id.action_search);
         MenuItem setting = m.findItem(R.id.action_settings);
+        SearchView searchQuery = (SearchView) search.getActionView();
 
         switch (tabIndex) {
             case 0:
