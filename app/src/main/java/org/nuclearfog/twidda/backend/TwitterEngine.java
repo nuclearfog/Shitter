@@ -35,11 +35,9 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterEngine {
 
+    private static TwitterEngine mTwitter;
     private final String TWITTER_CONSUMER_KEY = "xxx";
     private final String TWITTER_CONSUMER_SECRET = "xxx";
-
-
-    private static TwitterEngine mTwitter;
     private long twitterID = -1L;
     private Twitter twitter;
     private GlobalSettings settings;
@@ -94,7 +92,7 @@ public class TwitterEngine {
      * Get Access-Token, store and initialize Twitter
      *
      * @param twitterPin PIN for accessing account
-     * @throws TwitterException     if pin is false
+     * @throws TwitterException if pin is false
      * @see #initKeys(String, String)
      */
     public void initialize(String twitterPin) throws TwitterException {
@@ -231,26 +229,28 @@ public class TwitterEngine {
     /**
      * Get User Tweets
      *
-     * @param userId User ID
-     * @param page   current page
+     * @param userId  User ID
+     * @param sinceId minimum tweet ID
+     * @param page    current page
      * @return List of User Tweets
      * @throws TwitterException if access is unavailable
      */
-    public List<Tweet> getUserTweets(long userId, long page, long id) throws TwitterException {
-        List<Status> result = twitter.getUserTimeline(userId, new Paging((int) page, load, id));
+    public List<Tweet> getUserTweets(long userId, long sinceId, long page) throws TwitterException {
+        List<Status> result = twitter.getUserTimeline(userId, new Paging((int) page, load, sinceId));
         return convertStatusList(result);
     }
 
     /**
      * Get User Favs
      *
-     * @param userId User ID
-     * @param page   current page
+     * @param userId  User ID
+     * @param sinceId minimum tweet ID
+     * @param page    current page
      * @return List of User Favs
      * @throws TwitterException if access is unavailable
      */
-    public List<Tweet> getUserFavs(long userId, long page, long id) throws TwitterException {
-        List<Status> favorits = twitter.getFavorites(userId, new Paging((int) page, load, id));
+    public List<Tweet> getUserFavs(long userId, long sinceId, long page) throws TwitterException {
+        List<Status> favorits = twitter.getFavorites(userId, new Paging((int) page, load, sinceId));
         return convertStatusList(favorits);
     }
 
@@ -502,6 +502,7 @@ public class TwitterEngine {
 
     /**
      * get list of Direct Messages
+     *
      * @return DM List
      * @throws TwitterException if access is unavailable
      */
@@ -516,9 +517,10 @@ public class TwitterEngine {
 
     /**
      * Send direct message
+     *
      * @param username receiver name
-     * @param msg Message Text
-     * @param path media path
+     * @param msg      Message Text
+     * @param path     media path
      * @throws TwitterException if access is unavailable
      */
     public void sendMessage(String username, String msg, @Nullable String path) throws TwitterException {
@@ -535,6 +537,7 @@ public class TwitterEngine {
 
     /**
      * convert #twitter4j.User to TwitterUser List
+     *
      * @param users Twitter4J user List
      * @return TwitterUser
      */
@@ -614,8 +617,9 @@ public class TwitterEngine {
      * @return User item
      */
     private TwitterUser getUser(User user) {
+        String description = user.getDescription().replace('\n', ' ');
         return new TwitterUser(user.getId(), user.getName(), user.getScreenName(),
-                user.getOriginalProfileImageURL(), user.getDescription(), user.getLocation(), user.isVerified(),
+                user.getOriginalProfileImageURL(), description, user.getLocation(), user.isVerified(),
                 user.isProtected(), user.getURL(), user.getProfileBannerURL(), user.getCreatedAt().getTime(),
                 user.getFriendsCount(), user.getFollowersCount());
     }

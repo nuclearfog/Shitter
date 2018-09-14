@@ -42,13 +42,13 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         searchAdapter = (TimelineAdapter) tweetSearch.getAdapter();
         userAdapter = (UserAdapter) userSearch.getAdapter();
 
-        if(searchAdapter == null) {
+        if (searchAdapter == null) {
             searchAdapter = new TimelineAdapter(context);
             tweetSearch.setAdapter(searchAdapter);
             searchAdapter.setColor(highlight, font_color);
             searchAdapter.toggleImage(imageLoad);
         }
-        if(userAdapter == null) {
+        if (userAdapter == null) {
             userAdapter = new UserAdapter(context);
             userSearch.setAdapter(userAdapter);
             userAdapter.toggleImage(imageLoad);
@@ -61,17 +61,17 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         String strSearch = search[0];
         long id = 1L;
         try {
-            if(searchAdapter.getItemCount() > 0) {
+            if (searchAdapter.getItemCount() > 0) {
                 id = searchAdapter.getItemId(0);
-                List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
+                List<Tweet> tweets = mTwitter.searchTweets(strSearch, id);
                 searchAdapter.addNew(tweets);
             } else {
-                List<Tweet> tweets = mTwitter.searchTweets(strSearch,id);
+                List<Tweet> tweets = mTwitter.searchTweets(strSearch, id);
                 searchAdapter.setData(tweets);
             }
             publishProgress();
 
-            if(userAdapter.getItemCount() == 0) {
+            if (userAdapter.getItemCount() == 0) {
                 List<TwitterUser> user = mTwitter.searchUsers(strSearch);
                 userAdapter.setData(user);
                 publishProgress();
@@ -81,7 +81,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
             }
-        } catch(Exception err) {
+        } catch (Exception err) {
             Log.e("Twitter Search", err.getMessage());
         }
         return null;

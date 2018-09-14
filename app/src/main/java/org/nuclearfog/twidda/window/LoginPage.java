@@ -37,8 +37,8 @@ public class LoginPage extends AppCompatActivity implements OnClickListener, OnC
     }
 
     @Override
-    public void onClick(View v){
-        switch(v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.linkButton:
                 Registration account = new Registration(this);
                 account.execute("");
@@ -46,7 +46,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener, OnC
 
             case R.id.get:
                 String twitterPin = pin.getText().toString();
-                if(!twitterPin.trim().isEmpty()) {
+                if (!twitterPin.trim().isEmpty()) {
                     new Registration(this).execute(twitterPin);
                 } else {
                     Toast.makeText(this, R.string.enter_pin, Toast.LENGTH_LONG).show();
@@ -55,9 +55,9 @@ public class LoginPage extends AppCompatActivity implements OnClickListener, OnC
 
             case R.id.clipboard:
                 ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                if(clip != null && clip.hasPrimaryClip()) {
+                if (clip != null && clip.hasPrimaryClip()) {
                     String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
-                    if(text.matches("\\d++\n?")) {
+                    if (text.matches("\\d++\n?")) {
                         pin.setText(text);
                         Toast.makeText(this, R.string.pin_added, Toast.LENGTH_LONG).show();
                     } else {

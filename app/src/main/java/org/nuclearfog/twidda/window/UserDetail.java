@@ -45,8 +45,41 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         int background = settings.getBackgroundColor();
 
         userList.setBackgroundColor(background);
-        getUsers();
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (uList == null) {
+            uList = new UserLists(UserDetail.this);
+            int titleId = 0;
+
+            switch (mode) {
+                case 0:
+                    titleId = R.string.following;
+                    uList.execute(userID, UserLists.FOLLOWING, -1L);
+                    break;
+                case 1:
+                    titleId = R.string.follower;
+                    uList.execute(userID, UserLists.FOLLOWERS, -1L);
+                    break;
+                case 2:
+                    titleId = R.string.retweet;
+                    uList.execute(tweetID, UserLists.RETWEETER, -1L);
+                    break;
+                case 3:
+                    titleId = R.string.favorite;
+                    uList.execute(tweetID, UserLists.FAVORISER, -1L);
+                    break;
+            }
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(titleId);
+            }
+        }
+    }
+
 
     @Override
     protected void onPause() {
@@ -56,18 +89,16 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
     }
 
     @Override
-    public boolean onCreateOptionsMenu( Menu m ) {
+    public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.user, m);
-        return true;
+        return super.onCreateOptionsMenu(m);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.user_back) {
+        if (item.getItemId() == R.id.user_back)
             finish();
-            return true;
-        }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -82,37 +113,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
             intent.putExtra("userID", userID);
             intent.putExtra("username", username);
             startActivity(intent);
-        }
-    }
-
-    private void getUsers() {
-        uList = new UserLists(UserDetail.this);
-        int titleId = 0;
-
-        switch (mode) {
-            case 0:
-                titleId = R.string.following;
-                uList.execute(userID, UserLists.FOLLOWING, -1L);
-                break;
-
-            case 1:
-                titleId = R.string.follower;
-                uList.execute(userID, UserLists.FOLLOWERS, -1L);
-                break;
-
-            case 2:
-                titleId = R.string.retweet;
-                uList.execute(tweetID, UserLists.RETWEETER, -1L);
-                break;
-
-            case 3:
-                titleId = R.string.favorite;
-                uList.execute(tweetID, UserLists.FAVORISER, -1L);
-                break;
-        }
-
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(titleId);
         }
     }
 }

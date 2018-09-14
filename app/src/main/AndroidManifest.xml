@@ -9,13 +9,13 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/shitter"
-        android:theme="@style/AppTheme"
-        android:label="@string/app_name">
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,18 +24,18 @@
 
         <activity
             android:name=".window.SearchPage"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".window.UserProfile"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".window.TweetPopup"
-            android:theme="@style/Transparency"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/Transparency" />
 
         <activity
             android:name=".window.MessagePopup"
@@ -44,23 +44,23 @@
 
         <activity
             android:name=".window.AppSettings"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".window.TweetDetail"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".window.UserDetail"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".window.LoginPage"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".window.DirectMessage"

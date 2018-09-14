@@ -32,10 +32,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     private GlobalSettings settings;
     private CheckBox toggleImg;
-    private Button colorButton1,colorButton2,colorButton3,colorButton4;
+    private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private Spinner woeId;
     private EditText woeIdText;
-    private int background,tweet,font,highlight;
+    private int background, tweet, font, highlight;
     private long wId;
     private int row;
     private int woeIdPos;
@@ -48,8 +48,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.settingpage);
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.settings);
 
         settings = GlobalSettings.getInstance(this);
 
@@ -62,13 +62,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         toggleImg = findViewById(R.id.toggleImg);
         woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
-        load();
-
-        woeId.setSelection(woeIdPos);
-        colorButton1.setBackgroundColor(background);
-        colorButton2.setBackgroundColor(font);
-        colorButton3.setBackgroundColor(tweet);
-        colorButton4.setBackgroundColor(highlight);
 
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
@@ -77,7 +70,28 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
         woeId.setOnItemSelectedListener(this);
+    }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        background = settings.getBackgroundColor();
+        font = settings.getFontColor();
+        tweet = settings.getTweetColor();
+        highlight = settings.getHighlightColor();
+        row = settings.getRowLimit();
+        wId = settings.getWoeId();
+        toggleImg.setChecked(settings.loadImages());
+        woeIdPos = settings.getWoeIdSelection();
+        customWoeId = settings.customWoeIdset();
+        woeId.setAdapter(new WorldIdAdapter(this));
+
+        woeId.setSelection(woeIdPos);
+        colorButton1.setBackgroundColor(background);
+        colorButton2.setBackgroundColor(font);
+        colorButton3.setBackgroundColor(tweet);
+        colorButton4.setBackgroundColor(highlight);
         if (customWoeId) {
             String text = Long.toString(wId);
             woeIdText.setVisibility(View.VISIBLE);
@@ -85,39 +99,55 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu( Menu m ) {
-        getMenuInflater().inflate(R.menu.setting, m);
-        return true;
-    }
 
     @Override
-    public boolean onOptionsItemSelected( MenuItem item ) {
-        switch(item.getItemId()) {
-            case R.id.save_settings:
-                save();
-                return true;
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.setting, m);
+        return super.onCreateOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.back_settings:
                 finish();
-                return true;
-            default:return false;
+                break;
+
+            case R.id.save_settings:
+                settings.setBackgroundColor(background);
+                settings.setHighlightColor(highlight);
+                settings.setTweetColor(tweet);
+                settings.setFontColor(font);
+                settings.setImageLoad(toggleImg.isChecked());
+                settings.setRowLimit(row);
+                settings.setWoeIdSelection(woeIdPos);
+                settings.setCustomWoeId(customWoeId);
+                String woeText = woeIdText.getText().toString();
+                if (customWoeId && !woeText.isEmpty())
+                    wId = Long.parseLong(woeText);
+                settings.setWoeId(wId);
+                Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onClick( View v ) {
-        switch(v.getId()) {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.delete_db:
-               new AlertDialog.Builder(this)
-                       .setMessage(R.string.delete_database_popup)
-                .setNegativeButton(R.string.no_confirm, null)
-                .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteDatabase("database.db");
-                    }
-                })
-                .show();
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.delete_database_popup)
+                        .setNegativeButton(R.string.no_confirm, null)
+                        .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                deleteDatabase("database.db");
+                            }
+                        })
+                        .show();
                 break;
 
             case R.id.color_background:
@@ -162,7 +192,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onColorChanged(int color) {
-        switch(mode) {
+        switch (mode) {
             case 0:
                 background = color;
                 break;
@@ -216,34 +246,5 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             }
         });
         d.show();
-    }
-
-    private void load() {
-        background = settings.getBackgroundColor();
-        font = settings.getFontColor();
-        tweet = settings.getTweetColor();
-        highlight = settings.getHighlightColor();
-        row = settings.getRowLimit();
-        wId = settings.getWoeId();
-        toggleImg.setChecked( settings.loadImages() );
-        woeIdPos = settings.getWoeIdSelection();
-        customWoeId = settings.customWoeIdset();
-        woeId.setAdapter( new WorldIdAdapter(this) );
-    }
-
-    private void save() {
-        settings.setBackgroundColor(background);
-        settings.setHighlightColor(highlight);
-        settings.setTweetColor(tweet);
-        settings.setFontColor(font);
-        settings.setImageLoad(toggleImg.isChecked());
-        settings.setRowLimit(row);
-        settings.setWoeIdSelection(woeIdPos);
-        settings.setCustomWoeId(customWoeId);
-        String woeText = woeIdText.getText().toString();
-        if (customWoeId && !woeText.isEmpty())
-            wId = Long.parseLong(woeText);
-        settings.setWoeId(wId);
-        Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
     }
 }

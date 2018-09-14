@@ -22,7 +22,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class UserLists extends AsyncTask <Long, Void, Boolean> {
+public class UserLists extends AsyncTask<Long, Void, Boolean> {
 
     public static final long FOLLOWING = 0L;
     public static final long FOLLOWERS = 1L;
@@ -38,7 +38,7 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     private int returnCode = 0;
 
     /**
-     *@see UserDetail
+     * @see UserDetail
      */
     public UserLists(UserDetail context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
@@ -92,27 +92,24 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
         long cursor = data[2];
         try {
             List<TwitterUser> user;
-            if(mode == FOLLOWING) {
-                user = mTwitter.getFollowing(id,cursor);
+            if (mode == FOLLOWING) {
+                user = mTwitter.getFollowing(id, cursor);
                 usrAdp.setData(user);
-            }
-            else if(mode == FOLLOWERS) {
-                user = mTwitter.getFollower(id,cursor);
+            } else if (mode == FOLLOWERS) {
+                user = mTwitter.getFollower(id, cursor);
                 usrAdp.setData(user);
-            }
-            else if(mode == RETWEETER) {
-                user = mTwitter.getRetweeter(id,cursor);
+            } else if (mode == RETWEETER) {
+                user = mTwitter.getRetweeter(id, cursor);
                 usrAdp.setData(user);
             }
             return true;
-        }
-        catch(TwitterException err) {
+        } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
             }
             return false;
-        } catch(Exception err) {
+        } catch (Exception err) {
             Log.e("User List", err.getMessage());
             return false;
         }
@@ -122,9 +119,9 @@ public class UserLists extends AsyncTask <Long, Void, Boolean> {
     @Override
     @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean success) {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
-        if(success) {
+        if (success) {
             usrAdp.notifyDataSetChanged();
         } else {
             if (returnCode == 420)

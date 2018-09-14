@@ -38,7 +38,16 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
         refresh.setRefreshing(true);
         refresh.setOnRefreshListener(this);
-        loadContent();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mLoader == null) {
+            mLoader = new MessageLoader(this);
+            mLoader.execute();
+        }
     }
 
 
@@ -53,8 +62,9 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.message, m);
-        return true;
+        return super.onCreateOptionsMenu(m);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -62,17 +72,9 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
             case R.id.message:
                 Intent sendDm = new Intent(this, MessagePopup.class);
                 startActivity(sendDm);
-                return true;
-
-            default:
-                return false;
+                break;
         }
-    }
-
-
-    private void loadContent() {
-        mLoader = new MessageLoader(this);
-        mLoader.execute();
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -90,6 +92,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
     @Override
     public void onRefresh() {
-        loadContent();
+        mLoader = new MessageLoader(this);
+        mLoader.execute();
     }
 }

@@ -63,7 +63,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void param) {
-        if (ui.get() == null) {
+        if (ui.get() != null) {
             SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
             mAdapter.notifyDataSetChanged();
             mRefresh.setRefreshing(false);

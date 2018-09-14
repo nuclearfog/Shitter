@@ -31,7 +31,7 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
 public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemClicked,
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
-    private RecyclerView tweetSearch,userSearch;
+    private RecyclerView tweetSearch, userSearch;
     private SwipeRefreshLayout tweetReload;
     private TwitterSearch mSearch;
     private TabHost tabhost;
@@ -53,7 +53,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
         Toolbar tool = findViewById(R.id.search_toolbar);
         setSupportActionBar(tool);
-        if(getSupportActionBar() != null)
+        if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         tweetSearch = findViewById(R.id.tweet_result);
@@ -85,7 +85,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public void onBackPressed() {
-        if(tabIndex == 1) {
+        if (tabIndex == 1) {
             tabhost.setCurrentTab(0);
         } else {
             super.onBackPressed();
@@ -106,12 +106,13 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
                 startActivity(intent);
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
             }
         });
-        return true;
+        return super.onCreateOptionsMenu(m);
     }
 
     @Override
@@ -119,20 +120,19 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetPopup.class);
             intent.putExtra("TweetID", -1);
-            if (search.startsWith("#")) {
+            if (search.startsWith("#"))
                 intent.putExtra("Addition", search);
-            }
             startActivity(intent);
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         Intent intent;
-        switch(parent.getId()) {
+        switch (parent.getId()) {
             case R.id.tweet_result:
-                if(!tweetReload.isRefreshing()) {
+                if (!tweetReload.isRefreshing()) {
                     TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
                     if (tweetAdapter != null) {
                         Tweet tweet = tweetAdapter.getData().get(position);
@@ -189,8 +189,8 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         final int ANIM_DUR = 300;
         final int DIMENS = Animation.RELATIVE_TO_PARENT;
 
-        Animation leftIn = new TranslateAnimation(DIMENS,-1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
-        Animation rightIn = new TranslateAnimation(DIMENS,1.0f,DIMENS,0.0f,DIMENS,0.0f,DIMENS,0.0f);
+        Animation leftIn = new TranslateAnimation(DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f, DIMENS, 0.0f);
+        Animation rightIn = new TranslateAnimation(DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f, DIMENS, 0.0f);
         Animation leftOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
         Animation rightOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
         leftIn.setDuration(ANIM_DUR);
@@ -200,7 +200,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
         View currentView = tabhost.getCurrentView();
 
-        if( tabhost.getCurrentTab() > tabIndex ) {
+        if (tabhost.getCurrentTab() > tabIndex) {
             lastView.setAnimation(leftOut);
             currentView.setAnimation(rightIn);
         } else {

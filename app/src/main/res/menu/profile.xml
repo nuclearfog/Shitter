@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/profile_tweet"
@@ -18,7 +18,6 @@
         android:id="@+id/profile_message"
         android:icon="@drawable/message"
         android:title="@string/directmessage"
-        android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile_block"

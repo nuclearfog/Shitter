@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.R;
 import java.io.InputStream;
 import java.net.URL;
 
-public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
+public class ImagePopup extends AsyncTask<String, Void, Boolean> {
 
     private Dialog popup;
     private Bitmap imgArray[];
@@ -36,7 +36,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         popup.setCanceledOnTouchOutside(false);
-        if(popup.getWindow() != null)
+        if (popup.getWindow() != null)
             popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         View load = inflater.inflate(R.layout.item_load, null, false);
         View cancelButton = load.findViewById(R.id.kill_button);
@@ -64,15 +64,15 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     protected Boolean doInBackground(String... links) {
         try {
             int size = links.length;
-            if(size == 0)
+            if (size == 0)
                 return false;
             imgArray = new Bitmap[size];
-            if(links[0].startsWith("/")) {
-                for(int index = 0 ; index < size ; index++) {
+            if (links[0].startsWith("/")) {
+                for (int index = 0; index < size; index++) {
                     imgArray[index] = BitmapFactory.decodeFile(links[index]);
                 }
             } else {
-                for(int index = 0 ; index < size ; index++) {
+                for (int index = 0; index < size; index++) {
                     InputStream mediaStream = new URL(links[index]).openStream();
                     imgArray[index] = BitmapFactory.decodeStream(mediaStream);
                 }
@@ -87,23 +87,23 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     @Override
     @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean result) {
-        if(result) {
+        if (result) {
             View content = inflater.inflate(R.layout.imagepreview, null, false);
             final ImageView mImg = content.findViewById(R.id.fullSizeImage);
             setImage(imgArray[position], mImg);
             popup.setContentView(content);
             popup.setCanceledOnTouchOutside(true);
             final int size = imgArray.length;
-            if(size > 0) {
+            if (size > 0) {
                 final Button left = content.findViewById(R.id.image_left);
                 final Button right = content.findViewById(R.id.image_right);
-                if(size > 1) {
+                if (size > 1) {
                     left.setVisibility(View.INVISIBLE);
                     right.setVisibility(View.VISIBLE);
                     left.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(position == 1)
+                            if (position == 1)
                                 left.setVisibility(View.INVISIBLE);
                             right.setVisibility(View.VISIBLE);
                             setImage(imgArray[--position], mImg);
@@ -112,7 +112,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
                     right.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(position == size-2)
+                            if (position == size - 2)
                                 right.setVisibility(View.INVISIBLE);
                             left.setVisibility(View.VISIBLE);
                             setImage(imgArray[++position], mImg);
@@ -127,7 +127,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean>  {
     }
 
     private void setImage(Bitmap btm, ImageView mImg) {
-        if(btm != null) {
+        if (btm != null) {
             int height = (int) (btm.getHeight() / (btm.getWidth() / 640.0));
             btm = Bitmap.createScaledBitmap(btm, 640, height, false);
             mImg.setImageBitmap(btm);

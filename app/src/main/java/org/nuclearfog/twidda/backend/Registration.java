@@ -27,20 +27,19 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground( String... twitterPin ) {
+    protected Boolean doInBackground(String... twitterPin) {
         String pin = twitterPin[0];
         try {
-            if( pin.trim().isEmpty() ) {
+            if (pin.trim().isEmpty()) {
                 redirectionURL = mTwitter.request();
             } else {
                 mTwitter.initialize(pin);
                 return true;
             }
-        } catch(TwitterException e) {
+        } catch (TwitterException e) {
             errorMessage += e.getErrorMessage();
             failure = true;
-        }
-        catch ( Exception e ) {
+        } catch (Exception e) {
             Log.e("Registration", e.getMessage());
             failure = true;
         }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +32,7 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
 /**
  * Detailed Tweet Activity
+ *
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
@@ -42,7 +42,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private StatusLoader mStat;
     private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
-    private GlobalSettings settings;
     private String username = "";
     private boolean isHome;
     private long userID = 0;
@@ -64,10 +63,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        settings = GlobalSettings.getInstance(this);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        int backgroundColor = settings.getBackgroundColor();
+        int fontColor = settings.getFontColor();
         isHome = userID == settings.getUserId();
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        TextView txtTw = findViewById(R.id.tweet_detailed);
+        View cLayout = findViewById(R.id.tweet_detail);
+        View tweet = findViewById(R.id.tweetbar);
         View retweet = findViewById(R.id.rt_button_detail);
         View favorite = findViewById(R.id.fav_button_detail);
         View txtRt = findViewById(R.id.no_rt_detail);
@@ -76,7 +80,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View answer = findViewById(R.id.answer_button);
         answerReload = findViewById(R.id.answer_reload);
         answer_list = findViewById(R.id.answer_list);
+
         answer_list.setLayoutManager(new LinearLayoutManager(this));
+        cLayout.setBackgroundColor(backgroundColor);
+        tweet.setBackgroundColor(backgroundColor);
+        answer_list.setBackgroundColor(backgroundColor);
+        txtTw.setTextColor(fontColor);
+
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
         answerReload.setOnRefreshListener(this);
@@ -84,8 +94,18 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         txtRt.setOnClickListener(this);
         profile_img.setOnClickListener(this);
         answer.setOnClickListener(this);
-        setContent();
     }
+
+
+    protected void onStart() {
+        super.onStart();
+        if (mStat == null) {
+            answerReload.setRefreshing(true);
+            mStat = new StatusLoader(this);
+            mStat.execute(tweetID);
+        }
+    }
+
 
     @Override
     protected void onPause() {
@@ -96,14 +116,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         super.onPause();
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
-        if (isHome) {
+        if (isHome)
             m.findItem(R.id.delete_tweet).setVisible(true);
-        }
-        return true;
+        return super.onCreateOptionsMenu(m);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -119,7 +140,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 });
                 deleteDialog.setNegativeButton(R.string.no_confirm, null);
                 deleteDialog.show();
-                return true;
+                break;
 
             case R.id.tweet_link:
                 if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
@@ -130,18 +151,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 } else {
                     Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 }
-                return true;
-
-            default:
-                return false;
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onClick(View v) {
         Intent intent;
         StatusLoader mStat = new StatusLoader(this);
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.rt_button_detail:
                 mStat.execute(tweetID, StatusLoader.RETWEET);
                 break;
@@ -180,6 +200,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         }
     }
 
+
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
@@ -193,30 +214,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         }
     }
 
+
     @Override
     public void onRefresh() {
         mStat = new StatusLoader(this);
         mStat.execute(tweetID);
     }
 
+
     @Override
     public void onMediaClicked(String mediaLinks[]) {
         ImagePopup mediaContent = new ImagePopup(this);
         mediaContent.execute(mediaLinks);
-    }
-
-    private void setContent() {
-        int backgroundColor = settings.getBackgroundColor();
-        int fontColor = settings.getFontColor();
-        CollapsingToolbarLayout cLayout = findViewById(R.id.tweet_detail);
-        View tweet = findViewById(R.id.tweetbar);
-        TextView txtTw = findViewById(R.id.tweet_detailed);
-        cLayout.setBackgroundColor(backgroundColor);
-        tweet.setBackgroundColor(backgroundColor);
-        answer_list.setBackgroundColor(backgroundColor);
-        txtTw.setTextColor(fontColor);
-        answerReload.setRefreshing(true);
-        mStat = new StatusLoader(this);
-        mStat.execute(tweetID);
     }
 }

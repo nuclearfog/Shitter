@@ -19,7 +19,7 @@ public class WorldIdAdapter extends ArrayAdapter {
     private int[] worldId;
 
     public WorldIdAdapter(Context context) {
-        super(context,android.R.layout.simple_spinner_dropdown_item);
+        super(context, android.R.layout.simple_spinner_dropdown_item);
         mInflater = LayoutInflater.from(context);
         Resources res = context.getResources();
         location = res.getStringArray(R.array.location);
@@ -46,8 +46,8 @@ public class WorldIdAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(int position, @Nullable View view, @NonNull ViewGroup parent) {
-        if(view == null) {
-            view = mInflater.inflate(android.R.layout.simple_spinner_item,parent,false);
+        if (view == null) {
+            view = mInflater.inflate(android.R.layout.simple_spinner_item, parent, false);
         }
         TextView country = view.findViewById(android.R.id.text1);
         country.setText(getItem(position));

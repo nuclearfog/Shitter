@@ -112,6 +112,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
+    public interface OnItemSelected {
+        void onSelected(int pos);
+    }
+
     class MessageHolder extends ViewHolder {
         final ImageView profile_img;
         final TextView username;
@@ -127,10 +131,5 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             createdAt = v.findViewById(R.id.dm_time);
             message = v.findViewById(R.id.dm_message);
         }
-    }
-
-
-    public interface OnItemSelected {
-        void onSelected(int pos);
     }
 }

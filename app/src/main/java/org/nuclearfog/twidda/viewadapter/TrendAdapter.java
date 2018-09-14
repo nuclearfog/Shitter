@@ -33,16 +33,13 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         this.font_color = font_color;
     }
 
-
-    public void setData(List<Trend> trendList) {
-        this.trendList = trendList;
-    }
-
-
     public List<Trend> getData() {
         return trendList;
     }
 
+    public void setData(List<Trend> trendList) {
+        this.trendList = trendList;
+    }
 
     @Override
     public int getItemCount() {
@@ -53,7 +50,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     @NonNull
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int index) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,21 +65,11 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        String posStr = Integer.toString(trendList.get(index).position)+'.';
+        String posStr = Integer.toString(trendList.get(index).position) + '.';
         vh.trends.setText(trendList.get(index).trend);
         vh.pos.setText(posStr);
         vh.trends.setTextColor(font_color);
         vh.pos.setTextColor(font_color);
-    }
-
-
-    class ItemHolder extends ViewHolder {
-        final TextView trends, pos;
-        ItemHolder(View v) {
-            super(v);
-            pos = v.findViewById(R.id.trendpos);
-            trends = v.findViewById(R.id.trendname);
-        }
     }
 
 
@@ -91,5 +78,15 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
      */
     public interface OnItemClicked {
         void onItemClick(ViewGroup parent, int position);
+    }
+
+    class ItemHolder extends ViewHolder {
+        final TextView trends, pos;
+
+        ItemHolder(View v) {
+            super(v);
+            pos = v.findViewById(R.id.trendpos);
+            trends = v.findViewById(R.id.trendname);
+        }
     }
 }

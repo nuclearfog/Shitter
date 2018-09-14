@@ -34,11 +34,10 @@ import twitter4j.TwitterException;
 
 public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
 
-    private static final long ERROR     =-1;
     public static final long RETWEET = 1;
     public static final long FAVORITE = 2;
     public static final long DELETE = 3;
-
+    private static final long ERROR = -1;
     private TwitterEngine mTwitter;
     private TimelineAdapter answerAdapter;
     private DatabaseAdapter database;
@@ -61,7 +60,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
         RecyclerView replyList = context.findViewById(R.id.answer_list);
         answerAdapter = (TimelineAdapter) replyList.getAdapter();
         database = new DatabaseAdapter(context);
-        if(answerAdapter == null) {
+        if (answerAdapter == null) {
             answerAdapter = new TimelineAdapter(context);
             replyList.setAdapter(answerAdapter);
             answerAdapter.toggleImage(toggleImg);
@@ -119,8 +118,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                 }
                 publishProgress(tweet);
             }
-        }
-        catch(TwitterException e) {
+        } catch (TwitterException e) {
             returnCode = e.getErrorCode();
             if (returnCode > 0) {
                 if (returnCode == 144)
@@ -129,8 +127,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                     errorMessage += e.getMessage();
             }
             return ERROR;
-        }
-        catch(Exception err) {
+        } catch (Exception err) {
             Log.e("Status Loader", err.getMessage());
             return ERROR;
         }
@@ -179,7 +176,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                 replyName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(ui.get(),TweetDetail.class);
+                        Intent intent = new Intent(ui.get(), TweetDetail.class);
                         intent.putExtra("tweetID", tweet.replyID);
                         intent.putExtra("userID", tweet.replyUserId);
                         intent.putExtra("username", tweet.replyName);
@@ -202,7 +199,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                 tweet_verify.setVisibility(View.VISIBLE);
             }
             if (toggleImg) {
-                Picasso.get().load(tweet.user.profileImg).into(profile_img);
+                Picasso.get().load(tweet.user.profileImg + "_bigger").into(profile_img);
             }
 
             Button retweetButton = connect.findViewById(R.id.rt_button_detail);
@@ -257,9 +254,9 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
         Spannable sTweet = new SpannableStringBuilder(tweet);
         int start = 0;
         boolean marked = false;
-        for(int i = 0 ; i < tweet.length() ; i++) {
+        for (int i = 0; i < tweet.length(); i++) {
             char current = tweet.charAt(i);
-            switch(current){
+            switch (current) {
                 case '@':
                 case '#':
                     start = i;
@@ -277,14 +274,14 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                 case '!':
                 case '?':
                 case '-':
-                    if(marked && start != i-1) {
+                    if (marked && start != i - 1) {
                         sTweet = spanning(sTweet, start, i);
                     }
                     marked = false;
                     break;
             }
         }
-        if(marked && start != tweet.length()-1) {
+        if (marked && start != tweet.length() - 1) {
             sTweet = spanning(sTweet, start, tweet.length());
         }
         return sTweet;
@@ -299,17 +296,18 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                 Spanned s = (Spanned) tv.getText();
                 String search = s.subSequence(start, end).toString();
                 Intent intent = new Intent(ui.get(), SearchPage.class);
-                if(search.startsWith("#"))
+                if (search.startsWith("#"))
                     intent.putExtra("Addition", search);
                 intent.putExtra("search", search);
                 ui.get().startActivity(intent);
             }
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 ds.setColor(highlight);
                 ds.setUnderlineText(false);
             }
-        },start,end,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return sTweet;
     }
 

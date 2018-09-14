@@ -28,21 +28,24 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
 /**
  * User Profile Activity
+ *
  * @see ProfileLoader
  */
 public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
-    private ProfileLoader mProfile, mTweets, mFavorites;
+    private ProfileLoader mProfile;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeList, favoriteList;
 
     private TabHost mTab;
     private View lastTab;
+    private boolean isFollowing, isBlocked, isMuted;
     private boolean home;
     private long userId = 0;
     private int tabIndex = 0;
     private String username = "";
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -56,7 +59,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
-        if(getSupportActionBar() != null)
+        if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
@@ -64,69 +67,77 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         int background = settings.getBackgroundColor();
 
         homeList = findViewById(R.id.ht_list);
+        homeReload = findViewById(R.id.hometweets);
         homeList.setLayoutManager(new LinearLayoutManager(this));
         homeList.setBackgroundColor(background);
 
         favoriteList = findViewById(R.id.hf_list);
+        favoriteReload = findViewById(R.id.homefavorits);
         favoriteList.setLayoutManager(new LinearLayoutManager(this));
         favoriteList.setBackgroundColor(background);
 
-        homeReload = findViewById(R.id.hometweets);
-        homeReload.setBackgroundColor(0xffff0000);
-
-        favoriteReload = findViewById(R.id.homefavorits);
-        favoriteReload.setBackgroundColor(0xffff0000);
-
         View txtFollowing = findViewById(R.id.following);
-        View txtFollower  = findViewById(R.id.follower);
+        View txtFollower = findViewById(R.id.follower);
         mTab = findViewById(R.id.profile_tab);
-        setTabs();
+        mTab.setup();
+        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
+        tab1.setContent(R.id.hometweets);
+        tab1.setIndicator("", getDrawable(R.drawable.home));
+        mTab.addTab(tab1);
+        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
+        tab2.setContent(R.id.homefavorits);
+        tab2.setIndicator("", getDrawable(R.drawable.favorite));
+        mTab.addTab(tab2);
+        lastTab = mTab.getCurrentView();
 
         mTab.setOnTabChangedListener(this);
         txtFollowing.setOnClickListener(this);
         txtFollower.setOnClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
-
-        getProfileTweets();
     }
 
-    @Override
-    protected void onPause() {
-        if (mProfile != null && !mProfile.isCancelled()) {
-            mProfile.cancel(true);
-        }
-        if (mTweets != null && !mTweets.isCancelled()) {
-            mTweets.cancel(true);
-            homeReload.setRefreshing(false);
-        }
-        if (mFavorites != null && !mFavorites.isCancelled()) {
-            mFavorites.cancel(true);
-            favoriteReload.setRefreshing(false);
-        }
-        super.onPause();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(tabIndex == 0) {
-            super.onBackPressed();
-        } else {
-            mTab.setCurrentTab(0);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
-        m.findItem(R.id.profile_message).setVisible(true);
-        if(!home) {
+        if (!home) {
             m.findItem(R.id.profile_follow).setVisible(true);
             m.findItem(R.id.profile_block).setVisible(true);
             m.findItem(R.id.profile_mute).setVisible(true);
         }
-        return true;
+        return super.onCreateOptionsMenu(m);
     }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu m) {
+        MenuItem followIcon = m.findItem(R.id.profile_follow);
+        MenuItem blockIcon = m.findItem(R.id.profile_block);
+        MenuItem muteIcon = m.findItem(R.id.profile_mute);
+
+        if (isFollowing) {
+            followIcon.setIcon(R.drawable.follow_enabled);
+            followIcon.setTitle(R.string.unfollow);
+        } else {
+            followIcon.setIcon(R.drawable.follow);
+            followIcon.setTitle(R.string.follow);
+        }
+        if (isBlocked) {
+            blockIcon.setTitle(R.string.unblock);
+            followIcon.setVisible(false);
+        } else {
+            blockIcon.setTitle(R.string.block);
+            followIcon.setVisible(true);
+        }
+        if (isMuted) {
+            muteIcon.setTitle(R.string.unmute);
+        } else {
+            muteIcon.setTitle(R.string.mute);
+        }
+        return super.onPrepareOptionsMenu(m);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -137,22 +148,22 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     if (!home)
                         intent.putExtra("Addition", username);
                     startActivity(intent);
-                    return true;
+                    break;
 
                 case R.id.profile_follow:
                     mProfile = new ProfileLoader(this);
                     mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
-                    return true;
+                    break;
 
                 case R.id.profile_block:
                     mProfile = new ProfileLoader(this);
                     mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
-                    return true;
+                    break;
 
                 case R.id.profile_mute:
                     mProfile = new ProfileLoader(this);
                     mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
-                    return true;
+                    break;
 
                 case R.id.profile_message:
                     if (home) {
@@ -163,37 +174,79 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                         sendDm.putExtra("username", username);
                         startActivity(sendDm);
                     }
-                    return true;
+                    break;
             }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mProfile == null) {
+            mProfile = new ProfileLoader(this);
+            homeReload.setRefreshing(true);
+            favoriteReload.setRefreshing(true);
+            mProfile.execute(userId, 0L);
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        if (mProfile != null && !mProfile.isCancelled()) {
+            mProfile.cancel(true);
+            homeReload.setRefreshing(false);
+            favoriteReload.setRefreshing(false);
+        }
+        super.onPause();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (tabIndex == 0) {
+            super.onBackPressed();
+        } else {
+            mTab.setCurrentTab(0);
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.following:
-                getConnection(0);
+                Intent following = new Intent(this, UserDetail.class);
+                following.putExtra("userID", userId);
+                following.putExtra("mode", 0);
+                startActivity(following);
                 break;
             case R.id.follower:
-                getConnection(1);
+                Intent follower = new Intent(this, UserDetail.class);
+                follower.putExtra("userID", userId);
+                follower.putExtra("mode", 1);
+                startActivity(follower);
                 break;
         }
     }
 
+
     @Override
     public void onRefresh() {
-        switch(tabIndex) {
+        switch (tabIndex) {
             case 0:
-                mTweets = new ProfileLoader(this);
-                mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
+                mProfile = new ProfileLoader(this);
+                mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
                 break;
             case 1:
-                mFavorites = new ProfileLoader(this);
-                mFavorites.execute(userId, ProfileLoader.GET_FAVORS, 1L);
+                mProfile = new ProfileLoader(this);
+                mProfile.execute(userId, ProfileLoader.GET_FAVORS, 1L);
                 break;
         }
     }
+
 
     @Override
     public void onTabChanged(String tabId) {
@@ -209,10 +262,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         }
     }
 
+
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter tweetAdapter;
-        if(parent.getId() == R.id.ht_list) {
+        if (parent.getId() == R.id.ht_list) {
             tweetAdapter = (TimelineAdapter) homeList.getAdapter();
         } else {
             tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
@@ -230,18 +284,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         }
     }
 
-    private void setTabs() {
-        mTab.setup();
-        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
-        tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("", getDrawable(R.drawable.home));
-        mTab.addTab(tab1);
-        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
-        tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("",getDrawable(R.drawable.favorite));
-        mTab.addTab(tab2);
-        lastTab = mTab.getCurrentView();
-    }
 
     private void animate() {
         final int ANIM_DUR = 300;
@@ -260,7 +302,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         rOut.setDuration(ANIM_DUR);
 
         View currentTab = mTab.getCurrentView();
-        if( mTab.getCurrentTab() > tabIndex ) {
+        if (mTab.getCurrentTab() > tabIndex) {
             lastTab.setAnimation(lOut);
             currentTab.setAnimation(rIn);
         } else {
@@ -270,22 +312,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         lastTab = mTab.getCurrentView();
     }
 
-    private void getProfileTweets() {
-        new ProfileLoader(this).execute(userId, ProfileLoader.LOAD_DB);
-        mProfile = new ProfileLoader(this);
-        mTweets = new ProfileLoader(this);
-        mFavorites = new ProfileLoader(this);
-        homeReload.setRefreshing(true);
-        favoriteReload.setRefreshing(true);
-        mProfile.execute(userId, ProfileLoader.GET_INF);
-        mTweets.execute(userId, ProfileLoader.GET_TWEETS,1L);
-        mFavorites.execute(userId, ProfileLoader.GET_FAVORS, 1L);
-    }
 
-    private void getConnection(int mode) {
-        Intent intent = new Intent(this, UserDetail.class);
-        intent.putExtra("userID", userId);
-        intent.putExtra("mode", mode);
-        startActivity(intent);
+    public void setConnection(boolean isFollowing, boolean isMuted, boolean isBlocked) {
+        this.isFollowing = isFollowing;
+        this.isMuted = isMuted;
+        this.isBlocked = isBlocked;
     }
 }

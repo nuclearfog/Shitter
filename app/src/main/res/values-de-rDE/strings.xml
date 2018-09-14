@@ -49,10 +49,6 @@
     <string name="unfollowed">entfolgt!</string>
     <string name="blocked">geblockt!</string>
     <string name="unblocked">entblockt!</string>
-    <string name="favorited">favoriziert!</string>
-    <string name="unfavorited">favorit entfernt!</string>
-    <string name="retweeted">retweetet!</string>
-    <string name="unretweet">retweet entfernt!</string>
     <string name="tweet_removed">Tweet gelöscht!</string>
     <string name="answering">antwort @</string>
     <string name="sent_from">"gesendet von: "</string>
@@ -66,4 +62,5 @@
     <string name="username">Username</string>
     <string name="dmessage">Nachricht</string>
     <string name="dmsend">Direktnachricht gesendet!</string>
+    <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
 </resources>

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImagePopup;
@@ -31,9 +32,8 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.messagewindow);
         String username = "";
         b = getIntent().getExtras();
-        if (b != null && b.containsKey("username")) {
+        if (b != null && b.containsKey("username"))
             username = b.getString("username");
-        }
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
 
@@ -77,9 +77,11 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == R.id.dm_send) {
             String username = receiver.getText().toString();
             String message = text.getText().toString();
-            if (!username.isEmpty() || !(message.isEmpty() && mediaPath.isEmpty())) {
+            if (!username.isEmpty() && (!message.isEmpty() || !mediaPath.isEmpty())) {
                 MessageUpload upload = new MessageUpload(this);
                 upload.execute(username, message, mediaPath);
+            } else {
+                Toast.makeText(this, R.string.error_dm, Toast.LENGTH_SHORT).show();
             }
         } else if (v.getId() == R.id.dm_media) {
             if (mediaPath.trim().isEmpty())

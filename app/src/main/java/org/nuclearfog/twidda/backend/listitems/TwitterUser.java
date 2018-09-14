@@ -16,11 +16,11 @@ public class TwitterUser {
     public final int follower;      // Follower count
 
     public TwitterUser(long userID, String username, String screenname, String profileImg,
-                String bio, String location, boolean isVerified, boolean isLocked, String link,
-                String bannerImg, long created, int following, int follower) {
+                       String bio, String location, boolean isVerified, boolean isLocked, String link,
+                       String bannerImg, long created, int following, int follower) {
         this.userID = userID;
         this.username = username;
-        this.screenname = '@'+screenname;
+        this.screenname = '@' + screenname;
         this.profileImg = profileImg;
         this.bio = bio;
         this.link = link;

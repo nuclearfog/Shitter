@@ -62,9 +62,9 @@ public class GlobalSettings {
     }
 
     public void setBackgroundColor(int color) {
+        background_color = color;
         Editor edit = settings.edit();
         edit.putInt("background_color", color);
-        background_color = color;
         edit.apply();
     }
 
@@ -73,9 +73,9 @@ public class GlobalSettings {
     }
 
     public void setFontColor(int color) {
+        font_color = color;
         Editor edit = settings.edit();
         edit.putInt("font_color", color);
-        font_color = color;
         edit.apply();
     }
 
@@ -84,9 +84,9 @@ public class GlobalSettings {
     }
 
     public void setHighlightColor(int color) {
+        highlight_color = color;
         Editor edit = settings.edit();
         edit.putInt("highlight_color", color);
-        highlight_color = color;
         edit.apply();
     }
 
@@ -95,9 +95,9 @@ public class GlobalSettings {
     }
 
     public void setTweetColor(int color) {
+        tweet_color = color;
         Editor edit = settings.edit();
         edit.putInt("tweet_color", color);
-        tweet_color = color;
         edit.apply();
     }
 
@@ -110,9 +110,9 @@ public class GlobalSettings {
     }
 
     public void setWoeId(long id) {
+        woeId = (int) id;
         Editor edit = settings.edit();
         edit.putInt("world_id", (int) id);
-        woeId = (int) id;
         edit.apply();
     }
 
@@ -125,9 +125,9 @@ public class GlobalSettings {
     }
 
     public void setWoeIdSelection(int pos) {
+        woeIdPos = pos;
         Editor edit = settings.edit();
         edit.putInt("world_id_pos", pos);
-        woeIdPos = pos;
         edit.apply();
     }
 
@@ -136,9 +136,9 @@ public class GlobalSettings {
     }
 
     public void setRowLimit(int limit) {
+        row = limit;
         Editor edit = settings.edit();
         edit.putInt("preload", limit);
-        row = limit;
         edit.apply();
     }
 
@@ -162,25 +162,25 @@ public class GlobalSettings {
     }
 
     public void setImageLoad(boolean image) {
+        loadImage = image;
         Editor edit = settings.edit();
         edit.putBoolean("image_load", image);
-        loadImage = image;
         edit.apply();
     }
 
     public void setCustomWoeId(boolean customWoeId) {
+        customWorldId = customWoeId;
         Editor edit = settings.edit();
         edit.putBoolean("custom_woeId", customWoeId);
-        customWorldId = customWoeId;
         edit.apply();
     }
 
     public void setConnection(String key1, String key2, Long userId) {
-        Editor e = settings.edit();
         loggedIn = true;
         this.key1 = key1;
         this.key2 = key2;
         this.userId = userId;
+        Editor e = settings.edit();
         e.putBoolean("login", true);
         e.putLong("userID", userId);
         e.putString("key1", key1);

@@ -58,7 +58,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
 
         mediaPath = new ArrayList<>();
         imageButton = findViewById(R.id.image);
-        previewBtn  = findViewById(R.id.img_preview);
+        previewBtn = findViewById(R.id.img_preview);
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
         root.setBackgroundColor(settings.getTweetColor());
@@ -77,8 +77,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode,returnCode,i);
-        if(returnCode == RESULT_OK){
+        super.onActivityResult(reqCode, returnCode, i);
+        if (returnCode == RESULT_OK) {
             String[] mode = {MediaStore.Images.Media.DATA};
             if (i.getData() != null) {
                 Cursor c = getContentResolver().query(i.getData(), mode, null, null, null);
@@ -110,7 +110,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()){
+        switch (v.getId()) {
             case R.id.sendTweet:
                 send();
                 break;
@@ -130,7 +130,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
     }
 
     private void showClosingMsg() {
-        if( !addition.equals(tweet.getText().toString()) || imgIndex > 0) {
+        if (!addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
             closeDialog.setMessage(R.string.should_cancel_tweet);
             closeDialog.setNegativeButton(R.string.no_confirm, null);
@@ -153,9 +153,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
         String tweetStr = tweet.getText().toString();
         String[] paths = new String[mediaPath.size()];
         paths = mediaPath.toArray(paths);
-        sendTweet = new StatusUpload(this ,paths);
-        if(!tweetStr.trim().isEmpty() || paths.length > 0) {
-            if(inReplyId > 0) {
+        sendTweet = new StatusUpload(this, paths);
+        if (!tweetStr.trim().isEmpty() || paths.length > 0) {
+            if (inReplyId > 0) {
                 sendTweet.execute(tweetStr, inReplyId);
             } else {
                 sendTweet.execute(tweetStr);

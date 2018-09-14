@@ -20,14 +20,13 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class MainPage extends AsyncTask<Integer, Void, Integer> {
+public class MainPage extends AsyncTask<Integer, Integer, Integer> {
 
-    public static final int HOME = 0;
-    public static final int TRND = 1;
-    public static final int MENT = 2;
-    public static final int H_LOAD = 3;
-    public static final int T_LOAD = 4;
-    public static final int M_LOAD = 5;
+    public static final int DATA = 0;
+    public static final int HOME = 1;
+    public static final int TRND = 2;
+    public static final int MENT = 3;
+
     private static final int FAIL = -1;
 
     private WeakReference<MainActivity> ui;
@@ -40,10 +39,7 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
     private String errMsg = "E: Main Page, ";
     private int returnCode = 0;
 
-    /**
-     * Main View
-     * @see MainActivity
-     */
+
     public MainPage(MainActivity context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
@@ -61,142 +57,126 @@ public class MainPage extends AsyncTask<Integer, Void, Integer> {
         trendsAdapter = (TrendAdapter) trendList.getAdapter();
         mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
 
-        if(timelineAdapter == null) {
+        if (timelineAdapter == null) {
             timelineAdapter = new TimelineAdapter(context);
             timelineList.setAdapter(timelineAdapter);
-            timelineAdapter.setColor(highlight, font);
-            timelineAdapter.toggleImage(image);
         }
-        if(trendsAdapter == null) {
+        if (trendsAdapter == null) {
             trendsAdapter = new TrendAdapter(context);
             trendList.setAdapter(trendsAdapter);
-            trendsAdapter.setColor(font);
         }
-        if(mentionAdapter == null) {
+        if (mentionAdapter == null) {
             mentionAdapter = new TimelineAdapter(context);
             mentionList.setAdapter(mentionAdapter);
-            mentionAdapter.setColor(highlight, font);
-            mentionAdapter.toggleImage(image);
         }
+        timelineAdapter.setColor(highlight, font);
+        timelineAdapter.toggleImage(image);
+        trendsAdapter.setColor(font);
+        mentionAdapter.setColor(highlight, font);
+        mentionAdapter.toggleImage(image);
     }
 
-    /**
-     * @param args [0] Execution Mode: (0)HomeTL, (1)Trend, (2)Mention
-     * @return Mode
-     */
+
     @Override
     protected Integer doInBackground(Integer... args) {
         final int MODE = args[0];
         int page = args[1];
-        long id = 1L;
-        List<Tweet> tweets;
         try {
-            switch (MODE) {
-                case HOME:
-
-                    if(timelineAdapter.getItemCount() > 0) {
-                        id = timelineAdapter.getItemId(0);
-                        tweets = mTwitter.getHome(page,id);
-                        timelineAdapter.addNew(tweets);
-                    } else {
-                        tweets = mTwitter.getHome(page,id);
-                        timelineAdapter.setData(tweets);
-                    }
-                    tweetDb.storeHomeTimeline(tweets);
-                    break;
-
-                case H_LOAD:
-
-                    tweets = tweetDb.getHomeTimeline();
+            if (MODE == HOME) {
+                List<Tweet> tweets;
+                if (timelineAdapter.getItemCount() > 0) {
+                    long id = timelineAdapter.getItemId(0);
+                    tweets = mTwitter.getHome(page, id);
+                    timelineAdapter.addNew(tweets);
+                } else {
+                    tweets = mTwitter.getHome(page, 1L);
                     timelineAdapter.setData(tweets);
-                    break;
+                }
+                publishProgress(HOME);
+                tweetDb.storeHomeTimeline(tweets);
+            } else if (MODE == TRND) {
+                List<Trend> trends = mTwitter.getTrends(woeId);
+                trendsAdapter.setData(trends);
+                publishProgress(TRND);
+                tweetDb.store(trends, woeId);
+            } else if (MODE == MENT) {
+                List<Tweet> tweets;
+                if (mentionAdapter.getItemCount() != 0) {
+                    long id = mentionAdapter.getItemId(0);
+                    tweets = mTwitter.getMention(page, id);
+                    mentionAdapter.addNew(tweets);
+                } else {
+                    tweets = mTwitter.getMention(page, 1L);
+                    mentionAdapter.setData(tweets);
+                }
+                publishProgress(MENT);
+                tweetDb.storeMentions(tweets);
+            } else {
+                List<Tweet> tweets = tweetDb.getHomeTimeline();
+                timelineAdapter.setData(tweets);
+                publishProgress(HOME);
 
-                case TRND:
+                trendsAdapter.setData(tweetDb.load(woeId));
+                publishProgress(TRND);
 
-                    List<Trend> trends = mTwitter.getTrends(woeId);
-                    tweetDb.store(trends, woeId);
-                    trendsAdapter.setData(trends);
-                    break;
-
-                case T_LOAD:
-
-                    trendsAdapter.setData(tweetDb.load(woeId));
-                    break;
-
-                case MENT:
-
-                    List<Tweet> mention;
-                    if(mentionAdapter.getItemCount() != 0) {
-                        id = mentionAdapter.getItemId(0);
-                        mention = mTwitter.getMention(page,id);
-                        mentionAdapter.addNew(mention);
-                    } else {
-                        mention = mTwitter.getMention(page,id);
-                        mentionAdapter.setData(mention);
-                    }
-                    tweetDb.storeMentions(mention);
-                    break;
-
-                case M_LOAD:
-
-                    mention = tweetDb.getMentions();
-                    mentionAdapter.setData(mention);
-                    break;
+                tweets = tweetDb.getMentions();
+                mentionAdapter.setData(tweets);
+                publishProgress(MENT);
             }
         } catch (TwitterException e) {
             returnCode = e.getErrorCode();
-            if (returnCode > 0 && returnCode != 420) {
+            if (returnCode > 0 && returnCode != 420)
                 errMsg += e.getMessage();
-            }
             return FAIL;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e("Main Page", e.getMessage());
             return FAIL;
         }
         return MODE;
     }
 
+
     @Override
-    protected void onPostExecute(Integer MODE) {
-        MainActivity connect = ui.get();
-        if(connect == null)
-            return;
-        SwipeRefreshLayout timelineRefresh = connect.findViewById(R.id.timeline);
-        SwipeRefreshLayout trendRefresh = connect.findViewById(R.id.trends);
-        SwipeRefreshLayout mentionRefresh = connect.findViewById(R.id.mention);
+    protected void onProgressUpdate(Integer... modes) {
+        if (ui.get() == null) return;
+        int mode = modes[0];
 
-        switch(MODE) {
-            case HOME:
-            case H_LOAD:
-                timelineAdapter.notifyDataSetChanged();
-                timelineRefresh.setRefreshing(false);
-                break;
+        if (mode == HOME) {
+            timelineAdapter.notifyDataSetChanged();
+            SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
+            timelineRefresh.setRefreshing(false);
+        }
+        if (mode == TRND) {
+            trendsAdapter.notifyDataSetChanged();
+            SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
+            trendRefresh.setRefreshing(false);
+        }
+        if (mode == MENT) {
+            mentionAdapter.notifyDataSetChanged();
+            SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
+            mentionRefresh.setRefreshing(false);
+        }
+    }
 
-            case TRND:
-            case T_LOAD:
-                trendsAdapter.notifyDataSetChanged();
-                trendRefresh.setRefreshing(false);
-                break;
 
-            case MENT:
-            case M_LOAD:
-                mentionAdapter.notifyDataSetChanged();
-                mentionRefresh.setRefreshing(false);
-                break;
+    @Override
+    protected void onPostExecute(Integer mode) {
+        if (ui.get() == null) return;
 
-            case FAIL:
-                if (returnCode > 0) {
-                    if (returnCode == 420) {
-                        Toast.makeText(connect, R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(connect, errMsg, Toast.LENGTH_LONG).show();
-                    }
-                }
-            default:
-                timelineRefresh.setRefreshing(false);
-                trendRefresh.setRefreshing(false);
-                mentionRefresh.setRefreshing(false);
+        if (mode == FAIL) {
+            if (returnCode > 0) {
+                if (returnCode == 420)
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+            }
+            SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
+            SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
+            SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
+
+            timelineRefresh.setRefreshing(false);
+            trendRefresh.setRefreshing(false);
+            mentionRefresh.setRefreshing(false);
         }
     }
 }

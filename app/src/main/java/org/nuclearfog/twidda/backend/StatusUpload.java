@@ -67,13 +67,13 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         try {
             Long id = -1L;
             String tweet = (String) args[0];
-            if(args.length > 1) {
+            if (args.length > 1) {
                 id = (Long) args[1];
             }
-            if(path.length == 0) {
-                mTwitter.sendStatus(tweet,id);
+            if (path.length == 0) {
+                mTwitter.sendStatus(tweet, id);
             } else {
-                mTwitter.sendStatus(tweet,id,path);
+                mTwitter.sendStatus(tweet, id, path);
             }
             return true;
         } catch (TwitterException err) {

@@ -32,13 +32,12 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 public class MainActivity extends AppCompatActivity implements OnRefreshListener, OnTabChangeListener,
-        TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked
-{
-    private SwipeRefreshLayout timelineReload,trendReload,mentionReload;
-    private RecyclerView timelineList, trendList,mentionList;
-    private MenuItem profile, tweet, search, setting;
+        TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked {
+
+    private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
+    private RecyclerView timelineList, trendList, mentionList;
     private GlobalSettings settings;
-    private MainPage home, trend, mention;
+    private MainPage home;
     private SearchView searchQuery;
     private View lastTab;
     private Toolbar toolbar;
@@ -52,9 +51,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         setContentView(R.layout.mainpage);
 
         settings = GlobalSettings.getInstance(this);
-        boolean login = settings.getLogin();
 
-        if( !login ) {
+        if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, 1);
         }
@@ -95,29 +93,50 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tab3.setIndicator("", getDrawable(R.drawable.mention));
         tabhost.addTab(tab3);
 
+        lastTab = tabhost.getCurrentView();
         tabhost.setOnTabChangedListener(this);
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
-        setTabContent();
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (home == null || settingChanged) {
+            home = new MainPage(this);
+            home.execute(MainPage.DATA, 1);
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (home != null && !home.isCancelled()) {
+            home.cancel(true);
+            timelineReload.setRefreshing(false);
+            trendReload.setRefreshing(false);
+            mentionReload.setRefreshing(false);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode,returnCode,i);
+        super.onActivityResult(reqCode, returnCode, i);
         if (returnCode == RESULT_CANCELED) {
             overridePendingTransition(0, 0);
             finish();
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         toolbar.inflateMenu(R.menu.home);
-        profile = m.findItem(R.id.action_profile);
-        tweet = m.findItem(R.id.action_tweet);
-        search = m.findItem(R.id.action_search);
-        setting = m.findItem(R.id.action_settings);
+        MenuItem search = m.findItem(R.id.action_search);
         searchQuery = (SearchView) search.getActionView();
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -127,107 +146,25 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(intent);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
             }
         });
-        return true;
+        return super.onCreateOptionsMenu(m);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch(item.getItemId()) {
-            case R.id.action_profile:
-                long homeId = settings.getUserId();
-                intent = new Intent(this, UserProfile.class);
-                intent.putExtra("userID", homeId);
-                intent.putExtra("username", "");
-                startActivity(intent);
-                return true;
-
-            case R.id.action_tweet:
-                intent = new Intent(this, TweetPopup.class);
-                startActivity(intent);
-                return true;
-
-            case R.id.action_settings:
-                settingChanged = true;
-                search.collapseActionView();
-                intent = new Intent(this, AppSettings.class);
-                startActivity(intent);
-                return true;
-
-            default:
-                return false;
-        }
-    }
 
     @Override
-    protected void onPause() {
-        if (home != null && !home.isCancelled()) {
-            home.cancel(true);
-            timelineReload.setRefreshing(false);
-        }
-        if (trend != null && !trend.isCancelled()) {
-            trend.cancel(true);
-            trendReload.setRefreshing(false);
-        }
-        if (mention != null && !mention.isCancelled()) {
-            mention.cancel(true);
-            mentionReload.setRefreshing(false);
-        }
-        super.onPause();
-    }
+    public boolean onPrepareOptionsMenu(Menu m) {
+        MenuItem profile = m.findItem(R.id.action_profile);
+        MenuItem tweet = m.findItem(R.id.action_tweet);
+        MenuItem search = m.findItem(R.id.action_search);
+        MenuItem setting = m.findItem(R.id.action_settings);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(settingChanged) {
-            timelineList.setAdapter(null);
-            trendList.setAdapter(null);
-            mentionList.setAdapter(null);
-            setTabContent();
-            settingChanged = false;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if( tabIndex == 0) {
-            super.onBackPressed();
-            overridePendingTransition(0,0);
-        }else {
-            tabhost.setCurrentTab(0);
-        }
-    }
-
-    @Override
-    public void onRefresh() {
         switch (tabIndex) {
             case 0:
-                home = new MainPage(MainActivity.this);
-                home.execute(MainPage.HOME,1);
-                break;
-            case 1:
-                trend = new MainPage(MainActivity.this);
-                trend.execute(MainPage.TRND, 1);
-                break;
-            case 2:
-                mention = new MainPage(MainActivity.this);
-                mention.execute(MainPage.MENT, 1);
-                break;
-        }
-    }
-
-    @Override
-    public void onTabChanged(String tabId) {
-        animate();
-        tabIndex = tabhost.getCurrentTab();
-
-        switch(tabId) {
-            case "timeline":
                 profile.setVisible(true);
                 search.setVisible(false);
                 tweet.setVisible(true);
@@ -235,14 +172,14 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 search.collapseActionView();
                 break;
 
-            case "trends":
+            case 1:
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
                 setting.setVisible(true);
                 break;
 
-            case "mention":
+            case 2:
                 searchQuery.onActionViewCollapsed();
                 profile.setVisible(false);
                 search.setVisible(false);
@@ -251,13 +188,79 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 search.collapseActionView();
                 break;
         }
+        return super.onPrepareOptionsMenu(m);
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.action_profile:
+                long homeId = settings.getUserId();
+                intent = new Intent(this, UserProfile.class);
+                intent.putExtra("userID", homeId);
+                intent.putExtra("username", "");
+                startActivity(intent);
+                break;
+
+            case R.id.action_tweet:
+                intent = new Intent(this, TweetPopup.class);
+                startActivity(intent);
+                break;
+
+            case R.id.action_settings:
+                settingChanged = true;
+                intent = new Intent(this, AppSettings.class);
+                startActivity(intent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (tabIndex == 0) {
+            super.onBackPressed();
+            overridePendingTransition(0, 0);
+        } else {
+            tabhost.setCurrentTab(0);
+        }
+    }
+
+
+    @Override
+    public void onRefresh() {
+        home = new MainPage(MainActivity.this);
+
+        switch (tabIndex) {
+            case 0:
+                home.execute(MainPage.HOME, 1);
+                break;
+            case 1:
+                home.execute(MainPage.TRND, 1);
+                break;
+            case 2:
+                home.execute(MainPage.MENT, 1);
+                break;
+        }
+    }
+
+
+    @Override
+    public void onTabChanged(String tabId) {
+        animate();
+        tabIndex = tabhost.getCurrentTab();
+        invalidateOptionsMenu();
+    }
+
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        switch(parent.getId()) {
+        switch (parent.getId()) {
             case R.id.tl_list:
-                if(!timelineReload.isRefreshing()) {
+                if (!timelineReload.isRefreshing()) {
                     TimelineAdapter timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
                     if (timelineAdapter != null) {
                         Tweet tweet = timelineAdapter.getData().get(position);
@@ -274,14 +277,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.tr_list:
-                if(!trendReload.isRefreshing()) {
+                if (!trendReload.isRefreshing()) {
                     TrendAdapter trendAdapter = (TrendAdapter) trendList.getAdapter();
                     if (trendAdapter != null) {
                         String search = trendAdapter.getData().get(position).trend;
                         Intent intent = new Intent(this, SearchPage.class);
-                        if (search.startsWith("#")) {
-                            intent.putExtra("Addition", search);
-                        } else {
+                        if (!search.startsWith("#")) {
                             search = '\"' + search + '\"';
                         }
                         intent.putExtra("search", search);
@@ -291,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.m_list:
-                if(!mentionReload.isRefreshing()) {
+                if (!mentionReload.isRefreshing()) {
                     TimelineAdapter mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
                     if (mentionAdapter != null) {
                         Tweet tweet = mentionAdapter.getData().get(position);
@@ -307,44 +308,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 }
                 break;
         }
-    }
-
-
-    private void setTabContent() {
-        int background = settings.getBackgroundColor();
-        int fontColor = settings.getFontColor();
-        int highlight = settings.getHighlightColor();
-
-        timelineList.setBackgroundColor(background);
-        trendList.setBackgroundColor(background);
-        mentionList.setBackgroundColor(background);
-
-        TimelineAdapter hAdapter = (TimelineAdapter) timelineList.getAdapter();
-        TrendAdapter tAdapter = (TrendAdapter) trendList.getAdapter();
-        TimelineAdapter mAdapter = (TimelineAdapter) mentionList.getAdapter();
-
-        if (hAdapter == null || hAdapter.getItemCount() == 0) {
-            home = new MainPage(this);
-            home.execute(MainPage.H_LOAD, 1);
-        } else {
-            hAdapter.setColor(highlight, fontColor);
-            hAdapter.notifyDataSetChanged();
-        }
-        if (tAdapter == null || tAdapter.getItemCount() == 0) {
-            trend = new MainPage(this);
-            trend.execute(MainPage.T_LOAD, 1);
-        } else {
-            tAdapter.setColor(fontColor);
-            tAdapter.notifyDataSetChanged();
-        }
-        if (mAdapter == null || mAdapter.getItemCount() == 0) {
-            mention = new MainPage(this);
-            mention.execute(MainPage.M_LOAD, 1);
-        } else {
-            mAdapter.setColor(highlight, fontColor);
-            mAdapter.notifyDataSetChanged();
-        }
-        lastTab = tabhost.getCurrentView();
     }
 
 
@@ -365,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         rOut.setDuration(ANIM_DUR);
 
         View currentTab = tabhost.getCurrentView();
-        if( tabhost.getCurrentTab() > tabIndex ) {
+        if (tabhost.getCurrentTab() > tabIndex) {
             lastTab.setAnimation(lOut);
             currentTab.setAnimation(rIn);
         } else {

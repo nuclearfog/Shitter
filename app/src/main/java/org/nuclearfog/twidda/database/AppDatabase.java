@@ -4,16 +4,15 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class AppDatabase extends SQLiteOpenHelper
-{
-    private static final String userTable = "CREATE TABLE IF NOT EXISTS user ("+
+public class AppDatabase extends SQLiteOpenHelper {
+    private static final String userTable = "CREATE TABLE IF NOT EXISTS user (" +
             "userID INTEGER PRIMARY KEY, username VARCHAR(50),scrname VARCHAR(15)," +
             "pbLink TEXT,banner TEXT,bio TEXT,location TEXT,link TEXT,userregister INTEGER," +
             "createdAt INTEGER, following INTEGER, follower INTEGER);";
 
-    private static final String tweetTable = "CREATE TABLE IF NOT EXISTS tweet ("+
-            "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweetID INTEGER, replyID INTEGER, retweeterID INTEGER,"+
-            "replyname TEXT, replyUserID INTEGER, time INTEGER, tweet TEXT, media TEXT, retweet INTEGER, favorite INTEGER,"+
+    private static final String tweetTable = "CREATE TABLE IF NOT EXISTS tweet (" +
+            "tweetID INTEGER PRIMARY KEY, userID INTEGER, retweetID INTEGER, replyID INTEGER, retweeterID INTEGER," +
+            "replyname TEXT, replyUserID INTEGER, time INTEGER, tweet TEXT, media TEXT, retweet INTEGER, favorite INTEGER," +
             "statusregister INTEGER, source VARCHAR(32), FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String favoriteTable = "CREATE TABLE IF NOT EXISTS favorit (" +
@@ -31,7 +30,14 @@ public class AppDatabase extends SQLiteOpenHelper
     private static AppDatabase mData;
 
     private AppDatabase(Context context) {
-        super(context, "database.db",null, 1);
+        super(context, "database.db", null, 1);
+    }
+
+    public static synchronized AppDatabase getInstance(Context context) {
+        if (mData == null) {
+            mData = new AppDatabase(context);
+        }
+        return mData;
     }
 
     @Override
@@ -48,13 +54,5 @@ public class AppDatabase extends SQLiteOpenHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    }
-
-
-    public static synchronized AppDatabase getInstance(Context context) {
-        if (mData == null) {
-            mData = new AppDatabase(context);
-        }
-        return mData;
     }
 }
