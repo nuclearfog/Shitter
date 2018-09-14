@@ -59,21 +59,21 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
 
         if (timelineAdapter == null) {
             timelineAdapter = new TimelineAdapter(context);
+            timelineAdapter.setColor(highlight, font);
+            timelineAdapter.toggleImage(image);
             timelineList.setAdapter(timelineAdapter);
         }
         if (trendsAdapter == null) {
             trendsAdapter = new TrendAdapter(context);
+            trendsAdapter.setColor(font);
             trendList.setAdapter(trendsAdapter);
         }
         if (mentionAdapter == null) {
             mentionAdapter = new TimelineAdapter(context);
+            mentionAdapter.setColor(highlight, font);
+            mentionAdapter.toggleImage(image);
             mentionList.setAdapter(mentionAdapter);
         }
-        timelineAdapter.setColor(highlight, font);
-        timelineAdapter.toggleImage(image);
-        trendsAdapter.setColor(font);
-        mentionAdapter.setColor(highlight, font);
-        mentionAdapter.toggleImage(image);
     }
 
 

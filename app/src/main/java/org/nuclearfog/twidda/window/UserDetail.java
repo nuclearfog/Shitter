@@ -2,12 +2,12 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
@@ -17,13 +17,14 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter.OnItemClicked;
 
-public class UserDetail extends AppCompatActivity implements OnItemClicked {
+public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRefreshListener {
 
     private RecyclerView userList;
     private UserLists uList;
     private int mode = -1;
     private long userID = 0;
     private long tweetID = 0;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -37,14 +38,17 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
         }
         setContentView(R.layout.userpage);
 
+        SwipeRefreshLayout refresh = findViewById(R.id.user_refresh);
         userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        int background = settings.getBackgroundColor();
 
-        userList.setBackgroundColor(background);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        userList.setBackgroundColor(settings.getBackgroundColor());
+
+        refresh.setRefreshing(true);
+        refresh.setOnRefreshListener(this);
     }
 
 
@@ -54,8 +58,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
         if (uList == null) {
             uList = new UserLists(UserDetail.this);
-            int titleId = 0;
-
+            int titleId;
             switch (mode) {
                 case 0:
                     titleId = R.string.following;
@@ -70,6 +73,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
                     uList.execute(tweetID, UserLists.RETWEETER, -1L);
                     break;
                 case 3:
+                default:
                     titleId = R.string.favorite;
                     uList.execute(tweetID, UserLists.FAVORISER, -1L);
                     break;
@@ -82,24 +86,12 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
 
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         if (uList != null && !uList.isCancelled())
             uList.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu m) {
-        getMenuInflater().inflate(R.menu.user, m);
-        return super.onCreateOptionsMenu(m);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.user_back)
-            finish();
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
@@ -108,11 +100,24 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked {
             TwitterUser user = userListAdapter.getData().get(position);
             long userID = user.userID;
             String username = user.screenname;
-
             Intent intent = new Intent(this, UserProfile.class);
             intent.putExtra("userID", userID);
             intent.putExtra("username", username);
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void onRefresh() {
+        uList = new UserLists(UserDetail.this);
+        if (mode == 0)
+            uList.execute(userID, UserLists.FOLLOWING, -1L);
+        else if (mode == 1)
+            uList.execute(userID, UserLists.FOLLOWERS, -1L);
+        else if (mode == 2)
+            uList.execute(tweetID, UserLists.RETWEETER, -1L);
+        else
+            uList.execute(tweetID, UserLists.FAVORISER, -1L);
     }
 }

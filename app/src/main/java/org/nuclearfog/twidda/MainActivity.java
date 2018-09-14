@@ -102,7 +102,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     protected void onStart() {
         super.onStart();
+        if (settingChanged) {
+            timelineList.setAdapter(null);
+            trendList.setAdapter(null);
+            mentionList.setAdapter(null);
+        }
         if (home == null || settingChanged) {
+            settingChanged = false;
             home = new MainPage(this);
             home.execute(MainPage.DATA, 1);
         }
@@ -111,13 +117,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     protected void onStop() {
-        super.onStop();
         if (home != null && !home.isCancelled()) {
             home.cancel(true);
             timelineReload.setRefreshing(false);
             trendReload.setRefreshing(false);
             mentionReload.setRefreshing(false);
         }
+        super.onStop();
     }
 
 
@@ -230,19 +236,15 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
+        if (home != null && !home.isCancelled())
+            home.cancel(true);
         home = new MainPage(MainActivity.this);
-
-        switch (tabIndex) {
-            case 0:
-                home.execute(MainPage.HOME, 1);
-                break;
-            case 1:
-                home.execute(MainPage.TRND, 1);
-                break;
-            case 2:
-                home.execute(MainPage.MENT, 1);
-                break;
-        }
+        if (tabIndex == 0)
+            home.execute(MainPage.HOME, 1);
+        else if (tabIndex == 1)
+            home.execute(MainPage.TRND, 1);
+        else if (tabIndex == 2)
+            home.execute(MainPage.MENT, 1);
     }
 
 
@@ -311,7 +313,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     private void animate() {
         final int ANIM_DUR = 300;
-
         final int DIMENS = Animation.RELATIVE_TO_PARENT;
         final float LEFT = -1.0f;
         final float RIGHT = 1.0f;

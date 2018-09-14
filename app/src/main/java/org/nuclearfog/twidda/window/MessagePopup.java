@@ -77,7 +77,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         if (v.getId() == R.id.dm_send) {
             String username = receiver.getText().toString();
             String message = text.getText().toString();
-            if (!username.isEmpty() && (!message.isEmpty() || !mediaPath.isEmpty())) {
+            if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
                 MessageUpload upload = new MessageUpload(this);
                 upload.execute(username, message, mediaPath);
             } else {

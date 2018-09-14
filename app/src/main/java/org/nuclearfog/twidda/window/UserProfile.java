@@ -37,7 +37,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ProfileLoader mProfile;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeList, favoriteList;
-
     private TabHost mTab;
     private View lastTab;
     private boolean isFollowing, isBlocked, isMuted;
@@ -50,12 +49,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        setContentView(R.layout.profilepage);
+
         b = getIntent().getExtras();
         if (b != null) {
             userId = b.getLong("userID");
             username = b.getString("username");
         }
-        setContentView(R.layout.profilepage);
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
         setSupportActionBar(tool);
@@ -95,6 +95,29 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         txtFollower.setOnClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mProfile == null) {
+            mProfile = new ProfileLoader(this);
+            homeReload.setRefreshing(true);
+            favoriteReload.setRefreshing(true);
+            mProfile.execute(userId, 0L);
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        if (mProfile != null && !mProfile.isCancelled()) {
+            mProfile.cancel(true);
+            homeReload.setRefreshing(false);
+            favoriteReload.setRefreshing(false);
+        }
+        super.onStop();
     }
 
 
@@ -182,29 +205,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mProfile == null) {
-            mProfile = new ProfileLoader(this);
-            homeReload.setRefreshing(true);
-            favoriteReload.setRefreshing(true);
-            mProfile.execute(userId, 0L);
-        }
-    }
-
-
-    @Override
-    protected void onPause() {
-        if (mProfile != null && !mProfile.isCancelled()) {
-            mProfile.cancel(true);
-            homeReload.setRefreshing(false);
-            favoriteReload.setRefreshing(false);
-        }
-        super.onPause();
-    }
-
-
-    @Override
     public void onBackPressed() {
         if (tabIndex == 0) {
             super.onBackPressed();
@@ -235,6 +235,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
+        if (mProfile != null && !mProfile.isCancelled())
+            mProfile.cancel(true);
+
         switch (tabIndex) {
             case 0:
                 mProfile = new ProfileLoader(this);
@@ -287,7 +290,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     private void animate() {
         final int ANIM_DUR = 300;
-
         final int DIMENS = Animation.RELATIVE_TO_PARENT;
         final float LEFT = -1.0f;
         final float RIGHT = 1.0f;

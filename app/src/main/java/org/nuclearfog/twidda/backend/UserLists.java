@@ -1,14 +1,10 @@
 package org.nuclearfog.twidda.backend;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -31,57 +27,26 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
 
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
-    private LayoutInflater inflater;
     private UserAdapter usrAdp;
-    private Dialog popup;
     private String errorMessage = "E: Userlist, ";
     private int returnCode = 0;
 
-    /**
-     * @see UserDetail
-     */
+
     public UserLists(UserDetail context) {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         boolean imageLoad = settings.loadImages();
-        inflater = LayoutInflater.from(context);
-        popup = new Dialog(context);
 
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = context.findViewById(R.id.userlist);
 
-        usrAdp = new UserAdapter(context);
-        usrAdp.toggleImage(imageLoad);
-        userList.setAdapter(usrAdp);
-    }
+        usrAdp = (UserAdapter) userList.getAdapter();
 
-    @Override
-    @SuppressLint("InflateParams")
-    protected void onPreExecute() {
-        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.setCanceledOnTouchOutside(false);
-        if (popup.getWindow() != null)
-            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        View load = inflater.inflate(R.layout.item_load, null, false);
-        View cancelButton = load.findViewById(R.id.kill_button);
-        popup.setContentView(load);
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popup.dismiss();
-                if (!isCancelled())
-                    cancel(true);
-            }
-        });
-        popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                if (!isCancelled())
-                    cancel(true);
-            }
-        });
-        popup.show();
+        if (usrAdp == null) {
+            usrAdp = new UserAdapter(context);
+            usrAdp.toggleImage(imageLoad);
+            userList.setAdapter(usrAdp);
+        }
     }
 
 
@@ -108,27 +73,27 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
             if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
             }
-            return false;
         } catch (Exception err) {
             Log.e("User List", err.getMessage());
-            return false;
         }
+        return false;
     }
 
 
     @Override
     @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean success) {
-        if (ui.get() == null)
-            return;
-        if (success) {
-            usrAdp.notifyDataSetChanged();
-        } else {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
+        refresh.setRefreshing(false);
+        usrAdp.notifyDataSetChanged();
+
+        if (!success) {
             if (returnCode == 420)
                 Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
             else if (returnCode > 0)
                 Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
         }
-        popup.dismiss();
     }
 }
