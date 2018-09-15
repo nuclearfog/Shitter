@@ -7,4 +7,5 @@
     <dimen name="text_input_width">300dp</dimen>
     <dimen name="text_input_height">200dp</dimen>
     <dimen name="name_input_height">32dp</dimen>
+    <dimen name="tweet_icon_size">20dp</dimen>
 </resources>

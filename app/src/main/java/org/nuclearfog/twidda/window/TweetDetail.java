@@ -59,7 +59,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             userID = b.getLong("userID");
             username = b.getString("username");
         }
-        setContentView(R.layout.tweetpage);
+        setContentView(R.layout.page_tweet);
 
         Toolbar tool = findViewById(R.id.tweet_toolbar);
         setSupportActionBar(tool);

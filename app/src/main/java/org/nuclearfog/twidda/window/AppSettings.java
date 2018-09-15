@@ -46,7 +46,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
-        setContentView(R.layout.settingpage);
+        setContentView(R.layout.page_settings);
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)

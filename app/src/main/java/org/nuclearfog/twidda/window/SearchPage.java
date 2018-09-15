@@ -44,7 +44,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.searchpage);
+        setContentView(R.layout.page_search);
 
         b = getIntent().getExtras();
         if (b != null)

@@ -44,7 +44,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
             else if (b.containsKey("userID"))
                 id = b.getLong("userID");
         }
-        setContentView(R.layout.userpage);
+        setContentView(R.layout.page_userlist);
 
         SwipeRefreshLayout refresh = findViewById(R.id.user_refresh);
         userList = findViewById(R.id.userlist);

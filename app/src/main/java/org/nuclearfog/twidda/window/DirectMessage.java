@@ -28,7 +28,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.messagepage);
+        setContentView(R.layout.page_dm);
         Toolbar tool = findViewById(R.id.dm_toolbar);
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)

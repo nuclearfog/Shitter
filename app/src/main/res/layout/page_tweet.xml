@@ -17,10 +17,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_horizontal"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <android.support.v7.widget.Toolbar
@@ -28,101 +25,110 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/bar_wide" />
 
-                <TextView
-                    android:id="@+id/answer_reference_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingBottom="2dp"
-                    android:singleLine="true"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
-
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
 
-                    <android.support.v7.widget.CardView
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
-                        app:cardCornerRadius="5dp">
-
-                        <ImageView
-                            android:id="@+id/profileimage_detail"
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            android:contentDescription="@string/profile_image" />
-                    </android.support.v7.widget.CardView>
+                    <TextView
+                        android:id="@+id/answer_reference_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingBottom="2dp"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.CardView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="5dp">
+
+                            <ImageView
+                                android:id="@+id/profileimage_detail"
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:contentDescription="@string/profile_image" />
+                        </android.support.v7.widget.CardView>
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/tweet_verify"
-                                android:layout_width="12dp"
-                                android:layout_height="12dp"
-                                android:layout_marginEnd="4dp"
-                                android:contentDescription="@string/verify"
-                                android:visibility="gone"
-                                app:srcCompat="@drawable/verify" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:id="@+id/tweet_verify"
+                                    android:layout_width="12dp"
+                                    android:layout_height="12dp"
+                                    android:layout_marginEnd="4dp"
+                                    android:contentDescription="@string/verify"
+                                    android:visibility="gone"
+                                    app:srcCompat="@drawable/verify" />
+
+                                <TextView
+                                    android:id="@+id/usernamedetail"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:singleLine="true" />
+                            </LinearLayout>
 
                             <TextView
-                                android:id="@+id/usernamedetail"
+                                android:id="@+id/scrnamedetail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:singleLine="true" />
+
+                            <TextView
+                                android:id="@+id/timedetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:textSize="12sp" />
+
                         </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/scrnamedetail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true" />
-
-                        <TextView
-                            android:id="@+id/timedetail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:singleLine="true"
-                            android:textSize="12sp" />
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/tweet_detailed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autoLink="web"
+                        android:linksClickable="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/used_api"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:linksClickable="false"
+                        android:singleLine="true"
+                        android:textSize="12sp" />
+
+                    <Button
+                        android:id="@+id/image_attach"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/preview"
+                        android:visibility="gone" />
+
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tweet_detailed"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autoLink="web"
-                    android:linksClickable="true"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/used_api"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:linksClickable="false"
-                    android:singleLine="true"
-                    android:textSize="12sp" />
-
-                <Button
-                    android:id="@+id/image_attach"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@drawable/preview"
-                    android:visibility="gone" />
-
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -153,8 +159,8 @@
 
                 <Button
                     android:id="@+id/answer_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/tweet_icon_size"
+                    android:layout_height="@dimen/tweet_icon_size"
                     android:background="@drawable/chat" />
 
                 <TextView
@@ -170,8 +176,8 @@
 
                 <Button
                     android:id="@+id/rt_button_detail"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/tweet_icon_size"
+                    android:layout_height="@dimen/tweet_icon_size"
                     android:background="@drawable/retweet" />
 
                 <TextView
@@ -187,8 +193,8 @@
 
                 <Button
                     android:id="@+id/fav_button_detail"
-                    android:layout_width="24dp"
-                    android:layout_height="20dp"
+                    android:layout_width="@dimen/tweet_icon_size"
+                    android:layout_height="@dimen/tweet_icon_size"
                     android:background="@drawable/favorite" />
 
                 <TextView

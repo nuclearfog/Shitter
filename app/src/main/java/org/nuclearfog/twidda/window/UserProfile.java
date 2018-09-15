@@ -51,7 +51,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.profilepage);
+        setContentView(R.layout.page_profile);
 
         b = getIntent().getExtras();
         if (b != null) {

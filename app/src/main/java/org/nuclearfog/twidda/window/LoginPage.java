@@ -23,7 +23,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.loginpage);
+        setContentView(R.layout.page_login);
         pin = findViewById(R.id.pin);
         findViewById(R.id.linkButton).setOnClickListener(this);
         findViewById(R.id.get).setOnClickListener(this);

@@ -88,7 +88,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
     @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean result) {
         if (result) {
-            View content = inflater.inflate(R.layout.imagepreview, null, false);
+            View content = inflater.inflate(R.layout.popup_image, null, false);
             final ImageView mImg = content.findViewById(R.id.fullSizeImage);
             setImage(imgArray[position], mImg);
             popup.setContentView(content);

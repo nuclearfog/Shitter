@@ -34,7 +34,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.messagewindow);
+        setContentView(R.layout.popup_dm);
         String username = "";
         b = getIntent().getExtras();
         if (b != null && b.containsKey("username"))
