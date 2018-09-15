@@ -16,10 +16,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:gravity="center_horizontal"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <android.support.v7.widget.Toolbar
@@ -30,155 +27,164 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
-
-                    <android.support.v7.widget.CardView
-                        android:layout_width="@dimen/profile_image"
-                        android:layout_height="@dimen/profile_image">
-
-                        <ImageView
-                            android:id="@+id/profile_img"
-                            android:layout_width="@dimen/profile_image"
-                            android:layout_height="@dimen/profile_image"
-                            android:layout_marginEnd="5dp"
-                            android:contentDescription="@string/profile_image" />
-
-                    </android.support.v7.widget.CardView>
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="10dp"
-                        android:orientation="vertical">
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.CardView
+                            android:layout_width="@dimen/profile_image"
+                            android:layout_height="@dimen/profile_image">
+
+                            <ImageView
+                                android:id="@+id/profile_img"
+                                android:layout_width="@dimen/profile_image"
+                                android:layout_height="@dimen/profile_image"
+                                android:layout_marginEnd="5dp"
+                                android:contentDescription="@string/profile_image" />
+
+                        </android.support.v7.widget.CardView>
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:orientation="vertical">
 
-                            <ImageView
-                                android:id="@+id/profile_verify"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="2dp"
-                                android:contentDescription="@string/verify"
-                                android:visibility="gone"
-                                app:srcCompat="@drawable/verify" />
-
-                            <TextView
-                                android:id="@+id/profile_username"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:singleLine="true" />
+                                android:orientation="horizontal">
 
-                        </LinearLayout>
+                                <ImageView
+                                    android:id="@+id/profile_verify"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginEnd="2dp"
+                                    android:contentDescription="@string/verify"
+                                    android:visibility="gone"
+                                    app:srcCompat="@drawable/verify" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/profile_username"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="2dp"
+                                    android:singleLine="true" />
 
-                            <ImageView
-                                android:id="@+id/profile_locked"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="2dp"
-                                android:contentDescription="@string/profile_locked"
-                                android:visibility="gone"
-                                app:srcCompat="@drawable/lock" />
+                            </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/profile_screenname"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="2dp"
-                                android:singleLine="true" />
+                                android:orientation="horizontal">
 
-                        </LinearLayout>
+                                <ImageView
+                                    android:id="@+id/profile_locked"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginEnd="2dp"
+                                    android:contentDescription="@string/profile_locked"
+                                    android:visibility="gone"
+                                    app:srcCompat="@drawable/lock" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/profile_screenname"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="2dp"
+                                    android:singleLine="true" />
 
-                            <ImageView
-                                android:id="@+id/followback"
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginEnd="2dp"
-                                android:background="@drawable/followback"
-                                android:contentDescription="@string/followback"
-                                android:visibility="gone" />
+                            </LinearLayout>
 
-                            <TextView
-                                android:id="@+id/following"
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:drawablePadding="4dp"
-                                android:drawableStart="@drawable/following"
-                                android:visibility="invisible" />
+                                android:layout_marginTop="2dp"
+                                android:orientation="horizontal">
 
-                            <TextView
-                                android:id="@+id/follower"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:drawablePadding="4dp"
-                                android:drawableStart="@drawable/follower"
-                                android:visibility="invisible" />
+                                <ImageView
+                                    android:id="@+id/followback"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginEnd="2dp"
+                                    android:background="@drawable/followback"
+                                    android:contentDescription="@string/followback"
+                                    android:visibility="gone" />
+
+                                <TextView
+                                    android:id="@+id/following"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:drawablePadding="4dp"
+                                    android:drawableStart="@drawable/following"
+                                    android:visibility="invisible" />
+
+                                <TextView
+                                    android:id="@+id/follower"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:drawablePadding="4dp"
+                                    android:drawableStart="@drawable/follower"
+                                    android:visibility="invisible" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/bio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:linksClickable="true" />
+
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/location"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/links"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:autoLink="web"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/link"
+                        android:linksClickable="true"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/profile_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/calendar"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:visibility="invisible" />
+
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/bio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:linksClickable="true" />
-
-                <TextView
-                    android:id="@+id/location"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/location"
-                    android:singleLine="true"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/links"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autoLink="web"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/link"
-                    android:linksClickable="true"
-                    android:singleLine="true"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/profile_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/calendar"
-                    android:singleLine="true"
-                    android:textSize="12sp"
-                    android:visibility="invisible" />
-
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
