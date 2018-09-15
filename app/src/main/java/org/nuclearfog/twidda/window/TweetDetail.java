@@ -25,7 +25,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusLoader;
-import org.nuclearfog.twidda.backend.StatusLoader.OnMediaClick;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
@@ -39,7 +38,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  * @see StatusLoader
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
-        OnItemClicked, OnRefreshListener, OnMediaClick {
+        OnItemClicked, OnRefreshListener {
 
     private RecyclerView answer_list;
     private StatusLoader mStat;
@@ -49,6 +48,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private boolean isHome;
     private long userID = 0;
     private long tweetID = 0;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -209,7 +209,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
-        if (timeLineAdapter != null) {
+        if (timeLineAdapter != null && !answerReload.isRefreshing()) {
             Tweet tweet = timeLineAdapter.getData().get(position);
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.tweetID);
@@ -229,7 +229,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
-    @Override
     public void onMediaClicked(String mediaLinks[]) {
         ImagePopup mediaContent = new ImagePopup(this);
         mediaContent.execute(mediaLinks);

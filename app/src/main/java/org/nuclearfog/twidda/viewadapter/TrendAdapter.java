@@ -33,13 +33,16 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         this.font_color = font_color;
     }
 
+
     public List<Trend> getData() {
         return trendList;
     }
 
+
     public void setData(List<Trend> trendList) {
         this.trendList = trendList;
     }
+
 
     @Override
     public int getItemCount() {
@@ -79,6 +82,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     public interface OnItemClicked {
         void onItemClick(ViewGroup parent, int position);
     }
+
 
     class ItemHolder extends ViewHolder {
         final TextView trends, pos;

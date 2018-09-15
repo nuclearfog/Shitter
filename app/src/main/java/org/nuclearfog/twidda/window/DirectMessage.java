@@ -24,6 +24,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     private MessageLoader mLoader;
     private RecyclerView dmList;
 
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);

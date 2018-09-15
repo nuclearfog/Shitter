@@ -14,11 +14,11 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
-import org.nuclearfog.twidda.backend.Registration.OnConnect;
 
-public class LoginPage extends AppCompatActivity implements OnClickListener, OnConnect {
+public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     private EditText pin;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -30,11 +30,13 @@ public class LoginPage extends AppCompatActivity implements OnClickListener, OnC
         findViewById(R.id.clipboard).setOnClickListener(this);
     }
 
+
     @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         super.onBackPressed();
     }
+
 
     @Override
     public void onClick(View v) {
@@ -68,7 +70,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener, OnC
         }
     }
 
-    @Override
+
     public void connect(String link) {
         ConnectivityManager mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (mConnect != null && mConnect.getActiveNetworkInfo() != null) {

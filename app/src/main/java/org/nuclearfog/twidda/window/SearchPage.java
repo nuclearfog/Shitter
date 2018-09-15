@@ -40,6 +40,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     private String search = "";
     private int tabIndex = 0;
 
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);

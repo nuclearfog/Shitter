@@ -30,6 +30,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
     private EditText receiver, text;
     private String mediaPath = "";
 
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);

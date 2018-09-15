@@ -152,9 +152,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                Intent intent = new Intent(MainActivity.this, SearchPage.class);
-                intent.putExtra("search", s);
-                startActivity(intent);
+                Intent search = new Intent(MainActivity.this, SearchPage.class);
+                search.putExtra("search", s);
+                startActivity(search);
                 return false;
             }
 
@@ -206,25 +206,24 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_profile:
                 long homeId = settings.getUserId();
-                intent = new Intent(this, UserProfile.class);
-                intent.putExtra("userID", homeId);
-                intent.putExtra("username", "");
-                startActivity(intent);
+                Intent user = new Intent(this, UserProfile.class);
+                user.putExtra("userID", homeId);
+                user.putExtra("username", "");
+                startActivity(user);
                 break;
 
             case R.id.action_tweet:
-                intent = new Intent(this, TweetPopup.class);
-                startActivity(intent);
+                Intent tweet = new Intent(this, TweetPopup.class);
+                startActivity(tweet);
                 break;
 
             case R.id.action_settings:
                 settingChanged = true;
-                intent = new Intent(this, AppSettings.class);
-                startActivity(intent);
+                Intent settings = new Intent(this, AppSettings.class);
+                startActivity(settings);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -266,55 +265,40 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        switch (parent.getId()) {
-            case R.id.tl_list:
-                if (!timelineReload.isRefreshing()) {
-                    TimelineAdapter timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
-                    if (timelineAdapter != null) {
-                        Tweet tweet = timelineAdapter.getData().get(position);
-                        if (tweet.embedded != null) {
-                            tweet = tweet.embedded;
-                        }
-                        Intent intent = new Intent(this, TweetDetail.class);
-                        intent.putExtra("tweetID", tweet.tweetID);
-                        intent.putExtra("userID", tweet.user.userID);
-                        intent.putExtra("username", tweet.user.screenname);
-                        startActivity(intent);
-                    }
-                }
-                break;
-
-            case R.id.tr_list:
-                if (!trendReload.isRefreshing()) {
-                    TrendAdapter trendAdapter = (TrendAdapter) trendList.getAdapter();
-                    if (trendAdapter != null) {
-                        String search = trendAdapter.getData().get(position).trend;
-                        Intent intent = new Intent(this, SearchPage.class);
-                        if (!search.startsWith("#")) {
-                            search = '\"' + search + '\"';
-                        }
-                        intent.putExtra("search", search);
-                        startActivity(intent);
-                    }
-                }
-                break;
-
-            case R.id.m_list:
-                if (!mentionReload.isRefreshing()) {
-                    TimelineAdapter mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
-                    if (mentionAdapter != null) {
-                        Tweet tweet = mentionAdapter.getData().get(position);
-                        if (tweet.embedded != null) {
-                            tweet = tweet.embedded;
-                        }
-                        Intent intent = new Intent(this, TweetDetail.class);
-                        intent.putExtra("tweetID", tweet.tweetID);
-                        intent.putExtra("userID", tweet.user.userID);
-                        intent.putExtra("username", tweet.user.screenname);
-                        startActivity(intent);
-                    }
-                }
-                break;
+        if (parent.getId() == R.id.tl_list && !timelineReload.isRefreshing()) {
+            TimelineAdapter timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
+            if (timelineAdapter != null) {
+                Tweet tweet = timelineAdapter.getData().get(position);
+                if (tweet.embedded != null)
+                    tweet = tweet.embedded;
+                Intent intent = new Intent(this, TweetDetail.class);
+                intent.putExtra("tweetID", tweet.tweetID);
+                intent.putExtra("userID", tweet.user.userID);
+                intent.putExtra("username", tweet.user.screenname);
+                startActivity(intent);
+            }
+        } else if (parent.getId() == R.id.tr_list && !trendReload.isRefreshing()) {
+            TrendAdapter trendAdapter = (TrendAdapter) trendList.getAdapter();
+            if (trendAdapter != null) {
+                String search = trendAdapter.getData().get(position).trend;
+                Intent intent = new Intent(this, SearchPage.class);
+                if (!search.startsWith("#"))
+                    search = '\"' + search + '\"';
+                intent.putExtra("search", search);
+                startActivity(intent);
+            }
+        } else if (parent.getId() == R.id.m_list && !mentionReload.isRefreshing()) {
+            TimelineAdapter mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
+            if (mentionAdapter != null) {
+                Tweet tweet = mentionAdapter.getData().get(position);
+                if (tweet.embedded != null)
+                    tweet = tweet.embedded;
+                Intent intent = new Intent(this, TweetDetail.class);
+                intent.putExtra("tweetID", tweet.tweetID);
+                intent.putExtra("userID", tweet.user.userID);
+                intent.putExtra("username", tweet.user.screenname);
+                startActivity(intent);
+            }
         }
     }
 

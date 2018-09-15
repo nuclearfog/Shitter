@@ -38,6 +38,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
     private long inReplyId = -1L;
     private int imgIndex = 0;
 
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -71,10 +72,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
         previewBtn.setOnClickListener(this);
     }
 
+
     @Override
     public void onBackPressed() {
         showClosingMsg();
     }
+
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
@@ -101,6 +104,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
             }
         }
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -130,6 +134,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
         }
     }
 
+
     private void showClosingMsg() {
         if (!addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
@@ -149,6 +154,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
         }
     }
 
+
     @Override
     public void send() {
         String tweetStr = tweet.getText().toString();
@@ -163,6 +169,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
             }
         }
     }
+
 
     private void getMedia() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

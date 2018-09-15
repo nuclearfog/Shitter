@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -27,6 +26,7 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
 import static android.os.AsyncTask.Status.RUNNING;
+
 
 /**
  * User Profile Activity
@@ -105,9 +105,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         super.onStart();
         if (mProfile == null) {
             mProfile = new ProfileLoader(this);
+            mProfile.execute(userId, 0L);
             homeReload.setRefreshing(true);
             favoriteReload.setRefreshing(true);
-            mProfile.execute(userId, 0L);
         }
     }
 
@@ -166,7 +166,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mProfile != null && mProfile.getStatus() != AsyncTask.Status.RUNNING) {
+        if (mProfile != null && mProfile.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent intent = new Intent(this, TweetPopup.class);

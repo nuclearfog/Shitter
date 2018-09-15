@@ -42,6 +42,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private boolean customWoeId;
     private int mode = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);

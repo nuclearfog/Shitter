@@ -25,18 +25,22 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     private OnItemClicked mListener;
     private boolean loadImage = true;
 
+
     public UserAdapter(OnItemClicked mListener) {
         mUser = new ArrayList<>();
         this.mListener = mListener;
     }
 
+
     public List<TwitterUser> getData() {
         return mUser;
     }
 
+
     public void setData(List<TwitterUser> mUser) {
         this.mUser = mUser;
     }
+
 
     public void toggleImage(boolean image) {
         loadImage = image;
@@ -95,6 +99,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     public interface OnItemClicked {
         void onItemClick(ViewGroup parent, int position);
     }
+
 
     class ItemHolder extends ViewHolder {
         final ImageView profileImg, verifyIco, lockIco;

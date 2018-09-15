@@ -26,6 +26,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     private OnItemSelected mListener;
     private boolean loadImage = true;
 
+
     public MessageAdapter(OnItemSelected listener) {
         messages = new ArrayList<>();
         this.mListener = listener;
@@ -115,6 +116,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public interface OnItemSelected {
         void onSelected(int pos);
     }
+
 
     class MessageHolder extends ViewHolder {
         final ImageView profile_img;

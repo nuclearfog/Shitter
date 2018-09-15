@@ -91,7 +91,6 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     @Override
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
-
         SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
         searchAdapter.notifyDataSetChanged();
         userAdapter.notifyDataSetChanged();
@@ -102,6 +101,8 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
     @Override
     protected void onPostExecute(Void v) {
         if (ui.get() != null) {
+            SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+            tweetReload.setRefreshing(false);
             if (returnCode == 420)
                 Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
             else if (returnCode > 0)

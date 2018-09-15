@@ -45,6 +45,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         this.font_color = font_color;
     }
 
+
     public void toggleImage(boolean image_load) {
         img_ldr = image_load;
     }
@@ -196,6 +197,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     public interface OnItemClicked {
         void onItemClick(ViewGroup parent, int position);
     }
+
 
     class ItemHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;

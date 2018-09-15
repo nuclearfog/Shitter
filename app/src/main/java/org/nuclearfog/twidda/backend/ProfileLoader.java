@@ -26,9 +26,11 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
+
+public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
     // GET USER TWEETS
+    private static final long GET_USER = 1;
     public static final long GET_TWEETS = 2;
     public static final long GET_FAVORS = 3;
 
@@ -45,6 +47,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
     private DatabaseAdapter database;
+    private TwitterUser user;
     private long homeId;
     private boolean imgEnabled;
 
@@ -101,24 +104,27 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
         isHome = homeId == userId;
 
         try {
-            TwitterUser user = database.getUser(userId);
+            user = database.getUser(userId);
             if (user != null)
-                publishProgress(user);
+                publishProgress(GET_USER);
 
             if (homeTl.getItemCount() == 0) {
                 List<Tweet> tweets = database.getUserTweets(userId);
-                homeTl.setData(tweets);
-                publishProgress();
+                if (!tweets.isEmpty()) {
+                    homeTl.setData(tweets);
+                    publishProgress(GET_TWEETS);
+                }
             }
             if (homeFav.getItemCount() == 0) {
                 List<Tweet> favors = database.getUserFavs(userId);
-                homeFav.setData(favors);
-                publishProgress();
+                if (!favors.isEmpty()) {
+                    homeFav.setData(favors);
+                    publishProgress(GET_FAVORS);
+                }
             }
 
-
             user = mTwitter.getUser(userId);
-            publishProgress(user);
+            publishProgress(GET_USER);
             database.storeUser(user);
 
             if (!isHome) {
@@ -132,15 +138,15 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
             if (mode == ACTION_FOLLOW) {
                 isFollowing = !isFollowing;
                 mTwitter.followAction(userId, isFollowing);
-                publishProgress(user);
+                publishProgress(GET_USER);
             } else if (mode == ACTION_BLOCK) {
                 isBlocked = !isBlocked;
                 mTwitter.blockAction(userId, isBlocked);
-                publishProgress(user);
+                publishProgress(GET_USER);
             } else if (mode == ACTION_MUTE) {
                 isMuted = !isMuted;
                 mTwitter.muteAction(userId, isMuted);
-                publishProgress(user);
+                publishProgress(GET_USER);
             } else {
                 boolean access = (!user.isLocked || isFollowed);
                 if ((mode == GET_TWEETS || homeTl.getItemCount() == 0) && access) {
@@ -150,7 +156,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
 
                     List<Tweet> tweets = mTwitter.getUserTweets(userId, id, page);
                     homeTl.addNew(tweets);
-                    publishProgress();
+                    publishProgress(GET_TWEETS);
                     database.storeUserTweets(tweets);
                 }
                 if ((mode == GET_FAVORS || homeFav.getItemCount() == 0) && access) {
@@ -160,7 +166,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
 
                     List<Tweet> favors = mTwitter.getUserFavs(userId, id, page);
                     homeFav.addNew(favors);
-                    publishProgress();
+                    publishProgress(GET_FAVORS);
                     database.storeUserFavs(favors, userId);
                 }
             }
@@ -179,11 +185,10 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
 
 
     @Override
-    protected void onProgressUpdate(TwitterUser... users) {
+    protected void onProgressUpdate(Long... mode) {
         if (ui.get() == null) return;
-        if (users.length == 1) {
-            final TwitterUser user = users[0];
 
+        if (mode[0] == GET_USER) {
             TextView txtUser = ui.get().findViewById(R.id.profile_username);
             TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
             TextView txtBio = ui.get().findViewById(R.id.bio);
@@ -232,14 +237,15 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, Long> {
                     }
                 });
             }
-        } else {
+        } else if (mode[0] == GET_TWEETS) {
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            homeReload.setRefreshing(false);
             homeTl.notifyDataSetChanged();
-            SwipeRefreshLayout tweetsReload = ui.get().findViewById(R.id.hometweets);
-            tweetsReload.setRefreshing(false);
 
+        } else if (mode[0] == GET_FAVORS) {
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            favReload.setRefreshing(false);
             homeFav.notifyDataSetChanged();
-            SwipeRefreshLayout favorReload = ui.get().findViewById(R.id.homefavorits);
-            favorReload.setRefreshing(false);
         }
     }
 

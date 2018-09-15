@@ -18,6 +18,7 @@ public class WorldIdAdapter extends ArrayAdapter {
     private String[] location;
     private int[] worldId;
 
+
     public WorldIdAdapter(Context context) {
         super(context, android.R.layout.simple_spinner_dropdown_item);
         mInflater = LayoutInflater.from(context);
@@ -25,6 +26,7 @@ public class WorldIdAdapter extends ArrayAdapter {
         location = res.getStringArray(R.array.location);
         worldId = res.getIntArray(R.array.woeId);
     }
+
 
     @Override
     public int getCount() {
@@ -42,6 +44,7 @@ public class WorldIdAdapter extends ArrayAdapter {
     public long getItemId(int position) {
         return worldId[position];
     }
+
 
     @NonNull
     @Override

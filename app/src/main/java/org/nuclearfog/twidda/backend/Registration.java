@@ -61,9 +61,4 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             }
         }
     }
-
-
-    public interface OnConnect {
-        void connect(String link);
-    }
 }
