@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -20,9 +22,11 @@ import org.nuclearfog.twidda.backend.MessageUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
 
 public class MessagePopup extends AppCompatActivity implements View.OnClickListener {
 
+    private MessageUpload upload;
     private EditText receiver, text;
     private String mediaPath = "";
 
@@ -47,6 +51,27 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         receiver.append(username);
         send.setOnClickListener(this);
         media.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (text.getText().toString().isEmpty() && mediaPath.isEmpty()) {
+            super.onBackPressed();
+        } else {
+            AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
+            closeDialog.setMessage(R.string.cancel_message);
+            closeDialog.setNegativeButton(R.string.no_confirm, null);
+            closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (upload != null && upload.getStatus() == RUNNING)
+                        upload.cancel(true);
+                    finish();
+                }
+            });
+            closeDialog.show();
+        }
     }
 
 
@@ -78,7 +103,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
             String username = receiver.getText().toString();
             String message = text.getText().toString();
             if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
-                MessageUpload upload = new MessageUpload(this);
+                upload = new MessageUpload(this);
                 upload.execute(username, message, mediaPath);
             } else {
                 Toast.makeText(this, R.string.error_dm, Toast.LENGTH_SHORT).show();

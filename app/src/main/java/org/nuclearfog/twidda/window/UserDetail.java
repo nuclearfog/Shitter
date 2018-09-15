@@ -17,13 +17,14 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter.OnItemClicked;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
 public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRefreshListener {
 
     private RecyclerView userList;
     private UserLists uList;
     private int mode = -1;
-    private long userID = 0;
-    private long tweetID = 0;
+    private long id = 0;
 
 
     @Override
@@ -31,10 +32,11 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
         super.onCreate(b);
         b = getIntent().getExtras();
         if (b != null) {
-            userID = b.getLong("userID");
             mode = b.getInt("mode");
             if (b.containsKey("tweetID"))
-                tweetID = b.getLong("tweetID");
+                id = b.getLong("tweetID");
+            else if (b.containsKey("userID"))
+                id = b.getLong("userID");
         }
         setContentView(R.layout.userpage);
 
@@ -62,20 +64,20 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
             switch (mode) {
                 case 0:
                     titleId = R.string.following;
-                    uList.execute(userID, UserLists.FOLLOWING, -1L);
+                    uList.execute(id, UserLists.FOLLOWING, -1L);
                     break;
                 case 1:
                     titleId = R.string.follower;
-                    uList.execute(userID, UserLists.FOLLOWERS, -1L);
+                    uList.execute(id, UserLists.FOLLOWERS, -1L);
                     break;
                 case 2:
                     titleId = R.string.retweet;
-                    uList.execute(tweetID, UserLists.RETWEETER, -1L);
+                    uList.execute(id, UserLists.RETWEETER, -1L);
                     break;
                 case 3:
                 default:
                     titleId = R.string.favorite;
-                    uList.execute(tweetID, UserLists.FAVORISER, -1L);
+                    uList.execute(id, UserLists.FAVORISER, -1L);
                     break;
             }
             if (getSupportActionBar() != null) {
@@ -87,7 +89,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
     @Override
     protected void onStop() {
-        if (uList != null && !uList.isCancelled())
+        if (uList != null && uList.getStatus() == RUNNING)
             uList.cancel(true);
         super.onStop();
     }
@@ -110,14 +112,16 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
     @Override
     public void onRefresh() {
+        if (uList != null && uList.getStatus() == RUNNING)
+            uList.cancel(true);
         uList = new UserLists(UserDetail.this);
         if (mode == 0)
-            uList.execute(userID, UserLists.FOLLOWING, -1L);
+            uList.execute(id, UserLists.FOLLOWING, -1L);
         else if (mode == 1)
-            uList.execute(userID, UserLists.FOLLOWERS, -1L);
+            uList.execute(id, UserLists.FOLLOWERS, -1L);
         else if (mode == 2)
-            uList.execute(tweetID, UserLists.RETWEETER, -1L);
+            uList.execute(id, UserLists.RETWEETER, -1L);
         else
-            uList.execute(tweetID, UserLists.FAVORISER, -1L);
+            uList.execute(id, UserLists.FAVORISER, -1L);
     }
 }

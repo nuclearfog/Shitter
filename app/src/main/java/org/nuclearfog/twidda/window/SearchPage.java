@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.window;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,6 +27,8 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
 public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemClicked,
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
@@ -42,11 +43,11 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        b = getIntent().getExtras();
-        if (b != null) {
-            search = b.getString("search");
-        }
         setContentView(R.layout.searchpage);
+
+        b = getIntent().getExtras();
+        if (b != null)
+            search = b.getString("search");
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         int background = settings.getBackgroundColor();
@@ -67,21 +68,42 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         tweetReload = findViewById(R.id.searchtweets);
         tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
-        setTabs(tabhost);
+        TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
+        tab1.setContent(R.id.searchtweets);
+        tab1.setIndicator("", getDrawable(R.drawable.search));
+        tabhost.addTab(tab1);
+
+        TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
+        tab2.setContent(R.id.user_result);
+        tab2.setIndicator("", getDrawable(R.drawable.user));
+        tabhost.addTab(tab2);
+        lastView = tabhost.getCurrentView();
 
         tabhost.setOnTabChangedListener(this);
         tweetReload.setOnRefreshListener(this);
-        getContent();
     }
 
+
     @Override
-    protected void onPause() {
-        if (mSearch != null && !mSearch.isCancelled()) {
+    protected void onStart() {
+        super.onStart();
+        if (mSearch == null) {
+            mSearch = new TwitterSearch(this);
+            tweetReload.setRefreshing(true);
+            mSearch.execute(search);
+        }
+    }
+
+
+    @Override
+    protected void onStop() {
+        if (mSearch != null && mSearch.getStatus() == RUNNING) {
             mSearch.cancel(true);
             tweetReload.setRefreshing(false);
         }
-        super.onPause();
+        super.onStop();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -91,6 +113,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
             super.onBackPressed();
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
@@ -106,7 +129,6 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
                 startActivity(intent);
                 return true;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -114,6 +136,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         });
         return super.onCreateOptionsMenu(m);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -127,38 +150,33 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        Intent intent;
-        switch (parent.getId()) {
-            case R.id.tweet_result:
-                if (!tweetReload.isRefreshing()) {
-                    TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
-                    if (tweetAdapter != null) {
-                        Tweet tweet = tweetAdapter.getData().get(position);
-
-                        intent = new Intent(this, TweetDetail.class);
-                        intent.putExtra("tweetID", tweet.tweetID);
-                        intent.putExtra("userID", tweet.user.userID);
-                        intent.putExtra("username", tweet.user.screenname);
-                        startActivity(intent);
-                    }
+        if (parent.getId() == R.id.tweet_result) {
+            if (!tweetReload.isRefreshing()) {
+                TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
+                if (tweetAdapter != null) {
+                    Tweet tweet = tweetAdapter.getData().get(position);
+                    Intent intent = new Intent(this, TweetDetail.class);
+                    intent.putExtra("tweetID", tweet.tweetID);
+                    intent.putExtra("userID", tweet.user.userID);
+                    intent.putExtra("username", tweet.user.screenname);
+                    startActivity(intent);
                 }
-                break;
-
-            case R.id.user_result:
+            } else {
                 UserAdapter userAdapter = (UserAdapter) userSearch.getAdapter();
                 if (userAdapter != null) {
                     TwitterUser user = userAdapter.getData().get(position);
-
-                    intent = new Intent(this, UserProfile.class);
+                    Intent intent = new Intent(this, UserProfile.class);
                     intent.putExtra("userID", user.userID);
                     intent.putExtra("username", user.screenname);
                     startActivity(intent);
                 }
-                break;
+            }
         }
     }
+
 
     @Override
     public void onRefresh() {
@@ -166,24 +184,13 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         mSearch.execute(search);
     }
 
+
     @Override
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = tabhost.getCurrentTab();
     }
 
-    private void setTabs(TabHost tabhost) {
-        TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
-        tab1.setContent(R.id.searchtweets);
-        tab1.setIndicator("", getDrawable(R.drawable.search));
-        tabhost.addTab(tab1);
-
-        TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
-        tab2.setContent(R.id.user_result);
-        tab2.setIndicator("", getDrawable(R.drawable.user));
-        tabhost.addTab(tab2);
-        lastView = tabhost.getCurrentView();
-    }
 
     private void animate() {
         final int ANIM_DUR = 300;
@@ -208,12 +215,5 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
             currentView.setAnimation(leftIn);
         }
         lastView = tabhost.getCurrentView();
-    }
-
-    @SuppressLint("InflateParams")
-    private void getContent() {
-        mSearch = new TwitterSearch(this);
-        tweetReload.setRefreshing(true);
-        mSearch.execute(search);
     }
 }

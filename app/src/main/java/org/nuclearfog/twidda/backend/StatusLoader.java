@@ -216,8 +216,6 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                 favoriteButton.setBackgroundResource(R.drawable.favorite);
             }
         }
-        SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
-        ansReload.setRefreshing(false);
         String ansStr = Integer.toString(answerAdapter.getItemCount());
         TextView txtAns = connect.findViewById(R.id.no_ans_detail);
         answerAdapter.notifyDataSetChanged();
@@ -241,11 +239,9 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Long> {
                         Toast.makeText(connect, errorMessage, Toast.LENGTH_LONG).show();
                     }
                 }
-                SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
-                if (ansReload.isRefreshing()) {
-                    ansReload.setRefreshing(false);
-                }
             }
+            SwipeRefreshLayout ansReload = connect.findViewById(R.id.answer_reload);
+            ansReload.setRefreshing(false);
         }
     }
 

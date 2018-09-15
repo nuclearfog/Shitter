@@ -63,4 +63,6 @@
     <string name="dmessage">Nachricht</string>
     <string name="dmsend">Direktnachricht gesendet!</string>
     <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
+    <string name="abort">Abgebrochen!</string>
+    <string name="cancel_message">Nachricht verwerfen?</string>
 </resources>

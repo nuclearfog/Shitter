@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -29,6 +30,8 @@ import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
+
+import static android.os.AsyncTask.Status.RUNNING;
 
 /**
  * Detailed Tweet Activity
@@ -108,12 +111,12 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onPause() {
-        if (mStat != null && !mStat.isCancelled()) {
+    protected void onStop() {
+        if (mStat != null && mStat.getStatus() == RUNNING) {
             mStat.cancel(true);
             answerReload.setRefreshing(false);
         }
-        super.onPause();
+        super.onStop();
     }
 
 
@@ -159,44 +162,46 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        Intent intent;
-        StatusLoader mStat = new StatusLoader(this);
-        switch (v.getId()) {
-            case R.id.rt_button_detail:
-                mStat.execute(tweetID, StatusLoader.RETWEET);
-                break;
+        if (mStat.getStatus() == AsyncTask.Status.FINISHED) {
+            switch (v.getId()) {
+                case R.id.rt_button_detail:
+                    mStat = new StatusLoader(this);
+                    mStat.execute(tweetID, StatusLoader.RETWEET);
+                    break;
 
-            case R.id.fav_button_detail:
-                mStat.execute(tweetID, StatusLoader.FAVORITE);
-                break;
+                case R.id.fav_button_detail:
+                    mStat = new StatusLoader(this);
+                    mStat.execute(tweetID, StatusLoader.FAVORITE);
+                    break;
 
-            case R.id.no_rt_detail:
-                intent = new Intent(this, UserDetail.class);
-                intent.putExtra("tweetID", tweetID);
-                intent.putExtra("mode", 2);
-                startActivity(intent);
-                break;
+                case R.id.no_rt_detail:
+                    Intent retweeter = new Intent(this, UserDetail.class);
+                    retweeter.putExtra("tweetID", tweetID);
+                    retweeter.putExtra("mode", 2);
+                    startActivity(retweeter);
+                    break;
 
-            case R.id.no_fav_detail:
-                intent = new Intent(this, UserDetail.class);
-                intent.putExtra("tweetID", tweetID);
-                intent.putExtra("mode", 3);
-                startActivity(intent);
-                break;
+                case R.id.no_fav_detail:
+                    Intent favor = new Intent(this, UserDetail.class);
+                    favor.putExtra("tweetID", tweetID);
+                    favor.putExtra("mode", 3);
+                    startActivity(favor);
+                    break;
 
-            case R.id.profileimage_detail:
-                intent = new Intent(this, UserProfile.class);
-                intent.putExtra("userID", userID);
-                intent.putExtra("username", username);
-                startActivity(intent);
-                break;
+                case R.id.profileimage_detail:
+                    Intent profile = new Intent(this, UserProfile.class);
+                    profile.putExtra("userID", userID);
+                    profile.putExtra("username", username);
+                    startActivity(profile);
+                    break;
 
-            case R.id.answer_button:
-                intent = new Intent(this, TweetPopup.class);
-                intent.putExtra("TweetID", tweetID);
-                intent.putExtra("Addition", username);
-                startActivity(intent);
-                break;
+                case R.id.answer_button:
+                    Intent tweet = new Intent(this, TweetPopup.class);
+                    tweet.putExtra("TweetID", tweetID);
+                    tweet.putExtra("Addition", username);
+                    startActivity(tweet);
+                    break;
+            }
         }
     }
 
@@ -217,6 +222,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
+        if (mStat != null && mStat.getStatus() == RUNNING)
+            mStat.cancel(true);
         mStat = new StatusLoader(this);
         mStat.execute(tweetID);
     }

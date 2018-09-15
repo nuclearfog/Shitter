@@ -55,8 +55,10 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (!isCancelled())
+                if (!isCancelled()) {
+                    Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
                     cancel(true);
+                }
             }
         });
         popup.show();

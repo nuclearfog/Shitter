@@ -26,6 +26,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
 /**
  * User Profile Activity
  *
@@ -112,7 +114,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onStop() {
-        if (mProfile != null && !mProfile.isCancelled()) {
+        if (mProfile != null && mProfile.getStatus() == RUNNING) {
             mProfile.cancel(true);
             homeReload.setRefreshing(false);
             favoriteReload.setRefreshing(false);
@@ -235,18 +237,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
-        if (mProfile != null && !mProfile.isCancelled())
+        if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
 
-        switch (tabIndex) {
-            case 0:
-                mProfile = new ProfileLoader(this);
-                mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
-                break;
-            case 1:
-                mProfile = new ProfileLoader(this);
-                mProfile.execute(userId, ProfileLoader.GET_FAVORS, 1L);
-                break;
+        if (tabIndex == 0) {
+            mProfile = new ProfileLoader(this);
+            mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
+        } else {
+            mProfile = new ProfileLoader(this);
+            mProfile.execute(userId, ProfileLoader.GET_FAVORS, 1L);
         }
     }
 
@@ -255,30 +254,27 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = mTab.getCurrentTab();
-        switch (tabIndex) {
-            case 0:
-                favoriteList.smoothScrollToPosition(0);
-                break;
-            case 1:
-                homeList.smoothScrollToPosition(0);
-                break;
-        }
+
+        if (tabIndex == 0)
+            favoriteList.smoothScrollToPosition(0);
+        else
+            homeList.smoothScrollToPosition(0);
     }
 
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter tweetAdapter;
-        if (parent.getId() == R.id.ht_list) {
+        if (parent.getId() == R.id.ht_list)
             tweetAdapter = (TimelineAdapter) homeList.getAdapter();
-        } else {
+        else
             tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
-        }
+
         if (tweetAdapter != null) {
             Tweet tweet = tweetAdapter.getData().get(position);
-            if (tweet.embedded != null) {
+            if (tweet.embedded != null)
                 tweet = tweet.embedded;
-            }
+
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.tweetID);
             intent.putExtra("userID", tweet.user.userID);

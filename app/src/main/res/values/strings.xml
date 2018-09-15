@@ -71,4 +71,6 @@
     <string name="dmessage">Message</string>
     <string name="dmsend">Directmessage sent!</string>
     <string name="error_dm">enter username or message!</string>
+    <string name="abort">canceled!</string>
+    <string name="cancel_message">cancel message?</string>
 </resources>

@@ -102,6 +102,8 @@ public class TwitterEngine {
             String key2 = accessToken.getTokenSecret();
             initKeys(key1, key2);
             saveCurrentUser(key1, key2);
+        } else {
+            throw new IllegalMonitorStateException("empty request token!");
         }
     }
 

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
 
 public class TweetPopup extends AppCompatActivity implements OnClickListener, OnTweetSending {
 
@@ -137,7 +138,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (sendTweet != null && !sendTweet.isCancelled())
+                    if (sendTweet != null && sendTweet.getStatus() == RUNNING)
                         sendTweet.cancel(true);
                     finish();
                 }

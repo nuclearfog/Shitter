@@ -145,13 +145,11 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             timelineAdapter.notifyDataSetChanged();
             SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
             timelineRefresh.setRefreshing(false);
-        }
-        if (mode == TRND) {
+        } else if (mode == TRND) {
             trendsAdapter.notifyDataSetChanged();
             SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
             trendRefresh.setRefreshing(false);
-        }
-        if (mode == MENT) {
+        } else if (mode == MENT) {
             mentionAdapter.notifyDataSetChanged();
             SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
             mentionRefresh.setRefreshing(false);

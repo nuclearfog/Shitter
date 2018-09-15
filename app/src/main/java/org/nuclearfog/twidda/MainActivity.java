@@ -31,6 +31,13 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
+/**
+ * Main Activity
+ *
+ * @see MainPage
+ */
 public class MainActivity extends AppCompatActivity implements OnRefreshListener, OnTabChangeListener,
         TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked {
 
@@ -117,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     protected void onStop() {
-        if (home != null && !home.isCancelled()) {
+        if (home != null && home.getStatus() == RUNNING) {
             home.cancel(true);
             timelineReload.setRefreshing(false);
             trendReload.setRefreshing(false);
@@ -150,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(intent);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -236,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
-        if (home != null && !home.isCancelled())
+        if (home != null && home.getStatus() == RUNNING)
             home.cancel(true);
         home = new MainPage(MainActivity.this);
         if (tabIndex == 0)

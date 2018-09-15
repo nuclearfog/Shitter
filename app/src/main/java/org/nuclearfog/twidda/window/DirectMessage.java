@@ -17,6 +17,8 @@ import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter.OnItemSelected;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
 public class DirectMessage extends AppCompatActivity implements OnItemSelected, OnRefreshListener {
 
     private MessageLoader mLoader;
@@ -52,10 +54,10 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
 
     @Override
-    protected void onPause() {
-        if (mLoader != null && !mLoader.isCancelled())
+    protected void onStop() {
+        if (mLoader != null && mLoader.getStatus() == RUNNING)
             mLoader.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 
