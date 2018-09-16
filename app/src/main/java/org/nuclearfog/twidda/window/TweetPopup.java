@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImagePopup;
@@ -116,7 +117,18 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sendTweet:
-                send();
+                String tweetStr = tweet.getText().toString();
+                sendTweet = new StatusUpload(this, tweetStr, inReplyId);
+
+                if (!tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
+                    sendTweet.execute();
+                } else if (!mediaPath.isEmpty()) {
+                    String[] paths = new String[mediaPath.size()];
+                    paths = mediaPath.toArray(paths);
+                    sendTweet.execute(paths);
+                } else {
+                    Toast.makeText(this, R.string.empty_tweet, Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.close:
@@ -150,21 +162,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
             closeDialog.show();
         } else {
             finish();
-        }
-    }
-
-
-    public void send() {
-        String tweetStr = tweet.getText().toString();
-        String[] paths = new String[mediaPath.size()];
-        paths = mediaPath.toArray(paths);
-        sendTweet = new StatusUpload(this, tweetStr, inReplyId);
-        if (!tweetStr.trim().isEmpty() || paths.length > 0) {
-            if (inReplyId > 0) {
-                sendTweet.execute(paths);
-            } else {
-                sendTweet.execute();
-            }
         }
     }
 

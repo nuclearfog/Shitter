@@ -75,4 +75,5 @@
     <string name="cancel_message">cancel message?</string>
     <string name="error_not_specified">not specidfied error!</string>
     <string name="error_sending_dm">error while sending direct message!</string>
+    <string name="empty_tweet">empty tweet!</string>
 </resources>
