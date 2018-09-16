@@ -36,8 +36,8 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private static TwitterEngine mTwitter;
-    private final String TWITTER_CONSUMER_KEY = "D4n37jZ1VzKWYztbOocXO1fJU";
-    private final String TWITTER_CONSUMER_SECRET = "vH5Lr3S2khyOU2i2ywTQwviRK46VvgZN2Bh67BLVOlX5gwgTb4";
+    private final String TWITTER_CONSUMER_KEY = "xxx";
+    private final String TWITTER_CONSUMER_SECRET = "xxx";
     private long twitterID = -1L;
     private Twitter twitter;
     private GlobalSettings settings;
