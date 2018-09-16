@@ -6,18 +6,12 @@
         android:id="@+id/profile_tweet"
         android:icon="@drawable/tweet"
         android:title="@string/tweet"
-        android:visible="true"
         app:showAsAction="always" />
     <item
         android:id="@+id/profile_follow"
         android:icon="@drawable/follow"
         android:title="@string/follow"
         android:visible="false"
-        app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/profile_message"
-        android:icon="@drawable/message"
-        android:title="@string/directmessage"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile_block"
@@ -27,4 +21,9 @@
         android:id="@+id/profile_mute"
         android:title="@string/mute"
         android:visible="false" />
+    <item
+        android:id="@+id/profile_message"
+        android:icon="@drawable/message"
+        android:title="@string/directmessage"
+        app:showAsAction="ifRoom" />
 </menu>

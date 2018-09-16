@@ -56,6 +56,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private boolean isFollowed = false;
     private boolean isBlocked = false;
     private boolean isMuted = false;
+    private boolean canDm = false;
 
     private String errMsg = "E Profile Load: ";
     private int returnCode = 0;
@@ -124,16 +125,17 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             }
 
             user = mTwitter.getUser(UID);
-            publishProgress(GET_USER);
-            database.storeUser(user);
-
             if (!isHome) {
                 boolean connection[] = mTwitter.getConnection(UID);
                 isFollowing = connection[0];
                 isFollowed = connection[1];
                 isBlocked = connection[2];
                 isMuted = connection[3];
+                canDm = connection[4];
             }
+
+            publishProgress(GET_USER);
+            database.storeUser(user);
 
             if (MODE == ACTION_FOLLOW) {
                 isFollowing = !isFollowing;
@@ -148,7 +150,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 mTwitter.muteAction(UID, isMuted);
                 publishProgress(GET_USER);
             } else {
-                boolean access = (!user.isLocked || isFollowed);
+                boolean access = (!user.isLocked || isFollowing);
                 if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0) && access) {
                     long id = 1L;
                     if (homeTl.getItemCount() > 0)
@@ -231,13 +233,14 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             }
             if (imgEnabled) {
                 Picasso.get().load(user.profileImg + "_bigger").into(profile);
-                profile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        new ImagePopup(ui.get()).execute(user.profileImg);
-                    }
-                });
             }
+            profile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new ImagePopup(ui.get()).execute(user.profileImg);
+                }
+            });
+
         } else if (MODE == GET_TWEETS) {
             SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
             homeReload.setRefreshing(false);
@@ -292,7 +295,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             favoriteReload.setRefreshing(false);
         }
         if (!isHome) {
-            ui.get().setConnection(isFollowing, isMuted, isBlocked);
+            ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm);
             ui.get().invalidateOptionsMenu();
         }
     }

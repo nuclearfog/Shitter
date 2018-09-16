@@ -41,7 +41,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private RecyclerView homeList, favoriteList;
     private TabHost mTab;
     private View lastTab;
-    private boolean isFollowing, isBlocked, isMuted;
+    private boolean isFollowing, isBlocked, isMuted, canDm;
     private boolean home;
     private long userId = 0;
     private int tabIndex = 0;
@@ -137,28 +137,34 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        MenuItem followIcon = m.findItem(R.id.profile_follow);
-        MenuItem blockIcon = m.findItem(R.id.profile_block);
-        MenuItem muteIcon = m.findItem(R.id.profile_mute);
+        if (!home) {
+            MenuItem followIcon = m.findItem(R.id.profile_follow);
+            MenuItem blockIcon = m.findItem(R.id.profile_block);
+            MenuItem muteIcon = m.findItem(R.id.profile_mute);
+            MenuItem dmIcon = m.findItem(R.id.profile_message);
 
-        if (isFollowing) {
-            followIcon.setIcon(R.drawable.follow_enabled);
-            followIcon.setTitle(R.string.unfollow);
-        } else {
-            followIcon.setIcon(R.drawable.follow);
-            followIcon.setTitle(R.string.follow);
-        }
-        if (isBlocked) {
-            blockIcon.setTitle(R.string.unblock);
-            followIcon.setVisible(false);
-        } else {
-            blockIcon.setTitle(R.string.block);
-            followIcon.setVisible(true);
-        }
-        if (isMuted) {
-            muteIcon.setTitle(R.string.unmute);
-        } else {
-            muteIcon.setTitle(R.string.mute);
+            if (isFollowing) {
+                followIcon.setIcon(R.drawable.follow_enabled);
+                followIcon.setTitle(R.string.unfollow);
+            } else {
+                followIcon.setIcon(R.drawable.follow);
+                followIcon.setTitle(R.string.follow);
+            }
+            if (isBlocked) {
+                blockIcon.setTitle(R.string.unblock);
+                followIcon.setVisible(false);
+            } else {
+                blockIcon.setTitle(R.string.block);
+                followIcon.setVisible(true);
+            }
+            if (isMuted) {
+                muteIcon.setTitle(R.string.unmute);
+            } else {
+                muteIcon.setTitle(R.string.mute);
+            }
+            if (!canDm) {
+                dmIcon.setVisible(false);
+            }
         }
         return super.onPrepareOptionsMenu(m);
     }
@@ -169,10 +175,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if (mProfile != null && mProfile.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
-                    Intent intent = new Intent(this, TweetPopup.class);
+                    Intent tweet = new Intent(this, TweetPopup.class);
                     if (!home)
-                        intent.putExtra("Addition", username);
-                    startActivity(intent);
+                        tweet.putExtra("Addition", username);
+                    startActivity(tweet);
                     break;
 
                 case R.id.profile_follow:
@@ -311,9 +317,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public void setConnection(boolean isFollowing, boolean isMuted, boolean isBlocked) {
+    public void setConnection(boolean isFollowing, boolean isMuted, boolean isBlocked, boolean canDm) {
         this.isFollowing = isFollowing;
         this.isMuted = isMuted;
         this.isBlocked = isBlocked;
+        this.canDm = canDm;
     }
 }

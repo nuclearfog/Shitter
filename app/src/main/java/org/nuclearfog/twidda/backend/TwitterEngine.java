@@ -271,16 +271,17 @@ public class TwitterEngine {
      * Efficient Access of Connection Information
      *
      * @param id User ID compared with Home ID
-     * @return array of connection states Index 0: Following, 1: Follow, 2: blocked
+     * @return array of connection states Index 0: Following, 1: Follow, 2: blocked 3: muted 4: canDM
      * @throws TwitterException if Connection is unavailable
      */
     public boolean[] getConnection(long id) throws TwitterException {
         Relationship connect = twitter.showFriendship(twitterID, id);
-        boolean connection[] = new boolean[4];
+        boolean connection[] = new boolean[5];
         connection[0] = connect.isSourceFollowingTarget();
         connection[1] = connect.isTargetFollowingSource();
         connection[2] = connect.isSourceBlockingTarget();
         connection[3] = connect.isSourceMutingTarget();
+        connection[4] = connect.canSourceDm();
         return connection;
     }
 
