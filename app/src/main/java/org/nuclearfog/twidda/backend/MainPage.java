@@ -26,8 +26,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     public static final int HOME = 1;
     public static final int TRND = 2;
     public static final int MENT = 3;
-
-    private static final int FAIL = -1;
+    private static final int FAIL = 4;
 
     private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
@@ -36,7 +35,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     private TrendAdapter trendsAdapter;
     private DatabaseAdapter tweetDb;
     private int woeId;
-    private String errMsg = "E: Main Page, ";
+    private String errMsg = "E Main Page: ";
     private int returnCode = 0;
 
 
@@ -80,16 +79,16 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     @Override
     protected Integer doInBackground(Integer... args) {
         final int MODE = args[0];
-        int page = args[1];
+        final int PAGE = args[1];
         try {
             if (MODE == HOME) {
                 List<Tweet> tweets;
                 if (timelineAdapter.getItemCount() > 0) {
                     long id = timelineAdapter.getItemId(0);
-                    tweets = mTwitter.getHome(page, id);
+                    tweets = mTwitter.getHome(PAGE, id);
                     timelineAdapter.addNew(tweets);
                 } else {
-                    tweets = mTwitter.getHome(page, 1L);
+                    tweets = mTwitter.getHome(PAGE, 1L);
                     timelineAdapter.setData(tweets);
                 }
                 publishProgress(HOME);
@@ -103,10 +102,10 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
                 List<Tweet> tweets;
                 if (mentionAdapter.getItemCount() != 0) {
                     long id = mentionAdapter.getItemId(0);
-                    tweets = mTwitter.getMention(page, id);
+                    tweets = mTwitter.getMention(PAGE, id);
                     mentionAdapter.addNew(tweets);
                 } else {
-                    tweets = mTwitter.getMention(page, 1L);
+                    tweets = mTwitter.getMention(PAGE, 1L);
                     mentionAdapter.setData(tweets);
                 }
                 publishProgress(MENT);
@@ -125,11 +124,12 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             }
         } catch (TwitterException e) {
             returnCode = e.getErrorCode();
-            if (returnCode > 0 && returnCode != 420)
-                errMsg += e.getMessage();
+            errMsg += e.getMessage();
             return FAIL;
         } catch (Exception e) {
-            Log.e("Main Page", e.getMessage());
+            e.printStackTrace();
+            errMsg += e.getMessage();
+            Log.e("Main Page", errMsg);
             return FAIL;
         }
         return MODE;
@@ -139,17 +139,18 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     @Override
     protected void onProgressUpdate(Integer... modes) {
         if (ui.get() == null) return;
-        int mode = modes[0];
 
-        if (mode == HOME) {
+        final int MODE = modes[0];
+
+        if (MODE == HOME) {
             timelineAdapter.notifyDataSetChanged();
             SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
             timelineRefresh.setRefreshing(false);
-        } else if (mode == TRND) {
+        } else if (MODE == TRND) {
             trendsAdapter.notifyDataSetChanged();
             SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
             trendRefresh.setRefreshing(false);
-        } else if (mode == MENT) {
+        } else if (MODE == MENT) {
             mentionAdapter.notifyDataSetChanged();
             SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
             mentionRefresh.setRefreshing(false);
@@ -162,12 +163,6 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
         if (ui.get() == null) return;
 
         if (mode == FAIL) {
-            if (returnCode > 0) {
-                if (returnCode == 420)
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
-            }
             SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
             SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
             SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
@@ -175,6 +170,17 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             timelineRefresh.setRefreshing(false);
             trendRefresh.setRefreshing(false);
             mentionRefresh.setRefreshing(false);
+
+            switch (returnCode) {
+                case 420:
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                    break;
+                case -1:
+                    Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

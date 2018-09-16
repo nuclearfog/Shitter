@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Message;
@@ -15,12 +16,16 @@ import org.nuclearfog.twidda.window.DirectMessage;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class MessageLoader extends AsyncTask<Void, Void, Void> {
+import twitter4j.TwitterException;
+
+public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<DirectMessage> ui;
     private MessageAdapter mAdapter;
     private TwitterEngine twitter;
     private DatabaseAdapter mData;
+    private String errorMsg = "E MessageLoader: ";
+    private int returnCode = 0;
 
     public MessageLoader(DirectMessage context) {
         ui = new WeakReference<>(context);
@@ -40,7 +45,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... param) {
+    protected Boolean doInBackground(Void... param) {
         try {
             List<Message> msg;
             if (mAdapter.getItemCount() > 0) {
@@ -55,18 +60,38 @@ public class MessageLoader extends AsyncTask<Void, Void, Void> {
                 }
             }
             mAdapter.setData(msg);
+        } catch (TwitterException err) {
+            returnCode = err.getErrorCode();
+            errorMsg += err.getMessage();
+            return false;
         } catch (Exception err) {
-            Log.e("Direct Message", err.getMessage());
+            errorMsg += err.getMessage();
+            Log.e("Direct Message", errorMsg);
+            err.printStackTrace();
+            return false;
         }
-        return null;
+        return true;
     }
 
     @Override
-    protected void onPostExecute(Void param) {
-        if (ui.get() != null) {
-            SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
-            mAdapter.notifyDataSetChanged();
-            mRefresh.setRefreshing(false);
+    protected void onPostExecute(Boolean success) {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
+        mAdapter.notifyDataSetChanged();
+        mRefresh.setRefreshing(false);
+
+        if (!success) {
+            switch (returnCode) {
+                case 420:
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                    break;
+                case -1:
+                    Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }

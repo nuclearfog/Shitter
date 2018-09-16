@@ -154,8 +154,8 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        if (parent.getId() == R.id.tweet_result) {
-            if (!tweetReload.isRefreshing()) {
+        if (!tweetReload.isRefreshing())
+            if (parent.getId() == R.id.tweet_result) {
                 TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
                 if (tweetAdapter != null) {
                     Tweet tweet = tweetAdapter.getData().get(position);
@@ -175,7 +175,6 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
                     startActivity(intent);
                 }
             }
-        }
     }
 
 

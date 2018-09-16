@@ -41,6 +41,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             failure = true;
         } catch (Exception e) {
             errorMessage += e.getMessage();
+            e.printStackTrace();
             Log.e("Registration", errorMessage);
             failure = true;
         }

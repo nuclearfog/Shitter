@@ -105,7 +105,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (mStat == null) {
             answerReload.setRefreshing(true);
             mStat = new StatusLoader(this);
-            mStat.execute(tweetID);
+            mStat.execute(tweetID, StatusLoader.LOAD);
         }
     }
 
@@ -225,7 +225,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (mStat != null && mStat.getStatus() == RUNNING)
             mStat.cancel(true);
         mStat = new StatusLoader(this);
-        mStat.execute(tweetID);
+        mStat.execute(tweetID, StatusLoader.LOAD);
     }
 
 

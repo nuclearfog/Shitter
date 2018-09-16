@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -20,7 +21,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
     private Dialog popup;
-    private String errorMsg;
+
 
     public MessageUpload(MessagePopup c) {
         ui = new WeakReference<>(c);
@@ -68,12 +69,14 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             if (!username.startsWith("@"))
                 username = '@' + username;
             mTwitter.sendMessage(username, message, path);
-            return true;
         } catch (Exception err) {
-            errorMsg = err.getMessage();
+            Log.e("DirectMessage", err.getMessage());
+            err.printStackTrace();
+            return false;
         }
-        return false;
+        return true;
     }
+
 
     @Override
     protected void onPostExecute(Boolean success) {
@@ -83,7 +86,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
                 Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
                 ui.get().finish();
             } else {
-                Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ui.get(), R.string.error_sending_dm, Toast.LENGTH_SHORT).show();
             }
         }
     }

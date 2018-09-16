@@ -18,7 +18,6 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
-import org.nuclearfog.twidda.backend.StatusUpload.OnTweetSending;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ import java.util.List;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 
-public class TweetPopup extends AppCompatActivity implements OnClickListener, OnTweetSending {
+public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private StatusUpload sendTweet;
     private View imageButton, previewBtn;
@@ -155,17 +154,16 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, On
     }
 
 
-    @Override
     public void send() {
         String tweetStr = tweet.getText().toString();
         String[] paths = new String[mediaPath.size()];
         paths = mediaPath.toArray(paths);
-        sendTweet = new StatusUpload(this, paths);
+        sendTweet = new StatusUpload(this, tweetStr, inReplyId);
         if (!tweetStr.trim().isEmpty() || paths.length > 0) {
             if (inReplyId > 0) {
-                sendTweet.execute(tweetStr, inReplyId);
+                sendTweet.execute(paths);
             } else {
-                sendTweet.execute(tweetStr);
+                sendTweet.execute();
             }
         }
     }

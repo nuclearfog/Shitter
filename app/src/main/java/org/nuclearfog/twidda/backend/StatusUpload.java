@@ -19,21 +19,26 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements OnClickListener {
+public class StatusUpload extends AsyncTask<String, Void, Boolean> {
+
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
     private Dialog popup;
-    private String[] path;
+    private String tweet;
+    private long replyId;
 
-    public StatusUpload(TweetPopup context, String[] path) {
+
+    public StatusUpload(TweetPopup context, String tweet, long replyId) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);
-        this.path = path;
+        this.tweet = tweet;
+        this.replyId = replyId;
     }
+
 
     @Override
     @SuppressLint("InflateParams")
@@ -55,7 +60,7 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (!isCancelled()) {
+                if (getStatus() == Status.RUNNING) {
                     Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
                     cancel(true);
                 }
@@ -64,51 +69,44 @@ public class StatusUpload extends AsyncTask<Object, Void, Boolean> implements On
         popup.show();
     }
 
+
     @Override
-    protected Boolean doInBackground(Object... args) {
+    protected Boolean doInBackground(String... path) {
         try {
-            Long id = -1L;
-            String tweet = (String) args[0];
-            if (args.length > 1) {
-                id = (Long) args[1];
-            }
-            if (path.length == 0) {
-                mTwitter.sendStatus(tweet, id);
-            } else {
-                mTwitter.sendStatus(tweet, id, path);
-            }
-            return true;
+            if (path.length == 0)
+                mTwitter.sendStatus(tweet, replyId);
+            else
+                mTwitter.sendStatus(tweet, replyId, path);
+
         } catch (TwitterException err) {
             return false;
         } catch (Exception err) {
+            err.printStackTrace();
             Log.e("Status Upload", err.getMessage());
             return false;
         }
+        return true;
     }
+
 
     @Override
     protected void onPostExecute(Boolean success) {
-        TweetPopup connect = ui.get();
-        if (connect != null) {
+        if (ui.get() != null) {
             popup.dismiss();
             if (success) {
-                Toast.makeText(connect, R.string.tweet_sent, Toast.LENGTH_LONG).show();
-                connect.finish();
+                Toast.makeText(ui.get(), R.string.tweet_sent, Toast.LENGTH_LONG).show();
+                ui.get().finish();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
                 builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
-                        .setPositiveButton(R.string.retry, this)
+                        .setPositiveButton(R.string.retry, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ui.get().send();
+                            }
+                        })
                         .setNegativeButton(R.string.cancel, null).show();
             }
         }
-    }
-
-    @Override
-    public void onClick(DialogInterface d, int id) {
-        ui.get().send();
-    }
-
-    public interface OnTweetSending {
-        void send();
     }
 }

@@ -67,16 +67,17 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
                 user = mTwitter.getRetweeter(id, cursor);
                 usrAdp.setData(user);
             }
-            return true;
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
                 errorMessage += err.getMessage();
             }
+            return false;
         } catch (Exception err) {
             Log.e("User List", err.getMessage());
+            return false;
         }
-        return false;
+        return true;
     }
 
 
@@ -90,10 +91,14 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
         usrAdp.notifyDataSetChanged();
 
         if (!success) {
-            if (returnCode == 420)
-                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-            else if (returnCode > 0)
-                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
+
+            switch (returnCode) {
+                case 420:
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

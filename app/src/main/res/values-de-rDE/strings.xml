@@ -65,4 +65,6 @@
     <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
     <string name="abort">Abgebrochen!</string>
     <string name="cancel_message">Nachricht verwerfen?</string>
+    <string name="error_not_specified">Allgemeiner Fehler!</string>
+    <string name="error_sending_dm">Fehler beim Senden der Direktnachricht!</string>
 </resources>

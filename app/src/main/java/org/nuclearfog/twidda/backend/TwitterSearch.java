@@ -19,13 +19,13 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class TwitterSearch extends AsyncTask<String, Void, Void> {
+public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
     private TimelineAdapter searchAdapter;
     private UserAdapter userAdapter;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
-    private String errorMessage = "E: Twitter search, ";
+    private String errMsg = "E Twitter search: ";
     private int returnCode = 0;
 
     public TwitterSearch(SearchPage context) {
@@ -57,7 +57,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
 
     @Override
-    protected Void doInBackground(String... search) {
+    protected Boolean doInBackground(String... search) {
         String strSearch = search[0];
         long id = 1L;
         try {
@@ -79,18 +79,22 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
-                errorMessage += err.getMessage();
+                errMsg += err.getMessage();
             }
+            return false;
         } catch (Exception err) {
-            Log.e("Twitter Search", err.getMessage());
+            errMsg += err.getMessage();
+            Log.e("Twitter Search", errMsg);
+            return false;
         }
-        return null;
+        return true;
     }
 
 
     @Override
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
+
         SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
         searchAdapter.notifyDataSetChanged();
         userAdapter.notifyDataSetChanged();
@@ -99,14 +103,20 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
 
     @Override
-    protected void onPostExecute(Void v) {
-        if (ui.get() != null) {
+    protected void onPostExecute(Boolean success) {
+        if (ui.get() == null) return;
+
+        if (!success) {
             SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
             tweetReload.setRefreshing(false);
-            if (returnCode == 420)
-                Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
-            else if (returnCode > 0)
-                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
+
+            switch (returnCode) {
+                case 420:
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+                    break;
+                default:
+                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
