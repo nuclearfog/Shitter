@@ -448,14 +448,11 @@ public class TwitterEngine {
         int retweet = tweet.retweet;
 
         if (tweet.retweeted) {
+            deleteTweet(tweet.retweetId);
             retweet--;
-            if (tweet.retweetId > tweet.tweetID)
-                deleteTweet(tweet.retweetId);
-            else
-                deleteTweet(tweet.tweetID);
         } else {
-            retweet++;
             twitter.retweetStatus(tweet.tweetID);
+            retweet++;
         }
         return new Tweet(tweetId, retweet, tweet.favorit, tweet.user, tweet.tweet,
                 tweet.time, tweet.replyName, tweet.replyUserId, tweet.media, tweet.source,
@@ -472,11 +469,11 @@ public class TwitterEngine {
         Tweet tweet = getStatus(tweetId);
         int favorite = tweet.favorit;
         if (tweet.favorized) {
-            favorite--;
             twitter.destroyFavorite(tweet.tweetID);
+            favorite--;
         } else {
-            favorite++;
             twitter.createFavorite(tweet.tweetID);
+            favorite++;
         }
         return new Tweet(tweetId, tweet.retweet, favorite, tweet.user, tweet.tweet,
                 tweet.time, tweet.replyName, tweet.replyUserId, tweet.media, tweet.source,

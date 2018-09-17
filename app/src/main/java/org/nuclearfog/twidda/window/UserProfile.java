@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 
 
@@ -172,7 +173,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mProfile != null && mProfile.getStatus() != RUNNING) {
+        if (mProfile != null && mProfile.getStatus() == FINISHED) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
@@ -271,6 +272,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter tweetAdapter;
+
         if (parent.getId() == R.id.ht_list)
             tweetAdapter = (TimelineAdapter) homeList.getAdapter();
         else

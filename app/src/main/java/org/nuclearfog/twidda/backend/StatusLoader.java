@@ -110,13 +110,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 database.removeStatus(TWEETID);
 
             } else if (MODE == RETWEET) {
-                Tweet tweet = mTwitter.retweet(TWEETID);
+                tweet = mTwitter.retweet(TWEETID);
                 if (!tweet.retweeted)
                     database.removeStatus(tweet.retweetId);
                 publishProgress();
 
             } else if (MODE == FAVORITE) {
-                Tweet tweet = mTwitter.favorite(TWEETID);
+                tweet = mTwitter.favorite(TWEETID);
                 if (tweet.favorized) {
                     database.storeFavorite(TWEETID);
                 } else {

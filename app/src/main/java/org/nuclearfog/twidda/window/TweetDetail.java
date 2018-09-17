@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -30,6 +29,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 
 /**
@@ -162,7 +162,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (mStat.getStatus() == AsyncTask.Status.FINISHED) {
+        if (mStat != null && mStat.getStatus() == FINISHED) {
             switch (v.getId()) {
                 case R.id.rt_button_detail:
                     mStat = new StatusLoader(this);
@@ -209,7 +209,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
-        if (timeLineAdapter != null && !answerReload.isRefreshing()) {
+        if (timeLineAdapter != null) {
             Tweet tweet = timeLineAdapter.getData().get(position);
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.tweetID);

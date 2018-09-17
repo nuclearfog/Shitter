@@ -28,7 +28,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private UserAdapter usrAdp;
-    private String errorMessage = "E: Userlist, ";
+    private String errorMessage = "E Userlist: ";
     private int returnCode = 0;
 
 

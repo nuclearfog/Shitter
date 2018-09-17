@@ -16,7 +16,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
     private boolean failure = false;
-    private String errorMessage = "E: Registration, ";
+    private String errorMessage = "E Registration: ";
     private String redirectionURL = "";
 
 
