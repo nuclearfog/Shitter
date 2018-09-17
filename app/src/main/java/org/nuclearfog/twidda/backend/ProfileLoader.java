@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
+import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
@@ -158,9 +160,10 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
                     List<Tweet> tweets = mTwitter.getUserTweets(UID, id, page);
                     homeTl.addNew(tweets);
-                    publishProgress(GET_TWEETS);
                     database.storeUserTweets(tweets);
                 }
+                publishProgress(GET_TWEETS);
+
                 if ((MODE == GET_FAVORS || homeFav.getItemCount() == 0) && access) {
                     long id = 1L;
                     if (homeFav.getItemCount() > 0)
@@ -168,9 +171,9 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
                     List<Tweet> favors = mTwitter.getUserFavs(UID, id, page);
                     homeFav.addNew(favors);
-                    publishProgress(GET_FAVORS);
                     database.storeUserFavs(favors, UID);
                 }
+                publishProgress(GET_FAVORS);
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
@@ -225,19 +228,39 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             if (user.isVerified) {
                 ui.get().findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
             }
-            if (user.isLocked) {
-                ui.get().findViewById(R.id.profile_locked).setVisibility(View.VISIBLE);
-            }
             if (isFollowed) {
                 ui.get().findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
             if (imgEnabled) {
                 Picasso.get().load(user.profileImg + "_bigger").into(profile);
             }
+            if (user.isLocked) {
+                ui.get().findViewById(R.id.profile_locked).setVisibility(View.VISIBLE);
+            } else {
+                txtFollowing.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent following = new Intent(ui.get(), UserDetail.class);
+                        following.putExtra("userID", user.userID);
+                        following.putExtra("mode", 0);
+                        ui.get().startActivity(following);
+                    }
+                });
+                txtFollower.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent follower = new Intent(ui.get(), UserDetail.class);
+                        follower.putExtra("userID", user.userID);
+                        follower.putExtra("mode", 1);
+                        ui.get().startActivity(follower);
+                    }
+                });
+            }
             profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new ImagePopup(ui.get()).execute(user.profileImg);
+                    if (getStatus() == Status.FINISHED)
+                        new ImagePopup(ui.get()).execute(user.profileImg);
                 }
             });
 
@@ -245,7 +268,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
             homeReload.setRefreshing(false);
             homeTl.notifyDataSetChanged();
-
         } else if (MODE == GET_FAVORS) {
             SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
             favReload.setRefreshing(false);
@@ -288,11 +310,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
-
-            SwipeRefreshLayout tweetsReload = ui.get().findViewById(R.id.hometweets);
-            SwipeRefreshLayout favoriteReload = ui.get().findViewById(R.id.homefavorits);
-            tweetsReload.setRefreshing(false);
-            favoriteReload.setRefreshing(false);
         }
         if (!isHome) {
             ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm);

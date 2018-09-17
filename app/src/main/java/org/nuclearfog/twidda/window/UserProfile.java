@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -34,7 +33,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  *
  * @see ProfileLoader
  */
-public class UserProfile extends AppCompatActivity implements OnClickListener,
+public class UserProfile extends AppCompatActivity implements
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
     private ProfileLoader mProfile;
@@ -79,8 +78,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         favoriteList.setLayoutManager(new LinearLayoutManager(this));
         favoriteList.setBackgroundColor(background);
 
-        View txtFollowing = findViewById(R.id.following);
-        View txtFollower = findViewById(R.id.follower);
         mTab = findViewById(R.id.profile_tab);
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
@@ -94,8 +91,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         lastTab = mTab.getCurrentView();
 
         mTab.setOnTabChangedListener(this);
-        txtFollowing.setOnClickListener(this);
-        txtFollower.setOnClickListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
     }
@@ -219,25 +214,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             super.onBackPressed();
         } else {
             mTab.setCurrentTab(0);
-        }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.following:
-                Intent following = new Intent(this, UserDetail.class);
-                following.putExtra("userID", userId);
-                following.putExtra("mode", 0);
-                startActivity(following);
-                break;
-            case R.id.follower:
-                Intent follower = new Intent(this, UserDetail.class);
-                follower.putExtra("userID", userId);
-                follower.putExtra("mode", 1);
-                startActivity(follower);
-                break;
         }
     }
 
