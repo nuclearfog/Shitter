@@ -91,22 +91,22 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() != null) {
-            popup.dismiss();
-            if (success) {
-                Toast.makeText(ui.get(), R.string.tweet_sent, Toast.LENGTH_LONG).show();
-                ui.get().finish();
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
-                builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
-                        .setPositiveButton(R.string.retry, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ui.get().findViewById(R.id.sendTweet).callOnClick();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null).show();
-            }
+        if (ui.get() == null) return;
+
+        popup.dismiss();
+        if (success) {
+            Toast.makeText(ui.get(), R.string.tweet_sent, Toast.LENGTH_LONG).show();
+            ui.get().finish();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
+            builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
+                    .setPositiveButton(R.string.retry, new OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ui.get().findViewById(R.id.sendTweet).callOnClick();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, null).show();
         }
     }
 }

@@ -26,10 +26,12 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
     private LayoutInflater inflater;
     private int position = 0;
 
+
     public ImagePopup(Context context) {
         popup = new Dialog(context);
         inflater = LayoutInflater.from(context);
     }
+
 
     @Override
     @SuppressLint("InflateParams")
@@ -46,19 +48,18 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
             @Override
             public void onClick(View v) {
                 popup.dismiss();
-                if (!isCancelled())
-                    cancel(true);
             }
         });
-        popup.setOnCancelListener(new DialogInterface.OnCancelListener() {
+        popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onCancel(DialogInterface dialog) {
-                if (!isCancelled())
+            public void onDismiss(DialogInterface dialog) {
+                if (getStatus() == Status.RUNNING)
                     cancel(true);
             }
         });
         popup.show();
     }
+
 
     @Override
     protected Boolean doInBackground(String... links) {
@@ -84,6 +85,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
             return false;
         }
     }
+
 
     @Override
     @SuppressLint("InflateParams")
@@ -126,6 +128,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
             popup.dismiss();
         }
     }
+
 
     private void setImage(Bitmap btm, ImageView mImg) {
         if (btm != null) {

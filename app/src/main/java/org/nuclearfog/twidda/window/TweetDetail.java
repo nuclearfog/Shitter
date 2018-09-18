@@ -29,13 +29,13 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 
 /**
  * Detailed Tweet Activity
  *
  * @see StatusLoader
+ * @see ImagePopup
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClicked, OnRefreshListener {
@@ -159,7 +159,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (mStat != null && mStat.getStatus() == FINISHED) {
+        if (mStat != null && mStat.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.rt_button_detail:
                     mStat = new StatusLoader(this);
@@ -227,7 +227,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     public void onMediaClicked(String mediaLinks[]) {
-        ImagePopup mediaContent = new ImagePopup(this);
-        mediaContent.execute(mediaLinks);
+        ImagePopup imagePopup = new ImagePopup(this);
+        imagePopup.execute(mediaLinks);
     }
 }

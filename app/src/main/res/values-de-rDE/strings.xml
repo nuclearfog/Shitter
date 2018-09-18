@@ -17,7 +17,7 @@
     <string name="trend_setting">Trendeinstellung</string>
     <string name="database">Datenbank</string>
     <string name="profile">Profil</string>
-    <string name="register_link">app registrieren</string>
+    <string name="register_link">PIN aufrufen</string>
     <string name="profile_image">profilbild</string>
     <string name="settings">Einstellungen</string>
     <string name="back">Zurück</string>
@@ -68,8 +68,9 @@
     <string name="error_not_specified">Allgemeiner Fehler!</string>
     <string name="error_sending_dm">Fehler beim Senden der Direktnachricht!</string>
     <string name="empty_tweet">Tweet leer!</string>
-    <string name="logout">log out!</string>
+    <string name="logout">ausloggen</string>
     <string name="should_log_lout">ausloggen?</string>
     <string name="should_unfollow">User entfolgen?</string>
     <string name="should_block">user sperren?</string>
+    <string name="pin_verification_failed">PIN verifizierung fehlgeschlagen!</string>
 </resources>

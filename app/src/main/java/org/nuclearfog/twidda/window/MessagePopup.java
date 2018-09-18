@@ -24,6 +24,11 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 
+/**
+ * Message Window
+ *
+ * @see MessageUpload
+ */
 public class MessagePopup extends AppCompatActivity implements View.OnClickListener {
 
     private MessageUpload upload;

@@ -78,11 +78,13 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.message:
-                Intent sendDm = new Intent(this, MessagePopup.class);
-                startActivity(sendDm);
-                break;
+        if (mLoader != null && mLoader.getStatus() != RUNNING) {
+            switch (item.getItemId()) {
+                case R.id.message:
+                    Intent sendDm = new Intent(this, MessagePopup.class);
+                    startActivity(sendDm);
+                    break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }

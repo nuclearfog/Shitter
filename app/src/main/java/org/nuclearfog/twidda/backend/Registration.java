@@ -5,18 +5,17 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.window.LoginPage;
 
 import java.lang.ref.WeakReference;
 
-import twitter4j.TwitterException;
 
 public class Registration extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
     private boolean failure = false;
-    private String errorMessage = "E Registration: ";
     private String redirectionURL = "";
 
 
@@ -30,19 +29,14 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     protected Boolean doInBackground(String... twitterPin) {
         String pin = twitterPin[0];
         try {
-            if (pin.trim().isEmpty()) {
-                redirectionURL = mTwitter.request();
-            } else {
+            redirectionURL = mTwitter.request();
+            if (!pin.trim().isEmpty()) {
                 mTwitter.initialize(pin);
                 return true;
             }
-        } catch (TwitterException e) {
-            errorMessage += e.getMessage();
-            failure = true;
         } catch (Exception e) {
-            errorMessage += e.getMessage();
             e.printStackTrace();
-            Log.e("Registration", errorMessage);
+            Log.e("Registration", e.getMessage());
             failure = true;
         }
         return false;
@@ -51,15 +45,15 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() != null) {
-            if (success) {
-                ui.get().setResult(Activity.RESULT_OK);
-                ui.get().finish();
-            } else if (failure) {
-                Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
-            } else {
-                ui.get().connect(redirectionURL);
-            }
+        if (ui.get() == null) return;
+
+        if (success) {
+            ui.get().setResult(Activity.RESULT_OK);
+            ui.get().finish();
+        } else if (failure) {
+            Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_LONG).show();
+        } else {
+            ui.get().connect(redirectionURL);
         }
     }
 }

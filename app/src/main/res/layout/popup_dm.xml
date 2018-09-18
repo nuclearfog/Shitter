@@ -10,15 +10,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
+        android:gravity="right|center_vertical"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/dm_receiver"
-            android:layout_width="@dimen/text_input_width"
+            android:layout_width="0dp"
             android:layout_height="@dimen/name_input_height"
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="5dp"
+            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:hint="@string/username"
             android:inputType="text"

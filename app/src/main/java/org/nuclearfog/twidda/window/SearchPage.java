@@ -27,9 +27,13 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 
+/**
+ * Search Page
+ *
+ * @see TwitterSearch
+ */
 public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemClicked,
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
@@ -131,6 +135,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
                 startActivity(intent);
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -142,7 +147,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.search_tweet) {
+        if (item.getItemId() == R.id.search_tweet && mSearch.getStatus() != RUNNING) {
             Intent intent = new Intent(this, TweetPopup.class);
             intent.putExtra("TweetID", -1);
             if (search.startsWith("#"))
@@ -181,7 +186,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public void onRefresh() {
-        if (mSearch != null && mSearch.getStatus() == FINISHED) {
+        if (mSearch != null && mSearch.getStatus() != RUNNING) {
             mSearch = new TwitterSearch(this);
             mSearch.execute(search);
         }

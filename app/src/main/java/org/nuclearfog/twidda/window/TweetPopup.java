@@ -27,9 +27,15 @@ import java.util.List;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 
+/**
+ * Tweet Window
+ *
+ * @see StatusUpload
+ */
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private StatusUpload sendTweet;
+    private ImagePopup imagePopup;
     private View imageButton, previewBtn;
     private List<String> mediaPath;
     private TextView imgCount;
@@ -70,6 +76,16 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         tweetButton.setOnClickListener(this);
         imageButton.setOnClickListener(this);
         previewBtn.setOnClickListener(this);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        if (sendTweet != null && sendTweet.getStatus() == RUNNING)
+            sendTweet.cancel(true);
+        if (imagePopup != null && imagePopup.getStatus() == RUNNING)
+            imagePopup.cancel(true);
+        super.onDestroy();
     }
 
 
@@ -118,8 +134,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.sendTweet:
                 String tweetStr = tweet.getText().toString();
+                if (sendTweet != null && sendTweet.getStatus() == RUNNING)
+                    sendTweet.cancel(true);
                 sendTweet = new StatusUpload(this, tweetStr, inReplyId);
-
                 if (!tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                     sendTweet.execute();
                 } else if (!mediaPath.isEmpty()) {
@@ -140,7 +157,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 break;
 
             case R.id.img_preview:
-                new ImagePopup(this).execute(mediaPath.toArray(new String[mediaPath.size()]));
+                if (imagePopup != null && imagePopup.getStatus() == RUNNING)
+                    imagePopup.cancel(true);
+                imagePopup = new ImagePopup(this);
+                imagePopup.execute(mediaPath.toArray(new String[mediaPath.size()]));
                 break;
         }
     }
@@ -154,8 +174,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (sendTweet != null && sendTweet.getStatus() == RUNNING)
-                        sendTweet.cancel(true);
                     finish();
                 }
             });

@@ -27,6 +27,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     private String errorMsg = "E MessageLoader: ";
     private int returnCode = 0;
 
+
     public MessageLoader(DirectMessage context) {
         ui = new WeakReference<>(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
@@ -42,6 +43,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
             dm_list.setAdapter(mAdapter);
         }
     }
+
 
     @Override
     protected Boolean doInBackground(Void... param) {
@@ -71,6 +73,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
         }
         return true;
     }
+
 
     @Override
     protected void onPostExecute(Boolean success) {

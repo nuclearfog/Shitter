@@ -20,9 +20,8 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter.OnItemClicked;
 
 import static android.os.AsyncTask.Status.RUNNING;
 
-
 /**
- * User List
+ * User List Activity
  *
  * @see UserLists
  */

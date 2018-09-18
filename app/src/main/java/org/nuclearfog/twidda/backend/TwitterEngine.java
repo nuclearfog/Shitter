@@ -38,11 +38,12 @@ public class TwitterEngine {
     private static TwitterEngine mTwitter;
     private final String TWITTER_CONSUMER_KEY = "xxx";
     private final String TWITTER_CONSUMER_SECRET = "xxx";
-    private long twitterID = -1L;
+
+    private String redirectionUrl;
+    private long twitterID;
     private Twitter twitter;
     private GlobalSettings settings;
     private RequestToken reqToken;
-    private boolean login;
     private int load;
 
 
@@ -51,13 +52,18 @@ public class TwitterEngine {
      */
     private TwitterEngine(Context context) {
         settings = GlobalSettings.getInstance(context);
-        login = settings.getLogin();
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
         Configuration configuration = builder.build();
         TwitterFactory factory = new TwitterFactory(configuration);
         twitter = factory.getInstance();
+
+        if (settings.getLogin()) {
+            String keys[] = settings.getKeys();
+            initKeys(keys[0], keys[1]);
+            twitterID = settings.getUserId();
+        }
     }
 
 
@@ -70,7 +76,6 @@ public class TwitterEngine {
     public static TwitterEngine getInstance(Context context) {
         if (mTwitter == null) {
             mTwitter = new TwitterEngine(context);
-            mTwitter.init();
         }
         mTwitter.setLoad();
         return mTwitter;
@@ -83,9 +88,11 @@ public class TwitterEngine {
      * @throws TwitterException if internet connection is unavailable
      */
     public String request() throws TwitterException {
-        if (reqToken == null)
+        if (reqToken == null) {
             reqToken = twitter.getOAuthRequestToken();
-        return reqToken.getAuthenticationURL();
+            redirectionUrl = reqToken.getAuthenticationURL();
+        }
+        return redirectionUrl;
     }
 
     /**
@@ -101,9 +108,8 @@ public class TwitterEngine {
             String key1 = accessToken.getToken();
             String key2 = accessToken.getTokenSecret();
             initKeys(key1, key2);
-            saveCurrentUser(key1, key2);
-        } else {
-            throw new IllegalMonitorStateException("empty request token!");
+            twitterID = twitter.getId();
+            settings.setConnection(key1, key2, twitterID);
         }
     }
 
@@ -120,19 +126,6 @@ public class TwitterEngine {
         builder.setTweetModeExtended(true);
         AccessToken token = new AccessToken(key1, key2);
         twitter = new TwitterFactory(builder.build()).getInstance(token);
-        login = true;
-    }
-
-    /**
-     * store current user's name & id
-     *
-     * @param key1 AccessToken
-     * @param key2 AccessToken Secret
-     * @throws TwitterException if twitter isn't initialized yet.
-     */
-    private void saveCurrentUser(String key1, String key2) throws TwitterException {
-        twitterID = twitter.getId();
-        settings.setConnection(key1, key2, twitterID);
     }
 
 
@@ -143,17 +136,6 @@ public class TwitterEngine {
         load = settings.getRowLimit();
     }
 
-    /**
-     * recall Keys from Shared-Preferences
-     * & initialize Twitter
-     */
-    private void init() {
-        if (login) {
-            String keys[] = settings.getKeys();
-            initKeys(keys[0], keys[1]);
-        }
-        twitterID = settings.getUserId();
-    }
 
     /**
      * Get Home Timeline

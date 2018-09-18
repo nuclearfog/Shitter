@@ -182,7 +182,7 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
-                android:layout_marginEnd="5dp"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@android:color/holo_red_dark"
                 android:text="@string/delete_database" />
@@ -192,7 +192,7 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
-                android:layout_marginEnd="5dp"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@android:color/holo_red_dark"
                 android:text="@string/logout" />

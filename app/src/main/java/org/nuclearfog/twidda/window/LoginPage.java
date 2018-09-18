@@ -15,10 +15,17 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
+/**
+ * Login Page
+ *
+ * @see Registration
+ */
 public class LoginPage extends AppCompatActivity implements OnClickListener {
 
+    private Registration register;
     private EditText pin;
-
 
     @Override
     protected void onCreate(Bundle b) {
@@ -32,6 +39,14 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
 
     @Override
+    protected void onDestroy() {
+        if (register != null && register.getStatus() == RUNNING)
+            register.cancel(true);
+        super.onDestroy();
+    }
+
+
+    @Override
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         super.onBackPressed();
@@ -40,16 +55,20 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
+        if (register != null && register.getStatus() == RUNNING)
+            register.cancel(true);
+
         switch (v.getId()) {
             case R.id.linkButton:
-                Registration account = new Registration(this);
-                account.execute("");
+                register = new Registration(this);
+                register.execute("");
                 break;
 
             case R.id.get:
                 String twitterPin = pin.getText().toString();
                 if (!twitterPin.trim().isEmpty()) {
-                    new Registration(this).execute(twitterPin);
+                    register = new Registration(this);
+                    register.execute(twitterPin);
                 } else {
                     Toast.makeText(this, R.string.enter_pin, Toast.LENGTH_LONG).show();
                 }

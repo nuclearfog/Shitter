@@ -27,6 +27,11 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.WorldIdAdapter;
 
+/**
+ * App settings page
+ *
+ * @see GlobalSettings
+ */
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnColorChangedListener, OnItemSelectedListener {
 

@@ -259,7 +259,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getStatus() == Status.FINISHED)
+                    if (getStatus() != Status.RUNNING)
                         new ImagePopup(ui.get()).execute(user.profileImg);
                 }
             });
@@ -310,6 +310,10 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            homeReload.setRefreshing(false);
+            favReload.setRefreshing(false);
         }
         if (!isHome) {
             ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm);

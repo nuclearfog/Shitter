@@ -49,7 +49,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
         popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (!isCancelled()) {
+                if (getStatus() == Status.RUNNING) {
                     Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
                     cancel(true);
                 }
@@ -80,14 +80,14 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() != null) {
-            popup.dismiss();
-            if (success) {
-                Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
-                ui.get().finish();
-            } else {
-                Toast.makeText(ui.get(), R.string.error_sending_dm, Toast.LENGTH_SHORT).show();
-            }
+        if (ui.get() == null) return;
+
+        popup.dismiss();
+        if (success) {
+            Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
+            ui.get().finish();
+        } else {
+            Toast.makeText(ui.get(), R.string.error_sending_dm, Toast.LENGTH_SHORT).show();
         }
     }
 }
