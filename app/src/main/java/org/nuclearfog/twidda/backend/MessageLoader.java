@@ -30,7 +30,6 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     public MessageLoader(DirectMessage context) {
         ui = new WeakReference<>(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        boolean loadImages = settings.loadImages();
 
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
@@ -39,7 +38,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
 
         if (mAdapter == null) {
             mAdapter = new MessageAdapter(context);
-            mAdapter.setImageLoad(loadImages);
+            mAdapter.setImageLoad(settings.loadImages());
             dm_list.setAdapter(mAdapter);
         }
     }

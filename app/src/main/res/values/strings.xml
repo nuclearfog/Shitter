@@ -76,4 +76,8 @@
     <string name="error_not_specified">not specidfied error!</string>
     <string name="error_sending_dm">error while sending direct message!</string>
     <string name="empty_tweet">empty tweet!</string>
+    <string name="logout">log out!</string>
+    <string name="should_log_lout">log out?</string>
+    <string name="should_unfollow">unfollow user?</string>
+    <string name="should_block">block user?</string>
 </resources>

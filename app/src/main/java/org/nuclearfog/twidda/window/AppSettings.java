@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -35,6 +35,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private Spinner woeId;
     private EditText woeIdText;
+    private View root;
     private int background, tweet, font, highlight;
     private long wId;
     private int row;
@@ -56,6 +57,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
         Button delButton = findViewById(R.id.delete_db);
         Button load_popup = findViewById(R.id.load_dialog);
+        Button logout = findViewById(R.id.logout);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_tweet);
@@ -63,9 +65,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         toggleImg = findViewById(R.id.toggleImg);
         woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
+        root = findViewById(R.id.settings_layout);
+        root.setBackgroundColor(settings.getBackgroundColor());
 
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
+        logout.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
@@ -139,13 +144,28 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_db:
-                new AlertDialog.Builder(this)
+                new Builder(this)
                         .setMessage(R.string.delete_database_popup)
                         .setNegativeButton(R.string.no_confirm, null)
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 deleteDatabase("database.db");
+                            }
+                        })
+                        .show();
+                break;
+
+            case R.id.logout:
+                new Builder(this)
+                        .setMessage(R.string.should_log_lout)
+                        .setNegativeButton(R.string.no_confirm, null)
+                        .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                settings.logout();
+                                deleteDatabase("database.db");
+                                finish();
                             }
                         })
                         .show();
@@ -244,6 +264,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 colorButton2.setBackgroundColor(font);
                 colorButton3.setBackgroundColor(tweet);
                 colorButton4.setBackgroundColor(highlight);
+                root.setBackgroundColor(background);
             }
         });
         d.show();

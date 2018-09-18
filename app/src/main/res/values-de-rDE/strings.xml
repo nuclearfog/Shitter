@@ -68,4 +68,8 @@
     <string name="error_not_specified">Allgemeiner Fehler!</string>
     <string name="error_sending_dm">Fehler beim Senden der Direktnachricht!</string>
     <string name="empty_tweet">Tweet leer!</string>
+    <string name="logout">log out!</string>
+    <string name="should_log_lout">ausloggen?</string>
+    <string name="should_unfollow">User entfolgen?</string>
+    <string name="should_block">user sperren?</string>
 </resources>

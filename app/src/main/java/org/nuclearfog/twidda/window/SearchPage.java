@@ -27,6 +27,7 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 
 public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemClicked,
@@ -51,23 +52,18 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
             search = b.getString("search");
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        int background = settings.getBackgroundColor();
 
+        View root = findViewById(R.id.search_layout);
+        tweetSearch = findViewById(R.id.tweet_result);
+        userSearch = findViewById(R.id.user_result);
+        tweetReload = findViewById(R.id.searchtweets);
+        tabhost = findViewById(R.id.search_tab);
         Toolbar tool = findViewById(R.id.search_toolbar);
+
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        tweetSearch = findViewById(R.id.tweet_result);
-        tweetSearch.setLayoutManager(new LinearLayoutManager(this));
-        tweetSearch.setBackgroundColor(background);
-
-        userSearch = findViewById(R.id.user_result);
-        userSearch.setLayoutManager(new LinearLayoutManager(this));
-        userSearch.setBackgroundColor(background);
-
-        tweetReload = findViewById(R.id.searchtweets);
-        tabhost = findViewById(R.id.search_tab);
         tabhost.setup();
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
         tab1.setContent(R.id.searchtweets);
@@ -79,6 +75,11 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         tab2.setIndicator("", getDrawable(R.drawable.user));
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
+
+        root.setBackgroundColor(settings.getBackgroundColor());
+
+        tweetSearch.setLayoutManager(new LinearLayoutManager(this));
+        userSearch.setLayoutManager(new LinearLayoutManager(this));
 
         tabhost.setOnTabChangedListener(this);
         tweetReload.setOnRefreshListener(this);
@@ -180,8 +181,10 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public void onRefresh() {
-        mSearch = new TwitterSearch(this);
-        mSearch.execute(search);
+        if (mSearch != null && mSearch.getStatus() == FINISHED) {
+            mSearch = new TwitterSearch(this);
+            mSearch.execute(search);
+        }
     }
 
 

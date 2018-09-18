@@ -73,8 +73,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         TextView txtTw = findViewById(R.id.tweet_detailed);
-        View cLayout = findViewById(R.id.tweet_detail);
-        View tweet = findViewById(R.id.tweetbar);
+        View root = findViewById(R.id.tweet_layout);
         View retweet = findViewById(R.id.rt_button_detail);
         View favorite = findViewById(R.id.fav_button_detail);
         View txtRt = findViewById(R.id.no_rt_detail);
@@ -83,11 +82,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View answer = findViewById(R.id.answer_button);
         answerReload = findViewById(R.id.answer_reload);
         answer_list = findViewById(R.id.answer_list);
-
         answer_list.setLayoutManager(new LinearLayoutManager(this));
-        cLayout.setBackgroundColor(backgroundColor);
-        tweet.setBackgroundColor(backgroundColor);
-        answer_list.setBackgroundColor(backgroundColor);
+
+        root.setBackgroundColor(backgroundColor);
         txtTw.setTextColor(fontColor);
 
         favorite.setOnClickListener(this);
@@ -209,7 +206,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
-        if (timeLineAdapter != null) {
+        if (timeLineAdapter != null && !answerReload.isRefreshing()) {
             Tweet tweet = timeLineAdapter.getData().get(position);
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.tweetID);

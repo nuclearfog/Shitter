@@ -40,15 +40,15 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         if (b != null && b.containsKey("username"))
             username = b.getString("username");
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-
         View root = findViewById(R.id.dm_popup);
         Button send = findViewById(R.id.dm_send);
         Button media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
         text = findViewById(R.id.dm_text);
 
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getTweetColor());
+
         receiver.append(username);
         send.setOnClickListener(this);
         media.setOnClickListener(this);

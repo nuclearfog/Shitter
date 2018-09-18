@@ -10,10 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageLoader;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter.OnItemSelected;
 
@@ -22,6 +24,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class DirectMessage extends AppCompatActivity implements OnItemSelected, OnRefreshListener {
 
     private MessageLoader mLoader;
+    private SwipeRefreshLayout refresh;
     private RecyclerView dmList;
 
 
@@ -33,13 +36,15 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.directmessage);
-        SwipeRefreshLayout refresh = findViewById(R.id.dm_reload);
-
+        refresh = findViewById(R.id.dm_reload);
         dmList = findViewById(R.id.messagelist);
+        View root = findViewById(R.id.dm_layout);
+
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        root.setBackgroundColor(settings.getBackgroundColor());
+
         dmList.setLayoutManager(new LinearLayoutManager(this));
         dmList.setHasFixedSize(true);
-
-        refresh.setRefreshing(true);
         refresh.setOnRefreshListener(this);
     }
 
@@ -48,6 +53,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     protected void onStart() {
         super.onStart();
         if (mLoader == null) {
+            refresh.setRefreshing(true);
             mLoader = new MessageLoader(this);
             mLoader.execute();
         }
@@ -58,6 +64,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     protected void onStop() {
         if (mLoader != null && mLoader.getStatus() == RUNNING)
             mLoader.cancel(true);
+        refresh.setRefreshing(false);
         super.onStop();
     }
 
@@ -84,7 +91,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     @Override
     public void onSelected(int index) {
         MessageAdapter mAdapter = (MessageAdapter) dmList.getAdapter();
-        if (mAdapter != null) {
+        if (mAdapter != null && !refresh.isRefreshing()) {
             TwitterUser sender = mAdapter.getData().get(index).sender;
             Intent sendDm = new Intent(this, MessagePopup.class);
             sendDm.putExtra("username", sender.screenname);

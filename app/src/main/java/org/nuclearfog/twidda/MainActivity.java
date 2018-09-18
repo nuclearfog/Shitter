@@ -41,11 +41,13 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class MainActivity extends AppCompatActivity implements OnRefreshListener, OnTabChangeListener,
         TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked {
 
+    private static final int LOGIN = 1;
+
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
     private GlobalSettings settings;
     private MainPage home;
-    private View lastTab;
+    private View lastTab, root;
     private TabHost tabhost;
     private int tabIndex = 0;
     private boolean settingChanged = false;
@@ -57,11 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
         settings = GlobalSettings.getInstance(this);
 
-        if (!settings.getLogin()) {
-            Intent i = new Intent(this, LoginPage.class);
-            startActivityForResult(i, 1);
-        }
-
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
         mentionList = findViewById(R.id.m_list);
@@ -70,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         mentionReload = findViewById(R.id.mention);
         tabhost = findViewById(R.id.main_tabhost);
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
+        root = findViewById(R.id.main_layout);
+
+        root.setBackgroundColor(settings.getBackgroundColor());
 
         timelineList.setLayoutManager(new LinearLayoutManager(this));
         timelineList.setHasFixedSize(true);
@@ -109,10 +109,15 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     protected void onStart() {
         super.onStart();
+        if (!settings.getLogin()) {
+            Intent i = new Intent(this, LoginPage.class);
+            startActivityForResult(i, LOGIN);
+        }
         if (settingChanged) {
             timelineList.setAdapter(null);
             trendList.setAdapter(null);
             mentionList.setAdapter(null);
+            root.setBackgroundColor(settings.getBackgroundColor());
         }
         if (home == null || settingChanged) {
             settingChanged = false;
@@ -137,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode, returnCode, i);
-        if (returnCode == RESULT_CANCELED) {
+        if (reqCode == LOGIN && returnCode == RESULT_CANCELED) {
             overridePendingTransition(0, 0);
             finish();
         }

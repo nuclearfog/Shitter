@@ -19,7 +19,6 @@
             android:layout_height="@dimen/name_input_height"
             android:layout_marginBottom="5dp"
             android:layout_marginEnd="5dp"
-            android:layout_weight="1"
             android:background="@android:color/transparent"
             android:hint="@string/username"
             android:inputType="text"
@@ -49,7 +48,7 @@
         android:layout_width="@dimen/text_input_width"
         android:layout_height="@dimen/text_input_height"
         android:background="@android:color/transparent"
-        android:gravity="left"
+        android:gravity="start"
         android:hint="@string/dmessage"
         android:inputType="text" />
 

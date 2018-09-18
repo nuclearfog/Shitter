@@ -8,7 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,17 +52,17 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 addition = b.getString("Addition") + " ";
         }
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        mediaPath = new ArrayList<>();
 
         View tweetButton = findViewById(R.id.sendTweet);
         View closeButton = findViewById(R.id.close);
         View root = findViewById(R.id.tweet_popup);
-
-        mediaPath = new ArrayList<>();
         imageButton = findViewById(R.id.image);
         previewBtn = findViewById(R.id.img_preview);
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
+
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getTweetColor());
         tweet.append(addition);
 
@@ -148,7 +148,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private void showClosingMsg() {
         if (!addition.equals(tweet.getText().toString()) || imgIndex > 0) {
-            AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
+            Builder closeDialog = new Builder(this);
             closeDialog.setMessage(R.string.should_cancel_tweet);
             closeDialog.setNegativeButton(R.string.no_confirm, null);
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {

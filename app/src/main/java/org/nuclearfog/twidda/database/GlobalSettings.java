@@ -47,7 +47,7 @@ public class GlobalSettings {
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
         userId = settings.getLong("userID", -1L);
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY); // TODO editable date format
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
     }
 
     public static GlobalSettings getInstance(Context context) {
@@ -185,6 +185,17 @@ public class GlobalSettings {
         e.putLong("userID", userId);
         e.putString("key1", key1);
         e.putString("key2", key2);
+        e.apply();
+    }
+
+    public void logout() {
+        loggedIn = false;
+        Editor e = settings.edit();
+        e.putBoolean("login", false);
+        e.remove("userID").remove("key1").remove("key2").remove("custom_woeId")
+                .remove("image_load").remove("preload").remove("world_id_pos")
+                .remove("world_id").remove("tweet_color").remove("highlight_color")
+                .remove("highlight_color").remove("font_color").remove("background_color");
         e.apply();
     }
 }

@@ -1,9 +1,11 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,25 +62,24 @@ public class UserProfile extends AppCompatActivity implements
         }
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
+        View root = findViewById(R.id.user_view);
+        homeList = findViewById(R.id.ht_list);
+        homeReload = findViewById(R.id.hometweets);
+        favoriteList = findViewById(R.id.hf_list);
+        favoriteReload = findViewById(R.id.homefavorits);
+        mTab = findViewById(R.id.profile_tab);
+
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
-        int background = settings.getBackgroundColor();
 
-        homeList = findViewById(R.id.ht_list);
-        homeReload = findViewById(R.id.hometweets);
         homeList.setLayoutManager(new LinearLayoutManager(this));
-        homeList.setBackgroundColor(background);
-
-        favoriteList = findViewById(R.id.hf_list);
-        favoriteReload = findViewById(R.id.homefavorits);
         favoriteList.setLayoutManager(new LinearLayoutManager(this));
-        favoriteList.setBackgroundColor(background);
+        root.setBackgroundColor(settings.getBackgroundColor());
 
-        mTab = findViewById(R.id.profile_tab);
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
@@ -179,12 +180,36 @@ public class UserProfile extends AppCompatActivity implements
 
                 case R.id.profile_follow:
                     mProfile = new ProfileLoader(this);
-                    mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
+                    if (!isFollowing) {
+                        mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
+                    } else {
+                        new Builder(this).setMessage(R.string.should_unfollow)
+                                .setNegativeButton(R.string.no_confirm, null)
+                                .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
+                                    }
+                                })
+                                .show();
+                    }
                     break;
 
                 case R.id.profile_block:
                     mProfile = new ProfileLoader(this);
-                    mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                    if (isBlocked) {
+                        mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                    } else {
+                        new Builder(this).setMessage(R.string.should_block)
+                                .setNegativeButton(R.string.no_confirm, null)
+                                .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                                    }
+                                })
+                                .show();
+                    }
                     break;
 
                 case R.id.profile_mute:
@@ -247,23 +272,30 @@ public class UserProfile extends AppCompatActivity implements
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        TimelineAdapter tweetAdapter;
-
-        if (parent.getId() == R.id.ht_list)
-            tweetAdapter = (TimelineAdapter) homeList.getAdapter();
-        else
-            tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
-
-        if (tweetAdapter != null) {
-            Tweet tweet = tweetAdapter.getData().get(position);
-            if (tweet.embedded != null)
-                tweet = tweet.embedded;
-
-            Intent intent = new Intent(this, TweetDetail.class);
-            intent.putExtra("tweetID", tweet.tweetID);
-            intent.putExtra("userID", tweet.user.userID);
-            intent.putExtra("username", tweet.user.screenname);
-            startActivity(intent);
+        if (parent.getId() == R.id.ht_list) {
+            TimelineAdapter tweetAdapter = (TimelineAdapter) homeList.getAdapter();
+            if (tweetAdapter != null && !homeReload.isRefreshing()) {
+                Tweet tweet = tweetAdapter.getData().get(position);
+                if (tweet.embedded != null)
+                    tweet = tweet.embedded;
+                Intent intent = new Intent(this, TweetDetail.class);
+                intent.putExtra("tweetID", tweet.tweetID);
+                intent.putExtra("userID", tweet.user.userID);
+                intent.putExtra("username", tweet.user.screenname);
+                startActivity(intent);
+            }
+        } else {
+            TimelineAdapter tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
+            if (tweetAdapter != null && !favoriteReload.isRefreshing()) {
+                Tweet tweet = tweetAdapter.getData().get(position);
+                if (tweet.embedded != null)
+                    tweet = tweet.embedded;
+                Intent intent = new Intent(this, TweetDetail.class);
+                intent.putExtra("tweetID", tweet.tweetID);
+                intent.putExtra("userID", tweet.user.userID);
+                intent.putExtra("username", tweet.user.screenname);
+                startActivity(intent);
+            }
         }
     }
 

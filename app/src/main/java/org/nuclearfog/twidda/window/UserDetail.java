@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
@@ -28,6 +29,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRefreshListener {
 
     private RecyclerView userList;
+    private SwipeRefreshLayout refresh;
     private UserLists uList;
     private int mode = -1;
     private long id = 0;
@@ -36,6 +38,8 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        setContentView(R.layout.page_userlist);
+
         b = getIntent().getExtras();
         if (b != null) {
             mode = b.getInt("mode");
@@ -44,16 +48,16 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
             else if (b.containsKey("userID"))
                 id = b.getLong("userID");
         }
-        setContentView(R.layout.page_userlist);
 
-        SwipeRefreshLayout refresh = findViewById(R.id.user_refresh);
+        View root = findViewById(R.id.user_view);
+        refresh = findViewById(R.id.user_refresh);
         userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(this));
         Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        userList.setBackgroundColor(settings.getBackgroundColor());
+        root.setBackgroundColor(settings.getBackgroundColor());
 
         refresh.setRefreshing(true);
         refresh.setOnRefreshListener(this);
@@ -95,8 +99,10 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
     @Override
     protected void onStop() {
-        if (uList != null && uList.getStatus() == RUNNING)
+        if (uList != null && uList.getStatus() == RUNNING) {
             uList.cancel(true);
+            refresh.setRefreshing(false);
+        }
         super.onStop();
     }
 
@@ -104,7 +110,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         UserAdapter userListAdapter = (UserAdapter) userList.getAdapter();
-        if (userListAdapter != null) {
+        if (userListAdapter != null && !refresh.isRefreshing()) {
             TwitterUser user = userListAdapter.getData().get(position);
             long userID = user.userID;
             String username = user.screenname;
