@@ -89,6 +89,16 @@ public class UserProfile extends AppCompatActivity implements
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
 
+        TimelineAdapter homeTl = new TimelineAdapter(this);
+        homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
+        homeTl.toggleImage(settings.loadImages());
+        homeList.setAdapter(homeTl);
+
+        TimelineAdapter homeFav = new TimelineAdapter(this);
+        homeFav.setColor(settings.getHighlightColor(), settings.getFontColor());
+        homeFav.toggleImage(settings.loadImages());
+        favoriteList.setAdapter(homeFav);
+
         mTab.setOnTabChangedListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);

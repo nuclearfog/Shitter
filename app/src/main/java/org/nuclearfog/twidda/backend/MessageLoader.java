@@ -9,7 +9,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Message;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.window.DirectMessage;
 
@@ -30,19 +29,10 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
 
     public MessageLoader(DirectMessage context) {
         ui = new WeakReference<>(context);
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
         mData = new DatabaseAdapter(context);
-
-        if (mAdapter == null) {
-            mAdapter = new MessageAdapter(context);
-            mAdapter.setColor(settings.getFontColor());
-            mAdapter.setImageLoad(settings.loadImages());
-            dm_list.setAdapter(mAdapter);
-        }
     }
 
 

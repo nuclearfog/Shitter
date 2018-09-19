@@ -45,34 +45,14 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         tweetDb = new DatabaseAdapter(context);
         woeId = settings.getWoeId();
-        int highlight = settings.getHighlightColor();
-        int font = settings.getFontColor();
-        boolean image = settings.loadImages();
 
         RecyclerView timelineList = context.findViewById(R.id.tl_list);
         RecyclerView trendList = context.findViewById(R.id.tr_list);
         RecyclerView mentionList = context.findViewById(R.id.m_list);
+
         timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
         trendsAdapter = (TrendAdapter) trendList.getAdapter();
         mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
-
-        if (timelineAdapter == null) {
-            timelineAdapter = new TimelineAdapter(context);
-            timelineAdapter.setColor(highlight, font);
-            timelineAdapter.toggleImage(image);
-            timelineList.setAdapter(timelineAdapter);
-        }
-        if (trendsAdapter == null) {
-            trendsAdapter = new TrendAdapter(context);
-            trendsAdapter.setColor(font);
-            trendList.setAdapter(trendsAdapter);
-        }
-        if (mentionAdapter == null) {
-            mentionAdapter = new TimelineAdapter(context);
-            mentionAdapter.setColor(highlight, font);
-            mentionAdapter.toggleImage(image);
-            mentionList.setAdapter(mentionAdapter);
-        }
     }
 
 

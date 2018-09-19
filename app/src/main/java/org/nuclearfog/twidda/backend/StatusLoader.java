@@ -46,7 +46,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private DatabaseAdapter database;
     private SimpleDateFormat sdf;
     private Tweet tweet;
-    private int highlight;
+    private int highlight, font_color;
     private boolean toggleImg;
     private String errMsg = "E Status load: ";
     private int returnCode = 0;
@@ -56,19 +56,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         sdf = settings.getDateFormatter();
-        int font = settings.getFontColor();
+        font_color = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
         ui = new WeakReference<>(context);
         RecyclerView replyList = context.findViewById(R.id.answer_list);
         answerAdapter = (TimelineAdapter) replyList.getAdapter();
         database = new DatabaseAdapter(context);
-        if (answerAdapter == null) {
-            answerAdapter = new TimelineAdapter(context);
-            replyList.setAdapter(answerAdapter);
-            answerAdapter.toggleImage(toggleImg);
-            answerAdapter.setColor(highlight, font);
-        }
     }
 
 
@@ -162,11 +156,16 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
 
         tweetText.setText(highlight(tweet.tweet));
+        tweetText.setTextColor(font_color);
         username.setText(tweet.user.username);
+        username.setTextColor(font_color);
         scrName.setText(tweet.user.screenname);
+        scrName.setTextColor(font_color);
         date.setText(sdf.format(tweet.time));
+        date.setTextColor(font_color);
         used_api.setText(R.string.sent_from);
         used_api.append(tweet.source);
+        used_api.setTextColor(font_color);
 
         String ansStr = Integer.toString(answerAdapter.getItemCount());
         String favStr = Integer.toString(tweet.favorit);

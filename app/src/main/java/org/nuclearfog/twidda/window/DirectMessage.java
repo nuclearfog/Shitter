@@ -49,6 +49,10 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
 
+        MessageAdapter mAdapter = new MessageAdapter(this);
+        mAdapter.setColor(settings.getFontColor());
+        mAdapter.setImageLoad(settings.loadImages());
+        dmList.setAdapter(mAdapter);
         dmList.setLayoutManager(new LinearLayoutManager(this));
         dmList.setHasFixedSize(true);
         refresh.setOnRefreshListener(this);

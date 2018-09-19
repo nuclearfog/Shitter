@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
@@ -53,13 +52,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        setContentView(R.layout.page_tweet);
+
         b = getIntent().getExtras();
         if (b != null) {
             tweetID = b.getLong("tweetID");
             userID = b.getLong("userID");
             username = b.getString("username");
         }
-        setContentView(R.layout.page_tweet);
 
         Toolbar tool = findViewById(R.id.tweet_toolbar);
         setSupportActionBar(tool);
@@ -67,13 +67,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        int backgroundColor = settings.getBackgroundColor();
-        int fontColor = settings.getFontColor();
         isHome = userID == settings.getUserId();
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        TextView txtTw = findViewById(R.id.tweet_detailed);
         View root = findViewById(R.id.tweet_layout);
+
         View retweet = findViewById(R.id.rt_button_detail);
         View favorite = findViewById(R.id.fav_button_detail);
         View txtRt = findViewById(R.id.no_rt_detail);
@@ -84,8 +82,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         answer_list = findViewById(R.id.answer_list);
         answer_list.setLayoutManager(new LinearLayoutManager(this));
 
-        root.setBackgroundColor(backgroundColor);
-        txtTw.setTextColor(fontColor);
+        root.setBackgroundColor(settings.getBackgroundColor());
+        TimelineAdapter answerAdapter = new TimelineAdapter(this);
+        answerAdapter.toggleImage(settings.loadImages());
+        answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        answer_list.setAdapter(answerAdapter);
 
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);

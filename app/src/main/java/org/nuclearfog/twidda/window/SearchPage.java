@@ -55,14 +55,15 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         if (b != null)
             search = b.getString("search");
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-
         View root = findViewById(R.id.search_layout);
         tweetSearch = findViewById(R.id.tweet_result);
         userSearch = findViewById(R.id.user_result);
         tweetReload = findViewById(R.id.searchtweets);
         tabhost = findViewById(R.id.search_tab);
         Toolbar tool = findViewById(R.id.search_toolbar);
+
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        root.setBackgroundColor(settings.getBackgroundColor());
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
@@ -80,10 +81,18 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
 
-        root.setBackgroundColor(settings.getBackgroundColor());
-
         tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         userSearch.setLayoutManager(new LinearLayoutManager(this));
+
+        TimelineAdapter searchAdapter = new TimelineAdapter(this);
+        searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        searchAdapter.toggleImage(settings.loadImages());
+        tweetSearch.setAdapter(searchAdapter);
+
+        UserAdapter userAdapter = new UserAdapter(this);
+        userAdapter.toggleImage(settings.loadImages());
+        userAdapter.setColor(settings.getFontColor());
+        userSearch.setAdapter(userAdapter);
 
         tabhost.setOnTabChangedListener(this);
         tweetReload.setOnRefreshListener(this);

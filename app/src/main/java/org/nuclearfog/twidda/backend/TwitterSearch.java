@@ -9,7 +9,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.SearchPage;
@@ -32,27 +31,10 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
 
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        int font_color = settings.getFontColor();
-        int highlight = settings.getHighlightColor();
-        boolean imageLoad = settings.loadImages();
-
         RecyclerView tweetSearch = context.findViewById(R.id.tweet_result);
         RecyclerView userSearch = context.findViewById(R.id.user_result);
         searchAdapter = (TimelineAdapter) tweetSearch.getAdapter();
         userAdapter = (UserAdapter) userSearch.getAdapter();
-
-        if (searchAdapter == null) {
-            searchAdapter = new TimelineAdapter(context);
-            tweetSearch.setAdapter(searchAdapter);
-            searchAdapter.setColor(highlight, font_color);
-            searchAdapter.toggleImage(imageLoad);
-        }
-        if (userAdapter == null) {
-            userAdapter = new UserAdapter(context);
-            userSearch.setAdapter(userAdapter);
-            userAdapter.toggleImage(imageLoad);
-        }
     }
 
 

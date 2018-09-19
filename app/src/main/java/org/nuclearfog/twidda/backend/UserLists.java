@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.UserDetail;
 
@@ -36,16 +35,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = context.findViewById(R.id.userlist);
-
         usrAdp = (UserAdapter) userList.getAdapter();
-
-        if (usrAdp == null) {
-            GlobalSettings settings = GlobalSettings.getInstance(context);
-            usrAdp = new UserAdapter(context);
-            usrAdp.toggleImage(settings.loadImages());
-            usrAdp.setColor(settings.getFontColor());
-            userList.setAdapter(usrAdp);
-        }
     }
 
 

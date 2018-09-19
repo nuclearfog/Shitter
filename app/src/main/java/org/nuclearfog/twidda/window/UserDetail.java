@@ -58,6 +58,11 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
 
+        UserAdapter usrAdp = new UserAdapter(this);
+        usrAdp.toggleImage(settings.loadImages());
+        usrAdp.setColor(settings.getFontColor());
+        userList.setAdapter(usrAdp);
+
         refresh.setRefreshing(true);
         refresh.setOnRefreshListener(this);
     }

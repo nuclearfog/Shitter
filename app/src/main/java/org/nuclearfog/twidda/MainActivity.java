@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
+    private TimelineAdapter timelineAdapter, mentionAdapter;
+    private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
     private MainPage home;
     private View lastTab, root;
@@ -69,17 +71,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
         root = findViewById(R.id.main_layout);
 
-        root.setBackgroundColor(settings.getBackgroundColor());
-
-        timelineList.setLayoutManager(new LinearLayoutManager(this));
-        timelineList.setHasFixedSize(true);
-
-        trendList.setLayoutManager(new LinearLayoutManager(this));
-        trendList.setHasFixedSize(true);
-
-        mentionList.setLayoutManager(new LinearLayoutManager(this));
-        mentionList.setHasFixedSize(true);
-
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -98,6 +89,21 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tab3.setIndicator("", getDrawable(R.drawable.mention));
         tabhost.addTab(tab3);
 
+        timelineList.setLayoutManager(new LinearLayoutManager(this));
+        timelineList.setHasFixedSize(true);
+        timelineAdapter = new TimelineAdapter(this);
+        timelineList.setAdapter(timelineAdapter);
+
+        trendList.setLayoutManager(new LinearLayoutManager(this));
+        trendList.setHasFixedSize(true);
+        trendsAdapter = new TrendAdapter(this);
+        trendList.setAdapter(trendsAdapter);
+
+        mentionList.setLayoutManager(new LinearLayoutManager(this));
+        mentionList.setHasFixedSize(true);
+        mentionAdapter = new TimelineAdapter(this);
+        mentionList.setAdapter(mentionAdapter);
+
         lastTab = tabhost.getCurrentView();
         tabhost.setOnTabChangedListener(this);
         timelineReload.setOnRefreshListener(this);
@@ -113,16 +119,22 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
         }
-        if (settingChanged) {
-            timelineList.setAdapter(null);
-            trendList.setAdapter(null);
-            mentionList.setAdapter(null);
-            root.setBackgroundColor(settings.getBackgroundColor());
-        }
         if (home == null || settingChanged) {
-            settingChanged = false;
-            home = new MainPage(this);
-            home.execute(MainPage.DATA, 1);
+            root.setBackgroundColor(settings.getBackgroundColor());
+            timelineAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+            timelineAdapter.toggleImage(settings.loadImages());
+            trendsAdapter.setColor(settings.getFontColor());
+            mentionAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+            mentionAdapter.toggleImage(settings.loadImages());
+            timelineAdapter.notifyDataSetChanged();
+            trendsAdapter.notifyDataSetChanged();
+            mentionAdapter.notifyDataSetChanged();
+            if (!settingChanged) {
+                home = new MainPage(this);
+                home.execute(MainPage.DATA, 1);
+            } else {
+                settingChanged = false;
+            }
         }
     }
 
@@ -162,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(search);
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;

@@ -13,14 +13,14 @@
 
         <android.support.v7.widget.CardView
             style="@style/ProfileImageCardView"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="10dp">
 
             <ImageView
                 android:id="@+id/user_profileimg"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:contentDescription="@string/profile_image" />
 
         </android.support.v7.widget.CardView>
@@ -43,7 +43,7 @@
                     android:layout_marginEnd="3dp"
                     android:background="@drawable/verify"
                     android:contentDescription="@string/verify"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/username_detail"
@@ -67,7 +67,7 @@
                     android:layout_marginEnd="3dp"
                     android:background="@drawable/lock"
                     android:contentDescription="@string/profile_locked"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/screenname_detail"
