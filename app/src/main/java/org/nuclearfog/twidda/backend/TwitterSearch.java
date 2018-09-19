@@ -14,14 +14,20 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.SearchPage;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
+public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
+
+    private final int TWEET = 0;
+    private final int USER = 1;
 
     private TimelineAdapter searchAdapter;
     private UserAdapter userAdapter;
+    private List<Tweet> tweets;
+    private List<TwitterUser> users;
     private TwitterEngine mTwitter;
     private WeakReference<SearchPage> ui;
     private String errMsg = "E Twitter search: ";
@@ -30,6 +36,9 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
     public TwitterSearch(SearchPage context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
+
+        tweets = new ArrayList<>();
+        users = new ArrayList<>();
 
         RecyclerView tweetSearch = context.findViewById(R.id.tweet_result);
         RecyclerView userSearch = context.findViewById(R.id.user_result);
@@ -43,20 +52,14 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
         String strSearch = search[0];
         long id = 1L;
         try {
-            if (searchAdapter.getItemCount() > 0) {
+            if (searchAdapter.getItemCount() > 0)
                 id = searchAdapter.getItemId(0);
-                List<Tweet> tweets = mTwitter.searchTweets(strSearch, id);
-                searchAdapter.addNew(tweets);
-            } else {
-                List<Tweet> tweets = mTwitter.searchTweets(strSearch, id);
-                searchAdapter.setData(tweets);
-            }
-            publishProgress();
+            tweets = mTwitter.searchTweets(strSearch, id);
+            publishProgress(TWEET);
 
             if (userAdapter.getItemCount() == 0) {
-                List<TwitterUser> user = mTwitter.searchUsers(strSearch);
-                userAdapter.setData(user);
-                publishProgress();
+                users = mTwitter.searchUsers(strSearch);
+                publishProgress(USER);
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
@@ -74,13 +77,22 @@ public class TwitterSearch extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected void onProgressUpdate(Void... v) {
+    protected void onProgressUpdate(Integer... mode) {
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
-        searchAdapter.notifyDataSetChanged();
-        userAdapter.notifyDataSetChanged();
-        tweetReload.setRefreshing(false);
+        switch (mode[0]) {
+            case TWEET:
+                searchAdapter.setData(tweets);
+                searchAdapter.notifyDataSetChanged();
+                SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+                tweetReload.setRefreshing(false);
+                break;
+
+            case USER:
+                userAdapter.setData(users);
+                userAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 
 

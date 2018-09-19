@@ -28,6 +28,7 @@ import org.nuclearfog.twidda.window.TweetDetail;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.TwitterException;
@@ -45,6 +46,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private TimelineAdapter answerAdapter;
     private DatabaseAdapter database;
     private SimpleDateFormat sdf;
+    private List<Tweet> answers;
     private Tweet tweet;
     private int highlight, font_color;
     private boolean toggleImg;
@@ -60,6 +62,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
         ui = new WeakReference<>(context);
+        answers = new ArrayList<>();
         RecyclerView replyList = context.findViewById(R.id.answer_list);
         answerAdapter = (TimelineAdapter) replyList.getAdapter();
         database = new DatabaseAdapter(context);
@@ -73,31 +76,26 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     protected Long doInBackground(Long... data) {
         final long TWEETID = data[0];
         final long MODE = data[1];
+        long sinceId = TWEETID;
 
         try {
             if (MODE == LOAD) {
                 tweet = database.getStatus(TWEETID);
-                List<Tweet> answers = database.getAnswers(TWEETID);
-                answerAdapter.setData(answers);
+                answers = database.getAnswers(TWEETID);
                 if (tweet != null)
                     publishProgress();
 
                 tweet = mTwitter.getStatus(TWEETID);
-                if (database.containStatus(TWEETID))
-                    database.updateStatus(tweet);
-
-                if (answerAdapter.getItemCount() > 0) {
-                    long sinceId = answerAdapter.getItemId(0);
-                    answers = mTwitter.getAnswers(tweet.user.screenname, TWEETID, sinceId);
-                    answerAdapter.addNew(answers);
-                } else {
-                    answers = mTwitter.getAnswers(tweet.user.screenname, TWEETID, TWEETID);
-                    answerAdapter.setData(answers);
-                }
+                if (!answers.isEmpty())
+                    sinceId = answers.get(0).tweetID;
+                answers = mTwitter.getAnswers(tweet.user.screenname, TWEETID, sinceId);
                 publishProgress();
 
-                if (answers.size() > 0 && database.containStatus(TWEETID))
-                    database.storeReplies(answers);
+                if (database.containStatus(TWEETID)) {
+                    database.updateStatus(tweet);
+                    if (!answers.isEmpty())
+                        database.storeReplies(answers);
+                }
 
             } else if (MODE == DELETE) {
                 mTwitter.deleteTweet(TWEETID);
@@ -215,6 +213,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         } else {
             favoriteButton.setBackgroundResource(R.drawable.favorite);
         }
+        answerAdapter.setData(answers);
         answerAdapter.notifyDataSetChanged();
     }
 

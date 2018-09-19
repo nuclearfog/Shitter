@@ -16,6 +16,7 @@ import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
 import org.nuclearfog.twidda.viewadapter.TrendAdapter;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.TwitterException;
@@ -34,6 +35,9 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
     private DatabaseAdapter tweetDb;
+    private List<Tweet> tweets, mention;
+    private List<Trend> trends;
+
     private int woeId;
     private String errMsg = "E Main Page: ";
     private int returnCode = 0;
@@ -45,6 +49,10 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         tweetDb = new DatabaseAdapter(context);
         woeId = settings.getWoeId();
+
+        tweets = new ArrayList<>();
+        trends = new ArrayList<>();
+        mention = new ArrayList<>();
 
         RecyclerView timelineList = context.findViewById(R.id.tl_list);
         RecyclerView trendList = context.findViewById(R.id.tr_list);
@@ -60,46 +68,30 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     protected Integer doInBackground(Integer... args) {
         final int MODE = args[0];
         final int PAGE = args[1];
+        long sinceId = 1L;
         try {
             if (MODE == HOME) {
-                List<Tweet> tweets;
-                if (timelineAdapter.getItemCount() > 0) {
-                    long id = timelineAdapter.getItemId(0);
-                    tweets = mTwitter.getHome(PAGE, id);
-                    timelineAdapter.addNew(tweets);
-                } else {
-                    tweets = mTwitter.getHome(PAGE, 1L);
-                    timelineAdapter.setData(tweets);
-                }
+                if (timelineAdapter.getItemCount() > 0)
+                    sinceId = timelineAdapter.getItemId(0);
+                tweets = mTwitter.getHome(PAGE, sinceId);
                 publishProgress(HOME);
                 tweetDb.storeHomeTimeline(tweets);
             } else if (MODE == TRND) {
-                List<Trend> trends = mTwitter.getTrends(woeId);
-                trendsAdapter.setData(trends);
+                trends = mTwitter.getTrends(woeId);
                 publishProgress(TRND);
                 tweetDb.store(trends, woeId);
             } else if (MODE == MENT) {
-                List<Tweet> tweets;
-                if (mentionAdapter.getItemCount() != 0) {
-                    long id = mentionAdapter.getItemId(0);
-                    tweets = mTwitter.getMention(PAGE, id);
-                    mentionAdapter.addNew(tweets);
-                } else {
-                    tweets = mTwitter.getMention(PAGE, 1L);
-                    mentionAdapter.setData(tweets);
-                }
+                if (mentionAdapter.getItemCount() != 0)
+                    sinceId = mentionAdapter.getItemId(0);
+                tweets = mTwitter.getMention(PAGE, sinceId);
                 publishProgress(MENT);
                 tweetDb.storeMentions(tweets);
             } else {
-                List<Tweet> tweets = tweetDb.getHomeTimeline();
-                timelineAdapter.setData(tweets);
+                tweets = tweetDb.getHomeTimeline();
                 publishProgress(HOME);
-
-                trendsAdapter.setData(tweetDb.load(woeId));
+                trends = tweetDb.getTrends(woeId);
                 publishProgress(TRND);
-
-                tweets = tweetDb.getMentions();
-                mentionAdapter.setData(tweets);
+                mention = tweetDb.getMentions();
                 publishProgress(MENT);
             }
         } catch (TwitterException e) {
@@ -121,16 +113,18 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
         if (ui.get() == null) return;
 
         final int MODE = modes[0];
-
         if (MODE == HOME) {
+            timelineAdapter.setData(tweets);
             timelineAdapter.notifyDataSetChanged();
             SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
             timelineRefresh.setRefreshing(false);
         } else if (MODE == TRND) {
+            trendsAdapter.setData(trends);
             trendsAdapter.notifyDataSetChanged();
             SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
             trendRefresh.setRefreshing(false);
         } else if (MODE == MENT) {
+            mentionAdapter.setData(mention);
             mentionAdapter.notifyDataSetChanged();
             SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
             mentionRefresh.setRefreshing(false);

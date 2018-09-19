@@ -71,7 +71,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
     @Override
     protected void onStart() {
         super.onStart();
-
         if (uList == null) {
             uList = new UserLists(UserDetail.this);
             int titleId;
@@ -128,8 +127,6 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
     @Override
     public void onRefresh() {
-        if (uList != null && uList.getStatus() == RUNNING)
-            uList.cancel(true);
         uList = new UserLists(UserDetail.this);
         if (mode == 0)
             uList.execute(id, UserLists.FOLLOWING, -1L);

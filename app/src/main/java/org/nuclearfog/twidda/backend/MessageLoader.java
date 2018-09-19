@@ -13,6 +13,7 @@ import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.window.DirectMessage;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.TwitterException;
@@ -23,6 +24,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     private MessageAdapter mAdapter;
     private TwitterEngine twitter;
     private DatabaseAdapter mData;
+    private List<Message> msg;
     private String errorMsg = "E MessageLoader: ";
     private int returnCode = 0;
 
@@ -32,6 +34,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
+        msg = new ArrayList<>();
         mData = new DatabaseAdapter(context);
     }
 
@@ -39,7 +42,6 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... param) {
         try {
-            List<Message> msg;
             if (mAdapter.getItemCount() > 0) {
                 msg = twitter.getMessages();
                 mData.storeMessage(msg);
@@ -51,7 +53,6 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
                     mData.storeMessage(msg);
                 }
             }
-            mAdapter.setData(msg);
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             errorMsg += err.getMessage();
@@ -70,11 +71,10 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
-        mAdapter.notifyDataSetChanged();
-        mRefresh.setRefreshing(false);
-
-        if (!success) {
+        if (success) {
+            mAdapter.setData(msg);
+            mAdapter.notifyDataSetChanged();
+        } else {
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
@@ -86,5 +86,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
                     Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
             }
         }
+        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
+        mRefresh.setRefreshing(false);
     }
 }

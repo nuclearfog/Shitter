@@ -220,8 +220,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
-        if (mStat != null && mStat.getStatus() == RUNNING)
-            mStat.cancel(true);
         mStat = new StatusLoader(this);
         mStat.execute(tweetID, StatusLoader.LOAD);
     }

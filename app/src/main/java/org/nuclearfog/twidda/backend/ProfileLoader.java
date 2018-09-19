@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private TwitterEngine mTwitter;
     private DatabaseAdapter database;
     private TwitterUser user;
+    private List<Tweet> tweets, favors;
     private long homeId;
     private boolean imgEnabled;
 
@@ -76,6 +78,9 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         imgEnabled = settings.loadImages();
         homeId = settings.getUserId();
 
+        tweets = new ArrayList<>();
+        favors = new ArrayList<>();
+
         RecyclerView profileTweets = context.findViewById(R.id.ht_list);
         RecyclerView profileFavors = context.findViewById(R.id.hf_list);
         homeTl = (TimelineAdapter) profileTweets.getAdapter();
@@ -88,6 +93,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         final long UID = args[0];
         final long MODE = args[1];
         long page = 1L;
+        long sinceId = 1L;
         if (args.length > 2)
             page = args[2];
         isHome = homeId == UID;
@@ -98,18 +104,14 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 publishProgress(GET_USER);
 
             if (homeTl.getItemCount() == 0) {
-                List<Tweet> tweets = database.getUserTweets(UID);
-                if (!tweets.isEmpty()) {
-                    homeTl.setData(tweets);
+                tweets = database.getUserTweets(UID);
+                if (!tweets.isEmpty())
                     publishProgress(GET_TWEETS);
-                }
             }
             if (homeFav.getItemCount() == 0) {
-                List<Tweet> favors = database.getUserFavs(UID);
-                if (!favors.isEmpty()) {
-                    homeFav.setData(favors);
+                favors = database.getUserFavs(UID);
+                if (!favors.isEmpty())
                     publishProgress(GET_FAVORS);
-                }
             }
 
             user = mTwitter.getUser(UID);
@@ -140,23 +142,17 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             } else {
                 boolean access = (!user.isLocked || isFollowing);
                 if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0) && access) {
-                    long id = 1L;
                     if (homeTl.getItemCount() > 0)
-                        id = homeTl.getItemId(0);
-
-                    List<Tweet> tweets = mTwitter.getUserTweets(UID, id, page);
-                    homeTl.addNew(tweets);
+                        sinceId = homeTl.getItemId(0);
+                    tweets = mTwitter.getUserTweets(UID, sinceId, page);
                     database.storeUserTweets(tweets);
                 }
                 publishProgress(GET_TWEETS);
 
                 if ((MODE == GET_FAVORS || homeFav.getItemCount() == 0) && access) {
-                    long id = 1L;
                     if (homeFav.getItemCount() > 0)
-                        id = homeFav.getItemId(0);
-
-                    List<Tweet> favors = mTwitter.getUserFavs(UID, id, page);
-                    homeFav.addNew(favors);
+                        sinceId = homeFav.getItemId(0);
+                    favors = mTwitter.getUserFavs(UID, sinceId, page);
                     database.storeUserFavs(favors, UID);
                 }
                 publishProgress(GET_FAVORS);
@@ -251,13 +247,15 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             });
 
         } else if (MODE == GET_TWEETS) {
+            homeTl.setData(tweets);
+            homeTl.notifyDataSetChanged();
             SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
             homeReload.setRefreshing(false);
-            homeTl.notifyDataSetChanged();
         } else if (MODE == GET_FAVORS) {
+            homeFav.setData(favors);
+            homeFav.notifyDataSetChanged();
             SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
             favReload.setRefreshing(false);
-            homeFav.notifyDataSetChanged();
         }
     }
 

@@ -253,9 +253,6 @@ public class UserProfile extends AppCompatActivity implements
 
     @Override
     public void onRefresh() {
-        if (mProfile != null && mProfile.getStatus() == RUNNING)
-            mProfile.cancel(true);
-
         if (tabIndex == 0) {
             mProfile = new ProfileLoader(this);
             mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
@@ -268,6 +265,11 @@ public class UserProfile extends AppCompatActivity implements
 
     @Override
     public void onTabChanged(String tabId) {
+        if (mProfile != null && mProfile.getStatus() == RUNNING) {
+            mProfile.cancel(true);
+            homeReload.setRefreshing(false);
+            favoriteReload.setRefreshing(false);
+        }
         animate();
         tabIndex = mTab.getCurrentTab();
 

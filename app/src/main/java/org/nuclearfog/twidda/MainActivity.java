@@ -249,8 +249,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     public void onBackPressed() {
         if (tabIndex == 0) {
-            super.onBackPressed();
             overridePendingTransition(0, 0);
+            super.onBackPressed();
         } else {
             tabhost.setCurrentTab(0);
         }
@@ -259,8 +259,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
-        if (home != null && home.getStatus() == RUNNING)
-            home.cancel(true);
         home = new MainPage(MainActivity.this);
         if (tabIndex == 0)
             home.execute(MainPage.HOME, 1);
@@ -273,6 +271,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onTabChanged(String tabId) {
+        if (home != null && home.getStatus() == RUNNING) {
+            home.cancel(true);
+            timelineReload.setRefreshing(false);
+            trendReload.setRefreshing(false);
+            mentionReload.setRefreshing(false);
+        }
         animate();
         tabIndex = tabhost.getCurrentTab();
         invalidateOptionsMenu();

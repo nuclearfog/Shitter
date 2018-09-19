@@ -412,7 +412,7 @@ public class DatabaseAdapter {
      * @param woeId Yahoo World ID
      * @return list of trends
      */
-    public List<Trend> load(int woeId) {
+    public List<Trend> getTrends(int woeId) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         List<Trend> trends = new ArrayList<>();
         String query = "SELECT * FROM trend WHERE woeID=" + woeId + " ORDER BY trendpos ASC";

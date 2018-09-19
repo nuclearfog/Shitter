@@ -13,6 +13,7 @@ import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.UserDetail;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.TwitterException;
@@ -27,6 +28,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
     private UserAdapter usrAdp;
+    private List<TwitterUser> user;
     private String errorMessage = "E Userlist: ";
     private int returnCode = 0;
 
@@ -36,6 +38,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = context.findViewById(R.id.userlist);
         usrAdp = (UserAdapter) userList.getAdapter();
+        user = new ArrayList<>();
     }
 
 
@@ -45,17 +48,12 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
         long mode = data[1];
         long cursor = data[2];
         try {
-            List<TwitterUser> user;
-            if (mode == FOLLOWING) {
+            if (mode == FOLLOWING)
                 user = mTwitter.getFollowing(id, cursor);
-                usrAdp.setData(user);
-            } else if (mode == FOLLOWERS) {
+            else if (mode == FOLLOWERS)
                 user = mTwitter.getFollower(id, cursor);
-                usrAdp.setData(user);
-            } else if (mode == RETWEETER) {
+            else if (mode == RETWEETER)
                 user = mTwitter.getRetweeter(id, cursor);
-                usrAdp.setData(user);
-            }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             if (returnCode > 0 && returnCode != 420) {
@@ -75,12 +73,10 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
-        refresh.setRefreshing(false);
-        usrAdp.notifyDataSetChanged();
-
-        if (!success) {
-
+        if (success) {
+            usrAdp.setData(user);
+            usrAdp.notifyDataSetChanged();
+        } else {
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
@@ -89,5 +85,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
                     Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         }
+        SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
+        refresh.setRefreshing(false);
     }
 }
