@@ -33,9 +33,6 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
 
 
     public UserLists(UserDetail context) {
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        boolean imageLoad = settings.loadImages();
-
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = context.findViewById(R.id.userlist);
@@ -43,8 +40,10 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
         usrAdp = (UserAdapter) userList.getAdapter();
 
         if (usrAdp == null) {
+            GlobalSettings settings = GlobalSettings.getInstance(context);
             usrAdp = new UserAdapter(context);
-            usrAdp.toggleImage(imageLoad);
+            usrAdp.toggleImage(settings.loadImages());
+            usrAdp.setColor(settings.getFontColor());
             userList.setAdapter(usrAdp);
         }
     }

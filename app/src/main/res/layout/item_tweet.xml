@@ -17,11 +17,13 @@
             android:orientation="horizontal">
 
             <android.support.v7.widget.CardView
+                style="@style/ProfileImageCardView"
                 android:layout_width="@dimen/profile_small"
                 android:layout_height="@dimen/profile_small">
 
                 <ImageView
                     android:id="@+id/tweetPb"
+                    style="@style/ProfileImageCardView"
                     android:layout_width="@dimen/profile_small"
                     android:layout_height="@dimen/profile_small"
                     android:layout_gravity="center_vertical"

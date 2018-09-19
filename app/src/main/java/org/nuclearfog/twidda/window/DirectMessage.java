@@ -21,6 +21,11 @@ import org.nuclearfog.twidda.viewadapter.MessageAdapter.OnItemSelected;
 
 import static android.os.AsyncTask.Status.RUNNING;
 
+/**
+ * Direct Message page
+ *
+ * @see MessageLoader
+ */
 public class DirectMessage extends AppCompatActivity implements OnItemSelected, OnRefreshListener {
 
     private MessageLoader mLoader;
@@ -32,6 +37,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_dm);
+
         Toolbar tool = findViewById(R.id.dm_toolbar);
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)

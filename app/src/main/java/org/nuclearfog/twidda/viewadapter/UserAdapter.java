@@ -23,6 +23,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     private List<TwitterUser> mUser;
     private OnItemClicked mListener;
+    private int font_color = 0xFFFFFFFF;
     private boolean loadImage = true;
 
 
@@ -44,6 +45,11 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     public void toggleImage(boolean image) {
         loadImage = image;
+    }
+
+
+    public void setColor(int font_color) {
+        this.font_color = font_color;
     }
 
 
@@ -80,6 +86,11 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         TwitterUser user = mUser.get(index);
         vh.screenname.setText(user.screenname);
         vh.username.setText(user.username);
+
+        vh.screenname.setTextColor(font_color);
+        vh.username.setTextColor(font_color);
+
+
         if (loadImage) {
             Picasso.get().load(user.profileImg + "_mini").into(vh.profileImg);
         }

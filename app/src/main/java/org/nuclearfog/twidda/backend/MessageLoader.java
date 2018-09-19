@@ -39,6 +39,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
 
         if (mAdapter == null) {
             mAdapter = new MessageAdapter(context);
+            mAdapter.setColor(settings.getFontColor());
             mAdapter.setImageLoad(settings.loadImages());
             dm_list.setAdapter(mAdapter);
         }

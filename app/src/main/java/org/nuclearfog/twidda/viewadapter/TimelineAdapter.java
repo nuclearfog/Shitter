@@ -107,13 +107,19 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
-        vh.tweet.setTextColor(font_color);
+
         vh.username.setText(tweet.user.username);
         vh.screenname.setText(tweet.user.screenname);
         vh.tweet.setText(highlight(tweet.tweet));
         vh.retweet.setText(retweet);
         vh.favorite.setText(favorit);
         vh.time.setText(stringTime(tweet.time));
+
+        vh.username.setTextColor(font_color);
+        vh.screenname.setTextColor(font_color);
+        vh.tweet.setTextColor(font_color);
+        vh.time.setTextColor(font_color);
+
         if (img_ldr) {
             Picasso.get().load(tweet.user.profileImg + "_mini").into(vh.profile);
         }

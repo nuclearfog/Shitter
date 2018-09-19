@@ -14,9 +14,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="fill_vertical"
             android:orientation="horizontal">
 
             <android.support.v7.widget.CardView
+                style="@style/ProfileImageCardView"
                 android:layout_width="@dimen/profile_small"
                 android:layout_height="@dimen/profile_small"
                 app:cardCornerRadius="5dp">

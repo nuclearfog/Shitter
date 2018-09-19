@@ -25,6 +25,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     private List<Message> messages;
     private OnItemSelected mListener;
     private boolean loadImage = true;
+    private int color = 0xFFFFFFFF;
 
 
     public MessageAdapter(OnItemSelected listener) {
@@ -45,6 +46,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     public void setImageLoad(boolean loadImage) {
         this.loadImage = loadImage;
+    }
+
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
 
@@ -83,6 +89,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         vh.username.setText(message.sender.username);
         vh.screenname.setText(message.sender.screenname);
         vh.createdAt.setText(stringTime(message.time));
+
+        vh.message.setTextColor(color);
+        vh.username.setTextColor(color);
+        vh.screenname.setTextColor(color);
+        vh.createdAt.setTextColor(color);
+
         if (loadImage)
             Picasso.get().load(message.sender.profileImg + "_mini").into(vh.profile_img);
     }
