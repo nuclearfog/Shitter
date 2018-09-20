@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked {
 
     private static final int LOGIN = 1;
+    private static final int SETTING = 2;
 
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private View lastTab, root;
     private TabHost tabhost;
     private int tabIndex = 0;
-    private boolean settingChanged = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,13 +110,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
-        } else if (home == null || settingChanged) {
-            root.setBackgroundColor(settings.getBackgroundColor());
-
+        } else if (home == null) {
             timelineAdapter = new TimelineAdapter(this);
             trendsAdapter = new TrendAdapter(this);
             mentionAdapter = new TimelineAdapter(this);
 
+            root.setBackgroundColor(settings.getBackgroundColor());
             timelineAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             timelineAdapter.toggleImage(settings.loadImages());
             trendsAdapter.setColor(settings.getFontColor());
@@ -129,8 +128,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             home = new MainPage(this);
             home.execute(MainPage.DATA, 1);
-
-            settingChanged = false;
         }
     }
 
@@ -153,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (reqCode == LOGIN && returnCode == RESULT_CANCELED) {
             overridePendingTransition(0, 0);
             finish();
+        } else if (reqCode == SETTING) {
+            home = null;
         }
     }
 
@@ -223,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 long homeId = settings.getUserId();
                 Intent user = new Intent(this, UserProfile.class);
                 user.putExtra("userID", homeId);
-                user.putExtra("username", "");
                 startActivity(user);
                 break;
 
@@ -233,9 +231,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.action_settings:
-                settingChanged = true;
                 Intent settings = new Intent(this, AppSettings.class);
-                startActivity(settings);
+                startActivityForResult(settings, SETTING);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -281,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onItemClick(ViewGroup parent, int position) {
-        if (parent.getId() == R.id.tl_list && !timelineReload.isRefreshing()) {
-            if (timelineAdapter != null) {
+        if (parent.getId() == R.id.tl_list) {
+            if (timelineAdapter != null && !timelineReload.isRefreshing()) {
                 Tweet tweet = timelineAdapter.getData().get(position);
                 if (tweet.embedded != null)
                     tweet = tweet.embedded;
@@ -292,8 +289,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 intent.putExtra("username", tweet.user.screenname);
                 startActivity(intent);
             }
-        } else if (parent.getId() == R.id.tr_list && !trendReload.isRefreshing()) {
-            if (trendsAdapter != null) {
+        } else if (parent.getId() == R.id.tr_list) {
+            if (trendsAdapter != null && !trendReload.isRefreshing()) {
                 String search = trendsAdapter.getData().get(position).trend;
                 Intent intent = new Intent(this, SearchPage.class);
                 if (!search.startsWith("#"))
@@ -301,8 +298,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 intent.putExtra("search", search);
                 startActivity(intent);
             }
-        } else if (parent.getId() == R.id.m_list && !mentionReload.isRefreshing()) {
-            if (mentionAdapter != null) {
+        } else if (parent.getId() == R.id.m_list) {
+            if (mentionAdapter != null && !mentionReload.isRefreshing()) {
                 Tweet tweet = mentionAdapter.getData().get(position);
                 if (tweet.embedded != null)
                     tweet = tweet.embedded;

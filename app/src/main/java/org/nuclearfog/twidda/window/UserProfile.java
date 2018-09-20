@@ -56,7 +56,8 @@ public class UserProfile extends AppCompatActivity implements
         b = getIntent().getExtras();
         if (b != null) {
             userId = b.getLong("userID");
-            username = b.getString("username");
+            if (b.containsKey("username"))
+                username = b.getString("username");
         }
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
