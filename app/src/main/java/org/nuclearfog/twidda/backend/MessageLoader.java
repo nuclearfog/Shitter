@@ -24,7 +24,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     private MessageAdapter mAdapter;
     private TwitterEngine twitter;
     private DatabaseAdapter mData;
-    private List<Message> msg;
+    private List<Message> message;
     private String errorMsg = "E MessageLoader: ";
     private int returnCode = 0;
 
@@ -34,7 +34,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
-        msg = new ArrayList<>();
+        message = new ArrayList<>();
         mData = new DatabaseAdapter(context);
     }
 
@@ -43,14 +43,14 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... param) {
         try {
             if (mAdapter.getItemCount() > 0) {
-                msg = twitter.getMessages();
-                mData.storeMessage(msg);
-                msg = mData.getMessages();
+                message = twitter.getMessages();
+                mData.storeMessage(message);
+                message = mData.getMessages();
             } else {
-                msg = mData.getMessages();
-                if (msg.size() == 0) {
-                    msg = twitter.getMessages();
-                    mData.storeMessage(msg);
+                message = mData.getMessages();
+                if (message.isEmpty()) {
+                    message = twitter.getMessages();
+                    mData.storeMessage(message);
                 }
             }
         } catch (TwitterException err) {
@@ -72,7 +72,7 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
         if (ui.get() == null) return;
 
         if (success) {
-            mAdapter.setData(msg);
+            mAdapter.setData(message);
             mAdapter.notifyDataSetChanged();
         } else {
             switch (returnCode) {

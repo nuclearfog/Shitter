@@ -63,9 +63,8 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
-            if (returnCode > 0 && returnCode != 420) {
+            if (returnCode > 0 && returnCode != 420)
                 errMsg += err.getMessage();
-            }
             return false;
         } catch (Exception err) {
             errMsg += err.getMessage();

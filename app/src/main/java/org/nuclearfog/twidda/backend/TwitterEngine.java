@@ -81,6 +81,10 @@ public class TwitterEngine {
         return mTwitter;
     }
 
+    public static void destroyInstance() {
+        mTwitter = null;
+    }
+
     /**
      * Request Registration Website
      *

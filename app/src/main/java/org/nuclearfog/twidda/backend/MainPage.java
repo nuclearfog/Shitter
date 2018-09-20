@@ -83,9 +83,9 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             } else if (MODE == MENT) {
                 if (mentionAdapter.getItemCount() != 0)
                     sinceId = mentionAdapter.getItemId(0);
-                tweets = mTwitter.getMention(PAGE, sinceId);
+                mention = mTwitter.getMention(PAGE, sinceId);
                 publishProgress(MENT);
-                tweetDb.storeMentions(tweets);
+                tweetDb.storeMentions(mention);
             } else {
                 tweets = tweetDb.getHomeTimeline();
                 publishProgress(HOME);

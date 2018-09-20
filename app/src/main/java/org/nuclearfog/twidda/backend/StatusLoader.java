@@ -80,14 +80,15 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
         try {
             if (MODE == LOAD) {
-                tweet = database.getStatus(TWEETID);
-                answers = database.getAnswers(TWEETID);
-                if (tweet != null)
+                if (database.containStatus(TWEETID) && answerAdapter.getItemCount() == 0) {
+                    tweet = database.getStatus(TWEETID);
+                    answers = database.getAnswers(TWEETID);
                     publishProgress();
+                }
 
                 tweet = mTwitter.getStatus(TWEETID);
-                if (!answers.isEmpty())
-                    sinceId = answers.get(0).tweetID;
+                if (answerAdapter.getItemCount() > 0)
+                    sinceId = answerAdapter.getItemId(0);
                 answers = mTwitter.getAnswers(tweet.user.screenname, TWEETID, sinceId);
                 publishProgress();
 
@@ -109,21 +110,21 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
             } else if (MODE == FAVORITE) {
                 tweet = mTwitter.favorite(TWEETID);
-                if (tweet.favorized) {
+                if (tweet.favorized)
                     database.storeFavorite(TWEETID);
-                } else {
+                else
                     database.removeFavorite(TWEETID);
-                }
                 publishProgress();
             }
+
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             if (returnCode == 144)
                 database.removeStatus(TWEETID);
             else
                 errMsg += err.getMessage();
-
             return ERROR;
+
         } catch (Exception err) {
             err.printStackTrace();
             errMsg += err.getMessage();

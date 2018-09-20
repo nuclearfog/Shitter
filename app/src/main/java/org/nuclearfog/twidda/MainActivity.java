@@ -59,8 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_main);
 
-        settings = GlobalSettings.getInstance(this);
-
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
         mentionList = findViewById(R.id.m_list);
@@ -90,19 +88,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tabhost.addTab(tab3);
 
         timelineList.setLayoutManager(new LinearLayoutManager(this));
-        timelineList.setHasFixedSize(true);
-        timelineAdapter = new TimelineAdapter(this);
-        timelineList.setAdapter(timelineAdapter);
-
         trendList.setLayoutManager(new LinearLayoutManager(this));
-        trendList.setHasFixedSize(true);
-        trendsAdapter = new TrendAdapter(this);
-        trendList.setAdapter(trendsAdapter);
-
         mentionList.setLayoutManager(new LinearLayoutManager(this));
+        timelineList.setHasFixedSize(true);
+        trendList.setHasFixedSize(true);
         mentionList.setHasFixedSize(true);
-        mentionAdapter = new TimelineAdapter(this);
-        mentionList.setAdapter(mentionAdapter);
+
+        settings = GlobalSettings.getInstance(this);
 
         lastTab = tabhost.getCurrentView();
         tabhost.setOnTabChangedListener(this);
@@ -118,23 +110,27 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
-        }
-        if (home == null || settingChanged) {
+        } else if (home == null || settingChanged) {
             root.setBackgroundColor(settings.getBackgroundColor());
+
+            timelineAdapter = new TimelineAdapter(this);
+            trendsAdapter = new TrendAdapter(this);
+            mentionAdapter = new TimelineAdapter(this);
+
             timelineAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             timelineAdapter.toggleImage(settings.loadImages());
             trendsAdapter.setColor(settings.getFontColor());
             mentionAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             mentionAdapter.toggleImage(settings.loadImages());
-            timelineAdapter.notifyDataSetChanged();
-            trendsAdapter.notifyDataSetChanged();
-            mentionAdapter.notifyDataSetChanged();
-            if (!settingChanged) {
-                home = new MainPage(this);
-                home.execute(MainPage.DATA, 1);
-            } else {
-                settingChanged = false;
-            }
+
+            timelineList.setAdapter(timelineAdapter);
+            trendList.setAdapter(trendsAdapter);
+            mentionList.setAdapter(mentionAdapter);
+
+            home = new MainPage(this);
+            home.execute(MainPage.DATA, 1);
+
+            settingChanged = false;
         }
     }
 
@@ -286,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     public void onItemClick(ViewGroup parent, int position) {
         if (parent.getId() == R.id.tl_list && !timelineReload.isRefreshing()) {
-            TimelineAdapter timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
             if (timelineAdapter != null) {
                 Tweet tweet = timelineAdapter.getData().get(position);
                 if (tweet.embedded != null)
@@ -298,9 +293,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(intent);
             }
         } else if (parent.getId() == R.id.tr_list && !trendReload.isRefreshing()) {
-            TrendAdapter trendAdapter = (TrendAdapter) trendList.getAdapter();
-            if (trendAdapter != null) {
-                String search = trendAdapter.getData().get(position).trend;
+            if (trendsAdapter != null) {
+                String search = trendsAdapter.getData().get(position).trend;
                 Intent intent = new Intent(this, SearchPage.class);
                 if (!search.startsWith("#"))
                     search = '\"' + search + '\"';
@@ -308,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(intent);
             }
         } else if (parent.getId() == R.id.m_list && !mentionReload.isRefreshing()) {
-            TimelineAdapter mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
             if (mentionAdapter != null) {
                 Tweet tweet = mentionAdapter.getData().get(position);
                 if (tweet.embedded != null)

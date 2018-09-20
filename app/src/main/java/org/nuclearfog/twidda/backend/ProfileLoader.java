@@ -141,21 +141,21 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 publishProgress(GET_USER);
             } else {
                 boolean access = (!user.isLocked || isFollowing);
+
                 if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0) && access) {
                     if (homeTl.getItemCount() > 0)
                         sinceId = homeTl.getItemId(0);
                     tweets = mTwitter.getUserTweets(UID, sinceId, page);
                     database.storeUserTweets(tweets);
+                    publishProgress(GET_TWEETS);
                 }
-                publishProgress(GET_TWEETS);
-
                 if ((MODE == GET_FAVORS || homeFav.getItemCount() == 0) && access) {
                     if (homeFav.getItemCount() > 0)
                         sinceId = homeFav.getItemId(0);
                     favors = mTwitter.getUserFavs(UID, sinceId, page);
                     database.storeUserFavs(favors, UID);
+                    publishProgress(GET_FAVORS);
                 }
-                publishProgress(GET_FAVORS);
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
