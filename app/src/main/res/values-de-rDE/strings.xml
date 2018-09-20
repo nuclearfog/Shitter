@@ -20,7 +20,6 @@
     <string name="register_link">PIN aufrufen</string>
     <string name="profile_image">profilbild</string>
     <string name="settings">Einstellungen</string>
-    <string name="back">Zurück</string>
     <string name="image">Bilder Laden</string>
     <string name="delete_database">Datenbank Löschen</string>
     <string name="search">Suche</string>
@@ -34,7 +33,6 @@
     <string name="pin_added">PIN eingefügt!</string>
     <string name="false_format">Falsches Format!</string>
     <string name="delete_database_popup">Datenbank löschen?</string>
-    <string name="saved">gesichert</string>
     <string name="rate_limit_exceeded">Abrufgrenze überschritten!</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="tweet_sent">Tweet gesendet</string>
@@ -53,7 +51,6 @@
     <string name="answering">antwort @</string>
     <string name="sent_from">"gesendet von: "</string>
     <string name="progress_kill">abbrechen</string>
-    <string name="save">speichern</string>
     <string name="mute">Stummschalten</string>
     <string name="unmute">Stummschaltung aufheben</string>
     <string name="muted">stummgeschaltet!</string>

@@ -6,7 +6,6 @@
     <string name="verifierbutton" translatable="false">login</string>
     <string name="tweet" translatable="false">Tweet</string>
     <string name="settings">Settings</string>
-    <string name="back">Back</string>
     <string name="following" translatable="false">Following</string>
     <string name="follower" translatable="false">Follower</string>
     <string name="retweet">Retweet</string>
@@ -42,7 +41,6 @@
     <string name="pin_added">PIN added!</string>
     <string name="false_format">not valid!</string>
     <string name="delete_database_popup">delete database?</string>
-    <string name="saved">saved</string>
     <string name="rate_limit_exceeded">Rate limit exceeded</string>
     <string name="error_sending_tweet">error while sending</string>
     <string name="tweet_sent">tweet sent</string>
@@ -60,7 +58,6 @@
     <string name="answering">answering @</string>
     <string name="sent_from">sent from: </string>
     <string name="progress_kill">stop loading</string>
-    <string name="save">save</string>
     <string name="woeid" translatable="false">World ID</string>
     <string name="mute">mute</string>
     <string name="unmute">un-mute</string>
