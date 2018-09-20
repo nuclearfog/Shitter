@@ -166,7 +166,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         used_api.append(tweet.source);
         used_api.setTextColor(font_color);
 
-        String ansStr = Integer.toString(answerAdapter.getItemCount());
+        String ansStr = Integer.toString(answerAdapter.getItemCount() + answers.size());
         String favStr = Integer.toString(tweet.favorit);
         String rtStr = Integer.toString(tweet.retweet);
         txtFav.setText(favStr);
