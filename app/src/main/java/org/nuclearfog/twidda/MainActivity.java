@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
+    private static final int TWEET = 3;
 
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
@@ -150,7 +151,11 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (reqCode == LOGIN && returnCode == RESULT_CANCELED) {
             overridePendingTransition(0, 0);
             finish();
+
         } else if (reqCode == SETTING) {
+            home = null;
+
+        } else if (reqCode == TWEET && returnCode == TweetDetail.CHANGED) {
             home = null;
         }
     }
@@ -287,7 +292,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 intent.putExtra("tweetID", tweet.tweetID);
                 intent.putExtra("userID", tweet.user.userID);
                 intent.putExtra("username", tweet.user.screenname);
-                startActivity(intent);
+                startActivityForResult(intent, TWEET);
             }
         } else if (parent.getId() == R.id.tr_list) {
             if (trendsAdapter != null && !trendReload.isRefreshing()) {
@@ -307,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 intent.putExtra("tweetID", tweet.tweetID);
                 intent.putExtra("userID", tweet.user.userID);
                 intent.putExtra("username", tweet.user.screenname);
-                startActivity(intent);
+                startActivityForResult(intent, TWEET);
             }
         }
     }

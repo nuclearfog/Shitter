@@ -222,8 +222,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     protected void onPostExecute(Long mode) {
         if (ui.get() == null) return;
 
+        SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
+        ansReload.setRefreshing(false);
+
         if (mode == DELETE) {
             Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
+            ui.get().setResult(ui.get().CHANGED);
             ui.get().finish();
         } else if (mode == ERROR) {
             switch (returnCode) {
@@ -239,9 +243,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
         }
-        SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
-        ansReload.setRefreshing(false);
-
     }
 
 

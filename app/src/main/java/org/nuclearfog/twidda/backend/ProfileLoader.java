@@ -123,7 +123,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 isMuted = connection[3];
                 canDm = connection[4];
             }
-
             publishProgress(GET_USER);
             database.storeUser(user);
 
@@ -140,21 +139,21 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 mTwitter.muteAction(UID, isMuted);
                 publishProgress(GET_USER);
             } else {
-                boolean access = (!user.isLocked || isFollowing);
-
-                if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0) && access) {
-                    if (homeTl.getItemCount() > 0)
-                        sinceId = homeTl.getItemId(0);
-                    tweets = mTwitter.getUserTweets(UID, sinceId, page);
-                    database.storeUserTweets(tweets);
-                    publishProgress(GET_TWEETS);
-                }
-                if ((MODE == GET_FAVORS || homeFav.getItemCount() == 0) && access) {
-                    if (homeFav.getItemCount() > 0)
-                        sinceId = homeFav.getItemId(0);
-                    favors = mTwitter.getUserFavs(UID, sinceId, page);
-                    database.storeUserFavs(favors, UID);
-                    publishProgress(GET_FAVORS);
+                if (!user.isLocked || isFollowing) {
+                    if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0)) {
+                        if (homeTl.getItemCount() > 0)
+                            sinceId = homeTl.getItemId(0);
+                        tweets = mTwitter.getUserTweets(UID, sinceId, page);
+                        database.storeUserTweets(tweets);
+                        publishProgress(GET_TWEETS);
+                    }
+                    if ((MODE == GET_FAVORS || homeFav.getItemCount() == 0)) {
+                        if (homeFav.getItemCount() > 0)
+                            sinceId = homeFav.getItemId(0);
+                        favors = mTwitter.getUserFavs(UID, sinceId, page);
+                        database.storeUserFavs(favors, UID);
+                        publishProgress(GET_FAVORS);
+                    }
                 }
             }
         } catch (TwitterException err) {
@@ -264,6 +263,11 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     protected void onPostExecute(final Long MODE) {
         if (ui.get() == null) return;
 
+        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+        homeReload.setRefreshing(false);
+        favReload.setRefreshing(false);
+
         if (MODE == ACTION_FOLLOW) {
             if (isFollowing)
                 Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
@@ -294,10 +298,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
-            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-            homeReload.setRefreshing(false);
-            favReload.setRefreshing(false);
         }
         if (!isHome) {
             ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm);

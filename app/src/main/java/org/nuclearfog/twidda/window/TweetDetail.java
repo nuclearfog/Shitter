@@ -39,6 +39,8 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClicked, OnRefreshListener {
 
+    public static final int CHANGED = 1;
+
     private RecyclerView answer_list;
     private StatusLoader mStat;
     private SwipeRefreshLayout answerReload;
@@ -136,7 +138,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        new StatusLoader(TweetDetail.this).execute(tweetID, StatusLoader.DELETE);
+                        if (mStat != null && mStat.getStatus() == RUNNING)
+                            mStat.cancel(true);
+                        mStat = new StatusLoader(TweetDetail.this);
+                        mStat.execute(tweetID, StatusLoader.DELETE);
                     }
                 });
                 deleteDialog.setNegativeButton(R.string.no_confirm, null);
