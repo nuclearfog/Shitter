@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ProfileLoader;
+import org.nuclearfog.twidda.backend.clickable.Tagger;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -33,8 +34,8 @@ import static android.os.AsyncTask.Status.RUNNING;
  *
  * @see ProfileLoader
  */
-public class UserProfile extends AppCompatActivity implements
-        OnRefreshListener, OnTabChangeListener, OnItemClicked {
+public class UserProfile extends AppCompatActivity implements OnRefreshListener,
+        OnTabChangeListener, OnItemClicked, Tagger.OnTagClickListener {
 
     private static final int TWEET = 1;
 
@@ -319,6 +320,16 @@ public class UserProfile extends AppCompatActivity implements
                 startActivityForResult(intent, TWEET);
             }
         }
+    }
+
+
+    @Override
+    public void onClick(String text) {
+        Intent intent = new Intent(this, SearchPage.class);
+        if (text.startsWith("#"))
+            intent.putExtra("Addition", text);
+        intent.putExtra("search", text);
+        startActivity(intent);
     }
 
 

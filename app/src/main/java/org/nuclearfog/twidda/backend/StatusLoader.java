@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -151,6 +152,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
 
         Spannable sTweet = Tagger.makeText(tweet.tweet, highlight, ui.get());
+        tweetText.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setText(sTweet);
         tweetText.setTextColor(font_color);
         username.setText(tweet.user.username);

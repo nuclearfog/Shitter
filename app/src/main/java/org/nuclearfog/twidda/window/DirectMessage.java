@@ -30,6 +30,7 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
     private MessageLoader mLoader;
     private SwipeRefreshLayout refresh;
+    private GlobalSettings settings;
     private RecyclerView dmList;
 
 
@@ -46,13 +47,9 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
         dmList = findViewById(R.id.messagelist);
         View root = findViewById(R.id.dm_layout);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
 
-        MessageAdapter mAdapter = new MessageAdapter(this);
-        mAdapter.setColor(settings.getFontColor());
-        mAdapter.setImageLoad(settings.loadImages());
-        dmList.setAdapter(mAdapter);
         dmList.setLayoutManager(new LinearLayoutManager(this));
         dmList.setHasFixedSize(true);
         refresh.setOnRefreshListener(this);
@@ -63,6 +60,11 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     protected void onStart() {
         super.onStart();
         if (mLoader == null) {
+            MessageAdapter mAdapter = new MessageAdapter(this);
+            mAdapter.setColor(settings.getFontColor());
+            mAdapter.setImageLoad(settings.loadImages());
+            dmList.setAdapter(mAdapter);
+
             refresh.setRefreshing(true);
             mLoader = new MessageLoader(this);
             mLoader.execute();

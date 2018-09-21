@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -14,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.backend.clickable.Tagger;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
@@ -53,6 +56,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private TwitterUser user;
     private List<Tweet> tweets, favors;
     private long homeId;
+    private int highlight;
     private boolean imgEnabled;
 
     private boolean isHome = false;
@@ -77,6 +81,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         sdf = settings.getDateFormatter();
         imgEnabled = settings.loadImages();
         homeId = settings.getUserId();
+        highlight = settings.getHighlightColor();
 
         tweets = new ArrayList<>();
         favors = new ArrayList<>();
@@ -189,9 +194,11 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             String follower = Integer.toString(user.follower);
             String following = Integer.toString(user.following);
             String date = sdf.format(new Date(user.created));
+            Spanned bio = Tagger.makeText(user.bio, highlight, ui.get());
+            txtBio.setMovementMethod(LinkMovementMethod.getInstance());
+            txtBio.setText(bio);
             txtUser.setText(user.username);
             txtScrName.setText(user.screenname);
-            txtBio.setText(user.bio);
             txtFollower.setText(follower);
             txtFollowing.setText(following);
             txtCreated.setText(date);

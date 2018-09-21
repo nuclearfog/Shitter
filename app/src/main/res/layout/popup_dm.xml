@@ -51,6 +51,6 @@
         android:background="@android:color/transparent"
         android:gravity="start"
         android:hint="@string/dmessage"
-        android:inputType="text" />
+        android:inputType="textMultiLine" />
 
 </LinearLayout>
