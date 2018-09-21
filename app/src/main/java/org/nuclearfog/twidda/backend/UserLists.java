@@ -8,8 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
-import org.nuclearfog.twidda.viewadapter.UserAdapter;
 import org.nuclearfog.twidda.window.UserDetail;
 
 import java.lang.ref.WeakReference;

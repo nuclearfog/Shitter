@@ -5,10 +5,6 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,11 +15,11 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.backend.clickable.Tagger;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
-import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 import java.lang.ref.WeakReference;
@@ -154,7 +150,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         View mediaButton = ui.get().findViewById(R.id.image_attach);
         View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
 
-        tweetText.setText(highlight(tweet.tweet));
+        Spannable sTweet = Tagger.makeText(tweet.tweet, highlight, ui.get());
+        tweetText.setText(sTweet);
         tweetText.setTextColor(font_color);
         username.setText(tweet.user.username);
         username.setTextColor(font_color);
@@ -218,6 +215,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         answerAdapter.notifyDataSetChanged();
     }
 
+
     @Override
     protected void onPostExecute(Long mode) {
         if (ui.get() == null) return;
@@ -225,10 +223,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
         ansReload.setRefreshing(false);
 
-        if (mode == DELETE) {
+        if (mode == FAVORITE || mode == RETWEET) {
+            ui.get().setResult(TweetDetail.CHANGED);
+
+        } else if (mode == DELETE) {
             Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-            ui.get().setResult(ui.get().CHANGED);
+            ui.get().setResult(TweetDetail.CHANGED);
             ui.get().finish();
+
         } else if (mode == ERROR) {
             switch (returnCode) {
                 case 136:
@@ -243,65 +245,5 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-
-    private Spannable highlight(String tweet) {
-        Spannable sTweet = new SpannableStringBuilder(tweet);
-        int start = 0;
-        boolean marked = false;
-        for (int i = 0; i < tweet.length(); i++) {
-            char current = tweet.charAt(i);
-            switch (current) {
-                case '@':
-                case '#':
-                    start = i;
-                    marked = true;
-                    break;
-                case '\'':
-                case '\"':
-                case '\n':
-                case ')':
-                case '(':
-                case ':':
-                case ' ':
-                case '.':
-                case ',':
-                case '!':
-                case '?':
-                case '-':
-                    if (marked && start != i - 1)
-                        sTweet = spanning(sTweet, start, i);
-                    marked = false;
-                    break;
-            }
-        }
-        if (marked && start != tweet.length() - 1) {
-            sTweet = spanning(sTweet, start, tweet.length());
-        }
-        return sTweet;
-    }
-
-
-    private Spannable spanning(Spannable sTweet, final int start, final int end) {
-        sTweet.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View widget) {
-                TextView tv = (TextView) widget;
-                Spanned s = (Spanned) tv.getText();
-                String search = s.subSequence(start, end).toString();
-                Intent intent = new Intent(ui.get(), SearchPage.class);
-                if (search.startsWith("#"))
-                    intent.putExtra("Addition", search);
-                intent.putExtra("search", search);
-                ui.get().startActivity(intent);
-            }
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                ds.setColor(highlight);
-                ds.setUnderlineText(false);
-            }
-        }, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return sTweet;
     }
 }

@@ -12,11 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.UserAdapter;
+import org.nuclearfog.twidda.adapter.UserAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.viewadapter.UserAdapter;
-import org.nuclearfog.twidda.viewadapter.UserAdapter.OnItemClicked;
 
 import static android.os.AsyncTask.Status.RUNNING;
 

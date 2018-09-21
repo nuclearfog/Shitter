@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.viewadapter;
+package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;

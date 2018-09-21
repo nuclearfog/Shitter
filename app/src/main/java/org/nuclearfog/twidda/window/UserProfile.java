@@ -20,11 +20,11 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter;
-import org.nuclearfog.twidda.viewadapter.TimelineAdapter.OnItemClicked;
 
 import static android.os.AsyncTask.Status.RUNNING;
 
@@ -36,7 +36,10 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class UserProfile extends AppCompatActivity implements
         OnRefreshListener, OnTabChangeListener, OnItemClicked {
 
+    private static final int TWEET = 1;
+
     private ProfileLoader mProfile;
+    private GlobalSettings settings;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeList, favoriteList;
     private TabHost mTab;
@@ -72,7 +75,7 @@ public class UserProfile extends AppCompatActivity implements
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
 
         homeList.setLayoutManager(new LinearLayoutManager(this));
@@ -90,16 +93,6 @@ public class UserProfile extends AppCompatActivity implements
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
 
-        TimelineAdapter homeTl = new TimelineAdapter(this);
-        homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
-        homeTl.toggleImage(settings.loadImages());
-        homeList.setAdapter(homeTl);
-
-        TimelineAdapter homeFav = new TimelineAdapter(this);
-        homeFav.setColor(settings.getHighlightColor(), settings.getFontColor());
-        homeFav.toggleImage(settings.loadImages());
-        favoriteList.setAdapter(homeFav);
-
         mTab.setOnTabChangedListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
@@ -110,6 +103,16 @@ public class UserProfile extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         if (mProfile == null) {
+            TimelineAdapter homeTl = new TimelineAdapter(this);
+            homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
+            homeTl.toggleImage(settings.loadImages());
+            homeList.setAdapter(homeTl);
+
+            TimelineAdapter homeFav = new TimelineAdapter(this);
+            homeFav.setColor(settings.getHighlightColor(), settings.getFontColor());
+            homeFav.toggleImage(settings.loadImages());
+            favoriteList.setAdapter(homeFav);
+
             mProfile = new ProfileLoader(this);
             mProfile.execute(userId, 0L);
             homeReload.setRefreshing(true);
@@ -126,6 +129,14 @@ public class UserProfile extends AppCompatActivity implements
             favoriteReload.setRefreshing(false);
         }
         super.onStop();
+    }
+
+
+    @Override
+    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
+        if (reqCode == TWEET && returnCode == TweetDetail.CHANGED) {
+            mProfile = null;
+        }
     }
 
 
@@ -293,7 +304,7 @@ public class UserProfile extends AppCompatActivity implements
                 intent.putExtra("tweetID", tweet.tweetID);
                 intent.putExtra("userID", tweet.user.userID);
                 intent.putExtra("username", tweet.user.screenname);
-                startActivity(intent);
+                startActivityForResult(intent, TWEET);
             }
         } else {
             TimelineAdapter tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
@@ -305,7 +316,7 @@ public class UserProfile extends AppCompatActivity implements
                 intent.putExtra("tweetID", tweet.tweetID);
                 intent.putExtra("userID", tweet.user.userID);
                 intent.putExtra("username", tweet.user.screenname);
-                startActivity(intent);
+                startActivityForResult(intent, TWEET);
             }
         }
     }

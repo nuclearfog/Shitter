@@ -7,9 +7,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.backend.listitems.Message;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.viewadapter.MessageAdapter;
 import org.nuclearfog.twidda.window.DirectMessage;
 
 import java.lang.ref.WeakReference;

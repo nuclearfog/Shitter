@@ -22,9 +22,9 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.WorldIdAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.viewadapter.WorldIdAdapter;
 
 /**
  * App settings page

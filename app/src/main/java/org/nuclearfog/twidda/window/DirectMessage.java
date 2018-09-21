@@ -13,11 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.MessageAdapter;
+import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
 import org.nuclearfog.twidda.backend.listitems.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.viewadapter.MessageAdapter;
-import org.nuclearfog.twidda.viewadapter.MessageAdapter.OnItemSelected;
 
 import static android.os.AsyncTask.Status.RUNNING;
 

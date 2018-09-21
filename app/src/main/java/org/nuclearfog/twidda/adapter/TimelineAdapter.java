@@ -1,12 +1,10 @@
-package org.nuclearfog.twidda.viewadapter;
+package org.nuclearfog.twidda.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +15,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.clickable.Tagger;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 
 import java.text.SimpleDateFormat;
@@ -102,10 +101,10 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
-
+        Spanned text = Tagger.makeText(tweet.tweet, highlight);
         vh.username.setText(tweet.user.username);
         vh.screenname.setText(tweet.user.screenname);
-        vh.tweet.setText(highlight(tweet.tweet));
+        vh.tweet.setText(text);
         vh.retweet.setText(retweet);
         vh.favorite.setText(favorit);
         vh.time.setText(stringTime(tweet.time));
@@ -148,47 +147,6 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
             return minutes + " m";
         else
             return seconds + " s";
-    }
-
-
-    public SpannableStringBuilder highlight(String tweet) {
-        SpannableStringBuilder sTweet = new SpannableStringBuilder(tweet);
-        int start = 0;
-        boolean marked = false;
-        for (int i = 0; i < tweet.length(); i++) {
-            char current = tweet.charAt(i);
-            switch (current) {
-                case '@':
-                    start = i;
-                    marked = true;
-                    break;
-                case '#':
-                    start = i;
-                    marked = true;
-                    break;
-
-                case '\'':
-                case '\"':
-                case '\n':
-                case ')':
-                case '(':
-                case ':':
-                case ' ':
-                case '.':
-                case ',':
-                case '!':
-                case '?':
-                case '-':
-                    if (marked)
-                        sTweet.setSpan(new ForegroundColorSpan(highlight), start, i, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    marked = false;
-                    break;
-            }
-            if (i == tweet.length() - 1 && marked) {
-                sTweet.setSpan(new ForegroundColorSpan(highlight), start, i + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
-        return sTweet;
     }
 
 
