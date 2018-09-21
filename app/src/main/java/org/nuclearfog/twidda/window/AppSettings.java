@@ -131,7 +131,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
             case R.id.logout:
                 new Builder(this)
-                        .setMessage(R.string.should_log_lout)
+                        .setMessage(R.string.confirm_log_lout)
                         .setNegativeButton(R.string.no_confirm, null)
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                             @Override

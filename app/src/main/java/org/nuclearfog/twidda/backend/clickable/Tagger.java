@@ -56,6 +56,6 @@ public abstract class Tagger {
 
 
     public interface OnTagClickListener {
-        void onClick(String text);
+        void onClick(String tag);
     }
 }

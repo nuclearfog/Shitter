@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.adapter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.clickable.Tagger;
+import org.nuclearfog.twidda.backend.clickable.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.backend.listitems.Message;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +28,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     private List<Message> messages;
     private OnItemSelected mListener;
+
+
     private boolean loadImage = true;
-    private int color = 0xFFFFFFFF;
+    private int highlight;
+    private int fontColor = 0xFFFFFFFF;
 
 
     public MessageAdapter(OnItemSelected listener) {
@@ -49,8 +56,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setColor(int fontColor, int highlight) {
+        this.fontColor = fontColor;
+        this.highlight = highlight;
     }
 
 
@@ -69,31 +77,42 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     @NonNull
     @Override
     public MessageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
-        v.setOnClickListener(new View.OnClickListener() {
+        LayoutInflater inf = LayoutInflater.from(parent.getContext());
+        final View view = inf.inflate(R.layout.item_dm, parent, false);
+        view.findViewById(R.id.dm_answer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
-                int position = rv.getChildLayoutPosition(v);
-                mListener.onSelected(position);
+                int position = rv.getChildLayoutPosition(view);
+                mListener.onAnswer(position);
             }
         });
-        return new MessageHolder(v);
+        view.findViewById(R.id.dm_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerView rv = (RecyclerView) parent;
+                int position = rv.getChildLayoutPosition(view);
+                mListener.onDelete(position);
+            }
+        });
+        return new MessageHolder(view);
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
         Message message = messages.get(index);
-        vh.message.setText(message.message);
+        Spanned text = Tagger.makeText(message.message, highlight, mListener);
+        vh.message.setMovementMethod(LinkMovementMethod.getInstance());
+        vh.message.setText(text);
         vh.username.setText(message.sender.username);
         vh.screenname.setText(message.sender.screenname);
         vh.createdAt.setText(stringTime(message.time));
 
-        vh.message.setTextColor(color);
-        vh.username.setTextColor(color);
-        vh.screenname.setTextColor(color);
-        vh.createdAt.setTextColor(color);
+        vh.message.setTextColor(fontColor);
+        vh.username.setTextColor(fontColor);
+        vh.screenname.setTextColor(fontColor);
+        vh.createdAt.setTextColor(fontColor);
 
         if (loadImage)
             Picasso.get().load(message.sender.profileImg + "_mini").into(vh.profile_img);
@@ -125,8 +144,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public interface OnItemSelected {
-        void onSelected(int pos);
+    public interface OnItemSelected extends OnTagClickListener {
+        void onAnswer(int pos);
+
+        void onDelete(int pos);
     }
 
 

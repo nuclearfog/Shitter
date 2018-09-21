@@ -81,9 +81,11 @@ public class TwitterEngine {
         return mTwitter;
     }
 
+
     public static void destroyInstance() {
         mTwitter = null;
     }
+
 
     /**
      * Request Registration Website
@@ -98,6 +100,7 @@ public class TwitterEngine {
         }
         return redirectionUrl;
     }
+
 
     /**
      * Get Access-Token, store and initialize Twitter
@@ -116,6 +119,7 @@ public class TwitterEngine {
             settings.setConnection(key1, key2, twitterID);
         }
     }
+
 
     /**
      * Initialize Twitter with Accesstoken
@@ -154,6 +158,7 @@ public class TwitterEngine {
         return convertStatusList(homeTweets);
     }
 
+
     /**
      * Get Mention Tweets
      *
@@ -166,6 +171,7 @@ public class TwitterEngine {
         List<Status> mentions = twitter.getMentionsTimeline(new Paging(page,/*load*/5, id));
         return convertStatusList(mentions);
     }
+
 
     /**
      * Get Tweet search result
@@ -185,6 +191,7 @@ public class TwitterEngine {
         return convertStatusList(results);
     }
 
+
     /**
      * Get Trending Hashtags
      *
@@ -203,6 +210,7 @@ public class TwitterEngine {
         return result;
     }
 
+
     /**
      * Get User search result
      *
@@ -213,6 +221,7 @@ public class TwitterEngine {
     public List<TwitterUser> searchUsers(String search) throws TwitterException {
         return convertUserList(twitter.searchUsers(search, -1));
     }
+
 
     /**
      * Get User Tweets
@@ -228,6 +237,7 @@ public class TwitterEngine {
         return convertStatusList(result);
     }
 
+
     /**
      * Get User Favs
      *
@@ -242,6 +252,7 @@ public class TwitterEngine {
         return convertStatusList(favorits);
     }
 
+
     /**
      * Get User Context
      *
@@ -252,6 +263,7 @@ public class TwitterEngine {
     public TwitterUser getUser(long id) throws TwitterException {
         return getUser(twitter.showUser(id));
     }
+
 
     /**
      * Efficient Access of Connection Information
@@ -271,6 +283,7 @@ public class TwitterEngine {
         return connection;
     }
 
+
     /**
      * Switch following User
      *
@@ -285,6 +298,7 @@ public class TwitterEngine {
             twitter.destroyFriendship(userId);
         }
     }
+
 
     /**
      * Switch blocking User
@@ -301,6 +315,7 @@ public class TwitterEngine {
         }
     }
 
+
     /**
      * Switch muting User
      *
@@ -316,6 +331,7 @@ public class TwitterEngine {
         }
     }
 
+
     /**
      * get Following User List
      *
@@ -328,6 +344,7 @@ public class TwitterEngine {
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
+
     /**
      * get Follower
      *
@@ -339,6 +356,7 @@ public class TwitterEngine {
         IDs userIDs = twitter.getFollowersIDs(id, cursor, load);
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
+
 
     /**
      * Send Tweet
@@ -353,6 +371,7 @@ public class TwitterEngine {
             mStatus.setInReplyToStatusId(reply);
         twitter.tweets().updateStatus(mStatus);
     }
+
 
     /**
      * Send Tweet
@@ -381,6 +400,7 @@ public class TwitterEngine {
         twitter.tweets().updateStatus(mStatus);
     }
 
+
     /**
      * Get Tweet
      *
@@ -399,6 +419,7 @@ public class TwitterEngine {
             return getTweet(status, null);
         }
     }
+
 
     /**
      * Get Answer Tweets
@@ -423,6 +444,7 @@ public class TwitterEngine {
         return convertStatusList(answers);
     }
 
+
     /**
      * Retweet Action
      *
@@ -445,6 +467,7 @@ public class TwitterEngine {
                 tweet.replyID, tweet.embedded, tweet.retweetId, !tweet.retweeted, tweet.favorized);
     }
 
+
     /**
      * Favorite Action
      *
@@ -466,6 +489,16 @@ public class TwitterEngine {
                 tweet.replyID, tweet.embedded, tweet.retweetId, tweet.retweeted, !tweet.favorized);
     }
 
+
+    /**
+     * @param id Tweet ID
+     * @throws TwitterException if Access is unavailable
+     */
+    public void deleteTweet(long id) throws TwitterException {
+        twitter.destroyStatus(id);
+    }
+
+
     /**
      * Get User who retweeted a Tweet
      *
@@ -486,6 +519,7 @@ public class TwitterEngine {
         }
     }
 
+
     /**
      * get list of Direct Messages
      *
@@ -500,6 +534,7 @@ public class TwitterEngine {
         }
         return result;
     }
+
 
     /**
      * Send direct message
@@ -518,6 +553,17 @@ public class TwitterEngine {
         } else {
             twitter.sendDirectMessage(id, msg);
         }
+    }
+
+
+    /**
+     * Delete Direct Message
+     *
+     * @param id Message ID
+     * @throws TwitterException if Access is unavailable
+     */
+    public void deleteMessage(long id) throws TwitterException {
+        twitter.destroyDirectMessage(id);
     }
 
 
@@ -542,6 +588,7 @@ public class TwitterEngine {
         }
         return result;
     }
+
 
     /**
      * convert #twitter4j.Status to Tweet List
@@ -573,6 +620,7 @@ public class TwitterEngine {
         return result;
     }
 
+
     /**
      * @param status        twitter4j.Status
      * @param retweetedStat embedded Status
@@ -598,6 +646,7 @@ public class TwitterEngine {
                 retweetedStat, status.getCurrentUserRetweetId(), status.isRetweeted(), status.isFavorited());
     }
 
+
     /**
      * @param user Twitter4J User
      * @return User item
@@ -609,6 +658,7 @@ public class TwitterEngine {
                 user.isProtected(), user.getURL(), user.getProfileBannerURL(), user.getCreatedAt().getTime(),
                 user.getFriendsCount(), user.getFollowersCount());
     }
+
 
     /**
      * @param dm Twitter4J directmessage
@@ -628,14 +678,6 @@ public class TwitterEngine {
         return new Message(dm.getId(), sender, receiver, time, dm.getText());
     }
 
-
-    /**
-     * @param id Tweet ID
-     * @throws TwitterException if Access is unavailable
-     */
-    public void deleteTweet(long id) throws TwitterException {
-        twitter.destroyStatus(id);
-    }
 
     /**
      * @param status Twitter4J status

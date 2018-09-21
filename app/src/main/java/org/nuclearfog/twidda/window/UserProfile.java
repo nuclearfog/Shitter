@@ -204,7 +204,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     if (!isFollowing) {
                         mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
                     } else {
-                        new Builder(this).setMessage(R.string.should_unfollow)
+                        new Builder(this).setMessage(R.string.confirm_unfollow)
                                 .setNegativeButton(R.string.no_confirm, null)
                                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                     @Override
@@ -221,7 +221,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     if (isBlocked) {
                         mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
                     } else {
-                        new Builder(this).setMessage(R.string.should_block)
+                        new Builder(this).setMessage(R.string.confirm_block)
                                 .setNegativeButton(R.string.no_confirm, null)
                                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                     @Override
@@ -326,8 +326,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     public void onClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
-        if (text.startsWith("#"))
-            intent.putExtra("Addition", text);
         intent.putExtra("search", text);
         startActivity(intent);
     }

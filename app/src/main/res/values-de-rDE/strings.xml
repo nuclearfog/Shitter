@@ -3,8 +3,6 @@
     <string name="font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
     <string name="verify">verifiziert</string>
-    <string name="yes_confirm">Ja</string>
-    <string name="no_confirm">Nein</string>
     <string name="fullimg">Großbild</string>
     <string name="profile_locked">Privat</string>
     <string name="load_factor">Anzahl Tweets</string>
@@ -26,7 +24,6 @@
     <string name="retweet">Retweet</string>
     <string name="favorite">favorisieren</string>
     <string name="background">Hintergrund</string>
-    <string name="should_cancel_tweet">Tweet verwerfen?</string>
     <string name="delete_tweet">Tweet löschen?</string>
     <string name="connection_failed">Verbindung fehlgeschlagen</string>
     <string name="enter_pin">PIN eingeben!</string>
@@ -66,8 +63,14 @@
     <string name="error_sending_dm">Fehler beim Senden der Direktnachricht!</string>
     <string name="empty_tweet">Tweet leer!</string>
     <string name="logout">ausloggen</string>
-    <string name="should_log_lout">ausloggen?</string>
-    <string name="should_unfollow">User entfolgen?</string>
-    <string name="should_block">user sperren?</string>
     <string name="pin_verification_failed">PIN verifizierung fehlgeschlagen!</string>
+    <string name="answer">Antworten</string>
+    <string name="delete_dm">löschen..</string>
+    <string name="yes_confirm">Ja</string>
+    <string name="no_confirm">Nein</string>
+    <string name="confirm_cancel_tweet">Tweet verwerfen?</string>
+    <string name="confirm_log_lout">ausloggen?</string>
+    <string name="confirm_unfollow">User entfolgen?</string>
+    <string name="confirm_block">user sperren?</string>
+    <string name="confirm_delete_dm">Nachricht löschen?</string>
 </resources>

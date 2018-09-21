@@ -18,7 +18,11 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
+public class MessageLoader extends AsyncTask<Long, Void, Long> {
+
+    public static final long LOAD = 0;
+    public static final long DELETE = 1;
+    private static final long FAIL = -1;
 
     private WeakReference<DirectMessage> ui;
     private MessageAdapter mAdapter;
@@ -40,41 +44,49 @@ public class MessageLoader extends AsyncTask<Void, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Void... param) {
+    protected Long doInBackground(Long... param) {
+        final long MODE = param[0];
         try {
-            if (mAdapter.getItemCount() > 0) {
-                message = twitter.getMessages();
-                mData.storeMessage(message);
-                message = mData.getMessages();
-            } else {
-                message = mData.getMessages();
-                if (message.isEmpty()) {
+            if (MODE == LOAD) {
+                if (mAdapter.getItemCount() > 0) {
                     message = twitter.getMessages();
                     mData.storeMessage(message);
+                    message = mData.getMessages();
+                } else {
+                    message = mData.getMessages();
+                    if (message.isEmpty()) {
+                        message = twitter.getMessages();
+                        mData.storeMessage(message);
+                    }
                 }
+            } else if (MODE == DELETE) {
+                twitter.deleteMessage(param[1]);
+                mData.deleteDm(param[1]);
+                message = mData.getMessages();
             }
         } catch (TwitterException err) {
             returnCode = err.getErrorCode();
             errorMsg += err.getMessage();
-            return false;
+            return FAIL;
+
         } catch (Exception err) {
             errorMsg += err.getMessage();
             Log.e("Direct Message", errorMsg);
             err.printStackTrace();
-            return false;
+            return FAIL;
         }
-        return true;
+        return MODE;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(Long mode) {
         if (ui.get() == null) return;
 
-        if (success) {
+        if (mode == LOAD || mode == DELETE) {
             mAdapter.setData(message);
             mAdapter.notifyDataSetChanged();
-        } else {
+        } else if (mode == FAIL) {
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();

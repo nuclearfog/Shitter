@@ -1,9 +1,11 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +18,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.backend.listitems.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -26,9 +28,10 @@ import static android.os.AsyncTask.Status.RUNNING;
  *
  * @see MessageLoader
  */
-public class DirectMessage extends AppCompatActivity implements OnItemSelected, OnRefreshListener {
+public class DirectMessage extends AppCompatActivity implements OnRefreshListener, OnItemSelected {
 
     private MessageLoader mLoader;
+    private MessageAdapter mAdapter;
     private SwipeRefreshLayout refresh;
     private GlobalSettings settings;
     private RecyclerView dmList;
@@ -60,14 +63,13 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
     protected void onStart() {
         super.onStart();
         if (mLoader == null) {
-            MessageAdapter mAdapter = new MessageAdapter(this);
-            mAdapter.setColor(settings.getFontColor());
+            mAdapter = new MessageAdapter(this);
+            mAdapter.setColor(settings.getFontColor(), settings.getHighlightColor());
             mAdapter.setImageLoad(settings.loadImages());
             dmList.setAdapter(mAdapter);
-
             refresh.setRefreshing(true);
             mLoader = new MessageLoader(this);
-            mLoader.execute();
+            mLoader.execute(MessageLoader.LOAD);
         }
     }
 
@@ -103,20 +105,47 @@ public class DirectMessage extends AppCompatActivity implements OnItemSelected, 
 
 
     @Override
-    public void onSelected(int index) {
-        MessageAdapter mAdapter = (MessageAdapter) dmList.getAdapter();
+    public void onAnswer(int index) {
         if (mAdapter != null && !refresh.isRefreshing()) {
-            TwitterUser sender = mAdapter.getData().get(index).sender;
+            Message message = mAdapter.getData().get(index);
             Intent sendDm = new Intent(this, MessagePopup.class);
-            sendDm.putExtra("username", sender.screenname);
+            sendDm.putExtra("username", message.sender.screenname);
             startActivity(sendDm);
         }
     }
 
 
     @Override
+    public void onDelete(int index) {
+        if (mLoader != null && mLoader.getStatus() != RUNNING) {
+            if (mAdapter != null && !refresh.isRefreshing()) {
+                Message message = mAdapter.getData().get(index);
+                final long messageId = message.messageId;
+                new Builder(this).setMessage(R.string.confirm_delete_dm)
+                        .setNegativeButton(R.string.no_confirm, null)
+                        .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mLoader = new MessageLoader(DirectMessage.this);
+                                mLoader.execute(MessageLoader.DELETE, messageId);
+                            }
+                        }).show();
+            }
+        }
+    }
+
+
+    @Override
+    public void onClick(String tag) {
+        Intent intent = new Intent(this, SearchPage.class);
+        intent.putExtra("search", tag);
+        startActivity(intent);
+    }
+
+
+    @Override
     public void onRefresh() {
         mLoader = new MessageLoader(this);
-        mLoader.execute();
+        mLoader.execute(MessageLoader.LOAD);
     }
 }

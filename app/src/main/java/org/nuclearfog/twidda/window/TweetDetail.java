@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -145,7 +145,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.delete_tweet:
-                AlertDialog.Builder deleteDialog = new AlertDialog.Builder(this);
+                Builder deleteDialog = new Builder(this);
                 deleteDialog.setMessage(R.string.delete_tweet);
                 deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                     @Override
@@ -224,8 +224,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public void onClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
-        if (text.startsWith("#"))
-            intent.putExtra("Addition", text);
         intent.putExtra("search", text);
         startActivity(intent);
     }

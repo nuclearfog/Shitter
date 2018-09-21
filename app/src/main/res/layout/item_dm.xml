@@ -76,9 +76,31 @@
             android:id="@+id/dm_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:autoLink="web"
             android:linksClickable="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/dm_answer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:text="@string/answer"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/dm_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_dm"
+                android:textSize="12sp" />
+        </LinearLayout>
 
 
     </LinearLayout>

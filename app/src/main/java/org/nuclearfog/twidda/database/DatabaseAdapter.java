@@ -407,6 +407,18 @@ public class DatabaseAdapter {
     }
 
     /**
+     * Delete Direct Message
+     *
+     * @param id Direct Message ID
+     */
+    public void deleteDm(long id) {
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
+        db.delete("message", "messageID=" + id, null);
+        commit(db);
+    }
+
+    /**
      * Load trend List
      *
      * @param woeId Yahoo World ID

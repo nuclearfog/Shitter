@@ -15,8 +15,6 @@
     <string name="popup" translatable="false">Popup</string>
     <string name="highlight">Highlight</string>
     <string name="verify">verified</string>
-    <string name="yes_confirm">Yes</string>
-    <string name="no_confirm">No</string>
     <string name="fullimg">big image</string>
     <string name="profile_locked">locked</string>
     <string name="load_factor">tweet count</string>
@@ -34,7 +32,6 @@
     <string name="image">load images</string>
     <string name="delete_database">delete database</string>
     <string name="search">search</string>
-    <string name="should_cancel_tweet">cancel tweet?</string>
     <string name="delete_tweet">delete tweet?</string>
     <string name="connection_failed">connection failed</string>
     <string name="enter_pin">Enter PIN</string>
@@ -74,8 +71,14 @@
     <string name="error_sending_dm">error while sending direct message!</string>
     <string name="empty_tweet">empty tweet!</string>
     <string name="logout">log out!</string>
-    <string name="should_log_lout">log out?</string>
-    <string name="should_unfollow">unfollow user?</string>
-    <string name="should_block">block user?</string>
     <string name="pin_verification_failed">PIN verification failed!</string>
+    <string name="answer">answer</string>
+    <string name="delete_dm">delete..</string>
+    <string name="yes_confirm">Yes</string>
+    <string name="no_confirm">No</string>
+    <string name="confirm_unfollow">unfollow user?</string>
+    <string name="confirm_delete_dm">delete message?</string>
+    <string name="confirm_block">block user?</string>
+    <string name="confirm_log_lout">log out?</string>
+    <string name="confirm_cancel_tweet">cancel tweet?</string>
 </resources>

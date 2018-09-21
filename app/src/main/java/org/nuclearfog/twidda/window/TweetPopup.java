@@ -169,7 +169,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     private void showClosingMsg() {
         if (!addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             Builder closeDialog = new Builder(this);
-            closeDialog.setMessage(R.string.should_cancel_tweet);
+            closeDialog.setMessage(R.string.confirm_cancel_tweet);
             closeDialog.setNegativeButton(R.string.no_confirm, null);
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
