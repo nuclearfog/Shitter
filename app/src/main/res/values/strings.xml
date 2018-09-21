@@ -81,4 +81,5 @@
     <string name="confirm_block">block user?</string>
     <string name="confirm_log_lout">log out?</string>
     <string name="confirm_cancel_tweet">cancel tweet?</string>
+    <string name="dm_not_found">message not found!</string>
 </resources>

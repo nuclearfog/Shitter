@@ -242,6 +242,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     break;
                 case 144:
                     Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
+                    ui.get().finish();
                     break;
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
