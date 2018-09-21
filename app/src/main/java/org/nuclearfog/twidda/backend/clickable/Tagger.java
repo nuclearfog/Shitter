@@ -11,14 +11,10 @@ import android.view.View;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Tagger {
+public abstract class Tagger {
 
     private static final String PATTERN = "[@#][^\\s@#\\.\\,]+";
     private static final int MODE = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
-
-
-    private Tagger() {
-    }
 
 
     public static Spannable makeText(final String text, final int color, final OnTagClickListener l) {
