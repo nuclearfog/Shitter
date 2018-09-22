@@ -270,11 +270,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     protected void onPostExecute(final Long MODE) {
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-        homeReload.setRefreshing(false);
-        favReload.setRefreshing(false);
-
         if (MODE == ACTION_FOLLOW) {
             if (isFollowing)
                 Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
@@ -294,6 +289,11 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
 
         } else if (MODE == FAILURE) {
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            homeReload.setRefreshing(false);
+            favReload.setRefreshing(false);
+
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();

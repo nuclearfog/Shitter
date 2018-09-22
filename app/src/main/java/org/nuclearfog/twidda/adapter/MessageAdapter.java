@@ -145,6 +145,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
 
     public interface OnItemSelected extends OnTagClickListener {
+
         void onAnswer(int pos);
 
         void onDelete(int pos);

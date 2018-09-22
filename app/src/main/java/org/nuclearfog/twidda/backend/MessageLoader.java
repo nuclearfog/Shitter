@@ -83,10 +83,12 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
     protected void onPostExecute(Long mode) {
         if (ui.get() == null) return;
 
-        if (mode == LOAD || mode == DELETE) {
-            mAdapter.setData(message);
-            mAdapter.notifyDataSetChanged();
-        } else if (mode == FAIL) {
+        mAdapter.setData(message);
+        mAdapter.notifyDataSetChanged();
+        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
+        mRefresh.setRefreshing(false);
+
+        if (mode == FAIL) {
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
@@ -101,7 +103,5 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
                     Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
             }
         }
-        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
-        mRefresh.setRefreshing(false);
     }
 }

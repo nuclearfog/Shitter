@@ -39,6 +39,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     private RecyclerView tweetSearch, userSearch;
     private SwipeRefreshLayout tweetReload;
+    private GlobalSettings settings;
     private TwitterSearch mSearch;
     private TabHost tabhost;
     private View lastView;
@@ -62,7 +63,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         tabhost = findViewById(R.id.search_tab);
         Toolbar tool = findViewById(R.id.search_toolbar);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
 
         setSupportActionBar(tool);
@@ -84,16 +85,6 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         userSearch.setLayoutManager(new LinearLayoutManager(this));
 
-        TimelineAdapter searchAdapter = new TimelineAdapter(this);
-        searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-        searchAdapter.toggleImage(settings.loadImages());
-        tweetSearch.setAdapter(searchAdapter);
-
-        UserAdapter userAdapter = new UserAdapter(this);
-        userAdapter.toggleImage(settings.loadImages());
-        userAdapter.setColor(settings.getFontColor());
-        userSearch.setAdapter(userAdapter);
-
         tabhost.setOnTabChangedListener(this);
         tweetReload.setOnRefreshListener(this);
     }
@@ -103,6 +94,16 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     protected void onStart() {
         super.onStart();
         if (mSearch == null) {
+            TimelineAdapter searchAdapter = new TimelineAdapter(this);
+            searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+            searchAdapter.toggleImage(settings.loadImages());
+            tweetSearch.setAdapter(searchAdapter);
+
+            UserAdapter userAdapter = new UserAdapter(this);
+            userAdapter.toggleImage(settings.loadImages());
+            userAdapter.setColor(settings.getFontColor());
+            userSearch.setAdapter(userAdapter);
+
             mSearch = new TwitterSearch(this);
             tweetReload.setRefreshing(true);
             mSearch.execute(search);

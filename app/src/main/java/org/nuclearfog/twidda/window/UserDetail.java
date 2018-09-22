@@ -29,6 +29,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
     private RecyclerView userList;
     private SwipeRefreshLayout refresh;
+    private GlobalSettings settings;
     private UserLists uList;
     private int mode = -1;
     private long id = 0;
@@ -55,13 +56,8 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
         Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
-
-        UserAdapter usrAdp = new UserAdapter(this);
-        usrAdp.toggleImage(settings.loadImages());
-        usrAdp.setColor(settings.getFontColor());
-        userList.setAdapter(usrAdp);
 
         refresh.setRefreshing(true);
         refresh.setOnRefreshListener(this);
@@ -72,8 +68,14 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
     protected void onStart() {
         super.onStart();
         if (uList == null) {
-            uList = new UserLists(UserDetail.this);
+            UserAdapter usrAdp = new UserAdapter(this);
+            usrAdp.toggleImage(settings.loadImages());
+            usrAdp.setColor(settings.getFontColor());
+            userList.setAdapter(usrAdp);
+
             int titleId;
+            uList = new UserLists(UserDetail.this);
+
             switch (mode) {
                 case 0:
                     titleId = R.string.following;

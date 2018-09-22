@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.clickable;
 
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -17,7 +18,7 @@ public abstract class Tagger {
     private static final int MODE = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
 
-    public static Spannable makeText(final String text, final int color, final OnTagClickListener l) {
+    public static Spannable makeText(final String text, final int color, @NonNull final OnTagClickListener l) {
         SpannableStringBuilder sText = new SpannableStringBuilder(text);
         Pattern p = Pattern.compile(PATTERN);
         Matcher m = p.matcher(text);

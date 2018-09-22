@@ -76,9 +76,10 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     protected void onStop() {
-        if (mLoader != null && mLoader.getStatus() == RUNNING)
+        if (mLoader != null && mLoader.getStatus() == RUNNING) {
             mLoader.cancel(true);
-        refresh.setRefreshing(false);
+            refresh.setRefreshing(false);
+        }
         super.onStop();
     }
 

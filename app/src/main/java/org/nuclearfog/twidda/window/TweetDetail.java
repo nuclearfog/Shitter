@@ -76,7 +76,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         View root = findViewById(R.id.tweet_layout);
-
         View retweet = findViewById(R.id.rt_button_detail);
         View favorite = findViewById(R.id.fav_button_detail);
         View txtRt = findViewById(R.id.no_rt_detail);
