@@ -77,9 +77,6 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
             usrAdp.setData(user);
             usrAdp.notifyDataSetChanged();
         } else {
-            SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
-            refresh.setRefreshing(false);
-
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
@@ -88,5 +85,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
                     Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         }
+        SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
+        refresh.setRefreshing(false);
     }
 }

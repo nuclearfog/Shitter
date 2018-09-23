@@ -50,10 +50,10 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
         }
 
         View root = findViewById(R.id.user_view);
+        Toolbar toolbar = findViewById(R.id.user_toolbar);
         refresh = findViewById(R.id.user_refresh);
         userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(this));
-        Toolbar toolbar = findViewById(R.id.user_toolbar);
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);

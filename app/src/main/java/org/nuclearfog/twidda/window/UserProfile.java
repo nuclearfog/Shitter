@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.clickable.Tagger;
+import org.nuclearfog.twidda.backend.clickable.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -35,7 +35,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  * @see ProfileLoader
  */
 public class UserProfile extends AppCompatActivity implements OnRefreshListener,
-        OnTabChangeListener, OnItemClicked, Tagger.OnTagClickListener {
+        OnTabChangeListener, OnItemClicked, OnTagClickListener {
 
     private static final int TWEET = 1;
 
@@ -45,8 +45,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     private RecyclerView homeList, favoriteList;
     private TabHost mTab;
     private View lastTab;
-    private boolean isFollowing, isBlocked, isMuted, canDm;
-    private boolean home;
+    private boolean home, isFollowing, isBlocked, isMuted, canDm;
     private long userId = 0;
     private int tabIndex = 0;
     private String username = "";
