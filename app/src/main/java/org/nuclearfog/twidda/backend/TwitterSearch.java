@@ -99,10 +99,10 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
-        if (!success) {
-            SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
-            tweetReload.setRefreshing(false);
+        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+        tweetReload.setRefreshing(false);
 
+        if (!success) {
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();

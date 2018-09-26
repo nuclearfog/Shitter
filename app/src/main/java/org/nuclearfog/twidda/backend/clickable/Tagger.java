@@ -27,12 +27,12 @@ public abstract class Tagger {
             final int end = m.end();
             sText.setSpan(new ClickableSpan() {
                 @Override
-                public void onClick(View widget) {
+                public void onClick(@NonNull View widget) {
                     l.onClick(text.substring(start, end));
                 }
 
                 @Override
-                public void updateDrawState(TextPaint ds) {
+                public void updateDrawState(@NonNull TextPaint ds) {
                     ds.setColor(color);
                     ds.setUnderlineText(false);
                 }
