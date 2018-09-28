@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -69,9 +68,11 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
 
 
     @Override
-    @SuppressLint("InflateParams")
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
+
+        SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
+        refresh.setRefreshing(false);
 
         if (success) {
             usrAdp.setData(user);
@@ -85,6 +86,13 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
                     Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+
+    @Override
+    protected void onCancelled(Boolean b) {
+        if (ui.get() == null) return;
+
         SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);
         refresh.setRefreshing(false);
     }

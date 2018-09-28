@@ -130,6 +130,12 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
     }
 
 
+    @Override
+    protected void onCancelled(Boolean b) {
+        popup.dismiss();
+    }
+
+
     private void setImage(Bitmap btm, ImageView mImg) {
         if (btm != null) {
             int height = (int) (btm.getHeight() / (btm.getWidth() / 640.0));

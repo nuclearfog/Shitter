@@ -249,4 +249,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             }
         }
     }
+
+
+    @Override
+    protected void onCancelled(Long l) {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
+        ansReload.setRefreshing(false);
+    }
 }

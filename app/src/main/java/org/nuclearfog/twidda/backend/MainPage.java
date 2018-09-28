@@ -157,4 +157,18 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             }
         }
     }
+
+
+    @Override
+    protected void onCancelled(Integer i) {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
+        SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
+        SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
+
+        timelineRefresh.setRefreshing(false);
+        trendRefresh.setRefreshing(false);
+        mentionRefresh.setRefreshing(false);
+    }
 }

@@ -160,7 +160,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 if (imagePopup != null && imagePopup.getStatus() == RUNNING)
                     imagePopup.cancel(true);
                 imagePopup = new ImagePopup(this);
-                imagePopup.execute(mediaPath.toArray(new String[mediaPath.size()]));
+                imagePopup.execute(mediaPath.toArray(new String[0]));
                 break;
         }
     }

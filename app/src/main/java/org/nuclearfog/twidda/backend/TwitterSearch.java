@@ -99,10 +99,10 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
-        tweetReload.setRefreshing(false);
-
         if (!success) {
+            SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+            tweetReload.setRefreshing(false);
+
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
@@ -111,5 +111,14 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+
+    @Override
+    protected void onCancelled(Boolean b) {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+        tweetReload.setRefreshing(false);
     }
 }

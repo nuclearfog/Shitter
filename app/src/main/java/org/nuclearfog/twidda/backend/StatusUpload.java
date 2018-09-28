@@ -109,4 +109,10 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
                     .setNegativeButton(R.string.cancel, null).show();
         }
     }
+
+
+    @Override
+    protected void onCancelled(Boolean b) {
+        popup.dismiss();
+    }
 }

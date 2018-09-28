@@ -90,4 +90,10 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             Toast.makeText(ui.get(), R.string.error_sending_dm, Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    @Override
+    protected void onCancelled(Boolean b) {
+        popup.dismiss();
+    }
 }

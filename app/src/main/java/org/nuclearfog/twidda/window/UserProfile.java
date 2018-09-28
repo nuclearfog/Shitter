@@ -123,11 +123,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     protected void onStop() {
-        if (mProfile != null && mProfile.getStatus() == RUNNING) {
+        if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
-            homeReload.setRefreshing(false);
-            favoriteReload.setRefreshing(false);
-        }
         super.onStop();
     }
 
@@ -265,30 +262,34 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onRefresh() {
-        if (tabIndex == 0) {
-            mProfile = new ProfileLoader(this);
-            mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
-        } else {
-            mProfile = new ProfileLoader(this);
-            mProfile.execute(userId, ProfileLoader.GET_FAVORS, 1L);
+        if (mProfile != null && mProfile.getStatus() == RUNNING)
+            mProfile.cancel(true);
+        mProfile = new ProfileLoader(this);
+
+        switch (tabIndex) {
+            case 0:
+                mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
+                break;
+            case 1:
+                mProfile.execute(userId, ProfileLoader.GET_FAVORS, 1L);
+                break;
         }
     }
 
 
     @Override
     public void onTabChanged(String tabId) {
-        if (mProfile != null && mProfile.getStatus() == RUNNING) {
-            mProfile.cancel(true);
-            homeReload.setRefreshing(false);
-            favoriteReload.setRefreshing(false);
-        }
         animate();
-        tabIndex = mTab.getCurrentTab();
 
-        if (tabIndex == 0)
-            favoriteList.smoothScrollToPosition(0);
-        else
-            homeList.smoothScrollToPosition(0);
+        switch (tabIndex) {
+            case 0:
+                homeList.smoothScrollToPosition(0);
+                break;
+            case 1:
+                favoriteList.smoothScrollToPosition(0);
+                break;
+        }
+        tabIndex = mTab.getCurrentTab();
     }
 
 

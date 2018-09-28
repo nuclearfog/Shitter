@@ -115,10 +115,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onStop() {
-        if (mStat != null && mStat.getStatus() == RUNNING) {
+        if (mStat != null && mStat.getStatus() == RUNNING)
             mStat.cancel(true);
-            answerReload.setRefreshing(false);
-        }
         super.onStop();
     }
 

@@ -76,7 +76,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
             case R.id.clipboard:
                 ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                if (clip != null && clip.hasPrimaryClip()) {
+                if (clip != null && clip.getPrimaryClip() != null) {
                     String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
                     if (text.matches("\\d++\n?")) {
                         pin.setText(text);

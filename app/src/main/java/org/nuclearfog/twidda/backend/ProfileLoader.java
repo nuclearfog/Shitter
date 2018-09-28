@@ -35,16 +35,14 @@ import twitter4j.TwitterException;
 
 public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
-    // GET USER TWEETS
-    private static final long GET_USER = 1;
     public static final long GET_TWEETS = 2;
     public static final long GET_FAVORS = 3;
-
     // USER ACTION
     public static final long ACTION_FOLLOW = 6;
     public static final long ACTION_BLOCK = 4;
     public static final long ACTION_MUTE = 5;
-
+    // GET USER TWEETS
+    private static final long GET_USER = 1;
     // INTERN FLAGS
     private static final long FAILURE = -1;
 
@@ -270,11 +268,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     protected void onPostExecute(final Long MODE) {
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-        homeReload.setRefreshing(false);
-        favReload.setRefreshing(false);
-
         if (MODE == ACTION_FOLLOW) {
             if (isFollowing)
                 Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
@@ -294,6 +287,10 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
 
         } else if (MODE == FAILURE) {
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            homeReload.setRefreshing(false);
+            favReload.setRefreshing(false);
 
             switch (returnCode) {
                 case 420:
@@ -311,5 +308,17 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm);
             ui.get().invalidateOptionsMenu();
         }
+    }
+
+
+    @Override
+    protected void onCancelled(Long mode) {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+        homeReload.setRefreshing(false);
+        favReload.setRefreshing(false);
+
     }
 }

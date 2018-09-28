@@ -137,9 +137,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onStop() {
         if (home != null && home.getStatus() == RUNNING) {
             home.cancel(true);
-            timelineReload.setRefreshing(false);
-            trendReload.setRefreshing(false);
-            mentionReload.setRefreshing(false);
         }
         super.onStop();
     }
@@ -174,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 startActivity(search);
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String s) {
                 return false;
@@ -257,24 +255,26 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
+        if (home != null && home.getStatus() == RUNNING)
+            home.cancel(true);
         home = new MainPage(MainActivity.this);
-        if (tabIndex == 0)
-            home.execute(MainPage.HOME, 1);
-        else if (tabIndex == 1)
-            home.execute(MainPage.TRND, 1);
-        else if (tabIndex == 2)
-            home.execute(MainPage.MENT, 1);
+
+        switch (tabIndex) {
+            case 0:
+                home.execute(MainPage.HOME, 1);
+                break;
+            case 1:
+                home.execute(MainPage.TRND, 1);
+                break;
+            case 2:
+                home.execute(MainPage.MENT, 1);
+                break;
+        }
     }
 
 
     @Override
     public void onTabChanged(String tabId) {
-        if (home != null && home.getStatus() == RUNNING) {
-            home.cancel(true);
-            timelineReload.setRefreshing(false);
-            trendReload.setRefreshing(false);
-            mentionReload.setRefreshing(false);
-        }
         animate();
         tabIndex = tabhost.getCurrentTab();
         invalidateOptionsMenu();

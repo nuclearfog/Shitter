@@ -14,10 +14,18 @@ import java.util.regex.Pattern;
 
 public abstract class Tagger {
 
-    private static final String PATTERN = "[@#][^\\s@#\\.\\,]+";
+    private static final String PATTERN = "[@#][^\\s@#\\.\\,\\!\\?]+";
     private static final int MODE = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 
 
+    /**
+     * Make a spannable colored String with click listener
+     *
+     * @param text  String that should be spannable
+     * @param color Text Color
+     * @param l     click listener
+     * @return Spannable String
+     */
     public static Spannable makeText(final String text, final int color, @NonNull final OnTagClickListener l) {
         SpannableStringBuilder sText = new SpannableStringBuilder(text);
         Pattern p = Pattern.compile(PATTERN);
@@ -42,6 +50,13 @@ public abstract class Tagger {
     }
 
 
+    /**
+     * Make a spannable String without listener
+     *
+     * @param text  String that should be spannable
+     * @param color Text Color
+     * @return Spannable String
+     */
     public static Spannable makeText(String text, int color) {
         SpannableStringBuilder sText = new SpannableStringBuilder(text);
         Pattern p = Pattern.compile(PATTERN);
@@ -56,7 +71,15 @@ public abstract class Tagger {
     }
 
 
+    /**
+     * Interface definition of Tag click listener
+     */
     public interface OnTagClickListener {
+        /**
+         * Called when a tag was clicked
+         *
+         * @param tag Clicked Tag
+         */
         void onClick(String tag);
     }
 }

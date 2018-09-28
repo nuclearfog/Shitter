@@ -113,10 +113,8 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     protected void onStop() {
-        if (mSearch != null && mSearch.getStatus() == RUNNING) {
+        if (mSearch != null && mSearch.getStatus() == RUNNING)
             mSearch.cancel(true);
-            tweetReload.setRefreshing(false);
-        }
         super.onStop();
     }
 

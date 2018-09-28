@@ -104,10 +104,8 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
     @Override
     protected void onStop() {
-        if (uList != null && uList.getStatus() == RUNNING) {
+        if (uList != null && uList.getStatus() == RUNNING)
             uList.cancel(true);
-            refresh.setRefreshing(false);
-        }
         super.onStop();
     }
 
