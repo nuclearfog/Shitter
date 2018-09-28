@@ -151,10 +151,10 @@
                 android:layout_height="wrap_content"
                 android:addStatesFromChildren="false"
                 android:orientation="horizontal"
-                android:paddingBottom="5dp"
                 android:paddingLeft="20dp"
+                android:paddingTop="5dp"
                 android:paddingRight="20dp"
-                android:paddingTop="5dp">
+                android:paddingBottom="5dp">
 
                 <Button
                     android:id="@+id/answer_button"

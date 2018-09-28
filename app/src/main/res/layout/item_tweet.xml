@@ -86,8 +86,8 @@
             android:id="@+id/tweettext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,8 +110,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="2"
-                android:drawablePadding="4dp"
                 android:drawableStart="@drawable/retweet"
+                android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:textSize="12sp" />
 
@@ -121,8 +121,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="5dp"
                 android:layout_weight="2"
-                android:drawablePadding="4dp"
                 android:drawableStart="@drawable/favorite_tweet"
+                android:drawablePadding="4dp"
                 android:singleLine="true"
                 android:textSize="12sp" />
 

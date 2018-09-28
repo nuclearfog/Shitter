@@ -128,8 +128,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:drawablePadding="4dp"
                                     android:drawableStart="@drawable/following"
+                                    android:drawablePadding="4dp"
                                     android:visibility="invisible" />
 
                                 <TextView
@@ -137,8 +137,8 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:drawablePadding="4dp"
                                     android:drawableStart="@drawable/follower"
+                                    android:drawablePadding="4dp"
                                     android:visibility="invisible" />
 
                             </LinearLayout>
@@ -158,8 +158,8 @@
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="4dp"
                         android:drawableStart="@drawable/location"
+                        android:drawablePadding="4dp"
                         android:singleLine="true"
                         android:textSize="12sp"
                         android:visibility="gone" />
@@ -169,8 +169,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autoLink="web"
-                        android:drawablePadding="4dp"
                         android:drawableStart="@drawable/link"
+                        android:drawablePadding="4dp"
                         android:linksClickable="true"
                         android:singleLine="true"
                         android:textSize="12sp"
@@ -180,8 +180,8 @@
                         android:id="@+id/profile_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="4dp"
                         android:drawableStart="@drawable/calendar"
+                        android:drawablePadding="4dp"
                         android:singleLine="true"
                         android:textSize="12sp"
                         android:visibility="invisible" />
