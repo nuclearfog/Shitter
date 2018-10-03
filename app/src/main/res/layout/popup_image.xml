@@ -2,26 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center">
 
-    <Button
-        android:id="@+id/image_left"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/left"
-        android:visibility="invisible" />
-
-    <ImageView
+    <org.nuclearfog.zoomview.ZoomView
         android:id="@+id/fullSizeImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:contentDescription="@string/fullimg" />
 
-    <Button
-        android:id="@+id/image_right"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:background="@drawable/right"
-        android:visibility="invisible" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/image_left"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/left"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/image_right"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/right"
+            android:visibility="invisible" />
+
+    </LinearLayout>
 
 </LinearLayout>

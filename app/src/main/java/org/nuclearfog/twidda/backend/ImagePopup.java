@@ -12,9 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -92,7 +92,7 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(Boolean result) {
         if (result) {
             View content = inflater.inflate(R.layout.popup_image, null, false);
-            final ImageView mImg = content.findViewById(R.id.fullSizeImage);
+            final ZoomView mImg = content.findViewById(R.id.fullSizeImage);
             setImage(imgArray[position], mImg);
             popup.setContentView(content);
             popup.setCanceledOnTouchOutside(true);
@@ -136,9 +136,9 @@ public class ImagePopup extends AsyncTask<String, Void, Boolean> {
     }
 
 
-    private void setImage(Bitmap btm, ImageView mImg) {
+    private void setImage(Bitmap btm, ZoomView mImg) {
         if (btm != null) {
-            int height = (int) (btm.getHeight() / (btm.getWidth() / 640.0));
+            int height = (int)(btm.getHeight() / (btm.getWidth() / 640.0));
             btm = Bitmap.createScaledBitmap(btm, 640, height, false);
             mImg.setImageBitmap(btm);
         }
