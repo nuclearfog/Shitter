@@ -160,7 +160,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             case R.id.tweet_link:
                 if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    String tweetLink = "https://twitter.com/" + username + "/status/" + tweetID;
                     intent.setData(Uri.parse(tweetLink));
                     startActivity(intent);
                 } else {
