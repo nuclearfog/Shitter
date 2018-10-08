@@ -67,7 +67,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int index) {
+    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
         v.setOnClickListener(new OnClickListener() {
             @Override

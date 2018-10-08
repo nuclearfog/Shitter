@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.MessageUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -117,8 +116,11 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         } else if (v.getId() == R.id.dm_media) {
             if (mediaPath.trim().isEmpty())
                 getMedia();
-            else
-                new ImagePopup(this).execute(mediaPath);
+            else {
+                Intent image = new Intent(this, ImageDetail.class);
+                image.putExtra("link", new String[]{mediaPath});
+                startActivity(image);
+            }
         }
     }
 

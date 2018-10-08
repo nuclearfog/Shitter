@@ -245,8 +245,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (getStatus() != Status.RUNNING)
-                        new ImagePopup(ui.get()).execute(user.profileImg);
+                    ui.get().imageClick(user.profileImg);
                 }
             });
 

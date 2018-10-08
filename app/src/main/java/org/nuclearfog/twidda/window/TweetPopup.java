@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.ImagePopup;
 import org.nuclearfog.twidda.backend.StatusUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -35,7 +34,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private StatusUpload sendTweet;
-    private ImagePopup imagePopup;
     private View imageButton, previewBtn;
     private List<String> mediaPath;
     private TextView imgCount;
@@ -83,8 +81,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     protected void onDestroy() {
         if (sendTweet != null && sendTweet.getStatus() == RUNNING)
             sendTweet.cancel(true);
-        if (imagePopup != null && imagePopup.getStatus() == RUNNING)
-            imagePopup.cancel(true);
         super.onDestroy();
     }
 
@@ -157,10 +153,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 break;
 
             case R.id.img_preview:
-                if (imagePopup != null && imagePopup.getStatus() == RUNNING)
-                    imagePopup.cancel(true);
-                imagePopup = new ImagePopup(this);
-                imagePopup.execute(mediaPath.toArray(new String[0]));
+                Intent image = new Intent(this, ImageDetail.class);
+                image.putExtra("link", mediaPath.toArray(new String[0]));
+                startActivity(image);
                 break;
         }
     }

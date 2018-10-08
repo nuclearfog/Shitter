@@ -193,7 +193,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             mediaButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ui.get().onMediaClicked(tweet.media);
+                    ui.get().imageClick(tweet.media);
                 }
             });
         }
@@ -225,10 +225,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
         ansReload.setRefreshing(false);
 
-        if (mode == FAVORITE || mode == RETWEET) {
-            ui.get().setResult(TweetDetail.CHANGED);
-
-        } else if (mode == DELETE) {
+        if (mode == DELETE) {
             Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
             ui.get().setResult(TweetDetail.CHANGED);
             ui.get().finish();
@@ -242,6 +239,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     break;
                 case 144:
                     Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
+                    ui.get().setResult(TweetDetail.CHANGED);
                     ui.get().finish();
                     break;
                 default:

@@ -74,4 +74,5 @@
     <string name="confirm_block">user sperren?</string>
     <string name="confirm_delete_dm">Nachricht löschen?</string>
     <string name="dm_not_found">Nachricht nicht gefunden!</string>
+    <string name="image_preview">Vorschau</string>
 </resources>

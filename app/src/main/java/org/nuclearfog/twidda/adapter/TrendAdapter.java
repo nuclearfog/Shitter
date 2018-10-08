@@ -52,7 +52,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int index) {
+    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
         v.setOnClickListener(new OnClickListener() {
             @Override

@@ -23,7 +23,7 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
-import org.nuclearfog.twidda.backend.ImagePopup;
+import org.nuclearfog.twidda.backend.ImageLoad;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.clickable.Tagger;
 import org.nuclearfog.twidda.backend.listitems.Tweet;
@@ -35,7 +35,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  * Detailed Tweet Activity
  *
  * @see StatusLoader
- * @see ImagePopup
+ * @see ImageLoad
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClicked, OnRefreshListener, Tagger.OnTagClickListener {
@@ -247,8 +247,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public void onMediaClicked(String mediaLinks[]) {
-        ImagePopup imagePopup = new ImagePopup(this);
-        imagePopup.execute(mediaLinks);
+    public void imageClick(String mediaLinks[]) {
+        Intent image = new Intent(this, ImageDetail.class);
+        image.putExtra("link", mediaLinks);
+        startActivity(image);
     }
 }

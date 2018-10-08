@@ -364,4 +364,11 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         this.isBlocked = isBlocked;
         this.canDm = canDm;
     }
+
+    public void imageClick(String link) {
+        Intent image = new Intent(this, ImageDetail.class);
+        image.putExtra("link", new String[]{link});
+        startActivity(image);
+
+    }
 }

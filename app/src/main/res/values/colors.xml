@@ -5,4 +5,6 @@
     <color name="soylentgreen">#76ff03</color>
     <color name="tweetwindow">#19aae8</color>
     <color name="DarkBlue">#050f48</color>
+    <color name="halftrancparency">#40000000</color>
+    <color name="darktrancparency">#80000000</color>
 </resources>
