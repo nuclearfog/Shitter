@@ -15,7 +15,6 @@
     <string name="popup" translatable="false">Popup</string>
     <string name="highlight">Highlight</string>
     <string name="verify">verified</string>
-    <string name="fullimg">big image</string>
     <string name="profile_locked">locked</string>
     <string name="load_factor">tweet count</string>
     <string name="block">Block</string>
@@ -82,5 +81,4 @@
     <string name="confirm_log_lout">log out?</string>
     <string name="confirm_cancel_tweet">cancel tweet?</string>
     <string name="dm_not_found">message not found!</string>
-    <string name="image_preview">image preview</string>
 </resources>

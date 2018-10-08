@@ -3,7 +3,6 @@
     <string name="font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
     <string name="verify">verifiziert</string>
-    <string name="fullimg">Großbild</string>
     <string name="profile_locked">Privat</string>
     <string name="load_factor">Anzahl Tweets</string>
     <string name="followback">Folgt dir</string>
@@ -74,5 +73,4 @@
     <string name="confirm_block">user sperren?</string>
     <string name="confirm_delete_dm">Nachricht löschen?</string>
     <string name="dm_not_found">Nachricht nicht gefunden!</string>
-    <string name="image_preview">Vorschau</string>
 </resources>

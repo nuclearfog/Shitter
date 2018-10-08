@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center_horizontal"
     android:background="@color/DarkBlue"
     android:gravity="center"
@@ -37,12 +38,12 @@
             android:padding="5dp"
             android:singleLine="true" />
 
-        <Button
+        <ImageButton
             android:id="@+id/clipboard"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:background="@drawable/copy" />
+            style="@style/Widget.AppCompat.Button.Borderless"
+            app:srcCompat="@drawable/copy" />
 
     </LinearLayout>
 
