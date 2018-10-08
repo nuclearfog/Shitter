@@ -15,8 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:paddingLeft="@dimen/side_padding"
+        android:paddingRight="@dimen/side_padding">
 
         <TextView
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/divider"
             android:background="?android:attr/listDivider" />
 
         <LinearLayout
@@ -38,18 +38,18 @@
             <Button
                 android:id="@+id/color_background"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/background" />
 
             <Button
                 android:id="@+id/color_font"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:includeFontPadding="false"
                 android:text="@string/font"
@@ -66,18 +66,18 @@
             <Button
                 android:id="@+id/color_tweet"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/popup" />
 
             <Button
                 android:id="@+id/highlight_color"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/highlight" />
 
@@ -86,13 +86,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
             android:text="@string/data_load"
             android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/divider"
             android:background="?android:attr/listDivider" />
 
         <LinearLayout
@@ -104,16 +103,17 @@
             <Button
                 android:id="@+id/load_dialog"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
+                android:layout_width="@dimen/null_size"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/load_factor" />
 
             <CheckBox
                 android:id="@+id/toggleImg"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="@dimen/side_padding"
                 android:layout_weight="1"
                 android:text="@string/image" />
 
@@ -122,35 +122,34 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/settings_textview"
             android:text="@string/trend_setting"
             android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/divider"
             android:background="?android:attr/listDivider" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="@dimen/layout_margin">
 
             <Spinner
                 android:id="@+id/woeid"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <EditText
                 android:id="@+id/woe_id"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="@dimen/side_padding"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:drawablePadding="4dp"
                 android:hint="@string/woeid"
                 android:inputType="number"
                 android:singleLine="true"
@@ -161,13 +160,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/button_margin"
             android:text="@string/database"
             android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="@dimen/divider"
             android:background="?android:attr/listDivider" />
 
         <LinearLayout
@@ -175,14 +174,14 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:padding="@dimen/layout_margin">
 
             <Button
                 android:id="@+id/delete_db"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:background="@android:color/holo_red_dark"
                 android:text="@string/delete_database" />
@@ -190,9 +189,9 @@
             <Button
                 android:id="@+id/logout"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="@dimen/button_height"
-                android:layout_margin="5dp"
+                android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:background="@android:color/holo_red_dark"
                 android:text="@string/logout" />

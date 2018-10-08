@@ -189,6 +189,12 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             TextView txtFollower = ui.get().findViewById(R.id.follower);
             ImageView profile = ui.get().findViewById(R.id.profile_img);
 
+            View following_ico = ui.get().findViewById(R.id.following_ico);
+            View follower_ico = ui.get().findViewById(R.id.follower_ico);
+            View location_ico = ui.get().findViewById(R.id.loction_ico);
+            View link_ico = ui.get().findViewById(R.id.links_ico);
+            View date_ico = ui.get().findViewById(R.id.date_ico);
+
             String follower = Integer.toString(user.follower);
             String following = Integer.toString(user.following);
             String date = sdf.format(new Date(user.created));
@@ -200,16 +206,18 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             txtFollower.setText(follower);
             txtFollowing.setText(following);
             txtCreated.setText(date);
-            txtFollower.setVisibility(View.VISIBLE);
-            txtFollowing.setVisibility(View.VISIBLE);
-            txtCreated.setVisibility(View.VISIBLE);
+
+            follower_ico.setVisibility(View.VISIBLE);
+            following_ico.setVisibility(View.VISIBLE);
+            date_ico.setVisibility(View.VISIBLE);
+
             if (user.location != null && !user.location.isEmpty()) {
                 txtLocation.setText(user.location);
-                txtLocation.setVisibility(View.VISIBLE);
+                location_ico.setVisibility(View.VISIBLE);
             }
             if (user.link != null && !user.link.isEmpty()) {
                 txtLink.setText(user.link);
-                txtLink.setVisibility(View.VISIBLE);
+                link_ico.setVisibility(View.VISIBLE);
             }
             if (user.isVerified) {
                 ui.get().findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);

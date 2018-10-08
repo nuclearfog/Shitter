@@ -121,11 +121,11 @@
                         android:singleLine="true"
                         android:textSize="12sp" />
 
-                    <Button
+                    <ImageView
                         android:id="@+id/image_attach"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:background="@drawable/preview"
+                        app:srcCompat="@drawable/preview"
                         android:visibility="gone" />
 
                 </LinearLayout>
@@ -156,11 +156,11 @@
                 android:paddingRight="20dp"
                 android:paddingBottom="5dp">
 
-                <Button
+                <ImageView
                     android:id="@+id/answer_button"
                     android:layout_width="@dimen/tweet_icon_size"
                     android:layout_height="@dimen/tweet_icon_size"
-                    android:background="@drawable/chat" />
+                    app:srcCompat="@drawable/chat" />
 
                 <TextView
                     android:id="@+id/no_ans_detail"
@@ -173,11 +173,11 @@
                     android:singleLine="true"
                     android:textSize="12sp" />
 
-                <Button
+                <ImageView
                     android:id="@+id/rt_button_detail"
                     android:layout_width="@dimen/tweet_icon_size"
                     android:layout_height="@dimen/tweet_icon_size"
-                    android:background="@drawable/retweet" />
+                    app:srcCompat="@drawable/retweet" />
 
                 <TextView
                     android:id="@+id/no_rt_detail"
@@ -190,11 +190,11 @@
                     android:singleLine="true"
                     android:textSize="12sp" />
 
-                <Button
+                <ImageView
                     android:id="@+id/fav_button_detail"
                     android:layout_width="@dimen/tweet_icon_size"
                     android:layout_height="@dimen/tweet_icon_size"
-                    android:background="@drawable/favorite" />
+                    app:srcCompat="@drawable/favorite" />
 
                 <TextView
                     android:id="@+id/no_fav_detail"

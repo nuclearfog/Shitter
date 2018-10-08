@@ -30,13 +30,13 @@
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
+                    android:paddingLeft="@dimen/side_padding"
+                    android:paddingRight="@dimen/side_padding">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginBottom="@dimen/layout_margin"
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.CardView
@@ -48,7 +48,6 @@
                                 android:id="@+id/profile_img"
                                 android:layout_width="@dimen/profile_image"
                                 android:layout_height="@dimen/profile_image"
-                                android:layout_marginEnd="5dp"
                                 android:contentDescription="@string/profile_image" />
 
                         </android.support.v7.widget.CardView>
@@ -56,20 +55,20 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="10dp"
+                            android:layout_marginStart="@dimen/layout_margin"
                             android:orientation="vertical">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <ImageView
                                     android:id="@+id/profile_verify"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginEnd="2dp"
+                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_height="@dimen/icon_size"
+                                    android:layout_marginEnd="@dimen/icon_margin"
                                     android:contentDescription="@string/verify"
                                     android:visibility="gone"
                                     app:srcCompat="@drawable/verify" />
@@ -78,7 +77,6 @@
                                     android:id="@+id/profile_username"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="2dp"
                                     android:singleLine="true" />
 
                             </LinearLayout>
@@ -86,14 +84,14 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <ImageView
                                     android:id="@+id/profile_locked"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginEnd="2dp"
+                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_height="@dimen/icon_size"
+                                    android:layout_marginEnd="@dimen/icon_margin"
                                     android:contentDescription="@string/profile_locked"
                                     android:visibility="gone"
                                     app:srcCompat="@drawable/lock" />
@@ -102,7 +100,6 @@
                                     android:id="@+id/profile_screenname"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="2dp"
                                     android:singleLine="true" />
 
                             </LinearLayout>
@@ -110,36 +107,46 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <ImageView
                                     android:id="@+id/followback"
-                                    android:layout_width="16dp"
-                                    android:layout_height="16dp"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginEnd="2dp"
-                                    android:background="@drawable/followback"
+                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_height="@dimen/icon_size"
+                                    android:layout_marginEnd="@dimen/icon_margin"
                                     android:contentDescription="@string/followback"
-                                    android:visibility="gone" />
+                                    android:visibility="gone"
+                                    app:srcCompat="@drawable/followback" />
+
+
+                                <ImageView
+                                    android:id="@+id/following_ico"
+                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_height="@dimen/icon_size"
+                                    android:layout_marginEnd="@dimen/icon_margin"
+                                    android:visibility="invisible"
+                                    app:srcCompat="@drawable/following" />
 
                                 <TextView
                                     android:id="@+id/following"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:drawableStart="@drawable/following"
-                                    android:drawablePadding="4dp"
-                                    android:visibility="invisible" />
+                                    android:layout_weight="1" />
+
+                                <ImageView
+                                    android:id="@+id/follower_ico"
+                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_height="@dimen/icon_size"
+                                    android:layout_marginEnd="@dimen/icon_margin"
+                                    android:visibility="invisible"
+                                    app:srcCompat="@drawable/follower" />
 
                                 <TextView
                                     android:id="@+id/follower"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:drawableStart="@drawable/follower"
-                                    android:drawablePadding="4dp"
-                                    android:visibility="invisible" />
+                                    android:layout_weight="1" />
 
                             </LinearLayout>
 
@@ -151,42 +158,81 @@
                         android:id="@+id/bio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="@dimen/layout_margin"
                         android:linksClickable="true" />
 
-                    <TextView
-                        android:id="@+id/location"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/location"
-                        android:drawablePadding="4dp"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/links"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autoLink="web"
-                        android:drawableStart="@drawable/link"
-                        android:drawablePadding="4dp"
-                        android:linksClickable="true"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
+                        <ImageView
+                            android:id="@+id/loction_ico"
+                            android:layout_width="@dimen/icon_size"
+                            android:layout_height="@dimen/icon_size"
+                            android:layout_marginEnd="@dimen/icon_margin"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/location" />
 
-                    <TextView
-                        android:id="@+id/profile_date"
+                        <TextView
+                            android:id="@+id/location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/calendar"
-                        android:drawablePadding="4dp"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        android:visibility="invisible" />
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/links_ico"
+                            android:layout_width="@dimen/icon_size"
+                            android:layout_height="@dimen/icon_size"
+                            android:layout_marginEnd="@dimen/icon_margin"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/link" />
+
+                        <TextView
+                            android:id="@+id/links"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:autoLink="web"
+                            android:linksClickable="true"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/date_ico"
+                            android:layout_width="@dimen/icon_size"
+                            android:layout_height="@dimen/icon_size"
+                            android:layout_marginEnd="@dimen/icon_margin"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/calendar" />
+
+                        <TextView
+                            android:id="@+id/profile_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
+
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>

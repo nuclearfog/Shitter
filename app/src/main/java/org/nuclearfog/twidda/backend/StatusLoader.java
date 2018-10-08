@@ -8,7 +8,6 @@ import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -146,8 +145,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         TextView txtFav = ui.get().findViewById(R.id.no_fav_detail);
         TextView txtAns = ui.get().findViewById(R.id.no_ans_detail);
         ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
-        Button retweetButton = ui.get().findViewById(R.id.rt_button_detail);
-        Button favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
+        ImageView retweetButton = ui.get().findViewById(R.id.rt_button_detail);
+        ImageView favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
         View mediaButton = ui.get().findViewById(R.id.image_attach);
         View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
 
@@ -204,14 +203,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             Picasso.get().load(tweet.user.profileImg + "_bigger").into(profile_img);
         }
         if (tweet.retweeted) {
-            retweetButton.setBackgroundResource(R.drawable.retweet_enabled);
+            retweetButton.setImageResource(R.drawable.retweet_enabled);
         } else {
-            retweetButton.setBackgroundResource(R.drawable.retweet);
+            retweetButton.setImageResource(R.drawable.retweet);
         }
         if (tweet.favorized) {
-            favoriteButton.setBackgroundResource(R.drawable.favorite_enabled);
+            favoriteButton.setImageResource(R.drawable.favorite_enabled);
         } else {
-            favoriteButton.setBackgroundResource(R.drawable.favorite);
+            favoriteButton.setImageResource(R.drawable.favorite);
         }
         answerAdapter.setData(answers);
         answerAdapter.notifyDataSetChanged();

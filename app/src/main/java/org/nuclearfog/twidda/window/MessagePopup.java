@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -45,8 +44,8 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
             username = b.getString("username");
 
         View root = findViewById(R.id.dm_popup);
-        Button send = findViewById(R.id.dm_send);
-        Button media = findViewById(R.id.dm_media);
+        View send = findViewById(R.id.dm_send);
+        View media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
         text = findViewById(R.id.dm_text);
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -8,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="@dimen/layout_margin"
         android:orientation="vertical">
 
         <LinearLayout
@@ -20,8 +19,7 @@
             <android.support.v7.widget.CardView
                 style="@style/ProfileImageCardView"
                 android:layout_width="@dimen/profile_small"
-                android:layout_height="@dimen/profile_small"
-                app:cardCornerRadius="5dp">
+                android:layout_height="@dimen/profile_small">
 
                 <ImageView
                     android:id="@+id/dm_profileImg"
@@ -34,7 +32,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="@dimen/layout_margin"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -44,7 +42,7 @@
 
                     <TextView
                         android:id="@+id/dm_username"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/null_size"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:singleLine="true"
@@ -52,7 +50,7 @@
 
                     <TextView
                         android:id="@+id/dm_time"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/null_size"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="end"
@@ -76,8 +74,8 @@
             android:id="@+id/dm_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="@dimen/layout_margin"
+            android:layout_marginBottom="@dimen/layout_margin"
             android:autoLink="web"
             android:linksClickable="true" />
 
@@ -88,20 +86,21 @@
 
             <TextView
                 android:id="@+id/dm_answer"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
+                android:layout_weight="1"
                 android:text="@string/answer"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/dm_delete"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/null_size"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/delete_dm"
                 android:textSize="12sp" />
-        </LinearLayout>
 
+        </LinearLayout>
 
     </LinearLayout>
 

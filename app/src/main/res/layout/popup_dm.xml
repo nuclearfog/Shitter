@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dm_popup"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -25,22 +26,20 @@
             android:inputType="text"
             android:singleLine="true" />
 
-        <Button
+        <ImageView
             android:id="@+id/dm_media"
-            style="@style/Widget.AppCompat.Button"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/image" />
+            app:srcCompat="@drawable/image" />
 
         <Button
             android:id="@+id/dm_send"
-            style="@style/Widget.AppCompat.Button"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/right" />
+            app:srcCompat="@drawable/right" />
 
     </LinearLayout>
 
