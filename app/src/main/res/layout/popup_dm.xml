@@ -30,6 +30,7 @@
             android:layout_width="@dimen/dm_button_size"
             android:layout_height="@dimen/dm_button_size"
             android:layout_marginStart="@dimen/dm_icon_margin"
+            android:layout_marginLeft="@dimen/dm_icon_margin"
             app:srcCompat="@drawable/image" />
 
         <ImageView
@@ -37,6 +38,7 @@
             android:layout_width="@dimen/dm_button_size"
             android:layout_height="@dimen/dm_button_size"
             android:layout_marginStart="@dimen/button_margin"
+            android:layout_marginLeft="@dimen/button_margin"
             app:srcCompat="@drawable/right" />
 
     </LinearLayout>

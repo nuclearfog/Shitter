@@ -114,6 +114,7 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/settings_button"
                 android:layout_marginStart="@dimen/side_padding"
+                android:layout_marginLeft="@dimen/side_padding"
                 android:layout_weight="1"
                 android:text="@string/image" />
 
@@ -148,6 +149,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/side_padding"
+                android:layout_marginLeft="@dimen/side_padding"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/woeid"

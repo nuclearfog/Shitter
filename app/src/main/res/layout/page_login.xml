@@ -28,6 +28,7 @@
             android:layout_width="@dimen/button_size"
             android:layout_height="@dimen/button_size"
             android:layout_marginEnd="@dimen/layout_margin"
+            android:layout_marginRight="@dimen/layout_margin"
             app:srcCompat="@drawable/key" />
 
         <EditText
@@ -44,6 +45,7 @@
             android:layout_width="@dimen/button_size"
             android:layout_height="@dimen/button_size"
             android:layout_marginStart="@dimen/layout_margin"
+            android:layout_marginLeft="@dimen/layout_margin"
             android:background="@android:color/transparent"
             app:srcCompat="@drawable/copy" />
 

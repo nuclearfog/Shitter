@@ -56,6 +56,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="@dimen/layout_margin"
+                            android:layout_marginLeft="@dimen/layout_margin"
                             android:orientation="vertical">
 
                             <LinearLayout
@@ -69,6 +70,7 @@
                                     android:layout_width="@dimen/icon_size"
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
+                                    android:layout_marginRight="@dimen/icon_margin"
                                     android:contentDescription="@string/verify"
                                     android:visibility="gone"
                                     app:srcCompat="@drawable/verify" />
@@ -92,6 +94,7 @@
                                     android:layout_width="@dimen/icon_size"
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
+                                    android:layout_marginRight="@dimen/icon_margin"
                                     android:contentDescription="@string/profile_locked"
                                     android:visibility="gone"
                                     app:srcCompat="@drawable/lock" />
@@ -115,6 +118,7 @@
                                     android:layout_width="@dimen/icon_size"
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
+                                    android:layout_marginRight="@dimen/icon_margin"
                                     android:contentDescription="@string/followback"
                                     android:visibility="gone"
                                     app:srcCompat="@drawable/followback" />
@@ -125,6 +129,7 @@
                                     android:layout_width="@dimen/icon_size"
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
+                                    android:layout_marginRight="@dimen/icon_margin"
                                     android:visibility="invisible"
                                     app:srcCompat="@drawable/following" />
 
@@ -139,6 +144,7 @@
                                     android:layout_width="@dimen/icon_size"
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
+                                    android:layout_marginRight="@dimen/icon_margin"
                                     android:visibility="invisible"
                                     app:srcCompat="@drawable/follower" />
 
@@ -172,6 +178,7 @@
                             android:layout_width="@dimen/icon_size"
                             android:layout_height="@dimen/icon_size"
                             android:layout_marginEnd="@dimen/icon_margin"
+                            android:layout_marginRight="@dimen/icon_margin"
                             android:visibility="gone"
                             app:srcCompat="@drawable/location" />
 
@@ -194,6 +201,7 @@
                             android:layout_width="@dimen/icon_size"
                             android:layout_height="@dimen/icon_size"
                             android:layout_marginEnd="@dimen/icon_margin"
+                            android:layout_marginRight="@dimen/icon_margin"
                             android:visibility="gone"
                             app:srcCompat="@drawable/link" />
 
@@ -219,6 +227,7 @@
                             android:layout_width="@dimen/icon_size"
                             android:layout_height="@dimen/icon_size"
                             android:layout_marginEnd="@dimen/icon_margin"
+                            android:layout_marginRight="@dimen/icon_margin"
                             android:visibility="gone"
                             app:srcCompat="@drawable/calendar" />
 
