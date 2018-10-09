@@ -3,10 +3,12 @@ package org.nuclearfog.twidda.window;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +57,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         b = getIntent().getExtras();
         if (b != null) {
@@ -85,11 +88,11 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("", getDrawable(R.drawable.home));
+        tab1.setIndicator("", ContextCompat.getDrawable(this, R.drawable.home));
         mTab.addTab(tab1);
         TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
         tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("", getDrawable(R.drawable.favorite));
+        tab2.setIndicator("", ContextCompat.getDrawable(this, R.drawable.favorite));
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
 

@@ -2,9 +2,11 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -51,6 +53,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_search);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         b = getIntent().getExtras();
         if (b != null)
@@ -73,12 +76,12 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
         tabhost.setup();
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
         tab1.setContent(R.id.searchtweets);
-        tab1.setIndicator("", getDrawable(R.drawable.search));
+        tab1.setIndicator("", ContextCompat.getDrawable(this, R.drawable.search));
         tabhost.addTab(tab1);
 
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
-        tab2.setIndicator("", getDrawable(R.drawable.user));
+        tab2.setIndicator("", ContextCompat.getDrawable(this, R.drawable.user));
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
 

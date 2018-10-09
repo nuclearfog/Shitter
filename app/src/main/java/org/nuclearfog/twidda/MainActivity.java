@@ -2,9 +2,11 @@ package org.nuclearfog.twidda;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_main);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
@@ -77,15 +80,15 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
-        tab1.setIndicator("", getDrawable(R.drawable.home));
+        tab1.setIndicator("", ContextCompat.getDrawable(this, R.drawable.home));
         tabhost.addTab(tab1);
         TabSpec tab2 = tabhost.newTabSpec("trends");
         tab2.setContent(R.id.trends);
-        tab2.setIndicator("", getDrawable(R.drawable.hash));
+        tab2.setIndicator("", ContextCompat.getDrawable(this, R.drawable.hash));
         tabhost.addTab(tab2);
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setContent(R.id.mention);
-        tab3.setIndicator("", getDrawable(R.drawable.mention));
+        tab3.setIndicator("", ContextCompat.getDrawable(this, R.drawable.mention));
         tabhost.addTab(tab3);
 
         timelineList.setLayoutManager(new LinearLayoutManager(this));
