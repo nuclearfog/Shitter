@@ -127,6 +127,23 @@ public class DatabaseAdapter {
     }
 
     /**
+     * Speichere Twitter Trends
+     *
+     * @param trends List of Trends
+     * @param woeId  Yahoo World ID
+     */
+    public void store(final List<Trend> trends, int woeId) {
+        SQLiteDatabase db = getDbWrite();
+        String query = "DELETE FROM trend WHERE woeID=" + woeId;
+        db.beginTransaction();
+        db.execSQL(query);
+        for (Trend trend : trends) {
+            storeTrends(trend, woeId, db);
+        }
+        commit(db);
+    }
+
+    /**
      * Speichere Tweet in Favoriten Tabelle
      *
      * @param tweetID Tweet ID
@@ -147,23 +164,6 @@ public class DatabaseAdapter {
         db.beginTransaction();
         db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
         db.update("tweet", status, "tweet.tweetID=" + tweetID, null);
-        commit(db);
-    }
-
-    /**
-     * Speichere Twitter Trends
-     *
-     * @param trends List of Trends
-     * @param woeId  Yahoo World ID
-     */
-    public void store(final List<Trend> trends, int woeId) {
-        SQLiteDatabase db = getDbWrite();
-        String query = "DELETE FROM trend WHERE woeID=" + woeId;
-        db.beginTransaction();
-        db.execSQL(query);
-        for (Trend trend : trends) {
-            storeTrends(trend, woeId, db);
-        }
         commit(db);
     }
 
