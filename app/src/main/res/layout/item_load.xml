@@ -16,8 +16,8 @@
         android:layout_width="@dimen/load_button"
         android:layout_height="@dimen/load_button"
         android:layout_gravity="center"
-        android:contentDescription="@string/progress_kill"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/progress_kill"
         app:srcCompat="@drawable/cross" />
 
 </FrameLayout>

@@ -39,8 +39,8 @@
             android:layout_width="@dimen/tweet_button_size"
             android:layout_height="@dimen/tweet_button_size"
             android:layout_marginStart="@dimen/tweet_icon_margin"
-            app:srcCompat="@drawable/preview"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:srcCompat="@drawable/preview" />
 
         <ImageView
             android:id="@+id/image"

@@ -51,9 +51,9 @@
 
     <Button
         android:id="@+id/get"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_margin="@dimen/button_padding"
         android:background="@android:color/darker_gray"
         android:text="@string/verifierbutton"

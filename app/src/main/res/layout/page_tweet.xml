@@ -123,8 +123,8 @@
                         android:id="@+id/image_attach"
                         android:layout_width="@dimen/button_size"
                         android:layout_height="@dimen/button_size"
-                        app:srcCompat="@drawable/preview"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/preview" />
 
                 </LinearLayout>
 

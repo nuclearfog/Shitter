@@ -43,8 +43,8 @@
                     android:layout_height="@dimen/icon_size"
                     android:layout_marginEnd="@dimen/icon_margin"
                     android:contentDescription="@string/verify"
-                    app:srcCompat="@drawable/verify"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/verify" />
 
                 <TextView
                     android:id="@+id/username_detail"
@@ -67,8 +67,8 @@
                     android:layout_height="@dimen/icon_size"
                     android:layout_marginEnd="@dimen/icon_margin"
                     android:contentDescription="@string/profile_locked"
-                    app:srcCompat="@drawable/lock"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/lock" />
 
                 <TextView
                     android:id="@+id/screenname_detail"
