@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/trendpos"
-            android:layout_width="@dimen/null_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/layout_margin"
             android:layout_weight="1"
@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/trendname"
-            android:layout_width="@dimen/null_size"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="8"
             android:singleLine="true"

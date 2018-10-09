@@ -38,8 +38,8 @@
             <Button
                 android:id="@+id/color_background"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/background" />
@@ -47,8 +47,8 @@
             <Button
                 android:id="@+id/color_font"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:includeFontPadding="false"
@@ -66,8 +66,8 @@
             <Button
                 android:id="@+id/color_tweet"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/popup" />
@@ -75,8 +75,8 @@
             <Button
                 android:id="@+id/highlight_color"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/highlight" />
@@ -103,16 +103,16 @@
             <Button
                 android:id="@+id/load_dialog"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_height="@dimen/button_height"
-                android:layout_width="@dimen/null_size"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:text="@string/load_factor" />
 
             <CheckBox
                 android:id="@+id/toggleImg"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_marginStart="@dimen/side_padding"
                 android:layout_weight="1"
                 android:text="@string/image" />
@@ -139,13 +139,13 @@
 
             <Spinner
                 android:id="@+id/woeid"
-                android:layout_width="@dimen/null_size"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <EditText
                 android:id="@+id/woe_id"
-                android:layout_width="@dimen/null_size"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/side_padding"
                 android:layout_weight="1"
@@ -179,8 +179,8 @@
             <Button
                 android:id="@+id/delete_db"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:background="@android:color/holo_red_dark"
@@ -189,8 +189,8 @@
             <Button
                 android:id="@+id/logout"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="@dimen/null_size"
-                android:layout_height="@dimen/button_height"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/settings_button"
                 android:layout_margin="@dimen/button_margin"
                 android:layout_weight="1"
                 android:background="@android:color/holo_red_dark"

@@ -1,26 +1,49 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="null_size">0dp</dimen>
+
     <dimen name="bar_wide">45dp</dimen>
-    <dimen name="button_height">40dp</dimen>
+
     <dimen name="profile_image">64dp</dimen>
     <dimen name="profile_middle">40dp</dimen>
     <dimen name="profile_small">32dp</dimen>
-    <dimen name="text_input_width">300dp</dimen>
-    <dimen name="text_input_height">200dp</dimen>
-    <dimen name="image_height">300dp</dimen>
+
     <dimen name="name_input_height">32dp</dimen>
     <dimen name="tweet_icon_size">20dp</dimen>
-
-    <dimen name="load_button">48dp</dimen>
-    <dimen name="button_padding">40dp</dimen>
-    <dimen name="button_size">24dp</dimen>
     <dimen name="icon_size">14dp</dimen>
+
     <dimen name="layout_margin">5dp</dimen>
     <dimen name="side_padding">10dp</dimen>
+
     <dimen name="icon_margin">5dp</dimen>
     <dimen name="divider">2dp</dimen>
+
+    <dimen name="load_button">48dp</dimen>
+    <dimen name="button_size">24dp</dimen>
     <dimen name="button_margin">5dp</dimen>
+
+    <!--Image preview -->
+    <dimen name="image_height">300dp</dimen>
+
+    <!--Login-->
+    <dimen name="button_padding">40dp</dimen>
+
+    <!--Settings-->
+    <dimen name="settings_button">40dp</dimen>
     <dimen name="settings_textview">5dp</dimen>
+
+    <!--Text Input-->
+    <dimen name="text_input_width">300dp</dimen>
+    <dimen name="text_input_height">200dp</dimen>
+
+    <!--TWEET PAGE-->
+    <dimen name="tweet_profile">56dp</dimen>
+    <dimen name="tweet_page_icon">16dp</dimen>
+
+    <!--DM POPUP-->
+    <dimen name="dm_icon_margin">5dp</dimen>
+    <dimen name="dm_button_size">32dp</dimen>
+
+    <!--TWEET POPUP-->
+    <dimen name="tweet_icon_margin">16dp</dimen>
+    <dimen name="tweet_button_size">32dp</dimen>
 
 </resources>

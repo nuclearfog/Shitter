@@ -28,16 +28,15 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_horizontal"
+                    android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
+                    android:paddingLeft="@dimen/layout_margin"
+                    android:paddingRight="@dimen/layout_margin">
 
                     <TextView
                         android:id="@+id/answer_reference_detail"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingBottom="2dp"
                         android:singleLine="true"
                         android:textSize="12sp"
                         android:visibility="gone" />
@@ -48,21 +47,20 @@
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.CardView
-                            android:layout_width="56dp"
-                            android:layout_height="56dp"
-                            app:cardCornerRadius="5dp">
+                            android:layout_width="@dimen/tweet_profile"
+                            android:layout_height="@dimen/tweet_profile">
 
                             <ImageView
                                 android:id="@+id/profileimage_detail"
-                                android:layout_width="56dp"
-                                android:layout_height="56dp"
+                                android:layout_width="@dimen/tweet_profile"
+                                android:layout_height="@dimen/tweet_profile"
                                 android:contentDescription="@string/profile_image" />
                         </android.support.v7.widget.CardView>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
+                            android:layout_marginStart="@dimen/layout_margin"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -74,9 +72,9 @@
 
                                 <ImageView
                                     android:id="@+id/tweet_verify"
-                                    android:layout_width="12dp"
-                                    android:layout_height="12dp"
-                                    android:layout_marginEnd="4dp"
+                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_height="@dimen/icon_size"
+                                    android:layout_marginEnd="@dimen/icon_margin"
                                     android:contentDescription="@string/verify"
                                     android:visibility="gone"
                                     app:srcCompat="@drawable/verify" />
@@ -123,12 +121,13 @@
 
                     <ImageView
                         android:id="@+id/image_attach"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="@dimen/button_size"
+                        android:layout_height="@dimen/button_size"
                         app:srcCompat="@drawable/preview"
                         android:visibility="gone" />
 
                 </LinearLayout>
+
             </LinearLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -151,22 +150,22 @@
                 android:layout_height="wrap_content"
                 android:addStatesFromChildren="false"
                 android:orientation="horizontal"
-                android:paddingLeft="20dp"
-                android:paddingTop="5dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="5dp">
+                android:paddingLeft="@dimen/side_padding"
+                android:paddingTop="@dimen/layout_margin"
+                android:paddingRight="@dimen/side_padding"
+                android:paddingBottom="@dimen/layout_margin">
 
                 <ImageView
                     android:id="@+id/answer_button"
-                    android:layout_width="@dimen/tweet_icon_size"
-                    android:layout_height="@dimen/tweet_icon_size"
+                    android:layout_width="@dimen/tweet_page_icon"
+                    android:layout_height="@dimen/tweet_page_icon"
+                    android:layout_marginEnd="@dimen/icon_margin"
                     app:srcCompat="@drawable/chat" />
 
                 <TextView
                     android:id="@+id/no_ans_detail"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:ems="10"
                     android:gravity="center_vertical"
@@ -175,15 +174,15 @@
 
                 <ImageView
                     android:id="@+id/rt_button_detail"
-                    android:layout_width="@dimen/tweet_icon_size"
-                    android:layout_height="@dimen/tweet_icon_size"
+                    android:layout_width="@dimen/tweet_page_icon"
+                    android:layout_height="@dimen/tweet_page_icon"
+                    android:layout_marginEnd="@dimen/icon_margin"
                     app:srcCompat="@drawable/retweet" />
 
                 <TextView
                     android:id="@+id/no_rt_detail"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:ems="10"
                     android:gravity="center_vertical"
@@ -192,15 +191,15 @@
 
                 <ImageView
                     android:id="@+id/fav_button_detail"
-                    android:layout_width="@dimen/tweet_icon_size"
-                    android:layout_height="@dimen/tweet_icon_size"
+                    android:layout_width="@dimen/tweet_page_icon"
+                    android:layout_height="@dimen/tweet_page_icon"
+                    android:layout_marginEnd="@dimen/icon_margin"
                     app:srcCompat="@drawable/favorite" />
 
                 <TextView
                     android:id="@+id/no_fav_detail"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
                     android:ems="10"
                     android:gravity="center_vertical"
