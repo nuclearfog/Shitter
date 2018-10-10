@@ -64,6 +64,7 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
         int destHeight = (int) (image.getHeight() / ratio);
 
         image = Bitmap.createScaledBitmap(image, 960, destHeight, false);
+        zoomImage.reset();
         zoomImage.setImageBitmap(image);
     }
 }

@@ -33,14 +33,6 @@
                     android:paddingLeft="@dimen/layout_margin"
                     android:paddingRight="@dimen/layout_margin">
 
-                    <TextView
-                        android:id="@+id/answer_reference_detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:singleLine="true"
-                        android:textSize="12sp"
-                        android:visibility="gone" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -62,6 +54,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/layout_margin"
                             android:layout_marginLeft="@dimen/layout_margin"
+                            android:layout_marginBottom="@dimen/layout_margin"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -104,6 +97,14 @@
                         </LinearLayout>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/answer_reference_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:singleLine="true"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tweet_detailed"

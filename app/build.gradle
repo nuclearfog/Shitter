@@ -29,11 +29,12 @@ android {
 dependencies {
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
-    implementation 'com.github.NudeDude:ZoomImageView:1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:exifinterface:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
     implementation 'com.android.support:design:28.0.0'
+
+    implementation(name:'zoomview', ext:'aar')
 }

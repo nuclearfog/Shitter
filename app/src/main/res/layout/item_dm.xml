@@ -87,17 +87,17 @@
 
             <TextView
                 android:id="@+id/dm_answer"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/side_padding"
+                android:layout_marginRight="@dimen/side_padding"
                 android:text="@string/answer"
                 android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/dm_delete"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/delete_dm"
                 android:textSize="12sp" />
 
