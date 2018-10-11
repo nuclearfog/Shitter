@@ -6,8 +6,6 @@
     <dimen name="profile_middle">40dp</dimen>
     <dimen name="profile_small">32dp</dimen>
 
-    <dimen name="name_input_height">32dp</dimen>
-    <dimen name="tweet_icon_size">20dp</dimen>
     <dimen name="icon_size">14dp</dimen>
 
     <dimen name="layout_margin">5dp</dimen>

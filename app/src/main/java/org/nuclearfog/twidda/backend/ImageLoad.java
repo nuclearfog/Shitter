@@ -12,7 +12,6 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.window.ImageDetail;
-import org.nuclearfog.zoomview.ZoomView;
 
 import java.lang.ref.WeakReference;
 import java.net.URL;
@@ -53,13 +52,12 @@ public class ImageLoad extends AsyncTask<String, Bitmap, Boolean> {
     protected void onProgressUpdate(Bitmap... images) {
         if (ui.get() == null) return;
 
-        ZoomView img = ui.get().findViewById(R.id.image_full);
         ProgressBar progress = ui.get().findViewById(R.id.image_load);
 
         imageAdapter.addImage(images[0]);
 
         if (progress.getVisibility() == View.VISIBLE) {
-            img.setImageBitmap(images[0]);
+            ui.get().setImage(images[0]);
             progress.setVisibility(View.INVISIBLE);
         } else {
             imageAdapter.notifyDataSetChanged();

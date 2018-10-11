@@ -47,6 +47,7 @@
                                 android:layout_width="@dimen/tweet_profile"
                                 android:layout_height="@dimen/tweet_profile"
                                 android:contentDescription="@string/profile_image" />
+
                         </android.support.v7.widget.CardView>
 
                         <LinearLayout
