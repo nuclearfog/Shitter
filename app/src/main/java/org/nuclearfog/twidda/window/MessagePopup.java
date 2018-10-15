@@ -118,6 +118,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
             else {
                 Intent image = new Intent(this, ImageDetail.class);
                 image.putExtra("link", new String[]{mediaPath});
+                image.putExtra("storable", false);
                 startActivity(image);
             }
         }

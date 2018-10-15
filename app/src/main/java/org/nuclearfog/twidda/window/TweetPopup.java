@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.window;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,8 +22,11 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
 /**
  * Tweet Window
@@ -181,15 +183,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private void getMedia() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PERMISSION_GRANTED) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent i = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, 0);
             } else {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, 1);
             }
         } else {
-            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent i = new Intent(Intent.ACTION_PICK, EXTERNAL_CONTENT_URI);
             startActivityForResult(i, 0);
         }
     }

@@ -81,4 +81,6 @@
     <string name="confirm_log_lout">log out?</string>
     <string name="confirm_cancel_tweet">cancel tweet?</string>
     <string name="dm_not_found">message not found!</string>
+    <string name="image_folder_created">folder created under Pictures!</string>
+    <string name="image_saved">image saved!</string>
 </resources>

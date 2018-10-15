@@ -16,10 +16,13 @@ import org.nuclearfog.twidda.window.ImageDetail;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 
-public class ImageLoad extends AsyncTask<String, Bitmap, Boolean> {
+
+public class ImageLoad extends AsyncTask<String, Integer, Boolean> {
 
     private WeakReference<ImageDetail> ui;
     private ImageAdapter imageAdapter;
+    private Bitmap images[];
+
 
     public ImageLoad(ImageDetail context) {
         ui = new WeakReference<>(context);
@@ -31,13 +34,14 @@ public class ImageLoad extends AsyncTask<String, Bitmap, Boolean> {
     @Override
     protected Boolean doInBackground(String... links) {
         try {
-            for (String link : links) {
-                Bitmap image;
+            images = new Bitmap[links.length];
+
+            for (int i = 0; i < links.length; i++) {
+                String link = links[i];
                 if (link.startsWith("/"))
-                    image = BitmapFactory.decodeFile(link);
+                    images[i] = BitmapFactory.decodeFile(link);
                 else
-                    image = BitmapFactory.decodeStream(new URL(link).openStream());
-                publishProgress(image);
+                    images[i] = BitmapFactory.decodeStream(new URL(link).openStream());
             }
         } catch (Exception err) {
             err.printStackTrace();
@@ -49,29 +53,17 @@ public class ImageLoad extends AsyncTask<String, Bitmap, Boolean> {
 
 
     @Override
-    protected void onProgressUpdate(Bitmap... images) {
-        if (ui.get() == null) return;
-
-        ProgressBar progress = ui.get().findViewById(R.id.image_load);
-
-        imageAdapter.addImage(images[0]);
-
-        if (progress.getVisibility() == View.VISIBLE) {
-            ui.get().setImage(images[0]);
-            progress.setVisibility(View.INVISIBLE);
-        } else {
-            imageAdapter.notifyDataSetChanged();
-        }
-    }
-
-
-    @Override
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
-        if (!success) {
-            View progress = ui.get().findViewById(R.id.image_load);
-            progress.setVisibility(View.INVISIBLE);
+        ProgressBar progress = ui.get().findViewById(R.id.image_load);
+        progress.setVisibility(View.INVISIBLE);
+
+        if (success) {
+            ui.get().setImage(images[0]);
+            imageAdapter.setImages(images);
+            imageAdapter.notifyDataSetChanged();
+        } else {
             Toast.makeText(ui.get(), R.string.connection_failed, Toast.LENGTH_SHORT).show();
         }
     }
