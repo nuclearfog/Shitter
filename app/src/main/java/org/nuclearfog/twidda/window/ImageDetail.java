@@ -119,7 +119,7 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
         String path = Environment.getExternalStorageDirectory().toString();
         path += "/Pictures/Shitter";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
-        String name = "shitter_" + formatter.format(new Date()) + ".jpg";
+        String name = "shitter_" + formatter.format(new Date()) + ".png";
 
         File dir = new File(path);
         if (dir.mkdirs())
