@@ -157,6 +157,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
             case R.id.img_preview:
                 Intent image = new Intent(this, ImageDetail.class);
                 image.putExtra("link", mediaPath.toArray(new String[0]));
+                image.putExtra("storable", false);
                 startActivity(image);
                 break;
         }
