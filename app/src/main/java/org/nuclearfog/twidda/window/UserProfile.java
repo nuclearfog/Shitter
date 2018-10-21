@@ -21,12 +21,12 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
+import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.clickable.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;

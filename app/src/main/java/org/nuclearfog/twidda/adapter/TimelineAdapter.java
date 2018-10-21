@@ -14,9 +14,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.clickable.Tagger;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.items.Tweet;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

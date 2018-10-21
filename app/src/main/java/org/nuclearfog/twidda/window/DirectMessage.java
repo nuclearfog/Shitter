@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
-import org.nuclearfog.twidda.backend.listitems.Message;
+import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;

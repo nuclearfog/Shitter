@@ -9,8 +9,8 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.window.SearchPage;
 
 import java.lang.ref.WeakReference;

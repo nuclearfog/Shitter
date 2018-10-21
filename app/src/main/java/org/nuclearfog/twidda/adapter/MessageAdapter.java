@@ -13,10 +13,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.tag.Tagger;
+import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.clickable.Tagger;
-import org.nuclearfog.twidda.backend.clickable.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.backend.listitems.Message;
+import org.nuclearfog.twidda.backend.items.Message;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

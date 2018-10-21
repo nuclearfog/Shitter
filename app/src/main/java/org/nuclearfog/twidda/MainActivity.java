@@ -24,7 +24,7 @@ import android.widget.TabHost.TabSpec;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.MainPage;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;

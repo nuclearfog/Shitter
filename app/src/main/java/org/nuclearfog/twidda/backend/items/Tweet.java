@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.listitems;
+package org.nuclearfog.twidda.backend.items;
 
 import android.support.annotation.Nullable;
 

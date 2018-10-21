@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.listitems.Message;
-import org.nuclearfog.twidda.backend.listitems.Trend;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.items.Trend;
+import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.util.ArrayList;
 import java.util.List;

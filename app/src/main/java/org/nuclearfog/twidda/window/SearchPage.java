@@ -25,8 +25,8 @@ import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.TwitterSearch;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -158,7 +158,7 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.search_tweet && mSearch.getStatus() != RUNNING) {
+        if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetPopup.class);
             intent.putExtra("TweetID", -1);
             if (search.startsWith("#"))

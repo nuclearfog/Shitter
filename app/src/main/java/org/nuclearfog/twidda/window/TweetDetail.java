@@ -20,13 +20,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ImageLoad;
 import org.nuclearfog.twidda.backend.StatusLoader;
-import org.nuclearfog.twidda.backend.clickable.Tagger;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
+import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;

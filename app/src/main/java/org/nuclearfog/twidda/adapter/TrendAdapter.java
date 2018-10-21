@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.listitems.Trend;
+import org.nuclearfog.twidda.backend.items.Trend;
 
 import java.util.ArrayList;
 import java.util.List;

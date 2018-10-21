@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.util.ArrayList;
 import java.util.List;
