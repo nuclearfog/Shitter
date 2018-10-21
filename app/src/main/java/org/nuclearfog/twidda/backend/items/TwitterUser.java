@@ -1,26 +1,32 @@
 package org.nuclearfog.twidda.backend.items;
 
 public class TwitterUser {
-    private final String username;
-    private final String screenname;
-    private final String bio;
-    private final String profileImg;
-    private final String bannerImg;
-    private final String location;
-    private final String link;
-    private final boolean isVerified;
-    private final boolean isLocked;
     private final long userID;
     private final long created;
+
+    private final String username;
+    private final String screenname;
+
+    private final boolean isVerified;
+    private final boolean isLocked;
+
     private final int following;
     private final int follower;
+
+    private final String bio;
+    private final String location;
+    private final String link;
+
+    private final String profileImg;
+    private final String bannerImg;
+
 
     public TwitterUser(long userID, String username, String screenname, String profileImg,
                        String bio, String location, boolean isVerified, boolean isLocked, String link,
                        String bannerImg, long created, int following, int follower) {
         this.userID = userID;
         this.username = username;
-        this.screenname = '@' + screenname;
+        this.screenname = screenname;
         this.profileImg = profileImg;
         this.bio = bio;
         this.link = link;
@@ -149,4 +155,5 @@ public class TwitterUser {
     public int getFollower() {
         return follower;
     }
+
 }

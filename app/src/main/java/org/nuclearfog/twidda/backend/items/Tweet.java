@@ -3,30 +3,36 @@ package org.nuclearfog.twidda.backend.items;
 import android.support.annotation.Nullable;
 
 public class Tweet {
+
+    private final long tweetID;
+    private final long time;
+    private final String tweet;
+    private final String[] media;
+    private final String source;
+
     private final TwitterUser user;
     private final Tweet embedded;
-    private final long tweetID;
-    private final String tweet;
-    private final String replyName;
-    private final String source;
-    private final long time;
+
     private final long replyID;
-    private final long retweetId;
     private final long replyUserId;
-    private final int retweet;
-    private final int favorit;
-    private final String[] media;
+    private final String replyName;
+
+    private final int retweetCount;
+    private final int favoriteCount;
+
     private final boolean retweeted;
     private final boolean favorized;
 
+    private final long retweetId;
 
-    public Tweet(long tweetID, int retweet, int favorit, TwitterUser user, String tweet, long time,
+
+    public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] media, String source, long replyID,
-                 @Nullable Tweet embedded, long retweetId, boolean retweeted, boolean favorized) {
+                 Tweet embedded, long retweetId, boolean retweeted, boolean favorized) {
         this.tweetID = tweetID;
         this.user = user;
-        this.retweet = retweet;
-        this.favorit = favorit;
+        this.retweetCount = retweetCount;
+        this.favoriteCount = favoriteCount;
         this.tweet = tweet;
         this.time = time;
         this.replyID = replyID;
@@ -39,7 +45,6 @@ public class Tweet {
         this.retweetId = retweetId;
         this.replyUserId = replyUserId;
     }
-
 
     /**
      * Tweet ID
@@ -138,7 +143,7 @@ public class Tweet {
      * @return retweet count
      */
     public int getRetweetCount() {
-        return retweet;
+        return retweetCount;
     }
 
     /**
@@ -147,7 +152,7 @@ public class Tweet {
      * @return favor count
      */
     public int getFavorCount() {
-        return favorit;
+        return favoriteCount;
     }
 
     /**
@@ -176,4 +181,5 @@ public class Tweet {
     public boolean favorized() {
         return favorized;
     }
+
 }

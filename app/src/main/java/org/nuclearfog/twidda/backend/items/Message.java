@@ -3,9 +3,13 @@ package org.nuclearfog.twidda.backend.items;
 public class Message {
 
     private final long messageId;
-    private final TwitterUser sender, receiver;
-    private final String message;
     private final long time;
+
+    private final TwitterUser sender;
+    private final TwitterUser receiver;
+
+    private final String message;
+
 
     public Message(long messageId, TwitterUser sender, TwitterUser receiver, long time, String message) {
         this.messageId = messageId;
@@ -59,4 +63,5 @@ public class Message {
     public long getTime() {
         return time;
     }
+
 }
