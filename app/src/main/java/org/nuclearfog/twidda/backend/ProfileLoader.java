@@ -225,7 +225,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             if (isFollowed) {
                 ui.get().findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
-            if (imgEnabled) {
+            if (imgEnabled && profile.getDrawable() == null) {
                 String link = user.getImageLink() + "_bigger";
                 Picasso.get().load(link).into(profile);
             }

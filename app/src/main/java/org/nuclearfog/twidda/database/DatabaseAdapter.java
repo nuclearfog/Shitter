@@ -577,7 +577,7 @@ public class DatabaseAdapter {
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
         userColumn.put("scrname", user.getScreenname());
-        userColumn.put("pbLink", user.getUsername());
+        userColumn.put("pbLink", user.getImageLink());
         userColumn.put("userregister", userRegister);
         userColumn.put("bio", user.getBio());
         userColumn.put("link", user.getLink());
