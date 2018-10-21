@@ -232,9 +232,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (timeLineAdapter != null && !answerReload.isRefreshing()) {
             Tweet tweet = timeLineAdapter.getData().get(position);
             Intent intent = new Intent(this, TweetDetail.class);
-            intent.putExtra("tweetID", tweet.tweetID);
-            intent.putExtra("userID", tweet.user.userID);
-            intent.putExtra("username", tweet.user.screenname);
+            intent.putExtra("tweetID", tweet.getId());
+            intent.putExtra("userID", tweet.getUser().getId());
+            intent.putExtra("username", tweet.getUser().getScreenname());
             startActivityForResult(intent, TWEET);
         }
     }

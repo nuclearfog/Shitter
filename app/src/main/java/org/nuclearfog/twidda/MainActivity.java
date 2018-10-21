@@ -289,17 +289,17 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (parent.getId() == R.id.tl_list) {
             if (timelineAdapter != null && !timelineReload.isRefreshing()) {
                 Tweet tweet = timelineAdapter.getData().get(position);
-                if (tweet.embedded != null)
-                    tweet = tweet.embedded;
+                if (tweet.getEmbeddedTweet() != null)
+                    tweet = tweet.getEmbeddedTweet();
                 Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.tweetID);
-                intent.putExtra("userID", tweet.user.userID);
-                intent.putExtra("username", tweet.user.screenname);
+                intent.putExtra("tweetID", tweet.getId());
+                intent.putExtra("userID", tweet.getUser().getId());
+                intent.putExtra("username", tweet.getUser().getScreenname());
                 startActivityForResult(intent, TWEET);
             }
         } else if (parent.getId() == R.id.tr_list) {
             if (trendsAdapter != null && !trendReload.isRefreshing()) {
-                String search = trendsAdapter.getData().get(position).trend;
+                String search = trendsAdapter.getData().get(position).getName();
                 Intent intent = new Intent(this, SearchPage.class);
                 if (!search.startsWith("#"))
                     search = '\"' + search + '\"';
@@ -309,12 +309,12 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         } else if (parent.getId() == R.id.m_list) {
             if (mentionAdapter != null && !mentionReload.isRefreshing()) {
                 Tweet tweet = mentionAdapter.getData().get(position);
-                if (tweet.embedded != null)
-                    tweet = tweet.embedded;
+                if (tweet.getEmbeddedTweet() != null)
+                    tweet = tweet.getEmbeddedTweet();
                 Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.tweetID);
-                intent.putExtra("userID", tweet.user.userID);
-                intent.putExtra("username", tweet.user.screenname);
+                intent.putExtra("tweetID", tweet.getId());
+                intent.putExtra("userID", tweet.getUser().getId());
+                intent.putExtra("username", tweet.getUser().getScreenname());
                 startActivityForResult(intent, TWEET);
             }
         }

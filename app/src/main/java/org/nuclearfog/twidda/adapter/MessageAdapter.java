@@ -64,7 +64,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public long getItemId(int pos) {
-        return messages.get(pos).messageId;
+        return messages.get(pos).getId();
     }
 
 
@@ -102,20 +102,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
         Message message = messages.get(index);
-        Spanned text = Tagger.makeText(message.message, highlight, mListener);
+        Spanned text = Tagger.makeText(message.getText(), highlight, mListener);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.message.setText(text);
-        vh.username.setText(message.sender.username);
-        vh.screenname.setText(message.sender.screenname);
-        vh.createdAt.setText(stringTime(message.time));
+        vh.username.setText(message.getSender().getUsername());
+        vh.screenname.setText(message.getSender().getScreenname());
+        vh.createdAt.setText(stringTime(message.getTime()));
 
         vh.message.setTextColor(fontColor);
         vh.username.setTextColor(fontColor);
         vh.screenname.setTextColor(fontColor);
         vh.createdAt.setTextColor(fontColor);
 
-        if (loadImage)
-            Picasso.get().load(message.sender.profileImg + "_mini").into(vh.profile_img);
+        if (loadImage) {
+            String link = message.getSender().getImageLink() + "_mini";
+            Picasso.get().load(link).into(vh.profile_img);
+        }
     }
 
 

@@ -105,7 +105,7 @@ public class DatabaseAdapter {
         for (Tweet tweet : fav) {
             storeStatus(tweet, 0, db);
             ContentValues favTable = new ContentValues();
-            favTable.put("tweetID", tweet.tweetID);
+            favTable.put("tweetID", tweet.getId());
             favTable.put("ownerID", ownerId);
             db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
         }
@@ -343,22 +343,22 @@ public class DatabaseAdapter {
     public void updateStatus(Tweet tweet) {
         SQLiteDatabase db = getDbWrite();
         ContentValues status = new ContentValues();
-        int register = getStatRegister(db, tweet.tweetID);
-        if (tweet.retweeted)
+        int register = getStatRegister(db, tweet.getId());
+        if (tweet.retweeted())
             register |= retweetedMask;
         else
             register &= ~retweetedMask;
 
-        if (tweet.favorized)
+        if (tweet.favorized())
             register |= favoritedMask;
         else
             register &= ~favoritedMask;
-        status.put("retweet", tweet.retweet);
-        status.put("favorite", tweet.favorit);
+        status.put("retweet", tweet.getRetweetCount());
+        status.put("favorite", tweet.getFavorCount());
         status.put("statusregister", register);
 
         db.beginTransaction();
-        db.update("tweet", status, "tweet.tweetID=" + tweet.tweetID, null);
+        db.update("tweet", status, "tweet.tweetID=" + tweet.getId(), null);
         commit(db);
     }
 
@@ -422,9 +422,7 @@ public class DatabaseAdapter {
                 int position = cursor.getInt(index);
                 index = cursor.getColumnIndex("trendname");
                 String name = cursor.getString(index);
-                index = cursor.getColumnIndex("trendlink");
-                String link = cursor.getString(index);
-                trends.add(new Trend(position, name, link));
+                trends.add(new Trend(position, name));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -572,83 +570,83 @@ public class DatabaseAdapter {
     private void storeUser(TwitterUser user, SQLiteDatabase db) {
         ContentValues userColumn = new ContentValues();
         int userRegister = 0;
-        if (user.isVerified)
+        if (user.isVerified())
             userRegister |= verifiedMask;
-        if (user.isLocked)
+        if (user.isLocked())
             userRegister |= lockedMask;
-        userColumn.put("userID", user.userID);
-        userColumn.put("username", user.username);
-        userColumn.put("scrname", user.screenname.substring(1));
-        userColumn.put("pbLink", user.profileImg);
+        userColumn.put("userID", user.getId());
+        userColumn.put("username", user.getUsername());
+        userColumn.put("scrname", user.getScreenname());
+        userColumn.put("pbLink", user.getUsername());
         userColumn.put("userregister", userRegister);
-        userColumn.put("bio", user.bio);
-        userColumn.put("link", user.link);
-        userColumn.put("location", user.location);
-        userColumn.put("banner", user.bannerImg);
-        userColumn.put("createdAt", user.created);
-        userColumn.put("following", user.following);
-        userColumn.put("follower", user.follower);
+        userColumn.put("bio", user.getBio());
+        userColumn.put("link", user.getLink());
+        userColumn.put("location", user.getLocation());
+        userColumn.put("banner", user.getBannerLink());
+        userColumn.put("createdAt", user.getCreatedAt());
+        userColumn.put("following", user.getFollowing());
+        userColumn.put("follower", user.getFollower());
         db.insertWithOnConflict("user", null, userColumn, CONFLICT_REPLACE);
     }
 
 
     private void storeStatus(Tweet tweet, int newStatusRegister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
-        TwitterUser user = tweet.user;
-        Tweet rtStat = tweet.embedded;
+        TwitterUser user = tweet.getUser();
+        Tweet rtStat = tweet.getEmbeddedTweet();
         long rtId = 1L;
 
         if (rtStat != null) {
             storeStatus(rtStat, 0, db);
-            rtId = rtStat.tweetID;
+            rtId = rtStat.getId();
         }
 
         ContentValues userColumn = new ContentValues();
         int userRegister = 0;
-        if (user.isVerified)
+        if (user.isVerified())
             userRegister |= verifiedMask;
-        if (user.isLocked)
+        if (user.isLocked())
             userRegister |= lockedMask;
 
-        userColumn.put("userID", user.userID);
-        userColumn.put("username", user.username);
-        userColumn.put("scrname", user.screenname.substring(1));
-        userColumn.put("pbLink", user.profileImg);
+        userColumn.put("userID", user.getId());
+        userColumn.put("username", user.getUsername());
+        userColumn.put("scrname", user.getScreenname());
+        userColumn.put("pbLink", user.getImageLink());
         userColumn.put("userregister", userRegister);
-        userColumn.put("bio", user.bio);
-        userColumn.put("link", user.link);
-        userColumn.put("location", user.location);
-        userColumn.put("banner", user.bannerImg);
-        userColumn.put("createdAt", user.created);
-        userColumn.put("following", user.following);
-        userColumn.put("follower", user.follower);
+        userColumn.put("bio", user.getBio());
+        userColumn.put("link", user.getLink());
+        userColumn.put("location", user.getLocation());
+        userColumn.put("banner", user.getBannerLink());
+        userColumn.put("createdAt", user.getCreatedAt());
+        userColumn.put("following", user.getFollowing());
+        userColumn.put("follower", user.getFollower());
 
-        status.put("tweetID", tweet.tweetID);
-        status.put("userID", user.userID);
-        status.put("time", tweet.time);
-        status.put("tweet", tweet.tweet);
+        status.put("tweetID", tweet.getId());
+        status.put("userID", user.getId());
+        status.put("time", tweet.getTime());
+        status.put("tweet", tweet.getText());
         status.put("retweetID", rtId);
-        status.put("source", tweet.source);
-        status.put("replyID", tweet.replyID);
-        status.put("replyname", tweet.replyName);
-        status.put("retweet", tweet.retweet);
-        status.put("favorite", tweet.favorit);
-        status.put("retweeterID", tweet.retweetId);
-        status.put("replyUserID", tweet.replyUserId);
-        String[] mediaLinks = tweet.media;
+        status.put("source", tweet.getSource());
+        status.put("replyID", tweet.getReplyId());
+        status.put("replyname", tweet.getReplyName());
+        status.put("retweet", tweet.getRetweetCount());
+        status.put("favorite", tweet.getFavorCount());
+        status.put("retweeterID", tweet.getMyRetweetId());
+        status.put("replyUserID", tweet.getReplyUserId());
+        String[] mediaLinks = tweet.getMediaLinks();
         StringBuilder media = new StringBuilder();
         for (String link : mediaLinks) {
             media.append(link);
             media.append(";");
         }
         status.put("media", media.toString());
-        int statusRegister = getStatRegister(db, tweet.tweetID);
+        int statusRegister = getStatRegister(db, tweet.getId());
         statusRegister |= newStatusRegister;
-        if (tweet.favorized)
+        if (tweet.favorized())
             statusRegister |= favoritedMask;
         else
             statusRegister &= ~favoritedMask;
-        if (tweet.retweeted)
+        if (tweet.retweeted())
             statusRegister |= retweetedMask;
         else
             statusRegister &= ~retweetedMask;
@@ -661,13 +659,13 @@ public class DatabaseAdapter {
 
     private void storeMessage(Message message, SQLiteDatabase db) {
         ContentValues messageColumn = new ContentValues();
-        messageColumn.put("messageID", message.messageId);
-        messageColumn.put("time", message.time);
-        messageColumn.put("senderID", message.sender.userID);
-        messageColumn.put("receiverID", message.receiver.userID);
-        messageColumn.put("message", message.message);
-        storeUser(message.sender, db);
-        storeUser(message.receiver, db);
+        messageColumn.put("messageID", message.getId());
+        messageColumn.put("time", message.getTime());
+        messageColumn.put("senderID", message.getSender().getId());
+        messageColumn.put("receiverID", message.getReceiver().getId());
+        messageColumn.put("message", message.getText());
+        storeUser(message.getSender(), db);
+        storeUser(message.getReceiver(), db);
         db.insertWithOnConflict("message", null, messageColumn, CONFLICT_IGNORE);
     }
 
@@ -675,9 +673,9 @@ public class DatabaseAdapter {
     private void storeTrends(Trend trend, int woeId, SQLiteDatabase db) {
         ContentValues trendColumn = new ContentValues();
         trendColumn.put("woeID", woeId);
-        trendColumn.put("trendpos", trend.position);
-        trendColumn.put("trendname", trend.trend);
-        trendColumn.put("trendlink", trend.link);
+        trendColumn.put("trendpos", trend.getPosition());
+        trendColumn.put("trendname", trend.getName());
+        // trendColumn.put("trendlink", "");//todo
         db.insertWithOnConflict("trend", null, trendColumn, CONFLICT_REPLACE);
     }
 

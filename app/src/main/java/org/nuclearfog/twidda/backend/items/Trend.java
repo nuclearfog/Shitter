@@ -1,13 +1,31 @@
 package org.nuclearfog.twidda.backend.items;
 
 public class Trend {
-    public final String trend;
-    public final String link;
-    public final int position;
+    private final String trend;
+    private final int position;
 
-    public Trend(int position, String trend, String link) {
+    public Trend(int position, String trend) {
         this.position = position;
         this.trend = trend;
-        this.link = link;
+    }
+
+
+    /**
+     * get Trend name
+     *
+     * @return trend name
+     */
+    public String getName() {
+        return trend;
+    }
+
+
+    /**
+     * get trend rank
+     *
+     * @return trend rank
+     */
+    public int getPosition() {
+        return position;
     }
 }

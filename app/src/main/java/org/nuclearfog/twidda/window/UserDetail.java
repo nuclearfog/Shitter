@@ -115,8 +115,8 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
         UserAdapter userListAdapter = (UserAdapter) userList.getAdapter();
         if (userListAdapter != null && !refresh.isRefreshing()) {
             TwitterUser user = userListAdapter.getData().get(position);
-            long userID = user.userID;
-            String username = user.screenname;
+            long userID = user.getId();
+            String username = user.getScreenname();
             Intent intent = new Intent(this, UserProfile.class);
             intent.putExtra("userID", userID);
             intent.putExtra("username", username);

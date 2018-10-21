@@ -61,7 +61,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @Override
     public long getItemId(int pos) {
-        return mUser.get(pos).userID;
+        return mUser.get(pos).getId();
     }
 
 
@@ -84,22 +84,22 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         TwitterUser user = mUser.get(index);
-        vh.screenname.setText(user.screenname);
-        vh.username.setText(user.username);
+        vh.screenname.setText(user.getScreenname());
+        vh.username.setText(user.getUsername());
 
         vh.screenname.setTextColor(font_color);
         vh.username.setTextColor(font_color);
 
 
         if (loadImage) {
-            Picasso.get().load(user.profileImg + "_mini").into(vh.profileImg);
+            Picasso.get().load(user.getImageLink() + "_mini").into(vh.profileImg);
         }
-        if (user.isVerified) {
+        if (user.isVerified()) {
             vh.verifyIco.setVisibility(View.VISIBLE);
         } else {
             vh.verifyIco.setVisibility(View.GONE);
         }
-        if (user.isLocked) {
+        if (user.isLocked()) {
             vh.lockIco.setVisibility(View.VISIBLE);
         } else {
             vh.lockIco.setVisibility(View.GONE);

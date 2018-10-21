@@ -110,7 +110,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
         if (mAdapter != null && !refresh.isRefreshing()) {
             Message message = mAdapter.getData().get(index);
             Intent sendDm = new Intent(this, MessagePopup.class);
-            sendDm.putExtra("username", message.sender.screenname);
+            sendDm.putExtra("username", message.getSender().getScreenname());
             startActivity(sendDm);
         }
     }
@@ -121,7 +121,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
         if (mLoader != null && mLoader.getStatus() != RUNNING) {
             if (mAdapter != null && !refresh.isRefreshing()) {
                 Message message = mAdapter.getData().get(index);
-                final long messageId = message.messageId;
+                final long messageId = message.getId();
                 new Builder(this).setMessage(R.string.confirm_delete_dm)
                         .setNegativeButton(R.string.no_confirm, null)
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {

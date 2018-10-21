@@ -64,7 +64,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
     @Override
     public long getItemId(int pos) {
-        return tweets.get(pos).tweetID;
+        return tweets.get(pos).getId();
     }
 
 
@@ -93,22 +93,22 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
-        String retweet = Integer.toString(tweet.retweet);
-        String favorit = Integer.toString(tweet.favorit);
-        if (tweet.embedded != null) {
-            String retweeter = "RT " + tweet.user.screenname;
+        String retweet = Integer.toString(tweet.getRetweetCount());
+        String favorit = Integer.toString(tweet.getFavorCount());
+        if (tweet.getEmbeddedTweet() != null) {
+            String retweeter = "RT " + tweet.getUser().getScreenname();
             vh.retweeter.setText(retweeter);
-            tweet = tweet.embedded;
+            tweet = tweet.getEmbeddedTweet();
         } else {
             vh.retweeter.setText("");
         }
-        Spanned text = Tagger.makeText(tweet.tweet, highlight);
-        vh.username.setText(tweet.user.username);
-        vh.screenname.setText(tweet.user.screenname);
+        Spanned text = Tagger.makeText(tweet.getText(), highlight);
+        vh.username.setText(tweet.getUser().getUsername());
+        vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);
         vh.retweet.setText(retweet);
         vh.favorite.setText(favorit);
-        vh.time.setText(stringTime(tweet.time));
+        vh.time.setText(stringTime(tweet.getTime()));
 
         vh.username.setTextColor(font_color);
         vh.screenname.setTextColor(font_color);
@@ -116,9 +116,9 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         vh.time.setTextColor(font_color);
 
         if (img_ldr) {
-            Picasso.get().load(tweet.user.profileImg + "_mini").into(vh.profile);
+            Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
         }
-        if (tweet.user.isVerified) {
+        if (tweet.getUser().isVerified()) {
             vh.verify.setVisibility(View.VISIBLE);
         } else {
             vh.verify.setVisibility(View.GONE);

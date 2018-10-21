@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.listitems.Message;
-import org.nuclearfog.twidda.backend.listitems.Trend;
-import org.nuclearfog.twidda.backend.listitems.Tweet;
-import org.nuclearfog.twidda.backend.listitems.TwitterUser;
+import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.items.Trend;
+import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
@@ -204,7 +204,7 @@ public class TwitterEngine {
         twitter4j.Trend trends[] = twitter.getPlaceTrends(woeId).getTrends();
 
         for (int i = 0; i < trends.length; i++) {
-            Trend item = new Trend(i + 1, trends[i].getName(), trends[i].getURL());
+            Trend item = new Trend(i + 1, trends[i].getName());
             result.add(item);
         }
         return result;
@@ -453,18 +453,18 @@ public class TwitterEngine {
      */
     public Tweet retweet(long tweetId) throws TwitterException {
         Tweet tweet = getStatus(tweetId);
-        int retweet = tweet.retweet;
+        int retweet = tweet.getRetweetCount();
 
-        if (tweet.retweeted) {
-            deleteTweet(tweet.retweetId);
+        if (tweet.retweeted()) {
+            deleteTweet(tweet.getMyRetweetId());
             retweet--;
         } else {
-            twitter.retweetStatus(tweet.tweetID);
+            twitter.retweetStatus(tweet.getId());
             retweet++;
         }
-        return new Tweet(tweetId, retweet, tweet.favorit, tweet.user, tweet.tweet,
-                tweet.time, tweet.replyName, tweet.replyUserId, tweet.media, tweet.source,
-                tweet.replyID, tweet.embedded, tweet.retweetId, !tweet.retweeted, tweet.favorized);
+        return new Tweet(tweetId, retweet, tweet.getFavorCount(), tweet.getUser(), tweet.getText(),
+                tweet.getTime(), tweet.getReplyName(), tweet.getReplyUserId(), tweet.getMediaLinks(), tweet.getSource(),
+                tweet.getReplyId(), tweet.getEmbeddedTweet(), tweet.getMyRetweetId(), !tweet.retweeted(), tweet.favorized());
     }
 
 
@@ -476,17 +476,17 @@ public class TwitterEngine {
      */
     public Tweet favorite(long tweetId) throws TwitterException {
         Tweet tweet = getStatus(tweetId);
-        int favorite = tweet.favorit;
-        if (tweet.favorized) {
-            twitter.destroyFavorite(tweet.tweetID);
+        int favorite = tweet.getFavorCount();
+        if (tweet.favorized()) {
+            twitter.destroyFavorite(tweet.getId());
             favorite--;
         } else {
-            twitter.createFavorite(tweet.tweetID);
+            twitter.createFavorite(tweet.getId());
             favorite++;
         }
-        return new Tweet(tweetId, tweet.retweet, favorite, tweet.user, tweet.tweet,
-                tweet.time, tweet.replyName, tweet.replyUserId, tweet.media, tweet.source,
-                tweet.replyID, tweet.embedded, tweet.retweetId, tweet.retweeted, !tweet.favorized);
+        return new Tweet(tweetId, tweet.getRetweetCount(), favorite, tweet.getUser(), tweet.getText(),
+                tweet.getTime(), tweet.getReplyName(), tweet.getReplyUserId(), tweet.getMediaLinks(), tweet.getSource(),
+                tweet.getReplyId(), tweet.getEmbeddedTweet(), tweet.getMyRetweetId(), tweet.retweeted(), !tweet.favorized());
     }
 
 
@@ -508,9 +508,9 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public List<TwitterUser> getRetweeter(long tweetID, long cursor) throws TwitterException {
-        Tweet embeddedStat = getStatus(tweetID).embedded;
+        Tweet embeddedStat = getStatus(tweetID).getEmbeddedTweet();
         if (embeddedStat != null)
-            tweetID = embeddedStat.tweetID;
+            tweetID = embeddedStat.getId();
         long[] userIds = twitter.getRetweeterIds(tweetID, load, cursor).getIDs();
         if (userIds.length == 0) {
             return new ArrayList<>();
@@ -630,8 +630,8 @@ public class TwitterEngine {
         TwitterUser user = getUser(status.getUser());
         int retweet, favorite;
         if (retweetedStat != null) {
-            retweet = retweetedStat.retweet;
-            favorite = retweetedStat.favorit;
+            retweet = retweetedStat.getRetweetCount();
+            favorite = retweetedStat.getFavorCount();
         } else {
             retweet = status.getRetweetCount();
             favorite = status.getFavoriteCount();
@@ -653,7 +653,8 @@ public class TwitterEngine {
      */
     private TwitterUser getUser(User user) {
         String description = user.getDescription().replace('\n', ' ');
-        return new TwitterUser(user.getId(), user.getName(), user.getScreenName(),
+        String screenname = '@' + user.getScreenName();
+        return new TwitterUser(user.getId(), user.getName(), screenname,
                 user.getOriginalProfileImageURL(), description, user.getLocation(), user.isVerified(),
                 user.isProtected(), user.getURL(), user.getProfileBannerURL(), user.getCreatedAt().getTime(),
                 user.getFriendsCount(), user.getFollowersCount());

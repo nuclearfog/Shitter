@@ -85,7 +85,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tweet = mTwitter.getStatus(TWEETID);
                 if (answerAdapter.getItemCount() > 0)
                     sinceId = answerAdapter.getItemId(0);
-                answers = mTwitter.getAnswers(tweet.user.screenname, TWEETID, sinceId);
+                answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
                 publishProgress();
 
                 if (database.containStatus(TWEETID)) {
@@ -100,13 +100,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
             } else if (MODE == RETWEET) {
                 tweet = mTwitter.retweet(TWEETID);
-                if (!tweet.retweeted)
-                    database.removeStatus(tweet.retweetId);
+                if (!tweet.retweeted())
+                    database.removeStatus(tweet.getMyRetweetId());
                 publishProgress();
 
             } else if (MODE == FAVORITE) {
                 tweet = mTwitter.favorite(TWEETID);
-                if (tweet.favorized)
+                if (tweet.favorized())
                     database.storeFavorite(TWEETID);
                 else
                     database.removeFavorite(TWEETID);
@@ -150,64 +150,64 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         View mediaButton = ui.get().findViewById(R.id.image_attach);
         View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
 
-        Spannable sTweet = Tagger.makeText(tweet.tweet, highlight, ui.get());
+        Spannable sTweet = Tagger.makeText(tweet.getText(), highlight, ui.get());
         tweetText.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setText(sTweet);
         tweetText.setTextColor(font_color);
-        username.setText(tweet.user.username);
+        username.setText(tweet.getUser().getUsername());
         username.setTextColor(font_color);
-        scrName.setText(tweet.user.screenname);
+        scrName.setText(tweet.getUser().getScreenname());
         scrName.setTextColor(font_color);
-        date.setText(sdf.format(tweet.time));
+        date.setText(sdf.format(tweet.getTime()));
         date.setTextColor(font_color);
         used_api.setText(R.string.sent_from);
-        used_api.append(tweet.source);
+        used_api.append(tweet.getSource());
         used_api.setTextColor(font_color);
 
         String ansStr = Integer.toString(answerAdapter.getItemCount() + answers.size());
-        String favStr = Integer.toString(tweet.favorit);
-        String rtStr = Integer.toString(tweet.retweet);
+        String favStr = Integer.toString(tweet.getFavorCount());
+        String rtStr = Integer.toString(tweet.getRetweetCount());
         txtFav.setText(favStr);
         txtRet.setText(rtStr);
         txtAns.setText(ansStr);
 
-        if (tweet.replyID > 1) {
+        if (tweet.getReplyId() > 1) {
             String reply = ui.get().getString(R.string.answering);
-            reply += tweet.replyName;
+            reply += tweet.getReplyName();
             replyName.setText(reply);
             replyName.setVisibility(View.VISIBLE);
             replyName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(ui.get(), TweetDetail.class);
-                    intent.putExtra("tweetID", tweet.replyID);
-                    intent.putExtra("userID", tweet.replyUserId);
-                    intent.putExtra("username", tweet.replyName);
+                    intent.putExtra("tweetID", tweet.getReplyId());
+                    intent.putExtra("userID", tweet.getUser().getId());
+                    intent.putExtra("username", tweet.getReplyName());
                     ui.get().startActivity(intent);
                 }
             });
         }
-        if (tweet.media != null && tweet.media.length != 0) {
+        if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length != 0) {
             mediaButton.setVisibility(View.VISIBLE);
             mediaButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ui.get().imageClick(tweet.media);
+                    ui.get().imageClick(tweet.getMediaLinks());
                 }
             });
         }
-        if (tweet.user.isVerified) {
+        if (tweet.getUser().isVerified()) {
             tweet_verify.setVisibility(View.VISIBLE);
         }
         if (toggleImg) {
-            Picasso.get().load(tweet.user.profileImg + "_bigger").into(profile_img);
+            Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
         }
-        if (tweet.retweeted) {
+        if (tweet.retweeted()) {
             retweetButton.setImageResource(R.drawable.retweet_enabled);
         } else {
             retweetButton.setImageResource(R.drawable.retweet);
         }
-        if (tweet.favorized) {
+        if (tweet.favorized()) {
             favoriteButton.setImageResource(R.drawable.favorite_enabled);
         } else {
             favoriteButton.setImageResource(R.drawable.favorite);

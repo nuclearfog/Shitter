@@ -302,24 +302,24 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             TimelineAdapter tweetAdapter = (TimelineAdapter) homeList.getAdapter();
             if (tweetAdapter != null && !homeReload.isRefreshing()) {
                 Tweet tweet = tweetAdapter.getData().get(position);
-                if (tweet.embedded != null)
-                    tweet = tweet.embedded;
+                if (tweet.getEmbeddedTweet() != null)
+                    tweet = tweet.getEmbeddedTweet();
                 Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.tweetID);
-                intent.putExtra("userID", tweet.user.userID);
-                intent.putExtra("username", tweet.user.screenname);
+                intent.putExtra("tweetID", tweet.getId());
+                intent.putExtra("userID", tweet.getUser().getId());
+                intent.putExtra("username", tweet.getUser().getId());
                 startActivityForResult(intent, TWEET);
             }
         } else {
             TimelineAdapter tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
             if (tweetAdapter != null && !favoriteReload.isRefreshing()) {
                 Tweet tweet = tweetAdapter.getData().get(position);
-                if (tweet.embedded != null)
-                    tweet = tweet.embedded;
+                if (tweet.getEmbeddedTweet() != null)
+                    tweet = tweet.getEmbeddedTweet();
                 Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.tweetID);
-                intent.putExtra("userID", tweet.user.userID);
-                intent.putExtra("username", tweet.user.screenname);
+                intent.putExtra("tweetID", tweet.getId());
+                intent.putExtra("userID", tweet.getUser().getId());
+                intent.putExtra("username", tweet.getUser().getScreenname());
                 startActivityForResult(intent, TWEET);
             }
         }

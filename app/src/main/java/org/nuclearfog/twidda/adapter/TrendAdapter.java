@@ -68,8 +68,9 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        String posStr = Integer.toString(trendList.get(index).position) + '.';
-        vh.trends.setText(trendList.get(index).trend);
+        Trend trend = trendList.get(index);
+        String posStr = Integer.toString(trend.getPosition()) + '.';
+        vh.trends.setText(trend.getName());
         vh.pos.setText(posStr);
         vh.trends.setTextColor(font_color);
         vh.pos.setTextColor(font_color);

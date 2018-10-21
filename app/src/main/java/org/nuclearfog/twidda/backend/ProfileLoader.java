@@ -142,7 +142,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 mTwitter.muteAction(UID, isMuted);
                 publishProgress(GET_USER);
             } else {
-                if (!user.isLocked || isFollowing) {
+                if (!user.isLocked() || isFollowing) {
                     if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0)) {
                         if (homeTl.getItemCount() > 0)
                             sinceId = homeTl.getItemId(0);
@@ -195,14 +195,14 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             View link_ico = ui.get().findViewById(R.id.links_ico);
             View date_ico = ui.get().findViewById(R.id.date_ico);
 
-            String follower = Integer.toString(user.follower);
-            String following = Integer.toString(user.following);
-            String date = sdf.format(new Date(user.created));
-            Spanned bio = Tagger.makeText(user.bio, highlight, ui.get());
+            String follower = Integer.toString(user.getFollower());
+            String following = Integer.toString(user.getFollowing());
+            String date = sdf.format(new Date(user.getCreatedAt()));
+            Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
             txtBio.setMovementMethod(LinkMovementMethod.getInstance());
             txtBio.setText(bio);
-            txtUser.setText(user.username);
-            txtScrName.setText(user.screenname);
+            txtUser.setText(user.getUsername());
+            txtScrName.setText(user.getScreenname());
             txtFollower.setText(follower);
             txtFollowing.setText(following);
             txtCreated.setText(date);
@@ -211,31 +211,32 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             following_ico.setVisibility(View.VISIBLE);
             date_ico.setVisibility(View.VISIBLE);
 
-            if (user.location != null && !user.location.isEmpty()) {
-                txtLocation.setText(user.location);
+            if (user.getLocation() != null && !user.getLocation().isEmpty()) {
+                txtLocation.setText(user.getLocation());
                 location_ico.setVisibility(View.VISIBLE);
             }
-            if (user.link != null && !user.link.isEmpty()) {
-                txtLink.setText(user.link);
+            if (user.getLink() != null && !user.getLink().isEmpty()) {
+                txtLink.setText(user.getLink());
                 link_ico.setVisibility(View.VISIBLE);
             }
-            if (user.isVerified) {
+            if (user.isVerified()) {
                 ui.get().findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
             }
             if (isFollowed) {
                 ui.get().findViewById(R.id.followback).setVisibility(View.VISIBLE);
             }
             if (imgEnabled) {
-                Picasso.get().load(user.profileImg + "_bigger").into(profile);
+                String link = user.getImageLink() + "_bigger";
+                Picasso.get().load(link).into(profile);
             }
-            if (user.isLocked) {
+            if (user.isLocked()) {
                 ui.get().findViewById(R.id.profile_locked).setVisibility(View.VISIBLE);
             } else {
                 txtFollowing.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent following = new Intent(ui.get(), UserDetail.class);
-                        following.putExtra("userID", user.userID);
+                        following.putExtra("userID", user.getId());
                         following.putExtra("mode", 0);
                         ui.get().startActivity(following);
                     }
@@ -244,7 +245,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                     @Override
                     public void onClick(View v) {
                         Intent follower = new Intent(ui.get(), UserDetail.class);
-                        follower.putExtra("userID", user.userID);
+                        follower.putExtra("userID", user.getId());
                         follower.putExtra("mode", 1);
                         ui.get().startActivity(follower);
                     }
@@ -253,7 +254,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ui.get().imageClick(user.profileImg);
+                    ui.get().imageClick(user.getImageLink());
                 }
             });
 

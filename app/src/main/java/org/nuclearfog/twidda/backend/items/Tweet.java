@@ -3,21 +3,21 @@ package org.nuclearfog.twidda.backend.items;
 import android.support.annotation.Nullable;
 
 public class Tweet {
-    public final TwitterUser user;  // Tweet Author
-    public final Tweet embedded;    // Retweetet Tweet
-    public final long tweetID;      // Unique Tweet ID
-    public final String tweet;      // Tweet Text
-    public final String replyName;  // Screenname of Answered User
-    public final String source;     // Used Tweet API
-    public final long time;         // Tweet Time in millisecond
-    public final long replyID;      // Unique ID of Replied Tweet
-    public final long retweetId;    // Unique ID of My retweet
-    public final long replyUserId;  // ID of Replied User
-    public final int retweet;       // Retweet Count
-    public final int favorit;       // Favorite Count
-    public final String[] media;    // Media Link container
-    public final boolean retweeted; // Retweeted by me
-    public final boolean favorized; // Favorited by me
+    private final TwitterUser user;
+    private final Tweet embedded;
+    private final long tweetID;
+    private final String tweet;
+    private final String replyName;
+    private final String source;
+    private final long time;
+    private final long replyID;
+    private final long retweetId;
+    private final long replyUserId;
+    private final int retweet;
+    private final int favorit;
+    private final String[] media;
+    private final boolean retweeted;
+    private final boolean favorized;
 
 
     public Tweet(long tweetID, int retweet, int favorit, TwitterUser user, String tweet, long time,
@@ -38,5 +38,142 @@ public class Tweet {
         this.favorized = favorized;
         this.retweetId = retweetId;
         this.replyUserId = replyUserId;
+    }
+
+
+    /**
+     * Tweet ID
+     *
+     * @return tweetID
+     */
+    public long getId() {
+        return tweetID;
+    }
+
+    /**
+     * Tweet Content
+     *
+     * @return tweet text
+     */
+    public String getText() {
+        return tweet;
+    }
+
+    /**
+     * get author
+     *
+     * @return tweet owner
+     */
+    public TwitterUser getUser() {
+        return user;
+    }
+
+    /**
+     * get time
+     *
+     * @return raw time
+     */
+    public long getTime() {
+        return time;
+    }
+
+    /**
+     * get used tweet api
+     *
+     * @return api name
+     */
+    public String getSource() {
+        return source;
+    }
+
+    /**
+     * get embedded Tweet
+     *
+     * @return tweet
+     */
+    @Nullable
+    public Tweet getEmbeddedTweet() {
+        return embedded;
+    }
+
+    /**
+     * name of replied user
+     *
+     * @return username
+     */
+    public String getReplyName() {
+        return replyName;
+    }
+
+    /**
+     * ID of replied user
+     *
+     * @return user Id
+     */
+    public long getReplyUserId() {
+        return replyUserId;
+    }
+
+    /**
+     * ID of replied tweet
+     *
+     * @return tweet id
+     */
+    public long getReplyId() {
+        return replyID;
+    }
+
+    /**
+     * ID of my retweet
+     *
+     * @return tweet ID
+     */
+    public long getMyRetweetId() {
+        return retweetId;
+    }
+
+    /**
+     * get number of retweets
+     *
+     * @return retweet count
+     */
+    public int getRetweetCount() {
+        return retweet;
+    }
+
+    /**
+     * get number of favors
+     *
+     * @return favor count
+     */
+    public int getFavorCount() {
+        return favorit;
+    }
+
+    /**
+     * get media links of tweet
+     *
+     * @return media links array
+     */
+    public String[] getMediaLinks() {
+        return media;
+    }
+
+    /**
+     * is tweet retweeted by me
+     *
+     * @return retweet status
+     */
+    public boolean retweeted() {
+        return retweeted;
+    }
+
+    /**
+     * is tweet favored by me
+     *
+     * @return favor status
+     */
+    public boolean favorized() {
+        return favorized;
     }
 }
