@@ -22,12 +22,12 @@ import java.util.List;
 public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     private List<TwitterUser> mUser;
-    private OnItemClicked mListener;
+    private OnItemClickListener mListener;
     private int font_color = 0xFFFFFFFF;
     private boolean loadImage = true;
 
 
-    public UserAdapter(OnItemClicked mListener) {
+    public UserAdapter(OnItemClickListener mListener) {
         mUser = new ArrayList<>();
         this.mListener = mListener;
     }
@@ -74,7 +74,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onItemClick(parent, position);
+                mListener.onItemClick(rv, position);
             }
         });
         return new ItemHolder(v);
@@ -104,11 +104,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         } else {
             vh.lockIco.setVisibility(View.GONE);
         }
-    }
-
-
-    public interface OnItemClicked {
-        void onItemClick(ViewGroup parent, int position);
     }
 
 

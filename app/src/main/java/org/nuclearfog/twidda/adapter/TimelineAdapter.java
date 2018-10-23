@@ -26,14 +26,14 @@ import java.util.List;
 
 public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
-    private OnItemClicked mListener;
+    private OnItemClickListener mListener;
     private List<Tweet> tweets;
     private int highlight = 0xFFFFFFFF;
     private int font_color = 0xFFFFFFFF;
     private boolean img_ldr = true;
 
 
-    public TimelineAdapter(OnItemClicked mListener) {
+    public TimelineAdapter(OnItemClickListener mListener) {
         tweets = new ArrayList<>();
         this.mListener = mListener;
     }
@@ -83,7 +83,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onItemClick(parent, position);
+                mListener.onItemClick(rv, position);
             }
         });
         return new ItemHolder(v);
@@ -148,14 +148,6 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
             return minutes + " m";
         else
             return seconds + " s";
-    }
-
-
-    /**
-     * Custom Click Listener
-     */
-    public interface OnItemClicked {
-        void onItemClick(ViewGroup parent, int position);
     }
 
 

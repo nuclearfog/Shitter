@@ -19,11 +19,11 @@ import java.util.List;
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     private List<Trend> trendList;
-    private OnItemClicked mListener;
+    private OnItemClickListener mListener;
     private int font_color = 0xFFFFFFFF;
 
 
-    public TrendAdapter(OnItemClicked mListener) {
+    public TrendAdapter(OnItemClickListener mListener) {
         trendList = new ArrayList<>();
         this.mListener = mListener;
     }
@@ -59,7 +59,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onItemClick(parent, position);
+                mListener.onItemClick(rv, position);
             }
         });
         return new ItemHolder(v);
@@ -74,14 +74,6 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         vh.pos.setText(posStr);
         vh.trends.setTextColor(font_color);
         vh.pos.setTextColor(font_color);
-    }
-
-
-    /**
-     * Custom Click Listener
-     */
-    public interface OnItemClicked {
-        void onItemClick(ViewGroup parent, int position);
     }
 
 

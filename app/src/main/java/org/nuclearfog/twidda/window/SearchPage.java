@@ -14,15 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
-import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.TwitterSearch;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -36,8 +35,8 @@ import static android.os.AsyncTask.Status.RUNNING;
  *
  * @see TwitterSearch
  */
-public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemClicked,
-        OnRefreshListener, OnTabChangeListener, OnItemClicked {
+public class SearchPage extends AppCompatActivity implements OnRefreshListener,
+        OnTabChangeListener, OnItemClickListener {
 
     private RecyclerView tweetSearch, userSearch;
     private SwipeRefreshLayout tweetReload;
@@ -170,9 +169,9 @@ public class SearchPage extends AppCompatActivity implements UserAdapter.OnItemC
 
 
     @Override
-    public void onItemClick(ViewGroup parent, int position) {
+    public void onItemClick(RecyclerView rv, int position) {
         if (!tweetReload.isRefreshing())
-            if (parent.getId() == R.id.tweet_result) {
+            if (rv.getId() == R.id.tweet_result) {
                 TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
                 if (tweetAdapter != null) {
                     Tweet tweet = tweetAdapter.getData().get(position);

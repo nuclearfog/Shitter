@@ -9,11 +9,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.UserAdapter;
-import org.nuclearfog.twidda.adapter.UserAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.UserLists;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -25,7 +24,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  *
  * @see UserLists
  */
-public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRefreshListener {
+public class UserDetail extends AppCompatActivity implements OnItemClickListener, OnRefreshListener {
 
     private RecyclerView userList;
     private SwipeRefreshLayout refresh;
@@ -111,7 +110,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClicked, OnRe
 
 
     @Override
-    public void onItemClick(ViewGroup parent, int position) {
+    public void onItemClick(RecyclerView rv, int position) {
         UserAdapter userListAdapter = (UserAdapter) userList.getAdapter();
         if (userListAdapter != null && !refresh.isRefreshing()) {
             TwitterUser user = userListAdapter.getData().get(position);

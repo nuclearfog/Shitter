@@ -17,13 +17,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import org.nuclearfog.tag.Tagger;
+import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
-import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ImageLoad;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -38,7 +37,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  * @see ImageLoad
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
-        OnItemClicked, OnRefreshListener, Tagger.OnTagClickListener {
+        OnItemClickListener, OnRefreshListener, OnTagClickListener {
 
     public static final int CHANGED = 1;
     private static final int TWEET = 2;
@@ -227,7 +226,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onItemClick(ViewGroup parent, int position) {
+    public void onItemClick(RecyclerView rv, int position) {
         TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
         if (timeLineAdapter != null && !answerReload.isRefreshing()) {
             Tweet tweet = timeLineAdapter.getData().get(position);

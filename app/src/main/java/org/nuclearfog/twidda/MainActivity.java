@@ -14,13 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
+import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.MainPage;
@@ -40,8 +40,8 @@ import static android.os.AsyncTask.Status.RUNNING;
  *
  * @see MainPage
  */
-public class MainActivity extends AppCompatActivity implements OnRefreshListener, OnTabChangeListener,
-        TimelineAdapter.OnItemClicked, TrendAdapter.OnItemClicked {
+public class MainActivity extends AppCompatActivity implements OnRefreshListener,
+        OnTabChangeListener, OnItemClickListener {
 
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
@@ -285,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
 
     @Override
-    public void onItemClick(ViewGroup parent, int position) {
+    public void onItemClick(RecyclerView parent, int position) {
         if (parent.getId() == R.id.tl_list) {
             if (timelineAdapter != null && !timelineReload.isRefreshing()) {
                 Tweet tweet = timelineAdapter.getData().get(position);

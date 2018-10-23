@@ -19,7 +19,6 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
-    private final int LIMIT = 50;
     private final int favoritedMask = 1;
     private final int retweetedMask = 1 << 1;
     private final int homeMask = 1 << 2;
@@ -47,7 +46,7 @@ public class DatabaseAdapter {
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = getDbWrite();
         db.beginTransaction();
-        storeUser(user, db);
+        storeUser(user, db, CONFLICT_REPLACE);
         commit(db);
     }
 
@@ -206,7 +205,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&" + homeMask + ">0 " +
-                "ORDER BY tweetID DESC LIMIT " + LIMIT;
+                "ORDER BY tweetID DESC";
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -229,7 +228,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&" + mentionMask + ">0 " +
-                "ORDER BY tweetID DESC LIMIT " + LIMIT;
+                "ORDER BY tweetID DESC";
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -253,7 +252,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "WHERE statusregister&" + userTweetMask + ">0 " +
-                "AND user.userID =" + userID + " ORDER BY tweetID DESC LIMIT " + LIMIT;
+                "AND user.userID =" + userID + " ORDER BY tweetID DESC";
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
 
@@ -270,16 +269,16 @@ public class DatabaseAdapter {
     /**
      * Lade Favorisierte Tweets eines Nutzers
      *
-     * @param userID Nutzer ID
+     * @param ownerID Nutzer ID
      * @return Favoriten des Nutzers
      */
-    public List<Tweet> getUserFavs(long userID) {
+    public List<Tweet> getUserFavs(long ownerID) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE favorit.ownerID =" + userID + " ORDER BY tweetID DESC LIMIT " + LIMIT;
+                "WHERE favorit.ownerID =" + ownerID + " ORDER BY tweetID DESC";
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -323,7 +322,7 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + replyMask + ">0 " +
-                "ORDER BY tweetID DESC LIMIT " + LIMIT;
+                "ORDER BY tweetID DESC";
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -567,7 +566,7 @@ public class DatabaseAdapter {
     }
 
 
-    private void storeUser(TwitterUser user, SQLiteDatabase db) {
+    private void storeUser(TwitterUser user, SQLiteDatabase db, int mode) {
         ContentValues userColumn = new ContentValues();
         int userRegister = 0;
         if (user.isVerified())
@@ -586,11 +585,11 @@ public class DatabaseAdapter {
         userColumn.put("createdAt", user.getCreatedAt());
         userColumn.put("following", user.getFollowing());
         userColumn.put("follower", user.getFollower());
-        db.insertWithOnConflict("user", null, userColumn, CONFLICT_REPLACE);
+        db.insertWithOnConflict("user", null, userColumn, mode);
     }
 
 
-    private void storeStatus(Tweet tweet, int newStatusRegister, SQLiteDatabase db) {
+    private void storeStatus(Tweet tweet, int statusRegister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
         TwitterUser user = tweet.getUser();
         Tweet rtStat = tweet.getEmbeddedTweet();
@@ -601,26 +600,25 @@ public class DatabaseAdapter {
             rtId = rtStat.getId();
         }
 
-        ContentValues userColumn = new ContentValues();
-        int userRegister = 0;
-        if (user.isVerified())
-            userRegister |= verifiedMask;
-        if (user.isLocked())
-            userRegister |= lockedMask;
+        statusRegister |= getStatRegister(db, tweet.getId());
+        if (tweet.favorized()) {
+            statusRegister |= favoritedMask;
+        } else {
+            statusRegister &= ~favoritedMask;
+        }
+        if (tweet.retweeted()) {
+            statusRegister |= retweetedMask;
+        } else {
+            statusRegister &= ~retweetedMask;
+        }
 
-        userColumn.put("userID", user.getId());
-        userColumn.put("username", user.getUsername());
-        userColumn.put("scrname", user.getScreenname());
-        userColumn.put("pbLink", user.getImageLink());
-        userColumn.put("userregister", userRegister);
-        userColumn.put("bio", user.getBio());
-        userColumn.put("link", user.getLink());
-        userColumn.put("location", user.getLocation());
-        userColumn.put("banner", user.getBannerLink());
-        userColumn.put("createdAt", user.getCreatedAt());
-        userColumn.put("following", user.getFollowing());
-        userColumn.put("follower", user.getFollower());
-
+        StringBuilder media = new StringBuilder();
+        for (String link : tweet.getMediaLinks()) {
+            media.append(link);
+            media.append(";");
+        }
+        status.put("media", media.toString());
+        status.put("statusregister", statusRegister);
         status.put("tweetID", tweet.getId());
         status.put("userID", user.getId());
         status.put("time", tweet.getTime());
@@ -633,26 +631,7 @@ public class DatabaseAdapter {
         status.put("favorite", tweet.getFavorCount());
         status.put("retweeterID", tweet.getMyRetweetId());
         status.put("replyUserID", tweet.getReplyUserId());
-        String[] mediaLinks = tweet.getMediaLinks();
-        StringBuilder media = new StringBuilder();
-        for (String link : mediaLinks) {
-            media.append(link);
-            media.append(";");
-        }
-        status.put("media", media.toString());
-        int statusRegister = getStatRegister(db, tweet.getId());
-        statusRegister |= newStatusRegister;
-        if (tweet.favorized())
-            statusRegister |= favoritedMask;
-        else
-            statusRegister &= ~favoritedMask;
-        if (tweet.retweeted())
-            statusRegister |= retweetedMask;
-        else
-            statusRegister &= ~retweetedMask;
-        status.put("statusregister", statusRegister);
-
-        db.insertWithOnConflict("user", null, userColumn, CONFLICT_IGNORE);
+        storeUser(user, db, CONFLICT_IGNORE);
         db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
     }
 
@@ -664,8 +643,8 @@ public class DatabaseAdapter {
         messageColumn.put("senderID", message.getSender().getId());
         messageColumn.put("receiverID", message.getReceiver().getId());
         messageColumn.put("message", message.getText());
-        storeUser(message.getSender(), db);
-        storeUser(message.getReceiver(), db);
+        storeUser(message.getSender(), db, CONFLICT_IGNORE);
+        storeUser(message.getReceiver(), db, CONFLICT_IGNORE);
         db.insertWithOnConflict("message", null, messageColumn, CONFLICT_IGNORE);
     }
 
@@ -675,7 +654,6 @@ public class DatabaseAdapter {
         trendColumn.put("woeID", woeId);
         trendColumn.put("trendpos", trend.getPosition());
         trendColumn.put("trendname", trend.getName());
-        // trendColumn.put("trendlink", "");//todo
         db.insertWithOnConflict("trend", null, trendColumn, CONFLICT_REPLACE);
     }
 

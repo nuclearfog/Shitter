@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
@@ -23,8 +22,8 @@ import android.widget.TabHost.OnTabChangeListener;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
-import org.nuclearfog.twidda.adapter.TimelineAdapter.OnItemClicked;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -37,7 +36,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  * @see ProfileLoader
  */
 public class UserProfile extends AppCompatActivity implements OnRefreshListener,
-        OnTabChangeListener, OnItemClicked, OnTagClickListener {
+        OnTabChangeListener, OnItemClickListener, OnTagClickListener {
 
     private static final int TWEET = 1;
 
@@ -297,7 +296,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
 
     @Override
-    public void onItemClick(ViewGroup parent, int position) {
+    public void onItemClick(RecyclerView parent, int position) {
         if (parent.getId() == R.id.ht_list) {
             TimelineAdapter tweetAdapter = (TimelineAdapter) homeList.getAdapter();
             if (tweetAdapter != null && !homeReload.isRefreshing()) {
@@ -372,6 +371,5 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         Intent image = new Intent(this, ImageDetail.class);
         image.putExtra("link", new String[]{link});
         startActivity(image);
-
     }
 }
