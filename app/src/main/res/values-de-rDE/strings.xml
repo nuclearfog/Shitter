@@ -75,4 +75,6 @@
     <string name="dm_not_found">Nachricht nicht gefunden!</string>
     <string name="image_folder_created">Ordner erstellt unter Pictures</string>
     <string name="image_saved">Bild gespeichert!</string>
+    <string name="tweet_processing">in bearbeitung...</string>
+    <string name="tweet_loading">lädt...</string>
 </resources>

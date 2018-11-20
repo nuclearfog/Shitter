@@ -29,6 +29,8 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
+import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 /**
  * User Profile Activity
@@ -102,8 +104,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         if (mProfile == null) {
             TimelineAdapter homeTl = new TimelineAdapter(this);
             homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
@@ -124,17 +126,21 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
-        super.onStop();
+        super.onPause();
     }
 
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET && returnCode == TweetDetail.CHANGED) {
-            mProfile = null;
+        if (reqCode == TWEET) {
+            if (returnCode == CHANGED) {
+                mProfile = null;
+            } else if (returnCode == UPLOADED) {
+                mProfile = null;
+            }
         }
     }
 
@@ -194,7 +200,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     Intent tweet = new Intent(this, TweetPopup.class);
                     if (!home)
                         tweet.putExtra("Addition", username);
-                    startActivity(tweet);
+                    startActivityForResult(tweet, TWEET);
                     break;
 
                 case R.id.profile_follow:

@@ -34,6 +34,8 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
+import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 /**
  * Main Activity
@@ -109,8 +111,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
@@ -137,11 +139,11 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         if (home != null && home.getStatus() == RUNNING) {
             home.cancel(true);
         }
-        super.onStop();
+        super.onPause();
     }
 
 
@@ -151,12 +153,15 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (reqCode == LOGIN && returnCode == RESULT_CANCELED) {
             overridePendingTransition(0, 0);
             finish();
-
         } else if (reqCode == SETTING) {
             home = null;
 
-        } else if (reqCode == TWEET && returnCode == TweetDetail.CHANGED) {
-            home = null;
+        } else if (reqCode == TWEET) {
+            if (returnCode == CHANGED) {
+                home = null;
+            } else if (returnCode == UPLOADED) {
+                home = null;
+            }
         }
     }
 
@@ -233,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.action_tweet:
                 Intent tweet = new Intent(this, TweetPopup.class);
-                startActivity(tweet);
+                startActivityForResult(tweet, TWEET);
                 break;
 
             case R.id.action_settings:

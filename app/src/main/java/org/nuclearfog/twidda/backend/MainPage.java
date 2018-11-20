@@ -79,7 +79,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             } else if (MODE == TRND) {
                 trends = mTwitter.getTrends(woeId);
                 publishProgress(TRND);
-                tweetDb.store(trends, woeId);
+                tweetDb.storeTrends(trends, woeId);
             } else if (MODE == MENT) {
                 if (mentionAdapter.getItemCount() != 0)
                     sinceId = mentionAdapter.getItemId(0);

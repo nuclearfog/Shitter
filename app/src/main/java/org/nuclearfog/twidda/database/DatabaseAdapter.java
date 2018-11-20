@@ -19,15 +19,18 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
-    private final int favoritedMask = 1;
-    private final int retweetedMask = 1 << 1;
-    private final int homeMask = 1 << 2;
-    private final int mentionMask = 1 << 3;
-    private final int userTweetMask = 1 << 4;
-    private final int replyMask = 1 << 5;
+    public static final int LIMIT = 200;    //  DATABASE ENTRY LIMIT
 
-    private final int verifiedMask = 1;
-    private final int lockedMask = 1 << 1;
+    private final int FAV_MASK = 1;         //  FAVORITE MASK
+    private final int RTW_MASK = 1 << 1;    //  RETWEET MASK
+    private final int HOM_MASK = 1 << 2;    //  HOME TWEET MASK
+    private final int MEN_MASK = 1 << 3;    //  MENTION MASK
+    private final int UTW_MASK = 1 << 4;    //  USER TWEETS
+    private final int RPL_MASK = 1 << 5;    //  TWEET ANSWERS
+
+    private final int VER_MASK = 1;         //  USER VERIFIED MASK
+    private final int LCK_MASK = 1 << 1;    //  USER LOCKED MASK
+
 
     private AppDatabase dataHelper;
     private long homeId;
@@ -45,7 +48,6 @@ public class DatabaseAdapter {
      */
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         storeUser(user, db, CONFLICT_REPLACE);
         commit(db);
     }
@@ -57,9 +59,8 @@ public class DatabaseAdapter {
      */
     public void storeHomeTimeline(List<Tweet> home) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         for (Tweet tweet : home) {
-            storeStatus(tweet, homeMask, db);
+            storeStatus(tweet, HOM_MASK, db);
         }
         commit(db);
     }
@@ -71,9 +72,8 @@ public class DatabaseAdapter {
      */
     public void storeMentions(List<Tweet> mentions) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         for (Tweet tweet : mentions) {
-            storeStatus(tweet, mentionMask, db);
+            storeStatus(tweet, MEN_MASK, db);
         }
         commit(db);
     }
@@ -85,9 +85,8 @@ public class DatabaseAdapter {
      */
     public void storeUserTweets(List<Tweet> stats) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         for (Tweet tweet : stats) {
-            storeStatus(tweet, userTweetMask, db);
+            storeStatus(tweet, UTW_MASK, db);
         }
         commit(db);
     }
@@ -100,7 +99,6 @@ public class DatabaseAdapter {
      */
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         for (Tweet tweet : fav) {
             storeStatus(tweet, 0, db);
             ContentValues favTable = new ContentValues();
@@ -118,9 +116,8 @@ public class DatabaseAdapter {
      */
     public void storeReplies(final List<Tweet> replies) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         for (Tweet tweet : replies) {
-            storeStatus(tweet, replyMask, db);
+            storeStatus(tweet, RPL_MASK, db);
         }
         commit(db);
     }
@@ -131,10 +128,9 @@ public class DatabaseAdapter {
      * @param trends List of Trends
      * @param woeId  Yahoo World ID
      */
-    public void store(final List<Trend> trends, int woeId) {
+    public void storeTrends(final List<Trend> trends, int woeId) {
         SQLiteDatabase db = getDbWrite();
         String query = "DELETE FROM trend WHERE woeID=" + woeId;
-        db.beginTransaction();
         db.execSQL(query);
         for (Trend trend : trends) {
             storeTrends(trend, woeId, db);
@@ -154,15 +150,28 @@ public class DatabaseAdapter {
         ContentValues status = new ContentValues();
 
         int register = getStatRegister(db, tweetID);
-        register |= favoritedMask;
+        register |= FAV_MASK;
 
         favTable.put("tweetID", tweetID);
         favTable.put("ownerID", homeId);
         status.put("statusregister", register);
 
-        db.beginTransaction();
         db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
         db.update("tweet", status, "tweet.tweetID=" + tweetID, null);
+        commit(db);
+    }
+
+    /**
+     * Store currently sent tweet
+     *
+     * @param tweet new created tweet
+     */
+    public void storeTweet(Tweet tweet) {
+        SQLiteDatabase db = getDbWrite();
+        int mask = UTW_MASK | HOM_MASK;
+        if (tweet.getReplyId() > 0)
+            mask |= RPL_MASK;
+        storeStatus(tweet, mask, db);
         commit(db);
     }
 
@@ -173,7 +182,6 @@ public class DatabaseAdapter {
      */
     public void storeMessage(List<Message> messages) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         for (Message message : messages) {
             storeMessage(message, db);
         }
@@ -204,8 +212,8 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
-                "WHERE statusregister&" + homeMask + ">0 " +
-                "ORDER BY tweetID DESC";
+                "WHERE statusregister&" + HOM_MASK + ">0 " +
+                "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -227,8 +235,8 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
-                "WHERE statusregister&" + mentionMask + ">0 " +
-                "ORDER BY tweetID DESC";
+                "WHERE statusregister&" + MEN_MASK + ">0 " +
+                "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -251,8 +259,9 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE statusregister&" + userTweetMask + ">0 " +
-                "AND user.userID =" + userID + " ORDER BY tweetID DESC";
+                "WHERE statusregister&" + UTW_MASK + ">0 " +
+                "AND user.userID =" + userID +
+                " ORDER BY tweetID DESC LIMIT " + LIMIT;
 
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
 
@@ -278,7 +287,8 @@ public class DatabaseAdapter {
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE favorit.ownerID =" + ownerID + " ORDER BY tweetID DESC";
+                "WHERE favorit.ownerID =" + ownerID +
+                " ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -321,8 +331,8 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + replyMask + ">0 " +
-                "ORDER BY tweetID DESC";
+                "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + RPL_MASK + ">0 " +
+                "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
             do {
@@ -344,19 +354,17 @@ public class DatabaseAdapter {
         ContentValues status = new ContentValues();
         int register = getStatRegister(db, tweet.getId());
         if (tweet.retweeted())
-            register |= retweetedMask;
+            register |= RTW_MASK;
         else
-            register &= ~retweetedMask;
+            register &= ~RTW_MASK;
 
         if (tweet.favorized())
-            register |= favoritedMask;
+            register |= FAV_MASK;
         else
-            register &= ~favoritedMask;
+            register &= ~FAV_MASK;
         status.put("retweet", tweet.getRetweetCount());
         status.put("favorite", tweet.getFavorCount());
         status.put("statusregister", register);
-
-        db.beginTransaction();
         db.update("tweet", status, "tweet.tweetID=" + tweet.getId(), null);
         commit(db);
     }
@@ -368,7 +376,6 @@ public class DatabaseAdapter {
      */
     public void removeStatus(long id) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         db.delete("tweet", "tweetID=" + id, null);
         db.delete("favorit", "tweetID=" + id + " AND ownerID=" + homeId, null);
         commit(db);
@@ -382,11 +389,9 @@ public class DatabaseAdapter {
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = getDbWrite();
         int register = getStatRegister(db, tweetId);
-        register &= ~favoritedMask;
+        register &= ~FAV_MASK;
         ContentValues status = new ContentValues();
         status.put("statusregister", register);
-
-        db.beginTransaction();
         db.delete("favorit", "tweetID=" + tweetId + " AND ownerID=" + homeId, null);
         db.update("tweet", status, "tweet.tweetID=" + tweetId, null);
         commit(db);
@@ -399,7 +404,6 @@ public class DatabaseAdapter {
      */
     public void deleteDm(long id) {
         SQLiteDatabase db = getDbWrite();
-        db.beginTransaction();
         db.delete("message", "messageID=" + id, null);
         commit(db);
     }
@@ -438,7 +442,7 @@ public class DatabaseAdapter {
     public List<Message> getMessages() {
         List<Message> result = new ArrayList<>();
         SQLiteDatabase db = dataHelper.getReadableDatabase();
-        String query = "SELECT * FROM message ORDER BY messageID DESC";
+        String query = "SELECT * FROM message ORDER BY messageID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
             do {
@@ -510,8 +514,8 @@ public class DatabaseAdapter {
         long replyUserId = cursor.getLong(index);
         index = cursor.getColumnIndex("statusregister");
         int statusregister = cursor.getInt(index);
-        boolean favorited = (statusregister & favoritedMask) > 0;
-        boolean retweeted = (statusregister & retweetedMask) > 0;
+        boolean favorited = (statusregister & FAV_MASK) > 0;
+        boolean retweeted = (statusregister & RTW_MASK) > 0;
 
         String[] medias = parseMedia(medialinks);
 
@@ -523,6 +527,7 @@ public class DatabaseAdapter {
                 source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited);
     }
 
+
     private TwitterUser getUser(long userId, SQLiteDatabase db) {
         TwitterUser user = null;
         String query = "SELECT * FROM user WHERE userID=" + userId + " LIMIT 1";
@@ -532,6 +537,7 @@ public class DatabaseAdapter {
         cursor.close();
         return user;
     }
+
 
     private TwitterUser getUser(Cursor cursor) {
         int index = cursor.getColumnIndex("userID");
@@ -559,8 +565,8 @@ public class DatabaseAdapter {
         index = cursor.getColumnIndex("follower");
         int follower = cursor.getInt(index);
 
-        boolean isVerified = (userRegister & verifiedMask) > 0;
-        boolean isLocked = (userRegister & lockedMask) > 0;
+        boolean isVerified = (userRegister & VER_MASK) > 0;
+        boolean isLocked = (userRegister & LCK_MASK) > 0;
         return new TwitterUser(userId, username, screenname, profileImg, bio,
                 location, isVerified, isLocked, link, banner, createdAt, following, follower);
     }
@@ -570,9 +576,9 @@ public class DatabaseAdapter {
         ContentValues userColumn = new ContentValues();
         int userRegister = 0;
         if (user.isVerified())
-            userRegister |= verifiedMask;
+            userRegister |= VER_MASK;
         if (user.isLocked())
-            userRegister |= lockedMask;
+            userRegister |= LCK_MASK;
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
         userColumn.put("scrname", user.getScreenname());
@@ -602,14 +608,14 @@ public class DatabaseAdapter {
 
         statusRegister |= getStatRegister(db, tweet.getId());
         if (tweet.favorized()) {
-            statusRegister |= favoritedMask;
+            statusRegister |= FAV_MASK;
         } else {
-            statusRegister &= ~favoritedMask;
+            statusRegister &= ~FAV_MASK;
         }
         if (tweet.retweeted()) {
-            statusRegister |= retweetedMask;
+            statusRegister |= RTW_MASK;
         } else {
-            statusRegister &= ~retweetedMask;
+            statusRegister &= ~RTW_MASK;
         }
 
         StringBuilder media = new StringBuilder();
@@ -672,7 +678,9 @@ public class DatabaseAdapter {
 
 
     private synchronized SQLiteDatabase getDbWrite() {
-        return dataHelper.getWritableDatabase();
+        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        db.beginTransaction();
+        return db;
     }
 
 

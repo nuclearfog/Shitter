@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.items.Message;
@@ -363,41 +362,29 @@ public class TwitterEngine {
      *
      * @param text  Tweet Text
      * @param reply In reply to tweet ID
+     * @param path  Path to the Media File
+     * @return uploaded Status
      * @throws TwitterException if Access is unavailable
      */
-    public void sendStatus(String text, long reply) throws TwitterException {
+    public Tweet sendStatus(String text, long reply, @Nullable String[] path) throws TwitterException {
         StatusUpdate mStatus = new StatusUpdate(text);
+
         if (reply > 0)
             mStatus.setInReplyToStatusId(reply);
-        twitter.tweets().updateStatus(mStatus);
-    }
 
-
-    /**
-     * Send Tweet
-     *
-     * @param text  Tweet Text
-     * @param reply In reply to tweet ID
-     * @param path  Path to the Media File
-     * @throws TwitterException     if Access is unavailable
-     * @throws NullPointerException if file path is wrong
-     */
-    public void sendStatus(String text, long reply, @NonNull String[] path) throws TwitterException, NullPointerException {
-        UploadedMedia media;
-        int count = path.length;
-        long[] mIDs = new long[count];
-        StatusUpdate mStatus = new StatusUpdate(text);
-
-        if (reply > 0) {
-            mStatus.setInReplyToStatusId(reply);
+        if (path != null) {
+            int count = path.length;
+            long[] mIDs = new long[count];
+            for (int i = 0; i < count; i++) {
+                String current = path[i];
+                UploadedMedia media = twitter.uploadMedia(new File(current));
+                mIDs[i] = media.getMediaId();
+            }
+            mStatus.setMediaIds(mIDs);
         }
-        for (int i = 0; i < count; i++) {
-            String current = path[i];
-            media = twitter.uploadMedia(new File(current));
-            mIDs[i] = media.getMediaId();
-        }
-        mStatus.setMediaIds(mIDs);
-        twitter.tweets().updateStatus(mStatus);
+
+        Status currentStat = twitter.tweets().updateStatus(mStatus);
+        return getTweet(currentStat, null);
     }
 
 
@@ -410,9 +397,9 @@ public class TwitterEngine {
      */
     public Tweet getStatus(long id) throws TwitterException {
         Status status = twitter.showStatus(id);
-        Status retweet = status.getRetweetedStatus(); // Bug getretweetedstatus does not have a currentUserRetweetId
+        Status retweet = status.getRetweetedStatus();
         if (retweet != null) {
-            retweet = twitter.showStatus(retweet.getId()); // reload full retweet
+            retweet = twitter.showStatus(retweet.getId());
             Tweet embedded = getTweet(retweet, null);
             return getTweet(status, embedded);
         } else {

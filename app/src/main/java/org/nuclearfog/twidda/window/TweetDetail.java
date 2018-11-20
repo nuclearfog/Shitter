@@ -29,6 +29,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 /**
  * Detailed Tweet Activity
@@ -97,8 +98,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         if (mStat == null) {
             TimelineAdapter answerAdapter = new TimelineAdapter(this);
             answerAdapter.toggleImage(settings.loadImages());
@@ -113,17 +114,21 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         if (mStat != null && mStat.getStatus() == RUNNING)
             mStat.cancel(true);
-        super.onStop();
+        super.onPause();
     }
 
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET && returnCode == CHANGED) {
-            mStat = null;
+        if (reqCode == TWEET) {
+            if (returnCode == CHANGED) {
+                mStat = null;
+            } else if (returnCode == UPLOADED) {
+                mStat = null;
+            }
         }
     }
 
@@ -178,11 +183,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 case R.id.rt_button_detail:
                     mStat = new StatusLoader(this);
                     mStat.execute(tweetID, StatusLoader.RETWEET);
+                    Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.fav_button_detail:
                     mStat = new StatusLoader(this);
                     mStat.execute(tweetID, StatusLoader.FAVORITE);
+                    Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.no_rt_detail:
@@ -210,9 +217,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     Intent tweet = new Intent(this, TweetPopup.class);
                     tweet.putExtra("TweetID", tweetID);
                     tweet.putExtra("Addition", username);
-                    startActivity(tweet);
+                    startActivityForResult(tweet, TWEET);
                     break;
             }
+        } else {
+            Toast.makeText(this, R.string.tweet_processing, Toast.LENGTH_SHORT).show();
         }
     }
 

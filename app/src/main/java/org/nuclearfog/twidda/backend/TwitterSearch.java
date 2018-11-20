@@ -107,6 +107,8 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
                     break;
+                case -1:
+                    break;
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }

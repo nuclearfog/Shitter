@@ -83,4 +83,6 @@
     <string name="dm_not_found">message not found!</string>
     <string name="image_folder_created">folder created under Pictures!</string>
     <string name="image_saved">image saved!</string>
+    <string name="tweet_processing">processing...</string>
+    <string name="tweet_loading">loading...</string>
 </resources>

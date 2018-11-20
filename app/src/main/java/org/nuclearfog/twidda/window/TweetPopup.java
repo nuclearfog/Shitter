@@ -35,6 +35,8 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
  */
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
+    public static final int UPLOADED = 2;
+
     private StatusUpload sendTweet;
     private View imageButton, previewBtn;
     private List<String> mediaPath;
@@ -186,14 +188,14 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PERMISSION_GRANTED) {
-                Intent i = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 0);
+                Intent mediaIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+                startActivityForResult(mediaIntent, 0);
             } else {
                 requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, 1);
             }
         } else {
-            Intent i = new Intent(Intent.ACTION_PICK, EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, 0);
+            Intent mediaIntent = new Intent(Intent.ACTION_PICK, EXTERNAL_CONTENT_URI);
+            startActivityForResult(mediaIntent, 0);
         }
     }
 }
