@@ -124,9 +124,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         if (reqCode == TWEET) {
-            if (returnCode == CHANGED) {
-                mStat = null;
-            } else if (returnCode == UPLOADED) {
+            if (returnCode == CHANGED || returnCode == UPLOADED) {
                 mStat = null;
             }
         }

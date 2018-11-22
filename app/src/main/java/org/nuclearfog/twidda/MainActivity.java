@@ -150,18 +150,22 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode, returnCode, i);
-        if (reqCode == LOGIN && returnCode == RESULT_CANCELED) {
-            overridePendingTransition(0, 0);
-            finish();
-        } else if (reqCode == SETTING) {
-            home = null;
 
-        } else if (reqCode == TWEET) {
-            if (returnCode == CHANGED) {
+        switch (reqCode) {
+            case LOGIN:
+                if (returnCode == RESULT_CANCELED) {
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
+                break;
+
+            case TWEET:
+                if (returnCode != CHANGED && returnCode != UPLOADED)
+                    break;
+
+            case SETTING:
                 home = null;
-            } else if (returnCode == UPLOADED) {
-                home = null;
-            }
+                break;
         }
     }
 

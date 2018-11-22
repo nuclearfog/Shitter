@@ -136,9 +136,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         if (reqCode == TWEET) {
-            if (returnCode == CHANGED) {
-                mProfile = null;
-            } else if (returnCode == UPLOADED) {
+            if (returnCode == CHANGED || returnCode == UPLOADED) {
                 mProfile = null;
             }
         }

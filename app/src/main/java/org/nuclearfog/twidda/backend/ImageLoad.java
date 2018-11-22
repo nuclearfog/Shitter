@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 
 
-public class ImageLoad extends AsyncTask<String, Integer, Boolean> {
+public class ImageLoad extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<ImageDetail> ui;
     private ImageAdapter imageAdapter;

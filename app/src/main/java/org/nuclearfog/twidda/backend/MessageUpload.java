@@ -15,12 +15,17 @@ import org.nuclearfog.twidda.window.MessagePopup;
 
 import java.lang.ref.WeakReference;
 
-public class MessageUpload extends AsyncTask<String, Void, Boolean> {
+import twitter4j.TwitterException;
+
+public class MessageUpload extends AsyncTask<String, Void, Void> {
 
     private WeakReference<MessagePopup> ui;
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
     private Dialog popup;
+    private String errorMsg = "E MessageUpload: ";
+    private int returnCode = 0;
+
 
 
     public MessageUpload(MessagePopup c) {
@@ -61,7 +66,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(String... param) {
+    protected Void doInBackground(String... param) {
         String username = param[0];
         String message = param[1];
         String path = param[2];
@@ -69,31 +74,40 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             if (!username.startsWith("@"))
                 username = '@' + username;
             mTwitter.sendMessage(username, message, path);
+        } catch (TwitterException err) {
+            returnCode = err.getErrorCode();
+            errorMsg += err.getErrorMessage();
         } catch (Exception err) {
             Log.e("DirectMessage", err.getMessage());
             err.printStackTrace();
-            return false;
+            returnCode = -1;
         }
-        return true;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
 
         popup.dismiss();
-        if (success) {
+        if (returnCode == 0) {
             Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
             ui.get().finish();
         } else {
-            Toast.makeText(ui.get(), R.string.error_sending_dm, Toast.LENGTH_SHORT).show();
+            switch (returnCode) {
+                case 420:
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
 
     @Override
-    protected void onCancelled(Boolean b) {
+    protected void onCancelled(Void v) {
         popup.dismiss();
     }
 }

@@ -19,7 +19,7 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
-    public static final int LIMIT = 200;    //  DATABASE ENTRY LIMIT
+    public static final int LIMIT = 100;    //  DATABASE ENTRY LIMIT
 
     private final int FAV_MASK = 1;         //  FAVORITE MASK
     private final int RTW_MASK = 1 << 1;    //  RETWEET MASK
