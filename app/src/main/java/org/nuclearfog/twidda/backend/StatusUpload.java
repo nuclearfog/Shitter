@@ -13,15 +13,12 @@ import android.view.Window;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
-
-import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 
 public class StatusUpload extends AsyncTask<String, Void, Boolean> {
@@ -79,13 +76,11 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... path) {
         try {
-            Tweet sendTweet;
             if (path.length == 0) {
-                sendTweet = mTwitter.sendStatus(tweet, replyId, null);
+                mTwitter.sendStatus(tweet, replyId, null);
             } else {
-                sendTweet = mTwitter.sendStatus(tweet, replyId, path);
+                mTwitter.sendStatus(tweet, replyId, path);
             }
-            database.storeTweet(sendTweet);
 
         } catch (TwitterException err) {
             return false;
@@ -105,7 +100,6 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
         popup.dismiss();
         if (success) {
             Toast.makeText(ui.get(), R.string.tweet_sent, Toast.LENGTH_LONG).show();
-            ui.get().setResult(UPLOADED);
             ui.get().finish();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());

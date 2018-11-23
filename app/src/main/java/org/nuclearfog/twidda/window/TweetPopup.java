@@ -35,8 +35,6 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
  */
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
-    public static final int UPLOADED = 2;
-
     private StatusUpload sendTweet;
     private View imageButton, previewBtn;
     private List<String> mediaPath;

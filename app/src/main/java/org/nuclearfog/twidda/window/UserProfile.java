@@ -26,11 +26,10 @@ import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
-import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 /**
  * User Profile Activity
@@ -130,16 +129,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
         super.onPause();
-    }
-
-
-    @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET) {
-            if (returnCode == CHANGED || returnCode == UPLOADED) {
-                mProfile = null;
-            }
-        }
     }
 
 
@@ -305,25 +294,19 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             TimelineAdapter tweetAdapter = (TimelineAdapter) homeList.getAdapter();
             if (tweetAdapter != null && !homeReload.isRefreshing()) {
                 Tweet tweet = tweetAdapter.getData().get(position);
+                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.getId());
-                intent.putExtra("userID", tweet.getUser().getId());
-                intent.putExtra("username", tweet.getUser().getScreenname());
-                startActivityForResult(intent, TWEET);
+                openTweet(tweet.getId(), user.getId(), user.getScreenname());
             }
         } else {
             TimelineAdapter tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
             if (tweetAdapter != null && !favoriteReload.isRefreshing()) {
                 Tweet tweet = tweetAdapter.getData().get(position);
+                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.getId());
-                intent.putExtra("userID", tweet.getUser().getId());
-                intent.putExtra("username", tweet.getUser().getScreenname());
-                startActivityForResult(intent, TWEET);
+                openTweet(tweet.getId(), user.getId(), user.getScreenname());
             }
         }
     }
@@ -334,6 +317,15 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         Intent intent = new Intent(this, SearchPage.class);
         intent.putExtra("search", text);
         startActivity(intent);
+    }
+
+
+    private void openTweet(long tweetId, long userId, String username) {
+        Intent intent = new Intent(this, TweetDetail.class);
+        intent.putExtra("tweetID", tweetId);
+        intent.putExtra("userID", userId);
+        intent.putExtra("username", username);
+        startActivityForResult(intent, TWEET);
     }
 
 

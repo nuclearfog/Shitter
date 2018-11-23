@@ -162,20 +162,6 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Store currently sent tweet
-     *
-     * @param tweet new created tweet
-     */
-    public void storeTweet(Tweet tweet) {
-        SQLiteDatabase db = getDbWrite();
-        int mask = UTW_MASK | HOM_MASK;
-        if (tweet.getReplyId() > 0)
-            mask |= RPL_MASK;
-        storeStatus(tweet, mask, db);
-        commit(db);
-    }
-
-    /**
      * speicher direktnachrichten
      *
      * @param messages Direktnachrichten liste

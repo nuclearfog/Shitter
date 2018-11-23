@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,8 +24,10 @@ import android.widget.TabHost.TabSpec;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
+import org.nuclearfog.twidda.backend.LinkBrowser;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -34,8 +37,6 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
-import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 /**
  * Main Activity
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
     private MainPage home;
+    private LinkBrowser mBrowser;
     private View lastTab, root;
     private TabHost tabhost;
     private int tabIndex = 0;
@@ -134,6 +136,15 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             home = new MainPage(this);
             home.execute(MainPage.DATA, 1);
+
+            Uri link = getIntent().getData();
+            if (link != null) {
+                String text = link.toString();
+                if (text.startsWith("https://")) {
+                    mBrowser = new LinkBrowser(this);
+                    mBrowser.execute(text);
+                }
+            }
         }
     }
 
@@ -142,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onPause() {
         if (home != null && home.getStatus() == RUNNING) {
             home.cancel(true);
+        }
+        if (mBrowser != null && mBrowser.getStatus() == RUNNING) {
+            mBrowser.cancel(true);
         }
         super.onPause();
     }
@@ -158,10 +172,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     finish();
                 }
                 break;
-
-            case TWEET:
-                if (returnCode != CHANGED && returnCode != UPLOADED)
-                    break;
 
             case SETTING:
                 home = null;
@@ -298,13 +308,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (parent.getId() == R.id.tl_list) {
             if (timelineAdapter != null && !timelineReload.isRefreshing()) {
                 Tweet tweet = timelineAdapter.getData().get(position);
+                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.getId());
-                intent.putExtra("userID", tweet.getUser().getId());
-                intent.putExtra("username", tweet.getUser().getScreenname());
-                startActivityForResult(intent, TWEET);
+                openTweet(tweet.getId(), user.getId(), user.getScreenname());
             }
         } else if (parent.getId() == R.id.tr_list) {
             if (trendsAdapter != null && !trendReload.isRefreshing()) {
@@ -318,15 +325,21 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         } else if (parent.getId() == R.id.m_list) {
             if (mentionAdapter != null && !mentionReload.isRefreshing()) {
                 Tweet tweet = mentionAdapter.getData().get(position);
+                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                Intent intent = new Intent(this, TweetDetail.class);
-                intent.putExtra("tweetID", tweet.getId());
-                intent.putExtra("userID", tweet.getUser().getId());
-                intent.putExtra("username", tweet.getUser().getScreenname());
-                startActivityForResult(intent, TWEET);
+                openTweet(tweet.getId(), user.getId(), user.getScreenname());
             }
         }
+    }
+
+
+    private void openTweet(long tweetId, long userId, String username) {
+        Intent intent = new Intent(this, TweetDetail.class);
+        intent.putExtra("tweetID", tweetId);
+        intent.putExtra("userID", userId);
+        intent.putExtra("username", username);
+        startActivityForResult(intent, TWEET);
     }
 
 

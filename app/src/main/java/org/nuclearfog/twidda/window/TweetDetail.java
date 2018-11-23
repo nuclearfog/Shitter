@@ -29,7 +29,6 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetPopup.UPLOADED;
 
 /**
  * Detailed Tweet Activity
@@ -118,16 +117,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (mStat != null && mStat.getStatus() == RUNNING)
             mStat.cancel(true);
         super.onPause();
-    }
-
-
-    @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET) {
-            if (returnCode == CHANGED || returnCode == UPLOADED) {
-                mStat = null;
-            }
-        }
     }
 
 
