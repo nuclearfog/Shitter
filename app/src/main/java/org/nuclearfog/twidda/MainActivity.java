@@ -139,11 +139,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             Uri link = getIntent().getData();
             if (link != null) {
-                String text = link.toString();
-                if (text.startsWith("https://")) {
-                    mBrowser = new LinkBrowser(this);
-                    mBrowser.execute(text);
-                }
+                mBrowser = new LinkBrowser(this);
+                mBrowser.execute(link);
             }
         }
     }

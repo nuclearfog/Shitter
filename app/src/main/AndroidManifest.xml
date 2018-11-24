@@ -31,7 +31,9 @@
 
                 <data
                     android:host="*.twitter.com"
+                    android:pathPattern="\\/.*\\/status\\/.*"
                     android:scheme="https" />
+
             </intent-filter>
         </activity>
 

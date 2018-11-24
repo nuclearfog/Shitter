@@ -265,6 +265,18 @@ public class TwitterEngine {
 
 
     /**
+     * Get User Context
+     *
+     * @param name User name
+     * @return User Object
+     * @throws TwitterException if Access is unavailable
+     */
+    public TwitterUser getUser(String name) throws TwitterException {
+        return getUser(twitter.showUser(name));
+    }
+
+
+    /**
      * Efficient Access of Connection Information
      *
      * @param id User ID compared with Home ID
@@ -363,10 +375,10 @@ public class TwitterEngine {
      * @param text  Tweet Text
      * @param reply In reply to tweet ID
      * @param path  Path to the Media File
-     * @return uploaded Status
+
      * @throws TwitterException if Access is unavailable
      */
-    public Tweet sendStatus(String text, long reply, @Nullable String[] path) throws TwitterException {
+    public void sendStatus(String text, long reply, @Nullable String[] path) throws TwitterException {
         StatusUpdate mStatus = new StatusUpdate(text);
 
         if (reply > 0)
@@ -382,9 +394,7 @@ public class TwitterEngine {
             }
             mStatus.setMediaIds(mIDs);
         }
-
-        Status currentStat = twitter.tweets().updateStatus(mStatus);
-        return getTweet(currentStat, null);
+        twitter.tweets().updateStatus(mStatus);
     }
 
 
