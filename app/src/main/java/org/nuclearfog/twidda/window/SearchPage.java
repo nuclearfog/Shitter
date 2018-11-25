@@ -51,8 +51,8 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true); // Tab view
         setContentView(R.layout.page_search);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         b = getIntent().getExtras();
         if (b != null)

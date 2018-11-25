@@ -27,7 +27,6 @@ import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.LinkBrowser;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -64,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);  // Tab view
         setContentView(R.layout.page_main);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
@@ -305,10 +304,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (parent.getId() == R.id.tl_list) {
             if (timelineAdapter != null && !timelineReload.isRefreshing()) {
                 Tweet tweet = timelineAdapter.getData().get(position);
-                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), user.getId(), user.getScreenname());
+                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
             }
         } else if (parent.getId() == R.id.tr_list) {
             if (trendsAdapter != null && !trendReload.isRefreshing()) {
@@ -322,10 +320,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         } else if (parent.getId() == R.id.m_list) {
             if (mentionAdapter != null && !mentionReload.isRefreshing()) {
                 Tweet tweet = mentionAdapter.getData().get(position);
-                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), user.getId(), user.getScreenname());
+                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
             }
         }
     }

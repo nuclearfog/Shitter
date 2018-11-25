@@ -26,7 +26,6 @@ import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -56,8 +55,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);  // Tab view
         setContentView(R.layout.page_profile);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         b = getIntent().getExtras();
         if (b != null) {
@@ -294,19 +293,17 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             TimelineAdapter tweetAdapter = (TimelineAdapter) homeList.getAdapter();
             if (tweetAdapter != null && !homeReload.isRefreshing()) {
                 Tweet tweet = tweetAdapter.getData().get(position);
-                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), user.getId(), user.getScreenname());
+                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
             }
         } else {
             TimelineAdapter tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
             if (tweetAdapter != null && !favoriteReload.isRefreshing()) {
                 Tweet tweet = tweetAdapter.getData().get(position);
-                TwitterUser user = tweet.getUser();
                 if (tweet.getEmbeddedTweet() != null)
                     tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), user.getId(), user.getScreenname());
+                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
             }
         }
     }

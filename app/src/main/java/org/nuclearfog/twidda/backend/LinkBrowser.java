@@ -24,8 +24,11 @@ import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import twitter4j.TwitterException;
+
 public class LinkBrowser extends AsyncTask<Uri, Void, Integer> {
 
+    private static final int NO_MATCH = 0;
     private static final int GET_USER = 1;
     private static final int GET_TWEET = 2;
     private static final int FAILURE = 3;
@@ -38,6 +41,7 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Integer> {
     private LayoutInflater inflater;
     private Dialog popup;
 
+    private String errMsg = "";
 
     public LinkBrowser(MainActivity context) {
         ui = new WeakReference<>(context);
@@ -105,10 +109,14 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Integer> {
                     return GET_TWEET;
                 }
             }
+        } catch (TwitterException err) {
+            errMsg = err.getErrorMessage();
+            return FAILURE;
         } catch (Exception err) {
             Log.e("LinkBrowser", err.getMessage());
+            return FAILURE;
         }
-        return FAILURE;
+        return NO_MATCH;
     }
 
 
@@ -132,6 +140,14 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Integer> {
                 userActivity.putExtra("username", user.getScreenname());
                 userActivity.putExtra("userID", user.getId());
                 ui.get().startActivity(userActivity);
+                break;
+
+            case FAILURE:
+                if (errMsg.isEmpty()) {
+                    Toast.makeText(ui.get(), R.string.site_load_failure, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }

@@ -25,13 +25,17 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="*.twitter.com"
                     android:pathPattern="\\/.*\\/status\\/.*"
+                    android:host="*.twitter.com"
+                    android:scheme="https" />
+
+                <data
+                    android:host="*.twitter.com"
+                    android:pathPattern="\\/.*?.*"
                     android:scheme="https" />
 
             </intent-filter>

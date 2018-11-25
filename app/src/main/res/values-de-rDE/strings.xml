@@ -77,4 +77,5 @@
     <string name="image_saved">Bild gespeichert!</string>
     <string name="tweet_processing">in bearbeitung...</string>
     <string name="tweet_loading">lädt...</string>
+    <string name="site_load_failure">Fehler beim Abrufen der Seite!</string>
 </resources>
