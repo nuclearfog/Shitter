@@ -90,4 +90,5 @@
     <string name="add_image">add new image</string>
     <string name="send_tweet">send Tweet</string>
     <string name="tweet_close">close tweet</string>
+    <string name="profile_not_found">Profile not found!</string>
 </resources>

@@ -29,6 +29,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
 
 /**
  * User Profile Activity
@@ -128,6 +129,15 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
         super.onStop();
+    }
+
+
+    @Override
+    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
+        super.onActivityResult(reqCode, returnCode, i);
+        if (reqCode == TWEET && returnCode == CHANGED) {
+            mProfile = null;
+        }
     }
 
 
@@ -359,6 +369,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         this.isBlocked = isBlocked;
         this.canDm = canDm;
     }
+
 
     public void imageClick(String link) {
         Intent image = new Intent(this, ImageDetail.class);

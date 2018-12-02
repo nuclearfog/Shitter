@@ -121,6 +121,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     @Override
+    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
+        super.onActivityResult(reqCode, returnCode, i);
+        if (reqCode == TWEET && returnCode == CHANGED) {
+            mStat = null;
+        }
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
         if (isHome)
@@ -246,5 +255,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Intent image = new Intent(this, ImageDetail.class);
         image.putExtra("link", mediaLinks);
         startActivity(image);
+    }
+
+    public void deleteTweet() {
+        Toast.makeText(this, R.string.tweet_removed, Toast.LENGTH_SHORT).show();
+        setResult(TweetDetail.CHANGED);
+        finish();
     }
 }

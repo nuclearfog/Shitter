@@ -36,6 +36,7 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
 
 /**
  * Main Activity
@@ -171,6 +172,11 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case SETTING:
                 home = null;
+                break;
+
+            case TWEET:
+                if (returnCode == CHANGED)
+                    home = null;
                 break;
         }
     }

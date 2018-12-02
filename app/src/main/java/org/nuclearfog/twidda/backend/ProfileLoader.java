@@ -300,14 +300,21 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
 
         } else if (MODE == FAILURE) {
+
             switch (returnCode) {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
                     break;
-                case 136:
+
+                case 50:
+                    Toast.makeText(ui.get(), R.string.profile_not_found, Toast.LENGTH_LONG).show();
                     break;
+
                 case -1:
+                case 136:
                     Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_LONG).show();
+                    break;
+
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }

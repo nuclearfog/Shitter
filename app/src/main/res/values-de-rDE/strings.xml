@@ -75,7 +75,12 @@
     <string name="dm_not_found">Nachricht nicht gefunden!</string>
     <string name="image_folder_created">Ordner erstellt unter Pictures</string>
     <string name="image_saved">Bild gespeichert!</string>
-    <string name="tweet_processing">in bearbeitung...</string>
-    <string name="tweet_loading">lädt...</string>
+    <string name="tweet_processing">in bearbeitung..</string>
+    <string name="tweet_loading">lädt..</string>
     <string name="site_load_failure">Fehler beim Abrufen der Seite!</string>
+    <string name="profile_not_found">Profil nicht gefunden!</string>
+    <string name="tweet_close">Tweetfenster schließen</string>
+    <string name="send_tweet">Tweet senden</string>
+    <string name="add_image">Bild hinzufügen</string>
+    <string name="image_preview">Bildvorschau</string>
 </resources>
