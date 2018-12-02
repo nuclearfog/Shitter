@@ -102,8 +102,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         if (mProfile == null) {
             TimelineAdapter homeTl = new TimelineAdapter(this);
             homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
@@ -124,10 +124,10 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 

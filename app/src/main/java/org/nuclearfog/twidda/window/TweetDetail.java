@@ -97,8 +97,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         if (mStat == null) {
             TimelineAdapter answerAdapter = new TimelineAdapter(this);
             answerAdapter.toggleImage(settings.loadImages());
@@ -113,10 +113,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         if (mStat != null && mStat.getStatus() == RUNNING)
             mStat.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 

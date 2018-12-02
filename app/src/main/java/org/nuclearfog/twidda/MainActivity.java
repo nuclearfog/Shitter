@@ -112,8 +112,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
@@ -146,14 +146,14 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
 
     @Override
-    protected void onPause() {
+    protected void onStop() {
         if (home != null && home.getStatus() == RUNNING) {
             home.cancel(true);
         }
         if (mBrowser != null && mBrowser.getStatus() == RUNNING) {
             mBrowser.cancel(true);
         }
-        super.onPause();
+        super.onStop();
     }
 
 

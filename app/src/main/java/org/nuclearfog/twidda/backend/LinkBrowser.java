@@ -15,10 +15,8 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.window.TweetDetail;
-import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
@@ -26,22 +24,15 @@ import java.util.regex.Pattern;
 
 import twitter4j.TwitterException;
 
-public class LinkBrowser extends AsyncTask<Uri, Void, Integer> {
-
-    private static final int NO_MATCH = 0;
-    private static final int GET_USER = 1;
-    private static final int GET_TWEET = 2;
-    private static final int FAILURE = 3;
+public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
 
     private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
     private DatabaseAdapter mData;
-    private TwitterUser user;
     private Tweet tweet;
     private LayoutInflater inflater;
     private Dialog popup;
-
-    private String errMsg = "";
+    private String errMsg;
 
     public LinkBrowser(MainActivity context) {
         ui = new WeakReference<>(context);
@@ -82,78 +73,61 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Integer> {
 
 
     @Override
-    protected Integer doInBackground(Uri... links) {
+    protected Void doInBackground(Uri... links) {
         try {
             String path = links[0].getPath();
             if (path != null) {
+                Pattern linkPattern = Pattern.compile("\\/@?[\\w_]+\\/status\\/\\d{1,20}");
+                Matcher linkMatch = linkPattern.matcher(path);
+                if (linkMatch.matches()) {
+                    Pattern idPattern = Pattern.compile("\\d{1,20}");
+                    Matcher idMatcher = idPattern.matcher(path);
 
-                Pattern pattern = Pattern.compile("[^\\/\\?]+");
-                Matcher matcher = pattern.matcher(path);
+                    if (idMatcher.find()) {
+                        int start = idMatcher.start();
+                        int end = idMatcher.end();
+                        String idString = path.substring(start, end);
+                        long tweetId = Long.parseLong(idString);
 
-                if (matcher.find()) {
-                    int start = matcher.start();
-                    int end = matcher.end();
-                    if (!matcher.find()) {
-                        String username = path.substring(start, end);
-                        user = mTwitter.getUser(username);
-                        mData.storeUser(user);
-                        return GET_USER;
+                        tweet = mData.getStatus(tweetId);
+                        if (tweet == null)
+                            tweet = mTwitter.getStatus(tweetId);
                     }
-                }
-                if (matcher.find()) {
-                    int start = matcher.start();
-                    int end = matcher.end();
-                    String id = path.substring(start, end);
-                    long tweetId = Long.parseLong(id);
-                    tweet = mTwitter.getStatus(tweetId);
-                    return GET_TWEET;
                 }
             }
         } catch (TwitterException err) {
             errMsg = err.getErrorMessage();
-            return FAILURE;
         } catch (Exception err) {
             Log.e("LinkBrowser", err.getMessage());
-            return FAILURE;
         }
-        return NO_MATCH;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Integer mode) {
+    protected void onPostExecute(Void mode) {
         if (ui.get() == null) return;
 
         popup.dismiss();
 
-        switch (mode) {
-            case GET_TWEET:
-                Intent tweetActivity = new Intent(ui.get(), TweetDetail.class);
-                tweetActivity.putExtra("username", tweet.getUser().getScreenname());
-                tweetActivity.putExtra("userID", tweet.getUser().getId());
-                tweetActivity.putExtra("tweetID", tweet.getId());
-                ui.get().startActivity(tweetActivity);
-                break;
-
-            case GET_USER:
-                Intent userActivity = new Intent(ui.get(), UserProfile.class);
-                userActivity.putExtra("username", user.getScreenname());
-                userActivity.putExtra("userID", user.getId());
-                ui.get().startActivity(userActivity);
-                break;
-
-            case FAILURE:
-                if (errMsg.isEmpty()) {
-                    Toast.makeText(ui.get(), R.string.site_load_failure, Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
-                }
-                break;
+        if (tweet != null) {
+            Intent tweetActivity = new Intent(ui.get(), TweetDetail.class);
+            tweetActivity.putExtra("username", tweet.getUser().getScreenname());
+            tweetActivity.putExtra("userID", tweet.getUser().getId());
+            tweetActivity.putExtra("tweetID", tweet.getId());
+            ui.get().startActivity(tweetActivity);
+        } else {
+            if (errMsg == null) {
+                Toast.makeText(ui.get(), R.string.site_load_failure, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
+
     @Override
-    protected void onCancelled(Integer i) {
+    protected void onCancelled(Void v) {
         popup.dismiss();
     }
 }

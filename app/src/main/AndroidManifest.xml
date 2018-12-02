@@ -33,11 +33,6 @@
                     android:host="*.twitter.com"
                     android:scheme="https" />
 
-                <data
-                    android:host="*.twitter.com"
-                    android:pathPattern="\\/.*?.*"
-                    android:scheme="https" />
-
             </intent-filter>
         </activity>
 
