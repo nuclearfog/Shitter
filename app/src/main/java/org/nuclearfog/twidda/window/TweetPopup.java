@@ -164,6 +164,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     }
 
 
+    public void close() {
+        Toast.makeText(this, R.string.tweet_sent, Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+
     private void showClosingMsg() {
         if (!addition.equals(tweet.getText().toString()) || imgIndex > 0) {
             Builder closeDialog = new Builder(this);

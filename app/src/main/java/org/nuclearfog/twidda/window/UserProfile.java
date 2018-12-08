@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
+import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
 
 /**
  * User Profile Activity
@@ -135,7 +135,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode, returnCode, i);
-        if (reqCode == TWEET && returnCode == CHANGED) {
+        if (reqCode == TWEET && returnCode == TWEET_REMOVED) {
             mProfile = null;
         }
     }
@@ -196,7 +196,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     Intent tweet = new Intent(this, TweetPopup.class);
                     if (!home)
                         tweet.putExtra("Addition", username);
-                    startActivityForResult(tweet, TWEET);
+                    startActivity(tweet);
                     break;
 
                 case R.id.profile_follow:

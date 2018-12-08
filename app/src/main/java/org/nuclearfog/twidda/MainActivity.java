@@ -36,7 +36,7 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetDetail.CHANGED;
+import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
 
 /**
  * Main Activity
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case TWEET:
-                if (returnCode == CHANGED)
+                if (returnCode == TWEET_REMOVED)
                     home = null;
                 break;
         }

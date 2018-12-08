@@ -240,8 +240,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 case 34:
                 case 144:
                     Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
-                    ui.get().setResult(TweetDetail.CHANGED);
-                    ui.get().finish();
+                    ui.get().deleteTweet();
                     break;
 
                 default:

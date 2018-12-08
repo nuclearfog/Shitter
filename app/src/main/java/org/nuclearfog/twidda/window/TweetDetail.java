@@ -39,7 +39,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClickListener, OnRefreshListener, OnTagClickListener {
 
-    public static final int CHANGED = 1;
+    public static final int TWEET_REMOVED = 1;
     private static final int TWEET = 2;
 
     private RecyclerView answer_list;
@@ -123,7 +123,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode, returnCode, i);
-        if (reqCode == TWEET && returnCode == CHANGED) {
+        if (reqCode == TWEET && returnCode == TWEET_REMOVED) {
             mStat = null;
         }
     }
@@ -259,7 +259,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     public void deleteTweet() {
         Toast.makeText(this, R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-        setResult(TweetDetail.CHANGED);
+        setResult(TWEET_REMOVED);
         finish();
     }
 }

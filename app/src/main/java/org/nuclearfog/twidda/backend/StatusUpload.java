@@ -13,7 +13,6 @@ import android.view.Window;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
@@ -24,7 +23,6 @@ import twitter4j.TwitterException;
 public class StatusUpload extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<TweetPopup> ui;
-    private DatabaseAdapter database;
     private TwitterEngine mTwitter;
     private LayoutInflater inflater;
     private Dialog popup;
@@ -36,7 +34,6 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);
-        database = new DatabaseAdapter(context);
         popup = new Dialog(context);
         this.tweet = tweet;
         this.replyId = replyId;
@@ -99,8 +96,8 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
 
         popup.dismiss();
         if (success) {
-            Toast.makeText(ui.get(), R.string.tweet_sent, Toast.LENGTH_LONG).show();
-            ui.get().finish();
+            ui.get().close();
+
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
             builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)

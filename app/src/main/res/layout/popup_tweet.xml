@@ -38,6 +38,8 @@
             android:id="@+id/img_preview"
             android:layout_width="@dimen/tweet_button_size"
             android:layout_height="@dimen/tweet_button_size"
+            android:layout_marginStart="@dimen/tweet_icon_margin"
+            android:layout_marginLeft="@dimen/tweet_icon_margin"
             android:contentDescription="@string/image_preview"
             android:visibility="invisible"
             app:srcCompat="@drawable/preview" />

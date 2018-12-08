@@ -432,6 +432,7 @@ public class TwitterEngine {
         Query query = new Query("to:" + name + " since_id:" + sinceId + " -filter:retweets");
         query.setCount(load);
         QueryResult result = twitter.search(query);
+
         List<twitter4j.Status> stats = result.getTweets();
         for (twitter4j.Status reply : stats) {
             if (reply.getInReplyToStatusId() == tweetId) {
@@ -474,6 +475,7 @@ public class TwitterEngine {
     public Tweet favorite(long tweetId) throws TwitterException {
         Tweet tweet = getStatus(tweetId);
         int favorite = tweet.getFavorCount();
+
         if (tweet.favorized()) {
             twitter.destroyFavorite(tweet.getId());
             favorite--;
@@ -572,16 +574,10 @@ public class TwitterEngine {
      */
     private List<TwitterUser> convertUserList(List<User> users) {
         List<TwitterUser> result = new ArrayList<>();
-        if (users.isEmpty())
-            return result;
+
         for (User user : users) {
-            try {
-                TwitterUser item = getUser(user);
-                result.add(item);
-            } catch (Exception err) {
-                // Bug in Twitter4J caused by 'withheld accounts'
-                // because of empty profile image URL
-            }
+            TwitterUser item = getUser(user);
+            result.add(item);
         }
         return result;
     }
@@ -595,23 +591,16 @@ public class TwitterEngine {
      */
     private List<Tweet> convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
-        if (statuses.isEmpty())
-            return result;
 
         for (Status status : statuses) {
-            try {
-                Status embedded = status.getRetweetedStatus();
-                if (embedded != null) {
-                    Tweet retweet = getTweet(embedded, null);
-                    Tweet tweet = getTweet(status, retweet);
-                    result.add(tweet);
-                } else {
-                    Tweet tweet = getTweet(status, null);
-                    result.add(tweet);
-                }
-            } catch (Exception err) {
-                // Bug in Twitter4J caused by 'withheld accounts'
-                // because of empty profile image URL
+            Status embedded = status.getRetweetedStatus();
+            if (embedded != null) {
+                Tweet retweet = getTweet(embedded, null);
+                Tweet tweet = getTweet(status, retweet);
+                result.add(tweet);
+            } else {
+                Tweet tweet = getTweet(status, null);
+                result.add(tweet);
             }
         }
         return result;
