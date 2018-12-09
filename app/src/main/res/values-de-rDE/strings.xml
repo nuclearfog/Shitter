@@ -83,4 +83,5 @@
     <string name="send_tweet">Tweet senden</string>
     <string name="add_image">Bild hinzufügen</string>
     <string name="image_preview">Bildvorschau</string>
+    <string name="char_limit_reached">Zeichenlimit erreicht!</string>
 </resources>

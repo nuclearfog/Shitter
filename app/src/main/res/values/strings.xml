@@ -91,4 +91,5 @@
     <string name="send_tweet">send Tweet</string>
     <string name="tweet_close">close tweet</string>
     <string name="profile_not_found">Profile not found!</string>
+    <string name="char_limit_reached">char limit reached!</string>
 </resources>

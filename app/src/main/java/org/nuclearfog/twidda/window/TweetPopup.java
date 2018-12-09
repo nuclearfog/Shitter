@@ -135,14 +135,17 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 if (sendTweet != null && sendTweet.getStatus() == RUNNING)
                     sendTweet.cancel(true);
                 sendTweet = new StatusUpload(this, tweetStr, inReplyId);
-                if (!tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
-                    sendTweet.execute();
+
+                if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
+                    Toast.makeText(this, R.string.empty_tweet, Toast.LENGTH_SHORT).show();
+                } else if (tweetStr.length() > 280) {
+                    Toast.makeText(this, R.string.char_limit_reached, Toast.LENGTH_SHORT).show();
                 } else if (!mediaPath.isEmpty()) {
                     String[] paths = new String[mediaPath.size()];
                     paths = mediaPath.toArray(paths);
                     sendTweet.execute(paths);
                 } else {
-                    Toast.makeText(this, R.string.empty_tweet, Toast.LENGTH_SHORT).show();
+                    sendTweet.execute();
                 }
                 break;
 
