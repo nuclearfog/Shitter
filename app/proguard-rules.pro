@@ -18,7 +18,7 @@
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
--keepattributes SourceFile,LineNumberTable
+#-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
@@ -32,6 +32,3 @@
 
 -dontwarn org.conscrypt**
 -keep class org.conscrypt** {*;}
-
--dontwarn android.support.v7.widget.SearchView
--keep class android.support.v7.widget.SearchView {*;}

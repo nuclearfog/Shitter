@@ -65,6 +65,7 @@ public class ImageLoad extends AsyncTask<String, Void, Boolean> {
             imageAdapter.notifyDataSetChanged();
         } else {
             Toast.makeText(ui.get(), R.string.connection_failed, Toast.LENGTH_SHORT).show();
+            ui.get().finish();
         }
     }
 }
