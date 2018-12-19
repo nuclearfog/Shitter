@@ -92,4 +92,14 @@
     <string name="char_limit_reached">char limit reached!</string>
     <string name="link_to_clipboard">copy link to clipboard</string>
     <string name="copied_to_clipboard">Link copied to clipboard!</string>
+    <string name="location_name">Location name</string>
+    <string name="profile_link">Profile link</string>
+    <string name="profile_date">profile creation date</string>
+    <string name="paste_from_clipboard">paste from clipboard</string>
+    <string name="clipboard_icon">clipboard icon</string>
+    <string name="image_preview_button">image preview button</string>
+    <string name="answer_button">answer button</string>
+    <string name="retweet_button">retweet button</string>
+    <string name="favorite_button">favorite button</string>
+    <string name="close_dm">close direct message</string>
 </resources>

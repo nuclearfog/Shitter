@@ -130,6 +130,7 @@
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
                                     android:layout_marginRight="@dimen/icon_margin"
+                                    android:contentDescription="@string/following"
                                     android:visibility="invisible"
                                     app:srcCompat="@drawable/following" />
 
@@ -145,6 +146,7 @@
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
                                     android:layout_marginRight="@dimen/icon_margin"
+                                    android:contentDescription="@string/follower"
                                     android:visibility="invisible"
                                     app:srcCompat="@drawable/follower" />
 
@@ -179,6 +181,7 @@
                             android:layout_height="@dimen/icon_size"
                             android:layout_marginEnd="@dimen/icon_margin"
                             android:layout_marginRight="@dimen/icon_margin"
+                            android:contentDescription="@string/location_name"
                             android:visibility="gone"
                             app:srcCompat="@drawable/location" />
 
@@ -202,6 +205,7 @@
                             android:layout_height="@dimen/icon_size"
                             android:layout_marginEnd="@dimen/icon_margin"
                             android:layout_marginRight="@dimen/icon_margin"
+                            android:contentDescription="@string/profile_link"
                             android:visibility="gone"
                             app:srcCompat="@drawable/link" />
 
@@ -228,6 +232,7 @@
                             android:layout_height="@dimen/icon_size"
                             android:layout_marginEnd="@dimen/icon_margin"
                             android:layout_marginRight="@dimen/icon_margin"
+                            android:contentDescription="@string/profile_date"
                             android:visibility="gone"
                             app:srcCompat="@drawable/calendar" />
 

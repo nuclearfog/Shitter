@@ -127,6 +127,7 @@
                         android:id="@+id/image_attach"
                         android:layout_width="@dimen/button_size"
                         android:layout_height="@dimen/button_size"
+                        android:contentDescription="@string/image_preview_button"
                         android:visibility="gone"
                         app:srcCompat="@drawable/preview" />
 
@@ -165,6 +166,7 @@
                     android:layout_height="@dimen/tweet_page_icon"
                     android:layout_marginEnd="@dimen/icon_margin"
                     android:layout_marginRight="@dimen/icon_margin"
+                    android:contentDescription="@string/answer_button"
                     app:srcCompat="@drawable/chat" />
 
                 <TextView
@@ -183,6 +185,7 @@
                     android:layout_height="@dimen/tweet_page_icon"
                     android:layout_marginEnd="@dimen/icon_margin"
                     android:layout_marginRight="@dimen/icon_margin"
+                    android:contentDescription="@string/retweet_button"
                     app:srcCompat="@drawable/retweet" />
 
                 <TextView
@@ -201,6 +204,7 @@
                     android:layout_height="@dimen/tweet_page_icon"
                     android:layout_marginEnd="@dimen/icon_margin"
                     android:layout_marginRight="@dimen/icon_margin"
+                    android:contentDescription="@string/favorite_button"
                     app:srcCompat="@drawable/favorite" />
 
                 <TextView

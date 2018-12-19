@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dm_popup"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -23,7 +24,9 @@
             android:background="@android:color/transparent"
             android:hint="@string/username"
             android:inputType="text"
-            android:singleLine="true" />
+            android:importantForAutofill="no"
+            android:singleLine="true"
+            tools:targetApi="o" />
 
         <ImageView
             android:id="@+id/dm_media"
@@ -31,6 +34,7 @@
             android:layout_height="@dimen/dm_button_size"
             android:layout_marginStart="@dimen/dm_icon_margin"
             android:layout_marginLeft="@dimen/dm_icon_margin"
+            android:contentDescription="@string/add_image"
             app:srcCompat="@drawable/image" />
 
         <ImageView
@@ -39,6 +43,7 @@
             android:layout_height="@dimen/dm_button_size"
             android:layout_marginStart="@dimen/button_margin"
             android:layout_marginLeft="@dimen/button_margin"
+            android:contentDescription="@string/close_dm"
             app:srcCompat="@drawable/right" />
 
     </LinearLayout>
@@ -50,6 +55,8 @@
         android:background="@android:color/transparent"
         android:gravity="start"
         android:hint="@string/dmessage"
-        android:inputType="textMultiLine" />
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        tools:targetApi="o" />
 
 </LinearLayout>

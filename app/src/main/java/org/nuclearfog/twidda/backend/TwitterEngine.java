@@ -265,18 +265,6 @@ public class TwitterEngine {
 
 
     /**
-     * Get User Context
-     *
-     * @param name User name
-     * @return User Object
-     * @throws TwitterException if Access is unavailable
-     */
-    public TwitterUser getUser(String name) throws TwitterException {
-        return getUser(twitter.showUser(name));
-    }
-
-
-    /**
      * Efficient Access of Connection Information
      *
      * @param id User ID compared with Home ID

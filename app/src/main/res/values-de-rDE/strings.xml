@@ -84,4 +84,14 @@
     <string name="char_limit_reached">Zeichenlimit erreicht!</string>
     <string name="link_to_clipboard">Link in Zwischenablage kopieren</string>
     <string name="copied_to_clipboard">Link in Zwischenablage kopiert!</string>
+    <string name="location_name">Standortname</string>
+    <string name="profile_link">Profillink</string>
+    <string name="profile_date">Profil erstellt am</string>
+    <string name="paste_from_clipboard">Von Zwischenablage einfügen</string>
+    <string name="clipboard_icon">Clipboard Symbol</string>
+    <string name="image_preview_button">Bildvorschau button</string>
+    <string name="answer_button">Antwort Button</string>
+    <string name="retweet_button">Retweet Button</string>
+    <string name="favorite_button">Favorit Button</string>
+    <string name="close_dm">Direktnachricht schließen</string>
 </resources>
