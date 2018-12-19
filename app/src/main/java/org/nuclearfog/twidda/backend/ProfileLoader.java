@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,6 +54,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private DatabaseAdapter database;
     private TwitterUser user;
     private List<Tweet> tweets, favors;
+    private NumberFormat formatter;
     private long homeId;
     private int highlight;
     private boolean imgEnabled;
@@ -75,6 +77,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
+        formatter = NumberFormat.getIntegerInstance();
         database = new DatabaseAdapter(context);
         sdf = settings.getDateFormatter();
         imgEnabled = settings.loadImages();
@@ -195,16 +198,14 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             View link_ico = ui.get().findViewById(R.id.links_ico);
             View date_ico = ui.get().findViewById(R.id.date_ico);
 
-            String follower = Integer.toString(user.getFollower());
-            String following = Integer.toString(user.getFollowing());
             String date = sdf.format(new Date(user.getCreatedAt()));
             Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
             txtBio.setMovementMethod(LinkMovementMethod.getInstance());
             txtBio.setText(bio);
             txtUser.setText(user.getUsername());
             txtScrName.setText(user.getScreenname());
-            txtFollower.setText(follower);
-            txtFollowing.setText(following);
+            txtFollower.setText(formatter.format(user.getFollower()));
+            txtFollowing.setText(formatter.format(user.getFollowing()));
             txtCreated.setText(date);
 
             follower_ico.setVisibility(View.VISIBLE);

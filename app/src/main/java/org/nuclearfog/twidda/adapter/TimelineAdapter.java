@@ -18,6 +18,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
     private OnItemClickListener mListener;
     private List<Tweet> tweets;
+    private NumberFormat formatter;
     private int highlight = 0xFFFFFFFF;
     private int font_color = 0xFFFFFFFF;
     private boolean img_ldr = true;
@@ -35,6 +37,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
     public TimelineAdapter(OnItemClickListener mListener) {
         tweets = new ArrayList<>();
+        formatter = NumberFormat.getIntegerInstance();
         this.mListener = mListener;
     }
 
@@ -93,8 +96,6 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
-        String retweet = Integer.toString(tweet.getRetweetCount());
-        String favorit = Integer.toString(tweet.getFavorCount());
         if (tweet.getEmbeddedTweet() != null) {
             String retweeter = "RT " + tweet.getUser().getScreenname();
             vh.retweeter.setText(retweeter);
@@ -106,8 +107,8 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         vh.username.setText(tweet.getUser().getUsername());
         vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);
-        vh.retweet.setText(retweet);
-        vh.favorite.setText(favorit);
+        vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
+        vh.favorite.setText(formatter.format(tweet.getFavorCount()));
         vh.time.setText(stringTime(tweet.getTime()));
 
         vh.username.setTextColor(font_color);

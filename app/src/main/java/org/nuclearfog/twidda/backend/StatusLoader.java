@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 import java.lang.ref.WeakReference;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private TimelineAdapter answerAdapter;
     private DatabaseAdapter database;
     private SimpleDateFormat sdf;
+    private NumberFormat formatter;
     private List<Tweet> answers;
     private Tweet tweet;
     private int highlight, font_color;
@@ -54,6 +56,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         sdf = settings.getDateFormatter();
+        formatter = NumberFormat.getIntegerInstance();
         font_color = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.loadImages();
@@ -164,12 +167,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         used_api.append(tweet.getSource());
         used_api.setTextColor(font_color);
 
-        String ansStr = Integer.toString(answerAdapter.getItemCount() + answers.size());
-        String favStr = Integer.toString(tweet.getFavorCount());
-        String rtStr = Integer.toString(tweet.getRetweetCount());
-        txtFav.setText(favStr);
-        txtRet.setText(rtStr);
-        txtAns.setText(ansStr);
+        txtFav.setText(formatter.format(tweet.getFavorCount()));
+        txtRet.setText(formatter.format(tweet.getRetweetCount()));
+        txtAns.setText(formatter.format(answerAdapter.getItemCount() + answers.size()));
 
         if (tweet.getReplyId() > 1) {
             String reply = ui.get().getString(R.string.answering);

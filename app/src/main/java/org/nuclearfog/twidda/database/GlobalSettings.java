@@ -47,7 +47,7 @@ public class GlobalSettings {
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
         userId = settings.getLong("userID", -1L);
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.GERMANY);
+        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.getDefault());
     }
 
     public static GlobalSettings getInstance(Context context) {
