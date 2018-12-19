@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -167,6 +169,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 }
                 break;
+
+            case R.id.link_copy:
+                String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+                clip.setPrimaryClip(linkClip);
+                Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -174,50 +184,49 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (mStat != null && mStat.getStatus() != RUNNING) {
-            switch (v.getId()) {
-                case R.id.rt_button_detail:
-                    mStat = new StatusLoader(this);
-                    mStat.execute(tweetID, StatusLoader.RETWEET);
-                    Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
-                    break;
+        if (mStat != null && mStat.getStatus() == RUNNING)
+            mStat.cancel(true);
 
-                case R.id.fav_button_detail:
-                    mStat = new StatusLoader(this);
-                    mStat.execute(tweetID, StatusLoader.FAVORITE);
-                    Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
-                    break;
+        switch (v.getId()) {
+            case R.id.rt_button_detail:
+                mStat = new StatusLoader(this);
+                mStat.execute(tweetID, StatusLoader.RETWEET);
+                Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
+                break;
 
-                case R.id.no_rt_detail:
-                    Intent retweeter = new Intent(this, UserDetail.class);
-                    retweeter.putExtra("tweetID", tweetID);
-                    retweeter.putExtra("mode", 2);
-                    startActivity(retweeter);
-                    break;
+            case R.id.fav_button_detail:
+                mStat = new StatusLoader(this);
+                mStat.execute(tweetID, StatusLoader.FAVORITE);
+                Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
+                break;
 
-                case R.id.no_fav_detail:
-                    Intent favor = new Intent(this, UserDetail.class);
-                    favor.putExtra("tweetID", tweetID);
-                    favor.putExtra("mode", 3);
-                    startActivity(favor);
-                    break;
+            case R.id.no_rt_detail:
+                Intent retweeter = new Intent(this, UserDetail.class);
+                retweeter.putExtra("tweetID", tweetID);
+                retweeter.putExtra("mode", 2);
+                startActivity(retweeter);
+                break;
 
-                case R.id.profileimage_detail:
-                    Intent profile = new Intent(this, UserProfile.class);
-                    profile.putExtra("userID", userID);
-                    profile.putExtra("username", username);
-                    startActivity(profile);
-                    break;
+            case R.id.no_fav_detail:
+                Intent favor = new Intent(this, UserDetail.class);
+                favor.putExtra("tweetID", tweetID);
+                favor.putExtra("mode", 3);
+                startActivity(favor);
+                break;
 
-                case R.id.answer_button:
-                    Intent tweet = new Intent(this, TweetPopup.class);
-                    tweet.putExtra("TweetID", tweetID);
-                    tweet.putExtra("Addition", username);
-                    startActivityForResult(tweet, TWEET);
-                    break;
-            }
-        } else {
-            Toast.makeText(this, R.string.tweet_processing, Toast.LENGTH_SHORT).show();
+            case R.id.profileimage_detail:
+                Intent profile = new Intent(this, UserProfile.class);
+                profile.putExtra("userID", userID);
+                profile.putExtra("username", username);
+                startActivity(profile);
+                break;
+
+            case R.id.answer_button:
+                Intent tweet = new Intent(this, TweetPopup.class);
+                tweet.putExtra("TweetID", tweetID);
+                tweet.putExtra("Addition", username);
+                startActivityForResult(tweet, TWEET);
+                break;
         }
     }
 
@@ -256,6 +265,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         image.putExtra("link", mediaLinks);
         startActivity(image);
     }
+
 
     public void deleteTweet() {
         Toast.makeText(this, R.string.tweet_removed, Toast.LENGTH_SHORT).show();

@@ -4,6 +4,11 @@
     <item
         android:id="@+id/tweet_link"
         android:title="@string/get_tweetlink" />
+
+    <item
+        android:id="@+id/link_copy"
+        android:title="@string/link_to_clipboard" />
+
     <item
         android:id="@+id/delete_tweet"
         android:title="@string/tweet_delete"

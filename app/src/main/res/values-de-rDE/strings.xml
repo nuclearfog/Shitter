@@ -59,7 +59,6 @@
     <string name="abort">Abgebrochen!</string>
     <string name="cancel_message">Nachricht verwerfen?</string>
     <string name="error_not_specified">Allgemeiner Fehler!</string>
-    <string name="error_sending_dm">Fehler beim Senden der Direktnachricht!</string>
     <string name="empty_tweet">Tweet leer!</string>
     <string name="logout">ausloggen</string>
     <string name="pin_verification_failed">PIN verifizierung fehlgeschlagen!</string>
@@ -75,7 +74,6 @@
     <string name="dm_not_found">Nachricht nicht gefunden!</string>
     <string name="image_folder_created">Ordner erstellt unter Pictures</string>
     <string name="image_saved">Bild gespeichert!</string>
-    <string name="tweet_processing">in bearbeitung..</string>
     <string name="tweet_loading">lädt..</string>
     <string name="site_load_failure">Fehler beim Abrufen der Seite!</string>
     <string name="profile_not_found">Profil nicht gefunden!</string>
@@ -84,4 +82,6 @@
     <string name="add_image">Bild hinzufügen</string>
     <string name="image_preview">Bildvorschau</string>
     <string name="char_limit_reached">Zeichenlimit erreicht!</string>
+    <string name="link_to_clipboard">Link in Zwischenablage kopieren</string>
+    <string name="copied_to_clipboard">Link in Zwischenablage kopiert!</string>
 </resources>
