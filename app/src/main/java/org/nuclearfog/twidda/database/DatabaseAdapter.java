@@ -31,7 +31,6 @@ public class DatabaseAdapter {
     private static final int VER_MASK = 1;         //  USER VERIFIED MASK
     private static final int LCK_MASK = 1 << 1;    //  USER LOCKED MASK
 
-
     private AppDatabase dataHelper;
     private long homeId;
 
@@ -42,9 +41,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Nutzer speichern
+     * Store user information
      *
-     * @param user Nutzer Information
+     * @param user Twitter user
      */
     public void storeUser(TwitterUser user) {
         SQLiteDatabase db = getDbWrite();
@@ -53,9 +52,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Home Timeline speichern
+     * store home timeline
      *
-     * @param home Tweet Liste
+     * @param home tweet from home timeline
      */
     public void storeHomeTimeline(List<Tweet> home) {
         SQLiteDatabase db = getDbWrite();
@@ -66,9 +65,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Erwähnungen speichern
+     * store mentions
      *
-     * @param mentions Tweet Liste
+     * @param mentions tweets
      */
     public void storeMentions(List<Tweet> mentions) {
         SQLiteDatabase db = getDbWrite();
@@ -79,9 +78,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Nutzer Tweets speichern
+     * store user timeline
      *
-     * @param stats Tweet Liste
+     * @param stats user timeline
      */
     public void storeUserTweets(List<Tweet> stats) {
         SQLiteDatabase db = getDbWrite();
@@ -92,10 +91,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Nutzer Favoriten Speichern
+     * store user favors
      *
-     * @param fav     Tweet Liste
-     * @param ownerId User ID
+     * @param fav tweet favored by user
+     * @param ownerId user ID
      */
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
         SQLiteDatabase db = getDbWrite();
@@ -110,9 +109,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Tweet Antworten speicher
+     * store replies of a tweet
      *
-     * @param replies Tweet Antworten Liste
+     * @param replies tweet replies
      */
     public void storeReplies(final List<Tweet> replies) {
         SQLiteDatabase db = getDbWrite();
@@ -123,7 +122,7 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Speichere Twitter Trends
+     * store location specific trends
      *
      * @param trends List of Trends
      * @param woeId  Yahoo World ID
@@ -139,7 +138,7 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Speichere Tweet in Favoriten Tabelle
+     * store tweet ID of a favored tweet by the current user
      *
      * @param tweetID Tweet ID
      */
@@ -162,9 +161,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * speicher direktnachrichten
+     * store direct messages
      *
-     * @param messages Direktnachrichten liste
+     * @param messages list of direct messages
      */
     public void storeMessage(List<Message> messages) {
         SQLiteDatabase db = getDbWrite();
@@ -175,10 +174,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Lade Nutzer Information
+     * get user information
      *
-     * @param userId Nutzer ID
-     * @return Nutzer Informationen oder NULL falls nicht vorhanden
+     * @param userId ID of user
+     * @return user information or null if not found
      */
     @Nullable
     public TwitterUser getUser(long userId) {
@@ -189,9 +188,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Lade Home Timeline
+     * load home timeline
      *
-     * @return Tweet Liste
+     * @return tweet list
      */
     public List<Tweet> getHomeTimeline() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -212,9 +211,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Erwähnungen laden
+     * load mentions
      *
-     * @return Tweet Liste
+     * @return tweet list
      */
     public List<Tweet> getMentions() {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -235,10 +234,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Tweet Liste eines Nutzers
+     * load user timeline
      *
-     * @param userID Nutzer ID
-     * @return Tweet Liste des Users
+     * @param userID user ID
+     * @return Tweet list of user tweets
      */
     public List<Tweet> getUserTweets(long userID) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -262,10 +261,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Lade Favorisierte Tweets eines Nutzers
+     * load user favored tweets
      *
-     * @param ownerID Nutzer ID
-     * @return Favoriten des Nutzers
+     * @param ownerID user ID
+     * @return favored tweets by user
      */
     public List<Tweet> getUserFavs(long ownerID) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -287,10 +286,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Lade Tweet
+     * load status
      *
-     * @param tweetId Tweet ID
-     * @return Gefundener Tweet oder NULL falls nicht vorhanden
+     * @param tweetId tweet ID
+     * @return tweet or null if not found
      */
     @Nullable
     public Tweet getStatus(long tweetId) {
@@ -307,10 +306,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Lade Antworten
+     * get tweet answers
      *
      * @param tweetId Tweet ID
-     * @return Antworten zur Tweet ID
+     * @return list of tweet answers
      */
     public List<Tweet> getAnswers(long tweetId) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
@@ -331,32 +330,45 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Aktualisiere Status
+     * update status and author information
      *
      * @param tweet Tweet
      */
     public void updateStatus(Tweet tweet) {
         SQLiteDatabase db = getDbWrite();
-        ContentValues status = new ContentValues();
+        ContentValues statColumn = new ContentValues();
+        ContentValues userColumn = new ContentValues();
         int register = getStatRegister(db, tweet.getId());
         if (tweet.retweeted())
             register |= RTW_MASK;
         else
             register &= ~RTW_MASK;
-
         if (tweet.favorized())
             register |= FAV_MASK;
         else
             register &= ~FAV_MASK;
-        status.put("retweet", tweet.getRetweetCount());
-        status.put("favorite", tweet.getFavorCount());
-        status.put("statusregister", register);
-        db.update("tweet", status, "tweet.tweetID=" + tweet.getId(), null);
+        statColumn.put("retweet", tweet.getRetweetCount());
+        statColumn.put("favorite", tweet.getFavorCount());
+        statColumn.put("statusregister", register);
+
+        TwitterUser user = tweet.getUser();
+        userColumn.put("username", user.getUsername());
+        userColumn.put("scrname", user.getScreenname());
+        userColumn.put("pbLink", user.getImageLink());
+        userColumn.put("bio", user.getBio());
+        userColumn.put("link", user.getLink());
+        userColumn.put("location", user.getLocation());
+        userColumn.put("banner", user.getBannerLink());
+        userColumn.put("following", user.getFollowing());
+        userColumn.put("follower", user.getFollower());
+
+        db.update("tweet", statColumn, "tweet.tweetID=" + tweet.getId(), null);
+        db.update("user", userColumn, "user.userID=" + user.getId(), null);
         commit(db);
     }
 
     /**
-     * Lösche Tweet
+     * remove status
      *
      * @param id Tweet ID
      */
@@ -368,9 +380,9 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Entferne Tweet aus der Favoriten Tabelle
+     * remove status from favorites
      *
-     * @param tweetId ID des tweets
+     * @param tweetId tweet ID
      */
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = getDbWrite();
@@ -419,11 +431,10 @@ public class DatabaseAdapter {
         return trends;
     }
 
-
     /**
-     * Direkt nachrichten laden
+     * load direct messages
      *
-     * @return Liste Direktnachrichten
+     * @return list of direct messages
      */
     public List<Message> getMessages() {
         List<Message> result = new ArrayList<>();
@@ -456,10 +467,10 @@ public class DatabaseAdapter {
     }
 
     /**
-     * Suche Tweet in Datenbank
+     * check if tweet exists in database
      *
      * @param id Tweet ID
-     * @return True falls gefunden, ansonsten False
+     * @return true if found
      */
     public boolean containStatus(long id) {
         SQLiteDatabase db = dataHelper.getReadableDatabase();
