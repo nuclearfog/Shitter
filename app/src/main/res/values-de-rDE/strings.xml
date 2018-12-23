@@ -76,7 +76,6 @@
     <string name="image_saved">Bild gespeichert!</string>
     <string name="tweet_loading">lädt..</string>
     <string name="site_load_failure">Fehler beim Abrufen der Seite!</string>
-    <string name="profile_not_found">Profil nicht gefunden!</string>
     <string name="tweet_close">Tweetfenster schließen</string>
     <string name="send_tweet">Tweet senden</string>
     <string name="add_image">Bild hinzufügen</string>
@@ -94,4 +93,5 @@
     <string name="retweet_button">Retweet Button</string>
     <string name="favorite_button">Favorit Button</string>
     <string name="close_dm">Direktnachricht schließen</string>
+    <string name="user_not_found">Nutzer nicht gefunden!</string>
 </resources>

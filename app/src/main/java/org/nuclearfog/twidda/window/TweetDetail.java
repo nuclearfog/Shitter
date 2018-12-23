@@ -265,11 +265,4 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         image.putExtra("link", mediaLinks);
         startActivity(image);
     }
-
-
-    public void deleteTweet() {
-        Toast.makeText(this, R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-        setResult(TWEET_REMOVED);
-        finish();
-    }
 }

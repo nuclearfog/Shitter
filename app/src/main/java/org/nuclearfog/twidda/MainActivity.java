@@ -160,8 +160,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode, returnCode, i);
-
         switch (reqCode) {
             case LOGIN:
                 if (returnCode == RESULT_CANCELED) {
@@ -179,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     home = null;
                 break;
         }
+        super.onActivityResult(reqCode, returnCode, i);
     }
 
 

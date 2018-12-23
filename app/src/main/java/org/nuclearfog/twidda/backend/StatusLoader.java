@@ -30,6 +30,8 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
+
 public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     public static final long LOAD = 0;
@@ -225,7 +227,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         ansReload.setRefreshing(false);
 
         if (mode == DELETE) {
-            ui.get().deleteTweet();
+            Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_LONG).show();
+            ui.get().setResult(TWEET_REMOVED);
+            ui.get().finish();
 
         } else if (mode == ERROR) {
 
@@ -240,7 +244,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 case 34:
                 case 144:
                     Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
-                    ui.get().deleteTweet();
+                    ui.get().setResult(TWEET_REMOVED);
+                    ui.get().finish();
+                    break;
+
+                case 50:
+                case 63:
+                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_LONG).show();
                     break;
 
                 default:

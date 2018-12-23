@@ -13,6 +13,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
@@ -32,8 +33,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  * @see GlobalSettings
  */
 public class AppSettings extends AppCompatActivity implements OnClickListener,
-        OnColorChangedListener, OnItemSelectedListener,
-        CompoundButton.OnCheckedChangeListener {
+        OnColorChangedListener, OnItemSelectedListener, OnCheckedChangeListener {
 
     private GlobalSettings settings;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
