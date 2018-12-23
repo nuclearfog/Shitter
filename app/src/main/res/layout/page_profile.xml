@@ -138,7 +138,8 @@
                                     android:id="@+id/following"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1" />
+                                    android:layout_weight="1"
+                                    android:singleLine="true" />
 
                                 <ImageView
                                     android:id="@+id/follower_ico"
@@ -154,7 +155,8 @@
                                     android:id="@+id/follower"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1" />
+                                    android:layout_weight="1"
+                                    android:singleLine="true" />
 
                             </LinearLayout>
 
@@ -167,6 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/layout_margin"
+                        android:autoLink="web"
                         android:linksClickable="true" />
 
                     <LinearLayout

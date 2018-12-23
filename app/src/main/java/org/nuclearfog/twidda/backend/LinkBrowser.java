@@ -118,7 +118,7 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
             ui.get().startActivity(tweetActivity);
         } else {
             if (errMsg == null) {
-                Toast.makeText(ui.get(), R.string.site_load_failure, Toast.LENGTH_LONG).show();
+                Toast.makeText(ui.get(), R.string.site_load_failure, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }

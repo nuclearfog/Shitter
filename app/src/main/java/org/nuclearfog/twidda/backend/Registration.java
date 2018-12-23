@@ -51,7 +51,7 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
             ui.get().setResult(Activity.RESULT_OK);
             ui.get().finish();
         } else if (failure) {
-            Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_SHORT).show();
         } else {
             ui.get().connect(redirectionURL);
         }

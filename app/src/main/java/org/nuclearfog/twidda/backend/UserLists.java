@@ -83,7 +83,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                     break;
                 default:
-                    Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
             }
         }
     }

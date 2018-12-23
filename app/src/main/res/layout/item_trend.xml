@@ -19,6 +19,7 @@
             android:layout_marginRight="@dimen/layout_margin"
             android:layout_weight="1"
             android:gravity="center_vertical|end"
+            android:singleLine="true"
             android:textAlignment="gravity" />
 
         <TextView

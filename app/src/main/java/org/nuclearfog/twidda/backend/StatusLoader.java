@@ -227,7 +227,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         ansReload.setRefreshing(false);
 
         if (mode == DELETE) {
-            Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_LONG).show();
+            Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
             ui.get().setResult(TWEET_REMOVED);
             ui.get().finish();
 
@@ -238,19 +238,20 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     break;
 
                 case 420:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                     break;
 
                 case 34:
                 case 144:
-                    Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_SHORT).show();
                     ui.get().setResult(TWEET_REMOVED);
                     ui.get().finish();
                     break;
 
                 case 50:
                 case 63:
-                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
+                    ui.get().finish();
                     break;
 
                 default:

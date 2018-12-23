@@ -100,7 +100,7 @@ public class MessageUpload extends AsyncTask<String, Void, Void> {
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                     break;
                 default:
-                    Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
             }
         }
     }
