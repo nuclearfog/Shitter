@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -35,8 +36,8 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private static TwitterEngine mTwitter;
-    private final String TWITTER_CONSUMER_KEY = "QAJXMoaJ9kAhwhpPKmRB94ijK";
-    private final String TWITTER_CONSUMER_SECRET = "NDLiQzlXfuhAox5XibKvF7mC4YRJqjqGZCff9rsPKS7VmwUjRG";
+    private final String TWITTER_CONSUMER_KEY = BuildConfig.API_KEY_1;
+    private final String TWITTER_CONSUMER_SECRET = BuildConfig.API_KEY_2;
 
     private String redirectionUrl;
     private long twitterID;

@@ -14,6 +14,11 @@ android {
     }
 
     buildTypes {
+
+        all {
+            buildConfigField "String", "API_KEY_1", TWITTER_CONSUMER_KEY
+            buildConfigField "String", "API_KEY_2", TWITTER_CONSUMER_SECRET
+        }
         release {
             debuggable false
             minifyEnabled true
