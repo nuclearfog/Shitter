@@ -234,8 +234,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         } else if (mode == ERROR) {
 
             switch (returnCode) {
-                case 136:
-                    break;
 
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
@@ -250,6 +248,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
                 case 50:
                 case 63:
+                case 136:
                     Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
                     ui.get().finish();
                     break;

@@ -309,12 +309,12 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
                 case 50:
                 case 63:
+                case 136:
                     Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
                     ui.get().finish();
                     break;
 
                 case -1:
-                case 136:
                     Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
                     break;
 
