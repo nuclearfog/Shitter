@@ -70,29 +70,36 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
         final int PAGE = args[1];
         long sinceId = 1L;
         try {
-            if (MODE == HOME) {
-                if (timelineAdapter.getItemCount() > 0)
-                    sinceId = timelineAdapter.getItemId(0);
-                tweets = mTwitter.getHome(PAGE, sinceId);
-                publishProgress(HOME);
-                tweetDb.storeHomeTimeline(tweets);
-            } else if (MODE == TRND) {
-                trends = mTwitter.getTrends(woeId);
-                publishProgress(TRND);
-                tweetDb.storeTrends(trends, woeId);
-            } else if (MODE == MENT) {
-                if (mentionAdapter.getItemCount() != 0)
-                    sinceId = mentionAdapter.getItemId(0);
-                mention = mTwitter.getMention(PAGE, sinceId);
-                publishProgress(MENT);
-                tweetDb.storeMentions(mention);
-            } else {
-                tweets = tweetDb.getHomeTimeline();
-                publishProgress(HOME);
-                trends = tweetDb.getTrends(woeId);
-                publishProgress(TRND);
-                mention = tweetDb.getMentions();
-                publishProgress(MENT);
+            switch (MODE) {
+                case HOME:
+                    if (timelineAdapter.getItemCount() > 0)
+                        sinceId = timelineAdapter.getItemId(0);
+                    tweets = mTwitter.getHome(PAGE, sinceId);
+                    publishProgress(HOME);
+                    tweetDb.storeHomeTimeline(tweets);
+                    break;
+
+                case TRND:
+                    trends = mTwitter.getTrends(woeId);
+                    publishProgress(TRND);
+                    tweetDb.storeTrends(trends, woeId);
+                    break;
+
+                case MENT:
+                    if (mentionAdapter.getItemCount() != 0)
+                        sinceId = mentionAdapter.getItemId(0);
+                    mention = mTwitter.getMention(PAGE, sinceId);
+                    publishProgress(MENT);
+                    tweetDb.storeMentions(mention);
+                    break;
+
+                default:
+                    tweets = tweetDb.getHomeTimeline();
+                    publishProgress(HOME);
+                    trends = tweetDb.getTrends(woeId);
+                    publishProgress(TRND);
+                    mention = tweetDb.getMentions();
+                    publishProgress(MENT);
             }
         } catch (TwitterException e) {
             returnCode = e.getErrorCode();
@@ -113,21 +120,28 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
         if (ui.get() == null) return;
 
         final int MODE = modes[0];
-        if (MODE == HOME) {
-            timelineAdapter.setData(tweets);
-            timelineAdapter.notifyDataSetChanged();
-            SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
-            timelineRefresh.setRefreshing(false);
-        } else if (MODE == TRND) {
-            trendsAdapter.setData(trends);
-            trendsAdapter.notifyDataSetChanged();
-            SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
-            trendRefresh.setRefreshing(false);
-        } else if (MODE == MENT) {
-            mentionAdapter.setData(mention);
-            mentionAdapter.notifyDataSetChanged();
-            SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
-            mentionRefresh.setRefreshing(false);
+
+        switch (MODE) {
+            case HOME:
+                timelineAdapter.setData(tweets);
+                timelineAdapter.notifyDataSetChanged();
+                SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
+                timelineRefresh.setRefreshing(false);
+                break;
+
+            case TRND:
+                trendsAdapter.setData(trends);
+                trendsAdapter.notifyDataSetChanged();
+                SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
+                trendRefresh.setRefreshing(false);
+                break;
+
+            case MENT:
+                mentionAdapter.setData(mention);
+                mentionAdapter.notifyDataSetChanged();
+                SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
+                mentionRefresh.setRefreshing(false);
+                break;
         }
     }
 
@@ -149,9 +163,11 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                     break;
+
                 case -1:
                     Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
                     break;
+
                 default:
                     Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }

@@ -36,15 +36,14 @@ import twitter4j.TwitterException;
 
 public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
-    public static final long GET_TWEETS = 2;
-    public static final long GET_FAVORS = 3;
+    public static final long GET_TWEETS = 1;
+    public static final long GET_FAVORS = 2;
     // USER ACTION
-    public static final long ACTION_FOLLOW = 6;
+    public static final long ACTION_FOLLOW = 3;
     public static final long ACTION_BLOCK = 4;
     public static final long ACTION_MUTE = 5;
-    // GET USER TWEETS
-    private static final long GET_USER = 1;
     // INTERN FLAGS
+    private static final long GET_USER = 6;
     private static final long FAILURE = -1;
 
     private TimelineAdapter homeTl, homeFav;
