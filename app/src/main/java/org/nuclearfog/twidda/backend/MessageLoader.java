@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
@@ -27,10 +26,9 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
     private WeakReference<DirectMessage> ui;
     private MessageAdapter mAdapter;
     private TwitterEngine twitter;
+    private TwitterException err;
     private DatabaseAdapter mData;
     private List<Message> message;
-    private String errorMsg = "E MessageLoader: ";
-    private int returnCode = 0;
 
 
     public MessageLoader(DirectMessage context) {
@@ -65,14 +63,10 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
                 twitter.deleteMessage(param[1]);
             }
         } catch (TwitterException err) {
-            returnCode = err.getErrorCode();
-            errorMsg += err.getMessage();
+            this.err = err;
             return FAIL;
-
         } catch (Exception err) {
-            errorMsg += err.getMessage();
-            Log.e("Direct Message", errorMsg);
-            err.printStackTrace();
+            Log.e("Direct Message", err.getMessage());
             return FAIL;
         }
         return MODE;
@@ -90,19 +84,8 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
             mAdapter.setData(message);
             mAdapter.notifyDataSetChanged();
         } else {
-            switch (returnCode) {
-                case 420:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-                case 34:
-                    Toast.makeText(ui.get(), R.string.dm_not_found, Toast.LENGTH_SHORT).show();
-                    break;
-                case -1:
-                    Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
-            }
+            if(err != null)
+                ErrorHandling.printError(ui.get(), err);
         }
     }
 

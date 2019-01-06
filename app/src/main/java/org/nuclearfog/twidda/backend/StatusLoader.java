@@ -41,6 +41,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private static final long ERROR = -1;
 
     private TwitterEngine mTwitter;
+    private TwitterException err;
     private WeakReference<TweetDetail> ui;
     private TimelineAdapter answerAdapter;
     private DatabaseAdapter database;
@@ -50,8 +51,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private Tweet tweet;
     private int highlight, font_color;
     private boolean toggleImg;
-    private String errMsg = "E Status load: ";
-    private int returnCode = 0;
 
 
     public StatusLoader(TweetDetail context) {
@@ -86,19 +85,16 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     answers = database.getAnswers(TWEETID);
                     publishProgress();
                 }
-
                 tweet = mTwitter.getStatus(TWEETID);
                 if (answerAdapter.getItemCount() > 0)
                     sinceId = answerAdapter.getItemId(0);
                 answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
                 publishProgress();
-
                 if (database.containStatus(TWEETID)) {
                     database.updateStatus(tweet);
                     if (!answers.isEmpty())
                         database.storeReplies(answers);
                 }
-
             } else if (MODE == DELETE) {
                 mTwitter.deleteTweet(TWEETID);
                 database.removeStatus(TWEETID);
@@ -117,19 +113,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     database.removeFavorite(TWEETID);
                 publishProgress();
             }
-
         } catch (TwitterException err) {
-            returnCode = err.getErrorCode();
-            if (returnCode == 144 || returnCode == 34 || returnCode == 63)
+            this.err = err;
+            int rCode = err.getErrorCode();
+            if (rCode == 144 || rCode == 34 || rCode == 63)
                 database.removeStatus(TWEETID);
-            else
-                errMsg += err.getMessage();
             return ERROR;
-
         } catch (Exception err) {
-            err.printStackTrace();
-            errMsg += err.getMessage();
-            Log.e("Status Loader", errMsg);
+            Log.e("Status Loader", err.getMessage());
             return ERROR;
         }
         return MODE;
@@ -230,36 +221,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
             ui.get().setResult(TWEET_REMOVED);
             ui.get().finish();
-
         } else if (mode == ERROR) {
-
-            switch (returnCode) {
-
-                case 420:
-                case 429:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case 34:
-                case 144:
-                    Toast.makeText(ui.get(), R.string.tweet_not_found, Toast.LENGTH_SHORT).show();
-                    ui.get().setResult(TWEET_REMOVED);
+            if(err != null) {
+                boolean killActivity = ErrorHandling.printError(ui.get(), err);
+                if (killActivity)
                     ui.get().finish();
-                    break;
-
-                case 50:
-                case 63:
-                case 136:
-                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
-                    ui.get().finish();
-                    break;
-
-                case -1:
-                    Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
-                    break;
-
-                default:
-                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
         }
     }

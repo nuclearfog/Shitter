@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,8 +30,8 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
     private DatabaseAdapter mData;
     private Tweet tweet;
     private LayoutInflater inflater;
+    private TwitterException err;
     private Dialog popup;
-    private String errMsg;
 
     public LinkBrowser(MainActivity context) {
         ui = new WeakReference<>(context);
@@ -44,7 +43,6 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
 
 
     @Override
-    @SuppressLint("InflateParams")
     protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         popup.setCanceledOnTouchOutside(false);
@@ -96,7 +94,7 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
                 }
             }
         } catch (TwitterException err) {
-            errMsg = err.getErrorMessage();
+            this.err = err;
         } catch (Exception err) {
             Log.e("LinkBrowser", err.getMessage());
         }
@@ -117,11 +115,8 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
             tweetActivity.putExtra("tweetID", tweet.getId());
             ui.get().startActivity(tweetActivity);
         } else {
-            if (errMsg == null) {
-                Toast.makeText(ui.get(), R.string.site_load_failure, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
-            }
+            if(err != null)
+                ErrorHandling.printError(ui.get(),err);
         }
     }
 

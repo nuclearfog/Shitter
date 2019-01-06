@@ -33,7 +33,6 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-
 public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
     public static final long GET_TWEETS = 1;
@@ -50,6 +49,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
+    private TwitterException err;
     private DatabaseAdapter database;
     private TwitterUser user;
     private List<Tweet> tweets, favors;
@@ -65,8 +65,6 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private boolean isMuted = false;
     private boolean canDm = false;
 
-    private String errMsg = "E Profile Load: ";
-    private int returnCode = 0;
 
     /**
      * @param context Context to Activity
@@ -162,13 +160,10 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 }
             }
         } catch (TwitterException err) {
-            returnCode = err.getErrorCode();
-            errMsg += err.getMessage();
+            this.err = err;
             return FAILURE;
         } catch (Exception err) {
-            err.printStackTrace();
-            errMsg += err.getMessage();
-            Log.e("ProfileLoader", errMsg);
+            Log.e("ProfileLoader", err.getMessage());
             return FAILURE;
         }
         return MODE;
@@ -302,27 +297,10 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
 
         } else if (MODE == FAILURE) {
-
-            switch (returnCode) {
-
-                case 420:   //
-                case 429:   // Rate limit exceeded!
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case 50:    // USER not found
-                case 63:    // USER suspended
-                case 136:   // Blocked!
-                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
+            if(err != null) {
+                boolean killActivity = ErrorHandling.printError(ui.get(), err);
+                if (killActivity)
                     ui.get().finish();
-                    break;
-
-                case -1:
-                    Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
-                    break;
-
-                default:
-                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
             }
         }
         if (!isHome) {
@@ -340,6 +318,5 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
         homeReload.setRefreshing(false);
         favReload.setRefreshing(false);
-
     }
 }

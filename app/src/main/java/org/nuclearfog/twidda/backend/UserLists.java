@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
@@ -26,11 +25,9 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
 
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
+    private TwitterException err;
     private UserAdapter usrAdp;
     private List<TwitterUser> user;
-    private String errorMessage = "E Userlist: ";
-    private int returnCode = 0;
-
 
     public UserLists(UserDetail context) {
         ui = new WeakReference<>(context);
@@ -54,10 +51,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
             else if (mode == RETWEETER)
                 user = mTwitter.getRetweeter(id, cursor);
         } catch (TwitterException err) {
-            returnCode = err.getErrorCode();
-            if (returnCode > 0 && returnCode != 420) {
-                errorMessage += err.getMessage();
-            }
+            this.err = err;
             return false;
         } catch (Exception err) {
             Log.e("User List", err.getMessage());
@@ -78,12 +72,8 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
             usrAdp.setData(user);
             usrAdp.notifyDataSetChanged();
         } else {
-            switch (returnCode) {
-                case 420:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    Toast.makeText(ui.get(), errorMessage, Toast.LENGTH_LONG).show();
+            if(err != null) {
+                ErrorHandling.printError(ui.get(), err);
             }
         }
     }

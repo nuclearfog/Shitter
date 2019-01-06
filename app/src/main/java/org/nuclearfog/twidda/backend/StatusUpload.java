@@ -19,11 +19,11 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-
 public class StatusUpload extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
+    private TwitterException err;
     private LayoutInflater inflater;
     private Dialog popup;
     private String tweet;
@@ -78,11 +78,10 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
             } else {
                 mTwitter.sendStatus(tweet, replyId, path);
             }
-
         } catch (TwitterException err) {
+            this.err = err;
             return false;
         } catch (Exception err) {
-            err.printStackTrace();
             Log.e("Status Upload", err.getMessage());
             return false;
         }
@@ -99,6 +98,9 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
             ui.get().close();
 
         } else {
+            if(err != null)
+                ErrorHandling.printError(ui.get(),err);
+
             AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
             builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
                     .setPositiveButton(R.string.retry, new OnClickListener() {

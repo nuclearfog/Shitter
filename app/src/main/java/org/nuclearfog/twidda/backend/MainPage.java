@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
@@ -31,6 +30,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
 
     private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
+    private TwitterException err;
 
     private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
@@ -39,8 +39,6 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     private List<Trend> trends;
 
     private int woeId;
-    private String errMsg = "E Main Page: ";
-    private int returnCode = 0;
 
 
     public MainPage(MainActivity context) {
@@ -101,14 +99,11 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
                     mention = tweetDb.getMentions();
                     publishProgress(MENT);
             }
-        } catch (TwitterException e) {
-            returnCode = e.getErrorCode();
-            errMsg += e.getMessage();
+        } catch (TwitterException err) {
+            this.err = err;
             return FAIL;
-        } catch (Exception e) {
-            e.printStackTrace();
-            errMsg += e.getMessage();
-            Log.e("Main Page", errMsg);
+        } catch (Exception err) {
+            Log.e("Main Page", err.getMessage());
             return FAIL;
         }
         return MODE;
@@ -147,10 +142,10 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
 
 
     @Override
-    protected void onPostExecute(Integer mode) {
+    protected void onPostExecute(Integer result) {
         if (ui.get() == null) return;
 
-        if (mode == FAIL) {
+        if (result == FAIL) {
             SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
             SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
             SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
@@ -159,17 +154,8 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             trendRefresh.setRefreshing(false);
             mentionRefresh.setRefreshing(false);
 
-            switch (returnCode) {
-                case 420:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case -1:
-                    Toast.makeText(ui.get(), R.string.error_not_specified, Toast.LENGTH_SHORT).show();
-                    break;
-
-                default:
-                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+            if(err != null) {
+                ErrorHandling.printError(ui.get(), err);
             }
         }
     }

@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
@@ -29,9 +28,8 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
     private List<Tweet> tweets;
     private List<TwitterUser> users;
     private TwitterEngine mTwitter;
+    private TwitterException err;
     private WeakReference<SearchPage> ui;
-    private String errMsg = "E Twitter search: ";
-    private int returnCode = 0;
 
     public TwitterSearch(SearchPage context) {
         ui = new WeakReference<>(context);
@@ -62,13 +60,10 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
                 publishProgress(USER);
             }
         } catch (TwitterException err) {
-            returnCode = err.getErrorCode();
-            if (returnCode > 0 && returnCode != 420)
-                errMsg += err.getMessage();
+            this.err = err;
             return false;
         } catch (Exception err) {
-            errMsg += err.getMessage();
-            Log.e("Twitter Search", errMsg);
+            Log.e("Twitter Search", err.getMessage());
             return false;
         }
         return true;
@@ -102,15 +97,8 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
         if (!success) {
             SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
             tweetReload.setRefreshing(false);
-
-            switch (returnCode) {
-                case 420:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-                case -1:
-                    break;
-                default:
-                    Toast.makeText(ui.get(), errMsg, Toast.LENGTH_LONG).show();
+            if(err != null) {
+                ErrorHandling.printError(ui.get(), err);
             }
         }
     }

@@ -17,15 +17,13 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-public class MessageUpload extends AsyncTask<String, Void, Void> {
+public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<MessagePopup> ui;
     private TwitterEngine mTwitter;
+    private TwitterException err;
     private LayoutInflater inflater;
     private Dialog popup;
-    private String errorMsg = "E MessageUpload: ";
-    private int returnCode = 0;
-
 
 
     public MessageUpload(MessagePopup c) {
@@ -66,7 +64,7 @@ public class MessageUpload extends AsyncTask<String, Void, Void> {
 
 
     @Override
-    protected Void doInBackground(String... param) {
+    protected Boolean doInBackground(String... param) {
         String username = param[0];
         String message = param[1];
         String path = param[2];
@@ -75,48 +73,33 @@ public class MessageUpload extends AsyncTask<String, Void, Void> {
                 username = '@' + username;
             mTwitter.sendMessage(username, message, path);
         } catch (TwitterException err) {
-            returnCode = err.getErrorCode();
-            errorMsg += err.getErrorMessage();
+            this.err = err;
+            return false;
         } catch (Exception err) {
             Log.e("DirectMessage", err.getMessage());
-            err.printStackTrace();
-            returnCode = -1;
+            return false;
         }
-        return null;
+        return true;
     }
 
 
     @Override
-    protected void onPostExecute(Void v) {
+    protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
         popup.dismiss();
-        if (returnCode == 0) {
+        if (success) {
             Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
             ui.get().finish();
         } else {
-            switch (returnCode) {
-                case 420:
-                    Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case 150:
-                    Toast.makeText(ui.get(), R.string.cant_send_dm, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case 50:
-                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
-                    break;
-
-                default:
-                    Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
-            }
+            if(err != null)
+                ErrorHandling.printError(ui.get(), err);
         }
     }
 
 
     @Override
-    protected void onCancelled(Void v) {
+    protected void onCancelled(Boolean v) {
         popup.dismiss();
     }
 }
