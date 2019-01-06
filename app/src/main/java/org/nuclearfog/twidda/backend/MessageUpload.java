@@ -92,7 +92,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
             ui.get().finish();
         } else {
-            if(err != null)
+            if (err != null)
                 ErrorHandling.printError(ui.get(), err);
         }
     }

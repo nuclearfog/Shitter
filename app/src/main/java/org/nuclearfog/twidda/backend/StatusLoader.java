@@ -222,7 +222,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
             ui.get().setResult(TWEET_REMOVED);
             ui.get().finish();
         } else if (mode == ERROR) {
-            if(err != null) {
+            if (err != null) {
                 boolean killActivity = ErrorHandling.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();

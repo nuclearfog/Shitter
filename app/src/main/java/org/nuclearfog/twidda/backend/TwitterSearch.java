@@ -97,7 +97,7 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
         if (!success) {
             SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
             tweetReload.setRefreshing(false);
-            if(err != null) {
+            if (err != null) {
                 ErrorHandling.printError(ui.get(), err);
             }
         }

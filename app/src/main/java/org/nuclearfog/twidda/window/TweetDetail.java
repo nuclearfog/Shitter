@@ -189,14 +189,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
         switch (v.getId()) {
             case R.id.rt_button_detail:
-                if(mStat != null && mStat.getStatus() == RUNNING)
+                if (mStat != null && mStat.getStatus() == RUNNING)
                     mStat.cancel(true);
                 mStat = new StatusLoader(this);
                 mStat.execute(tweetID, StatusLoader.RETWEET);
                 break;
 
             case R.id.fav_button_detail:
-                if(mStat != null && mStat.getStatus() == RUNNING)
+                if (mStat != null && mStat.getStatus() == RUNNING)
                     mStat.cancel(true);
                 mStat = new StatusLoader(this);
                 mStat.execute(tweetID, StatusLoader.FAVORITE);

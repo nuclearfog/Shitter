@@ -154,7 +154,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
             trendRefresh.setRefreshing(false);
             mentionRefresh.setRefreshing(false);
 
-            if(err != null) {
+            if (err != null) {
                 ErrorHandling.printError(ui.get(), err);
             }
         }

@@ -54,7 +54,7 @@ public class AppDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if(oldVersion == 1 && newVersion >= 2) {
+        if (oldVersion == 1 && newVersion >= 2) {
             final String T_QUERY = "ALTER TABLE user ADD COLUMN tweetCount INTEGER DEFAULT 0;";
             db.execSQL(T_QUERY);
             final String F_QUERY = "ALTER TABLE user ADD COLUMN favorCount INTEGER DEFAULT 0;";

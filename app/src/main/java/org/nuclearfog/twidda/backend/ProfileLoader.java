@@ -253,7 +253,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 }
             });
 
-            ui.get().setTweetCount(user.getTweetCount(),user.getFavorCount());
+            ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
 
         } else if (MODE == GET_TWEETS) {
             homeTl.setData(tweets);
@@ -297,7 +297,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
 
         } else if (MODE == FAILURE) {
-            if(err != null) {
+            if (err != null) {
                 boolean killActivity = ErrorHandling.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();

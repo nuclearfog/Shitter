@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -13,24 +14,32 @@ abstract class ErrorHandling {
 
     /**
      * Print twitter error message
-     * @param c Application Context
+     *
+     * @param c     Application Context
      * @param error TwitterException
      * @return if Activity should shut down
      */
     public static boolean printError(Context c, @NonNull TwitterException error) {
 
-        switch(error.getErrorCode()) {
-
+        switch (error.getErrorCode()) {
+            case 88:
             case 420:   //
             case 429:   // Rate limit exceeded!
-                Toast.makeText(c, R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
+                String msg = c.getString(R.string.rate_limit_exceeded);
+                msg += error.getRetryAfter();
+                Toast.makeText(c, msg, Toast.LENGTH_SHORT).show();
                 break;
 
+            case 17:
             case 50:    // USER not found
             case 63:    // USER suspended
             case 136:   // Blocked!
                 Toast.makeText(c, R.string.user_not_found, Toast.LENGTH_SHORT).show();
                 return true;
+
+            case 32:
+                Toast.makeText(c, R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                break;
 
             case 34:    //
             case 144:   // TWEET not found
@@ -41,12 +50,34 @@ abstract class ErrorHandling {
                 Toast.makeText(c, R.string.cant_send_dm, Toast.LENGTH_SHORT).show();
                 break;
 
-            case -1:
-                Toast.makeText(c, R.string.error_not_specified, Toast.LENGTH_SHORT).show();
+            case 179:
+                Toast.makeText(c, R.string.status_private, Toast.LENGTH_SHORT).show();
                 break;
 
+            case 186:
+                Toast.makeText(c, R.string.status_too_long, Toast.LENGTH_SHORT).show();
+                break;
+
+            case 187:
+                Toast.makeText(c, R.string.duplicate_status, Toast.LENGTH_SHORT).show();
+                break;
+
+            case 354:
+                Toast.makeText(c, R.string.directmessage_too_long, Toast.LENGTH_SHORT).show();
+                break;
+
+            case 89:
+                Toast.makeText(c, R.string.error_accesstoken, Toast.LENGTH_SHORT).show();
+                break;
+
+            case -1:
             default:
-                Toast.makeText(c, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+                ConnectivityManager mConnect = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (mConnect.getActiveNetworkInfo() == null || !mConnect.getActiveNetworkInfo().isConnected()) {
+                    Toast.makeText(c, R.string.connection_failed, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(c, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+                }
         }
         return false;
     }

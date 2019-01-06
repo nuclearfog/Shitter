@@ -371,7 +371,6 @@ public class TwitterEngine {
      * @param text  Tweet Text
      * @param reply In reply to tweet ID
      * @param path  Path to the Media File
-
      * @throws TwitterException if Access is unavailable
      */
     public void sendStatus(String text, long reply, @Nullable String[] path) throws TwitterException {
@@ -453,7 +452,7 @@ public class TwitterEngine {
         else
             tweet = twitter.retweetStatus(tweet.getId());
 
-        if(tweet.getRetweetedStatus() == null)
+        if (tweet.getRetweetedStatus() == null)
             return getTweet(tweet, null);
         else
             return getTweet(tweet, getTweet(tweet.getRetweetedStatus(), null));
@@ -474,11 +473,11 @@ public class TwitterEngine {
         else
             tweet = twitter.createFavorite(tweet.getId());
 
-        if(tweet.getRetweetedStatus() == null)
+        if (tweet.getRetweetedStatus() == null)
             return getTweet(tweet, null);
         else
             return getTweet(tweet, getTweet(tweet.getRetweetedStatus(), null));
-   }
+    }
 
 
     /**

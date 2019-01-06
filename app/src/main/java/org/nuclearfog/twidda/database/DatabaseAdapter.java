@@ -93,7 +93,7 @@ public class DatabaseAdapter {
     /**
      * store user favors
      *
-     * @param fav tweet favored by user
+     * @param fav     tweet favored by user
      * @param ownerId user ID
      */
     public void storeUserFavs(List<Tweet> fav, long ownerId) {

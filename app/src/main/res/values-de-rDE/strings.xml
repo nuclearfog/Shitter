@@ -29,7 +29,7 @@
     <string name="pin_added">PIN eingefügt!</string>
     <string name="false_format">Falsches Format!</string>
     <string name="delete_database_popup">Datenbank löschen?</string>
-    <string name="rate_limit_exceeded">Abrufgrenze überschritten!</string>
+    <string name="rate_limit_exceeded">"Rate-Limit erreicht, weiter in (s): "</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="tweet_sent">Tweet gesendet</string>
     <string name="error">Fehler!</string>
@@ -58,7 +58,6 @@
     <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
     <string name="abort">Abgebrochen!</string>
     <string name="cancel_message">Nachricht verwerfen?</string>
-    <string name="error_not_specified">Allgemeiner Fehler!</string>
     <string name="empty_tweet">Tweet leer!</string>
     <string name="logout">ausloggen</string>
     <string name="pin_verification_failed">PIN verifizierung fehlgeschlagen!</string>
@@ -71,11 +70,8 @@
     <string name="confirm_unfollow">User entfolgen?</string>
     <string name="confirm_block">user sperren?</string>
     <string name="confirm_delete_dm">Nachricht löschen?</string>
-    <string name="dm_not_found">Nachricht nicht gefunden!</string>
     <string name="image_folder_created">Ordner erstellt unter Pictures</string>
     <string name="image_saved">Bild gespeichert!</string>
-    <string name="tweet_loading">lädt..</string>
-    <string name="site_load_failure">Fehler beim Abrufen der Seite!</string>
     <string name="tweet_close">Tweetfenster schließen</string>
     <string name="send_tweet">Tweet senden</string>
     <string name="add_image">Bild hinzufügen</string>
@@ -96,4 +92,10 @@
     <string name="user_not_found">Nutzer nicht gefunden!</string>
     <string name="profile_tweets">Profile tweets</string>
     <string name="cant_send_dm">Nachricht kann nicht an den User gesendet werden!</string>
+    <string name="error_accesstoken">ungültiger Zugangsschlüssel!</string>
+    <string name="status_private">keine Berechtigung um den Status zu sehen!</string>
+    <string name="status_too_long">Status ist zu lang!</string>
+    <string name="duplicate_status">Tweet wurde schon versendet!</string>
+    <string name="directmessage_too_long">Direktnachricht länge überschritten!</string>
+    <string name="authentication_failed">Authentifikation fehlgeschlagen!</string>
 </resources>

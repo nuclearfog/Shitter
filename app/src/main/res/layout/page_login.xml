@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:hint="@string/pin"
-            android:inputType="numberPassword"
             android:importantForAutofill="no"
+            android:inputType="numberPassword"
             android:singleLine="true"
             tools:targetApi="o" />
 
@@ -50,8 +50,8 @@
             android:layout_height="@dimen/button_size"
             android:layout_marginStart="@dimen/layout_margin"
             android:layout_marginLeft="@dimen/layout_margin"
-            android:contentDescription="@string/paste_from_clipboard"
             android:background="@android:color/transparent"
+            android:contentDescription="@string/paste_from_clipboard"
             app:srcCompat="@drawable/copy" />
 
     </LinearLayout>
