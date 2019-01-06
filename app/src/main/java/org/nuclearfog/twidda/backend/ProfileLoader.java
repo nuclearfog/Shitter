@@ -304,13 +304,15 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         } else if (MODE == FAILURE) {
 
             switch (returnCode) {
-                case 420:
+
+                case 420:   //
+                case 429:   // Rate limit exceeded!
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                     break;
 
-                case 50:
-                case 63:
-                case 136:
+                case 50:    // USER not found
+                case 63:    // USER suspended
+                case 136:   // Blocked!
                     Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
                     ui.get().finish();
                     break;

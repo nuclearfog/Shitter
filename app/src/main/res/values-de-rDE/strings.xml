@@ -95,4 +95,5 @@
     <string name="close_dm">Direktnachricht schließen</string>
     <string name="user_not_found">Nutzer nicht gefunden!</string>
     <string name="profile_tweets">Profile tweets</string>
+    <string name="cant_send_dm">Nachricht kann nicht an den User gesendet werden!</string>
 </resources>

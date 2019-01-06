@@ -103,4 +103,5 @@
     <string name="close_dm">close direct message</string>
     <string name="user_not_found">user not found!</string>
     <string name="profile_tweets">Profile tweets</string>
+    <string name="cant_send_dm">cannot send dm to user!</string>
 </resources>

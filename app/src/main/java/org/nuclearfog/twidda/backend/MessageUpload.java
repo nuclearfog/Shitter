@@ -99,6 +99,15 @@ public class MessageUpload extends AsyncTask<String, Void, Void> {
                 case 420:
                     Toast.makeText(ui.get(), R.string.rate_limit_exceeded, Toast.LENGTH_SHORT).show();
                     break;
+
+                case 150:
+                    Toast.makeText(ui.get(), R.string.cant_send_dm, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case 50:
+                    Toast.makeText(ui.get(), R.string.user_not_found, Toast.LENGTH_SHORT).show();
+                    break;
+
                 default:
                     Toast.makeText(ui.get(), errorMsg, Toast.LENGTH_LONG).show();
             }

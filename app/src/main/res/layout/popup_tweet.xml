@@ -1,79 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tweet_popup"
+    style="@style/PopupCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:background="@color/tweetwindow"
-    android:orientation="vertical">
-
-    <EditText
-        android:id="@+id/tweet_input"
-        android:layout_width="@dimen/text_input_width"
-        android:layout_height="@dimen/text_input_height"
-        android:layout_marginLeft="@dimen/layout_margin"
-        android:layout_marginTop="@dimen/layout_margin"
-        android:layout_marginRight="@dimen/layout_margin"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:hint="@string/tweet"
-        android:importantForAutofill="no"
-        android:inputType="textMultiLine"
-        tools:targetApi="o" />
+    android:layout_gravity="center">
 
     <LinearLayout
+        android:id="@+id/tweet_popup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/layout_margin"
-        android:gravity="end|center_vertical"
-        android:orientation="horizontal">
+        android:background="@color/tweetwindow"
+        android:orientation="vertical"
+        android:padding="@dimen/layout_margin">
 
-        <TextView
-            android:id="@+id/imgcount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="18sp" />
+        <EditText
+            android:id="@+id/tweet_input"
+            android:layout_width="@dimen/text_input_width"
+            android:layout_height="@dimen/text_input_height"
+            android:background="@android:color/transparent"
+            android:gravity="top"
+            android:hint="@string/tweet"
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine"
+            tools:targetApi="o" />
 
-        <ImageView
-            android:id="@+id/img_preview"
-            android:layout_width="@dimen/tweet_button_size"
-            android:layout_height="@dimen/tweet_button_size"
-            android:layout_marginStart="@dimen/tweet_icon_margin"
-            android:layout_marginLeft="@dimen/tweet_icon_margin"
-            android:contentDescription="@string/image_preview"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/preview" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/layout_margin"
+            android:gravity="end|center_vertical"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="@dimen/tweet_button_size"
-            android:layout_height="@dimen/tweet_button_size"
-            android:layout_marginStart="@dimen/tweet_icon_margin"
-            android:layout_marginLeft="@dimen/tweet_icon_margin"
-            android:contentDescription="@string/add_image"
-            app:srcCompat="@drawable/image" />
+            <TextView
+                android:id="@+id/imgcount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/sendTweet"
-            android:layout_width="@dimen/tweet_button_size"
-            android:layout_height="@dimen/tweet_button_size"
-            android:layout_marginStart="@dimen/tweet_icon_margin"
-            android:layout_marginLeft="@dimen/tweet_icon_margin"
-            android:contentDescription="@string/send_tweet"
-            app:srcCompat="@drawable/tweet" />
+            <ImageView
+                android:id="@+id/img_preview"
+                android:layout_width="@dimen/tweet_button_size"
+                android:layout_height="@dimen/tweet_button_size"
+                android:layout_marginStart="@dimen/tweet_icon_margin"
+                android:layout_marginLeft="@dimen/tweet_icon_margin"
+                android:contentDescription="@string/image_preview"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/preview" />
 
-        <ImageView
-            android:id="@+id/close"
-            android:layout_width="@dimen/tweet_button_size"
-            android:layout_height="@dimen/tweet_button_size"
-            android:layout_marginStart="@dimen/tweet_icon_margin"
-            android:layout_marginLeft="@dimen/tweet_icon_margin"
-            android:contentDescription="@string/tweet_close"
-            app:srcCompat="@drawable/cross" />
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="@dimen/tweet_button_size"
+                android:layout_height="@dimen/tweet_button_size"
+                android:layout_marginStart="@dimen/tweet_icon_margin"
+                android:layout_marginLeft="@dimen/tweet_icon_margin"
+                android:contentDescription="@string/add_image"
+                app:srcCompat="@drawable/image" />
+
+            <ImageView
+                android:id="@+id/sendTweet"
+                android:layout_width="@dimen/tweet_button_size"
+                android:layout_height="@dimen/tweet_button_size"
+                android:layout_marginStart="@dimen/tweet_icon_margin"
+                android:layout_marginLeft="@dimen/tweet_icon_margin"
+                android:contentDescription="@string/send_tweet"
+                app:srcCompat="@drawable/tweet" />
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="@dimen/tweet_button_size"
+                android:layout_height="@dimen/tweet_button_size"
+                android:layout_marginStart="@dimen/tweet_icon_margin"
+                android:layout_marginLeft="@dimen/tweet_icon_margin"
+                android:contentDescription="@string/tweet_close"
+                app:srcCompat="@drawable/cross" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v7.widget.CardView>
