@@ -24,7 +24,7 @@
     <string name="favorite">favorisieren</string>
     <string name="background">Hintergrund</string>
     <string name="delete_tweet">Tweet löschen?</string>
-    <string name="connection_failed">Verbindung fehlgeschlagen</string>
+    <string name="connection_failed">Keine Internetverbindung!</string>
     <string name="enter_pin">PIN eingeben!</string>
     <string name="pin_added">PIN eingefügt!</string>
     <string name="false_format">Falsches Format!</string>
@@ -98,4 +98,5 @@
     <string name="duplicate_status">Tweet wurde schon versendet!</string>
     <string name="directmessage_too_long">Direktnachricht länge überschritten!</string>
     <string name="authentication_failed">Authentifikation fehlgeschlagen!</string>
+    <string name="follow_requested">warten auf Bestätigung</string>
 </resources>

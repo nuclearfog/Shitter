@@ -51,7 +51,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     private View lastTab, tweetIndicator, favorIndicator;
     private TabHost mTab;
     private NumberFormat formatter;
-    private boolean home, isFollowing, isBlocked, isMuted, canDm;
+    private boolean home, isFollowing, isBlocked, isMuted, canDm, requested;
     private String username;
     private long userId;
     private int tabIndex = 0;
@@ -176,6 +176,9 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             if (isFollowing) {
                 followIcon.setIcon(R.drawable.follow_enabled);
                 followIcon.setTitle(R.string.unfollow);
+            } else if (requested) {
+                followIcon.setIcon(R.drawable.follow_requested);
+                followIcon.setTitle(R.string.follow_requested);
             } else {
                 followIcon.setIcon(R.drawable.follow);
                 followIcon.setTitle(R.string.follow);
@@ -352,6 +355,15 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     }
 
 
+    public void setConnection(boolean isFollowing, boolean isMuted, boolean isBlocked, boolean canDm, boolean requested) {
+        this.isFollowing = isFollowing;
+        this.isMuted = isMuted;
+        this.isBlocked = isBlocked;
+        this.canDm = canDm;
+        this.requested = requested;
+    }
+
+
     private void openTweet(long tweetId, long userId, String username) {
         Intent intent = new Intent(this, TweetDetail.class);
         intent.putExtra("tweetID", tweetId);
@@ -385,14 +397,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             currentTab.setAnimation(lIn);
         }
         lastTab = mTab.getCurrentView();
-    }
-
-
-    public void setConnection(boolean isFollowing, boolean isMuted, boolean isBlocked, boolean canDm) {
-        this.isFollowing = isFollowing;
-        this.isMuted = isMuted;
-        this.isBlocked = isBlocked;
-        this.canDm = canDm;
     }
 
 

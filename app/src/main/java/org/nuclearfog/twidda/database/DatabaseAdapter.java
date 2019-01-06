@@ -21,15 +21,16 @@ public class DatabaseAdapter {
 
     public static final int LIMIT = 100;    //  DATABASE ENTRY LIMIT
 
-    private static final int FAV_MASK = 1;         //  FAVORITE MASK
-    private static final int RTW_MASK = 1 << 1;    //  RETWEET MASK
-    private static final int HOM_MASK = 1 << 2;    //  HOME TWEET MASK
-    private static final int MEN_MASK = 1 << 3;    //  MENTION MASK
-    private static final int UTW_MASK = 1 << 4;    //  USER TWEETS
-    private static final int RPL_MASK = 1 << 5;    //  TWEET ANSWERS
+    private static final int FAV_MASK = 1;          //  FAVORITE MASK
+    private static final int RTW_MASK = 1 << 1;     //  RETWEET MASK
+    private static final int HOM_MASK = 1 << 2;     //  HOME TWEET MASK
+    private static final int MEN_MASK = 1 << 3;     //  MENTION MASK
+    private static final int UTW_MASK = 1 << 4;     //  USER TWEETS
+    private static final int RPL_MASK = 1 << 5;     //  TWEET ANSWERS
 
-    private static final int VER_MASK = 1;         //  USER VERIFIED MASK
-    private static final int LCK_MASK = 1 << 1;    //  USER LOCKED MASK
+    private static final int VER_MASK = 1;          //  USER VERIFIED MASK
+    private static final int LCK_MASK = 1 << 1;     //  USER LOCKED MASK
+    private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
 
     private AppDatabase dataHelper;
     private long homeId;
@@ -568,8 +569,9 @@ public class DatabaseAdapter {
 
         boolean isVerified = (userRegister & VER_MASK) > 0;
         boolean isLocked = (userRegister & LCK_MASK) > 0;
+        boolean isReq = (userRegister & FRQ_MASK) > 0;
         return new TwitterUser(userId, username, screenname, profileImg, bio, location, isVerified,
-                isLocked, link, banner, createdAt, following, follower, tCount, fCount);
+                isLocked, isReq, link, banner, createdAt, following, follower, tCount, fCount);
     }
 
 
@@ -580,6 +582,9 @@ public class DatabaseAdapter {
             userRegister |= VER_MASK;
         if (user.isLocked())
             userRegister |= LCK_MASK;
+        if (user.followRequested())
+            userRegister |= FRQ_MASK;
+
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
         userColumn.put("scrname", user.getScreenname());

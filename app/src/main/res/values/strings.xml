@@ -106,4 +106,5 @@
     <string name="duplicate_status">Duplicate Status!</string>
     <string name="directmessage_too_long">direct message text is over the limit!</string>
     <string name="authentication_failed">failed to authenticate!</string>
+    <string name="follow_requested">follow requested</string>
 </resources>

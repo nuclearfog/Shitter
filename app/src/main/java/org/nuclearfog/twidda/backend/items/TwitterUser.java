@@ -11,6 +11,7 @@ public class TwitterUser {
 
     private final boolean isVerified;
     private final boolean isLocked;
+    private final boolean isFollowReqSent;
 
     private final int following;
     private final int follower;
@@ -41,11 +42,13 @@ public class TwitterUser {
         follower = user.getFollowersCount();
         tweetCount = user.getStatusesCount();
         favorCount = user.getFavouritesCount();
+        isFollowReqSent = user.isFollowRequestSent();
     }
 
-    public TwitterUser(long userID, String username, String screenname, String profileImg,
-                       String bio, String location, boolean isVerified, boolean isLocked, String link,
-                       String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
+    public TwitterUser(long userID, String username, String screenname, String profileImg, String bio, String location,
+                       boolean isVerified, boolean isLocked, boolean isFollowReqSent, String link, String bannerImg,
+                       long created, int following, int follower, int tweetCount, int favorCount) {
+
         this.userID = userID;
         this.username = username;
         this.screenname = screenname;
@@ -61,6 +64,7 @@ public class TwitterUser {
         this.follower = follower;
         this.tweetCount = tweetCount;
         this.favorCount = favorCount;
+        this.isFollowReqSent = isFollowReqSent;
     }
 
     /**
@@ -160,6 +164,15 @@ public class TwitterUser {
      */
     public boolean isLocked() {
         return isLocked;
+    }
+
+    /**
+     * requested follow
+     *
+     * @return if a follow was requested
+     */
+    public boolean followRequested() {
+        return isFollowReqSent;
     }
 
     /**

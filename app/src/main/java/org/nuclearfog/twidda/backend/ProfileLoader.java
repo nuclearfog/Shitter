@@ -130,8 +130,19 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             database.storeUser(user);
 
             if (MODE == ACTION_FOLLOW) {
-                isFollowing = !isFollowing;
-                user = mTwitter.followAction(UID, isFollowing);
+                if (user.isLocked()) {
+                    if (isFollowing) {
+                        isFollowing = false;
+                        user = mTwitter.followAction(UID, false);
+                    } else if (user.followRequested()) {
+                        user = mTwitter.followAction(UID, false);
+                    } else {
+                        user = mTwitter.followAction(UID, true);
+                    }
+                } else {
+                    isFollowing = !isFollowing;
+                    user = mTwitter.followAction(UID, isFollowing);
+                }
                 publishProgress(GET_USER);
             } else if (MODE == ACTION_BLOCK) {
                 isBlocked = !isBlocked;
@@ -279,11 +290,12 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         favReload.setRefreshing(false);
 
         if (MODE == ACTION_FOLLOW) {
-            if (isFollowing)
-                Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
-
+            if (!user.isLocked()) {
+                if (isFollowing)
+                    Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
+            }
         } else if (MODE == ACTION_BLOCK) {
             if (isBlocked)
                 Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
@@ -304,7 +316,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
             }
         }
         if (!isHome) {
-            ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm);
+            ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
             ui.get().invalidateOptionsMenu();
         }
     }
