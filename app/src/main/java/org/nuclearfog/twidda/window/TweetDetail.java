@@ -189,29 +189,31 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
         switch (v.getId()) {
             case R.id.rt_button_detail:
+                if(mStat != null && mStat.getStatus() == RUNNING)
+                    mStat.cancel(true);
                 mStat = new StatusLoader(this);
                 mStat.execute(tweetID, StatusLoader.RETWEET);
-                Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.fav_button_detail:
+                if(mStat != null && mStat.getStatus() == RUNNING)
+                    mStat.cancel(true);
                 mStat = new StatusLoader(this);
                 mStat.execute(tweetID, StatusLoader.FAVORITE);
-                Toast.makeText(this, R.string.tweet_loading, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.no_rt_detail:
-                Intent retweeter = new Intent(this, UserDetail.class);
-                retweeter.putExtra("tweetID", tweetID);
-                retweeter.putExtra("mode", 2);
-                startActivity(retweeter);
+                Intent retweet = new Intent(this, UserDetail.class);
+                retweet.putExtra("tweetID", tweetID);
+                retweet.putExtra("mode", 2);
+                startActivity(retweet);
                 break;
 
             case R.id.no_fav_detail:
-                Intent favor = new Intent(this, UserDetail.class);
-                favor.putExtra("tweetID", tweetID);
-                favor.putExtra("mode", 3);
-                startActivity(favor);
+                Intent favorit = new Intent(this, UserDetail.class);
+                favorit.putExtra("tweetID", tweetID);
+                favorit.putExtra("mode", 3);
+                startActivity(favorit);
                 break;
 
             case R.id.profileimage_detail:
