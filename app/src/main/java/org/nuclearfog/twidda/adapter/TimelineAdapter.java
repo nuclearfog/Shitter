@@ -147,8 +147,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
             return hours + " h";
         if (minutes > 0)
             return minutes + " m";
-        else
-            return seconds + " s";
+        return seconds + " s";
     }
 
 

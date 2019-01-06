@@ -133,15 +133,15 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
             if (MODE == ACTION_FOLLOW) {
                 isFollowing = !isFollowing;
-                mTwitter.followAction(UID, isFollowing);
+                user = mTwitter.followAction(UID, isFollowing);
                 publishProgress(GET_USER);
             } else if (MODE == ACTION_BLOCK) {
                 isBlocked = !isBlocked;
-                mTwitter.blockAction(UID, isBlocked);
+                user = mTwitter.blockAction(UID, isBlocked);
                 publishProgress(GET_USER);
             } else if (MODE == ACTION_MUTE) {
                 isMuted = !isMuted;
-                mTwitter.muteAction(UID, isMuted);
+                user = mTwitter.muteAction(UID, isMuted);
                 publishProgress(GET_USER);
             } else {
                 if (!user.isLocked() || isFollowing) {
@@ -257,6 +257,8 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                     ui.get().imageClick(user.getImageLink());
                 }
             });
+
+            ui.get().setTweetCount(user.getTweetCount(),user.getFavorCount());
 
         } else if (MODE == GET_TWEETS) {
             homeTl.setData(tweets);

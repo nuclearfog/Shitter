@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog.Builder;
@@ -12,6 +11,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TextView;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
@@ -27,6 +28,8 @@ import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import java.text.NumberFormat;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
@@ -43,14 +46,15 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     private ProfileLoader mProfile;
     private GlobalSettings settings;
-    private SwipeRefreshLayout homeReload, favoriteReload;
     private RecyclerView homeList, favoriteList;
+    private SwipeRefreshLayout homeReload, favoriteReload;
+    private View lastTab, tweetIndicator, favorIndicator;
     private TabHost mTab;
-    private View lastTab;
+    private NumberFormat formatter;
     private boolean home, isFollowing, isBlocked, isMuted, canDm;
-    private long userId = 0;
+    private String username;
+    private long userId;
     private int tabIndex = 0;
-    private String username = "";
 
 
     @Override
@@ -64,6 +68,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             userId = b.getLong("userID");
             if (b.containsKey("username"))
                 username = b.getString("username");
+            else
+                username = "";
         }
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
@@ -80,19 +86,25 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
         settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
+        formatter = NumberFormat.getIntegerInstance();
 
         homeList.setLayoutManager(new LinearLayoutManager(this));
         favoriteList.setLayoutManager(new LinearLayoutManager(this));
         root.setBackgroundColor(settings.getBackgroundColor());
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        tweetIndicator = inflater.inflate(R.layout.tab_tweets, null);
+        favorIndicator = inflater.inflate(R.layout.tab_favors, null);
+
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
         tab1.setContent(R.id.hometweets);
-        tab1.setIndicator("", ContextCompat.getDrawable(this, R.drawable.home));
+        tab1.setIndicator(tweetIndicator);
         mTab.addTab(tab1);
-        TabHost.TabSpec tab2 = mTab.newTabSpec("favorites");
+        TabHost.TabSpec tab2 = mTab.newTabSpec("favors");
         tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator("", ContextCompat.getDrawable(this, R.drawable.favorite));
+        tab2.setIndicator(favorIndicator);
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
 
@@ -288,9 +300,14 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         switch (tabIndex) {
             case 0:
                 homeList.smoothScrollToPosition(0);
+                favorIndicator.findViewById(R.id.favor_divider).setBackgroundResource(R.color.soylentgreen);
+                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundResource(android.R.color.transparent);
                 break;
+
             case 1:
                 favoriteList.smoothScrollToPosition(0);
+                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundResource(R.color.soylentgreen);
+                favorIndicator.findViewById(R.id.favor_divider).setBackgroundResource(android.R.color.transparent);
                 break;
         }
         tabIndex = mTab.getCurrentTab();
@@ -324,6 +341,14 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         Intent intent = new Intent(this, SearchPage.class);
         intent.putExtra("search", text);
         startActivity(intent);
+    }
+
+
+    public void setTweetCount(int tweets, int favors) {
+        TextView tweetCount = tweetIndicator.findViewById(R.id.profile_tweet_count);
+        TextView favorCount = favorIndicator.findViewById(R.id.profile_favor_count);
+        tweetCount.setText(formatter.format(tweets));
+        favorCount.setText(formatter.format(favors));
     }
 
 

@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.nuclearfog.twidda.BuildConfig;
@@ -289,14 +290,16 @@ public class TwitterEngine {
      *
      * @param userId User ID
      * @param action using action
+     * @return updated user information
      * @throws TwitterException if Access is unavailable
      */
-    public void followAction(long userId, boolean action) throws TwitterException {
-        if (action) {
-            twitter.createFriendship(userId);
-        } else {
-            twitter.destroyFriendship(userId);
-        }
+    public TwitterUser followAction(long userId, boolean action) throws TwitterException {
+        User user;
+        if (action)
+            user = twitter.createFriendship(userId);
+        else
+            user = twitter.destroyFriendship(userId);
+        return getUser(user);
     }
 
 
@@ -305,14 +308,16 @@ public class TwitterEngine {
      *
      * @param userId User ID
      * @param action using action
+     * @return updated user information
      * @throws TwitterException if Access is unavailable
      */
-    public void blockAction(long userId, boolean action) throws TwitterException {
-        if (action) {
-            twitter.createBlock(userId);
-        } else {
-            twitter.destroyBlock(userId);
-        }
+    public TwitterUser blockAction(long userId, boolean action) throws TwitterException {
+        User user;
+        if (action)
+            user = twitter.createBlock(userId);
+        else
+            user = twitter.destroyBlock(userId);
+        return getUser(user);
     }
 
 
@@ -321,14 +326,16 @@ public class TwitterEngine {
      *
      * @param userId User ID
      * @param action using action
+     * @return updated user information
      * @throws TwitterException if Access is unavailable
      */
-    public void muteAction(long userId, boolean action) throws TwitterException {
-        if (action) {
-            twitter.createMute(userId);
-        } else {
-            twitter.destroyMute(userId);
-        }
+    public TwitterUser muteAction(long userId, boolean action) throws TwitterException {
+        User user;
+        if (action)
+            user = twitter.createMute(userId);
+        else
+            user = twitter.destroyMute(userId);
+        return getUser(user);
     }
 
 
@@ -374,7 +381,7 @@ public class TwitterEngine {
             mStatus.setInReplyToStatusId(reply);
 
         if (path != null) {
-            int count = path.length;
+            final int count = path.length;
             long[] mIDs = new long[count];
             for (int i = 0; i < count; i++) {
                 String current = path[i];
@@ -439,19 +446,17 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public Tweet retweet(long tweetId) throws TwitterException {
-        Tweet tweet = getStatus(tweetId);
-        int retweet = tweet.getRetweetCount();
+        Status tweet = twitter.showStatus(tweetId);
 
-        if (tweet.retweeted()) {
-            deleteTweet(tweet.getMyRetweetId());
-            retweet--;
-        } else {
-            twitter.retweetStatus(tweet.getId());
-            retweet++;
-        }
-        return new Tweet(tweetId, retweet, tweet.getFavorCount(), tweet.getUser(), tweet.getText(),
-                tweet.getTime(), tweet.getReplyName(), tweet.getReplyUserId(), tweet.getMediaLinks(), tweet.getSource(),
-                tweet.getReplyId(), tweet.getEmbeddedTweet(), tweet.getMyRetweetId(), !tweet.retweeted(), tweet.favorized());
+        if (tweet.isRetweeted())
+            tweet = twitter.unRetweetStatus(tweet.getId());
+        else
+            tweet = twitter.retweetStatus(tweet.getId());
+
+        if(tweet.getRetweetedStatus() == null)
+            return getTweet(tweet, null);
+        else
+            return getTweet(tweet, getTweet(tweet.getRetweetedStatus(), null));
     }
 
 
@@ -462,20 +467,18 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public Tweet favorite(long tweetId) throws TwitterException {
-        Tweet tweet = getStatus(tweetId);
-        int favorite = tweet.getFavorCount();
+        Status tweet = twitter.showStatus(tweetId);
 
-        if (tweet.favorized()) {
-            twitter.destroyFavorite(tweet.getId());
-            favorite--;
-        } else {
-            twitter.createFavorite(tweet.getId());
-            favorite++;
-        }
-        return new Tweet(tweetId, tweet.getRetweetCount(), favorite, tweet.getUser(), tweet.getText(),
-                tweet.getTime(), tweet.getReplyName(), tweet.getReplyUserId(), tweet.getMediaLinks(), tweet.getSource(),
-                tweet.getReplyId(), tweet.getEmbeddedTweet(), tweet.getMyRetweetId(), tweet.retweeted(), !tweet.favorized());
-    }
+        if (tweet.isFavorited())
+            tweet = twitter.destroyFavorite(tweet.getId());
+        else
+            tweet = twitter.createFavorite(tweet.getId());
+
+        if(tweet.getRetweetedStatus() == null)
+            return getTweet(tweet, null);
+        else
+            return getTweet(tweet, getTweet(tweet.getRetweetedStatus(), null));
+   }
 
 
     /**
@@ -601,15 +604,13 @@ public class TwitterEngine {
      * @param retweetedStat embedded Status
      * @return Tweet item
      */
-    private Tweet getTweet(Status status, Tweet retweetedStat) {
+    private Tweet getTweet(@NonNull Status status, @Nullable Tweet retweetedStat) {
         TwitterUser user = getUser(status.getUser());
-        int retweet, favorite;
+        int retweet = status.getRetweetCount();
+        int favorite = status.getFavoriteCount();
         if (retweetedStat != null) {
             retweet = retweetedStat.getRetweetCount();
             favorite = retweetedStat.getFavorCount();
-        } else {
-            retweet = status.getRetweetCount();
-            favorite = status.getFavoriteCount();
         }
         String api = status.getSource();
         api = api.substring(api.indexOf('>') + 1);
@@ -627,12 +628,7 @@ public class TwitterEngine {
      * @return User item
      */
     private TwitterUser getUser(User user) {
-        String description = user.getDescription().replace('\n', ' ');
-        String screenname = '@' + user.getScreenName();
-        return new TwitterUser(user.getId(), user.getName(), screenname,
-                user.getOriginalProfileImageURL(), description, user.getLocation(), user.isVerified(),
-                user.isProtected(), user.getURL(), user.getProfileBannerURL(), user.getCreatedAt().getTime(),
-                user.getFriendsCount(), user.getFollowersCount());
+        return new TwitterUser(user);
     }
 
 

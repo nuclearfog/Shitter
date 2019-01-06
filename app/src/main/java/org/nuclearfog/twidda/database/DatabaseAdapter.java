@@ -343,7 +343,7 @@ public class DatabaseAdapter {
             register |= RTW_MASK;
         else
             register &= ~RTW_MASK;
-        if (tweet.favorized())
+        if (tweet.favored())
             register |= FAV_MASK;
         else
             register &= ~FAV_MASK;
@@ -561,11 +561,15 @@ public class DatabaseAdapter {
         int following = cursor.getInt(index);
         index = cursor.getColumnIndex("follower");
         int follower = cursor.getInt(index);
+        index = cursor.getColumnIndex("tweetCount");
+        int tCount = cursor.getInt(index);
+        index = cursor.getColumnIndex("favorCount");
+        int fCount = cursor.getInt(index);
 
         boolean isVerified = (userRegister & VER_MASK) > 0;
         boolean isLocked = (userRegister & LCK_MASK) > 0;
-        return new TwitterUser(userId, username, screenname, profileImg, bio,
-                location, isVerified, isLocked, link, banner, createdAt, following, follower);
+        return new TwitterUser(userId, username, screenname, profileImg, bio, location, isVerified,
+                isLocked, link, banner, createdAt, following, follower, tCount, fCount);
     }
 
 
@@ -588,6 +592,9 @@ public class DatabaseAdapter {
         userColumn.put("createdAt", user.getCreatedAt());
         userColumn.put("following", user.getFollowing());
         userColumn.put("follower", user.getFollower());
+        userColumn.put("tweetCount", user.getTweetCount());
+        userColumn.put("favorCount", user.getFavorCount());
+
         db.insertWithOnConflict("user", null, userColumn, mode);
     }
 
@@ -604,7 +611,7 @@ public class DatabaseAdapter {
         }
 
         statusRegister |= getStatRegister(db, tweet.getId());
-        if (tweet.favorized()) {
+        if (tweet.favored()) {
             statusRegister |= FAV_MASK;
         } else {
             statusRegister &= ~FAV_MASK;

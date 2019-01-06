@@ -111,7 +111,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
             } else if (MODE == FAVORITE) {
                 tweet = mTwitter.favorite(TWEETID);
-                if (tweet.favorized())
+                if (tweet.favored())
                     database.storeFavorite(TWEETID);
                 else
                     database.removeFavorite(TWEETID);
@@ -209,7 +209,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         } else {
             retweetButton.setImageResource(R.drawable.retweet);
         }
-        if (tweet.favorized()) {
+        if (tweet.favored()) {
             favoriteButton.setImageResource(R.drawable.favorite_enabled);
         } else {
             favoriteButton.setImageResource(R.drawable.favorite);

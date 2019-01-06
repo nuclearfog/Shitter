@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.items;
 
+import twitter4j.User;
+
 public class TwitterUser {
     private final long userID;
     private final long created;
@@ -13,6 +15,9 @@ public class TwitterUser {
     private final int following;
     private final int follower;
 
+    private final int tweetCount;
+    private final int favorCount;
+
     private final String bio;
     private final String location;
     private final String link;
@@ -20,10 +25,27 @@ public class TwitterUser {
     private final String profileImg;
     private final String bannerImg;
 
+    public TwitterUser(User user) {
+        userID = user.getId();
+        username = user.getName();
+        screenname = '@' + user.getScreenName();
+        profileImg = user.getOriginalProfileImageURL();
+        bio = user.getDescription().replace('\n', ' ');
+        link = user.getURL();
+        location = user.getLocation();
+        bannerImg = user.getProfileBannerURL();
+        isVerified = user.isVerified();
+        isLocked = user.isProtected();
+        created = user.getCreatedAt().getTime();
+        following = user.getFriendsCount();
+        follower = user.getFollowersCount();
+        tweetCount = user.getStatusesCount();
+        favorCount = user.getFavouritesCount();
+    }
 
     public TwitterUser(long userID, String username, String screenname, String profileImg,
                        String bio, String location, boolean isVerified, boolean isLocked, String link,
-                       String bannerImg, long created, int following, int follower) {
+                       String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
         this.userID = userID;
         this.username = username;
         this.screenname = screenname;
@@ -37,6 +59,8 @@ public class TwitterUser {
         this.created = created;
         this.following = following;
         this.follower = follower;
+        this.tweetCount = tweetCount;
+        this.favorCount = favorCount;
     }
 
     /**
@@ -154,6 +178,24 @@ public class TwitterUser {
      */
     public int getFollower() {
         return follower;
+    }
+
+    /**
+     * get Tweet count of user
+     *
+     * @return tweet count
+     */
+    public int getTweetCount() {
+        return tweetCount;
+    }
+
+    /**
+     * get count of favored tweets
+     *
+     * @return tweet count
+     */
+    public int getFavorCount() {
+        return favorCount;
     }
 
 }

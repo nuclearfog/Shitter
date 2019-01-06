@@ -21,14 +21,14 @@ public class Tweet {
     private final int favoriteCount;
 
     private final boolean retweeted;
-    private final boolean favorized;
+    private final boolean favored;
 
     private final long retweetId;
 
 
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] media, String source, long replyID,
-                 Tweet embedded, long retweetId, boolean retweeted, boolean favorized) {
+                 Tweet embedded, long retweetId, boolean retweeted, boolean favored) {
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
@@ -41,7 +41,7 @@ public class Tweet {
         this.media = media;
         this.source = source;
         this.retweeted = retweeted;
-        this.favorized = favorized;
+        this.favored = favored;
         this.retweetId = retweetId;
         this.replyUserId = replyUserId;
     }
@@ -167,7 +167,7 @@ public class Tweet {
     /**
      * is tweet retweeted by me
      *
-     * @return retweet status
+     * @return if status is retweeted
      */
     public boolean retweeted() {
         return retweeted;
@@ -176,10 +176,10 @@ public class Tweet {
     /**
      * is tweet favored by me
      *
-     * @return favor status
+     * @return if status is favored
      */
-    public boolean favorized() {
-        return favorized;
+    public boolean favored() {
+        return favored;
     }
 
 }
