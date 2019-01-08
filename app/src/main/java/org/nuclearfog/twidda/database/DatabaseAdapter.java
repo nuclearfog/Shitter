@@ -350,6 +350,7 @@ public class DatabaseAdapter {
             register &= ~FAV_MASK;
         statColumn.put("retweet", tweet.getRetweetCount());
         statColumn.put("favorite", tweet.getFavorCount());
+        statColumn.put("retweeterID", tweet.getMyRetweetId());
         statColumn.put("statusregister", register);
 
         TwitterUser user = tweet.getUser();
@@ -608,7 +609,7 @@ public class DatabaseAdapter {
         ContentValues status = new ContentValues();
         TwitterUser user = tweet.getUser();
         Tweet rtStat = tweet.getEmbeddedTweet();
-        long rtId = 1L;
+        long rtId = -1L;
 
         if (rtStat != null) {
             storeStatus(rtStat, 0, db);

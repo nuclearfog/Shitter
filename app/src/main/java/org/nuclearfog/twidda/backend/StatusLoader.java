@@ -101,17 +101,22 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
             } else if (MODE == RETWEET) {
                 tweet = mTwitter.retweet(TWEETID);
-                if (!tweet.retweeted())
-                    database.removeStatus(tweet.getMyRetweetId());
                 publishProgress();
+
+                if (!tweet.retweeted()) {
+                    tweet = database.getStatus(TWEETID);
+                    if (tweet != null)
+                        database.removeStatus(tweet.getMyRetweetId());
+                }
 
             } else if (MODE == FAVORITE) {
                 tweet = mTwitter.favorite(TWEETID);
+                publishProgress();
+
                 if (tweet.favored())
                     database.storeFavorite(TWEETID);
                 else
                     database.removeFavorite(TWEETID);
-                publishProgress();
             }
         } catch (TwitterException err) {
             this.err = err;

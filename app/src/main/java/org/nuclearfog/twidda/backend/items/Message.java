@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.items;
 
+import twitter4j.DirectMessage;
+import twitter4j.User;
+
 public class Message {
 
     private final long messageId;
@@ -9,6 +12,15 @@ public class Message {
     private final TwitterUser receiver;
 
     private final String message;
+
+
+    public Message(DirectMessage dm, User sender, User receiver) {
+        this.sender = new TwitterUser(sender);
+        this.receiver = new TwitterUser(receiver);
+        messageId = dm.getId();
+        time = dm.getCreatedAt().getTime();
+        message = dm.getText();
+    }
 
 
     public Message(long messageId, TwitterUser sender, TwitterUser receiver, long time, String message) {

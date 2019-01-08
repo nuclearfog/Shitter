@@ -2,6 +2,9 @@ package org.nuclearfog.twidda.backend.items;
 
 import android.support.annotation.Nullable;
 
+import twitter4j.MediaEntity;
+import twitter4j.Status;
+
 public class Tweet {
 
     private final long tweetID;
@@ -23,12 +26,39 @@ public class Tweet {
     private final boolean retweeted;
     private final boolean favored;
 
-    private final long retweetId;
+    private final long myRetweetId;
+
+
+    public Tweet(Status status, boolean removeRetweet) {
+        tweetID = status.getId();
+        user = new TwitterUser(status.getUser());
+        retweetCount = status.getRetweetCount();
+        favoriteCount = status.getFavoriteCount();
+        tweet = status.getText();
+        time = status.getCreatedAt().getTime();
+        replyID = status.getInReplyToStatusId();
+        replyName = status.getInReplyToScreenName();
+        media = getMediaLinks(status);
+        retweeted = status.isRetweeted() && !removeRetweet;
+        favored = status.isFavorited();
+        myRetweetId = status.getCurrentUserRetweetId();
+        replyUserId = status.getInReplyToUserId();
+
+        String api = status.getSource();
+        api = api.substring(api.indexOf('>') + 1);
+        api = api.substring(0, api.indexOf('<'));
+
+        source = api;
+        if (status.getRetweetedStatus() != null)
+            embedded = new Tweet(status.getRetweetedStatus(), false);
+        else
+            embedded = null;
+    }
 
 
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] media, String source, long replyID,
-                 Tweet embedded, long retweetId, boolean retweeted, boolean favored) {
+                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored) {
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
@@ -42,7 +72,7 @@ public class Tweet {
         this.source = source;
         this.retweeted = retweeted;
         this.favored = favored;
-        this.retweetId = retweetId;
+        this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
     }
 
@@ -134,7 +164,7 @@ public class Tweet {
      * @return tweet ID
      */
     public long getMyRetweetId() {
-        return retweetId;
+        return myRetweetId;
     }
 
     /**
@@ -182,4 +212,18 @@ public class Tweet {
         return favored;
     }
 
+
+    /**
+     * @param status Twitter4J status
+     * @return Array of Medialinks
+     */
+    private String[] getMediaLinks(Status status) {
+        MediaEntity[] mediaEntities = status.getMediaEntities();
+        String medialinks[] = new String[mediaEntities.length];
+        byte i = 0;
+        for (MediaEntity media : mediaEntities) {
+            medialinks[i++] = media.getMediaURLHttps();
+        }
+        return medialinks;
+    }
 }

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.nuclearfog.twidda.BuildConfig;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import twitter4j.DirectMessage;
 import twitter4j.IDs;
-import twitter4j.MediaEntity;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -262,7 +260,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public TwitterUser getUser(long id) throws TwitterException {
-        return getUser(twitter.showUser(id));
+        return new TwitterUser(twitter.showUser(id));
     }
 
 
@@ -299,7 +297,7 @@ public class TwitterEngine {
             user = twitter.createFriendship(userId);
         else
             user = twitter.destroyFriendship(userId);
-        return getUser(user);
+        return new TwitterUser(user);
     }
 
 
@@ -317,7 +315,7 @@ public class TwitterEngine {
             user = twitter.createBlock(userId);
         else
             user = twitter.destroyBlock(userId);
-        return getUser(user);
+        return new TwitterUser(user);
     }
 
 
@@ -335,7 +333,7 @@ public class TwitterEngine {
             user = twitter.createMute(userId);
         else
             user = twitter.destroyMute(userId);
-        return getUser(user);
+        return new TwitterUser(user);
     }
 
 
@@ -375,7 +373,6 @@ public class TwitterEngine {
      */
     public void sendStatus(String text, long reply, @Nullable String[] path) throws TwitterException {
         StatusUpdate mStatus = new StatusUpdate(text);
-
         if (reply > 0)
             mStatus.setInReplyToStatusId(reply);
 
@@ -401,15 +398,8 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public Tweet getStatus(long id) throws TwitterException {
-        Status status = twitter.showStatus(id);
-        Status retweet = status.getRetweetedStatus();
-        if (retweet != null) {
-            retweet = twitter.showStatus(retweet.getId());
-            Tweet embedded = getTweet(retweet, null);
-            return getTweet(status, embedded);
-        } else {
-            return getTweet(status, null);
-        }
+        Status tweet = twitter.showStatus(id);
+        return new Tweet(tweet, false);
     }
 
 
@@ -446,16 +436,13 @@ public class TwitterEngine {
      */
     public Tweet retweet(long tweetId) throws TwitterException {
         Status tweet = twitter.showStatus(tweetId);
-
-        if (tweet.isRetweeted())
+        if (tweet.isRetweeted()) {
             tweet = twitter.unRetweetStatus(tweet.getId());
-        else
-            tweet = twitter.retweetStatus(tweet.getId());
-
-        if (tweet.getRetweetedStatus() == null)
-            return getTweet(tweet, null);
-        else
-            return getTweet(tweet, getTweet(tweet.getRetweetedStatus(), null));
+            return new Tweet(tweet, true);
+        } else {
+            tweet = twitter.retweetStatus(tweet.getId()).getRetweetedStatus();
+            return new Tweet(tweet, false);
+        }
     }
 
 
@@ -467,16 +454,12 @@ public class TwitterEngine {
      */
     public Tweet favorite(long tweetId) throws TwitterException {
         Status tweet = twitter.showStatus(tweetId);
-
         if (tweet.isFavorited())
             tweet = twitter.destroyFavorite(tweet.getId());
         else
             tweet = twitter.createFavorite(tweet.getId());
 
-        if (tweet.getRetweetedStatus() == null)
-            return getTweet(tweet, null);
-        else
-            return getTweet(tweet, getTweet(tweet.getRetweetedStatus(), null));
+        return new Tweet(tweet, false);
     }
 
 
@@ -565,9 +548,8 @@ public class TwitterEngine {
      */
     private List<TwitterUser> convertUserList(List<User> users) {
         List<TwitterUser> result = new ArrayList<>();
-
         for (User user : users) {
-            TwitterUser item = getUser(user);
+            TwitterUser item = new TwitterUser(user);
             result.add(item);
         }
         return result;
@@ -582,52 +564,9 @@ public class TwitterEngine {
      */
     private List<Tweet> convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
-
-        for (Status status : statuses) {
-            Status embedded = status.getRetweetedStatus();
-            if (embedded != null) {
-                Tweet retweet = getTweet(embedded, null);
-                Tweet tweet = getTweet(status, retweet);
-                result.add(tweet);
-            } else {
-                Tweet tweet = getTweet(status, null);
-                result.add(tweet);
-            }
-        }
+        for (Status status : statuses)
+            result.add(new Tweet(status, false));
         return result;
-    }
-
-
-    /**
-     * @param status        twitter4j.Status
-     * @param retweetedStat embedded Status
-     * @return Tweet item
-     */
-    private Tweet getTweet(@NonNull Status status, @Nullable Tweet retweetedStat) {
-        TwitterUser user = getUser(status.getUser());
-        int retweet = status.getRetweetCount();
-        int favorite = status.getFavoriteCount();
-        if (retweetedStat != null) {
-            retweet = retweetedStat.getRetweetCount();
-            favorite = retweetedStat.getFavorCount();
-        }
-        String api = status.getSource();
-        api = api.substring(api.indexOf('>') + 1);
-        api = api.substring(0, api.indexOf('<'));
-
-        return new Tweet(status.getId(), retweet, favorite, user, status.getText(),
-                status.getCreatedAt().getTime(), status.getInReplyToScreenName(), status.getInReplyToUserId(),
-                getMediaLinks(status), api, status.getInReplyToStatusId(),
-                retweetedStat, status.getCurrentUserRetweetId(), status.isRetweeted(), status.isFavorited());
-    }
-
-
-    /**
-     * @param user Twitter4J User
-     * @return User item
-     */
-    private TwitterUser getUser(User user) {
-        return new TwitterUser(user);
     }
 
 
@@ -636,31 +575,8 @@ public class TwitterEngine {
      * @return dm item
      */
     private Message getMessage(DirectMessage dm) throws TwitterException {
-        TwitterUser sender, receiver;
-        sender = getUser(twitter.showUser(dm.getSenderId()));
-
-        if (dm.getSenderId() != dm.getRecipientId()) {
-            receiver = getUser(twitter.showUser(dm.getRecipientId()));
-        } else {
-            receiver = sender;
-        }
-        long time = dm.getCreatedAt().getTime();
-
-        return new Message(dm.getId(), sender, receiver, time, dm.getText());
-    }
-
-
-    /**
-     * @param status Twitter4J status
-     * @return Array of Medialinks
-     */
-    private String[] getMediaLinks(Status status) {
-        MediaEntity[] mediaEntities = status.getMediaEntities();
-        String medialinks[] = new String[mediaEntities.length];
-        byte i = 0;
-        for (MediaEntity media : mediaEntities) {
-            medialinks[i++] = media.getMediaURLHttps();
-        }
-        return medialinks;
+        User sender = twitter.showUser(dm.getSenderId());
+        User receiver = twitter.showUser(dm.getRecipientId());
+        return new Message(dm, sender, receiver);
     }
 }
