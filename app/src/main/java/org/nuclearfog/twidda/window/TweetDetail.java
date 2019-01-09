@@ -193,6 +193,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     mStat.cancel(true);
                 mStat = new StatusLoader(this);
                 mStat.execute(tweetID, StatusLoader.RETWEET);
+                Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.fav_button_detail:
@@ -200,6 +201,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     mStat.cancel(true);
                 mStat = new StatusLoader(this);
                 mStat.execute(tweetID, StatusLoader.FAVORITE);
+                Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.no_rt_detail:

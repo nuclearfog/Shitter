@@ -118,20 +118,32 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onDelete(int index) {
-        if (mLoader != null && mLoader.getStatus() != RUNNING) {
-            if (mAdapter != null && !refresh.isRefreshing()) {
-                Message message = mAdapter.getData().get(index);
-                final long messageId = message.getId();
-                new Builder(this).setMessage(R.string.confirm_delete_dm)
-                        .setNegativeButton(R.string.no_confirm, null)
-                        .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mLoader = new MessageLoader(DirectMessage.this);
-                                mLoader.execute(MessageLoader.DELETE, messageId);
-                            }
-                        }).show();
-            }
+        if (mAdapter != null && !refresh.isRefreshing()) {
+            Message message = mAdapter.getData().get(index);
+            final long messageId = message.getId();
+            new Builder(this).setMessage(R.string.confirm_delete_dm)
+                    .setNegativeButton(R.string.no_confirm, null)
+                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mLoader = new MessageLoader(DirectMessage.this);
+                            mLoader.execute(MessageLoader.DELETE, messageId);
+                        }
+                    }).show();
+        }
+    }
+
+
+    @Override
+    public void onProfileClick(int index) {
+        if (mAdapter != null && !refresh.isRefreshing()) {
+            Message message = mAdapter.getData().get(index);
+            long userId = message.getSender().getId();
+            String username = message.getSender().getScreenname();
+            Intent user = new Intent(this, UserProfile.class);
+            user.putExtra("userID", userId);
+            user.putExtra("username", username);
+            startActivity(user);
         }
     }
 

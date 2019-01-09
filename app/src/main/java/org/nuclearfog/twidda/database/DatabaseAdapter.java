@@ -94,7 +94,7 @@ public class DatabaseAdapter {
     /**
      * store user favors
      *
-     * @param fav     tweet favored by user
+     * @param fav tweet favored by user
      * @param ownerId user ID
      */
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
@@ -379,6 +379,21 @@ public class DatabaseAdapter {
         db.delete("tweet", "tweetID=" + id, null);
         db.delete("favorit", "tweetID=" + id + " AND ownerID=" + homeId, null);
         commit(db);
+    }
+
+    /**
+     * remove status containing a retweet
+     *
+     * @param tweetId tweet ID of retweet
+     */
+    public void removeRetweet(long tweetId) {
+        Tweet tweet = getStatus(tweetId);
+        if (tweet != null) {
+            SQLiteDatabase db = getDbWrite();
+            long retweetedId = tweet.getMyRetweetId();
+            db.delete("tweet", "retweeterID=" + retweetedId, null);
+            commit(db);
+        }
     }
 
     /**

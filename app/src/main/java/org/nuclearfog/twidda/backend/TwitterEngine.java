@@ -399,7 +399,7 @@ public class TwitterEngine {
      */
     public Tweet getStatus(long id) throws TwitterException {
         Status tweet = twitter.showStatus(id);
-        return new Tweet(tweet, false);
+        return new Tweet(tweet);
     }
 
 
@@ -438,10 +438,10 @@ public class TwitterEngine {
         Status tweet = twitter.showStatus(tweetId);
         if (tweet.isRetweeted()) {
             tweet = twitter.unRetweetStatus(tweet.getId());
-            return new Tweet(tweet, true);
+            return new Tweet(tweet).removeRetweet();
         } else {
             tweet = twitter.retweetStatus(tweet.getId()).getRetweetedStatus();
-            return new Tweet(tweet, false);
+            return new Tweet(tweet);
         }
     }
 
@@ -459,7 +459,7 @@ public class TwitterEngine {
         else
             tweet = twitter.createFavorite(tweet.getId());
 
-        return new Tweet(tweet, false);
+        return new Tweet(tweet);
     }
 
 
@@ -565,7 +565,7 @@ public class TwitterEngine {
     private List<Tweet> convertStatusList(List<Status> statuses) {
         List<Tweet> result = new ArrayList<>();
         for (Status status : statuses)
-            result.add(new Tweet(status, false));
+            result.add(new Tweet(status));
         return result;
     }
 

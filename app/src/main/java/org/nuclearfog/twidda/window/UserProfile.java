@@ -66,10 +66,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         b = getIntent().getExtras();
         if (b != null) {
             userId = b.getLong("userID");
-            if (b.containsKey("username"))
-                username = b.getString("username");
-            else
-                username = "";
+            username = b.getString("username");
         }
 
         Toolbar tool = findViewById(R.id.profile_toolbar);

@@ -99,4 +99,5 @@
     <string name="directmessage_too_long">Direktnachricht länge überschritten!</string>
     <string name="authentication_failed">Authentifikation fehlgeschlagen!</string>
     <string name="follow_requested">warten auf Bestätigung</string>
+    <string name="loading">lädt..</string>
 </resources>

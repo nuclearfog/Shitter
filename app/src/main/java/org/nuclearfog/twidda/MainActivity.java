@@ -248,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 long homeId = settings.getUserId();
                 Intent user = new Intent(this, UserProfile.class);
                 user.putExtra("userID", homeId);
+                user.putExtra("username", "");
                 startActivity(user);
                 break;
 

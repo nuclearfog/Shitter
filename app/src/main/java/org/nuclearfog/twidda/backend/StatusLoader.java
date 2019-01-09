@@ -103,11 +103,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                 tweet = mTwitter.retweet(TWEETID);
                 publishProgress();
 
-                if (!tweet.retweeted()) {
-                    tweet = database.getStatus(TWEETID);
-                    if (tweet != null)
-                        database.removeStatus(tweet.getMyRetweetId());
-                }
+                if (!tweet.retweeted())
+                    database.removeRetweet(TWEETID);
 
             } else if (MODE == FAVORITE) {
                 tweet = mTwitter.favorite(TWEETID);

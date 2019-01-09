@@ -95,6 +95,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 mListener.onDelete(position);
             }
         });
+        view.findViewById(R.id.dm_profileImg).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecyclerView rv = (RecyclerView) parent;
+                int position = rv.getChildLayoutPosition(view);
+                mListener.onProfileClick(position);
+            }
+        });
         return new MessageHolder(view);
     }
 
@@ -151,6 +159,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         void onAnswer(int pos);
 
         void onDelete(int pos);
+
+        void onProfileClick(int pos);
     }
 
 

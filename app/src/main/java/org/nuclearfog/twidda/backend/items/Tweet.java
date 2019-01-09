@@ -23,13 +23,13 @@ public class Tweet {
     private final int retweetCount;
     private final int favoriteCount;
 
-    private final boolean retweeted;
-    private final boolean favored;
+    private boolean retweeted;
+    private boolean favored;
 
     private final long myRetweetId;
 
 
-    public Tweet(Status status, boolean removeRetweet) {
+    public Tweet(Status status) {
         tweetID = status.getId();
         user = new TwitterUser(status.getUser());
         retweetCount = status.getRetweetCount();
@@ -39,7 +39,7 @@ public class Tweet {
         replyID = status.getInReplyToStatusId();
         replyName = status.getInReplyToScreenName();
         media = getMediaLinks(status);
-        retweeted = status.isRetweeted() && !removeRetweet;
+        retweeted = status.isRetweeted();
         favored = status.isFavorited();
         myRetweetId = status.getCurrentUserRetweetId();
         replyUserId = status.getInReplyToUserId();
@@ -50,7 +50,7 @@ public class Tweet {
 
         source = api;
         if (status.getRetweetedStatus() != null)
-            embedded = new Tweet(status.getRetweetedStatus(), false);
+            embedded = new Tweet(status.getRetweetedStatus());
         else
             embedded = null;
     }
@@ -225,5 +225,15 @@ public class Tweet {
             medialinks[i++] = media.getMediaURLHttps();
         }
         return medialinks;
+    }
+
+    /**
+     * set retweet false
+     *
+     * @return tweet
+     */
+    public Tweet removeRetweet() {
+        retweeted = false;
+        return this;
     }
 }
