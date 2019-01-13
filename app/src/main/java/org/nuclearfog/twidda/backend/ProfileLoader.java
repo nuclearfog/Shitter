@@ -323,7 +323,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
 
     @Override
-    protected void onCancelled(Long mode) {
+    protected void onCancelled() {
         if (ui.get() == null) return;
 
         SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);

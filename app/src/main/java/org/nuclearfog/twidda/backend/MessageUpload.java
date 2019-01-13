@@ -99,7 +99,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected void onCancelled(Boolean v) {
+    protected void onCancelled() {
         popup.dismiss();
     }
 }

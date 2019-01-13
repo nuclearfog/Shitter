@@ -113,7 +113,7 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected void onCancelled(Boolean b) {
+    protected void onCancelled() {
         popup.dismiss();
     }
 }

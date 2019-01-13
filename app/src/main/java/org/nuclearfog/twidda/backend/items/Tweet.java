@@ -22,11 +22,9 @@ public class Tweet {
 
     private final int retweetCount;
     private final int favoriteCount;
-
+    private final long myRetweetId;
     private boolean retweeted;
     private boolean favored;
-
-    private final long myRetweetId;
 
 
     public Tweet(Status status) {

@@ -80,7 +80,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
 
 
     @Override
-    protected void onCancelled(Boolean b) {
+    protected void onCancelled() {
         if (ui.get() == null) return;
 
         SwipeRefreshLayout refresh = ui.get().findViewById(R.id.user_refresh);

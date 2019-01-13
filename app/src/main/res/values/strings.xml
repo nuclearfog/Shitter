@@ -21,7 +21,7 @@
     <string name="follow">follow</string>
     <string name="retry">retry</string>
     <string name="cancel">cancel!</string>
-    <string name="color_settings">Color Settings</string>
+    <string name="color_settings">Color settings</string>
     <string name="followback">follows you</string>
     <string name="data_load">data consumption</string>
     <string name="trend_setting">trend setting</string>
@@ -114,5 +114,5 @@
     <string name="edit_save">save</string>
     <string name="profile_updated">Profile updated!</string>
     <string name="edit_empty_name">Empty user name!</string>
-    <string name="upload_button">Upload Button</string>
+    <string name="upload_button">upload</string>
 </resources>

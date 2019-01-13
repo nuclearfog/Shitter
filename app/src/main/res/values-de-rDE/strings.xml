@@ -9,7 +9,7 @@
     <string name="follow">folgen</string>
     <string name="retry">wiederholen</string>
     <string name="cancel">abbrechen</string>
-    <string name="color_settings">Farb einstellungen</string>
+    <string name="color_settings">Farbeinstellungen</string>
     <string name="data_load">Datenverbrauch</string>
     <string name="trend_setting">Trendeinstellung</string>
     <string name="database">Datenbank</string>
@@ -102,8 +102,9 @@
     <string name="loading">lädt..</string>
     <string name="profile_location">Standort</string>
     <string name="profile_bio">Bio</string>
-    <string name="edit_profile">Profile bearbeiten</string>
+    <string name="edit_profile">Profil bearbeiten</string>
     <string name="edit_save">speichern</string>
     <string name="profile_updated">Profile aktualisiert!</string>
     <string name="edit_empty_name">Name leer!</string>
+    <string name="upload_button">hochladen</string>
 </resources>

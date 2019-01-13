@@ -122,7 +122,7 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
 
 
     @Override
-    protected void onCancelled(Void v) {
+    protected void onCancelled() {
         popup.dismiss();
     }
 }

@@ -91,7 +91,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
 
 
     @Override
-    protected void onCancelled(Long l) {
+    protected void onCancelled() {
         if (ui.get() == null) return;
 
         SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);

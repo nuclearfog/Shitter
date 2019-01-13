@@ -2,9 +2,11 @@ package org.nuclearfog.twidda.backend;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.Editable;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.window.ImageDetail;
 import org.nuclearfog.twidda.window.ProfileEdit;
 
 import java.io.File;
@@ -121,14 +124,24 @@ public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
 
         switch (mode) {
             case READ_DATA:
-                ImageView pb_image = ui.get().findViewById(R.id.edit_pb);
-                String link = user.getImageLink() + "_bigger";
-                Picasso.get().load(link).into(pb_image);
-
                 edit_name.append(user.getUsername());
                 edit_link.append(user.getLink());
                 edit_loc.append(user.getLocation());
                 edit_bio.append(user.getBio());
+
+                ImageView pb_image = ui.get().findViewById(R.id.edit_pb);
+                String link = user.getImageLink() + "_bigger";
+                Picasso.get().load(link).into(pb_image);
+
+                final String mediaLink[] = new String[]{user.getImageLink()};
+                pb_image.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent image = new Intent(ui.get(), ImageDetail.class);
+                        image.putExtra("link", mediaLink);
+                        ui.get().startActivity(image);
+                    }
+                });
                 break;
 
             case WRITE_DATA:
@@ -138,7 +151,14 @@ public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
 
             case ERROR:
                 ErrorHandling.printError(ui.get(), err);
+                ui.get().finish();
                 break;
         }
+    }
+
+
+    @Override
+    protected void onCancelled() {
+        popup.dismiss();
     }
 }

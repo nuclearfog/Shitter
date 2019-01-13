@@ -105,7 +105,7 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
 
 
     @Override
-    protected void onCancelled(Boolean b) {
+    protected void onCancelled() {
         if (ui.get() == null) return;
 
         SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
