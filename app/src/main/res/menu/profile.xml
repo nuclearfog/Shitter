@@ -26,4 +26,7 @@
         android:icon="@drawable/message"
         android:title="@string/directmessage"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/profile_settings"
+        android:title="@string/edit_profile" />
 </menu>

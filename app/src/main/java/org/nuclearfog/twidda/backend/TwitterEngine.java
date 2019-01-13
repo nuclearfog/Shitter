@@ -265,6 +265,17 @@ public class TwitterEngine {
 
 
     /**
+     * Get current user
+     *
+     * @return curent user
+     * @throws TwitterException if Access is unavailable
+     */
+    public TwitterUser getCurrentUser() throws TwitterException {
+        return new TwitterUser(twitter.showUser(twitterID));
+    }
+
+
+    /**
      * Efficient Access of Connection Information
      *
      * @param id User ID compared with Home ID
@@ -537,6 +548,33 @@ public class TwitterEngine {
      */
     public void deleteMessage(long id) throws TwitterException {
         twitter.destroyDirectMessage(id);
+    }
+
+
+    /**
+     * Update user profile
+     *
+     * @param name     new Username
+     * @param url      new link
+     * @param location new location
+     * @param bio      new bio
+     * @return updated user profile
+     * @throws TwitterException if Access is unavailable
+     */
+    public TwitterUser updateProfile(String name, String url, String location, String bio) throws TwitterException {
+        User user = twitter.updateProfile(name, url, location, bio);
+        return new TwitterUser(user);
+    }
+
+
+    /**
+     * Update user profile image
+     *
+     * @param image image file
+     * @throws TwitterException if Access is unavailable
+     */
+    public void updateProfileImage(File image) throws TwitterException {
+        twitter.updateProfileImage(image);
     }
 
 

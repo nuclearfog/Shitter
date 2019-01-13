@@ -88,7 +88,7 @@
     <string name="link_to_clipboard">copy link to clipboard</string>
     <string name="copied_to_clipboard">Link copied to clipboard!</string>
     <string name="location_name">Location name</string>
-    <string name="profile_link">Profile link</string>
+    <string name="profile_link">link</string>
     <string name="profile_date">profile creation date</string>
     <string name="paste_from_clipboard">paste from clipboard</string>
     <string name="clipboard_icon">clipboard icon</string>
@@ -108,4 +108,11 @@
     <string name="authentication_failed">failed to authenticate!</string>
     <string name="follow_requested">follow requested</string>
     <string name="loading">loading..</string>
+    <string name="profile_location">location</string>
+    <string name="profile_bio">bio</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="edit_save">save</string>
+    <string name="profile_updated">Profile updated!</string>
+    <string name="edit_empty_name">Empty user name!</string>
+    <string name="upload_button">Upload Button</string>
 </resources>

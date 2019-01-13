@@ -80,7 +80,7 @@
     <string name="link_to_clipboard">Link in Zwischenablage kopieren</string>
     <string name="copied_to_clipboard">Link in Zwischenablage kopiert!</string>
     <string name="location_name">Standortname</string>
-    <string name="profile_link">Profillink</string>
+    <string name="profile_link">Link</string>
     <string name="profile_date">Profil erstellt am</string>
     <string name="paste_from_clipboard">Von Zwischenablage einfügen</string>
     <string name="clipboard_icon">Clipboard Symbol</string>
@@ -100,4 +100,10 @@
     <string name="authentication_failed">Authentifikation fehlgeschlagen!</string>
     <string name="follow_requested">warten auf Bestätigung</string>
     <string name="loading">lädt..</string>
+    <string name="profile_location">Standort</string>
+    <string name="profile_bio">Bio</string>
+    <string name="edit_profile">Profile bearbeiten</string>
+    <string name="edit_save">speichern</string>
+    <string name="profile_updated">Profile aktualisiert!</string>
+    <string name="edit_empty_name">Name leer!</string>
 </resources>

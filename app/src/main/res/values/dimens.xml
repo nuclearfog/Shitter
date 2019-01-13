@@ -44,4 +44,8 @@
     <dimen name="tweet_icon_margin">16dp</dimen>
     <dimen name="tweet_button_size">32dp</dimen>
 
+    <!--Profile Edit-->
+    <dimen name="bio_height">150dp</dimen>
+    <dimen name="editprofile_padding">20dp</dimen>
+
 </resources>

@@ -90,7 +90,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         root.setBackgroundColor(settings.getBackgroundColor());
 
         LayoutInflater inflater = LayoutInflater.from(this);
-
         tweetIndicator = inflater.inflate(R.layout.tab_tweets, null);
         favorIndicator = inflater.inflate(R.layout.tab_favors, null);
 
@@ -157,6 +156,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             m.findItem(R.id.profile_follow).setVisible(true);
             m.findItem(R.id.profile_block).setVisible(true);
             m.findItem(R.id.profile_mute).setVisible(true);
+            m.findItem(R.id.profile_settings).setVisible(false);
         }
         return super.onCreateOptionsMenu(m);
     }
@@ -259,6 +259,11 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                         sendDm.putExtra("username", username);
                         startActivity(sendDm);
                     }
+                    break;
+
+                case R.id.profile_settings:
+                    Intent editProfile = new Intent(this, ProfileEdit.class);
+                    startActivity(editProfile);
                     break;
             }
         }

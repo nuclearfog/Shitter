@@ -88,6 +88,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/HalfTransparency" />
 
+        <activity
+            android:name=".window.ProfileEdit"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

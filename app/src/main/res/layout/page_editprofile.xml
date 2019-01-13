@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/page_edit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/editprofile_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bar_wide" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/editprofile_padding"
+            android:paddingRight="@dimen/editprofile_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/layout_margin"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/edit_pb"
+                    android:layout_width="@dimen/profile_image"
+                    android:layout_height="@dimen/profile_image"
+                    android:contentDescription="@string/image_preview" />
+
+                <ImageView
+                    android:id="@+id/edit_upload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:contentDescription="@string/upload_button"
+                    app:srcCompat="@drawable/upload" />
+
+                <TextView
+                    android:id="@+id/pb_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/username" />
+
+            <EditText
+                android:id="@+id/edit_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_margin"
+                android:background="@android:color/transparent"
+
+                android:hint="@string/tweet"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_location" />
+
+            <EditText
+                android:id="@+id/edit_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_margin"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_link" />
+
+            <EditText
+                android:id="@+id/edit_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/layout_margin"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_bio" />
+
+            <EditText
+                android:id="@+id/edit_bio"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bio_height"
+                android:background="@android:color/transparent"
+                android:ems="10"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
