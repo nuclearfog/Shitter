@@ -115,4 +115,5 @@
     <string name="profile_updated">Profile updated!</string>
     <string name="edit_empty_name">Empty user name!</string>
     <string name="upload_button">upload</string>
+    <string name="exit_confirm">discard changes?</string>
 </resources>

@@ -103,7 +103,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
-        Spanned text = Tagger.makeText(tweet.getText(), highlight);
+        Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
         vh.username.setText(tweet.getUser().getUsername());
         vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);

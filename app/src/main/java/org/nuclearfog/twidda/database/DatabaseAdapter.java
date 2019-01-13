@@ -653,7 +653,7 @@ public class DatabaseAdapter {
         status.put("tweetID", tweet.getId());
         status.put("userID", user.getId());
         status.put("time", tweet.getTime());
-        status.put("tweet", tweet.getText());
+        status.put("tweet", tweet.getTweet());
         status.put("retweetID", rtId);
         status.put("source", tweet.getSource());
         status.put("replyID", tweet.getReplyId());

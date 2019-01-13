@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.items;
 
+import twitter4j.URLEntity;
 import twitter4j.User;
 
 public class TwitterUser {
@@ -31,8 +32,8 @@ public class TwitterUser {
         username = user.getName();
         screenname = '@' + user.getScreenName();
         profileImg = user.getOriginalProfileImageURL();
-        bio = user.getDescription().replace('\n', ' ');
-        link = user.getURL();
+        bio = getBio(user);
+        link = user.getURLEntity().getExpandedURL();
         location = user.getLocation();
         bannerImg = user.getProfileBannerURL();
         isVerified = user.isVerified();
@@ -211,4 +212,20 @@ public class TwitterUser {
         return favorCount;
     }
 
+    /**
+     * Resolve shortened links from user description
+     *
+     * @param user Twitter user
+     * @return Description String
+     */
+    private String getBio(User user) {
+        URLEntity entities[] = user.getDescriptionURLEntities();
+        StringBuilder bio = new StringBuilder(user.getDescription());
+
+        for (int i = entities.length - 1; i >= 0; i--) {
+            URLEntity entity = entities[i];
+            bio.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
+        }
+        return bio.toString().replace('\n', ' ');
+    }
 }

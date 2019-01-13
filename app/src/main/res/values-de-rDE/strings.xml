@@ -107,4 +107,5 @@
     <string name="profile_updated">Profile aktualisiert!</string>
     <string name="edit_empty_name">Name leer!</string>
     <string name="upload_button">hochladen</string>
+    <string name="exit_confirm">Änderungen verwerfen?</string>
 </resources>

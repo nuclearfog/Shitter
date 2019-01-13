@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
+import twitter4j.URLEntity;
 
 public class Tweet {
 
@@ -32,7 +33,7 @@ public class Tweet {
         user = new TwitterUser(status.getUser());
         retweetCount = status.getRetweetCount();
         favoriteCount = status.getFavoriteCount();
-        tweet = status.getText();
+        tweet = getText(status);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
         replyName = status.getInReplyToScreenName();
@@ -88,7 +89,7 @@ public class Tweet {
      *
      * @return tweet text
      */
-    public String getText() {
+    public String getTweet() {
         return tweet;
     }
 
@@ -210,7 +211,6 @@ public class Tweet {
         return favored;
     }
 
-
     /**
      * @param status Twitter4J status
      * @return Array of Medialinks
@@ -233,5 +233,22 @@ public class Tweet {
     public Tweet removeRetweet() {
         retweeted = false;
         return this;
+    }
+
+    /**
+     * Resolve shortened tweet links
+     *
+     * @param status Tweet
+     * @return Tweet string with resolved URL entities
+     */
+    private String getText(Status status) {
+        URLEntity entities[] = status.getURLEntities();
+        StringBuilder tweet = new StringBuilder(status.getText());
+
+        for (int i = entities.length - 1; i >= 0; i--) {
+            URLEntity entity = entities[i];
+            tweet.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
+        }
+        return tweet.toString();
     }
 }

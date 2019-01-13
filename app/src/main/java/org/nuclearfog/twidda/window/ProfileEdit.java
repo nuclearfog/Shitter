@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.window;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -68,6 +70,21 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
         if (mEdit != null && mEdit.getStatus() == AsyncTask.Status.RUNNING)
             mEdit.cancel(true);
         super.onStop();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
+        closeDialog.setMessage(R.string.exit_confirm);
+        closeDialog.setNegativeButton(R.string.no_confirm, null);
+        closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        closeDialog.show();
     }
 
 

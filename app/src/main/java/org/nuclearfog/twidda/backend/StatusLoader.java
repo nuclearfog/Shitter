@@ -148,7 +148,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         View mediaButton = ui.get().findViewById(R.id.image_attach);
         View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
 
-        Spannable sTweet = Tagger.makeText(tweet.getText(), highlight, ui.get());
+        Spannable sTweet = Tagger.makeText(tweet.getTweet(), highlight, ui.get());
         tweetText.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setText(sTweet);
         tweetText.setTextColor(font_color);
