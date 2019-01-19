@@ -116,4 +116,5 @@
     <string name="edit_empty_name">Empty user name!</string>
     <string name="upload_button">upload</string>
     <string name="exit_confirm">discard changes?</string>
+    <string name="toggle_answer">Load answer</string>
 </resources>

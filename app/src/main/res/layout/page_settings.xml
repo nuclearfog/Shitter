@@ -111,7 +111,8 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_button"
                     android:layout_weight="1"
-                    android:text="@string/load_factor" />
+                    android:text="@string/load_factor"
+                    android:textSize="10sp" />
 
                 <CheckBox
                     android:id="@+id/toggleImg"
@@ -120,7 +121,18 @@
                     android:layout_marginStart="@dimen/side_padding"
                     android:layout_marginLeft="@dimen/side_padding"
                     android:layout_weight="1"
-                    android:text="@string/image" />
+                    android:text="@string/image"
+                    android:textSize="10sp" />
+
+                <CheckBox
+                    android:id="@+id/toggleAns"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/settings_button"
+                    android:layout_marginStart="@dimen/side_padding"
+                    android:layout_marginLeft="@dimen/side_padding"
+                    android:layout_weight="1"
+                    android:text="@string/toggle_answer"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 

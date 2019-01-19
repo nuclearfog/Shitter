@@ -68,7 +68,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
         super.onStart();
         if (uList == null) {
             UserAdapter usrAdp = new UserAdapter(this);
-            usrAdp.toggleImage(settings.loadImages());
+            usrAdp.toggleImage(settings.getImageLoad());
             usrAdp.setColor(settings.getFontColor());
             userList.setAdapter(usrAdp);
 

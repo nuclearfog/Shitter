@@ -35,9 +35,10 @@ import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
 public class StatusLoader extends AsyncTask<Long, Void, Long> {
 
     public static final long LOAD = 0;
-    public static final long RETWEET = 1;
-    public static final long FAVORITE = 2;
-    public static final long DELETE = 3;
+    public static final long ANS = 1;
+    public static final long RETWEET = 2;
+    public static final long FAVORITE = 3;
+    public static final long DELETE = 4;
     private static final long ERROR = -1;
 
     private TwitterEngine mTwitter;
@@ -50,7 +51,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private List<Tweet> answers;
     private Tweet tweet;
     private int highlight, font_color;
-    private boolean toggleImg;
+    private boolean toggleImg, toggleAns;
 
 
     public StatusLoader(TweetDetail context) {
@@ -60,7 +61,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         formatter = NumberFormat.getIntegerInstance();
         font_color = settings.getFontColor();
         highlight = settings.getHighlightColor();
-        toggleImg = settings.loadImages();
+        toggleImg = settings.getImageLoad();
+        toggleAns = settings.getAnswerLoad();
         ui = new WeakReference<>(context);
         answers = new ArrayList<>();
         RecyclerView replyList = context.findViewById(R.id.answer_list);
@@ -79,16 +81,18 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
         long sinceId = TWEETID;
 
         try {
-            if (MODE == LOAD) {
+            if (MODE == LOAD || MODE == ANS) {
                 if (database.containStatus(TWEETID) && answerAdapter.getItemCount() == 0) {
                     tweet = database.getStatus(TWEETID);
                     answers = database.getAnswers(TWEETID);
                     publishProgress();
                 }
                 tweet = mTwitter.getStatus(TWEETID);
-                if (answerAdapter.getItemCount() > 0)
-                    sinceId = answerAdapter.getItemId(0);
-                answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
+                if (toggleAns || MODE == ANS) {
+                    if (answerAdapter.getItemCount() > 0)
+                        sinceId = answerAdapter.getItemId(0);
+                    answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
+                }
                 publishProgress();
                 if (database.containStatus(TWEETID)) {
                     database.updateStatus(tweet);

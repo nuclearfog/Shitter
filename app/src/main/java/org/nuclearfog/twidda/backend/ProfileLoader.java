@@ -77,7 +77,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         formatter = NumberFormat.getIntegerInstance();
         database = new DatabaseAdapter(context);
         sdf = settings.getDateFormatter();
-        imgEnabled = settings.loadImages();
+        imgEnabled = settings.getImageLoad();
         homeId = settings.getUserId();
         highlight = settings.getHighlightColor();
 

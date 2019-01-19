@@ -37,12 +37,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     private GlobalSettings settings;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
-    private CheckBox toggleImg;
+    private CheckBox toggleImg, toggleAns;
     private EditText woeIdText;
     private Spinner woeId;
     private View root;
     private int mode = 0;
-
 
     @Override
     protected void onCreate(Bundle savedInst) {
@@ -64,6 +63,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton3 = findViewById(R.id.color_tweet);
         colorButton4 = findViewById(R.id.highlight_color);
         toggleImg = findViewById(R.id.toggleImg);
+        toggleAns = findViewById(R.id.toggleAns);
         woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
@@ -72,7 +72,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
         logout.setOnClickListener(this);
-        toggleImg.setOnCheckedChangeListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
@@ -84,25 +83,27 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onStart() {
         super.onStart();
-        toggleImg.setChecked(settings.loadImages());
+        toggleImg.setChecked(settings.getImageLoad());
+        toggleAns.setChecked(settings.getAnswerLoad());
         woeId.setAdapter(new WorldIdAdapter(this));
         woeId.setSelection(settings.getWoeIdSelection());
         colorButton1.setBackgroundColor(settings.getBackgroundColor());
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getTweetColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
-
-        if (settings.customWoeIdset()) {
+        if (settings.getCustomWidSet()) {
             String text = Long.toString(settings.getWoeId());
             woeIdText.setVisibility(View.VISIBLE);
             woeIdText.setText(text);
         }
+        toggleImg.setOnCheckedChangeListener(this);
+        toggleAns.setOnCheckedChangeListener(this);
     }
 
 
     @Override
     public void onBackPressed() {
-        if (settings.customWoeIdset()) {
+        if (settings.getCustomWidSet()) {
             String woeText = woeIdText.getText().toString();
             if (!woeText.isEmpty())
                 settings.setWoeId(Long.parseLong(woeText));
@@ -215,12 +216,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position == parent.getCount() - 1) {
             woeIdText.setVisibility(View.VISIBLE);
-            settings.setCustomWoeId(true);
+            settings.setCustomWidSet(true);
             settings.setWoeId(1);
         } else {
             woeIdText.setVisibility(View.INVISIBLE);
             woeIdText.setText("");
-            settings.setCustomWoeId(false);
+            settings.setCustomWidSet(false);
             settings.setWoeId(id);
         }
         settings.setWoeIdSelection(position);
@@ -235,7 +236,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onCheckedChanged(CompoundButton c, boolean checked) {
-        settings.setImageLoad(checked);
+        switch (c.getId()) {
+            case R.id.toggleImg:
+                settings.setImageLoad(checked);
+                break;
+            case R.id.toggleAns:
+                settings.setAnswerLoad(checked);
+                break;
+        }
     }
 
 

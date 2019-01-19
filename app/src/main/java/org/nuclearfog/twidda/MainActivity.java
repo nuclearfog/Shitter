@@ -125,10 +125,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             root.setBackgroundColor(settings.getBackgroundColor());
             timelineAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            timelineAdapter.toggleImage(settings.loadImages());
+            timelineAdapter.toggleImage(settings.getImageLoad());
             trendsAdapter.setColor(settings.getFontColor());
             mentionAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            mentionAdapter.toggleImage(settings.loadImages());
+            mentionAdapter.toggleImage(settings.getImageLoad());
 
             timelineList.setAdapter(timelineAdapter);
             trendList.setAdapter(trendsAdapter);
@@ -166,10 +166,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     overridePendingTransition(0, 0);
                     finish();
                 }
-                break;
-
-            case SETTING:
-                home = null;
                 break;
 
             case TWEET:
@@ -258,6 +254,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.action_settings:
+                if (home != null && home.getStatus() == RUNNING) {
+                    home.cancel(true);
+                    home = null;
+                }
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
                 break;

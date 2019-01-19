@@ -21,6 +21,7 @@ public class GlobalSettings {
     private int tweet_color;
 
     private boolean loadImage;
+    private boolean loadAnswer;
     private boolean loggedIn;
     private boolean customWorldId;
     private int row;
@@ -30,7 +31,6 @@ public class GlobalSettings {
 
     private String key1, key2;
     private long userId;
-
 
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences("settings", 0);
@@ -43,6 +43,7 @@ public class GlobalSettings {
         tweet_color = settings.getInt("tweet_color", 0xff19aae8);
         row = settings.getInt("preload", 20);
         loadImage = settings.getBoolean("image_load", true);
+        loadAnswer = settings.getBoolean("answer_load", true);
         loggedIn = settings.getBoolean("login", false);
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
@@ -101,8 +102,26 @@ public class GlobalSettings {
         edit.apply();
     }
 
-    public boolean loadImages() {
+    public boolean getImageLoad() {
         return loadImage;
+    }
+
+    public void setImageLoad(boolean image) {
+        loadImage = image;
+        Editor edit = settings.edit();
+        edit.putBoolean("image_load", image);
+        edit.apply();
+    }
+
+    public boolean getAnswerLoad() {
+        return loadAnswer;
+    }
+
+    public void setAnswerLoad(boolean loadAnswer) {
+        this.loadAnswer = loadAnswer;
+        Editor edit = settings.edit();
+        edit.putBoolean("answer_load", loadAnswer);
+        edit.apply();
     }
 
     public int getWoeId() {
@@ -116,10 +135,6 @@ public class GlobalSettings {
         edit.apply();
     }
 
-    public boolean customWoeIdset() {
-        return customWorldId;
-    }
-
     public int getWoeIdSelection() {
         return woeIdPos;
     }
@@ -128,6 +143,17 @@ public class GlobalSettings {
         woeIdPos = pos;
         Editor edit = settings.edit();
         edit.putInt("world_id_pos", pos);
+        edit.apply();
+    }
+
+    public boolean getCustomWidSet() {
+        return customWorldId;
+    }
+
+    public void setCustomWidSet(boolean customWoeId) {
+        customWorldId = customWoeId;
+        Editor edit = settings.edit();
+        edit.putBoolean("custom_woeId", customWoeId);
         edit.apply();
     }
 
@@ -159,20 +185,6 @@ public class GlobalSettings {
 
     public SimpleDateFormat getDateFormatter() {
         return sdf;
-    }
-
-    public void setImageLoad(boolean image) {
-        loadImage = image;
-        Editor edit = settings.edit();
-        edit.putBoolean("image_load", image);
-        edit.apply();
-    }
-
-    public void setCustomWoeId(boolean customWoeId) {
-        customWorldId = customWoeId;
-        Editor edit = settings.edit();
-        edit.putBoolean("custom_woeId", customWoeId);
-        edit.apply();
     }
 
     public void setConnection(String key1, String key2, Long userId) {

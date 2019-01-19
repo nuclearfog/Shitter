@@ -103,7 +103,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         super.onStart();
         if (mStat == null) {
             TimelineAdapter answerAdapter = new TimelineAdapter(this);
-            answerAdapter.toggleImage(settings.loadImages());
+            answerAdapter.toggleImage(settings.getImageLoad());
             answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             answer_list.setAdapter(answerAdapter);
 
@@ -260,7 +260,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public void onRefresh() {
         mStat = new StatusLoader(this);
-        mStat.execute(tweetID, StatusLoader.LOAD);
+        mStat.execute(tweetID, StatusLoader.ANS);
     }
 
 

@@ -98,11 +98,11 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         if (mSearch == null) {
             TimelineAdapter searchAdapter = new TimelineAdapter(this);
             searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            searchAdapter.toggleImage(settings.loadImages());
+            searchAdapter.toggleImage(settings.getImageLoad());
             tweetSearch.setAdapter(searchAdapter);
 
             UserAdapter userAdapter = new UserAdapter(this);
-            userAdapter.toggleImage(settings.loadImages());
+            userAdapter.toggleImage(settings.getImageLoad());
             userAdapter.setColor(settings.getFontColor());
             userSearch.setAdapter(userAdapter);
 

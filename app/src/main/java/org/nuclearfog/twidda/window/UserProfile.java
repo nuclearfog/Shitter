@@ -116,12 +116,12 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         if (mProfile == null) {
             TimelineAdapter homeTl = new TimelineAdapter(this);
             homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
-            homeTl.toggleImage(settings.loadImages());
+            homeTl.toggleImage(settings.getImageLoad());
             homeList.setAdapter(homeTl);
 
             TimelineAdapter homeFav = new TimelineAdapter(this);
             homeFav.setColor(settings.getHighlightColor(), settings.getFontColor());
-            homeFav.toggleImage(settings.loadImages());
+            homeFav.toggleImage(settings.getImageLoad());
             favoriteList.setAdapter(homeFav);
 
             mProfile = new ProfileLoader(this);
