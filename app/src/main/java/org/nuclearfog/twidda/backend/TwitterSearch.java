@@ -18,7 +18,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
+public class TwitterSearch extends AsyncTask<String, Integer, Void> {
 
     private final int TWEET = 0;
     private final int USER = 1;
@@ -46,7 +46,7 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(String... search) {
+    protected Void doInBackground(String... search) {
         String strSearch = search[0];
         long id = 1L;
         try {
@@ -61,12 +61,10 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             Log.e("Twitter Search", err.getMessage());
-            return false;
         }
-        return true;
+        return null;
     }
 
 
@@ -91,15 +89,14 @@ public class TwitterSearch extends AsyncTask<String, Integer, Boolean> {
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
 
-        if (!success) {
-            SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
-            tweetReload.setRefreshing(false);
-            if (err != null) {
-                ErrorHandling.printError(ui.get(), err);
-            }
+        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+        tweetReload.setRefreshing(false);
+
+        if (err != null) {
+            ErrorHandling.printError(ui.get(), err);
         }
     }
 
