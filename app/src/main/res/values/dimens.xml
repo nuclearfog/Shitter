@@ -34,7 +34,7 @@
 
     <!--TWEET PAGE-->
     <dimen name="tweet_profile">56dp</dimen>
-    <dimen name="tweet_page_icon">16dp</dimen>
+    <dimen name="tweet_page_icon">20dp</dimen>
 
     <!--DM POPUP-->
     <dimen name="dm_icon_margin">5dp</dimen>
