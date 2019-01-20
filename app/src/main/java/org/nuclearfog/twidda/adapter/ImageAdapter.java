@@ -20,7 +20,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
     }
 
 
-    public void setImages(Bitmap images[]) {
+    public void setImages(@NonNull Bitmap images[]) {
         this.images = images;
     }
 

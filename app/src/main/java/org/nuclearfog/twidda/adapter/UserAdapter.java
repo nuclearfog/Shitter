@@ -38,7 +38,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     }
 
 
-    public void setData(List<TwitterUser> mUser) {
+    public void setData(@NonNull List<TwitterUser> mUser) {
         this.mUser = mUser;
     }
 

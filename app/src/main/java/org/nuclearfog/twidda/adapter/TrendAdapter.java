@@ -39,7 +39,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
-    public void setData(List<Trend> trendList) {
+    public void setData(@NonNull List<Trend> trendList) {
         this.trendList = trendList;
     }
 

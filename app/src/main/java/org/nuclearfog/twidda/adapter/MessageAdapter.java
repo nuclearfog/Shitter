@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public void setData(List<Message> messages) {
+    public void setData(@NonNull List<Message> messages) {
         this.messages = messages;
     }
 

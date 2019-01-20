@@ -92,6 +92,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
                     if (answerAdapter.getItemCount() > 0)
                         sinceId = answerAdapter.getItemId(0);
                     answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
+                } else {
+                    answers = new ArrayList<>();
                 }
                 publishProgress();
                 if (database.containStatus(TWEETID)) {

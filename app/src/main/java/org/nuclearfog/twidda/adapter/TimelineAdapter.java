@@ -58,7 +58,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     }
 
 
-    public void setData(List<Tweet> newTweets) {
+    public void setData(@NonNull List<Tweet> newTweets) {
         List<Tweet> result = new ArrayList<>(newTweets);
         result.addAll(tweets);
         tweets = result;
