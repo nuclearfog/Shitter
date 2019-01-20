@@ -51,6 +51,12 @@ public class GlobalSettings {
         sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.getDefault());
     }
 
+    /**
+     * Get Singleton instance
+     *
+     * @param context Application Context needed for Shared preferences
+     * @return instance of this class
+     */
     public static GlobalSettings getInstance(Context context) {
         if (ourInstance == null) {
             ourInstance = new GlobalSettings(context);
@@ -58,10 +64,18 @@ public class GlobalSettings {
         return ourInstance;
     }
 
+    /**
+     * Get get background color
+     * @return color value
+     */
     public int getBackgroundColor() {
         return background_color;
     }
 
+    /**
+     * Set background color
+     * @param color background color value
+     */
     public void setBackgroundColor(int color) {
         background_color = color;
         Editor edit = settings.edit();
@@ -69,10 +83,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * get font color
+     * @return font color value
+     */
     public int getFontColor() {
         return font_color;
     }
 
+    /**
+     * set font color
+     * @param color font color value
+     */
     public void setFontColor(int color) {
         font_color = color;
         Editor edit = settings.edit();
@@ -80,10 +102,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * get highlight color
+     * @return highlight color value
+     */
     public int getHighlightColor() {
         return highlight_color;
     }
 
+    /**
+     * set highlight color
+     * @param color highlight color value
+     */
     public void setHighlightColor(int color) {
         highlight_color = color;
         Editor edit = settings.edit();
@@ -91,10 +121,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * get message window color
+     * @return color value
+     */
     public int getTweetColor() {
         return tweet_color;
     }
 
+    /**
+     * set message window color
+     * @param color color value
+     */
     public void setTweetColor(int color) {
         tweet_color = color;
         Editor edit = settings.edit();
@@ -102,10 +140,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * image loading enabled
+     * @return true if enabled
+     */
     public boolean getImageLoad() {
         return loadImage;
     }
 
+    /**
+     * enable/disable image load
+     * @param image true if enabled
+     */
     public void setImageLoad(boolean image) {
         loadImage = image;
         Editor edit = settings.edit();
@@ -113,10 +159,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * answer loading enabled
+     * @return if answer loading is enabled
+     */
     public boolean getAnswerLoad() {
         return loadAnswer;
     }
 
+    /**
+     * enable/disable answer loading
+     * @param loadAnswer true if enabled
+     */
     public void setAnswerLoad(boolean loadAnswer) {
         this.loadAnswer = loadAnswer;
         Editor edit = settings.edit();
@@ -124,10 +178,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * get World ID for trends
+     * @return World ID
+     */
     public int getWoeId() {
         return woeId;
     }
 
+    /**
+     * set World ID for trends
+     * @param id World ID
+     */
     public void setWoeId(long id) {
         woeId = (int) id;
         Editor edit = settings.edit();
@@ -135,10 +197,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * return position of the world id dropdown list
+     * @return position
+     */
     public int getWoeIdSelection() {
         return woeIdPos;
     }
 
+    /**
+     * set last position of the dropdown list
+     * @param pos position of the last selection
+     */
     public void setWoeIdSelection(int pos) {
         woeIdPos = pos;
         Editor edit = settings.edit();
@@ -146,10 +216,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * Check if custom World ID is set
+     * @return if custom world ID is set
+     */
     public boolean getCustomWidSet() {
         return customWorldId;
     }
 
+    /**
+     * Set custom World ID
+     * @param customWoeId true if Custom world ID is set
+     */
     public void setCustomWidSet(boolean customWoeId) {
         customWorldId = customWoeId;
         Editor edit = settings.edit();
@@ -157,10 +235,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * get loading limit of tweets/users
+     * @return max numbers of tweets/users should be loaded
+     */
     public int getRowLimit() {
         return row;
     }
 
+    /**
+     * set limit of tweets/users
+     * @param limit max numbers of tweets/users
+     */
     public void setRowLimit(int limit) {
         row = limit;
         Editor edit = settings.edit();
@@ -168,10 +254,18 @@ public class GlobalSettings {
         edit.apply();
     }
 
+    /**
+     * Check if current user is logged in
+     * @return true if current user is logged in
+     */
     public boolean getLogin() {
         return loggedIn;
     }
 
+    /**
+     * get Access tokens
+     * @return access tokens
+     */
     public String[] getKeys() {
         String out[] = new String[2];
         out[0] = key1;
@@ -179,14 +273,28 @@ public class GlobalSettings {
         return out;
     }
 
+    /**
+     * get current users ID
+     * @return User ID
+     */
     public long getUserId() {
         return userId;
     }
 
+    /**
+     * get Datetime Formatter for the current location
+     * @return Datetime Formatter
+     */
     public SimpleDateFormat getDateFormatter() {
         return sdf;
     }
 
+    /**
+     * Set Access tokens and user ID
+     * @param key1 1st access token
+     * @param key2 2nd access token
+     * @param userId User ID
+     */
     public void setConnection(String key1, String key2, Long userId) {
         loggedIn = true;
         this.key1 = key1;
@@ -200,6 +308,9 @@ public class GlobalSettings {
         e.apply();
     }
 
+    /**
+     * Remove all user content from Shared Preferences
+     */
     public void logout() {
         loggedIn = false;
         Editor e = settings.edit();

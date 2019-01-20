@@ -45,11 +45,11 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
         super.onCreate(b);
         setContentView(R.layout.page_image);
 
-        b = getIntent().getExtras();
-        if (b != null) {
-            link = b.getStringArray("link");
-            if (b.containsKey("storable"))
-                storable = b.getBoolean("storable");
+        Bundle param = getIntent().getExtras();
+        if (param != null) {
+            link = param.getStringArray("link");
+            if (param.containsKey("storable"))
+                storable = param.getBoolean("storable");
         }
 
         zoomImage = findViewById(R.id.image_full);

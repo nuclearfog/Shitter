@@ -50,12 +50,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         super.onCreate(b);
         setContentView(R.layout.popup_tweet);
 
-        b = getIntent().getExtras();
-        if (b != null) {
-            if (b.containsKey("TweetID"))
-                inReplyId = b.getLong("TweetID");
-            if (b.containsKey("Addition"))
-                addition = b.getString("Addition") + " ";
+        Bundle param = getIntent().getExtras();
+        if (param != null) {
+            if (param.containsKey("TweetID"))
+                inReplyId = param.getLong("TweetID");
+            if (param.containsKey("Addition"))
+                addition = param.getString("Addition") + " ";
         }
 
         mediaPath = new ArrayList<>();

@@ -54,9 +54,9 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true); // Tab view
         setContentView(R.layout.page_search);
 
-        b = getIntent().getExtras();
-        if (b != null)
-            search = b.getString("search");
+        Bundle param = getIntent().getExtras();
+        if (param != null)
+            search = param.getString("search");
 
         View root = findViewById(R.id.search_layout);
         tweetSearch = findViewById(R.id.tweet_result);

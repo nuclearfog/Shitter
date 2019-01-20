@@ -60,11 +60,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
 
-        b = getIntent().getExtras();
-        if (b != null) {
-            tweetID = b.getLong("tweetID");
-            userID = b.getLong("userID");
-            username = b.getString("username");
+        Bundle param = getIntent().getExtras();
+        if (param != null) {
+            tweetID = param.getLong("tweetID");
+            userID = param.getLong("userID");
+            username = param.getString("username");
         }
 
         Toolbar tool = findViewById(R.id.tweet_toolbar);
@@ -106,8 +106,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             answerAdapter.toggleImage(settings.getImageLoad());
             answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             answer_list.setAdapter(answerAdapter);
-
-            answerReload.setRefreshing(true);
+            if (settings.getAnswerLoad())
+                answerReload.setRefreshing(true);
             mStat = new StatusLoader(this);
             mStat.execute(tweetID, StatusLoader.LOAD);
         }

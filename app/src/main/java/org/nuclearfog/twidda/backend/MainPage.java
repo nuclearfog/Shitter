@@ -162,7 +162,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
 
 
     @Override
-    protected void onCancelled(Integer i) {
+    protected void onCancelled() {
         if (ui.get() == null) return;
 
         SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);

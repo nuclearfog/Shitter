@@ -44,8 +44,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private int mode = 0;
 
     @Override
-    protected void onCreate(Bundle savedInst) {
-        super.onCreate(savedInst);
+    protected void onCreate(Bundle b) {
+        super.onCreate(b);
         setContentView(R.layout.page_settings);
 
         Toolbar toolbar = findViewById(R.id.toolbar_setting);

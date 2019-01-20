@@ -39,9 +39,9 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         super.onCreate(b);
         setContentView(R.layout.popup_dm);
         String username = "";
-        b = getIntent().getExtras();
-        if (b != null && b.containsKey("username"))
-            username = b.getString("username");
+        Bundle param = getIntent().getExtras();
+        if (param != null && param.containsKey("username"))
+            username = param.getString("username");
 
         View root = findViewById(R.id.dm_popup);
         View send = findViewById(R.id.dm_send);

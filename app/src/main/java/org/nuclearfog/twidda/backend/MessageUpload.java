@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.backend;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -35,7 +34,6 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    @SuppressLint("InflateParams")
     protected void onPreExecute() {
         popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
         popup.setCanceledOnTouchOutside(false);

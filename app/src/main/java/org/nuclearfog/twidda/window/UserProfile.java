@@ -63,10 +63,10 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);  // Tab view
         setContentView(R.layout.page_profile);
 
-        b = getIntent().getExtras();
-        if (b != null) {
-            userId = b.getLong("userID");
-            username = b.getString("username");
+        Bundle param = getIntent().getExtras();
+        if (param != null) {
+            userId = param.getLong("userID");
+            username = param.getString("username");
         }
 
         Toolbar tool = findViewById(R.id.profile_toolbar);

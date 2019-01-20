@@ -39,13 +39,13 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
         super.onCreate(b);
         setContentView(R.layout.page_userlist);
 
-        b = getIntent().getExtras();
-        if (b != null) {
-            mode = b.getInt("mode");
-            if (b.containsKey("tweetID"))
-                id = b.getLong("tweetID");
-            else if (b.containsKey("userID"))
-                id = b.getLong("userID");
+        Bundle param = getIntent().getExtras();
+        if (param != null) {
+            mode = param.getInt("mode");
+            if (param.containsKey("tweetID"))
+                id = param.getLong("tweetID");
+            else if (param.containsKey("userID"))
+                id = param.getLong("userID");
         }
 
         View root = findViewById(R.id.user_view);
