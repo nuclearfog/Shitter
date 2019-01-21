@@ -113,6 +113,8 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:linksClickable="true"
+                        android:maxLines="@integer/tweet_max_line"
+                        android:scrollbars="vertical"
                         android:textSize="18sp" />
 
                     <TextView

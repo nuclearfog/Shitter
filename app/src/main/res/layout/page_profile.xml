@@ -170,7 +170,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/layout_margin"
                         android:autoLink="web"
-                        android:linksClickable="true" />
+                        android:linksClickable="true"
+                        android:maxLines="@integer/max_bio_lines"
+                        android:scrollbars="vertical" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

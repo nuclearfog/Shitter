@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +71,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         }
 
         Toolbar tool = findViewById(R.id.profile_toolbar);
+        TextView bioTxt = findViewById(R.id.bio);
         View root = findViewById(R.id.user_view);
         homeList = findViewById(R.id.ht_list);
         homeReload = findViewById(R.id.hometweets);
@@ -88,6 +90,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         homeList.setLayoutManager(new LinearLayoutManager(this));
         favoriteList.setLayoutManager(new LinearLayoutManager(this));
         root.setBackgroundColor(settings.getBackgroundColor());
+        bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         LayoutInflater inflater = LayoutInflater.from(this);
         tweetIndicator = inflater.inflate(R.layout.tab_tweets, null);

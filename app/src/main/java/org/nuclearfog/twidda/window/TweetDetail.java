@@ -15,10 +15,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
@@ -83,9 +85,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View txtFav = findViewById(R.id.no_fav_detail);
         View profile_img = findViewById(R.id.profileimage_detail);
         View answer = findViewById(R.id.answer_button);
+        TextView tweetTxt = findViewById(R.id.tweet_detailed);
         answerReload = findViewById(R.id.answer_reload);
         answer_list = findViewById(R.id.answer_list);
         answer_list.setLayoutManager(new LinearLayoutManager(this));
+        tweetTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         root.setBackgroundColor(settings.getBackgroundColor());
 

@@ -221,11 +221,10 @@ public class TwitterUser {
     private String getBio(User user) {
         URLEntity entities[] = user.getDescriptionURLEntities();
         StringBuilder bio = new StringBuilder(user.getDescription());
-
         for (int i = entities.length - 1; i >= 0; i--) {
             URLEntity entity = entities[i];
             bio.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
         }
-        return bio.toString().replace('\n', ' ');
+        return bio.toString();
     }
 }
