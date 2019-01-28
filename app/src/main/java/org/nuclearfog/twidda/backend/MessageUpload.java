@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +26,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
     private Dialog popup;
 
 
-    public MessageUpload(MessagePopup c) {
+    public MessageUpload(@NonNull MessagePopup c) {
         ui = new WeakReference<>(c);
         popup = new Dialog(c);
         inflater = LayoutInflater.from(c);

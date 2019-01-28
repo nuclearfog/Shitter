@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
@@ -54,7 +55,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Long> {
     private boolean toggleImg, toggleAns;
 
 
-    public StatusLoader(TweetDetail context) {
+    public StatusLoader(@NonNull TweetDetail context) {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         sdf = settings.getDateFormatter();

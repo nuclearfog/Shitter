@@ -67,12 +67,12 @@ public class TwitterEngine {
 
 
     /**
-     * Singleton
+     * Singleton, package-private
      *
      * @param context Main Thread Context
      * @return TwitterEngine Instance
      */
-    public static TwitterEngine getInstance(Context context) {
+    static TwitterEngine getInstance(Context context) {
         if (mTwitter == null) {
             mTwitter = new TwitterEngine(context);
         }

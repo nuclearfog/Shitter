@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
     private List<Message> message;
 
 
-    public MessageLoader(DirectMessage context) {
+    public MessageLoader(@NonNull DirectMessage context) {
         ui = new WeakReference<>(context);
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();

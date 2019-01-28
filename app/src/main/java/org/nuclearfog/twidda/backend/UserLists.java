@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +30,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
     private UserAdapter usrAdp;
     private List<TwitterUser> user;
 
-    public UserLists(UserDetail context) {
+    public UserLists(@NonNull UserDetail context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = context.findViewById(R.id.userlist);

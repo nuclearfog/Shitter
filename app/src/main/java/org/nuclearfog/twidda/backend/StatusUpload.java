@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,13 +30,13 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
     private long replyId;
 
 
-    public StatusUpload(TweetPopup context, String tweet, long replyId) {
+    public StatusUpload(@NonNull TweetPopup context, String tweet, long replyId) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);
-        this.tweet = tweet;
         this.replyId = replyId;
+        this.tweet = tweet;
     }
 
 

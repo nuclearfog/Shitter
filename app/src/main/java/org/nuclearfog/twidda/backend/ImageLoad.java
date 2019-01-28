@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -24,7 +25,7 @@ public class ImageLoad extends AsyncTask<String, Void, Boolean> {
     private Bitmap images[];
 
 
-    public ImageLoad(ImageDetail context) {
+    public ImageLoad(@NonNull ImageDetail context) {
         ui = new WeakReference<>(context);
         RecyclerView imageList = context.findViewById(R.id.image_list);
         imageAdapter = (ImageAdapter) imageList.getAdapter();

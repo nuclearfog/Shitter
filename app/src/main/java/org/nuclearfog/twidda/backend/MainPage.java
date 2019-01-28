@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -41,7 +42,7 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
     private int woeId;
 
 
-    public MainPage(MainActivity context) {
+    public MainPage(@NonNull MainActivity context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);

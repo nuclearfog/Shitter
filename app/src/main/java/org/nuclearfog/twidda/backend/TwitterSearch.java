@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,7 +32,7 @@ public class TwitterSearch extends AsyncTask<String, Integer, Void> {
     private TwitterException err;
     private WeakReference<SearchPage> ui;
 
-    public TwitterSearch(SearchPage context) {
+    public TwitterSearch(@NonNull SearchPage context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
 

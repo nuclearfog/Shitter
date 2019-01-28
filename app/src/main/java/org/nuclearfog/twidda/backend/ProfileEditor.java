@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.util.Log;
 import android.view.View;
@@ -42,7 +43,7 @@ public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
     private String image_path;
 
 
-    public ProfileEditor(ProfileEdit c) {
+    public ProfileEditor(@NonNull ProfileEdit c) {
         ui = new WeakReference<>(c);
         mTwitter = TwitterEngine.getInstance(c);
         mData = new DatabaseAdapter(c);

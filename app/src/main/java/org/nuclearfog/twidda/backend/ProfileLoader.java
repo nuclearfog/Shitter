@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
@@ -70,7 +71,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
      * @param context Context to Activity
      * @see UserProfile
      */
-    public ProfileLoader(UserProfile context) {
+    public ProfileLoader(@NonNull UserProfile context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);

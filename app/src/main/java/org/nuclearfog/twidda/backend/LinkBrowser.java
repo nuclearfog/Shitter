@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,7 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
     private TwitterException err;
     private Dialog popup;
 
-    public LinkBrowser(MainActivity context) {
+    public LinkBrowser(@NonNull MainActivity context) {
         ui = new WeakReference<>(context);
         popup = new Dialog(context);
         mData = new DatabaseAdapter(context);
