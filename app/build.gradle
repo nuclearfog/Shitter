@@ -14,7 +14,6 @@ android {
     }
 
     buildTypes {
-
         all {
             buildConfigField "String", "API_KEY_1", TWITTER_CONSUMER_KEY
             buildConfigField "String", "API_KEY_2", TWITTER_CONSUMER_SECRET
@@ -39,9 +38,8 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
 
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
-    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'com.squareup.picasso:picasso:2.71828'
-
-    implementation(name: 'zoomview', ext: 'aar')
-    implementation(name: 'tagger', ext: 'aar')
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+    implementation 'com.github.NudeDude:Tagger:1.1'
+    implementation 'com.github.NudeDude:ZoomView:1.0.1'
 }
