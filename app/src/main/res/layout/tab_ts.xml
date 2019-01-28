@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/tab_icon_size"
+        android:layout_height="@dimen/tab_icon_size"
+        android:contentDescription="@string/profile_tweets"
+        app:srcCompat="@drawable/search" />
+
+    <View
+        android:id="@+id/ts_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tab_div_height"
+        android:layout_marginTop="@dimen/tab_div_margin"
+        android:background="@color/soylentgreen" />
+
+</LinearLayout>

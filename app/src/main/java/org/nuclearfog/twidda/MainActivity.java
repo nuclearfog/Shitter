@@ -3,15 +3,14 @@ package org.nuclearfog.twidda;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,18 +52,18 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter, mentionAdapter;
+    private View tlIndicator, trIndicator, mnIndicator;
+    private View lastTab, root;
     private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
     private MainPage home;
     private LinkBrowser mBrowser;
-    private View lastTab, root;
     private TabHost tabhost;
     private int tabIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);  // Tab view
         setContentView(R.layout.page_main);
 
         timelineList = findViewById(R.id.tl_list);
@@ -81,18 +80,23 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+        tlIndicator = inflater.inflate(R.layout.tab_tl, null);
+        trIndicator = inflater.inflate(R.layout.tab_tr, null);
+        mnIndicator = inflater.inflate(R.layout.tab_mn, null);
+
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
-        tab1.setIndicator("", ContextCompat.getDrawable(this, R.drawable.home));
+        tab1.setIndicator(tlIndicator);
         tabhost.addTab(tab1);
         TabSpec tab2 = tabhost.newTabSpec("trends");
         tab2.setContent(R.id.trends);
-        tab2.setIndicator("", ContextCompat.getDrawable(this, R.drawable.hash));
+        tab2.setIndicator(trIndicator);
         tabhost.addTab(tab2);
         TabSpec tab3 = tabhost.newTabSpec("mention");
         tab3.setContent(R.id.mention);
-        tab3.setIndicator("", ContextCompat.getDrawable(this, R.drawable.mention));
+        tab3.setIndicator(mnIndicator);
         tabhost.addTab(tab3);
 
         timelineList.setLayoutManager(new LinearLayoutManager(this));
@@ -302,6 +306,25 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         animate();
         tabIndex = tabhost.getCurrentTab();
         invalidateOptionsMenu();
+        switch (tabIndex) {
+            case 0:
+                tlIndicator.findViewById(R.id.tl_divider).setBackgroundResource(R.color.soylentgreen);
+                trIndicator.findViewById(R.id.tr_divider).setBackgroundResource(android.R.color.transparent);
+                mnIndicator.findViewById(R.id.mn_divider).setBackgroundResource(android.R.color.transparent);
+                break;
+
+            case 1:
+                trIndicator.findViewById(R.id.tr_divider).setBackgroundResource(R.color.soylentgreen);
+                tlIndicator.findViewById(R.id.tl_divider).setBackgroundResource(android.R.color.transparent);
+                mnIndicator.findViewById(R.id.mn_divider).setBackgroundResource(android.R.color.transparent);
+                break;
+
+            case 2:
+                mnIndicator.findViewById(R.id.mn_divider).setBackgroundResource(R.color.soylentgreen);
+                tlIndicator.findViewById(R.id.tl_divider).setBackgroundResource(android.R.color.transparent);
+                trIndicator.findViewById(R.id.tr_divider).setBackgroundResource(android.R.color.transparent);
+                break;
+        }
     }
 
 

@@ -2,15 +2,14 @@ package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +41,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     private SwipeRefreshLayout tweetReload;
     private GlobalSettings settings;
     private TwitterSearch mSearch;
+    private View twIndicator, usIndicator;
     private TabHost tabhost;
     private View lastView;
     private String search = "";
@@ -51,7 +51,6 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true); // Tab view
         setContentView(R.layout.page_search);
 
         Bundle param = getIntent().getExtras();
@@ -72,15 +71,19 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        LayoutInflater inflater = LayoutInflater.from(this);
+        twIndicator = inflater.inflate(R.layout.tab_ts, null);
+        usIndicator = inflater.inflate(R.layout.tab_us, null);
+
         tabhost.setup();
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
         tab1.setContent(R.id.searchtweets);
-        tab1.setIndicator("", ContextCompat.getDrawable(this, R.drawable.search));
+        tab1.setIndicator(twIndicator);
         tabhost.addTab(tab1);
 
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
-        tab2.setIndicator("", ContextCompat.getDrawable(this, R.drawable.user));
+        tab2.setIndicator(usIndicator);
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
 
@@ -207,17 +210,31 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = tabhost.getCurrentTab();
+        switch (tabIndex) {
+            case 0:
+                twIndicator.findViewById(R.id.ts_divider).setBackgroundResource(R.color.soylentgreen);
+                usIndicator.findViewById(R.id.us_divider).setBackgroundResource(android.R.color.transparent);
+                break;
+
+            case 1:
+                usIndicator.findViewById(R.id.us_divider).setBackgroundResource(R.color.soylentgreen);
+                twIndicator.findViewById(R.id.ts_divider).setBackgroundResource(android.R.color.transparent);
+                break;
+        }
     }
 
 
     private void animate() {
         final int ANIM_DUR = 300;
         final int DIMENS = Animation.RELATIVE_TO_PARENT;
+        final float LEFT = -1.0f;
+        final float RIGHT = 1.0f;
+        final float NULL = 0.0f;
 
-        Animation leftIn = new TranslateAnimation(DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f, DIMENS, 0.0f);
-        Animation rightIn = new TranslateAnimation(DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f, DIMENS, 0.0f);
-        Animation leftOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, -1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
-        Animation rightOut = new TranslateAnimation(DIMENS, 0.0f, DIMENS, 1.0f, DIMENS, 0.0f, DIMENS, 0.0f);
+        Animation leftIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+        Animation rightIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+        Animation leftOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
+        Animation rightOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
         leftIn.setDuration(ANIM_DUR);
         rightIn.setDuration(ANIM_DUR);
         leftOut.setDuration(ANIM_DUR);

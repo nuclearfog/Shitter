@@ -48,6 +48,12 @@
     <dimen name="bio_height">150dp</dimen>
     <dimen name="editprofile_padding">20dp</dimen>
 
+    <!--Tabs-->
+    <dimen name="tab_icon_size">24dp</dimen>
+    <dimen name="tab_div_height">2dp</dimen>
+    <dimen name="tab_div_margin">12dp</dimen>
+
+
     <integer name="tweet_max_line">10</integer>
     <integer name="max_bio_lines">5</integer>
 </resources>

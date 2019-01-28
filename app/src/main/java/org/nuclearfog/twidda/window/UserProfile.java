@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -61,7 +60,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);  // Tab view
         setContentView(R.layout.page_profile);
 
         Bundle param = getIntent().getExtras();
@@ -93,8 +91,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        tweetIndicator = inflater.inflate(R.layout.tab_tweets, null);
-        favorIndicator = inflater.inflate(R.layout.tab_favors, null);
+        tweetIndicator = inflater.inflate(R.layout.tab_tw, null);
+        favorIndicator = inflater.inflate(R.layout.tab_fa, null);
 
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
