@@ -17,9 +17,11 @@ Features:
 
 
 included libraries:
-- Twitter4J 4.0.7
-- picasso 2.71828
-- QuadFlask colorpicker 0.0.13
+- Twitter4J 4.0.7 https://github.com/Twitter4J/Twitter4J
+- picasso 2.71828 https://github.com/square/picasso
+- QuadFlask colorpicker https://github.com/QuadFlask/colorpicker
+- ZoomImageView https://github.com/NudeDude/ZoomView
+- Tagger https://github.com/NudeDude/Tagger
 
 svg icons from www.entypo.com
 
