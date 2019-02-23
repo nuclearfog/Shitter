@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         trIndicator = inflater.inflate(R.layout.tab_tr, null);
         mnIndicator = inflater.inflate(R.layout.tab_mn, null);
 
+        settings = GlobalSettings.getInstance(this);
+
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
         tab1.setContent(R.id.timeline);
@@ -99,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tab3.setIndicator(mnIndicator);
         tabhost.addTab(tab3);
 
+        tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(settings.getHighlightColor());
+
         timelineList.setLayoutManager(new LinearLayoutManager(this));
         trendList.setLayoutManager(new LinearLayoutManager(this));
         mentionList.setLayoutManager(new LinearLayoutManager(this));
         timelineList.setHasFixedSize(true);
         trendList.setHasFixedSize(true);
         mentionList.setHasFixedSize(true);
-
-        settings = GlobalSettings.getInstance(this);
 
         lastTab = tabhost.getCurrentView();
         tabhost.setOnTabChangedListener(this);
@@ -308,21 +310,21 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         invalidateOptionsMenu();
         switch (tabIndex) {
             case 0:
-                tlIndicator.findViewById(R.id.tl_divider).setBackgroundResource(R.color.soylentgreen);
-                trIndicator.findViewById(R.id.tr_divider).setBackgroundResource(android.R.color.transparent);
-                mnIndicator.findViewById(R.id.mn_divider).setBackgroundResource(android.R.color.transparent);
+                tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(settings.getHighlightColor());
+                trIndicator.findViewById(R.id.tr_divider).setBackgroundColor(0);
+                mnIndicator.findViewById(R.id.mn_divider).setBackgroundColor(0);
                 break;
 
             case 1:
-                trIndicator.findViewById(R.id.tr_divider).setBackgroundResource(R.color.soylentgreen);
-                tlIndicator.findViewById(R.id.tl_divider).setBackgroundResource(android.R.color.transparent);
-                mnIndicator.findViewById(R.id.mn_divider).setBackgroundResource(android.R.color.transparent);
+                trIndicator.findViewById(R.id.tr_divider).setBackgroundColor(settings.getHighlightColor());
+                tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(0);
+                mnIndicator.findViewById(R.id.mn_divider).setBackgroundColor(0);
                 break;
 
             case 2:
-                mnIndicator.findViewById(R.id.mn_divider).setBackgroundResource(R.color.soylentgreen);
-                tlIndicator.findViewById(R.id.tl_divider).setBackgroundResource(android.R.color.transparent);
-                trIndicator.findViewById(R.id.tr_divider).setBackgroundResource(android.R.color.transparent);
+                mnIndicator.findViewById(R.id.mn_divider).setBackgroundColor(settings.getHighlightColor());
+                tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(0);
+                trIndicator.findViewById(R.id.tr_divider).setBackgroundColor(0);
                 break;
         }
     }
@@ -368,24 +370,24 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     private void animate() {
         final int ANIM_DUR = 300;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
         final float LEFT = -1.0f;
         final float RIGHT = 1.0f;
         final float NULL = 0.0f;
-        Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-        Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-        Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
-        Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
-        lIn.setDuration(ANIM_DUR);
-        rIn.setDuration(ANIM_DUR);
-        lOut.setDuration(ANIM_DUR);
-        rOut.setDuration(ANIM_DUR);
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
 
         View currentTab = tabhost.getCurrentView();
         if (tabhost.getCurrentTab() > tabIndex) {
+            Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
+            Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+            lOut.setDuration(ANIM_DUR);
+            rIn.setDuration(ANIM_DUR);
             lastTab.setAnimation(lOut);
             currentTab.setAnimation(rIn);
         } else {
+            Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+            Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
+            lIn.setDuration(ANIM_DUR);
+            rOut.setDuration(ANIM_DUR);
             lastTab.setAnimation(rOut);
             currentTab.setAnimation(lIn);
         }

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/tab_padding_top">
 
     <ImageView
         android:layout_width="@dimen/tab_icon_size"
@@ -16,6 +17,5 @@
         android:id="@+id/tr_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/tab_div_height"
-        android:layout_marginTop="@dimen/tab_div_margin"
-        android:background="@android:color/transparent" />
+        android:layout_marginTop="@dimen/tab_div_margin" />
 </LinearLayout>

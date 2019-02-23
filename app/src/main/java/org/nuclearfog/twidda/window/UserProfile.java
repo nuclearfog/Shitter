@@ -105,6 +105,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
 
+        tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundColor(settings.getHighlightColor());
+
         mTab.setOnTabChangedListener(this);
         homeReload.setOnRefreshListener(this);
         favoriteReload.setOnRefreshListener(this);
@@ -302,21 +304,20 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     public void onTabChanged(String tabId) {
         animate();
-
+        tabIndex = mTab.getCurrentTab();
         switch (tabIndex) {
             case 0:
                 homeList.smoothScrollToPosition(0);
-                favorIndicator.findViewById(R.id.favor_divider).setBackgroundResource(R.color.soylentgreen);
-                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundResource(android.R.color.transparent);
+                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundColor(settings.getHighlightColor());
+                favorIndicator.findViewById(R.id.favor_divider).setBackgroundColor(0);
                 break;
 
             case 1:
                 favoriteList.smoothScrollToPosition(0);
-                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundResource(R.color.soylentgreen);
-                favorIndicator.findViewById(R.id.favor_divider).setBackgroundResource(android.R.color.transparent);
+                favorIndicator.findViewById(R.id.favor_divider).setBackgroundColor(settings.getHighlightColor());
+                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundColor(0);
                 break;
         }
-        tabIndex = mTab.getCurrentTab();
     }
 
 
@@ -378,24 +379,24 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     private void animate() {
         final int ANIM_DUR = 300;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
         final float LEFT = -1.0f;
         final float RIGHT = 1.0f;
         final float NULL = 0.0f;
-        Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-        Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-        Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
-        Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
-        lIn.setDuration(ANIM_DUR);
-        rIn.setDuration(ANIM_DUR);
-        lOut.setDuration(ANIM_DUR);
-        rOut.setDuration(ANIM_DUR);
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
 
         View currentTab = mTab.getCurrentView();
         if (mTab.getCurrentTab() > tabIndex) {
+            Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
+            Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+            lOut.setDuration(ANIM_DUR);
+            rIn.setDuration(ANIM_DUR);
             lastTab.setAnimation(lOut);
             currentTab.setAnimation(rIn);
         } else {
+            Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+            Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
+            lIn.setDuration(ANIM_DUR);
+            rOut.setDuration(ANIM_DUR);
             lastTab.setAnimation(rOut);
             currentTab.setAnimation(lIn);
         }

@@ -87,6 +87,8 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
 
+        twIndicator.findViewById(R.id.ts_divider).setBackgroundColor(settings.getHighlightColor());
+
         tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         userSearch.setLayoutManager(new LinearLayoutManager(this));
 
@@ -212,13 +214,13 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         tabIndex = tabhost.getCurrentTab();
         switch (tabIndex) {
             case 0:
-                twIndicator.findViewById(R.id.ts_divider).setBackgroundResource(R.color.soylentgreen);
-                usIndicator.findViewById(R.id.us_divider).setBackgroundResource(android.R.color.transparent);
+                twIndicator.findViewById(R.id.ts_divider).setBackgroundColor(settings.getHighlightColor());
+                usIndicator.findViewById(R.id.us_divider).setBackgroundColor(0);
                 break;
 
             case 1:
-                usIndicator.findViewById(R.id.us_divider).setBackgroundResource(R.color.soylentgreen);
-                twIndicator.findViewById(R.id.ts_divider).setBackgroundResource(android.R.color.transparent);
+                usIndicator.findViewById(R.id.us_divider).setBackgroundColor(settings.getHighlightColor());
+                twIndicator.findViewById(R.id.ts_divider).setBackgroundResource(0);
                 break;
         }
     }
@@ -226,26 +228,24 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
 
     private void animate() {
         final int ANIM_DUR = 300;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
         final float LEFT = -1.0f;
         final float RIGHT = 1.0f;
         final float NULL = 0.0f;
-
-        Animation leftIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-        Animation rightIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-        Animation leftOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
-        Animation rightOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
-        leftIn.setDuration(ANIM_DUR);
-        rightIn.setDuration(ANIM_DUR);
-        leftOut.setDuration(ANIM_DUR);
-        rightOut.setDuration(ANIM_DUR);
+        final int DIMENS = Animation.RELATIVE_TO_PARENT;
 
         View currentView = tabhost.getCurrentView();
-
         if (tabhost.getCurrentTab() > tabIndex) {
+            Animation leftOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
+            Animation rightIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+            leftOut.setDuration(ANIM_DUR);
+            rightIn.setDuration(ANIM_DUR);
             lastView.setAnimation(leftOut);
             currentView.setAnimation(rightIn);
         } else {
+            Animation leftIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
+            Animation rightOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
+            leftIn.setDuration(ANIM_DUR);
+            rightOut.setDuration(ANIM_DUR);
             lastView.setAnimation(rightOut);
             currentView.setAnimation(leftIn);
         }
