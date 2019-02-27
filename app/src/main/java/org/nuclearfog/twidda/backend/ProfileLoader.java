@@ -132,27 +132,36 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
 
             if (MODE == ACTION_FOLLOW) {
                 if (user.isLocked()) {
-                    if (isFollowing) {
-                        isFollowing = false;
-                        user = mTwitter.followAction(UID, false);
-                    } else if (user.followRequested()) {
-                        user = mTwitter.followAction(UID, false);
-                    } else {
-                        user = mTwitter.followAction(UID, true);
-                    }
+                    if (isFollowing)
+                        user = mTwitter.unfollowUser(UID);
+                    else if (!user.followRequested())
+                        user = mTwitter.followUser(UID);
+                    // TODO purge follow request
                 } else {
+                    if (!isFollowing)
+                        user = mTwitter.followUser(UID);
+                    else
+                        user = mTwitter.unfollowUser(UID);
                     isFollowing = !isFollowing;
-                    user = mTwitter.followAction(UID, isFollowing);
                 }
                 publishProgress(GET_USER);
+
             } else if (MODE == ACTION_BLOCK) {
+                if (!isBlocked)
+                    user = mTwitter.blockUser(UID);
+                else
+                    user = mTwitter.unblockUser(UID);
                 isBlocked = !isBlocked;
-                user = mTwitter.blockAction(UID, isBlocked);
                 publishProgress(GET_USER);
+
             } else if (MODE == ACTION_MUTE) {
+                if (!isMuted)
+                    user = mTwitter.muteUser(UID);
+                else
+                    user = mTwitter.unmuteUser(UID);
                 isMuted = !isMuted;
-                user = mTwitter.muteAction(UID, isMuted);
                 publishProgress(GET_USER);
+
             } else {
                 if (!user.isLocked() || isFollowing) {
                     if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0)) {

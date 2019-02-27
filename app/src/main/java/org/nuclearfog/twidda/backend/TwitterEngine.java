@@ -255,12 +255,12 @@ public class TwitterEngine {
     /**
      * Get User Context
      *
-     * @param id User ID
+     * @param userId User ID
      * @return User Object
      * @throws TwitterException if Access is unavailable
      */
-    public TwitterUser getUser(long id) throws TwitterException {
-        return new TwitterUser(twitter.showUser(id));
+    public TwitterUser getUser(long userId) throws TwitterException {
+        return new TwitterUser(twitter.showUser(userId));
     }
 
 
@@ -278,12 +278,12 @@ public class TwitterEngine {
     /**
      * Efficient Access of Connection Information
      *
-     * @param id User ID compared with Home ID
+     * @param userId User ID compared with Home ID
      * @return array of connection states Index 0: Following, 1: Follow, 2: blocked 3: muted 4: canDM
      * @throws TwitterException if Connection is unavailable
      */
-    public boolean[] getConnection(long id) throws TwitterException {
-        Relationship connect = twitter.showFriendship(twitterID, id);
+    public boolean[] getConnection(long userId) throws TwitterException {
+        Relationship connect = twitter.showFriendship(twitterID, userId);
         boolean connection[] = new boolean[5];
         connection[0] = connect.isSourceFollowingTarget();
         connection[1] = connect.isTargetFollowingSource();
@@ -295,68 +295,83 @@ public class TwitterEngine {
 
 
     /**
-     * Switch following User
-     *
-     * @param userId User ID
-     * @param action using action
-     * @return updated user information
+     * Follow Twitter user
+     * @param userID User ID
+     * @return Twitter User
      * @throws TwitterException if Access is unavailable
      */
-    public TwitterUser followAction(long userId, boolean action) throws TwitterException {
-        User user;
-        if (action)
-            user = twitter.createFriendship(userId);
-        else
-            user = twitter.destroyFriendship(userId);
-        return new TwitterUser(user);
+    public TwitterUser followUser(long userID) throws TwitterException {
+        return new TwitterUser(twitter.createFriendship(userID));
     }
 
 
     /**
-     * Switch blocking User
-     *
-     * @param userId User ID
-     * @param action using action
-     * @return updated user information
+     * Unfollow Twitter user
+     * @param userID User ID
+     * @return Twitter User
      * @throws TwitterException if Access is unavailable
      */
-    public TwitterUser blockAction(long userId, boolean action) throws TwitterException {
-        User user;
-        if (action)
-            user = twitter.createBlock(userId);
-        else
-            user = twitter.destroyBlock(userId);
-        return new TwitterUser(user);
+    public TwitterUser unfollowUser(long userID) throws TwitterException {
+        return new TwitterUser(twitter.destroyFriendship(userID));
     }
 
 
     /**
-     * Switch muting User
+     * Block Twitter user
      *
-     * @param userId User ID
-     * @param action using action
-     * @return updated user information
+     * @param UserID User ID
+     * @return Twitter User
      * @throws TwitterException if Access is unavailable
      */
-    public TwitterUser muteAction(long userId, boolean action) throws TwitterException {
-        User user;
-        if (action)
-            user = twitter.createMute(userId);
-        else
-            user = twitter.destroyMute(userId);
-        return new TwitterUser(user);
+    public TwitterUser blockUser(long UserID) throws TwitterException {
+        return new TwitterUser(twitter.createBlock(UserID));
+    }
+
+
+    /**
+     * Unblock Twitter user
+     *
+     * @param UserID User ID
+     * @return Twitter User
+     * @throws TwitterException if Access is unavailable
+     */
+    public TwitterUser unblockUser(long UserID) throws TwitterException {
+        return new TwitterUser(twitter.destroyBlock(UserID));
+    }
+
+
+    /**
+     * Mute Twitter user
+     *
+     * @param UserID User ID
+     * @return Twitter User
+     * @throws TwitterException if Access is unavailable
+     */
+    public TwitterUser muteUser(long UserID) throws TwitterException {
+        return new TwitterUser(twitter.createMute(UserID));
+    }
+
+
+    /**
+     * Unmute Twitter user
+     * @param UserID User ID
+     * @return Twitter User
+     * @throws TwitterException if Access is unavailable
+     */
+    public TwitterUser unmuteUser(long UserID) throws TwitterException {
+        return new TwitterUser(twitter.destroyMute(UserID));
     }
 
 
     /**
      * get Following User List
      *
-     * @param id User ID
+     * @param userId User ID
      * @return List of Following User
      * @throws TwitterException if Access is unavailable
      */
-    public List<TwitterUser> getFollowing(long id, long cursor) throws TwitterException {
-        IDs userIDs = twitter.getFriendsIDs(id, cursor, load);
+    public List<TwitterUser> getFollowing(long userId, long cursor) throws TwitterException {
+        IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
@@ -364,12 +379,12 @@ public class TwitterEngine {
     /**
      * get Follower
      *
-     * @param id User ID
+     * @param userId User ID
      * @return List of Follower
      * @throws TwitterException if Access is unavailable
      */
-    public List<TwitterUser> getFollower(long id, long cursor) throws TwitterException {
-        IDs userIDs = twitter.getFollowersIDs(id, cursor, load);
+    public List<TwitterUser> getFollower(long userId, long cursor) throws TwitterException {
+        IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
@@ -404,12 +419,12 @@ public class TwitterEngine {
     /**
      * Get Tweet
      *
-     * @param id Tweet ID
+     * @param tweetId Tweet ID
      * @return Tweet Object
      * @throws TwitterException if Access is unavailable
      */
-    public Tweet getStatus(long id) throws TwitterException {
-        Status tweet = twitter.showStatus(id);
+    public Tweet getStatus(long tweetId) throws TwitterException {
+        Status tweet = twitter.showStatus(tweetId);
         return new Tweet(tweet);
     }
 
@@ -475,11 +490,11 @@ public class TwitterEngine {
 
 
     /**
-     * @param id Tweet ID
+     * @param tweetId Tweet ID
      * @throws TwitterException if Access is unavailable
      */
-    public void deleteTweet(long id) throws TwitterException {
-        twitter.destroyStatus(id);
+    public void deleteTweet(long tweetId) throws TwitterException {
+        twitter.destroyStatus(tweetId);
     }
 
 

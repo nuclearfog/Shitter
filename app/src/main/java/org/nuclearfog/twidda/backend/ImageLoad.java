@@ -45,7 +45,6 @@ public class ImageLoad extends AsyncTask<String, Void, Boolean> {
                     images[i] = BitmapFactory.decodeStream(new URL(link).openStream());
             }
         } catch (Exception err) {
-            err.printStackTrace();
             Log.e("Image Popup", err.getMessage());
             return false;
         }

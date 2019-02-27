@@ -76,7 +76,11 @@ abstract class ErrorHandling {
                 if (mConnect.getActiveNetworkInfo() == null || !mConnect.getActiveNetworkInfo().isConnected()) {
                     Toast.makeText(c, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(c, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+                    String strMsg = error.getMessage();
+                    if (strMsg != null && strMsg.trim().isEmpty())
+                        Toast.makeText(c, R.string.error, Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(c, error.getErrorMessage(), Toast.LENGTH_LONG).show();
                 }
         }
         return false;
