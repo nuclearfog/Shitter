@@ -14,7 +14,7 @@ Features:
 - Edit Twitter profile
 
 
-<img src="shitter_1.jpg" width="180" height="320"> <img src="shitter_2.jpg" width="180" height="320"> <img src="shitter_3.jpg" width="180" height="320">
+<img src="shitter_1.png" width="180" height="320"> <img src="shitter_2.png" width="180" height="320"> <img src="shitter_3.png" width="180" height="320">
 
 
 included libraries:
