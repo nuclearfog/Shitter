@@ -48,7 +48,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     private GlobalSettings settings;
     private RecyclerView homeList, favoriteList;
     private SwipeRefreshLayout homeReload, favoriteReload;
-    private View lastTab, tweetIndicator, favorIndicator;
+    private View lastTab, tweetUnderline, favorUnderline;
+    private TextView tweetCount, favorCount;
     private TabHost mTab;
     private NumberFormat formatter;
     private boolean home, isFollowing, isBlocked, isMuted, canDm, requested;
@@ -62,13 +63,17 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         super.onCreate(b);
         setContentView(R.layout.page_profile);
 
+        Toolbar tool = findViewById(R.id.profile_toolbar);
+        setSupportActionBar(tool);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         Bundle param = getIntent().getExtras();
         if (param != null) {
             userId = param.getLong("userID");
             username = param.getString("username");
         }
 
-        Toolbar tool = findViewById(R.id.profile_toolbar);
         TextView bioTxt = findViewById(R.id.bio);
         View root = findViewById(R.id.user_view);
         homeList = findViewById(R.id.ht_list);
@@ -76,10 +81,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         favoriteList = findViewById(R.id.hf_list);
         favoriteReload = findViewById(R.id.homefavorits);
         mTab = findViewById(R.id.profile_tab);
-
-        setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
@@ -91,8 +92,13 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        tweetIndicator = inflater.inflate(R.layout.tab_tw, null);
-        favorIndicator = inflater.inflate(R.layout.tab_fa, null);
+        View tweetIndicator = inflater.inflate(R.layout.tab_tw, null);
+        View favorIndicator = inflater.inflate(R.layout.tab_fa, null);
+        tweetUnderline = tweetIndicator.findViewById(R.id.tweet_divider);
+        favorUnderline = favorIndicator.findViewById(R.id.favor_divider);
+        tweetCount = tweetIndicator.findViewById(R.id.profile_tweet_count);
+        favorCount = favorIndicator.findViewById(R.id.profile_favor_count);
+        tweetUnderline.setBackgroundColor(settings.getHighlightColor());
 
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
@@ -104,8 +110,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         tab2.setIndicator(favorIndicator);
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
-
-        tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundColor(settings.getHighlightColor());
 
         mTab.setOnTabChangedListener(this);
         homeReload.setOnRefreshListener(this);
@@ -307,15 +311,15 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         tabIndex = mTab.getCurrentTab();
         switch (tabIndex) {
             case 0:
-                homeList.smoothScrollToPosition(0);
-                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundColor(settings.getHighlightColor());
-                favorIndicator.findViewById(R.id.favor_divider).setBackgroundColor(0);
+                favoriteList.smoothScrollToPosition(0);
+                tweetUnderline.setBackgroundColor(settings.getHighlightColor());
+                favorUnderline.setBackgroundColor(0);
                 break;
 
             case 1:
-                favoriteList.smoothScrollToPosition(0);
-                favorIndicator.findViewById(R.id.favor_divider).setBackgroundColor(settings.getHighlightColor());
-                tweetIndicator.findViewById(R.id.tweet_divider).setBackgroundColor(0);
+                homeList.smoothScrollToPosition(0);
+                favorUnderline.setBackgroundColor(settings.getHighlightColor());
+                tweetUnderline.setBackgroundColor(0);
                 break;
         }
     }
@@ -352,8 +356,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
 
     public void setTweetCount(int tweets, int favors) {
-        TextView tweetCount = tweetIndicator.findViewById(R.id.profile_tweet_count);
-        TextView favorCount = favorIndicator.findViewById(R.id.profile_favor_count);
         tweetCount.setText(formatter.format(tweets));
         favorCount.setText(formatter.format(favors));
     }

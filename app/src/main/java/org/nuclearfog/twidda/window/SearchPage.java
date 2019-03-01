@@ -41,17 +41,20 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     private SwipeRefreshLayout tweetReload;
     private GlobalSettings settings;
     private TwitterSearch mSearch;
-    private View twIndicator, usIndicator;
+    private View lastView, twUnderline, usUnderline;
     private TabHost tabhost;
-    private View lastView;
     private String search = "";
     private int tabIndex = 0;
-
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_search);
+
+        Toolbar tool = findViewById(R.id.search_toolbar);
+        setSupportActionBar(tool);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle param = getIntent().getExtras();
         if (param != null)
@@ -62,18 +65,16 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         userSearch = findViewById(R.id.user_result);
         tweetReload = findViewById(R.id.searchtweets);
         tabhost = findViewById(R.id.search_tab);
-        Toolbar tool = findViewById(R.id.search_toolbar);
 
         settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
 
-        setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         LayoutInflater inflater = LayoutInflater.from(this);
-        twIndicator = inflater.inflate(R.layout.tab_ts, null);
-        usIndicator = inflater.inflate(R.layout.tab_us, null);
+        View twIndicator = inflater.inflate(R.layout.tab_ts, null);
+        View usIndicator = inflater.inflate(R.layout.tab_us, null);
+        twUnderline = twIndicator.findViewById(R.id.ts_divider);
+        usUnderline = usIndicator.findViewById(R.id.us_divider);
+        twUnderline.setBackgroundColor(settings.getHighlightColor());
 
         tabhost.setup();
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");
@@ -86,8 +87,6 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         tab2.setIndicator(usIndicator);
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
-
-        twIndicator.findViewById(R.id.ts_divider).setBackgroundColor(settings.getHighlightColor());
 
         tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         userSearch.setLayoutManager(new LinearLayoutManager(this));
@@ -214,13 +213,12 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         tabIndex = tabhost.getCurrentTab();
         switch (tabIndex) {
             case 0:
-                twIndicator.findViewById(R.id.ts_divider).setBackgroundColor(settings.getHighlightColor());
-                usIndicator.findViewById(R.id.us_divider).setBackgroundColor(0);
+                twUnderline.setBackgroundColor(settings.getHighlightColor());
+                usUnderline.setBackgroundColor(0);
                 break;
-
             case 1:
-                usIndicator.findViewById(R.id.us_divider).setBackgroundColor(settings.getHighlightColor());
-                twIndicator.findViewById(R.id.ts_divider).setBackgroundResource(0);
+                usUnderline.setBackgroundColor(settings.getHighlightColor());
+                twUnderline.setBackgroundResource(0);
                 break;
         }
     }

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
     private TimelineAdapter timelineAdapter, mentionAdapter;
-    private View tlIndicator, trIndicator, mnIndicator;
+    private View tlUnderline, trUnderline, mnUnderline;
     private View lastTab, root;
     private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
@@ -66,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_main);
 
+        Toolbar toolbar = findViewById(R.id.profile_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         timelineList = findViewById(R.id.tl_list);
         trendList = findViewById(R.id.tr_list);
         mentionList = findViewById(R.id.m_list);
@@ -73,19 +78,15 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         trendReload = findViewById(R.id.trends);
         mentionReload = findViewById(R.id.mention);
         tabhost = findViewById(R.id.main_tabhost);
-        Toolbar toolbar = findViewById(R.id.profile_toolbar);
         root = findViewById(R.id.main_layout);
 
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         LayoutInflater inflater = LayoutInflater.from(this);
-        tlIndicator = inflater.inflate(R.layout.tab_tl, null);
-        trIndicator = inflater.inflate(R.layout.tab_tr, null);
-        mnIndicator = inflater.inflate(R.layout.tab_mn, null);
-
-        settings = GlobalSettings.getInstance(this);
+        View tlIndicator = inflater.inflate(R.layout.tab_tl, null);
+        View trIndicator = inflater.inflate(R.layout.tab_tr, null);
+        View mnIndicator = inflater.inflate(R.layout.tab_mn, null);
+        tlUnderline = tlIndicator.findViewById(R.id.tl_divider);
+        trUnderline = trIndicator.findViewById(R.id.tr_divider);
+        mnUnderline = mnIndicator.findViewById(R.id.mn_divider);
 
         tabhost.setup();
         TabSpec tab1 = tabhost.newTabSpec("timeline");
@@ -101,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         tab3.setIndicator(mnIndicator);
         tabhost.addTab(tab3);
 
-        tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(settings.getHighlightColor());
-
         timelineList.setLayoutManager(new LinearLayoutManager(this));
         trendList.setLayoutManager(new LinearLayoutManager(this));
         mentionList.setLayoutManager(new LinearLayoutManager(this));
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         timelineReload.setOnRefreshListener(this);
         trendReload.setOnRefreshListener(this);
         mentionReload.setOnRefreshListener(this);
+        settings = GlobalSettings.getInstance(this);
     }
 
 
@@ -142,6 +142,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             home = new MainPage(this);
             home.execute(MainPage.DATA, 1);
+
+            if (tabIndex == 0)
+                tlUnderline.setBackgroundColor(settings.getHighlightColor());
+            else if (tabIndex == 1)
+                trUnderline.setBackgroundColor(settings.getHighlightColor());
+            else
+                mnUnderline.setBackgroundColor(settings.getHighlightColor());
 
             Uri link = getIntent().getData();
             if (link != null) {
@@ -260,9 +267,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.action_settings:
-                if (home != null && home.getStatus() == RUNNING) {
+                if (home != null && home.getStatus() == RUNNING)
                     home.cancel(true);
-                }
                 home = null;
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
@@ -310,21 +316,21 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         invalidateOptionsMenu();
         switch (tabIndex) {
             case 0:
-                tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(settings.getHighlightColor());
-                trIndicator.findViewById(R.id.tr_divider).setBackgroundColor(0);
-                mnIndicator.findViewById(R.id.mn_divider).setBackgroundColor(0);
+                tlUnderline.setBackgroundColor(settings.getHighlightColor());
+                trUnderline.setBackgroundColor(0);
+                mnUnderline.setBackgroundColor(0);
                 break;
 
             case 1:
-                trIndicator.findViewById(R.id.tr_divider).setBackgroundColor(settings.getHighlightColor());
-                tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(0);
-                mnIndicator.findViewById(R.id.mn_divider).setBackgroundColor(0);
+                trUnderline.setBackgroundColor(settings.getHighlightColor());
+                tlUnderline.setBackgroundColor(0);
+                mnUnderline.setBackgroundColor(0);
                 break;
 
             case 2:
-                mnIndicator.findViewById(R.id.mn_divider).setBackgroundColor(settings.getHighlightColor());
-                tlIndicator.findViewById(R.id.tl_divider).setBackgroundColor(0);
-                trIndicator.findViewById(R.id.tr_divider).setBackgroundColor(0);
+                mnUnderline.setBackgroundColor(settings.getHighlightColor());
+                tlUnderline.setBackgroundColor(0);
+                trUnderline.setBackgroundColor(0);
                 break;
         }
     }
