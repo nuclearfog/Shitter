@@ -12,7 +12,6 @@
     <string name="color_settings">Farbeinstellungen</string>
     <string name="data_load">Datenverbrauch</string>
     <string name="trend_setting">Trendeinstellung</string>
-    <string name="database">Datenbank</string>
     <string name="profile">Profil</string>
     <string name="register_link">PIN aufrufen</string>
     <string name="profile_image">profilbild</string>
@@ -109,4 +108,5 @@
     <string name="upload_button">hochladen</string>
     <string name="exit_confirm">Änderungen verwerfen?</string>
     <string name="toggle_answer">Antworten laden</string>
+    <string name="user_data">Nutzerdaten</string>
 </resources>

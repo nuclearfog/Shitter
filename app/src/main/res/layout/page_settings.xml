@@ -181,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin"
-                android:text="@string/database"
+                android:text="@string/user_data"
                 android:textSize="18sp" />
 
             <View

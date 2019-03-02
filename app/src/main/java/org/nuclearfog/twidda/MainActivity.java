@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     public void onItemClick(RecyclerView parent, int position) {
         switch (parent.getId()) {
             case R.id.tl_list:
-                if (timelineAdapter != null && !timelineReload.isRefreshing()) {
+                if (!timelineReload.isRefreshing()) {
                     Tweet tweet = timelineAdapter.getData().get(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
@@ -326,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.tr_list:
-                if (trendsAdapter != null && !trendReload.isRefreshing()) {
+                if (!trendReload.isRefreshing()) {
                     String search = trendsAdapter.getData().get(position).getName();
                     Intent intent = new Intent(this, SearchPage.class);
                     if (!search.startsWith("#"))
@@ -337,7 +337,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.m_list:
-                if (mentionAdapter != null && !mentionReload.isRefreshing()) {
+                if (!mentionReload.isRefreshing()) {
                     Tweet tweet = mentionAdapter.getData().get(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();

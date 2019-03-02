@@ -47,6 +47,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     private ProfileLoader mProfile;
     private GlobalSettings settings;
     private RecyclerView homeList, favoriteList;
+    private TimelineAdapter tweetAdapter, favAdapter;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private View lastTab, tweetUnderline, favorUnderline;
     private TextView tweetCount, favorCount;
@@ -121,15 +122,15 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     protected void onStart() {
         super.onStart();
         if (mProfile == null) {
-            TimelineAdapter homeTl = new TimelineAdapter(this);
-            homeTl.setColor(settings.getHighlightColor(), settings.getFontColor());
-            homeTl.toggleImage(settings.getImageLoad());
-            homeList.setAdapter(homeTl);
+            tweetAdapter = new TimelineAdapter(this);
+            tweetAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+            tweetAdapter.toggleImage(settings.getImageLoad());
+            homeList.setAdapter(tweetAdapter);
 
-            TimelineAdapter homeFav = new TimelineAdapter(this);
-            homeFav.setColor(settings.getHighlightColor(), settings.getFontColor());
-            homeFav.toggleImage(settings.getImageLoad());
-            favoriteList.setAdapter(homeFav);
+            favAdapter = new TimelineAdapter(this);
+            favAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+            favAdapter.toggleImage(settings.getImageLoad());
+            favoriteList.setAdapter(favAdapter);
 
             mProfile = new ProfileLoader(this);
             mProfile.execute(userId, 0L);
@@ -327,22 +328,24 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onItemClick(RecyclerView parent, int position) {
-        if (parent.getId() == R.id.ht_list) {
-            TimelineAdapter tweetAdapter = (TimelineAdapter) homeList.getAdapter();
-            if (tweetAdapter != null && !homeReload.isRefreshing()) {
-                Tweet tweet = tweetAdapter.getData().get(position);
-                if (tweet.getEmbeddedTweet() != null)
-                    tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
-            }
-        } else {
-            TimelineAdapter tweetAdapter = (TimelineAdapter) favoriteList.getAdapter();
-            if (tweetAdapter != null && !favoriteReload.isRefreshing()) {
-                Tweet tweet = tweetAdapter.getData().get(position);
-                if (tweet.getEmbeddedTweet() != null)
-                    tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
-            }
+        switch (parent.getId()) {
+            case R.id.ht_list:
+                if (!homeReload.isRefreshing()) {
+                    Tweet tweet = tweetAdapter.getData().get(position);
+                    if (tweet.getEmbeddedTweet() != null)
+                        tweet = tweet.getEmbeddedTweet();
+                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                }
+                break;
+
+            case R.id.hf_list:
+                if (!favoriteReload.isRefreshing()) {
+                    Tweet tweet = favAdapter.getData().get(position);
+                    if (tweet.getEmbeddedTweet() != null)
+                        tweet = tweet.getEmbeddedTweet();
+                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                }
+                break;
         }
     }
 

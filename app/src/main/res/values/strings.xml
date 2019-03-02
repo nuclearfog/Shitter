@@ -25,7 +25,6 @@
     <string name="followback">follows you</string>
     <string name="data_load">data consumption</string>
     <string name="trend_setting">trend setting</string>
-    <string name="database">database</string>
     <string name="profile">profile</string>
     <string name="register_link">get PIN!</string>
     <string name="image">load images</string>
@@ -117,4 +116,5 @@
     <string name="upload_button">upload</string>
     <string name="exit_confirm">discard changes?</string>
     <string name="toggle_answer">Load answer</string>
+    <string name="user_data">User data</string>
 </resources>

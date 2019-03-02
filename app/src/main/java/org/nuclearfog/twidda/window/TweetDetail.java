@@ -27,7 +27,6 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
-import org.nuclearfog.twidda.backend.ImageLoad;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -38,7 +37,6 @@ import static android.os.AsyncTask.Status.RUNNING;
  * Detailed Tweet Activity
  *
  * @see StatusLoader
- * @see ImageLoad
  */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClickListener, OnRefreshListener, OnTagClickListener {
@@ -47,6 +45,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private static final int TWEET = 2;
 
     private RecyclerView answer_list;
+    private TimelineAdapter answerAdapter;
     private StatusLoader mStat;
     private GlobalSettings settings;
     private SwipeRefreshLayout answerReload;
@@ -106,7 +105,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         if (mStat == null) {
-            TimelineAdapter answerAdapter = new TimelineAdapter(this);
+            answerAdapter = new TimelineAdapter(this);
             answerAdapter.toggleImage(settings.getImageLoad());
             answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             answer_list.setAdapter(answerAdapter);
@@ -249,9 +248,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onItemClick(RecyclerView rv, int position) {
-        TimelineAdapter timeLineAdapter = (TimelineAdapter) answer_list.getAdapter();
-        if (timeLineAdapter != null && !answerReload.isRefreshing()) {
-            Tweet tweet = timeLineAdapter.getData().get(position);
+        if (!answerReload.isRefreshing()) {
+            Tweet tweet = answerAdapter.getData().get(position);
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.getId());
             intent.putExtra("userID", tweet.getUser().getId());

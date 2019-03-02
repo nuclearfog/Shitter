@@ -38,6 +38,8 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         OnTabChangeListener, OnItemClickListener {
 
     private RecyclerView tweetSearch, userSearch;
+    private TimelineAdapter searchAdapter;
+    private UserAdapter userAdapter;
     private SwipeRefreshLayout tweetReload;
     private GlobalSettings settings;
     private TwitterSearch mSearch;
@@ -100,12 +102,12 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     protected void onStart() {
         super.onStart();
         if (mSearch == null) {
-            TimelineAdapter searchAdapter = new TimelineAdapter(this);
+            searchAdapter = new TimelineAdapter(this);
             searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             searchAdapter.toggleImage(settings.getImageLoad());
             tweetSearch.setAdapter(searchAdapter);
 
-            UserAdapter userAdapter = new UserAdapter(this);
+            userAdapter = new UserAdapter(this);
             userAdapter.toggleImage(settings.getImageLoad());
             userAdapter.setColor(settings.getFontColor());
             userSearch.setAdapter(userAdapter);
@@ -174,27 +176,26 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onItemClick(RecyclerView rv, int position) {
-        if (!tweetReload.isRefreshing())
-            if (rv.getId() == R.id.tweet_result) {
-                TimelineAdapter tweetAdapter = (TimelineAdapter) tweetSearch.getAdapter();
-                if (tweetAdapter != null) {
-                    Tweet tweet = tweetAdapter.getData().get(position);
-                    Intent intent = new Intent(this, TweetDetail.class);
-                    intent.putExtra("tweetID", tweet.getId());
-                    intent.putExtra("userID", tweet.getUser().getId());
-                    intent.putExtra("username", tweet.getUser().getScreenname());
-                    startActivity(intent);
-                }
-            } else {
-                UserAdapter userAdapter = (UserAdapter) userSearch.getAdapter();
-                if (userAdapter != null) {
+        if (!tweetReload.isRefreshing()) {
+            switch (rv.getId()) {
+                case R.id.tweet_result:
+                    Tweet tweet = searchAdapter.getData().get(position);
+                    Intent tweetdetail = new Intent(this, TweetDetail.class);
+                    tweetdetail.putExtra("tweetID", tweet.getId());
+                    tweetdetail.putExtra("userID", tweet.getUser().getId());
+                    tweetdetail.putExtra("username", tweet.getUser().getScreenname());
+                    startActivity(tweetdetail);
+                    break;
+
+                case R.id.user_result:
                     TwitterUser user = userAdapter.getData().get(position);
-                    Intent intent = new Intent(this, UserProfile.class);
-                    intent.putExtra("userID", user.getId());
-                    intent.putExtra("username", user.getScreenname());
-                    startActivity(intent);
-                }
+                    Intent userprofile = new Intent(this, UserProfile.class);
+                    userprofile.putExtra("userID", user.getId());
+                    userprofile.putExtra("username", user.getScreenname());
+                    startActivity(userprofile);
+                    break;
             }
+        }
     }
 
 
