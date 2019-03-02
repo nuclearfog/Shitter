@@ -296,6 +296,7 @@ public class TwitterEngine {
 
     /**
      * Follow Twitter user
+     *
      * @param userID User ID
      * @return Twitter User
      * @throws TwitterException if Access is unavailable
@@ -307,6 +308,7 @@ public class TwitterEngine {
 
     /**
      * Unfollow Twitter user
+     *
      * @param userID User ID
      * @return Twitter User
      * @throws TwitterException if Access is unavailable
@@ -354,6 +356,7 @@ public class TwitterEngine {
 
     /**
      * Unmute Twitter user
+     *
      * @param UserID User ID
      * @return Twitter User
      * @throws TwitterException if Access is unavailable

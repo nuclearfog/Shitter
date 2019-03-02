@@ -50,7 +50,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         text = findViewById(R.id.dm_text);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getTweetColor());
+        root.setBackgroundColor(settings.getPopupColor());
 
         receiver.append(username);
         send.setOnClickListener(this);

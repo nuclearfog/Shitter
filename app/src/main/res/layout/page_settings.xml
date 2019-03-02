@@ -69,7 +69,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/color_tweet"
+                    android:id="@+id/color_popup"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_button"

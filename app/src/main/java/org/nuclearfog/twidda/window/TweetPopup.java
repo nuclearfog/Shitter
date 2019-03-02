@@ -69,7 +69,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         imgCount = findViewById(R.id.imgcount);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getTweetColor());
+        root.setBackgroundColor(settings.getPopupColor());
         tweet.append(addition);
 
         closeButton.setOnClickListener(this);

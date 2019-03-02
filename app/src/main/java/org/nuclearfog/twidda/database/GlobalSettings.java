@@ -66,6 +66,7 @@ public class GlobalSettings {
 
     /**
      * Get get background color
+     *
      * @return color value
      */
     public int getBackgroundColor() {
@@ -74,6 +75,7 @@ public class GlobalSettings {
 
     /**
      * Set background color
+     *
      * @param color background color value
      */
     public void setBackgroundColor(int color) {
@@ -85,6 +87,7 @@ public class GlobalSettings {
 
     /**
      * get font color
+     *
      * @return font color value
      */
     public int getFontColor() {
@@ -93,6 +96,7 @@ public class GlobalSettings {
 
     /**
      * set font color
+     *
      * @param color font color value
      */
     public void setFontColor(int color) {
@@ -104,6 +108,7 @@ public class GlobalSettings {
 
     /**
      * get highlight color
+     *
      * @return highlight color value
      */
     public int getHighlightColor() {
@@ -112,6 +117,7 @@ public class GlobalSettings {
 
     /**
      * set highlight color
+     *
      * @param color highlight color value
      */
     public void setHighlightColor(int color) {
@@ -123,17 +129,19 @@ public class GlobalSettings {
 
     /**
      * get message window color
+     *
      * @return color value
      */
-    public int getTweetColor() {
+    public int getPopupColor() {
         return tweet_color;
     }
 
     /**
      * set message window color
+     *
      * @param color color value
      */
-    public void setTweetColor(int color) {
+    public void setPopupColor(int color) {
         tweet_color = color;
         Editor edit = settings.edit();
         edit.putInt("tweet_color", color);
@@ -142,6 +150,7 @@ public class GlobalSettings {
 
     /**
      * image loading enabled
+     *
      * @return true if enabled
      */
     public boolean getImageLoad() {
@@ -150,6 +159,7 @@ public class GlobalSettings {
 
     /**
      * enable/disable image load
+     *
      * @param image true if enabled
      */
     public void setImageLoad(boolean image) {
@@ -161,6 +171,7 @@ public class GlobalSettings {
 
     /**
      * answer loading enabled
+     *
      * @return if answer loading is enabled
      */
     public boolean getAnswerLoad() {
@@ -169,6 +180,7 @@ public class GlobalSettings {
 
     /**
      * enable/disable answer loading
+     *
      * @param loadAnswer true if enabled
      */
     public void setAnswerLoad(boolean loadAnswer) {
@@ -180,6 +192,7 @@ public class GlobalSettings {
 
     /**
      * get World ID for trends
+     *
      * @return World ID
      */
     public int getWoeId() {
@@ -188,6 +201,7 @@ public class GlobalSettings {
 
     /**
      * set World ID for trends
+     *
      * @param id World ID
      */
     public void setWoeId(long id) {
@@ -199,6 +213,7 @@ public class GlobalSettings {
 
     /**
      * return position of the world id dropdown list
+     *
      * @return position
      */
     public int getWoeIdSelection() {
@@ -207,6 +222,7 @@ public class GlobalSettings {
 
     /**
      * set last position of the dropdown list
+     *
      * @param pos position of the last selection
      */
     public void setWoeIdSelection(int pos) {
@@ -218,6 +234,7 @@ public class GlobalSettings {
 
     /**
      * Check if custom World ID is set
+     *
      * @return if custom world ID is set
      */
     public boolean getCustomWidSet() {
@@ -226,6 +243,7 @@ public class GlobalSettings {
 
     /**
      * Set custom World ID
+     *
      * @param customWoeId true if Custom world ID is set
      */
     public void setCustomWidSet(boolean customWoeId) {
@@ -237,6 +255,7 @@ public class GlobalSettings {
 
     /**
      * get loading limit of tweets/users
+     *
      * @return max numbers of tweets/users should be loaded
      */
     public int getRowLimit() {
@@ -245,6 +264,7 @@ public class GlobalSettings {
 
     /**
      * set limit of tweets/users
+     *
      * @param limit max numbers of tweets/users
      */
     public void setRowLimit(int limit) {
@@ -256,6 +276,7 @@ public class GlobalSettings {
 
     /**
      * Check if current user is logged in
+     *
      * @return true if current user is logged in
      */
     public boolean getLogin() {
@@ -264,6 +285,7 @@ public class GlobalSettings {
 
     /**
      * get Access tokens
+     *
      * @return access tokens
      */
     public String[] getKeys() {
@@ -275,6 +297,7 @@ public class GlobalSettings {
 
     /**
      * get current users ID
+     *
      * @return User ID
      */
     public long getUserId() {
@@ -283,6 +306,7 @@ public class GlobalSettings {
 
     /**
      * get Datetime Formatter for the current location
+     *
      * @return Datetime Formatter
      */
     public SimpleDateFormat getDateFormatter() {
@@ -291,8 +315,9 @@ public class GlobalSettings {
 
     /**
      * Set Access tokens and user ID
-     * @param key1 1st access token
-     * @param key2 2nd access token
+     *
+     * @param key1   1st access token
+     * @param key2   2nd access token
      * @param userId User ID
      */
     public void setConnection(String key1, String key2, Long userId) {

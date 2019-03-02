@@ -143,12 +143,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             home = new MainPage(this);
             home.execute(MainPage.DATA, 1);
 
-            if (tabIndex == 0)
-                tlUnderline.setBackgroundColor(settings.getHighlightColor());
-            else if (tabIndex == 1)
-                trUnderline.setBackgroundColor(settings.getHighlightColor());
-            else
-                mnUnderline.setBackgroundColor(settings.getHighlightColor());
+            setIndicator();
 
             Uri link = getIntent().getData();
             if (link != null) {
@@ -314,6 +309,46 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         animate();
         tabIndex = tabhost.getCurrentTab();
         invalidateOptionsMenu();
+        setIndicator();
+    }
+
+
+    @Override
+    public void onItemClick(RecyclerView parent, int position) {
+        switch (parent.getId()) {
+            case R.id.tl_list:
+                if (timelineAdapter != null && !timelineReload.isRefreshing()) {
+                    Tweet tweet = timelineAdapter.getData().get(position);
+                    if (tweet.getEmbeddedTweet() != null)
+                        tweet = tweet.getEmbeddedTweet();
+                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                }
+                break;
+
+            case R.id.tr_list:
+                if (trendsAdapter != null && !trendReload.isRefreshing()) {
+                    String search = trendsAdapter.getData().get(position).getName();
+                    Intent intent = new Intent(this, SearchPage.class);
+                    if (!search.startsWith("#"))
+                        search = '\"' + search + '\"';
+                    intent.putExtra("search", search);
+                    startActivity(intent);
+                }
+                break;
+
+            case R.id.m_list:
+                if (mentionAdapter != null && !mentionReload.isRefreshing()) {
+                    Tweet tweet = mentionAdapter.getData().get(position);
+                    if (tweet.getEmbeddedTweet() != null)
+                        tweet = tweet.getEmbeddedTweet();
+                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                }
+                break;
+        }
+    }
+
+
+    private void setIndicator() {
         switch (tabIndex) {
             case 0:
                 tlUnderline.setBackgroundColor(settings.getHighlightColor());
@@ -332,35 +367,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 tlUnderline.setBackgroundColor(0);
                 trUnderline.setBackgroundColor(0);
                 break;
-        }
-    }
-
-
-    @Override
-    public void onItemClick(RecyclerView parent, int position) {
-        if (parent.getId() == R.id.tl_list) {
-            if (timelineAdapter != null && !timelineReload.isRefreshing()) {
-                Tweet tweet = timelineAdapter.getData().get(position);
-                if (tweet.getEmbeddedTweet() != null)
-                    tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
-            }
-        } else if (parent.getId() == R.id.tr_list) {
-            if (trendsAdapter != null && !trendReload.isRefreshing()) {
-                String search = trendsAdapter.getData().get(position).getName();
-                Intent intent = new Intent(this, SearchPage.class);
-                if (!search.startsWith("#"))
-                    search = '\"' + search + '\"';
-                intent.putExtra("search", search);
-                startActivity(intent);
-            }
-        } else if (parent.getId() == R.id.m_list) {
-            if (mentionAdapter != null && !mentionReload.isRefreshing()) {
-                Tweet tweet = mentionAdapter.getData().get(position);
-                if (tweet.getEmbeddedTweet() != null)
-                    tweet = tweet.getEmbeddedTweet();
-                openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
-            }
         }
     }
 

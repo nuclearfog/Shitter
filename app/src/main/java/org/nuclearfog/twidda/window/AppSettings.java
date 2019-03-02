@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +34,12 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  * @see GlobalSettings
  */
 public class AppSettings extends AppCompatActivity implements OnClickListener,
-        OnColorChangedListener, OnItemSelectedListener, OnCheckedChangeListener {
+        OnDismissListener, OnItemSelectedListener, OnCheckedChangeListener {
+
+    private static final int BACKGROUND = 0;
+    private static final int FONTCOLOR = 1;
+    private static final int HIGHLIGHT = 2;
+    private static final int POPUPCOLOR = 3;
 
     private GlobalSettings settings;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
@@ -41,6 +47,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private EditText woeIdText;
     private Spinner woeId;
     private View root;
+
+    private int color = 0;
     private int mode = 0;
 
     @Override
@@ -60,7 +68,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         Button logout = findViewById(R.id.logout);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
-        colorButton3 = findViewById(R.id.color_tweet);
+        colorButton3 = findViewById(R.id.color_popup);
         colorButton4 = findViewById(R.id.highlight_color);
         toggleImg = findViewById(R.id.toggleImg);
         toggleAns = findViewById(R.id.toggleAns);
@@ -89,7 +97,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         woeId.setSelection(settings.getWoeIdSelection());
         colorButton1.setBackgroundColor(settings.getBackgroundColor());
         colorButton2.setBackgroundColor(settings.getFontColor());
-        colorButton3.setBackgroundColor(settings.getTweetColor());
+        colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
         if (settings.getCustomWidSet()) {
             String text = Long.toString(settings.getWoeId());
@@ -147,23 +155,27 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 break;
 
             case R.id.color_background:
-                setColor(settings.getBackgroundColor());
-                mode = 0;
+                mode = BACKGROUND;
+                color = settings.getBackgroundColor();
+                setColor(color);
                 break;
 
             case R.id.color_font:
-                setColor(settings.getFontColor());
-                mode = 1;
+                mode = FONTCOLOR;
+                color = settings.getFontColor();
+                setColor(color);
                 break;
 
-            case R.id.color_tweet:
-                setColor(settings.getTweetColor());
-                mode = 2;
+            case R.id.color_popup:
+                mode = POPUPCOLOR;
+                color = settings.getPopupColor();
+                setColor(color);
                 break;
 
             case R.id.highlight_color:
-                setColor(settings.getHighlightColor());
-                mode = 3;
+                mode = HIGHLIGHT;
+                color = settings.getHighlightColor();
+                setColor(color);
                 break;
 
             case R.id.load_dialog:
@@ -189,22 +201,25 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onColorChanged(int color) {
+    public void onDismiss(DialogInterface d) {
         switch (mode) {
-            case 0:
+            case BACKGROUND:
                 root.setBackgroundColor(color);
                 settings.setBackgroundColor(color);
                 colorButton1.setBackgroundColor(color);
                 break;
-            case 1:
+
+            case FONTCOLOR:
                 settings.setFontColor(color);
                 colorButton2.setBackgroundColor(color);
                 break;
-            case 2:
-                settings.setTweetColor(color);
+
+            case POPUPCOLOR:
+                settings.setPopupColor(color);
                 colorButton3.setBackgroundColor(color);
                 break;
-            case 3:
+
+            case HIGHLIGHT:
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
                 break;
@@ -240,6 +255,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             case R.id.toggleImg:
                 settings.setImageLoad(checked);
                 break;
+
             case R.id.toggleAns:
                 settings.setAnswerLoad(checked);
                 break;
@@ -251,7 +267,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         Dialog d = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
-                .setOnColorChangedListener(this).build();
+                .setOnColorChangedListener(new OnColorChangedListener() {
+                    @Override
+                    public void onColorChanged(int i) {
+                        color = i;
+                    }
+                }).build();
+        d.setOnDismissListener(this);
         d.show();
     }
 }
