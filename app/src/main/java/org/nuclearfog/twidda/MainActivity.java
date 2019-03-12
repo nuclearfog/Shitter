@@ -276,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     @Override
     public void onBackPressed() {
         if (tabIndex == 0) {
-            overridePendingTransition(0, 0);
             super.onBackPressed();
         } else {
             tabhost.setCurrentTab(0);
