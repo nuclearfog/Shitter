@@ -47,6 +47,15 @@ public class TwitterSearch extends AsyncTask<String, Integer, Void> {
 
 
     @Override
+    protected void onPreExecute() {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+        tweetReload.setRefreshing(true);
+    }
+
+
+    @Override
     protected Void doInBackground(String... search) {
         String strSearch = search[0];
         long id = 1L;
@@ -92,9 +101,6 @@ public class TwitterSearch extends AsyncTask<String, Integer, Void> {
     @Override
     protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
-
-        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
-        tweetReload.setRefreshing(false);
 
         if (err != null) {
             ErrorHandling.printError(ui.get(), err);

@@ -35,6 +35,10 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.backend.MainPage.Mode.DATA;
+import static org.nuclearfog.twidda.backend.MainPage.Mode.HOME;
+import static org.nuclearfog.twidda.backend.MainPage.Mode.MENT;
+import static org.nuclearfog.twidda.backend.MainPage.Mode.TRND;
 import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
 
 /**
@@ -140,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             trendList.setAdapter(trendsAdapter);
             mentionList.setAdapter(mentionAdapter);
 
-            home = new MainPage(this, MainPage.Mode.DATA);
+            home = new MainPage(this, DATA);
             home.execute(1);
 
             setIndicator();
@@ -291,13 +295,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         switch (tabIndex) {
             default:
             case 0:
-                home = new MainPage(this, MainPage.Mode.HOME);
+                home = new MainPage(this, HOME);
                 break;
             case 1:
-                home = new MainPage(this, MainPage.Mode.TRND);
+                home = new MainPage(this, TRND);
                 break;
             case 2:
-                home = new MainPage(this, MainPage.Mode.MENT);
+                home = new MainPage(this, MENT);
                 break;
         }
         home.execute(1);

@@ -67,7 +67,6 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
             mAdapter.setColor(settings.getFontColor(), settings.getHighlightColor());
             mAdapter.setImageLoad(settings.getImageLoad());
             dmList.setAdapter(mAdapter);
-            refresh.setRefreshing(true);
             mLoader = new MessageLoader(this);
             mLoader.execute(MessageLoader.LOAD);
         }
@@ -78,7 +77,6 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
     protected void onStop() {
         if (mLoader != null && mLoader.getStatus() == RUNNING) {
             mLoader.cancel(true);
-            refresh.setRefreshing(false);
         }
         super.onStop();
     }

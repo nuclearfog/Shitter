@@ -23,6 +23,13 @@ import twitter4j.TwitterException;
 
 public class MainPage extends AsyncTask<Integer, Void, Void> {
 
+    public enum Mode {
+        DATA,
+        HOME,
+        TRND,
+        MENT
+    }
+
     private final Mode mode;
     private boolean failure = false;
 
@@ -167,13 +174,5 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
                     break;
             }
         }
-    }
-
-
-    public enum Mode {
-        DATA,
-        HOME,
-        TRND,
-        MENT
     }
 }

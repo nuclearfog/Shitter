@@ -43,6 +43,15 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
 
 
     @Override
+    protected void onPreExecute() {
+        if (ui.get() == null) return;
+
+        SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
+        mRefresh.setRefreshing(true);
+    }
+
+
+    @Override
     protected Long doInBackground(Long... param) {
         final long MODE = param[0];
         try {

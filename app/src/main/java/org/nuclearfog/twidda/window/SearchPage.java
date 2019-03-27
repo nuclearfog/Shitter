@@ -113,7 +113,6 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
             userSearch.setAdapter(userAdapter);
 
             mSearch = new TwitterSearch(this);
-            tweetReload.setRefreshing(true);
             mSearch.execute(search);
         }
     }
