@@ -132,10 +132,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             favAdapter.toggleImage(settings.getImageLoad());
             favoriteList.setAdapter(favAdapter);
 
-            mProfile = new ProfileLoader(this);
+            mProfile = new ProfileLoader(this, ProfileLoader.Mode.LDR_PROFILE);
             mProfile.execute(userId, 0L);
-            homeReload.setRefreshing(true);
-            favoriteReload.setRefreshing(true);
         }
     }
 
@@ -220,16 +218,16 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.profile_follow:
-                    mProfile = new ProfileLoader(this);
+                    mProfile = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
                     if (!isFollowing) {
-                        mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
+                        mProfile.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_unfollow)
                                 .setNegativeButton(R.string.no_confirm, null)
                                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mProfile.execute(userId, ProfileLoader.ACTION_FOLLOW);
+                                        mProfile.execute(userId);
                                     }
                                 })
                                 .show();
@@ -237,16 +235,16 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.profile_block:
-                    mProfile = new ProfileLoader(this);
+                    mProfile = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
                     if (isBlocked) {
-                        mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                        mProfile.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_block)
                                 .setNegativeButton(R.string.no_confirm, null)
                                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mProfile.execute(userId, ProfileLoader.ACTION_BLOCK);
+                                        mProfile.execute(userId);
                                     }
                                 })
                                 .show();
@@ -254,8 +252,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.profile_mute:
-                    mProfile = new ProfileLoader(this);
-                    mProfile.execute(userId, ProfileLoader.ACTION_MUTE);
+                    mProfile = new ProfileLoader(this, ProfileLoader.Mode.ACTION_MUTE);
+                    mProfile.execute(userId);
                     break;
 
                 case R.id.profile_message:
@@ -293,16 +291,17 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     public void onRefresh() {
         if (mProfile != null && mProfile.getStatus() == RUNNING)
             mProfile.cancel(true);
-        mProfile = new ProfileLoader(this);
 
         switch (tabIndex) {
+            default:
             case 0:
-                mProfile.execute(userId, ProfileLoader.GET_TWEETS, 1L);
+                mProfile = new ProfileLoader(this, ProfileLoader.Mode.GET_TWEETS);
                 break;
             case 1:
-                mProfile.execute(userId, ProfileLoader.GET_FAVORS, 1L);
+                mProfile = new ProfileLoader(this, ProfileLoader.Mode.GET_FAVORS);
                 break;
         }
+        mProfile.execute(userId);
     }
 
 

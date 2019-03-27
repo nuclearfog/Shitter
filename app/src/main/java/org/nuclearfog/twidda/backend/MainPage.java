@@ -21,13 +21,31 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class MainPage extends AsyncTask<Integer, Integer, Integer> {
+public class MainPage extends AsyncTask<Integer, Void, Void> {
 
-    public static final int DATA = 0;
-    public static final int HOME = 1;
-    public static final int TRND = 2;
-    public static final int MENT = 3;
-    private static final int FAIL = 4;
+    private final Mode mode;
+    private boolean failure = false;
+
+    public MainPage(@NonNull MainActivity context, Mode mode) {
+        ui = new WeakReference<>(context);
+        mTwitter = TwitterEngine.getInstance(context);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        tweetDb = new DatabaseAdapter(context);
+        woeId = settings.getWoeId();
+
+        tweets = new ArrayList<>();
+        trends = new ArrayList<>();
+        mention = new ArrayList<>();
+        this.mode = mode;
+
+        RecyclerView timelineList = context.findViewById(R.id.tl_list);
+        RecyclerView trendList = context.findViewById(R.id.tr_list);
+        RecyclerView mentionList = context.findViewById(R.id.m_list);
+
+        timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
+        trendsAdapter = (TrendAdapter) trendList.getAdapter();
+        mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
+    }
 
     private WeakReference<MainActivity> ui;
     private TwitterEngine mTwitter;
@@ -41,137 +59,121 @@ public class MainPage extends AsyncTask<Integer, Integer, Integer> {
 
     private int woeId;
 
-
-    public MainPage(@NonNull MainActivity context) {
-        ui = new WeakReference<>(context);
-        mTwitter = TwitterEngine.getInstance(context);
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        tweetDb = new DatabaseAdapter(context);
-        woeId = settings.getWoeId();
-
-        tweets = new ArrayList<>();
-        trends = new ArrayList<>();
-        mention = new ArrayList<>();
-
-        RecyclerView timelineList = context.findViewById(R.id.tl_list);
-        RecyclerView trendList = context.findViewById(R.id.tr_list);
-        RecyclerView mentionList = context.findViewById(R.id.m_list);
-
-        timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
-        trendsAdapter = (TrendAdapter) trendList.getAdapter();
-        mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
-    }
-
-
     @Override
-    protected Integer doInBackground(Integer... args) {
-        final int MODE = args[0];
-        final int PAGE = args[1];
+    protected Void doInBackground(Integer... args) {
+        final int PAGE = args[0];
         long sinceId = 1L;
         try {
-            switch (MODE) {
+            switch (mode) {
                 case HOME:
                     if (timelineAdapter.getItemCount() > 0)
                         sinceId = timelineAdapter.getItemId(0);
                     tweets = mTwitter.getHome(PAGE, sinceId);
-                    publishProgress(HOME);
+                    publishProgress();
                     tweetDb.storeHomeTimeline(tweets);
                     break;
 
                 case TRND:
                     trends = mTwitter.getTrends(woeId);
-                    publishProgress(TRND);
+                    publishProgress();
                     tweetDb.storeTrends(trends, woeId);
                     break;
 
                 case MENT:
-                    if (mentionAdapter.getItemCount() != 0)
+                    if (mentionAdapter.getItemCount() > 0)
                         sinceId = mentionAdapter.getItemId(0);
                     mention = mTwitter.getMention(PAGE, sinceId);
-                    publishProgress(MENT);
+                    publishProgress();
                     tweetDb.storeMentions(mention);
                     break;
 
-                default:
+                case DATA:
                     tweets = tweetDb.getHomeTimeline();
-                    publishProgress(HOME);
                     trends = tweetDb.getTrends(woeId);
-                    publishProgress(TRND);
                     mention = tweetDb.getMentions();
-                    publishProgress(MENT);
+                    publishProgress();
             }
+
         } catch (TwitterException err) {
             this.err = err;
-            return FAIL;
+            failure = true;
         } catch (Exception err) {
             Log.e("Main Page", err.getMessage());
-            return FAIL;
+            failure = true;
         }
-        return MODE;
+        return null;
     }
 
-
     @Override
-    protected void onProgressUpdate(Integer... modes) {
-        if (ui.get() == null) return;
+    protected void onProgressUpdate(Void... v) {
+        disableSwipe();
 
-        final int MODE = modes[0];
-
-        switch (MODE) {
+        switch (mode) {
             case HOME:
                 timelineAdapter.setData(tweets);
                 timelineAdapter.notifyDataSetChanged();
-                SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
-                timelineRefresh.setRefreshing(false);
                 break;
 
             case TRND:
                 trendsAdapter.setData(trends);
                 trendsAdapter.notifyDataSetChanged();
-                SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
-                trendRefresh.setRefreshing(false);
                 break;
 
             case MENT:
                 mentionAdapter.setData(mention);
                 mentionAdapter.notifyDataSetChanged();
-                SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
-                mentionRefresh.setRefreshing(false);
                 break;
+
+            default:
+                timelineAdapter.setData(tweets);
+                trendsAdapter.setData(trends);
+                mentionAdapter.setData(mention);
+                timelineAdapter.notifyDataSetChanged();
+                trendsAdapter.notifyDataSetChanged();
+                mentionAdapter.notifyDataSetChanged();
         }
     }
 
+    @Override
+    protected void onPostExecute(Void v) {
+        if (failure && ui.get() != null) {
+            disableSwipe();
+            if (err != null)
+                ErrorHandling.printError(ui.get(), err);
+        }
+    }
 
     @Override
-    protected void onPostExecute(Integer result) {
-        if (ui.get() == null) return;
+    protected void onCancelled() {
+        disableSwipe();
+    }
 
-        if (result == FAIL) {
-            SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
-            SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
-            SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
+    private void disableSwipe() {
+        if (ui.get() != null) {
+            switch (mode) {
+                case HOME:
+                    SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
+                    timelineRefresh.setRefreshing(false);
+                    break;
 
-            timelineRefresh.setRefreshing(false);
-            trendRefresh.setRefreshing(false);
-            mentionRefresh.setRefreshing(false);
+                case TRND:
+                    SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
+                    trendRefresh.setRefreshing(false);
+                    break;
 
-            if (err != null) {
-                ErrorHandling.printError(ui.get(), err);
+                case MENT:
+                    SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
+                    mentionRefresh.setRefreshing(false);
+                    break;
             }
         }
     }
 
 
-    @Override
-    protected void onCancelled() {
-        if (ui.get() == null) return;
-
-        SwipeRefreshLayout timelineRefresh = ui.get().findViewById(R.id.timeline);
-        SwipeRefreshLayout trendRefresh = ui.get().findViewById(R.id.trends);
-        SwipeRefreshLayout mentionRefresh = ui.get().findViewById(R.id.mention);
-
-        timelineRefresh.setRefreshing(false);
-        trendRefresh.setRefreshing(false);
-        mentionRefresh.setRefreshing(false);
+    public enum Mode {
+        DATA,
+        HOME,
+        TRND,
+        MENT
     }
 }

@@ -279,7 +279,7 @@ public class TwitterEngine {
      * Efficient Access of Connection Information
      *
      * @param userId User ID compared with Home ID
-     * @return array of connection states Index 0: Following, 1: Follow, 2: blocked 3: muted 4: canDM
+     * @return array of connection states Index 0: I follow user, 1: user follows me, 2: blocked 3: muted 4: canDM
      * @throws TwitterException if Connection is unavailable
      */
     public boolean[] getConnection(long userId) throws TwitterException {

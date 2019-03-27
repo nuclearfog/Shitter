@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             trendList.setAdapter(trendsAdapter);
             mentionList.setAdapter(mentionAdapter);
 
-            home = new MainPage(this);
-            home.execute(MainPage.DATA, 1);
+            home = new MainPage(this, MainPage.Mode.DATA);
+            home.execute(1);
 
             setIndicator();
 
@@ -287,19 +287,20 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     public void onRefresh() {
         if (home != null && home.getStatus() == RUNNING)
             home.cancel(true);
-        home = new MainPage(MainActivity.this);
 
         switch (tabIndex) {
+            default:
             case 0:
-                home.execute(MainPage.HOME, 1);
+                home = new MainPage(this, MainPage.Mode.HOME);
                 break;
             case 1:
-                home.execute(MainPage.TRND, 1);
+                home = new MainPage(this, MainPage.Mode.TRND);
                 break;
             case 2:
-                home.execute(MainPage.MENT, 1);
+                home = new MainPage(this, MainPage.Mode.MENT);
                 break;
         }
+        home.execute(1);
     }
 
 

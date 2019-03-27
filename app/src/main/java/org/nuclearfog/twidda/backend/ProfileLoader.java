@@ -34,18 +34,10 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class ProfileLoader extends AsyncTask<Long, Long, Long> {
+public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
-    public static final long GET_TWEETS = 1;
-    public static final long GET_FAVORS = 2;
-    // USER ACTION
-    public static final long ACTION_FOLLOW = 3;
-    public static final long ACTION_BLOCK = 4;
-    public static final long ACTION_MUTE = 5;
-    // INTERN FLAGS
-    private static final long GET_USER = 6;
-    private static final long FAILURE = -1;
-
+    private final Mode mode;
+    private boolean failure = false;
     private TimelineAdapter homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
@@ -58,20 +50,17 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
     private long homeId;
     private int highlight;
     private boolean imgEnabled;
-
     private boolean isHome = false;
     private boolean isFollowing = false;
     private boolean isFollowed = false;
     private boolean isBlocked = false;
     private boolean isMuted = false;
     private boolean canDm = false;
-
-
     /**
      * @param context Context to Activity
      * @see UserProfile
      */
-    public ProfileLoader(@NonNull UserProfile context) {
+    public ProfileLoader(@NonNull UserProfile context, Mode mode) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
@@ -82,6 +71,7 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         homeId = settings.getUserId();
         highlight = settings.getHighlightColor();
 
+        this.mode = mode;
         tweets = new ArrayList<>();
         favors = new ArrayList<>();
 
@@ -91,34 +81,38 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
         homeFav = (TimelineAdapter) profileFavors.getAdapter();
     }
 
+    @Override
+    protected void onPreExecute() {
+        if (ui.get() != null) {
+            if (mode == Mode.LDR_PROFILE) {
+                SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+                SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+                homeReload.setRefreshing(true);
+                favReload.setRefreshing(true);
+            }
+        }
+    }
 
     @Override
-    protected Long doInBackground(Long... args) {
+    protected Void doInBackground(Long... args) {
         final long UID = args[0];
-        final long MODE = args[1];
         long page = 1L;
-        long sinceId = 1L;
         if (args.length > 2)
             page = args[2];
         isHome = homeId == UID;
-
         try {
-            user = database.getUser(UID);
-            if (user != null)
-                publishProgress(GET_USER);
-
-            if (homeTl.getItemCount() == 0) {
+            if (mode == Mode.LDR_PROFILE) {
+                user = database.getUser(UID);
+                if (user != null)
+                    publishProgress();
                 tweets = database.getUserTweets(UID);
-                if (!tweets.isEmpty())
-                    publishProgress(GET_TWEETS);
-            }
-            if (homeFav.getItemCount() == 0) {
                 favors = database.getUserFavs(UID);
-                if (!favors.isEmpty())
-                    publishProgress(GET_FAVORS);
             }
 
             user = mTwitter.getUser(UID);
+            publishProgress();
+            database.storeUser(user);
+
             if (!isHome) {
                 boolean connection[] = mTwitter.getConnection(UID);
                 isFollowing = connection[0];
@@ -127,218 +121,297 @@ public class ProfileLoader extends AsyncTask<Long, Long, Long> {
                 isMuted = connection[3];
                 canDm = connection[4];
             }
-            publishProgress(GET_USER);
-            database.storeUser(user);
 
-            if (MODE == ACTION_FOLLOW) {
-                if (user.isLocked()) {
-                    if (isFollowing)
-                        user = mTwitter.unfollowUser(UID);
-                    else if (!user.followRequested())
-                        user = mTwitter.followUser(UID);
-                    // TODO purge follow request
-                } else {
-                    if (!isFollowing)
-                        user = mTwitter.followUser(UID);
-                    else
-                        user = mTwitter.unfollowUser(UID);
-                    isFollowing = !isFollowing;
-                }
-                publishProgress(GET_USER);
+            switch (mode) {
+                case LDR_PROFILE:
+                    if (!user.isLocked() || isFollowing || isHome) {
+                        if (tweets.isEmpty()) {
+                            tweets = mTwitter.getUserTweets(UID, 1, page);
+                            publishProgress();
+                            database.storeUserTweets(tweets);
+                        }
+                        if (favors.isEmpty()) {
+                            favors = mTwitter.getUserFavs(UID, 1, page);
+                            publishProgress();
+                            database.storeUserFavs(favors, UID);
+                        }
+                    }
+                    break;
 
-            } else if (MODE == ACTION_BLOCK) {
-                if (!isBlocked)
-                    user = mTwitter.blockUser(UID);
-                else
-                    user = mTwitter.unblockUser(UID);
-                isBlocked = !isBlocked;
-                publishProgress(GET_USER);
-
-            } else if (MODE == ACTION_MUTE) {
-                if (!isMuted)
-                    user = mTwitter.muteUser(UID);
-                else
-                    user = mTwitter.unmuteUser(UID);
-                isMuted = !isMuted;
-                publishProgress(GET_USER);
-
-            } else {
-                if (!user.isLocked() || isFollowing) {
-                    if ((MODE == GET_TWEETS || homeTl.getItemCount() == 0)) {
+                case GET_TWEETS:
+                    if (!user.isLocked() || isFollowing || isHome) {
+                        long sinceId = 1;
                         if (homeTl.getItemCount() > 0)
                             sinceId = homeTl.getItemId(0);
                         tweets = mTwitter.getUserTweets(UID, sinceId, page);
+                        publishProgress();
                         database.storeUserTweets(tweets);
-                        publishProgress(GET_TWEETS);
                     }
-                    if ((MODE == GET_FAVORS || homeFav.getItemCount() == 0)) {
+                    break;
+
+                case GET_FAVORS:
+                    if (!user.isLocked() || isFollowing || isHome) {
+                        long sinceId = 1;
                         if (homeFav.getItemCount() > 0)
                             sinceId = homeFav.getItemId(0);
                         favors = mTwitter.getUserFavs(UID, sinceId, page);
+                        publishProgress();
                         database.storeUserFavs(favors, UID);
-                        publishProgress(GET_FAVORS);
                     }
-                }
+                    break;
+
+                case ACTION_FOLLOW:
+                    if (user.isLocked()) {
+                        if (isFollowing)
+                            user = mTwitter.unfollowUser(UID);
+                        else if (!user.followRequested())
+                            user = mTwitter.followUser(UID);
+                        // TODO purge follow request
+                    } else {
+                        if (!isFollowing)
+                            user = mTwitter.followUser(UID);
+                        else
+                            user = mTwitter.unfollowUser(UID);
+                        isFollowing = !isFollowing;
+                    }
+                    publishProgress();
+                    break;
+
+                case ACTION_BLOCK:
+                    if (!isBlocked)
+                        user = mTwitter.blockUser(UID);
+                    else
+                        user = mTwitter.unblockUser(UID);
+                    isBlocked = !isBlocked;
+                    publishProgress();
+                    break;
+
+                case ACTION_MUTE:
+                    if (!isMuted)
+                        user = mTwitter.muteUser(UID);
+                    else
+                        user = mTwitter.unmuteUser(UID);
+                    isMuted = !isMuted;
+                    publishProgress();
+                    break;
             }
         } catch (TwitterException err) {
             this.err = err;
-            return FAILURE;
+            failure = true;
         } catch (Exception err) {
             Log.e("ProfileLoader", err.getMessage());
-            return FAILURE;
+            failure = true;
         }
-        return MODE;
+        return null;
     }
 
-
     @Override
-    protected void onProgressUpdate(Long... mode) {
+    protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
 
-        final long MODE = mode[0];
-        if (MODE == GET_USER) {
-            TextView txtUser = ui.get().findViewById(R.id.profile_username);
-            TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
-            TextView txtBio = ui.get().findViewById(R.id.bio);
-            TextView txtLocation = ui.get().findViewById(R.id.location);
-            TextView txtLink = ui.get().findViewById(R.id.links);
-            TextView txtCreated = ui.get().findViewById(R.id.profile_date);
-            TextView txtFollowing = ui.get().findViewById(R.id.following);
-            TextView txtFollower = ui.get().findViewById(R.id.follower);
-            ImageView profile = ui.get().findViewById(R.id.profile_img);
+        TextView txtUser = ui.get().findViewById(R.id.profile_username);
+        TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
+        TextView txtBio = ui.get().findViewById(R.id.bio);
+        TextView txtLocation = ui.get().findViewById(R.id.location);
+        TextView txtLink = ui.get().findViewById(R.id.links);
 
+        TextView txtFollowing = ui.get().findViewById(R.id.following);
+        TextView txtFollower = ui.get().findViewById(R.id.follower);
+
+        ImageView profile = ui.get().findViewById(R.id.profile_img);
+        View location_ico = ui.get().findViewById(R.id.loction_ico);
+        View link_ico = ui.get().findViewById(R.id.links_ico);
+        View followback = ui.get().findViewById(R.id.followback);
+        View locked = ui.get().findViewById(R.id.profile_locked);
+
+        if (mode == Mode.LDR_PROFILE) {
             View following_ico = ui.get().findViewById(R.id.following_ico);
             View follower_ico = ui.get().findViewById(R.id.follower_ico);
-            View location_ico = ui.get().findViewById(R.id.loction_ico);
-            View link_ico = ui.get().findViewById(R.id.links_ico);
             View date_ico = ui.get().findViewById(R.id.date_ico);
+            TextView txtCreated = ui.get().findViewById(R.id.profile_date);
 
             String date = sdf.format(new Date(user.getCreatedAt()));
-            Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
-            txtBio.setMovementMethod(LinkMovementMethod.getInstance());
-            txtBio.setText(bio);
-            txtUser.setText(user.getUsername());
-            txtScrName.setText(user.getScreenname());
-            txtFollower.setText(formatter.format(user.getFollower()));
-            txtFollowing.setText(formatter.format(user.getFollowing()));
             txtCreated.setText(date);
 
             follower_ico.setVisibility(View.VISIBLE);
             following_ico.setVisibility(View.VISIBLE);
             date_ico.setVisibility(View.VISIBLE);
-
-            if (user.getLocation() != null && !user.getLocation().isEmpty()) {
-                txtLocation.setText(user.getLocation());
-                location_ico.setVisibility(View.VISIBLE);
-            }
-            if (user.getLink() != null && !user.getLink().isEmpty()) {
-                txtLink.setText(user.getLink());
-                link_ico.setVisibility(View.VISIBLE);
-            }
-            if (user.isVerified()) {
+            if (user.isVerified())
                 ui.get().findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
-            }
-            if (isFollowed) {
-                ui.get().findViewById(R.id.followback).setVisibility(View.VISIBLE);
-            }
-            if (imgEnabled) {
-                String link = user.getImageLink() + "_bigger";
-                Picasso.get().load(link).into(profile);
-            }
-            if (user.isLocked()) {
-                ui.get().findViewById(R.id.profile_locked).setVisibility(View.VISIBLE);
-            } else {
-                txtFollowing.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent following = new Intent(ui.get(), UserDetail.class);
-                        following.putExtra("userID", user.getId());
-                        following.putExtra("mode", 0);
-                        ui.get().startActivity(following);
-                    }
-                });
-                txtFollower.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent follower = new Intent(ui.get(), UserDetail.class);
-                        follower.putExtra("userID", user.getId());
-                        follower.putExtra("mode", 1);
-                        ui.get().startActivity(follower);
-                    }
-                });
-            }
-            profile.setOnClickListener(new View.OnClickListener() {
+        }
+
+        Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
+        txtBio.setMovementMethod(LinkMovementMethod.getInstance());
+        txtBio.setText(bio);
+        txtUser.setText(user.getUsername());
+        txtScrName.setText(user.getScreenname());
+        txtFollower.setText(formatter.format(user.getFollower()));
+        txtFollowing.setText(formatter.format(user.getFollowing()));
+
+        if (user.getLocation() != null && !user.getLocation().isEmpty()) {
+            txtLocation.setText(user.getLocation());
+            location_ico.setVisibility(View.VISIBLE);
+        } else {
+            txtLocation.setText("");
+            location_ico.setVisibility(View.GONE);
+        }
+        if (user.getLink() != null && !user.getLink().isEmpty()) {
+            txtLink.setText(user.getLink());
+            link_ico.setVisibility(View.VISIBLE);
+        } else {
+            txtLink.setText("");
+            link_ico.setVisibility(View.GONE);
+        }
+
+        if (isFollowed)
+            followback.setVisibility(View.VISIBLE);
+
+        if (imgEnabled) {
+            String link = user.getImageLink() + "_bigger";
+            Picasso.get().load(link).into(profile);
+        }
+        if (user.isLocked())
+            locked.setVisibility(View.VISIBLE);
+        else {
+            txtFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ui.get().imageClick(user.getImageLink());
+                    Intent following = new Intent(ui.get(), UserDetail.class);
+                    following.putExtra("userID", user.getId());
+                    following.putExtra("mode", 0);
+                    ui.get().startActivity(following);
                 }
             });
-
-            ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
-
-        } else if (MODE == GET_TWEETS) {
-            homeTl.setData(tweets);
-            homeTl.notifyDataSetChanged();
-            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-            homeReload.setRefreshing(false);
-        } else if (MODE == GET_FAVORS) {
-            homeFav.setData(favors);
-            homeFav.notifyDataSetChanged();
-            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-            favReload.setRefreshing(false);
+            txtFollower.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent follower = new Intent(ui.get(), UserDetail.class);
+                    follower.putExtra("userID", user.getId());
+                    follower.putExtra("mode", 1);
+                    ui.get().startActivity(follower);
+                }
+            });
         }
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ui.get().imageClick(user.getImageLink());
+            }
+        });
+        ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
     }
 
-
     @Override
-    protected void onPostExecute(final Long MODE) {
+    protected void onPostExecute(final Void v) {
+        SwipeRefreshLayout homeReload, favReload;
+
         if (ui.get() == null) return;
 
-        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-        homeReload.setRefreshing(false);
-        favReload.setRefreshing(false);
+        if (!isHome) {
+            ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
+            ui.get().invalidateOptionsMenu();
+        }
 
-        if (MODE == ACTION_FOLLOW) {
-            if (!user.isLocked()) {
-                if (isFollowing)
-                    Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+        switch (mode) {
+            case LDR_PROFILE:
+                homeReload = ui.get().findViewById(R.id.hometweets);
+                favReload = ui.get().findViewById(R.id.homefavorits);
+                if (!tweets.isEmpty()) {
+                    homeTl.setData(tweets);
+                    homeTl.notifyDataSetChanged();
+                }
+                homeReload.setRefreshing(false);
+
+                if (!favors.isEmpty()) {
+                    homeFav.setData(favors);
+                    homeFav.notifyDataSetChanged();
+                }
+                favReload.setRefreshing(false);
+                break;
+
+            case GET_TWEETS:
+                homeReload = ui.get().findViewById(R.id.hometweets);
+                if (!tweets.isEmpty()) {
+                    homeTl.setData(tweets);
+                    homeTl.notifyDataSetChanged();
+                }
+                homeReload.setRefreshing(false);
+                break;
+
+            case GET_FAVORS:
+                favReload = ui.get().findViewById(R.id.homefavorits);
+                if (!favors.isEmpty()) {
+                    homeFav.setData(favors);
+                    homeFav.notifyDataSetChanged();
+                }
+                favReload.setRefreshing(false);
+                break;
+
+            case ACTION_FOLLOW:
+                if (!user.isLocked())
+                    if (isFollowing)
+                        Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
+                break;
+
+            case ACTION_BLOCK:
+                if (isBlocked)
+                    Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
-            }
-        } else if (MODE == ACTION_BLOCK) {
-            if (isBlocked)
-                Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
+                break;
 
-        } else if (MODE == ACTION_MUTE) {
-            if (isMuted)
-                Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
+            case ACTION_MUTE:
+                if (isMuted)
+                    Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
+                break;
+        }
 
-        } else if (MODE == FAILURE) {
+        if (failure) {
             if (err != null) {
                 boolean killActivity = ErrorHandling.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();
             }
         }
-        if (!isHome) {
-            ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
-            ui.get().invalidateOptionsMenu();
+
+    }
+
+    @Override
+    protected void onCancelled() {
+        if (ui.get() != null) {
+            SwipeRefreshLayout homeReload, favReload;
+            switch (mode) {
+                case GET_TWEETS:
+                    homeReload = ui.get().findViewById(R.id.hometweets);
+                    homeReload.setRefreshing(false);
+                    break;
+
+                case GET_FAVORS:
+                    favReload = ui.get().findViewById(R.id.homefavorits);
+                    favReload.setRefreshing(false);
+                    break;
+
+                case LDR_PROFILE:
+                    homeReload = ui.get().findViewById(R.id.hometweets);
+                    favReload = ui.get().findViewById(R.id.homefavorits);
+                    homeReload.setRefreshing(false);
+                    favReload.setRefreshing(false);
+                    break;
+            }
         }
     }
 
 
-    @Override
-    protected void onCancelled() {
-        if (ui.get() == null) return;
-
-        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-        homeReload.setRefreshing(false);
-        favReload.setRefreshing(false);
+    public enum Mode {
+        LDR_PROFILE,
+        GET_TWEETS,
+        GET_FAVORS,
+        ACTION_FOLLOW,
+        ACTION_BLOCK,
+        ACTION_MUTE
     }
 }
