@@ -35,8 +35,28 @@ import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
 
 public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
+    public enum Mode {
+        LOAD,
+        ANS,
+        RETWEET,
+        FAVORITE,
+        DELETE
+    }
     private final Mode mode;
     private boolean failure = false;
+
+    private TwitterEngine mTwitter;
+    private TwitterException err;
+    private WeakReference<TweetDetail> ui;
+    private TimelineAdapter answerAdapter;
+    private DatabaseAdapter database;
+    private SimpleDateFormat sdf;
+    private NumberFormat formatter;
+    private List<Tweet> answers;
+    private Tweet tweet;
+    private int highlight, font_color;
+    private boolean toggleImg, toggleAns;
+
 
     public StatusLoader(@NonNull TweetDetail context, Mode mode) {
         mTwitter = TwitterEngine.getInstance(context);
@@ -55,18 +75,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         database = new DatabaseAdapter(context);
     }
 
-
-    private TwitterEngine mTwitter;
-    private TwitterException err;
-    private WeakReference<TweetDetail> ui;
-    private TimelineAdapter answerAdapter;
-    private DatabaseAdapter database;
-    private SimpleDateFormat sdf;
-    private NumberFormat formatter;
-    private List<Tweet> answers;
-    private Tweet tweet;
-    private int highlight, font_color;
-    private boolean toggleImg, toggleAns;
 
     @Override
     protected void onPreExecute() {
@@ -250,15 +258,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         }
         answerAdapter.setData(answers);
         answerAdapter.notifyDataSetChanged();
-    }
-
-
-    public enum Mode {
-        LOAD,
-        ANS,
-        RETWEET,
-        FAVORITE,
-        DELETE
     }
 
 

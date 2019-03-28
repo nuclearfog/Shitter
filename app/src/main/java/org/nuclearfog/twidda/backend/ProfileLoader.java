@@ -36,8 +36,17 @@ import twitter4j.TwitterException;
 
 public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
+    public enum Mode {
+        LDR_PROFILE,
+        GET_TWEETS,
+        GET_FAVORS,
+        ACTION_FOLLOW,
+        ACTION_BLOCK,
+        ACTION_MUTE
+    }
     private final Mode mode;
     private boolean failure = false;
+
     private TimelineAdapter homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
@@ -112,7 +121,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                 tweets = database.getUserTweets(UID);
                 favors = database.getUserFavs(UID);
             }
-
             user = mTwitter.getUser(UID);
             publishProgress();
             database.storeUser(user);
@@ -246,7 +254,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             if (isFollowed)
                 followback.setVisibility(View.VISIBLE);
         }
-
         Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
         txtBio.setMovementMethod(LinkMovementMethod.getInstance());
         txtBio.setText(bio);
@@ -409,15 +416,5 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                     break;
             }
         }
-    }
-
-
-    public enum Mode {
-        LDR_PROFILE,
-        GET_TWEETS,
-        GET_FAVORS,
-        ACTION_FOLLOW,
-        ACTION_BLOCK,
-        ACTION_MUTE
     }
 }
