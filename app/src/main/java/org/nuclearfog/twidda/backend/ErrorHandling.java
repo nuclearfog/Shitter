@@ -77,10 +77,10 @@ abstract class ErrorHandling {
                     Toast.makeText(c, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 } else {
                     String strMsg = error.getMessage();
-                    if (strMsg != null && strMsg.trim().isEmpty())
-                        Toast.makeText(c, R.string.error, Toast.LENGTH_LONG).show();
+                    if (strMsg != null && !strMsg.trim().isEmpty())
+                        Toast.makeText(c, strMsg, Toast.LENGTH_LONG).show();
                     else
-                        Toast.makeText(c, error.getErrorMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(c, R.string.error, Toast.LENGTH_LONG).show();
                 }
         }
         return false;
