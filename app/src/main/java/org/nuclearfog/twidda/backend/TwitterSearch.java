@@ -19,10 +19,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class TwitterSearch extends AsyncTask<String, Integer, Void> {
-
-    private final int TWEET = 0;
-    private final int USER = 1;
+public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
     private TimelineAdapter searchAdapter;
     private UserAdapter userAdapter;
@@ -63,11 +60,9 @@ public class TwitterSearch extends AsyncTask<String, Integer, Void> {
             if (searchAdapter.getItemCount() > 0)
                 id = searchAdapter.getItemId(0);
             tweets = mTwitter.searchTweets(strSearch, id);
-            publishProgress(TWEET);
 
             if (userAdapter.getItemCount() == 0) {
                 users = mTwitter.searchUsers(strSearch);
-                publishProgress(USER);
             }
         } catch (TwitterException err) {
             this.err = err;
@@ -79,29 +74,20 @@ public class TwitterSearch extends AsyncTask<String, Integer, Void> {
 
 
     @Override
-    protected void onProgressUpdate(Integer... mode) {
-        if (ui.get() == null) return;
-
-        switch (mode[0]) {
-            case TWEET:
-                searchAdapter.setData(tweets);
-                searchAdapter.notifyDataSetChanged();
-                SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
-                tweetReload.setRefreshing(false);
-                break;
-
-            case USER:
-                userAdapter.setData(users);
-                userAdapter.notifyDataSetChanged();
-                break;
-        }
-    }
-
-
-    @Override
     protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
 
+        SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
+        tweetReload.setRefreshing(false);
+
+        if(!tweets.isEmpty()) {
+            searchAdapter.setData(tweets);
+            searchAdapter.notifyDataSetChanged();
+        }
+        if(!users.isEmpty()) {
+            userAdapter.setData(users);
+            userAdapter.notifyDataSetChanged();
+        }
         if (err != null) {
             ErrorHandling.printError(ui.get(), err);
         }

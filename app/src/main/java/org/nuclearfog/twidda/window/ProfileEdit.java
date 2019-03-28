@@ -26,6 +26,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.READ_DATA;
+import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.WRITE_DATA;
 
 /**
  * @see org.nuclearfog.twidda.backend.ProfileEditor
@@ -59,8 +61,8 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
     protected void onStart() {
         super.onStart();
         if (mEdit == null) {
-            mEdit = new ProfileEditor(this);
-            mEdit.execute(ProfileEditor.READ_DATA);
+            mEdit = new ProfileEditor(this, READ_DATA);
+            mEdit.execute();
         }
     }
 
@@ -146,8 +148,8 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
         } else {
             if (mEdit != null && mEdit.getStatus() == RUNNING)
                 mEdit.cancel(true);
-            mEdit = new ProfileEditor(this);
-            mEdit.execute(ProfileEditor.WRITE_DATA);
+            mEdit = new ProfileEditor(this, WRITE_DATA);
+            mEdit.execute();
         }
     }
 

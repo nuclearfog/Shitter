@@ -28,11 +28,16 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
 
-    public static final int READ_DATA = 0;
-    public static final int WRITE_DATA = 1;
-    private static final int ERROR = -1;
+public class ProfileEditor extends AsyncTask<Void, Void, Void> {
+
+    public enum Mode {
+        READ_DATA,
+        WRITE_DATA
+    }
+    private final Mode mode;
+    private boolean failure;
+
     private WeakReference<ProfileEdit> ui;
     private TwitterEngine mTwitter;
     private DatabaseAdapter mData;
@@ -43,11 +48,12 @@ public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
     private String image_path;
 
 
-    public ProfileEditor(@NonNull ProfileEdit c) {
+    public ProfileEditor(@NonNull ProfileEdit c, Mode mode) {
         ui = new WeakReference<>(c);
         mTwitter = TwitterEngine.getInstance(c);
         mData = new DatabaseAdapter(c);
         popup = new Dialog(c);
+        this.mode = mode;
 
         EditText name = ui.get().findViewById(R.id.edit_name);
         EditText link = ui.get().findViewById(R.id.edit_link);
@@ -86,10 +92,9 @@ public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
 
 
     @Override
-    protected Integer doInBackground(Integer... modes) {
-        final int MODE = modes[0];
+    protected Void doInBackground(Void... v) {
         try {
-            switch (MODE) {
+            switch (mode) {
                 case READ_DATA:
                     user = mTwitter.getCurrentUser();
                     break;
@@ -108,52 +113,52 @@ public class ProfileEditor extends AsyncTask<Integer, Void, Integer> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            return ERROR;
+            failure = true;
         } catch (Exception err) {
             Log.e("E: ProfileEditor", err.getMessage());
-            return ERROR;
+            failure = true;
         }
-        return MODE;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Integer mode) {
+    protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
 
         popup.dismiss();
 
-        switch (mode) {
-            case READ_DATA:
-                edit_name.append(user.getUsername());
-                edit_link.append(user.getLink());
-                edit_loc.append(user.getLocation());
-                edit_bio.append(user.getBio());
+        if(failure) {
+            ErrorHandling.printError(ui.get(), err);
+            ui.get().finish();
+        } else {
+            switch (mode) {
+                case READ_DATA:
+                    edit_name.append(user.getUsername());
+                    edit_link.append(user.getLink());
+                    edit_loc.append(user.getLocation());
+                    edit_bio.append(user.getBio());
 
-                ImageView pb_image = ui.get().findViewById(R.id.edit_pb);
-                String link = user.getImageLink() + "_bigger";
-                Picasso.get().load(link).into(pb_image);
+                    ImageView pb_image = ui.get().findViewById(R.id.edit_pb);
+                    String link = user.getImageLink() + "_bigger";
+                    Picasso.get().load(link).into(pb_image);
 
-                final String mediaLink[] = new String[]{user.getImageLink()};
-                pb_image.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent image = new Intent(ui.get(), ImageDetail.class);
-                        image.putExtra("link", mediaLink);
-                        ui.get().startActivity(image);
-                    }
-                });
-                break;
+                    final String mediaLink[] = new String[]{user.getImageLink()};
+                    pb_image.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent image = new Intent(ui.get(), ImageDetail.class);
+                            image.putExtra("link", mediaLink);
+                            ui.get().startActivity(image);
+                        }
+                    });
+                    break;
 
-            case WRITE_DATA:
-                Toast.makeText(ui.get(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
-                ui.get().finish();
-                break;
-
-            case ERROR:
-                ErrorHandling.printError(ui.get(), err);
-                ui.get().finish();
-                break;
+                case WRITE_DATA:
+                    Toast.makeText(ui.get(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
+                    ui.get().finish();
+                    break;
+            }
         }
     }
 
