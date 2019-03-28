@@ -18,11 +18,14 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class MessageLoader extends AsyncTask<Long, Void, Long> {
+public class MessageLoader extends AsyncTask<Long, Void, Void> {
 
-    public static final long LOAD = 0;
-    public static final long DELETE = 1;
-    private static final long FAIL = -1;
+    public enum Mode {
+        LOAD,
+        DELETE
+    }
+    private final Mode mode;
+    private boolean failure = false;
 
     private WeakReference<DirectMessage> ui;
     private MessageAdapter mAdapter;
@@ -32,13 +35,14 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
     private List<Message> message;
 
 
-    public MessageLoader(@NonNull DirectMessage context) {
+    public MessageLoader(@NonNull DirectMessage context, Mode mode) {
         ui = new WeakReference<>(context);
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
-        message = new ArrayList<>();
         mData = new DatabaseAdapter(context);
+        message = new ArrayList<>();
+        this.mode = mode;
     }
 
 
@@ -52,45 +56,49 @@ public class MessageLoader extends AsyncTask<Long, Void, Long> {
 
 
     @Override
-    protected Long doInBackground(Long... param) {
-        final long MODE = param[0];
+    protected Void doInBackground(Long... param) {
         try {
-            if (MODE == LOAD) {
-                if (mAdapter.getItemCount() > 0) {
-                    message = twitter.getMessages();
-                    mData.storeMessage(message);
-                    message = mData.getMessages();
-                } else {
-                    message = mData.getMessages();
-                    if (message.isEmpty()) {
+            switch(mode) {
+                case LOAD:
+                    if (mAdapter.getItemCount() > 0) {
                         message = twitter.getMessages();
                         mData.storeMessage(message);
+                        message = mData.getMessages();
+                    } else {
+                        message = mData.getMessages();
+                        if (message.isEmpty()) {
+                            message = twitter.getMessages();
+                            mData.storeMessage(message);
+                        }
                     }
-                }
-            } else if (MODE == DELETE) {
-                mData.deleteDm(param[1]);
-                message = mData.getMessages();
-                twitter.deleteMessage(param[1]);
+                    break;
+
+                case DELETE:
+                    long messageId = param[0];
+                    twitter.deleteMessage(messageId);
+                    mData.deleteDm(messageId);
+                    message = mData.getMessages();
+                    break;
             }
         } catch (TwitterException err) {
             this.err = err;
-            return FAIL;
+            failure = true;
         } catch (Exception err) {
             Log.e("Direct Message", err.getMessage());
-            return FAIL;
+            failure = true;
         }
-        return MODE;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Long mode) {
+    protected void onPostExecute(Void mode) {
         if (ui.get() == null) return;
 
         SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
         mRefresh.setRefreshing(false);
 
-        if (mode != FAIL) {
+        if (!failure) {
             mAdapter.setData(message);
             mAdapter.notifyDataSetChanged();
         } else {

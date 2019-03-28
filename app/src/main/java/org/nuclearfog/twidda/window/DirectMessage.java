@@ -22,6 +22,8 @@ import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.backend.MessageLoader.Mode.DELETE;
+import static org.nuclearfog.twidda.backend.MessageLoader.Mode.LOAD;
 
 /**
  * Direct Message page
@@ -67,8 +69,8 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
             mAdapter.setColor(settings.getFontColor(), settings.getHighlightColor());
             mAdapter.setImageLoad(settings.getImageLoad());
             dmList.setAdapter(mAdapter);
-            mLoader = new MessageLoader(this);
-            mLoader.execute(MessageLoader.LOAD);
+            mLoader = new MessageLoader(this, LOAD);
+            mLoader.execute();
         }
     }
 
@@ -124,8 +126,8 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
                     .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mLoader = new MessageLoader(DirectMessage.this);
-                            mLoader.execute(MessageLoader.DELETE, messageId);
+                            mLoader = new MessageLoader(DirectMessage.this, DELETE);
+                            mLoader.execute(messageId);
                         }
                     }).show();
         }
@@ -156,7 +158,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onRefresh() {
-        mLoader = new MessageLoader(this);
-        mLoader.execute(MessageLoader.LOAD);
+        mLoader = new MessageLoader(this, LOAD);
+        mLoader.execute();
     }
 }
