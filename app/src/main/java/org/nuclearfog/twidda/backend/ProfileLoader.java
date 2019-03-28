@@ -50,12 +50,14 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
     private long homeId;
     private int highlight;
     private boolean imgEnabled;
-    private boolean isHome = false;
-    private boolean isFollowing = false;
-    private boolean isFollowed = false;
-    private boolean isBlocked = false;
-    private boolean isMuted = false;
-    private boolean canDm = false;
+    private boolean isHome;
+    private boolean isFollowing;
+    private boolean isFollowed;
+    private boolean isBlocked;
+    private boolean isMuted;
+    private boolean canDm;
+
+
     /**
      * @param context Context to Activity
      * @see UserProfile
@@ -81,6 +83,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         homeFav = (TimelineAdapter) profileFavors.getAdapter();
     }
 
+
     @Override
     protected void onPreExecute() {
         if (ui.get() != null) {
@@ -92,6 +95,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             }
         }
     }
+
 
     @Override
     protected Void doInBackground(Long... args) {
@@ -205,6 +209,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         return null;
     }
 
+
     @Override
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
@@ -238,6 +243,8 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             date_ico.setVisibility(View.VISIBLE);
             if (user.isVerified())
                 ui.get().findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
+            if (isFollowed)
+                followback.setVisibility(View.VISIBLE);
         }
 
         Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
@@ -262,17 +269,13 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             txtLink.setText("");
             link_ico.setVisibility(View.GONE);
         }
-
-        if (isFollowed)
-            followback.setVisibility(View.VISIBLE);
-
         if (imgEnabled) {
             String link = user.getImageLink() + "_bigger";
             Picasso.get().load(link).into(profile);
         }
-        if (user.isLocked())
+        if (user.isLocked()) {
             locked.setVisibility(View.VISIBLE);
-        else {
+        } else {
             txtFollowing.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -299,12 +302,24 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             }
         });
         ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
+
+        if (!tweets.isEmpty()) {
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            homeTl.setData(tweets);
+            homeTl.notifyDataSetChanged();
+            homeReload.setRefreshing(false);
+        }
+        if (!favors.isEmpty()) {
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            homeFav.setData(favors);
+            homeFav.notifyDataSetChanged();
+            favReload.setRefreshing(false);
+        }
     }
+
 
     @Override
     protected void onPostExecute(final Void v) {
-        SwipeRefreshLayout homeReload, favReload;
-
         if (ui.get() == null) return;
 
         if (!isHome) {
@@ -314,37 +329,28 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
         switch (mode) {
             case LDR_PROFILE:
-                homeReload = ui.get().findViewById(R.id.hometweets);
-                favReload = ui.get().findViewById(R.id.homefavorits);
-                if (!tweets.isEmpty()) {
-                    homeTl.setData(tweets);
-                    homeTl.notifyDataSetChanged();
+                if (tweets.isEmpty()) {
+                    SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+                    homeReload.setRefreshing(false);
                 }
-                homeReload.setRefreshing(false);
-
-                if (!favors.isEmpty()) {
-                    homeFav.setData(favors);
-                    homeFav.notifyDataSetChanged();
+                if (favors.isEmpty()) {
+                    SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+                    favReload.setRefreshing(false);
                 }
-                favReload.setRefreshing(false);
                 break;
 
             case GET_TWEETS:
-                homeReload = ui.get().findViewById(R.id.hometweets);
-                if (!tweets.isEmpty()) {
-                    homeTl.setData(tweets);
-                    homeTl.notifyDataSetChanged();
+                if (tweets.isEmpty()) {
+                    SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+                    homeReload.setRefreshing(false);
                 }
-                homeReload.setRefreshing(false);
                 break;
 
             case GET_FAVORS:
-                favReload = ui.get().findViewById(R.id.homefavorits);
-                if (!favors.isEmpty()) {
-                    homeFav.setData(favors);
-                    homeFav.notifyDataSetChanged();
+                if (favors.isEmpty()) {
+                    SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+                    favReload.setRefreshing(false);
                 }
-                favReload.setRefreshing(false);
                 break;
 
             case ACTION_FOLLOW:
@@ -377,8 +383,8 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                     ui.get().finish();
             }
         }
-
     }
+
 
     @Override
     protected void onCancelled() {
