@@ -116,10 +116,11 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         try {
             if (mode == Mode.LDR_PROFILE) {
                 user = database.getUser(UID);
-                if (user != null)
+                if (user != null) {
+                    tweets = database.getUserTweets(UID);
+                    favors = database.getUserFavs(UID);
                     publishProgress();
-                tweets = database.getUserTweets(UID);
-                favors = database.getUserFavs(UID);
+                }
             }
             user = mTwitter.getUser(UID);
             publishProgress();
@@ -329,65 +330,71 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
     protected void onPostExecute(final Void v) {
         if (ui.get() == null) return;
 
-        if (!isHome) {
-            ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
-            ui.get().invalidateOptionsMenu();
-        }
-
-        switch (mode) {
-            case LDR_PROFILE:
-                if (tweets.isEmpty()) {
-                    SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-                    homeReload.setRefreshing(false);
-                }
-                if (favors.isEmpty()) {
-                    SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-                    favReload.setRefreshing(false);
-                }
-                break;
-
-            case GET_TWEETS:
-                if (tweets.isEmpty()) {
-                    SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-                    homeReload.setRefreshing(false);
-                }
-                break;
-
-            case GET_FAVORS:
-                if (favors.isEmpty()) {
-                    SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-                    favReload.setRefreshing(false);
-                }
-                break;
-
-            case ACTION_FOLLOW:
-                if (!user.isLocked())
-                    if (isFollowing)
-                        Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
-                break;
-
-            case ACTION_BLOCK:
-                if (isBlocked)
-                    Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
-                break;
-
-            case ACTION_MUTE:
-                if (isMuted)
-                    Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
-                break;
-        }
-
         if (failure) {
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            if(homeReload.isRefreshing())
+                homeReload.setRefreshing(false);
+            if(favReload.isRefreshing())
+                favReload.setRefreshing(false);
+
             if (err != null) {
                 boolean killActivity = ErrorHandling.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();
+            }
+        } else {
+            switch (mode) {
+                case LDR_PROFILE:
+                    if (tweets.isEmpty()) {
+                        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+                        homeReload.setRefreshing(false);
+                    }
+                    if (favors.isEmpty()) {
+                        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+                        favReload.setRefreshing(false);
+                    }
+                    break;
+
+                case GET_TWEETS:
+                    if (tweets.isEmpty()) {
+                        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+                        homeReload.setRefreshing(false);
+                    }
+                    break;
+
+                case GET_FAVORS:
+                    if (favors.isEmpty()) {
+                        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+                        favReload.setRefreshing(false);
+                    }
+                    break;
+
+                case ACTION_FOLLOW:
+                    if (!user.isLocked())
+                        if (isFollowing)
+                            Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case ACTION_BLOCK:
+                    if (isBlocked)
+                        Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case ACTION_MUTE:
+                    if (isMuted)
+                        Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            if (!isHome) {
+                ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
+                ui.get().invalidateOptionsMenu();
             }
         }
     }
