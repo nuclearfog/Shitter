@@ -133,7 +133,6 @@
                                     android:layout_marginEnd="@dimen/icon_margin"
                                     android:layout_marginRight="@dimen/icon_margin"
                                     android:contentDescription="@string/following"
-                                    android:visibility="invisible"
                                     app:srcCompat="@drawable/following" />
 
                                 <TextView
@@ -150,7 +149,6 @@
                                     android:layout_marginEnd="@dimen/icon_margin"
                                     android:layout_marginRight="@dimen/icon_margin"
                                     android:contentDescription="@string/follower"
-                                    android:visibility="invisible"
                                     app:srcCompat="@drawable/follower" />
 
                                 <TextView
@@ -240,7 +238,6 @@
                             android:layout_marginEnd="@dimen/icon_margin"
                             android:layout_marginRight="@dimen/icon_margin"
                             android:contentDescription="@string/profile_date"
-                            android:visibility="gone"
                             app:srcCompat="@drawable/calendar" />
 
                         <TextView
