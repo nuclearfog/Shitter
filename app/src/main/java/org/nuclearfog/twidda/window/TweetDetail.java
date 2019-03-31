@@ -57,7 +57,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private ConnectivityManager mConnect;
     private String username = "";
     private boolean isHome;
-    private long userID = 0;
     private long tweetID = 0;
 
 
@@ -69,7 +68,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         if (param != null) {
             tweetID = param.getLong("tweetID");
-            userID = param.getLong("userID");
             username = param.getString("username");
         }
 
@@ -79,7 +77,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         settings = GlobalSettings.getInstance(this);
-        isHome = userID == settings.getUserId();
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         View root = findViewById(R.id.tweet_layout);
@@ -87,7 +84,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View favorite = findViewById(R.id.fav_button_detail);
         View txtRt = findViewById(R.id.no_rt_detail);
         View txtFav = findViewById(R.id.no_fav_detail);
-        View profile_img = findViewById(R.id.profileimage_detail);
         View answer = findViewById(R.id.answer_button);
         TextView tweetTxt = findViewById(R.id.tweet_detailed);
         answerReload = findViewById(R.id.answer_reload);
@@ -102,7 +98,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         answerReload.setOnRefreshListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
-        profile_img.setOnClickListener(this);
         answer.setOnClickListener(this);
     }
 
@@ -140,9 +135,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
+        return super.onCreateOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu m) {
         if (isHome)
             m.findItem(R.id.delete_tweet).setVisible(true);
-        return super.onCreateOptionsMenu(m);
+        return super.onPrepareOptionsMenu(m);
     }
 
 
@@ -224,13 +225,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 startActivity(favorit);
                 break;
 
-            case R.id.profileimage_detail:
-                Intent profile = new Intent(this, UserProfile.class);
-                profile.putExtra("userID", userID);
-                profile.putExtra("username", username);
-                startActivity(profile);
-                break;
-
             case R.id.answer_button:
                 Intent tweet = new Intent(this, TweetPopup.class);
                 tweet.putExtra("TweetID", tweetID);
@@ -273,5 +267,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Intent image = new Intent(this, ImageDetail.class);
         image.putExtra("link", mediaLinks);
         startActivity(image);
+    }
+
+
+    public void setOptionsmenu() {
+        isHome = true;
+        invalidateOptionsMenu();
     }
 }
