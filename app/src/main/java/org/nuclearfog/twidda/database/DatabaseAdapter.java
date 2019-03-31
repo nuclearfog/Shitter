@@ -182,9 +182,9 @@ public class DatabaseAdapter {
      */
     @Nullable
     public TwitterUser getUser(long userId) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         TwitterUser result = getUser(userId, db);
-        db.close();
+        close(db);
         return result;
     }
 
@@ -194,7 +194,7 @@ public class DatabaseAdapter {
      * @return tweet list
      */
     public List<Tweet> getHomeTimeline() {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
@@ -208,6 +208,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        close(db);
         return tweetList;
     }
 
@@ -217,7 +218,7 @@ public class DatabaseAdapter {
      * @return tweet list
      */
     public List<Tweet> getMentions() {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
@@ -231,6 +232,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        close(db);
         return tweetList;
     }
 
@@ -241,7 +243,7 @@ public class DatabaseAdapter {
      * @return Tweet list of user tweets
      */
     public List<Tweet> getUserTweets(long userID) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
@@ -258,6 +260,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        close(db);
         return tweetList;
     }
 
@@ -268,7 +271,7 @@ public class DatabaseAdapter {
      * @return favored tweets by user
      */
     public List<Tweet> getUserFavs(long ownerID) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
@@ -283,6 +286,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        close(db);
         return tweetList;
     }
 
@@ -294,7 +298,7 @@ public class DatabaseAdapter {
      */
     @Nullable
     public Tweet getStatus(long tweetId) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         Tweet result = null;
         String query = "SELECT * FROM tweet " +
                 "INNER JOIN user ON user.userID = tweet.userID " +
@@ -303,6 +307,7 @@ public class DatabaseAdapter {
         if (cursor.moveToFirst())
             result = getStatus(cursor);
         cursor.close();
+        close(db);
         return result;
     }
 
@@ -313,7 +318,7 @@ public class DatabaseAdapter {
      * @return list of tweet answers
      */
     public List<Tweet> getAnswers(long tweetId) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new ArrayList<>();
         String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
@@ -327,6 +332,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        close(db);
         return tweetList;
     }
 
@@ -430,7 +436,7 @@ public class DatabaseAdapter {
      * @return list of trends
      */
     public List<Trend> getTrends(int woeId) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         List<Trend> trends = new ArrayList<>();
         String query = "SELECT * FROM trend WHERE woeID=" + woeId + " ORDER BY trendpos ASC";
         Cursor cursor = db.rawQuery(query, null);
@@ -444,7 +450,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        close(db);
         return trends;
     }
 
@@ -455,7 +461,7 @@ public class DatabaseAdapter {
      */
     public List<Message> getMessages() {
         List<Message> result = new ArrayList<>();
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         String query = "SELECT * FROM message ORDER BY messageID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
@@ -479,7 +485,7 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        db.close();
+        close(db);
         return result;
     }
 
@@ -490,12 +496,12 @@ public class DatabaseAdapter {
      * @return true if found
      */
     public boolean containStatus(long id) {
-        SQLiteDatabase db = dataHelper.getReadableDatabase();
+        SQLiteDatabase db = getDbRead();
         String query = "SELECT tweetID FROM tweet WHERE tweetID=" + id + " LIMIT 1;";
         Cursor c = db.rawQuery(query, null);
         boolean result = c.moveToFirst();
         c.close();
-        db.close();
+        close(db);
         return result;
     }
 
@@ -699,6 +705,16 @@ public class DatabaseAdapter {
         }
         c.close();
         return result;
+    }
+
+
+    private synchronized SQLiteDatabase getDbRead() {
+        return dataHelper.getReadableDatabase();
+    }
+
+
+    private synchronized void close(SQLiteDatabase db) {
+        db.close();
     }
 
 

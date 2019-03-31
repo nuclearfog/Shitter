@@ -236,6 +236,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         View location_ico = ui.get().findViewById(R.id.loction_ico);
         View link_ico = ui.get().findViewById(R.id.links_ico);
         View followback = ui.get().findViewById(R.id.followback);
+        View verified = ui.get().findViewById(R.id.profile_verify);
         View locked = ui.get().findViewById(R.id.profile_locked);
 
         if (mode == Mode.LDR_PROFILE) {
@@ -251,9 +252,43 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             following_ico.setVisibility(View.VISIBLE);
             date_ico.setVisibility(View.VISIBLE);
             if (user.isVerified())
-                ui.get().findViewById(R.id.profile_verify).setVisibility(View.VISIBLE);
+                verified.setVisibility(View.VISIBLE);
             if (isFollowed)
                 followback.setVisibility(View.VISIBLE);
+            if (user.isLocked()) {
+                locked.setVisibility(View.VISIBLE);
+            } else {
+                if(!txtFollowing.isClickable()) {
+                    txtFollowing.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent following = new Intent(ui.get(), UserDetail.class);
+                            following.putExtra("userID", user.getId());
+                            following.putExtra("mode", 0);
+                            ui.get().startActivity(following);
+                        }
+                    });
+                }
+                if(!txtFollower.isClickable()) {
+                    txtFollower.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent follower = new Intent(ui.get(), UserDetail.class);
+                            follower.putExtra("userID", user.getId());
+                            follower.putExtra("mode", 1);
+                            ui.get().startActivity(follower);
+                        }
+                    });
+                }
+                if(!profile.isClickable()) {
+                    profile.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ui.get().imageClick(user.getImageLink());
+                        }
+                    });
+                }
+            }
         }
         Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
         txtBio.setMovementMethod(LinkMovementMethod.getInstance());
@@ -281,34 +316,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             String link = user.getImageLink() + "_bigger";
             Picasso.get().load(link).into(profile);
         }
-        if (user.isLocked()) {
-            locked.setVisibility(View.VISIBLE);
-        } else {
-            txtFollowing.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent following = new Intent(ui.get(), UserDetail.class);
-                    following.putExtra("userID", user.getId());
-                    following.putExtra("mode", 0);
-                    ui.get().startActivity(following);
-                }
-            });
-            txtFollower.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent follower = new Intent(ui.get(), UserDetail.class);
-                    follower.putExtra("userID", user.getId());
-                    follower.putExtra("mode", 1);
-                    ui.get().startActivity(follower);
-                }
-            });
-        }
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ui.get().imageClick(user.getImageLink());
-            }
-        });
+
         ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
 
         if (!tweets.isEmpty()) {

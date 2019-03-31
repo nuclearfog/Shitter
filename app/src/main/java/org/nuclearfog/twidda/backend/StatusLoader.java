@@ -88,9 +88,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         }
     }
 
-    /**
-     * @param data [0] TWEET ID
-     */
+
     @Override
     protected Void doInBackground(Long... data) {
         final long TWEETID = data[0];
@@ -143,7 +141,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                         database.removeFavorite(TWEETID);
                     break;
             }
-
         } catch (TwitterException err) {
             this.err = err;
             int rCode = err.getErrorCode();
@@ -164,8 +161,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
         if(mode == Mode.LOAD) {
             TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
-            TextView date = ui.get().findViewById(R.id.timedetail);
-            TextView used_api = ui.get().findViewById(R.id.used_api);
+            TextView tweetDate = ui.get().findViewById(R.id.timedetail);
+            TextView tweet_api = ui.get().findViewById(R.id.used_api);
             View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
             View tweet_locked = ui.get().findViewById(R.id.tweet_locked);
 
@@ -173,11 +170,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             tweetText.setMovementMethod(LinkMovementMethod.getInstance());
             tweetText.setText(sTweet);
             tweetText.setTextColor(font_color);
-            date.setText(sdf.format(tweet.getTime()));
-            date.setTextColor(font_color);
-            used_api.setText(R.string.sent_from);
-            used_api.append(tweet.getSource());
-            used_api.setTextColor(font_color);
+            tweetDate.setText(sdf.format(tweet.getTime()));
+            tweetDate.setTextColor(font_color);
+            tweet_api.setText(R.string.sent_from);
+            tweet_api.append(tweet.getSource());
+            tweet_api.setTextColor(font_color);
 
             if (tweet.getUser().isVerified()) {
                 tweet_verify.setVisibility(View.VISIBLE);
@@ -185,7 +182,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             if (tweet.getUser().isLocked()) {
                 tweet_locked.setVisibility(View.VISIBLE);
             }
-            if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length != 0) {
+            if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length > 0) {
                 View mediaButton = ui.get().findViewById(R.id.image_attach);
                 mediaButton.setVisibility(View.VISIBLE);
                 if(!mediaButton.isClickable()) {
