@@ -167,7 +167,7 @@ public class TwitterEngine {
      * @throws TwitterException if access is unavailable
      */
     public List<Tweet> getMention(int page, long id) throws TwitterException {
-        List<Status> mentions = twitter.getMentionsTimeline(new Paging(page,/*load*/5, id));
+        List<Status> mentions = twitter.getMentionsTimeline(new Paging(page, load, id));
         return convertStatusList(mentions);
     }
 
