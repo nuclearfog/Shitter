@@ -127,10 +127,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 case RETWEET:
                     tweet = mTwitter.retweet(TWEETID);
                     publishProgress();
-                    database.updateStatus(tweet);
 
                     if (!tweet.retweeted())
                         database.removeRetweet(TWEETID);
+                    database.updateStatus(tweet);
                     break;
 
                 case FAVORITE:

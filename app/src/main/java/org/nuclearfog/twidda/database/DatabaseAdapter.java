@@ -391,7 +391,7 @@ public class DatabaseAdapter {
         if (tweet != null) {
             SQLiteDatabase db = getDbWrite();
             long retweetedId = tweet.getMyRetweetId();
-            db.delete("tweet", "retweeterID=" + retweetedId, null);
+            db.delete("tweet", "tweetID=" + retweetedId, null);
             commit(db);
         }
     }
