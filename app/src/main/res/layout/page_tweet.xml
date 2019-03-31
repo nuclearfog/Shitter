@@ -26,12 +26,14 @@
                     android:layout_height="@dimen/bar_wide" />
 
                 <LinearLayout
+                    android:id="@+id/tweet_head"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/layout_margin"
-                    android:paddingRight="@dimen/layout_margin">
+                    android:paddingRight="@dimen/layout_margin"
+                    android:visibility="invisible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -171,6 +173,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/tweet_foot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:addStatesFromChildren="false"
@@ -178,7 +181,8 @@
                 android:paddingLeft="@dimen/side_padding"
                 android:paddingTop="@dimen/layout_margin"
                 android:paddingRight="@dimen/side_padding"
-                android:paddingBottom="@dimen/layout_margin">
+                android:paddingBottom="@dimen/layout_margin"
+                android:visibility="invisible">
 
                 <ImageView
                     android:id="@+id/answer_button"

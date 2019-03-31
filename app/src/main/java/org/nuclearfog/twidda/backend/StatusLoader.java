@@ -32,6 +32,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
 
 public class StatusLoader extends AsyncTask<Long, Void, Void> {
@@ -177,14 +178,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             tweet_api.setTextColor(font_color);
 
             if (tweet.getUser().isVerified()) {
-                tweet_verify.setVisibility(View.VISIBLE);
+                tweet_verify.setVisibility(VISIBLE);
             }
             if (tweet.getUser().isLocked()) {
-                tweet_locked.setVisibility(View.VISIBLE);
+                tweet_locked.setVisibility(VISIBLE);
             }
             if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length > 0) {
                 View mediaButton = ui.get().findViewById(R.id.image_attach);
-                mediaButton.setVisibility(View.VISIBLE);
+                mediaButton.setVisibility(VISIBLE);
                 if(!mediaButton.isClickable()) {
                     mediaButton.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -205,6 +206,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
         ImageView retweetButton = ui.get().findViewById(R.id.rt_button_detail);
         ImageView favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
+        View tweet_header = ui.get().findViewById(R.id.tweet_head);
+        View tweet_footer = ui.get().findViewById(R.id.tweet_foot);
 
         username.setText(tweet.getUser().getUsername());
         username.setTextColor(font_color);
@@ -219,7 +222,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             String reply = ui.get().getString(R.string.answering);
             reply += tweet.getReplyName();
             replyName.setText(reply);
-            replyName.setVisibility(View.VISIBLE);
+            replyName.setVisibility(VISIBLE);
             if(!replyName.isClickable()) {
                 replyName.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -262,6 +265,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         if(tweet.getUser().getId() == homeId) {
             ui.get().setOptionsmenu();
         }
+        if(tweet_header.getVisibility() != VISIBLE)
+            tweet_header.setVisibility(VISIBLE);
+        if(tweet_footer.getVisibility() != VISIBLE)
+            tweet_footer.setVisibility(VISIBLE);
         if(!answers.isEmpty()) {
             SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
             ansReload.setRefreshing(false);

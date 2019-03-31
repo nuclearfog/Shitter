@@ -26,12 +26,14 @@
                     android:layout_height="@dimen/bar_wide" />
 
                 <LinearLayout
+                    android:id="@+id/profile_header"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/side_padding"
-                    android:paddingRight="@dimen/side_padding">
+                    android:paddingRight="@dimen/side_padding"
+                    android:visibility="invisible">
 
                     <LinearLayout
                         android:layout_width="match_parent"

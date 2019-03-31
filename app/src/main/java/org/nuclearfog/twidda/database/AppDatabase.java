@@ -27,10 +27,14 @@ public class AppDatabase extends SQLiteOpenHelper {
             "messageID INTEGER PRIMARY KEY,time INTEGER,senderID INTEGER,receiverID INTEGER," +
             "message TEXT);";
 
+    private static final String INDX_USER_ID = "CREATE UNIQUE INDEX IF NOT EXISTS idx_user ON user(userID);";
+    private static final String INDX_TWEET_ID = "CREATE UNIQUE INDEX IF NOT EXISTS idx_tweet ON tweet(tweetID);";
+    private static final String INDX_TWEET_US = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
+
     private static AppDatabase mData;
 
     private AppDatabase(Context context) {
-        super(context, "database.db", null, 2);
+        super(context, "database.db", null, 3);
     }
 
     public static synchronized AppDatabase getInstance(Context context) {
@@ -50,15 +54,24 @@ public class AppDatabase extends SQLiteOpenHelper {
         db.execSQL(trendTable);
 
         db.execSQL(messageTable);
+
+        db.execSQL(INDX_USER_ID);
+        db.execSQL(INDX_TWEET_ID);
+        db.execSQL(INDX_TWEET_US);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1 && newVersion >= 2) {
+        if (oldVersion < 2 && newVersion >= 2) {
             final String T_QUERY = "ALTER TABLE user ADD COLUMN tweetCount INTEGER DEFAULT 0;";
             db.execSQL(T_QUERY);
             final String F_QUERY = "ALTER TABLE user ADD COLUMN favorCount INTEGER DEFAULT 0;";
             db.execSQL(F_QUERY);
+        }
+        if(oldVersion < 3 && newVersion >=3) {
+            db.execSQL(INDX_USER_ID);
+            db.execSQL(INDX_TWEET_ID);
+            db.execSQL(INDX_TWEET_US);
         }
     }
 }

@@ -34,6 +34,10 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+import static android.view.View.VISIBLE;
+import static android.view.View.GONE;
+
+
 public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
     public enum Mode {
@@ -238,25 +242,19 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         View followback = ui.get().findViewById(R.id.followback);
         View verified = ui.get().findViewById(R.id.profile_verify);
         View locked = ui.get().findViewById(R.id.profile_locked);
+        View profile_head = ui.get().findViewById(R.id.profile_header);
 
         if (mode == Mode.LDR_PROFILE) {
-            View following_ico = ui.get().findViewById(R.id.following_ico);
-            View follower_ico = ui.get().findViewById(R.id.follower_ico);
-            View date_ico = ui.get().findViewById(R.id.date_ico);
             TextView txtCreated = ui.get().findViewById(R.id.profile_date);
-
             String date = sdf.format(new Date(user.getCreatedAt()));
             txtCreated.setText(date);
 
-            follower_ico.setVisibility(View.VISIBLE);
-            following_ico.setVisibility(View.VISIBLE);
-            date_ico.setVisibility(View.VISIBLE);
             if (user.isVerified())
-                verified.setVisibility(View.VISIBLE);
+                verified.setVisibility(VISIBLE);
             if (isFollowed)
-                followback.setVisibility(View.VISIBLE);
+                followback.setVisibility(VISIBLE);
             if (user.isLocked()) {
-                locked.setVisibility(View.VISIBLE);
+                locked.setVisibility(VISIBLE);
             } else {
                 if(!txtFollowing.isClickable()) {
                     txtFollowing.setOnClickListener(new View.OnClickListener() {
@@ -300,22 +298,25 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
         if (user.getLocation() != null && !user.getLocation().isEmpty()) {
             txtLocation.setText(user.getLocation());
-            location_ico.setVisibility(View.VISIBLE);
+            location_ico.setVisibility(VISIBLE);
         } else {
             txtLocation.setText("");
-            location_ico.setVisibility(View.GONE);
+            location_ico.setVisibility(GONE);
         }
         if (user.getLink() != null && !user.getLink().isEmpty()) {
             txtLink.setText(user.getLink());
-            link_ico.setVisibility(View.VISIBLE);
+            link_ico.setVisibility(VISIBLE);
         } else {
             txtLink.setText("");
-            link_ico.setVisibility(View.GONE);
+            link_ico.setVisibility(GONE);
         }
         if (imgEnabled) {
             String link = user.getImageLink() + "_bigger";
             Picasso.get().load(link).into(profile);
         }
+
+        if(profile_head.getVisibility() != VISIBLE)
+            profile_head.setVisibility(VISIBLE);
 
         ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
 
