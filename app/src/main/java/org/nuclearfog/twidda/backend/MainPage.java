@@ -146,7 +146,7 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
         if (failure && ui.get() != null) {
             disableSwipe();
             if (err != null)
-                ErrorHandling.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), err);
         }
     }
 

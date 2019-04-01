@@ -89,7 +89,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
             userAdapter.notifyDataSetChanged();
         }
         if (err != null) {
-            ErrorHandling.printError(ui.get(), err);
+            ErrorHandler.printError(ui.get(), err);
         }
     }
 

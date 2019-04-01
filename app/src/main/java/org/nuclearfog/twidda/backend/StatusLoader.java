@@ -295,7 +295,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             }
         } else {
             if (err != null) {
-                boolean killActivity = ErrorHandling.printError(ui.get(), err);
+                boolean killActivity = ErrorHandler.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();
             }

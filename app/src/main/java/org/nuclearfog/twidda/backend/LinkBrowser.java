@@ -117,7 +117,7 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
             ui.get().startActivity(tweetActivity);
         } else {
             if (err != null)
-                ErrorHandling.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), err);
         }
     }
 

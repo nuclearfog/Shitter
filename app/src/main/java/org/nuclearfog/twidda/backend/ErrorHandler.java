@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.R;
 import twitter4j.TwitterException;
 
 
-abstract class ErrorHandling {
+abstract class ErrorHandler {
 
     /**
      * Print twitter error message
@@ -33,7 +33,6 @@ abstract class ErrorHandling {
             case 17:
             case 50:    // USER not found
             case 63:    // USER suspended
-            case 136:   // Blocked!
                 Toast.makeText(c, R.string.user_not_found, Toast.LENGTH_SHORT).show();
                 return true;
 

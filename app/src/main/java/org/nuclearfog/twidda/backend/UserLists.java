@@ -74,7 +74,7 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
             usrAdp.notifyDataSetChanged();
         } else {
             if (err != null) {
-                ErrorHandling.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), err);
             }
         }
     }

@@ -103,7 +103,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
             mAdapter.notifyDataSetChanged();
         } else {
             if (err != null)
-                ErrorHandling.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), err);
         }
     }
 

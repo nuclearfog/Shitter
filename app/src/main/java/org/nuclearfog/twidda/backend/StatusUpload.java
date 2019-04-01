@@ -98,7 +98,7 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
 
         } else {
             if (err != null)
-                ErrorHandling.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), err);
 
             AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
             builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)

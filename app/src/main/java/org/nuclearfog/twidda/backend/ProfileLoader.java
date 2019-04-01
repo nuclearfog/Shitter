@@ -348,7 +348,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                 favReload.setRefreshing(false);
 
             if (err != null) {
-                boolean killActivity = ErrorHandling.printError(ui.get(), err);
+                boolean killActivity = ErrorHandler.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();
             }

@@ -92,7 +92,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             ui.get().finish();
         } else {
             if (err != null)
-                ErrorHandling.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), err);
         }
     }
 

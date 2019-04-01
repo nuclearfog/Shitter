@@ -129,7 +129,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
         popup.dismiss();
 
         if(failure) {
-            ErrorHandling.printError(ui.get(), err);
+            ErrorHandler.printError(ui.get(), err);
             ui.get().finish();
         } else {
             switch (mode) {
