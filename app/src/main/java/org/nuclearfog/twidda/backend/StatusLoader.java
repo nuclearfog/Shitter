@@ -226,7 +226,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
         txtFav.setText(formatter.format(tweet.getFavorCount()));
         txtRet.setText(formatter.format(tweet.getRetweetCount()));
-        txtAns.setText(formatter.format(answerAdapter.getItemCount() + answers.size()));
+        txtAns.setText(formatter.format(answers.size()));
 
         if (tweet.getReplyId() > 1) {
             String reply = ui.get().getString(R.string.answering);
