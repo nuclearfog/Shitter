@@ -201,10 +201,8 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onRefresh() {
-        if (mSearch != null && mSearch.getStatus() != RUNNING) {
-            mSearch = new TwitterSearch(this);
-            mSearch.execute(search);
-        }
+        mSearch = new TwitterSearch(this);
+        mSearch.execute(search);
     }
 
 

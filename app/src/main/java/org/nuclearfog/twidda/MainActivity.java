@@ -281,9 +281,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
-        if (home != null && home.getStatus() == RUNNING)
-            home.cancel(true);
-
         switch (tabIndex) {
             default:
             case 0:

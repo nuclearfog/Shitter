@@ -291,9 +291,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onRefresh() {
-        if (mProfile != null && mProfile.getStatus() == RUNNING)
-            mProfile.cancel(true);
-
         switch (tabIndex) {
             default:
             case 0:
