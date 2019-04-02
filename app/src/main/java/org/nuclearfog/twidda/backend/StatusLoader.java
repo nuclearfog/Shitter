@@ -272,7 +272,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             favoriteButton.setImageResource(R.drawable.favorite);
         }
         if(tweet.getUser().getId() == homeId) {
-            ui.get().setOptionsmenu();
+            ui.get().enableDelete();
         }
         if(tweet_header.getVisibility() != VISIBLE)
             tweet_header.setVisibility(VISIBLE);

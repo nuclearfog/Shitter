@@ -284,7 +284,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public void setOptionsmenu() {
+    public void enableDelete() {
         isHome = true;
         invalidateOptionsMenu();
     }
@@ -316,6 +316,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 Toast.makeText(this,R.string.tweet_not_found,Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         }
     }
