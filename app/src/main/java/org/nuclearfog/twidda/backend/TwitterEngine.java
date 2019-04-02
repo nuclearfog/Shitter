@@ -375,7 +375,10 @@ public class TwitterEngine {
      */
     public List<TwitterUser> getFollowing(long userId, long cursor) throws TwitterException {
         IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
-        return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
+        long ids[] = userIDs.getIDs();
+        if(ids.length == 0)
+            return new ArrayList<>();
+        return convertUserList(twitter.lookupUsers(ids));
     }
 
 
@@ -388,6 +391,9 @@ public class TwitterEngine {
      */
     public List<TwitterUser> getFollower(long userId, long cursor) throws TwitterException {
         IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
+        long ids[] = userIDs.getIDs();
+        if(ids.length == 0)
+            return new ArrayList<>();
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
@@ -514,11 +520,9 @@ public class TwitterEngine {
         if (embeddedStat != null)
             tweetID = embeddedStat.getId();
         long[] userIds = twitter.getRetweeterIds(tweetID, load, cursor).getIDs();
-        if (userIds.length == 0) {
+        if (userIds.length == 0)
             return new ArrayList<>();
-        } else {
-            return convertUserList(twitter.lookupUsers(userIds));
-        }
+        return convertUserList(twitter.lookupUsers(userIds));
     }
 
 

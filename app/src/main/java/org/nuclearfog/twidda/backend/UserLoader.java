@@ -17,12 +17,15 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class UserLists extends AsyncTask<Long, Void, Boolean> {
+public class UserLoader extends AsyncTask<Long, Void, Boolean> {
 
-    public static final long FOLLOWING = 0L;
-    public static final long FOLLOWERS = 1L;
-    public static final long RETWEETER = 2L;
-    public static final long FAVORISER = 3L;
+    public enum Mode {
+        FOLLOWING,
+        FOLLOWERS,
+        RETWEET,
+        FAVORIT
+    }
+    private Mode mode;
 
     private WeakReference<UserDetail> ui;
     private TwitterEngine mTwitter;
@@ -30,27 +33,35 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
     private UserAdapter usrAdp;
     private List<TwitterUser> user;
 
-    public UserLists(@NonNull UserDetail context) {
+    public UserLoader(@NonNull UserDetail context, Mode mode) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         RecyclerView userList = context.findViewById(R.id.userlist);
         usrAdp = (UserAdapter) userList.getAdapter();
         user = new ArrayList<>();
+        this.mode = mode;
     }
 
 
     @Override
     protected Boolean doInBackground(Long... data) {
         long id = data[0];
-        long mode = data[1];
-        long cursor = data[2];
+        long cursor = data[1];
         try {
-            if (mode == FOLLOWING)
-                user = mTwitter.getFollowing(id, cursor);
-            else if (mode == FOLLOWERS)
-                user = mTwitter.getFollower(id, cursor);
-            else if (mode == RETWEETER)
-                user = mTwitter.getRetweeter(id, cursor);
+            switch(mode) {
+                case FOLLOWING:
+                    user = mTwitter.getFollowing(id, cursor);
+                    break;
+                case FOLLOWERS:
+                    user = mTwitter.getFollower(id, cursor);
+                    break;
+                case RETWEET:
+                    user = mTwitter.getRetweeter(id, cursor);
+                    break;
+                case FAVORIT:
+                    // TODO get User favoriting a tweet
+                    break;
+            }
         } catch (TwitterException err) {
             this.err = err;
             return false;

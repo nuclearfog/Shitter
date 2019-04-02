@@ -33,7 +33,7 @@ import java.util.List;
 import twitter4j.TwitterException;
 
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
+import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
@@ -104,19 +104,20 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     }
                 case ANS:
                     tweet = mTwitter.getStatus(TWEETID);
+                    boolean storeStatus = database.containStatus(TWEETID);
+
                     if (mode == Mode.ANS || toggleAns) {
                         if (answerAdapter.getItemCount() > 0)
                             sinceId = answerAdapter.getItemId(0);
                         answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
-                        if (database.containStatus(TWEETID)) {
-                            database.updateStatus(tweet);
-                            if (!answers.isEmpty())
-                                database.storeReplies(answers);
-                        }
+                        if (storeStatus && !answers.isEmpty())
+                            database.storeReplies(answers);
                         answers.addAll(answerAdapter.getData());
                     }
                     publishProgress();
 
+                    if(storeStatus)
+                        database.updateStatus(tweet);
                     break;
 
                 case DELETE:
@@ -293,7 +294,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         if (!failure) {
             if (mode == Mode.DELETE) {
                 Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-                ui.get().setResult(TWEET_REMOVED);
+                ui.get().setResult(STAT_CHANGED);
                 ui.get().finish();
             }
         } else {

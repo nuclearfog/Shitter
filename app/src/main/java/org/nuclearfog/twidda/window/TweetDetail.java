@@ -50,7 +50,7 @@ import static org.nuclearfog.twidda.backend.StatusLoader.Mode.RETWEET;
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClickListener, OnRefreshListener, OnTagClickListener {
 
-    public static final int TWEET_REMOVED = 1;
+    public static final int STAT_CHANGED = 1;
     private static final int TWEET = 2;
 
     private RecyclerView answer_list;
@@ -138,10 +138,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode, returnCode, i);
-        if (reqCode == TWEET && returnCode == TWEET_REMOVED) {
+        if (reqCode == TWEET && returnCode == STAT_CHANGED) {
             mStat = null;
         }
+        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
@@ -226,14 +226,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
                 case R.id.no_rt_detail:
                     Intent retweet = new Intent(this, UserDetail.class);
-                    retweet.putExtra("tweetID", tweetID);
+                    retweet.putExtra("ID", tweetID);
                     retweet.putExtra("mode", 2);
                     startActivity(retweet);
                     break;
 
                 case R.id.no_fav_detail:
                     Intent favorit = new Intent(this, UserDetail.class);
-                    favorit.putExtra("tweetID", tweetID);
+                    favorit.putExtra("ID", tweetID);
                     favorit.putExtra("mode", 3);
                     startActivity(favorit);
                     break;

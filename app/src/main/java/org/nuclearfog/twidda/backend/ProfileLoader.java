@@ -279,7 +279,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         @Override
                         public void onClick(View v) {
                             Intent following = new Intent(ui.get(), UserDetail.class);
-                            following.putExtra("userID", user.getId());
+                            following.putExtra("ID", user.getId());
                             following.putExtra("mode", 0);
                             ui.get().startActivity(following);
                         }
@@ -290,7 +290,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         @Override
                         public void onClick(View v) {
                             Intent follower = new Intent(ui.get(), UserDetail.class);
-                            follower.putExtra("userID", user.getId());
+                            follower.putExtra("ID", user.getId());
                             follower.putExtra("mode", 1);
                             ui.get().startActivity(follower);
                         }

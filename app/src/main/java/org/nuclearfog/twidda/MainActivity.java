@@ -37,7 +37,7 @@ import static org.nuclearfog.twidda.backend.MainPage.Mode.DATA;
 import static org.nuclearfog.twidda.backend.MainPage.Mode.HOME;
 import static org.nuclearfog.twidda.backend.MainPage.Mode.MENT;
 import static org.nuclearfog.twidda.backend.MainPage.Mode.TRND;
-import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
+import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 /**
  * Main Activity
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case TWEET:
-                if (returnCode == TWEET_REMOVED)
+                if (returnCode == STAT_CHANGED)
                     home = null;
                 break;
         }

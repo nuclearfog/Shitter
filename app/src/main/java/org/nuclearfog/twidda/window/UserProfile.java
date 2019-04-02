@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.text.NumberFormat;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetDetail.TWEET_REMOVED;
+import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 /**
  * User Profile Activity
@@ -150,10 +150,10 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode, returnCode, i);
-        if (reqCode == TWEET && returnCode == TWEET_REMOVED) {
+        if (reqCode == TWEET && returnCode == STAT_CHANGED) {
             mProfile = null;
         }
+        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
