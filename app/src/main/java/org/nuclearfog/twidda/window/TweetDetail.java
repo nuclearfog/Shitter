@@ -24,12 +24,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.backend.StatusLoader.Mode.ANS;
@@ -66,9 +70,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.page_tweet);
 
         Bundle param = getIntent().getExtras();
-        if (param != null) {
+        Uri link = getIntent().getData();
+
+        if(link != null) {
+            getTweet(link.getPath());
+        }
+        else if (param != null) {
             tweetID = param.getLong("tweetID");
             username = param.getString("username");
+        }
+        else{
+            finish();
         }
 
         Toolbar tool = findViewById(R.id.tweet_toolbar);
@@ -150,41 +162,43 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_tweet:
-                Builder deleteDialog = new Builder(this);
-                deleteDialog.setMessage(R.string.delete_tweet);
-                deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (mStat != null && mStat.getStatus() == RUNNING)
-                            mStat.cancel(true);
-                        mStat = new StatusLoader(TweetDetail.this, DELETE);
-                        mStat.execute(tweetID);
+        if(mStat != null && mStat.getStatus() != RUNNING) {
+            switch (item.getItemId()) {
+                case R.id.delete_tweet:
+                    Builder deleteDialog = new Builder(this);
+                    deleteDialog.setMessage(R.string.delete_tweet);
+                    deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (mStat != null && mStat.getStatus() == RUNNING)
+                                mStat.cancel(true);
+                            mStat = new StatusLoader(TweetDetail.this, DELETE);
+                            mStat.execute(tweetID);
+                        }
+                    });
+                    deleteDialog.setNegativeButton(R.string.no_confirm, null);
+                    deleteDialog.show();
+                    break;
+
+                case R.id.tweet_link:
+                    if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                        intent.setData(Uri.parse(tweetLink));
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                     }
-                });
-                deleteDialog.setNegativeButton(R.string.no_confirm, null);
-                deleteDialog.show();
-                break;
+                    break;
 
-            case R.id.tweet_link:
-                if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                case R.id.link_copy:
                     String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
-                    intent.setData(Uri.parse(tweetLink));
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.link_copy:
-                String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
-                ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
-                clip.setPrimaryClip(linkClip);
-                Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
-                break;
+                    ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                    ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+                    clip.setPrimaryClip(linkClip);
+                    Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -192,46 +206,45 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (mStat != null && mStat.getStatus() == RUNNING)
-            mStat.cancel(true);
+        if (mStat != null && mStat.getStatus() != RUNNING) {
+            switch (v.getId()) {
+                case R.id.rt_button_detail:
+                    if (mStat != null && mStat.getStatus() == RUNNING)
+                        mStat.cancel(true);
+                    mStat = new StatusLoader(this, RETWEET);
+                    mStat.execute(tweetID);
+                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                    break;
 
-        switch (v.getId()) {
-            case R.id.rt_button_detail:
-                if (mStat != null && mStat.getStatus() == RUNNING)
-                    mStat.cancel(true);
-                mStat = new StatusLoader(this, RETWEET);
-                mStat.execute(tweetID);
-                Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
-                break;
+                case R.id.fav_button_detail:
+                    if (mStat != null && mStat.getStatus() == RUNNING)
+                        mStat.cancel(true);
+                    mStat = new StatusLoader(this, FAVORITE);
+                    mStat.execute(tweetID);
+                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                    break;
 
-            case R.id.fav_button_detail:
-                if (mStat != null && mStat.getStatus() == RUNNING)
-                    mStat.cancel(true);
-                mStat = new StatusLoader(this, FAVORITE);
-                mStat.execute(tweetID);
-                Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
-                break;
+                case R.id.no_rt_detail:
+                    Intent retweet = new Intent(this, UserDetail.class);
+                    retweet.putExtra("tweetID", tweetID);
+                    retweet.putExtra("mode", 2);
+                    startActivity(retweet);
+                    break;
 
-            case R.id.no_rt_detail:
-                Intent retweet = new Intent(this, UserDetail.class);
-                retweet.putExtra("tweetID", tweetID);
-                retweet.putExtra("mode", 2);
-                startActivity(retweet);
-                break;
+                case R.id.no_fav_detail:
+                    Intent favorit = new Intent(this, UserDetail.class);
+                    favorit.putExtra("tweetID", tweetID);
+                    favorit.putExtra("mode", 3);
+                    startActivity(favorit);
+                    break;
 
-            case R.id.no_fav_detail:
-                Intent favorit = new Intent(this, UserDetail.class);
-                favorit.putExtra("tweetID", tweetID);
-                favorit.putExtra("mode", 3);
-                startActivity(favorit);
-                break;
-
-            case R.id.answer_button:
-                Intent tweet = new Intent(this, TweetPopup.class);
-                tweet.putExtra("TweetID", tweetID);
-                tweet.putExtra("Addition", username);
-                startActivityForResult(tweet, TWEET);
-                break;
+                case R.id.answer_button:
+                    Intent tweet = new Intent(this, TweetPopup.class);
+                    tweet.putExtra("TweetID", tweetID);
+                    tweet.putExtra("Addition", username);
+                    startActivityForResult(tweet, TWEET);
+                    break;
+            }
         }
     }
 
@@ -274,5 +287,36 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public void setOptionsmenu() {
         isHome = true;
         invalidateOptionsMenu();
+    }
+
+
+    private void getTweet(String link) {
+        if (link != null) {
+            Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
+            Matcher linkMatch = linkPattern.matcher(link);
+            if (linkMatch.matches()) {
+                Pattern idPattern = Pattern.compile("\\d{1,20}");
+                Pattern usrPattern = Pattern.compile("/@?[\\w_]+/");
+
+                Matcher matcher = idPattern.matcher(link);
+                if (matcher.find()) {
+                    int start = matcher.start();
+                    int end = matcher.end();
+                    tweetID = Long.parseLong(link.substring(start, end));
+                }
+
+                matcher = usrPattern.matcher(link);
+                if (matcher.find()) {
+                    int start = matcher.start();
+                    int end = matcher.end();
+                    username = link.substring(start + 1, end - 1);
+                }
+            }
+            else {
+                Toast.makeText(this,R.string.tweet_not_found,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
+        }
     }
 }

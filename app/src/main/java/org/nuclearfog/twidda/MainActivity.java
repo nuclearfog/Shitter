@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -23,7 +22,6 @@ import android.widget.TabHost.TabSpec;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
-import org.nuclearfog.twidda.backend.LinkBrowser;
 import org.nuclearfog.twidda.backend.MainPage;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -61,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
     private MainPage home;
-    private LinkBrowser mBrowser;
     private TabHost tabhost;
     private int tabIndex = 0;
 
@@ -152,12 +149,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             home.execute(1);
 
             setIndicator();
-
-            Uri link = getIntent().getData();
-            if (link != null) {
-                mBrowser = new LinkBrowser(this);
-                mBrowser.execute(link);
-            }
         }
     }
 
@@ -166,9 +157,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onStop() {
         if (home != null && home.getStatus() == RUNNING) {
             home.cancel(true);
-        }
-        if (mBrowser != null && mBrowser.getStatus() == RUNNING) {
-            mBrowser.cancel(true);
         }
         super.onStop();
     }
