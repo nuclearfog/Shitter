@@ -16,7 +16,7 @@ public class AppDatabase extends SQLiteOpenHelper {
             "statusregister INTEGER,source VARCHAR(32),FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String favoriteTable = "CREATE TABLE IF NOT EXISTS favorit (" +
-            "ownerID INTEGER,tweetID INTEGER PRIMARY KEY," +
+            "ownerID INTEGER,tweetID INTEGER," +
             "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
@@ -27,14 +27,13 @@ public class AppDatabase extends SQLiteOpenHelper {
             "messageID INTEGER PRIMARY KEY,time INTEGER,senderID INTEGER,receiverID INTEGER," +
             "message TEXT);";
 
-    private static final String INDX_USER_ID = "CREATE UNIQUE INDEX IF NOT EXISTS idx_user ON user(userID);";
-    private static final String INDX_TWEET_ID = "CREATE UNIQUE INDEX IF NOT EXISTS idx_tweet ON tweet(tweetID);";
-    private static final String INDX_TWEET_US = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
+    private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
+    private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
 
     private static AppDatabase mData;
 
     private AppDatabase(Context context) {
-        super(context, "database.db", null, 3);
+        super(context, "database.db", null, 1);
     }
 
     public static synchronized AppDatabase getInstance(Context context) {
@@ -55,9 +54,8 @@ public class AppDatabase extends SQLiteOpenHelper {
 
         db.execSQL(messageTable);
 
-        db.execSQL(INDX_USER_ID);
-        db.execSQL(INDX_TWEET_ID);
-        db.execSQL(INDX_TWEET_US);
+        db.execSQL(INDX_TWEET);
+        db.execSQL(INDX_FAVOR);
     }
 
     @Override
@@ -69,9 +67,13 @@ public class AppDatabase extends SQLiteOpenHelper {
             db.execSQL(F_QUERY);
         }
         if(oldVersion < 3 && newVersion >=3) {
-            db.execSQL(INDX_USER_ID);
-            db.execSQL(INDX_TWEET_ID);
-            db.execSQL(INDX_TWEET_US);
+            db.execSQL("DROP TABLE favorit");
+            db.execSQL("DROP INDEX idx_tweet");
+
+            db.execSQL(favoriteTable);
+
+            db.execSQL(INDX_TWEET);
+            db.execSQL(INDX_FAVOR);
         }
     }
 }

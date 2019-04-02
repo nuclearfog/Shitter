@@ -144,13 +144,15 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                     if (!user.isLocked() || isFollowing || isHome) {
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getUserTweets(UID, 1, page);
-                            publishProgress();
                             database.storeUserTweets(tweets);
+                            tweets.addAll(homeTl.getData());
+                            publishProgress();
                         }
                         if (favors.isEmpty()) {
                             favors = mTwitter.getUserFavs(UID, 1, page);
-                            publishProgress();
                             database.storeUserFavs(favors, UID);
+                            favors.addAll(homeFav.getData());
+                            publishProgress();
                         }
                     }
                     break;
@@ -161,8 +163,9 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         if (homeTl.getItemCount() > 0)
                             sinceId = homeTl.getItemId(0);
                         tweets = mTwitter.getUserTweets(UID, sinceId, page);
-                        publishProgress();
                         database.storeUserTweets(tweets);
+                        tweets.addAll(homeTl.getData());
+                        publishProgress();
                     }
                     break;
 
@@ -172,8 +175,9 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         if (homeFav.getItemCount() > 0)
                             sinceId = homeFav.getItemId(0);
                         favors = mTwitter.getUserFavs(UID, sinceId, page);
-                        publishProgress();
                         database.storeUserFavs(favors, UID);
+                        favors.addAll(homeFav.getData());
+                        publishProgress();
                     }
                     break;
 
@@ -226,6 +230,19 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
     @Override
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
+
+        if (!tweets.isEmpty()) {
+            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
+            homeTl.setData(tweets);
+            homeTl.notifyDataSetChanged();
+            homeReload.setRefreshing(false);
+        }
+        if (!favors.isEmpty()) {
+            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
+            homeFav.setData(favors);
+            homeFav.notifyDataSetChanged();
+            favReload.setRefreshing(false);
+        }
 
         TextView txtUser = ui.get().findViewById(R.id.profile_username);
         TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
@@ -319,19 +336,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             profile_head.setVisibility(VISIBLE);
 
         ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
-
-        if (!tweets.isEmpty()) {
-            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-            homeTl.setData(tweets);
-            homeTl.notifyDataSetChanged();
-            homeReload.setRefreshing(false);
-        }
-        if (!favors.isEmpty()) {
-            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-            homeFav.setData(favors);
-            homeFav.notifyDataSetChanged();
-            favReload.setRefreshing(false);
-        }
     }
 
 

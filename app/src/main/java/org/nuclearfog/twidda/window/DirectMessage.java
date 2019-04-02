@@ -106,9 +106,9 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
 
     @Override
-    public void onAnswer(int index) {
+    public void onAnswer(int position) {
         if (mAdapter != null && !refresh.isRefreshing()) {
-            Message message = mAdapter.getData().get(index);
+            Message message = mAdapter.getData(position);
             Intent sendDm = new Intent(this, MessagePopup.class);
             sendDm.putExtra("username", message.getSender().getScreenname());
             startActivity(sendDm);
@@ -117,9 +117,9 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
 
     @Override
-    public void onDelete(int index) {
+    public void onDelete(int position) {
         if (mAdapter != null && !refresh.isRefreshing()) {
-            Message message = mAdapter.getData().get(index);
+            Message message = mAdapter.getData(position);
             final long messageId = message.getId();
             new Builder(this).setMessage(R.string.confirm_delete_dm)
                     .setNegativeButton(R.string.no_confirm, null)
@@ -137,7 +137,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
     @Override
     public void onProfileClick(int index) {
         if (mAdapter != null && !refresh.isRefreshing()) {
-            Message message = mAdapter.getData().get(index);
+            Message message = mAdapter.getData(index);
             long userId = message.getSender().getId();
             String username = message.getSender().getScreenname();
             Intent user = new Intent(this, UserProfile.class);

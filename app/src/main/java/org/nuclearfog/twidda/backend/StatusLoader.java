@@ -108,14 +108,15 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                         if (answerAdapter.getItemCount() > 0)
                             sinceId = answerAdapter.getItemId(0);
                         answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
+                        if (database.containStatus(TWEETID)) {
+                            database.updateStatus(tweet);
+                            if (!answers.isEmpty())
+                                database.storeReplies(answers);
+                        }
+                        answers.addAll(answerAdapter.getData());
                     }
                     publishProgress();
 
-                    if (database.containStatus(TWEETID)) {
-                        database.updateStatus(tweet);
-                        if (!answers.isEmpty())
-                            database.storeReplies(answers);
-                    }
                     break;
 
                 case DELETE:
@@ -159,6 +160,13 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     @Override
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
+
+        if(!answers.isEmpty()) {
+            SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
+            ansReload.setRefreshing(false);
+            answerAdapter.setData(answers);
+            answerAdapter.notifyDataSetChanged();
+        }
 
         if(mode == Mode.LOAD) {
             TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
@@ -269,12 +277,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             tweet_header.setVisibility(VISIBLE);
         if(tweet_footer.getVisibility() != VISIBLE)
             tweet_footer.setVisibility(VISIBLE);
-        if(!answers.isEmpty()) {
-            SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
-            ansReload.setRefreshing(false);
-            answerAdapter.setData(answers);
-            answerAdapter.notifyDataSetChanged();
-        }
     }
 
 

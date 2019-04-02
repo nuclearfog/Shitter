@@ -29,9 +29,21 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
         TRND,
         MENT
     }
-
     private final Mode mode;
     private boolean failure = false;
+
+    private WeakReference<MainActivity> ui;
+    private TwitterEngine mTwitter;
+    private TwitterException err;
+
+    private TimelineAdapter timelineAdapter, mentionAdapter;
+    private TrendAdapter trendsAdapter;
+    private DatabaseAdapter tweetDb;
+    private List<Tweet> tweets, mention;
+    private List<Trend> trends;
+
+    private int woeId;
+
 
     public MainPage(@NonNull MainActivity context, Mode mode) {
         ui = new WeakReference<>(context);
@@ -54,17 +66,6 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
         mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
     }
 
-    private WeakReference<MainActivity> ui;
-    private TwitterEngine mTwitter;
-    private TwitterException err;
-
-    private TimelineAdapter timelineAdapter, mentionAdapter;
-    private TrendAdapter trendsAdapter;
-    private DatabaseAdapter tweetDb;
-    private List<Tweet> tweets, mention;
-    private List<Trend> trends;
-
-    private int woeId;
 
     @Override
     protected Void doInBackground(Integer... args) {
@@ -76,8 +77,9 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
                     if (timelineAdapter.getItemCount() > 0)
                         sinceId = timelineAdapter.getItemId(0);
                     tweets = mTwitter.getHome(PAGE, sinceId);
-                    publishProgress();
                     tweetDb.storeHomeTimeline(tweets);
+                    tweets.addAll(timelineAdapter.getData());
+                    publishProgress();
                     break;
 
                 case TRND:
@@ -90,8 +92,9 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
                     if (mentionAdapter.getItemCount() > 0)
                         sinceId = mentionAdapter.getItemId(0);
                     mention = mTwitter.getMention(PAGE, sinceId);
-                    publishProgress();
+                    mention.addAll(mentionAdapter.getData());
                     tweetDb.storeMentions(mention);
+                    publishProgress();
                     break;
 
                 case DATA:
@@ -100,7 +103,6 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
                     mention = tweetDb.getMentions();
                     publishProgress();
             }
-
         } catch (TwitterException err) {
             this.err = err;
             failure = true;
@@ -110,6 +112,7 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
         }
         return null;
     }
+
 
     @Override
     protected void onProgressUpdate(Void... v) {
@@ -141,6 +144,7 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
         }
     }
 
+
     @Override
     protected void onPostExecute(Void v) {
         if (failure && ui.get() != null) {
@@ -150,10 +154,12 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
         }
     }
 
+
     @Override
     protected void onCancelled() {
         disableSwipe();
     }
+
 
     private void disableSwipe() {
         if (ui.get() != null) {

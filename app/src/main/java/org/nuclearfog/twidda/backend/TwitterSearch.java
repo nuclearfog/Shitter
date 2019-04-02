@@ -81,6 +81,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         tweetReload.setRefreshing(false);
 
         if(!tweets.isEmpty()) {
+            tweets.addAll(searchAdapter.getData());
             searchAdapter.setData(tweets);
             searchAdapter.notifyDataSetChanged();
         }

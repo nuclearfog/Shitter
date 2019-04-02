@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         switch (parent.getId()) {
             case R.id.tl_list:
                 if (!timelineReload.isRefreshing()) {
-                    Tweet tweet = timelineAdapter.getData().get(position);
+                    Tweet tweet = timelineAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
                     openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.tr_list:
                 if (!trendReload.isRefreshing()) {
-                    String search = trendsAdapter.getData().get(position).getName();
+                    String search = trendsAdapter.getData(position).getName();
                     Intent intent = new Intent(this, SearchPage.class);
                     if (!search.startsWith("#"))
                         search = '\"' + search + '\"';
@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.m_list:
                 if (!mentionReload.isRefreshing()) {
-                    Tweet tweet = mentionAdapter.getData().get(position);
+                    Tweet tweet = mentionAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
                     openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());

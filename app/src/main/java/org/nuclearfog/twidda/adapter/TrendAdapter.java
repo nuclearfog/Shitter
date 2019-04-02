@@ -34,8 +34,8 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
-    public List<Trend> getData() {
-        return trendList;
+    public Trend getData(int pos) {
+        return trendList.get(pos);
     }
 
 

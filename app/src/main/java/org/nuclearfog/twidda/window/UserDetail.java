@@ -113,7 +113,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
     public void onItemClick(RecyclerView rv, int position) {
         UserAdapter userListAdapter = (UserAdapter) userList.getAdapter();
         if (userListAdapter != null && !refresh.isRefreshing()) {
-            TwitterUser user = userListAdapter.getData().get(position);
+            TwitterUser user = userListAdapter.getData(position);
             long userID = user.getId();
             String username = user.getScreenname();
             Intent intent = new Intent(this, UserProfile.class);

@@ -33,13 +33,13 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     }
 
 
-    public List<TwitterUser> getData() {
-        return mUser;
+    public TwitterUser getData(int pos) {
+        return mUser.get(pos);
     }
 
 
     public void setData(@NonNull List<TwitterUser> mUser) {
-        this.mUser = mUser;
+        this.mUser = new ArrayList<>(mUser);
     }
 
 

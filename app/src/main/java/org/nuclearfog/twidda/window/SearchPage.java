@@ -178,7 +178,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         if (!tweetReload.isRefreshing()) {
             switch (rv.getId()) {
                 case R.id.tweet_result:
-                    Tweet tweet = searchAdapter.getData().get(position);
+                    Tweet tweet = searchAdapter.getData(position);
                     Intent tweetdetail = new Intent(this, TweetDetail.class);
                     tweetdetail.putExtra("tweetID", tweet.getId());
                     tweetdetail.putExtra("userID", tweet.getUser().getId());
@@ -187,7 +187,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.user_result:
-                    TwitterUser user = userAdapter.getData().get(position);
+                    TwitterUser user = userAdapter.getData(position);
                     Intent userprofile = new Intent(this, UserProfile.class);
                     userprofile.putExtra("userID", user.getId());
                     userprofile.putExtra("username", user.getScreenname());

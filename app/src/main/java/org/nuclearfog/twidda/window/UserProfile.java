@@ -330,7 +330,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         switch (parent.getId()) {
             case R.id.ht_list:
                 if (!homeReload.isRefreshing()) {
-                    Tweet tweet = tweetAdapter.getData().get(position);
+                    Tweet tweet = tweetAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
                     openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
@@ -339,7 +339,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
             case R.id.hf_list:
                 if (!favoriteReload.isRefreshing()) {
-                    Tweet tweet = favAdapter.getData().get(position);
+                    Tweet tweet = favAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
                     openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());

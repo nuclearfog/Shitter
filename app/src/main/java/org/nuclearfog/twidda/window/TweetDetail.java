@@ -246,7 +246,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     public void onItemClick(RecyclerView rv, int position) {
         if (!answerReload.isRefreshing()) {
-            Tweet tweet = answerAdapter.getData().get(position);
+            Tweet tweet = answerAdapter.getData(position);
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.getId());
             intent.putExtra("userID", tweet.getUser().getId());

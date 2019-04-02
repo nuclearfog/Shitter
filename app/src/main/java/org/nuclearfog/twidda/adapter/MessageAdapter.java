@@ -41,8 +41,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public List<Message> getData() {
-        return messages;
+    public Message getData(int pos) {
+        return messages.get(pos);
     }
 
 
