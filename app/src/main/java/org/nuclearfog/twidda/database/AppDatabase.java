@@ -33,7 +33,7 @@ public class AppDatabase extends SQLiteOpenHelper {
     private static AppDatabase mData;
 
     private AppDatabase(Context context) {
-        super(context, "database.db", null, 1);
+        super(context, "database.db", null, 3);
     }
 
     public static synchronized AppDatabase getInstance(Context context) {
