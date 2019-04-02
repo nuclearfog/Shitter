@@ -220,7 +220,8 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            Log.e("ProfileLoader", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("ProfileLoader", err.getMessage());
             failure = true;
         }
         return null;

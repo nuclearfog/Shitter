@@ -55,7 +55,8 @@ public class UserLists extends AsyncTask<Long, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
-            Log.e("User List", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("User List", err.getMessage());
             return false;
         }
         return true;

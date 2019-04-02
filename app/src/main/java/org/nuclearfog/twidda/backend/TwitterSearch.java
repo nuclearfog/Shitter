@@ -67,7 +67,10 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         } catch (TwitterException err) {
             this.err = err;
         } catch (Exception err) {
-            Log.e("Twitter Search", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("Twitter Search", err.getMessage());
+            else
+                Log.e("Twitter Search", err.toString());
         }
         return null;
     }

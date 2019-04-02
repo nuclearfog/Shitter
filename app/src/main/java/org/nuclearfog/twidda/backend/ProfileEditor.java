@@ -115,7 +115,8 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            Log.e("E: ProfileEditor", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("E: ProfileEditor", err.getMessage());
             failure = true;
         }
         return null;

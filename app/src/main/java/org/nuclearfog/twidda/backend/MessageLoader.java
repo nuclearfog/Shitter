@@ -84,7 +84,8 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            Log.e("Direct Message", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("Direct Message", err.getMessage());
             failure = true;
         }
         return null;

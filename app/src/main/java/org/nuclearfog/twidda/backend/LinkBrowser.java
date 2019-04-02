@@ -97,7 +97,10 @@ public class LinkBrowser extends AsyncTask<Uri, Void, Void> {
         } catch (TwitterException err) {
             this.err = err;
         } catch (Exception err) {
-            Log.e("LinkBrowser", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("LinkBrowser", err.getMessage());
+            else
+                Log.e("LinkBrowser", err.toString());
         }
         return null;
     }

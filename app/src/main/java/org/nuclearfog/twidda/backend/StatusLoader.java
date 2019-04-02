@@ -150,7 +150,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 database.removeStatus(TWEETID);
             failure = true;
         } catch (Exception err) {
-            Log.e("Status Loader", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("Status Loader", err.getMessage());
             failure = true;
         }
         return null;

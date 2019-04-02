@@ -107,7 +107,8 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            Log.e("Main Page", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("Main Page", err.getMessage());
             failure = true;
         }
         return null;

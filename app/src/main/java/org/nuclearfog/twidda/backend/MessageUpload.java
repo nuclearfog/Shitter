@@ -75,7 +75,8 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
-            Log.e("DirectMessage", err.getMessage());
+            if(err.getMessage() != null)
+                Log.e("DirectMessage", err.getMessage());
             return false;
         }
         return true;
