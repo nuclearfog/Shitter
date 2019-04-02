@@ -92,6 +92,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         tweetTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         root.setBackgroundColor(settings.getBackgroundColor());
+        answerReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);

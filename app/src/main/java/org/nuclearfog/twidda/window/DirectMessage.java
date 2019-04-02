@@ -34,7 +34,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     private MessageLoader mLoader;
     private MessageAdapter mAdapter;
-    private SwipeRefreshLayout refresh;
+    private SwipeRefreshLayout messageRefresh;
     private GlobalSettings settings;
     private RecyclerView dmList;
 
@@ -48,16 +48,17 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.directmessage);
-        refresh = findViewById(R.id.dm_reload);
+        messageRefresh = findViewById(R.id.dm_reload);
         dmList = findViewById(R.id.messagelist);
         View root = findViewById(R.id.dm_layout);
 
         settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
+        messageRefresh.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
         dmList.setLayoutManager(new LinearLayoutManager(this));
         dmList.setHasFixedSize(true);
-        refresh.setOnRefreshListener(this);
+        messageRefresh.setOnRefreshListener(this);
     }
 
 
@@ -107,7 +108,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onAnswer(int position) {
-        if (mAdapter != null && !refresh.isRefreshing()) {
+        if (mAdapter != null && !messageRefresh.isRefreshing()) {
             Message message = mAdapter.getData(position);
             Intent sendDm = new Intent(this, MessagePopup.class);
             sendDm.putExtra("username", message.getSender().getScreenname());
@@ -118,7 +119,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onDelete(int position) {
-        if (mAdapter != null && !refresh.isRefreshing()) {
+        if (mAdapter != null && !messageRefresh.isRefreshing()) {
             Message message = mAdapter.getData(position);
             final long messageId = message.getId();
             new Builder(this).setMessage(R.string.confirm_delete_dm)
@@ -136,7 +137,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onProfileClick(int index) {
-        if (mAdapter != null && !refresh.isRefreshing()) {
+        if (mAdapter != null && !messageRefresh.isRefreshing()) {
             Message message = mAdapter.getData(index);
             long userId = message.getSender().getId();
             String username = message.getSender().getScreenname();

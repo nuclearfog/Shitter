@@ -50,6 +50,7 @@ abstract class ErrorHandler {
                 break;
 
             case 179:
+            case 136:
                 Toast.makeText(c, R.string.status_private, Toast.LENGTH_SHORT).show();
                 break;
 

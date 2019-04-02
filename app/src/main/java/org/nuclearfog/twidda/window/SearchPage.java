@@ -77,6 +77,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         twUnderline = twIndicator.findViewById(R.id.ts_divider);
         usUnderline = usIndicator.findViewById(R.id.us_divider);
         twUnderline.setBackgroundColor(settings.getHighlightColor());
+        tweetReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
         tabhost.setup();
         TabHost.TabSpec tab1 = tabhost.newTabSpec("search_result");

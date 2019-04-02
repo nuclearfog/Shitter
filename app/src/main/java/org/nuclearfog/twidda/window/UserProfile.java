@@ -100,6 +100,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         tweetCount = tweetIndicator.findViewById(R.id.profile_tweet_count);
         favorCount = favorIndicator.findViewById(R.id.profile_favor_count);
         tweetUnderline.setBackgroundColor(settings.getHighlightColor());
+        homeReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        favoriteReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
         mTab.setup();
         TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");

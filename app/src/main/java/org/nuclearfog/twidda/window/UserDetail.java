@@ -27,7 +27,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 public class UserDetail extends AppCompatActivity implements OnItemClickListener, OnRefreshListener {
 
     private RecyclerView userList;
-    private SwipeRefreshLayout refresh;
+    private SwipeRefreshLayout userReload;
     private GlobalSettings settings;
     private UserLists uList;
     private int mode = -1;
@@ -50,16 +50,17 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
 
         View root = findViewById(R.id.user_view);
         Toolbar toolbar = findViewById(R.id.user_toolbar);
-        refresh = findViewById(R.id.user_refresh);
+        userReload = findViewById(R.id.user_refresh);
         userList = findViewById(R.id.userlist);
         userList.setLayoutManager(new LinearLayoutManager(this));
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
+        userReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
-        refresh.setRefreshing(true);
-        refresh.setOnRefreshListener(this);
+        userReload.setRefreshing(true);
+        userReload.setOnRefreshListener(this);
     }
 
 
@@ -112,7 +113,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
     @Override
     public void onItemClick(RecyclerView rv, int position) {
         UserAdapter userListAdapter = (UserAdapter) userList.getAdapter();
-        if (userListAdapter != null && !refresh.isRefreshing()) {
+        if (userListAdapter != null && !userReload.isRefreshing()) {
             TwitterUser user = userListAdapter.getData(position);
             long userID = user.getId();
             String username = user.getScreenname();

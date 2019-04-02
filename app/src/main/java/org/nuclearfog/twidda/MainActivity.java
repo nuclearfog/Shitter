@@ -140,6 +140,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             mentionAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             mentionAdapter.toggleImage(settings.getImageLoad());
 
+            timelineReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+            trendReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+            mentionReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+
             timelineList.setAdapter(timelineAdapter);
             trendList.setAdapter(trendsAdapter);
             mentionList.setAdapter(mentionAdapter);
