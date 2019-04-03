@@ -19,14 +19,13 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
-    private List<Message> messages;
+    private Message messages[];
     private OnItemSelected mListener;
 
 
@@ -36,18 +35,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
 
     public MessageAdapter(OnItemSelected listener) {
-        messages = new ArrayList<>();
+        messages = new Message[0];
         this.mListener = listener;
     }
 
 
     public Message getData(int pos) {
-        return messages.get(pos);
+        return messages[pos];
     }
 
 
-    public void setData(@NonNull List<Message> messages) {
-        this.messages = messages;
+    public void setData(@NonNull List<Message> messageList) {
+        messages = messageList.toArray(messages);
     }
 
 
@@ -64,13 +63,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public long getItemId(int pos) {
-        return messages.get(pos).getId();
+        return messages[pos].getId();
     }
 
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return messages.length;
     }
 
 
@@ -109,7 +108,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
-        Message message = messages.get(index);
+        Message message = messages[index];
         Spanned text = Tagger.makeText(message.getText(), highlight, mListener);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.message.setText(text);

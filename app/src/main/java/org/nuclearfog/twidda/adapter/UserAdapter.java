@@ -16,30 +16,29 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
-    private List<TwitterUser> mUser;
+    private TwitterUser mUser[];
     private OnItemClickListener mListener;
     private int font_color = 0xFFFFFFFF;
     private boolean loadImage = true;
 
 
     public UserAdapter(OnItemClickListener mListener) {
-        mUser = new ArrayList<>();
+        mUser = new TwitterUser[0];
         this.mListener = mListener;
     }
 
 
     public TwitterUser getData(int pos) {
-        return mUser.get(pos);
+        return mUser[pos];
     }
 
 
-    public void setData(@NonNull List<TwitterUser> mUser) {
-        this.mUser = new ArrayList<>(mUser);
+    public void setData(@NonNull List<TwitterUser> userList) {
+        mUser = userList.toArray(mUser);
     }
 
 
@@ -55,13 +54,13 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @Override
     public int getItemCount() {
-        return mUser.size();
+        return mUser.length;
     }
 
 
     @Override
     public long getItemId(int pos) {
-        return mUser.get(pos).getId();
+        return mUser[pos].getId();
     }
 
 
@@ -83,7 +82,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        TwitterUser user = mUser.get(index);
+        TwitterUser user = mUser[index];
         vh.screenname.setText(user.getScreenname());
         vh.username.setText(user.getUsername());
 

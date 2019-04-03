@@ -13,18 +13,17 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Trend;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
-    private List<Trend> trendList;
+    private Trend trends[];
     private OnItemClickListener mListener;
     private int font_color = 0xFFFFFFFF;
 
 
     public TrendAdapter(OnItemClickListener mListener) {
-        trendList = new ArrayList<>();
+        trends = new Trend[0];
         this.mListener = mListener;
     }
 
@@ -35,18 +34,18 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
 
     public Trend getData(int pos) {
-        return trendList.get(pos);
+        return trends[pos];
     }
 
 
     public void setData(@NonNull List<Trend> trendList) {
-        this.trendList = trendList;
+        trends = trendList.toArray(trends);
     }
 
 
     @Override
     public int getItemCount() {
-        return trendList.size();
+        return trends.length;
     }
 
 
@@ -68,7 +67,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        Trend trend = trendList.get(index);
+        Trend trend = trends[index];
         String posStr = Integer.toString(trend.getPosition()) + '.';
         vh.trends.setText(trend.getName());
         vh.pos.setText(posStr);

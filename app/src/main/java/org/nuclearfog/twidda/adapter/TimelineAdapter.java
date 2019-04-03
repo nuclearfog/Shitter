@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.List;
 public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
     private OnItemClickListener mListener;
-    private List<Tweet> tweets;
+    private Tweet tweets[];
     private NumberFormat formatter;
     private int highlight = 0xFFFFFFFF;
     private int font_color = 0xFFFFFFFF;
@@ -36,7 +36,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
 
     public TimelineAdapter(OnItemClickListener mListener) {
-        tweets = new ArrayList<>();
+        tweets = new Tweet[0];
         formatter = NumberFormat.getIntegerInstance();
         this.mListener = mListener;
     }
@@ -54,29 +54,29 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
 
     public Tweet getData(int pos) {
-        return tweets.get(pos);
+        return tweets[pos];
     }
 
 
     public List<Tweet>getData() {
-        return tweets;
+        return Arrays.asList(tweets);
     }
 
 
     public void setData(@NonNull List<Tweet> newTweets) {
-        this.tweets = new ArrayList<>(newTweets);
+        tweets = newTweets.toArray(tweets);
     }
 
 
     @Override
     public long getItemId(int pos) {
-        return tweets.get(pos).getId();
+        return tweets[pos].getId();
     }
 
 
     @Override
     public int getItemCount() {
-        return tweets.size();
+        return tweets.length;
     }
 
 
@@ -98,7 +98,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        Tweet tweet = tweets.get(index);
+        Tweet tweet = tweets[index];
         if (tweet.getEmbeddedTweet() != null) {
             String retweeter = "RT " + tweet.getUser().getScreenname();
             vh.retweeter.setText(retweeter);
