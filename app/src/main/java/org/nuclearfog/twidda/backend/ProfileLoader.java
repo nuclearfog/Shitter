@@ -316,16 +316,18 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
         if (user.getLocation() != null && !user.getLocation().isEmpty()) {
             txtLocation.setText(user.getLocation());
+            txtLocation.setVisibility(VISIBLE);
             location_ico.setVisibility(VISIBLE);
         } else {
-            txtLocation.setText("");
+            txtLocation.setVisibility(GONE);
             location_ico.setVisibility(GONE);
         }
         if (user.getLink() != null && !user.getLink().isEmpty()) {
             txtLink.setText(user.getLink());
+            txtLink.setVisibility(VISIBLE);
             link_ico.setVisibility(VISIBLE);
         } else {
-            txtLink.setText("");
+            txtLink.setVisibility(GONE);
             link_ico.setVisibility(GONE);
         }
         if (imgEnabled) {
