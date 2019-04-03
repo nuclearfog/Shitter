@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
 
     public void setData(@NonNull List<Message> messageList) {
-        messages = messageList.toArray(messages);
+        messages = messageList.toArray(new Message[0]);
     }
 
 
@@ -111,6 +111,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         Message message = messages[index];
         Spanned text = Tagger.makeText(message.getText(), highlight, mListener);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
+        vh.message.setLinkTextColor(highlight);
         vh.message.setText(text);
         vh.username.setText(message.getSender().getUsername());
         vh.screenname.setText(message.getSender().getScreenname());

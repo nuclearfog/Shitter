@@ -76,6 +76,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         }
 
         TextView bioTxt = findViewById(R.id.bio);
+        TextView lnkTxt = findViewById(R.id.links);
         View root = findViewById(R.id.user_view);
         homeList = findViewById(R.id.ht_list);
         homeReload = findViewById(R.id.hometweets);
@@ -91,6 +92,9 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         favoriteList.setLayoutManager(new LinearLayoutManager(this));
         root.setBackgroundColor(settings.getBackgroundColor());
         bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+        lnkTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+        bioTxt.setLinkTextColor(settings.getHighlightColor());
+        lnkTxt.setLinkTextColor(settings.getHighlightColor());
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View tweetIndicator = inflater.inflate(R.layout.tab_tw, null);

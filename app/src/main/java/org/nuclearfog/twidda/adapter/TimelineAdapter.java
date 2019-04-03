@@ -64,7 +64,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
 
     public void setData(@NonNull List<Tweet> newTweets) {
-        tweets = newTweets.toArray(tweets);
+        tweets = newTweets.toArray(new Tweet[0]);
     }
 
 

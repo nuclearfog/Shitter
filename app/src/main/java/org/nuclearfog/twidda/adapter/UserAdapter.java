@@ -38,7 +38,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
 
     public void setData(@NonNull List<TwitterUser> userList) {
-        mUser = userList.toArray(mUser);
+        mUser = userList.toArray(new TwitterUser[0]);
     }
 
 

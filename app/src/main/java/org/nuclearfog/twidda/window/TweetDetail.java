@@ -102,6 +102,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         answer_list = findViewById(R.id.answer_list);
         answer_list.setLayoutManager(new LinearLayoutManager(this));
         tweetTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+        tweetTxt.setLinkTextColor(settings.getHighlightColor());
 
         root.setBackgroundColor(settings.getBackgroundColor());
         answerReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
