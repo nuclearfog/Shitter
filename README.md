@@ -19,15 +19,15 @@ Features:
 
 
 included libraries:
-Twitter4J 4.0.7 https://github.com/Twitter4J/Twitter4J
-picasso 2.71828 https://github.com/square/picasso
-QuadFlask colorpicker https://github.com/QuadFlask/colorpicker
-ZoomImageView https://github.com/NudeDude/ZoomView
-Tagger https://github.com/NudeDude/Tagger
+- Twitter4J 4.0.7 https://github.com/Twitter4J/Twitter4J
+- picasso 2.71828 https://github.com/square/picasso
+- QuadFlask colorpicker https://github.com/QuadFlask/colorpicker
+- ZoomImageView https://github.com/NudeDude/ZoomView
+- Tagger https://github.com/NudeDude/Tagger
 
 
-logo design by @Tobaloidee
+logo and app icon design by @Tobaloidee
 
-svg icons from www.entypo.com
+icons from www.entypo.com
 
 my Twitter: www.twitter.com/nuclearfog
