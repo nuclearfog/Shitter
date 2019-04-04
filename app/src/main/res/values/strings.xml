@@ -50,7 +50,7 @@
     <string name="blocked">blocked</string>
     <string name="unblocked">unblocked</string>
     <string name="tweet_removed">Tweet removed!</string>
-    <string name="answering">answering @</string>
+    <string name="answering">answering </string>
     <string name="sent_from">sent from: </string>
     <string name="progress_kill">stop loading</string>
     <string name="woeid" translatable="false">World ID</string>

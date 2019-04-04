@@ -68,8 +68,6 @@ public class AppDatabase extends SQLiteOpenHelper {
         }
         if(oldVersion < 3 && newVersion >=3) {
             db.execSQL("DROP TABLE favorit");
-            db.execSQL("DROP INDEX idx_tweet");
-
             db.execSQL(favoriteTable);
 
             db.execSQL(INDX_TWEET);

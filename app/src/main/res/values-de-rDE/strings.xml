@@ -43,7 +43,7 @@
     <string name="blocked">geblockt!</string>
     <string name="unblocked">entblockt!</string>
     <string name="tweet_removed">Tweet gelöscht!</string>
-    <string name="answering">antwort @</string>
+    <string name="answering">"antwort "</string>
     <string name="sent_from">"gesendet von: "</string>
     <string name="progress_kill">abbrechen</string>
     <string name="mute">Stummschalten</string>

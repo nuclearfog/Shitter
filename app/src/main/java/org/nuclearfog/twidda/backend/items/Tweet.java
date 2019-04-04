@@ -36,7 +36,7 @@ public class Tweet {
         tweet = getText(status);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
-        replyName = status.getInReplyToScreenName();
+        replyName = '@' + status.getInReplyToScreenName();
         media = getMediaLinks(status);
         retweeted = status.isRetweeted();
         favored = status.isFavorited();
