@@ -53,6 +53,7 @@
     <dimen name="tab_div_height">2dp</dimen>
     <dimen name="tab_div_margin">12dp</dimen>
     <dimen name="tab_padding_top">5dp</dimen>
+    <dimen name="logo_height">200dp</dimen>
 
     <!--Text limitation-->
     <integer name="tweet_max_line">10</integer>

@@ -117,4 +117,5 @@
     <string name="exit_confirm">discard changes?</string>
     <string name="toggle_answer">Load answer</string>
     <string name="user_data">User data</string>
+    <string name="logo_descr">Shitter Logo</string>
 </resources>
