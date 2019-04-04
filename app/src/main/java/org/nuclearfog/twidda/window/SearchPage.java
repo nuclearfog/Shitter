@@ -183,7 +183,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
                     Intent tweetdetail = new Intent(this, TweetDetail.class);
                     tweetdetail.putExtra("tweetID", tweet.getId());
                     tweetdetail.putExtra("userID", tweet.getUser().getId());
-                    tweetdetail.putExtra("username", tweet.getUser().getScreenname());
+                    tweetdetail.putExtra("username", tweet.getUser().getScreenname().substring(1));
                     startActivity(tweetdetail);
                     break;
 

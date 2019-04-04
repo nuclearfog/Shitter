@@ -184,7 +184,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 case R.id.tweet_link:
                     if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                        String tweetLink = "https://twitter.com/" + username + "/status/" + tweetID;
                         intent.setData(Uri.parse(tweetLink));
                         startActivity(intent);
                     } else {
@@ -193,7 +193,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.link_copy:
-                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    String tweetLink = "https://twitter.com/" + username + "/status/" + tweetID;
                     ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
                     clip.setPrimaryClip(linkClip);
@@ -242,7 +242,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 case R.id.answer_button:
                     Intent tweet = new Intent(this, TweetPopup.class);
                     tweet.putExtra("TweetID", tweetID);
-                    tweet.putExtra("Addition", username);
+                    tweet.putExtra("Addition", '@'+username);
                     startActivityForResult(tweet, TWEET);
                     break;
             }
@@ -265,7 +265,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.getId());
             intent.putExtra("userID", tweet.getUser().getId());
-            intent.putExtra("username", tweet.getUser().getScreenname());
+            intent.putExtra("username", tweet.getUser().getScreenname().substring(1));
             startActivityForResult(intent, TWEET);
         }
     }
@@ -296,22 +296,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
             Matcher linkMatch = linkPattern.matcher(link);
             if (linkMatch.matches()) {
-                Pattern idPattern = Pattern.compile("\\d{1,20}");
-                Pattern usrPattern = Pattern.compile("/@?[\\w_]+/");
+                if(link.startsWith("/@"))
+                    link = link.substring(2);
+                else
+                    link = link.substring(1);
+                int end = link.indexOf('/');
 
-                Matcher matcher = idPattern.matcher(link);
-                if (matcher.find()) {
-                    int start = matcher.start();
-                    int end = matcher.end();
-                    tweetID = Long.parseLong(link.substring(start, end));
-                }
-
-                matcher = usrPattern.matcher(link);
-                if (matcher.find()) {
-                    int start = matcher.start();
-                    int end = matcher.end();
-                    username = link.substring(start + 1, end - 1);
-                }
+                username = link.substring(0,end);
+                link = link.substring(end + 8);
+                tweetID = Long.parseLong(link);
             }
             else {
                 Toast.makeText(this,R.string.tweet_not_found,Toast.LENGTH_SHORT).show();

@@ -379,7 +379,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         Intent intent = new Intent(this, TweetDetail.class);
         intent.putExtra("tweetID", tweetId);
         intent.putExtra("userID", userId);
-        intent.putExtra("username", username);
+        intent.putExtra("username", username.substring(1));
         startActivityForResult(intent, TWEET);
     }
 
