@@ -1,7 +1,7 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
 
-Alternative Twitter App for Android
+Alternative Twitter App for Android <img src="/images/twitter4j.gif" width="138" height="30">
 
 Features:
 - fast access to tweets and userprofiles
@@ -15,7 +15,7 @@ Features:
 - Edit Twitter profile
 
 
-<img src="/screenshots/shitter_1.png" width="180" height="320"/> <img src="/screenshots/shitter_2.png" width="180" height="320"/> <img src="/screenshots/shitter_3.png" width="180" height="320"/>
+<img src="/images/shitter_1.png" width="180" height="320"> <img src="/images/shitter_2.png" width="180" height="320"> <img src="/images/shitter_3.png" width="180" height="320">
 
 
 included libraries:
