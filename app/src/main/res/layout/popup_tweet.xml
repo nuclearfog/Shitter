@@ -21,7 +21,6 @@
             android:background="@android:color/transparent"
             android:gravity="top"
             android:hint="@string/tweet"
-            android:autofillHints=""
             android:inputType="textMultiLine" />
 
         <LinearLayout

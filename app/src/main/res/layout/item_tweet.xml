@@ -25,7 +25,6 @@
 
                 <ImageView
                     android:id="@+id/tweetPb"
-                    style="@style/ProfileImageCardView"
                     android:layout_width="@dimen/profile_small"
                     android:layout_height="@dimen/profile_small"
                     android:contentDescription="@string/profile_image" />
