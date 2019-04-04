@@ -119,13 +119,21 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         vh.tweet.setTextColor(font_color);
         vh.time.setTextColor(font_color);
 
+        if(tweet.retweeted())
+            vh.rtButton.setImageResource(R.drawable.retweet_enabled);
+        else
+            vh.rtButton.setImageResource(R.drawable.retweet);
+        if(tweet.favored())
+            vh.fvButton.setImageResource(R.drawable.favorite_enabled);
+        else
+            vh.fvButton.setImageResource(R.drawable.favorite);
+        if (tweet.getUser().isVerified())
+            vh.verify.setVisibility(View.VISIBLE);
+        else
+            vh.verify.setVisibility(View.GONE);
+
         if (img_ldr) {
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
-        }
-        if (tweet.getUser().isVerified()) {
-            vh.verify.setVisibility(View.VISIBLE);
-        } else {
-            vh.verify.setVisibility(View.GONE);
         }
     }
 
@@ -158,6 +166,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         final TextView username, screenname, tweet, retweet;
         final TextView favorite, retweeter, time;
         final ImageView profile, verify;
+        final ImageView rtButton, fvButton;
 
         ItemHolder(View v) {
             super(v);
@@ -170,6 +179,8 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
             time = v.findViewById(R.id.time);
             profile = v.findViewById(R.id.tweetPb);
             verify = v.findViewById(R.id.list_verify);
+            rtButton = v.findViewById(R.id.rt_button);
+            fvButton = v.findViewById(R.id.fv_button);
         }
     }
 }

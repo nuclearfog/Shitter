@@ -105,6 +105,7 @@
                 android:textSize="12sp" />
 
             <ImageView
+                android:id="@+id/rt_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/icon_margin"
@@ -121,12 +122,13 @@
                 android:textSize="12sp" />
 
             <ImageView
+                android:id="@+id/fv_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/icon_margin"
                 android:layout_marginRight="@dimen/icon_margin"
                 android:contentDescription="@string/favorite"
-                app:srcCompat="@drawable/favorite_tweet" />
+                app:srcCompat="@drawable/favorite" />
 
             <TextView
                 android:id="@+id/favorite_number"

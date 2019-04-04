@@ -191,7 +191,7 @@
                     android:layout_marginEnd="@dimen/icon_margin"
                     android:layout_marginRight="@dimen/tweet_icon_margin"
                     android:contentDescription="@string/answer_button"
-                    app:srcCompat="@drawable/chat" />
+                    app:srcCompat="@drawable/answer" />
 
                 <TextView
                     android:id="@+id/no_ans_detail"
