@@ -40,6 +40,6 @@ dependencies {
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
-    implementation 'com.github.NudeDude:Tagger:1.1'
     implementation 'com.github.NudeDude:ZoomView:1.0.1'
+    implementation 'com.github.NudeDude:Tagger:1'
 }
