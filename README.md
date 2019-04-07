@@ -26,7 +26,7 @@ included libraries:
 - Tagger https://github.com/NudeDude/Tagger
 
 
-logo and app icon design by @Tobaloidee
+logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
 
 icons from www.entypo.com
 
