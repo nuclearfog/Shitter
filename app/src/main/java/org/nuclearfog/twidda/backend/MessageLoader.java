@@ -21,8 +21,9 @@ import twitter4j.TwitterException;
 public class MessageLoader extends AsyncTask<Long, Void, Void> {
 
     public enum Mode {
-        LOAD,
-        DELETE
+        GET,
+        LDR,
+        DEL
     }
     private final Mode mode;
     private boolean failure = false;
@@ -57,36 +58,31 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
 
     @Override
     protected Void doInBackground(Long... param) {
+        long messageId = -1;
         try {
             switch(mode) {
-                case LOAD:
-                    if (mAdapter.getItemCount() > 0) {
-                        message = twitter.getMessages();
-                        mData.storeMessage(message);
-                        message = mData.getMessages();
-                    } else {
-                        message = mData.getMessages();
-                        if (message.isEmpty()) {
-                            message = twitter.getMessages();
-                            mData.storeMessage(message);
-                        }
-                    }
+                case GET:
+                    message = twitter.getMessages();
+                    mData.storeMessage(message);
                     break;
 
-                case DELETE:
-                    long messageId = param[0];
+                case DEL:
+                    messageId = param[0];
                     twitter.deleteMessage(messageId);
                     mData.deleteDm(messageId);
-                    message = mData.getMessages();
                     break;
             }
         } catch (TwitterException err) {
+            if (err.getErrorCode() == 34)
+                mData.deleteDm(messageId);
             this.err = err;
             failure = true;
         } catch (Exception err) {
             if(err.getMessage() != null)
                 Log.e("Direct Message", err.getMessage());
             failure = true;
+        } finally {
+            message = mData.getMessages();
         }
         return null;
     }
@@ -99,11 +95,11 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
         SwipeRefreshLayout mRefresh = ui.get().findViewById(R.id.dm_reload);
         mRefresh.setRefreshing(false);
 
-        if (!failure) {
-            mAdapter.setData(message);
-            mAdapter.notifyDataSetChanged();
-        } else {
-            if (err != null)
+        mAdapter.setData(message);
+        mAdapter.notifyDataSetChanged();
+
+        if (failure) {
+            if (err != null && err.getErrorCode() != 34)
                 ErrorHandler.printError(ui.get(), err);
         }
     }

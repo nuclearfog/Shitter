@@ -22,8 +22,9 @@ import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.MessageLoader.Mode.DELETE;
-import static org.nuclearfog.twidda.backend.MessageLoader.Mode.LOAD;
+import static org.nuclearfog.twidda.backend.MessageLoader.Mode.DEL;
+import static org.nuclearfog.twidda.backend.MessageLoader.Mode.GET;
+import static org.nuclearfog.twidda.backend.MessageLoader.Mode.LDR;
 
 /**
  * Direct Message page
@@ -70,7 +71,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
             mAdapter.setColor(settings.getFontColor(), settings.getHighlightColor());
             mAdapter.setImageLoad(settings.getImageLoad());
             dmList.setAdapter(mAdapter);
-            mLoader = new MessageLoader(this, LOAD);
+            mLoader = new MessageLoader(this, LDR);
             mLoader.execute();
         }
     }
@@ -108,7 +109,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onAnswer(int position) {
-        if (mAdapter != null && !messageRefresh.isRefreshing()) {
+        if (!messageRefresh.isRefreshing()) {
             Message message = mAdapter.getData(position);
             Intent sendDm = new Intent(this, MessagePopup.class);
             sendDm.putExtra("username", message.getSender().getScreenname());
@@ -119,7 +120,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onDelete(int position) {
-        if (mAdapter != null && !messageRefresh.isRefreshing()) {
+        if (!messageRefresh.isRefreshing()) {
             Message message = mAdapter.getData(position);
             final long messageId = message.getId();
             new Builder(this).setMessage(R.string.confirm_delete_dm)
@@ -127,7 +128,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
                     .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mLoader = new MessageLoader(DirectMessage.this, DELETE);
+                            mLoader = new MessageLoader(DirectMessage.this, DEL);
                             mLoader.execute(messageId);
                         }
                     }).show();
@@ -137,7 +138,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onProfileClick(int index) {
-        if (mAdapter != null && !messageRefresh.isRefreshing()) {
+        if (!messageRefresh.isRefreshing()) {
             Message message = mAdapter.getData(index);
             long userId = message.getSender().getId();
             String username = message.getSender().getScreenname();
@@ -151,15 +152,17 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onClick(String tag) {
-        Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra("search", tag);
-        startActivity(intent);
+        if (!messageRefresh.isRefreshing()) {
+            Intent intent = new Intent(this, SearchPage.class);
+            intent.putExtra("search", tag);
+            startActivity(intent);
+        }
     }
 
 
     @Override
     public void onRefresh() {
-        mLoader = new MessageLoader(this, LOAD);
+        mLoader = new MessageLoader(this, GET);
         mLoader.execute();
     }
 }
