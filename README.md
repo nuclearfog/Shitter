@@ -15,19 +15,16 @@ Features:
 - Edit Twitter profile
 
 
-<img src="/images/shitter_1.png" width="180" height="320"> <img src="/images/shitter_2.png" width="180" height="320"> <img src="/images/shitter_3.png" width="180" height="320">
+
+<img src="/images/shitter_1.png" width="180"/> <img src="/images/shitter_2.png" width="180"/> <img src="/images/shitter_3.png" width="180"/>
 
 
-included libraries:
-- Twitter4J 4.0.7 https://github.com/Twitter4J/Twitter4J
-- picasso 2.71828 https://github.com/square/picasso
-- QuadFlask colorpicker https://github.com/QuadFlask/colorpicker
-- ZoomImageView https://github.com/NudeDude/ZoomView
-- Tagger https://github.com/NudeDude/Tagger
-
-
-logo and app icon design by @Tobaloidee
-
-icons from www.entypo.com
-
-my Twitter: www.twitter.com/nuclearfog
+Credits:
+- <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
+- <a href="https://github.com/square/picasso">picasso 2.71828</a>
+- <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
+- <a href="https://github.com/NudeDude/ZoomView">ZoomView</a>
+- <a href="https://github.com/NudeDude/Tagger">Tagger</a>
+- <a href="http://www.entypo.com" title="">Entypo svg icons</a>
+- logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
+- my Twitter: <a href="https://twitter.com/nuclearfog" title="">@nuclearfog</a>
