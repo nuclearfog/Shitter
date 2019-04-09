@@ -1,7 +1,8 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
-
 Alternative Twitter App for Android <img src="/images/twitter4j.gif" width="138" height="30">
+
+[![](https://img.shields.io/badge/download-apk-brightgreen.svg)](https://github.com/nuclearfog/Shitter/releases/download/1.4.2/SH1TT3R.apk)
 
 Features:
 - fast access to tweets and userprofiles
@@ -14,10 +15,9 @@ Features:
 - Directmessage
 - Edit Twitter profile
 
-
+Screenshots:
 
 <img src="/images/shitter_1.png" width="180"/> <img src="/images/shitter_2.png" width="180"/> <img src="/images/shitter_3.png" width="180"/>
-
 
 Credits:
 - <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
