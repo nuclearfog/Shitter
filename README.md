@@ -27,4 +27,3 @@ Credits:
 - <a href="https://github.com/NudeDude/Tagger">Tagger</a>
 - <a href="http://www.entypo.com" title="">Entypo svg icons</a>
 - logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
-- my Twitter: <a href="https://twitter.com/nuclearfog" title="">@nuclearfog</a>
