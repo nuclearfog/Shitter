@@ -96,7 +96,6 @@
     <string name="status_too_long">Status ist zu lang!</string>
     <string name="duplicate_status">Tweet wurde schon versendet!</string>
     <string name="directmessage_too_long">Direktnachricht länge überschritten!</string>
-    <string name="authentication_failed">Authentifikation fehlgeschlagen!</string>
     <string name="follow_requested">warten auf Bestätigung</string>
     <string name="loading">lädt..</string>
     <string name="profile_location">Standort</string>
@@ -109,4 +108,5 @@
     <string name="exit_confirm">Änderungen verwerfen?</string>
     <string name="toggle_answer">Antworten laden</string>
     <string name="user_data">Nutzerdaten</string>
+    <string name="request_token_error">Request Token abgelaufen, bitte App aktualisieren!</string>
 </resources>

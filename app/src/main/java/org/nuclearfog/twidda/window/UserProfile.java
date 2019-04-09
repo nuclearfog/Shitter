@@ -276,6 +276,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                 case R.id.profile_settings:
                     Intent editProfile = new Intent(this, ProfileEdit.class);
                     startActivity(editProfile);
+                    mProfile = null;
                     break;
             }
         }

@@ -37,7 +37,7 @@ abstract class ErrorHandler {
                 return true;
 
             case 32:
-                Toast.makeText(c, R.string.authentication_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.request_token_error, Toast.LENGTH_SHORT).show();
                 break;
 
             case 34:    //
