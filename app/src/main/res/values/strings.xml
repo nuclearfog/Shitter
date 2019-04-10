@@ -117,4 +117,6 @@
     <string name="toggle_answer">Load answer</string>
     <string name="user_data">User data</string>
     <string name="request_token_error">request token expired! please update app.</string>
+    <string name="settings_info">information</string>
+    <string name="github_link" translatable="false">github.com/nuclearfog/Shitter</string>
 </resources>

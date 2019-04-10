@@ -18,6 +18,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
@@ -45,6 +46,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private CheckBox toggleImg, toggleAns;
     private EditText woeIdText;
+    private TextView link;
     private Spinner woeId;
     private View root;
 
@@ -75,6 +77,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
+        link = findViewById(R.id.settings_link);
         root.setBackgroundColor(settings.getBackgroundColor());
 
         load_popup.setOnClickListener(this);
@@ -99,6 +102,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
+        link.setLinkTextColor(settings.getHighlightColor());
         if (settings.getCustomWidSet()) {
             String text = Long.toString(settings.getWoeId());
             woeIdText.setVisibility(View.VISIBLE);
@@ -222,6 +226,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             case HIGHLIGHT:
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
+                link.setLinkTextColor(color);
                 break;
         }
     }

@@ -165,7 +165,6 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetPopup.class);
-            intent.putExtra("TweetID", -1);
             if (search.startsWith("#"))
                 intent.putExtra("Addition", search);
             startActivity(intent);

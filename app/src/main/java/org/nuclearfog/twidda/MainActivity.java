@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         switch (reqCode) {
             case LOGIN:
                 if (returnCode == RESULT_CANCELED) {
-                    overridePendingTransition(0, 0);
                     finish();
                 }
                 break;
@@ -175,6 +174,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             case TWEET:
                 if (returnCode == STAT_CHANGED)
                     home = null;
+                break;
+
+            case SETTING:
+                home = null;
                 break;
         }
         super.onActivityResult(reqCode, returnCode, i);
@@ -260,7 +263,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             case R.id.action_settings:
                 if (home != null && home.getStatus() == RUNNING)
                     home.cancel(true);
-                home = null;
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
                 break;

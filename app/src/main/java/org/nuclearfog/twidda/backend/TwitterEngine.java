@@ -35,7 +35,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TwitterEngine {
 
     private static TwitterEngine mTwitter;
-    private final String TWITTER_CONSUMER_KEY = BuildConfig.API_KEY_1 + 1;
+    private final String TWITTER_CONSUMER_KEY = BuildConfig.API_KEY_1;
     private final String TWITTER_CONSUMER_SECRET = BuildConfig.API_KEY_2;
 
     private String redirectionUrl;
