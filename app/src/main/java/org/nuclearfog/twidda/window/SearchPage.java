@@ -42,7 +42,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     private UserAdapter userAdapter;
     private SwipeRefreshLayout tweetReload;
     private GlobalSettings settings;
-    private TwitterSearch mSearch;
+    private TwitterSearch searchAsync;
     private View lastView, twUnderline, usUnderline;
     private TabHost tabhost;
     private String search = "";
@@ -76,7 +76,6 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         View usIndicator = inflater.inflate(R.layout.tab_us, null);
         twUnderline = twIndicator.findViewById(R.id.ts_divider);
         usUnderline = usIndicator.findViewById(R.id.us_divider);
-        twUnderline.setBackgroundColor(settings.getHighlightColor());
         tweetReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
         tabhost.setup();
@@ -84,12 +83,12 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         tab1.setContent(R.id.searchtweets);
         tab1.setIndicator(twIndicator);
         tabhost.addTab(tab1);
-
         TabHost.TabSpec tab2 = tabhost.newTabSpec("user_result");
         tab2.setContent(R.id.user_result);
         tab2.setIndicator(usIndicator);
         tabhost.addTab(tab2);
         lastView = tabhost.getCurrentView();
+        setIndicator();
 
         tweetSearch.setLayoutManager(new LinearLayoutManager(this));
         userSearch.setLayoutManager(new LinearLayoutManager(this));
@@ -102,7 +101,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onStart() {
         super.onStart();
-        if (mSearch == null) {
+        if (searchAsync == null) {
             searchAdapter = new TimelineAdapter(this);
             searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             searchAdapter.toggleImage(settings.getImageLoad());
@@ -113,16 +112,16 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
             userAdapter.setColor(settings.getFontColor());
             userSearch.setAdapter(userAdapter);
 
-            mSearch = new TwitterSearch(this);
-            mSearch.execute(search);
+            searchAsync = new TwitterSearch(this);
+            searchAsync.execute(search);
         }
     }
 
 
     @Override
     protected void onStop() {
-        if (mSearch != null && mSearch.getStatus() == RUNNING)
-            mSearch.cancel(true);
+        if (searchAsync != null && searchAsync.getStatus() == RUNNING)
+            searchAsync.cancel(true);
         super.onStop();
     }
 
@@ -181,7 +180,6 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
                     Tweet tweet = searchAdapter.getData(position);
                     Intent tweetdetail = new Intent(this, TweetDetail.class);
                     tweetdetail.putExtra("tweetID", tweet.getId());
-                    tweetdetail.putExtra("userID", tweet.getUser().getId());
                     tweetdetail.putExtra("username", tweet.getUser().getScreenname());
                     startActivity(tweetdetail);
                     break;
@@ -200,8 +198,10 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onRefresh() {
-        mSearch = new TwitterSearch(this);
-        mSearch.execute(search);
+        if (searchAsync != null && searchAsync.getStatus() == RUNNING)
+            searchAsync.cancel(true);
+        searchAsync = new TwitterSearch(this);
+        searchAsync.execute(search);
     }
 
 
@@ -209,14 +209,20 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = tabhost.getCurrentTab();
+        setIndicator();
+    }
+
+
+    private void setIndicator() {
         switch (tabIndex) {
             case 0:
                 twUnderline.setBackgroundColor(settings.getHighlightColor());
                 usUnderline.setBackgroundColor(0);
                 break;
+
             case 1:
                 usUnderline.setBackgroundColor(settings.getHighlightColor());
-                twUnderline.setBackgroundResource(0);
+                twUnderline.setBackgroundColor(0);
                 break;
         }
     }

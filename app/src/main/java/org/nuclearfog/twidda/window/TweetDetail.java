@@ -55,7 +55,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     private RecyclerView answer_list;
     private TimelineAdapter answerAdapter;
-    private StatusLoader mStat;
+    private StatusLoader statusAsync;
     private GlobalSettings settings;
     private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
@@ -118,21 +118,21 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     protected void onStart() {
         super.onStart();
-        if (mStat == null) {
+        if (statusAsync == null) {
             answerAdapter = new TimelineAdapter(this);
             answerAdapter.toggleImage(settings.getImageLoad());
             answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             answer_list.setAdapter(answerAdapter);
-            mStat = new StatusLoader(this, LOAD);
-            mStat.execute(tweetID);
+            statusAsync = new StatusLoader(this, LOAD);
+            statusAsync.execute(tweetID);
         }
     }
 
 
     @Override
     protected void onStop() {
-        if (mStat != null && mStat.getStatus() == RUNNING)
-            mStat.cancel(true);
+        if (statusAsync != null && statusAsync.getStatus() == RUNNING)
+            statusAsync.cancel(true);
         super.onStop();
     }
 
@@ -140,7 +140,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         if (reqCode == TWEET && returnCode == STAT_CHANGED) {
-            mStat = null;
+            statusAsync = null;
         }
         super.onActivityResult(reqCode, returnCode, i);
     }
@@ -163,7 +163,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(mStat != null && mStat.getStatus() != RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
                     Builder deleteDialog = new Builder(this);
@@ -171,10 +171,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (mStat != null && mStat.getStatus() == RUNNING)
-                                mStat.cancel(true);
-                            mStat = new StatusLoader(TweetDetail.this, DELETE);
-                            mStat.execute(tweetID);
+                            if (statusAsync != null && statusAsync.getStatus() == RUNNING)
+                                statusAsync.cancel(true);
+                            statusAsync = new StatusLoader(TweetDetail.this, DELETE);
+                            statusAsync.execute(tweetID);
                         }
                     });
                     deleteDialog.setNegativeButton(R.string.no_confirm, null);
@@ -207,21 +207,21 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (mStat != null && mStat.getStatus() != RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.rt_button_detail:
-                    if (mStat != null && mStat.getStatus() == RUNNING)
-                        mStat.cancel(true);
-                    mStat = new StatusLoader(this, RETWEET);
-                    mStat.execute(tweetID);
+                    if (statusAsync != null && statusAsync.getStatus() == RUNNING)
+                        statusAsync.cancel(true);
+                    statusAsync = new StatusLoader(this, RETWEET);
+                    statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.fav_button_detail:
-                    if (mStat != null && mStat.getStatus() == RUNNING)
-                        mStat.cancel(true);
-                    mStat = new StatusLoader(this, FAVORITE);
-                    mStat.execute(tweetID);
+                    if (statusAsync != null && statusAsync.getStatus() == RUNNING)
+                        statusAsync.cancel(true);
+                    statusAsync = new StatusLoader(this, FAVORITE);
+                    statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
                     break;
 
@@ -273,8 +273,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
-        mStat = new StatusLoader(this, ANS);
-        mStat.execute(tweetID);
+        statusAsync = new StatusLoader(this, ANS);
+        statusAsync.execute(tweetID);
     }
 
 

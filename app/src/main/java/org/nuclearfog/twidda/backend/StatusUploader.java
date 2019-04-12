@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-public class StatusUpload extends AsyncTask<String, Void, Boolean> {
+public class StatusUploader extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
@@ -30,7 +30,7 @@ public class StatusUpload extends AsyncTask<String, Void, Boolean> {
     private long replyId;
 
 
-    public StatusUpload(@NonNull TweetPopup context, String tweet, long replyId) {
+    public StatusUploader(@NonNull TweetPopup context, String tweet, long replyId) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);

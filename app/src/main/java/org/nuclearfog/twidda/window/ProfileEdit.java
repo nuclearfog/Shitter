@@ -34,7 +34,7 @@ import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.WRITE_DATA;
  */
 public class ProfileEdit extends AppCompatActivity implements View.OnClickListener {
 
-    private ProfileEditor mEdit;
+    private ProfileEditor editorAsync;
     private TextView txtImg;
 
     @Override
@@ -60,17 +60,17 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (mEdit == null) {
-            mEdit = new ProfileEditor(this, READ_DATA);
-            mEdit.execute();
+        if (editorAsync == null) {
+            editorAsync = new ProfileEditor(this, READ_DATA);
+            editorAsync.execute();
         }
     }
 
 
     @Override
     protected void onStop() {
-        if (mEdit != null && mEdit.getStatus() == AsyncTask.Status.RUNNING)
-            mEdit.cancel(true);
+        if (editorAsync != null && editorAsync.getStatus() == AsyncTask.Status.RUNNING)
+            editorAsync.cancel(true);
         super.onStop();
     }
 
@@ -101,7 +101,7 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                if (mEdit == null || mEdit.getStatus() != RUNNING) {
+                if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
                     save();
                 }
                 break;
@@ -146,10 +146,10 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
         if (name.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, R.string.edit_empty_name, Toast.LENGTH_SHORT).show();
         } else {
-            if (mEdit != null && mEdit.getStatus() == RUNNING)
-                mEdit.cancel(true);
-            mEdit = new ProfileEditor(this, WRITE_DATA);
-            mEdit.execute();
+            if (editorAsync != null && editorAsync.getStatus() == RUNNING)
+                editorAsync.cancel(true);
+            editorAsync = new ProfileEditor(this, WRITE_DATA);
+            editorAsync.execute();
         }
     }
 

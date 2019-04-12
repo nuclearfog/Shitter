@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.StatusUpload;
+import org.nuclearfog.twidda.backend.StatusUploader;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 /**
  * Tweet Window
  *
- * @see StatusUpload
+ * @see StatusUploader
  */
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
-    private StatusUpload sendTweet;
+    private StatusUploader uploaderAsync;
     private View imageButton, previewBtn;
     private List<String> mediaPath;
     private TextView imgCount;
@@ -81,8 +81,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (sendTweet != null && sendTweet.getStatus() == RUNNING)
-            sendTweet.cancel(true);
+        if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
+            uploaderAsync.cancel(true);
         super.onDestroy();
     }
 
@@ -132,9 +132,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.sendTweet:
                 String tweetStr = tweet.getText().toString();
-                if (sendTweet != null && sendTweet.getStatus() == RUNNING)
-                    sendTweet.cancel(true);
-                sendTweet = new StatusUpload(this, tweetStr, inReplyId);
+                if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
+                    uploaderAsync.cancel(true);
+                uploaderAsync = new StatusUploader(this, tweetStr, inReplyId);
 
                 if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                     Toast.makeText(this, R.string.empty_tweet, Toast.LENGTH_SHORT).show();
@@ -143,9 +143,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 } else if (!mediaPath.isEmpty()) {
                     String[] paths = new String[mediaPath.size()];
                     paths = mediaPath.toArray(paths);
-                    sendTweet.execute(paths);
+                    uploaderAsync.execute(paths);
                 } else {
-                    sendTweet.execute();
+                    uploaderAsync.execute();
                 }
                 break;
 

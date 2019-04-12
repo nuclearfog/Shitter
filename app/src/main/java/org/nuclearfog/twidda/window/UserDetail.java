@@ -34,7 +34,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
     private SwipeRefreshLayout userReload;
     private UserAdapter usrAdp;
     private GlobalSettings settings;
-    private UserLoader uList;
+    private UserLoader userAsync;
     private int mode;
     private long id;
 
@@ -69,7 +69,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
     @Override
     protected void onStart() {
         super.onStart();
-        if (uList == null) {
+        if (userAsync == null) {
             int titleId;
             usrAdp = new UserAdapter(this);
             usrAdp.toggleImage(settings.getImageLoad());
@@ -79,26 +79,26 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
             switch (mode) {
                 case 0:
                     titleId = R.string.following;
-                    uList = new UserLoader(UserDetail.this, FOLLOWING);
+                    userAsync = new UserLoader(UserDetail.this, FOLLOWING);
                     break;
 
                 case 1:
                     titleId = R.string.follower;
-                    uList = new UserLoader(UserDetail.this, FOLLOWERS);
+                    userAsync = new UserLoader(UserDetail.this, FOLLOWERS);
                     break;
 
                 case 2:
                     titleId = R.string.retweet;
-                    uList = new UserLoader(UserDetail.this, RETWEET);
+                    userAsync = new UserLoader(UserDetail.this, RETWEET);
                     break;
 
                 case 3:
                 default:
                     titleId = R.string.favorite;
-                    uList = new UserLoader(UserDetail.this, FAVORIT);
+                    userAsync = new UserLoader(UserDetail.this, FAVORIT);
                     break;
             }
-            uList.execute(id, -1L);
+            userAsync.execute(id, -1L);
 
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(titleId);
@@ -109,8 +109,8 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
 
     @Override
     protected void onStop() {
-        if (uList != null && uList.getStatus() == RUNNING)
-            uList.cancel(true);
+        if (userAsync != null && userAsync.getStatus() == RUNNING)
+            userAsync.cancel(true);
         super.onStop();
     }
 
@@ -133,19 +133,19 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
     public void onRefresh() {
         switch(mode) {
             case 0:
-                uList = new UserLoader(UserDetail.this, FOLLOWING);
+                userAsync = new UserLoader(UserDetail.this, FOLLOWING);
                 break;
             case 1:
-                uList = new UserLoader(UserDetail.this, FOLLOWERS);
+                userAsync = new UserLoader(UserDetail.this, FOLLOWERS);
                 break;
             case 2:
-                uList = new UserLoader(UserDetail.this, RETWEET);
+                userAsync = new UserLoader(UserDetail.this, RETWEET);
                 break;
             case 3:
             default:
-                uList = new UserLoader(UserDetail.this, FAVORIT);
+                userAsync = new UserLoader(UserDetail.this, FAVORIT);
                 break;
         }
-        uList.execute(id, -1L);
+        userAsync.execute(id, -1L);
     }
 }

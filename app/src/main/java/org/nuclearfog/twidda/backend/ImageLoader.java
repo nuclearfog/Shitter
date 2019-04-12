@@ -18,14 +18,14 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 
 
-public class ImageLoad extends AsyncTask<String, Void, Boolean> {
+public class ImageLoader extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<ImageDetail> ui;
     private ImageAdapter imageAdapter;
     private Bitmap images[];
 
 
-    public ImageLoad(@NonNull ImageDetail context) {
+    public ImageLoader(@NonNull ImageDetail context) {
         ui = new WeakReference<>(context);
         RecyclerView imageList = context.findViewById(R.id.image_list);
         imageAdapter = (ImageAdapter) imageList.getAdapter();

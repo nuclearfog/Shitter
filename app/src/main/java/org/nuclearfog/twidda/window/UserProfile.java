@@ -44,7 +44,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     private static final int TWEET = 1;
 
-    private ProfileLoader mProfile;
+    private ProfileLoader profileAsync;
     private GlobalSettings settings;
     private RecyclerView homeList, favoriteList;
     private TimelineAdapter tweetAdapter, favAdapter;
@@ -103,7 +103,6 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         favorUnderline = favorIndicator.findViewById(R.id.favor_divider);
         tweetCount = tweetIndicator.findViewById(R.id.profile_tweet_count);
         favorCount = favorIndicator.findViewById(R.id.profile_favor_count);
-        tweetUnderline.setBackgroundColor(settings.getHighlightColor());
         homeReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         favoriteReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
 
@@ -117,6 +116,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         tab2.setIndicator(favorIndicator);
         mTab.addTab(tab2);
         lastTab = mTab.getCurrentView();
+        setIndicator();
 
         mTab.setOnTabChangedListener(this);
         homeReload.setOnRefreshListener(this);
@@ -127,7 +127,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onStart() {
         super.onStart();
-        if (mProfile == null) {
+        if (profileAsync == null) {
             tweetAdapter = new TimelineAdapter(this);
             tweetAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             tweetAdapter.toggleImage(settings.getImageLoad());
@@ -138,16 +138,16 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             favAdapter.toggleImage(settings.getImageLoad());
             favoriteList.setAdapter(favAdapter);
 
-            mProfile = new ProfileLoader(this, ProfileLoader.Mode.LDR_PROFILE);
-            mProfile.execute(userId, 0L);
+            profileAsync = new ProfileLoader(this, ProfileLoader.Mode.LDR_PROFILE);
+            profileAsync.execute(userId, 0L);
         }
     }
 
 
     @Override
     protected void onStop() {
-        if (mProfile != null && mProfile.getStatus() == RUNNING)
-            mProfile.cancel(true);
+        if (profileAsync != null && profileAsync.getStatus() == RUNNING)
+            profileAsync.cancel(true);
         super.onStop();
     }
 
@@ -155,7 +155,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         if (reqCode == TWEET && returnCode == STAT_CHANGED) {
-            mProfile = null;
+            profileAsync = null;
         }
         super.onActivityResult(reqCode, returnCode, i);
     }
@@ -214,7 +214,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mProfile != null && mProfile.getStatus() != RUNNING) {
+        if (profileAsync != null && profileAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
@@ -224,16 +224,16 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.profile_follow:
-                    mProfile = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
+                    profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
                     if (!isFollowing) {
-                        mProfile.execute(userId);
+                        profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_unfollow)
                                 .setNegativeButton(R.string.no_confirm, null)
                                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mProfile.execute(userId);
+                                        profileAsync.execute(userId);
                                     }
                                 })
                                 .show();
@@ -241,16 +241,16 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.profile_block:
-                    mProfile = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
+                    profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
                     if (isBlocked) {
-                        mProfile.execute(userId);
+                        profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_block)
                                 .setNegativeButton(R.string.no_confirm, null)
                                 .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mProfile.execute(userId);
+                                        profileAsync.execute(userId);
                                     }
                                 })
                                 .show();
@@ -258,8 +258,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     break;
 
                 case R.id.profile_mute:
-                    mProfile = new ProfileLoader(this, ProfileLoader.Mode.ACTION_MUTE);
-                    mProfile.execute(userId);
+                    profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_MUTE);
+                    profileAsync.execute(userId);
                     break;
 
                 case R.id.profile_message:
@@ -276,7 +276,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                 case R.id.profile_settings:
                     Intent editProfile = new Intent(this, ProfileEdit.class);
                     startActivity(editProfile);
-                    mProfile = null;
+                    profileAsync = null;
                     break;
             }
         }
@@ -296,16 +296,18 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     public void onRefresh() {
+        if (profileAsync != null && profileAsync.getStatus() == RUNNING)
+            profileAsync.cancel(true);
         switch (tabIndex) {
             default:
             case 0:
-                mProfile = new ProfileLoader(this, ProfileLoader.Mode.GET_TWEETS);
+                profileAsync = new ProfileLoader(this, ProfileLoader.Mode.GET_TWEETS);
                 break;
             case 1:
-                mProfile = new ProfileLoader(this, ProfileLoader.Mode.GET_FAVORS);
+                profileAsync = new ProfileLoader(this, ProfileLoader.Mode.GET_FAVORS);
                 break;
         }
-        mProfile.execute(userId);
+        profileAsync.execute(userId);
     }
 
 
@@ -313,19 +315,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     public void onTabChanged(String tabId) {
         animate();
         tabIndex = mTab.getCurrentTab();
-        switch (tabIndex) {
-            case 0:
-                favoriteList.smoothScrollToPosition(0);
-                tweetUnderline.setBackgroundColor(settings.getHighlightColor());
-                favorUnderline.setBackgroundColor(0);
-                break;
-
-            case 1:
-                homeList.smoothScrollToPosition(0);
-                favorUnderline.setBackgroundColor(settings.getHighlightColor());
-                tweetUnderline.setBackgroundColor(0);
-                break;
-        }
+        setIndicator();
     }
 
 
@@ -337,7 +327,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     Tweet tweet = tweetAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
                 }
                 break;
 
@@ -346,7 +336,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
                     Tweet tweet = favAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
                 }
                 break;
         }
@@ -376,12 +366,29 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     }
 
 
-    private void openTweet(long tweetId, long userId, String username) {
+    private void openTweet(long tweetId, String username) {
         Intent intent = new Intent(this, TweetDetail.class);
         intent.putExtra("tweetID", tweetId);
-        intent.putExtra("userID", userId);
         intent.putExtra("username", username);
         startActivityForResult(intent, TWEET);
+    }
+
+
+    private void setIndicator() {
+        switch (tabIndex) {
+            case 0:
+                tweetUnderline.setBackgroundColor(settings.getHighlightColor());
+                favorUnderline.setBackgroundColor(0);
+                favoriteList.smoothScrollToPosition(0);
+                break;
+
+            case 1:
+                favorUnderline.setBackgroundColor(settings.getHighlightColor());
+                tweetUnderline.setBackgroundColor(0);
+                homeList.smoothScrollToPosition(0);
+                break;
+        }
+
     }
 
 
@@ -409,12 +416,5 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             currentTab.setAnimation(lIn);
         }
         lastTab = mTab.getCurrentView();
-    }
-
-
-    public void imageClick(String link) {
-        Intent image = new Intent(this, ImageDetail.class);
-        image.putExtra("link", new String[]{link});
-        startActivity(image);
     }
 }

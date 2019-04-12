@@ -14,7 +14,7 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
-import org.nuclearfog.twidda.backend.ImageLoad;
+import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
@@ -30,12 +30,12 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 
 
 /**
- * @see ImageLoad
+ * @see ImageLoader
  */
 public class ImageDetail extends AppCompatActivity implements OnImageClickListener {
 
     boolean storable = true;
-    private ImageLoad mImage;
+    private ImageLoader imageAsync;
     private ZoomView zoomImage;
     private String link[];
     private int width;
@@ -66,17 +66,17 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (mImage == null) {
-            mImage = new ImageLoad(this);
-            mImage.execute(link);
+        if (imageAsync == null) {
+            imageAsync = new ImageLoader(this);
+            imageAsync.execute(link);
         }
     }
 
 
     @Override
     protected void onDestroy() {
-        if (mImage != null && mImage.getStatus() == RUNNING)
-            mImage.cancel(true);
+        if (imageAsync != null && imageAsync.getStatus() == RUNNING)
+            imageAsync.cancel(true);
         super.onDestroy();
     }
 

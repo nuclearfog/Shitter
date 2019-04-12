@@ -73,10 +73,12 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
                     break;
             }
         } catch (TwitterException err) {
-            if (err.getErrorCode() == 34)
+            if (err.getErrorCode() == 34) {
                 mData.deleteDm(messageId);
-            this.err = err;
-            failure = true;
+            } else {
+                this.err = err;
+                failure = true;
+            }
         } catch (Exception err) {
             if(err.getMessage() != null)
                 Log.e("Direct Message", err.getMessage());
@@ -98,10 +100,8 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
         mAdapter.setData(message);
         mAdapter.notifyDataSetChanged();
 
-        if (failure) {
-            if (err != null && err.getErrorCode() != 34)
-                ErrorHandler.printError(ui.get(), err);
-        }
+        if (failure)
+            ErrorHandler.printError(ui.get(), err);
     }
 
 

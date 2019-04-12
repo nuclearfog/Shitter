@@ -21,7 +21,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class MainPage extends AsyncTask<Integer, Void, Void> {
+public class StartPage extends AsyncTask<Integer, Void, Void> {
 
     public enum Mode {
         DATA,
@@ -45,7 +45,7 @@ public class MainPage extends AsyncTask<Integer, Void, Void> {
     private int woeId;
 
 
-    public MainPage(@NonNull MainActivity context, Mode mode) {
+    public StartPage(@NonNull MainActivity context, Mode mode) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);

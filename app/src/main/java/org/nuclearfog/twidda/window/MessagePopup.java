@@ -29,7 +29,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  */
 public class MessagePopup extends AppCompatActivity implements View.OnClickListener {
 
-    private MessageUpload upload;
+    private MessageUpload messageAsync;
     private EditText receiver, text;
     private String mediaPath = "";
 
@@ -69,8 +69,8 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (upload != null && upload.getStatus() == RUNNING)
-                        upload.cancel(true);
+                    if (messageAsync != null && messageAsync.getStatus() == RUNNING)
+                        messageAsync.cancel(true);
                     finish();
                 }
             });
@@ -107,8 +107,8 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
             String username = receiver.getText().toString();
             String message = text.getText().toString();
             if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
-                upload = new MessageUpload(this);
-                upload.execute(username, message, mediaPath);
+                messageAsync = new MessageUpload(this);
+                messageAsync.execute(username, message, mediaPath);
             } else {
                 Toast.makeText(this, R.string.error_dm, Toast.LENGTH_SHORT).show();
             }

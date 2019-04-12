@@ -33,7 +33,7 @@ import static org.nuclearfog.twidda.backend.MessageLoader.Mode.LDR;
  */
 public class DirectMessage extends AppCompatActivity implements OnRefreshListener, OnItemSelected {
 
-    private MessageLoader mLoader;
+    private MessageLoader messageAsync;
     private MessageAdapter mAdapter;
     private SwipeRefreshLayout messageRefresh;
     private GlobalSettings settings;
@@ -66,21 +66,21 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
     @Override
     protected void onStart() {
         super.onStart();
-        if (mLoader == null) {
+        if (messageAsync == null) {
             mAdapter = new MessageAdapter(this);
             mAdapter.setColor(settings.getFontColor(), settings.getHighlightColor());
             mAdapter.setImageLoad(settings.getImageLoad());
             dmList.setAdapter(mAdapter);
-            mLoader = new MessageLoader(this, LDR);
-            mLoader.execute();
+            messageAsync = new MessageLoader(this, LDR);
+            messageAsync.execute();
         }
     }
 
 
     @Override
     protected void onStop() {
-        if (mLoader != null && mLoader.getStatus() == RUNNING) {
-            mLoader.cancel(true);
+        if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
+            messageAsync.cancel(true);
         }
         super.onStop();
     }
@@ -95,7 +95,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mLoader != null && mLoader.getStatus() != RUNNING) {
+        if (messageAsync != null && messageAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.message:
                     Intent sendDm = new Intent(this, MessagePopup.class);
@@ -128,8 +128,8 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
                     .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mLoader = new MessageLoader(DirectMessage.this, DEL);
-                            mLoader.execute(messageId);
+                            messageAsync = new MessageLoader(DirectMessage.this, DEL);
+                            messageAsync.execute(messageId);
                         }
                     }).show();
         }
@@ -162,7 +162,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onRefresh() {
-        mLoader = new MessageLoader(this, GET);
-        mLoader.execute();
+        messageAsync = new MessageLoader(this, GET);
+        messageAsync.execute();
     }
 }

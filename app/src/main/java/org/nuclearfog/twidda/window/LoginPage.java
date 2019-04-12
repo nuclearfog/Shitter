@@ -24,7 +24,7 @@ import static android.os.AsyncTask.Status.RUNNING;
  */
 public class LoginPage extends AppCompatActivity implements OnClickListener {
 
-    private Registration register;
+    private Registration registerAsync;
     private EditText pin;
 
     @Override
@@ -40,8 +40,8 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (register != null && register.getStatus() == RUNNING)
-            register.cancel(true);
+        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
+            registerAsync.cancel(true);
         super.onDestroy();
     }
 
@@ -55,20 +55,20 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (register != null && register.getStatus() == RUNNING)
-            register.cancel(true);
+        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
+            registerAsync.cancel(true);
 
         switch (v.getId()) {
             case R.id.linkButton:
-                register = new Registration(this);
-                register.execute("");
+                registerAsync = new Registration(this);
+                registerAsync.execute("");
                 break;
 
             case R.id.get:
                 String twitterPin = pin.getText().toString();
                 if (!twitterPin.trim().isEmpty()) {
-                    register = new Registration(this);
-                    register.execute(twitterPin);
+                    registerAsync = new Registration(this);
+                    registerAsync.execute(twitterPin);
                 } else {
                     Toast.makeText(this, R.string.enter_pin, Toast.LENGTH_LONG).show();
                 }

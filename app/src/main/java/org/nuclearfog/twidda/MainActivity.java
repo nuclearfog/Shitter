@@ -22,7 +22,7 @@ import android.widget.TabHost.TabSpec;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
-import org.nuclearfog.twidda.backend.MainPage;
+import org.nuclearfog.twidda.backend.StartPage;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
@@ -33,16 +33,16 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.MainPage.Mode.DATA;
-import static org.nuclearfog.twidda.backend.MainPage.Mode.HOME;
-import static org.nuclearfog.twidda.backend.MainPage.Mode.MENT;
-import static org.nuclearfog.twidda.backend.MainPage.Mode.TRND;
+import static org.nuclearfog.twidda.backend.StartPage.Mode.DATA;
+import static org.nuclearfog.twidda.backend.StartPage.Mode.HOME;
+import static org.nuclearfog.twidda.backend.StartPage.Mode.MENT;
+import static org.nuclearfog.twidda.backend.StartPage.Mode.TRND;
 import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 /**
  * Main Activity
  *
- * @see MainPage
+ * @see StartPage
  */
 public class MainActivity extends AppCompatActivity implements OnRefreshListener,
         OnTabChangeListener, OnItemClickListener {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     private View lastTab, root;
     private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
-    private MainPage home;
+    private StartPage mainAsync;
     private TabHost tabhost;
     private int tabIndex = 0;
 
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
-        } else if (home == null) {
+        } else if (mainAsync == null) {
             timelineAdapter = new TimelineAdapter(this);
             trendsAdapter = new TrendAdapter(this);
             mentionAdapter = new TimelineAdapter(this);
@@ -145,8 +145,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             trendList.setAdapter(trendsAdapter);
             mentionList.setAdapter(mentionAdapter);
 
-            home = new MainPage(this, DATA);
-            home.execute(1);
+            mainAsync = new StartPage(this, DATA);
+            mainAsync.execute(1);
 
             setIndicator();
         }
@@ -155,8 +155,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     protected void onStop() {
-        if (home != null && home.getStatus() == RUNNING) {
-            home.cancel(true);
+        if (mainAsync != null && mainAsync.getStatus() == RUNNING) {
+            mainAsync.cancel(true);
         }
         super.onStop();
     }
@@ -166,18 +166,17 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         switch (reqCode) {
             case LOGIN:
-                if (returnCode == RESULT_CANCELED) {
+                if (returnCode == RESULT_CANCELED)
                     finish();
-                }
                 break;
 
             case TWEET:
                 if (returnCode == STAT_CHANGED)
-                    home = null;
+                    mainAsync = null;
                 break;
 
             case SETTING:
-                home = null;
+                mainAsync = null;
                 break;
         }
         super.onActivityResult(reqCode, returnCode, i);
@@ -213,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         MenuItem tweet = m.findItem(R.id.action_tweet);
         MenuItem search = m.findItem(R.id.action_search);
         MenuItem setting = m.findItem(R.id.action_settings);
-        SearchView searchQuery = (SearchView) search.getActionView();
 
         switch (tabIndex) {
             case 0:
@@ -232,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case 2:
-                searchQuery.onActionViewCollapsed();
                 profile.setVisible(false);
                 search.setVisible(false);
                 tweet.setVisible(false);
@@ -261,8 +258,8 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                 break;
 
             case R.id.action_settings:
-                if (home != null && home.getStatus() == RUNNING)
-                    home.cancel(true);
+                if (mainAsync != null && mainAsync.getStatus() == RUNNING)
+                    mainAsync.cancel(true);
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
                 break;
@@ -283,19 +280,22 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     @Override
     public void onRefresh() {
+        if (mainAsync != null && mainAsync.getStatus() == RUNNING)
+            mainAsync.cancel(true);
+
         switch (tabIndex) {
             default:
             case 0:
-                home = new MainPage(this, HOME);
+                mainAsync = new StartPage(this, HOME);
                 break;
             case 1:
-                home = new MainPage(this, TRND);
+                mainAsync = new StartPage(this, TRND);
                 break;
             case 2:
-                home = new MainPage(this, MENT);
+                mainAsync = new StartPage(this, MENT);
                 break;
         }
-        home.execute(1);
+        mainAsync.execute(1);
     }
 
 
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     Tweet tweet = timelineAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
                 }
                 break;
 
@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     Tweet tweet = mentionAdapter.getData(position);
                     if (tweet.getEmbeddedTweet() != null)
                         tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getId(), tweet.getUser().getScreenname());
+                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
                 }
                 break;
         }
@@ -366,10 +366,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
     }
 
 
-    private void openTweet(long tweetId, long userId, String username) {
+    private void openTweet(long tweetId, String username) {
         Intent intent = new Intent(this, TweetDetail.class);
         intent.putExtra("tweetID", tweetId);
-        intent.putExtra("userID", userId);
         intent.putExtra("username", username);
         startActivityForResult(intent, TWEET);
     }

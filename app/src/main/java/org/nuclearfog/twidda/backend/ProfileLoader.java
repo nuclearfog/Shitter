@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.window.ImageDetail;
 import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
@@ -34,8 +35,8 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-import static android.view.View.VISIBLE;
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 public class ProfileLoader extends AsyncTask<Long, Void, Void> {
@@ -300,7 +301,10 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                     profile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ui.get().imageClick(user.getImageLink());
+                            Intent image = new Intent(ui.get(), ImageDetail.class);
+                            image.putExtra("link", new String[]{user.getImageLink()});
+                            ui.get().startActivity(image);
+
                         }
                     });
                 }
