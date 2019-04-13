@@ -251,31 +251,31 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         TextView txtBio = ui.get().findViewById(R.id.bio);
         TextView txtLocation = ui.get().findViewById(R.id.location);
         TextView txtLink = ui.get().findViewById(R.id.links);
-
         TextView txtFollowing = ui.get().findViewById(R.id.following);
         TextView txtFollower = ui.get().findViewById(R.id.follower);
-
         ImageView profile = ui.get().findViewById(R.id.profile_img);
         View location_ico = ui.get().findViewById(R.id.loction_ico);
         View link_ico = ui.get().findViewById(R.id.links_ico);
-        View followback = ui.get().findViewById(R.id.followback);
-        View verified = ui.get().findViewById(R.id.profile_verify);
-        View locked = ui.get().findViewById(R.id.profile_locked);
-        View profile_head = ui.get().findViewById(R.id.profile_header);
 
         if (mode == Mode.LDR_PROFILE) {
-            TextView txtCreated = ui.get().findViewById(R.id.profile_date);
-            String date = sdf.format(new Date(user.getCreatedAt()));
-            txtCreated.setText(date);
+            View profile_head = ui.get().findViewById(R.id.profile_header);
+            if (profile_head.getVisibility() != VISIBLE) {
+                profile_head.setVisibility(VISIBLE);
 
-            if (user.isVerified())
-                verified.setVisibility(VISIBLE);
-            if (isFollowed)
-                followback.setVisibility(VISIBLE);
-            if (user.isLocked()) {
-                locked.setVisibility(VISIBLE);
-            } else {
-                if(!txtFollowing.isClickable()) {
+                View verified = ui.get().findViewById(R.id.profile_verify);
+                View followback = ui.get().findViewById(R.id.followback);
+                View locked = ui.get().findViewById(R.id.profile_locked);
+                TextView txtCreated = ui.get().findViewById(R.id.profile_date);
+                String date = sdf.format(new Date(user.getCreatedAt()));
+                txtCreated.setText(date);
+
+                if (user.isVerified())
+                    verified.setVisibility(VISIBLE);
+                if (isFollowed)
+                    followback.setVisibility(VISIBLE);
+                if (user.isLocked()) {
+                    locked.setVisibility(VISIBLE);
+                } else {
                     txtFollowing.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -285,8 +285,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                             ui.get().startActivity(following);
                         }
                     });
-                }
-                if(!txtFollower.isClickable()) {
                     txtFollower.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -296,8 +294,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                             ui.get().startActivity(follower);
                         }
                     });
-                }
-                if(!profile.isClickable()) {
                     profile.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -338,9 +334,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             String link = user.getImageLink() + "_bigger";
             Picasso.get().load(link).into(profile);
         }
-
-        if(profile_head.getVisibility() != VISIBLE)
-            profile_head.setVisibility(VISIBLE);
 
         ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
     }

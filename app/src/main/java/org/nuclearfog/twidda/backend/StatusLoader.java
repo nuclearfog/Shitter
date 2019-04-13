@@ -94,6 +94,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     protected Void doInBackground(Long... data) {
         final long TWEETID = data[0];
         long sinceId = TWEETID;
+        boolean updateStatus = false;
         try {
             switch (mode) {
                 case LOAD:
@@ -101,22 +102,24 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     if(tweet != null) {
                         answers = database.getAnswers(TWEETID);
                         publishProgress();
+                        updateStatus = true;
                     }
                 case ANS:
                     tweet = mTwitter.getStatus(TWEETID);
-                    boolean storeStatus = database.containStatus(TWEETID);
+                    if (!updateStatus)
+                        updateStatus = database.containStatus(TWEETID);
 
                     if (mode == Mode.ANS || toggleAns) {
                         if (answerAdapter.getItemCount() > 0)
                             sinceId = answerAdapter.getItemId(0);
                         answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
-                        if (storeStatus && !answers.isEmpty())
+                        if (updateStatus && !answers.isEmpty())
                             database.storeReplies(answers);
                         answers.addAll(answerAdapter.getData());
                     }
                     publishProgress();
 
-                    if(storeStatus)
+                    if (updateStatus)
                         database.updateStatus(tweet);
                     break;
 
@@ -170,43 +173,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             answerAdapter.notifyDataSetChanged();
         }
 
-        if(mode == Mode.LOAD) {
-            TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
-            TextView tweetDate = ui.get().findViewById(R.id.timedetail);
-            TextView tweet_api = ui.get().findViewById(R.id.used_api);
-            View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
-            View tweet_locked = ui.get().findViewById(R.id.tweet_locked);
-
-            Spannable sTweet = Tagger.makeText(tweet.getTweet(), highlight, ui.get());
-            tweetText.setMovementMethod(LinkMovementMethod.getInstance());
-            tweetText.setText(sTweet);
-            tweetText.setTextColor(font_color);
-            tweetDate.setText(sdf.format(tweet.getTime()));
-            tweetDate.setTextColor(font_color);
-            tweet_api.setText(R.string.sent_from);
-            tweet_api.append(tweet.getSource());
-            tweet_api.setTextColor(font_color);
-
-            if (tweet.getUser().isVerified()) {
-                tweet_verify.setVisibility(VISIBLE);
-            }
-            if (tweet.getUser().isLocked()) {
-                tweet_locked.setVisibility(VISIBLE);
-            }
-            if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length > 0) {
-                View mediaButton = ui.get().findViewById(R.id.image_attach);
-                mediaButton.setVisibility(VISIBLE);
-                if(!mediaButton.isClickable()) {
-                    mediaButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ui.get().imageClick(tweet.getMediaLinks());
-                        }
-                    });
-                }
-            }
-        }
-
         TextView username = ui.get().findViewById(R.id.usernamedetail);
         TextView scrName = ui.get().findViewById(R.id.scrnamedetail);
         TextView replyName = ui.get().findViewById(R.id.answer_reference_detail);
@@ -216,8 +182,56 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
         ImageView retweetButton = ui.get().findViewById(R.id.rt_button_detail);
         ImageView favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
-        View tweet_header = ui.get().findViewById(R.id.tweet_head);
-        View tweet_footer = ui.get().findViewById(R.id.tweet_foot);
+
+        if(mode == Mode.LOAD) {
+            View tweet_header = ui.get().findViewById(R.id.tweet_head);
+            if (tweet_header.getVisibility() != VISIBLE) {
+                TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
+                TextView tweetDate = ui.get().findViewById(R.id.timedetail);
+                TextView tweet_api = ui.get().findViewById(R.id.used_api);
+                View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
+                View tweet_locked = ui.get().findViewById(R.id.tweet_locked);
+                View tweet_footer = ui.get().findViewById(R.id.tweet_foot);
+
+                Spannable sTweet = Tagger.makeText(tweet.getTweet(), highlight, ui.get());
+                tweetText.setMovementMethod(LinkMovementMethod.getInstance());
+                tweetText.setText(sTweet);
+                tweetText.setTextColor(font_color);
+                tweetDate.setText(sdf.format(tweet.getTime()));
+                tweetDate.setTextColor(font_color);
+                tweet_api.setText(R.string.sent_from);
+                tweet_api.append(tweet.getSource());
+                tweet_api.setTextColor(font_color);
+
+                if (tweet.getUser().isVerified()) {
+                    tweet_verify.setVisibility(VISIBLE);
+                }
+                if (tweet.getUser().isLocked()) {
+                    tweet_locked.setVisibility(VISIBLE);
+                }
+                if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length > 0) {
+                    View mediaButton = ui.get().findViewById(R.id.image_attach);
+                    mediaButton.setVisibility(VISIBLE);
+                    mediaButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ui.get().imageClick(tweet.getMediaLinks());
+                        }
+                    });
+                }
+                profile_img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent profile = new Intent(ui.get(), UserProfile.class);
+                        profile.putExtra("userID", tweet.getUser().getId());
+                        profile.putExtra("username", tweet.getUser().getScreenname());
+                        ui.get().startActivity(profile);
+                    }
+                });
+                tweet_header.setVisibility(VISIBLE);
+                tweet_footer.setVisibility(VISIBLE);
+            }
+        }
 
         username.setText(tweet.getUser().getUsername());
         username.setTextColor(font_color);
@@ -247,18 +261,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             }
         }
 
-        if(!profile_img.isClickable()) {
-            profile_img.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent profile = new Intent(ui.get(), UserProfile.class);
-                    profile.putExtra("userID", tweet.getUser().getId());
-                    profile.putExtra("username", tweet.getUser().getScreenname());
-                    ui.get().startActivity(profile);
-                }
-            });
-        }
-
         if (toggleImg) {
             Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
         }
@@ -275,10 +277,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         if(tweet.getUser().getId() == homeId) {
             ui.get().enableDelete();
         }
-        if(tweet_header.getVisibility() != VISIBLE)
-            tweet_header.setVisibility(VISIBLE);
-        if(tweet_footer.getVisibility() != VISIBLE)
-            tweet_footer.setVisibility(VISIBLE);
     }
 
 
