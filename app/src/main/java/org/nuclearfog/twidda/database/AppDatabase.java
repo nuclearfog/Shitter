@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.lang.ref.WeakReference;
+
 public class AppDatabase extends SQLiteOpenHelper {
     private static final String userTable = "CREATE TABLE IF NOT EXISTS user (" +
             "userID INTEGER PRIMARY KEY,username VARCHAR(50),scrname VARCHAR(15)," +
@@ -30,17 +32,16 @@ public class AppDatabase extends SQLiteOpenHelper {
     private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
     private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
 
-    private static AppDatabase mData;
+    private static WeakReference<AppDatabase> mData;
 
     private AppDatabase(Context context) {
         super(context, "database.db", null, 3);
     }
 
     public static synchronized AppDatabase getInstance(Context context) {
-        if (mData == null) {
-            mData = new AppDatabase(context);
-        }
-        return mData;
+        if (mData == null || mData.get() == null)
+            mData = new WeakReference<>(new AppDatabase(context));
+        return mData.get();
     }
 
     @Override
