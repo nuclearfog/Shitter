@@ -49,6 +49,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         ACTION_BLOCK,
         ACTION_MUTE
     }
+
     private final Mode mode;
     private boolean failure = false;
 
@@ -221,7 +222,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("ProfileLoader", err.getMessage());
             failure = true;
         }
@@ -347,9 +348,9 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         if (failure) {
             SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
             SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-            if(homeReload.isRefreshing())
+            if (homeReload.isRefreshing())
                 homeReload.setRefreshing(false);
-            if(favReload.isRefreshing())
+            if (favReload.isRefreshing())
                 favReload.setRefreshing(false);
 
             if (err != null) {

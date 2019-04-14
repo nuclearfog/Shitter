@@ -73,16 +73,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
 
-        if(link != null) {
+        if (link != null) {
             getTweet(link.getPath());
-        }
-        else if (param != null) {
+        } else if (param != null) {
             if (BuildConfig.DEBUG && param.size() != 2)
                 throw new AssertionError();
             tweetID = param.getLong("tweetID");
             username = param.getString("username");
-        }
-        else{
+        } else {
             finish();
         }
 
@@ -299,18 +297,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
             Matcher linkMatch = linkPattern.matcher(link);
             if (linkMatch.matches()) {
-                if(link.startsWith("/@"))
+                if (link.startsWith("/@"))
                     link = link.substring(1);
                 else
                     link = '@' + link.substring(1);
                 int end = link.indexOf('/');
 
-                username = link.substring(0,end);
+                username = link.substring(0, end);
                 link = link.substring(end + 8);
                 tweetID = Long.parseLong(link);
-            }
-            else {
-                Toast.makeText(this,R.string.tweet_not_found,Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.tweet_not_found, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();

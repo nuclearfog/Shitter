@@ -44,6 +44,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         FAVORITE,
         DELETE
     }
+
     private final Mode mode;
     private boolean failure = false;
 
@@ -99,7 +100,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             switch (mode) {
                 case LOAD:
                     tweet = database.getStatus(TWEETID);
-                    if(tweet != null) {
+                    if (tweet != null) {
                         answers = database.getAnswers(TWEETID);
                         publishProgress();
                         updateStatus = true;
@@ -154,7 +155,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 database.removeStatus(TWEETID);
             failure = true;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("Status Loader", err.getMessage());
             failure = true;
         }
@@ -166,7 +167,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
 
-        if(!answers.isEmpty()) {
+        if (!answers.isEmpty()) {
             SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
             ansReload.setRefreshing(false);
             answerAdapter.setData(answers);
@@ -183,7 +184,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         ImageView retweetButton = ui.get().findViewById(R.id.rt_button_detail);
         ImageView favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
 
-        if(mode == Mode.LOAD) {
+        if (mode == Mode.LOAD) {
             View tweet_header = ui.get().findViewById(R.id.tweet_head);
             if (tweet_header.getVisibility() != VISIBLE) {
                 TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
@@ -247,7 +248,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             reply += tweet.getReplyName();
             replyName.setText(reply);
             replyName.setVisibility(VISIBLE);
-            if(!replyName.isClickable()) {
+            if (!replyName.isClickable()) {
                 replyName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -273,7 +274,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         } else {
             favoriteButton.setImageResource(R.drawable.favorite);
         }
-        if(tweet.getUser().getId() == homeId) {
+        if (tweet.getUser().getId() == homeId) {
             ui.get().enableDelete();
         }
     }
@@ -283,7 +284,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
 
-        if(answers.isEmpty()) {
+        if (answers.isEmpty()) {
             SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
             ansReload.setRefreshing(false);
         }

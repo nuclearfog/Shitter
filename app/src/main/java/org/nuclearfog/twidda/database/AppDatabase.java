@@ -66,7 +66,7 @@ public class AppDatabase extends SQLiteOpenHelper {
             final String F_QUERY = "ALTER TABLE user ADD COLUMN favorCount INTEGER DEFAULT 0;";
             db.execSQL(F_QUERY);
         }
-        if(oldVersion < 3 && newVersion >=3) {
+        if (oldVersion < 3 && newVersion >= 3) {
             db.execSQL("DROP TABLE favorit");
             db.execSQL(favoriteTable);
 

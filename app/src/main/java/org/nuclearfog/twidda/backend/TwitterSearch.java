@@ -67,7 +67,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         } catch (TwitterException err) {
             this.err = err;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("Twitter Search", err.getMessage());
             else
                 Log.e("Twitter Search", err.toString());
@@ -83,12 +83,12 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
         SwipeRefreshLayout tweetReload = ui.get().findViewById(R.id.searchtweets);
         tweetReload.setRefreshing(false);
 
-        if(!tweets.isEmpty()) {
+        if (!tweets.isEmpty()) {
             tweets.addAll(searchAdapter.getData());
             searchAdapter.setData(tweets);
             searchAdapter.notifyDataSetChanged();
         }
-        if(!users.isEmpty()) {
+        if (!users.isEmpty()) {
             userAdapter.setData(users);
             userAdapter.notifyDataSetChanged();
         }

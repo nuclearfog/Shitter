@@ -134,7 +134,7 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
 
     @Override
     public void onRefresh() {
-        switch(mode) {
+        switch (mode) {
             case 0:
                 userAsync = new UserLoader(UserDetail.this, FOLLOWING);
                 break;

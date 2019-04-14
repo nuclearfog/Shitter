@@ -25,6 +25,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
         LDR,
         DEL
     }
+
     private final Mode mode;
     private boolean failure = false;
 
@@ -60,7 +61,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
     protected Void doInBackground(Long... param) {
         long messageId = -1;
         try {
-            switch(mode) {
+            switch (mode) {
                 case GET:
                     message = twitter.getMessages();
                     mData.storeMessage(message);
@@ -80,7 +81,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
                 failure = true;
             }
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("Direct Message", err.getMessage());
             failure = true;
         } finally {

@@ -25,6 +25,7 @@ public class UserLoader extends AsyncTask<Long, Void, Boolean> {
         RETWEET,
         FAVORIT
     }
+
     private Mode mode;
 
     private WeakReference<UserDetail> ui;
@@ -48,7 +49,7 @@ public class UserLoader extends AsyncTask<Long, Void, Boolean> {
         long id = data[0];
         long cursor = data[1];
         try {
-            switch(mode) {
+            switch (mode) {
                 case FOLLOWING:
                     user = mTwitter.getFollowing(id, cursor);
                     break;
@@ -66,7 +67,7 @@ public class UserLoader extends AsyncTask<Long, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("User List", err.getMessage());
             return false;
         }

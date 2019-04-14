@@ -45,7 +45,7 @@ public class ImageLoader extends AsyncTask<String, Void, Boolean> {
                     images[i] = BitmapFactory.decodeStream(new URL(link).openStream());
             }
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("Image Popup", err.getMessage());
             return false;
         }

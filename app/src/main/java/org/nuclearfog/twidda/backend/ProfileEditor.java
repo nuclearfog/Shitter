@@ -35,6 +35,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
         READ_DATA,
         WRITE_DATA
     }
+
     private final Mode mode;
     private boolean failure;
 
@@ -115,7 +116,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("E: ProfileEditor", err.getMessage());
             failure = true;
         }
@@ -129,7 +130,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
 
         popup.dismiss();
 
-        if(failure) {
+        if (failure) {
             ErrorHandler.printError(ui.get(), err);
             ui.get().finish();
         } else {

@@ -29,6 +29,7 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
         TRND,
         MENT
     }
+
     private final Mode mode;
     private boolean failure = false;
 
@@ -107,7 +108,7 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
             this.err = err;
             failure = true;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("Main Page", err.getMessage());
             failure = true;
         }

@@ -62,7 +62,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     }
 
 
-    public List<Tweet>getData() {
+    public List<Tweet> getData() {
         return Arrays.asList(tweets);
     }
 
@@ -124,11 +124,11 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
         vh.tweet.setTextColor(font_color);
         vh.time.setTextColor(font_color);
 
-        if(tweet.retweeted())
+        if (tweet.retweeted())
             vh.rtButton.setImageResource(R.drawable.retweet_enabled);
         else
             vh.rtButton.setImageResource(R.drawable.retweet);
-        if(tweet.favored())
+        if (tweet.favored())
             vh.fvButton.setImageResource(R.drawable.favorite_enabled);
         else
             vh.fvButton.setImageResource(R.drawable.favorite);

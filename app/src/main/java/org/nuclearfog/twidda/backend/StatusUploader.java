@@ -81,7 +81,7 @@ public class StatusUploader extends AsyncTask<String, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
-            if(err.getMessage() != null)
+            if (err.getMessage() != null)
                 Log.e("Status Upload", err.getMessage());
             return false;
         }
