@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
@@ -76,6 +77,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             getTweet(link.getPath());
         }
         else if (param != null) {
+            if (BuildConfig.DEBUG && param.size() != 2)
+                throw new AssertionError();
             tweetID = param.getLong("tweetID");
             username = param.getString("username");
         }
@@ -264,7 +267,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             Tweet tweet = answerAdapter.getData(position);
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra("tweetID", tweet.getId());
-            intent.putExtra("userID", tweet.getUser().getId());
             intent.putExtra("username", tweet.getUser().getScreenname());
             startActivityForResult(intent, TWEET);
         }
@@ -281,6 +283,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public void imageClick(String mediaLinks[]) {
         Intent image = new Intent(this, ImageDetail.class);
         image.putExtra("link", mediaLinks);
+        image.putExtra("storable", true);
         startActivity(image);
     }
 

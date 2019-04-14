@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.widget.Toast;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
@@ -34,11 +35,12 @@ import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
  */
 public class ImageDetail extends AppCompatActivity implements OnImageClickListener {
 
-    boolean storable = true;
+    boolean storable;
     private ImageLoader imageAsync;
     private ZoomView zoomImage;
     private String link[];
     private int width;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -47,9 +49,10 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
+            if (BuildConfig.DEBUG && param.size() != 2)
+                throw new AssertionError();
             link = param.getStringArray("link");
-            if (param.containsKey("storable"))
-                storable = param.getBoolean("storable");
+            storable = param.getBoolean("storable");
         }
 
         zoomImage = findViewById(R.id.image_full);

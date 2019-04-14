@@ -150,6 +150,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
                         public void onClick(View v) {
                             Intent image = new Intent(ui.get(), ImageDetail.class);
                             image.putExtra("link", mediaLink);
+                            image.putExtra("storable", false);
                             ui.get().startActivity(image);
                         }
                     });

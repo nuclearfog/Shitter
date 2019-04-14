@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.UserAdapter;
@@ -46,6 +47,8 @@ public class UserDetail extends AppCompatActivity implements OnItemClickListener
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
+            if (BuildConfig.DEBUG && param.size() != 2)
+                throw new AssertionError();
             mode = param.getInt("mode");
             id = param.getLong("ID");
         }

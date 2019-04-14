@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -40,8 +41,12 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.popup_dm);
         String username = "";
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey("username"))
-            username = param.getString("username");
+        if (param != null) {
+            if (BuildConfig.DEBUG && param.size() > 1)
+                throw new AssertionError();
+            if (param.containsKey("username"))
+                username = param.getString("username");
+        }
 
         View root = findViewById(R.id.dm_popup);
         View send = findViewById(R.id.dm_send);

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusUploader;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -52,6 +53,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
+            if (BuildConfig.DEBUG && param.size() > 2)
+                throw new AssertionError();
             if (param.containsKey("TweetID"))
                 inReplyId = param.getLong("TweetID");
             if (param.containsKey("Addition"))

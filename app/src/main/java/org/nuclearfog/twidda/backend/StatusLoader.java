@@ -253,7 +253,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     public void onClick(View v) {
                         Intent intent = new Intent(ui.get(), TweetDetail.class);
                         intent.putExtra("tweetID", tweet.getReplyId());
-                        intent.putExtra("userID", tweet.getReplyUserId());
                         intent.putExtra("username", tweet.getReplyName());
                         ui.get().startActivity(intent);
                     }

@@ -22,6 +22,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
@@ -71,6 +72,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
+            if (BuildConfig.DEBUG && param.size() != 2)
+                throw new AssertionError();
             userId = param.getLong("userID");
             username = param.getString("username");
         }

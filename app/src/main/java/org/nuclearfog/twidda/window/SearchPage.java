@@ -18,6 +18,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TimelineAdapter;
@@ -59,8 +60,11 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle param = getIntent().getExtras();
-        if (param != null)
+        if (param != null) {
+            if (BuildConfig.DEBUG && param.size() != 1)
+                throw new AssertionError();
             search = param.getString("search");
+        }
 
         View root = findViewById(R.id.search_layout);
         tweetSearch = findViewById(R.id.tweet_result);

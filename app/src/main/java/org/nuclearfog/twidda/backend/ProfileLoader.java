@@ -299,6 +299,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         public void onClick(View v) {
                             Intent image = new Intent(ui.get(), ImageDetail.class);
                             image.putExtra("link", new String[]{user.getImageLink()});
+                            image.putExtra("storable", true);
                             ui.get().startActivity(image);
 
                         }

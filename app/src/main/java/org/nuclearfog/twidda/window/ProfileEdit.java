@@ -37,6 +37,7 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
     private ProfileEditor editorAsync;
     private TextView txtImg;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
