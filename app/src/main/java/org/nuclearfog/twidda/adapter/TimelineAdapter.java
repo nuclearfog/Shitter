@@ -18,6 +18,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 
+import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -27,18 +28,21 @@ import java.util.List;
 
 public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
 
-    private OnItemClickListener mListener;
+    private WeakReference<OnItemClickListener> itemClickListener;
     private Tweet tweets[];
+
     private NumberFormat formatter;
-    private int highlight = 0xFFFFFFFF;
-    private int font_color = 0xFFFFFFFF;
+    private int highlight;
+    private int font_color;
     private boolean img_ldr = true;
 
 
-    public TimelineAdapter(OnItemClickListener mListener) {
-        tweets = new Tweet[0];
+    public TimelineAdapter(OnItemClickListener l) {
+        itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
-        this.mListener = mListener;
+        tweets = new Tweet[0];
+        highlight = 0xFFFFFFFF;
+        font_color = 0xFFFFFFFF;
     }
 
 
@@ -89,7 +93,8 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onItemClick(rv, position);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onItemClick(rv, position);
             }
         });
         return new ItemHolder(v);

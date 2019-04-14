@@ -18,6 +18,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,18 +26,18 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
+    private WeakReference<OnItemSelected> itemClickListener;
     private Message messages[];
-    private OnItemSelected mListener;
-
-
-    private boolean loadImage = true;
     private int highlight;
-    private int fontColor = 0xFFFFFFFF;
+    private int fontColor;
+    private boolean loadImage;
 
 
-    public MessageAdapter(OnItemSelected listener) {
+    public MessageAdapter(OnItemSelected l) {
+        itemClickListener = new WeakReference<>(l);
         messages = new Message[0];
-        this.mListener = listener;
+        fontColor = 0xFFFFFFFF;
+        loadImage = true;
     }
 
 
@@ -83,7 +84,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
-                mListener.onAnswer(position);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onAnswer(position);
             }
         });
         view.findViewById(R.id.dm_delete).setOnClickListener(new View.OnClickListener() {
@@ -91,7 +93,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
-                mListener.onDelete(position);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onDelete(position);
             }
         });
         view.findViewById(R.id.dm_profileImg).setOnClickListener(new View.OnClickListener() {
@@ -99,7 +102,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
-                mListener.onProfileClick(position);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onProfileClick(position);
             }
         });
         return new MessageHolder(view);
@@ -108,11 +112,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
+        Spanned text;
         Message message = messages[index];
-        Spanned text = Tagger.makeText(message.getText(), highlight, mListener);
+        if (itemClickListener.get() != null)
+            text = Tagger.makeText(message.getText(), highlight, itemClickListener.get());
+        else
+            text = Tagger.makeText(message.getText(), highlight);
+
+        vh.message.setText(text);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.message.setLinkTextColor(highlight);
-        vh.message.setText(text);
         vh.username.setText(message.getSender().getUsername());
         vh.screenname.setText(message.getSender().getScreenname());
         vh.createdAt.setText(stringTime(message.getTime()));

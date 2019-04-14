@@ -13,18 +13,21 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Trend;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
+
+    private WeakReference<OnItemClickListener> itemClickListener;
     private Trend trends[];
-    private OnItemClickListener mListener;
-    private int font_color = 0xFFFFFFFF;
+    private int font_color;
 
 
-    public TrendAdapter(OnItemClickListener mListener) {
+    public TrendAdapter(OnItemClickListener l) {
+        itemClickListener = new WeakReference<>(l);
         trends = new Trend[0];
-        this.mListener = mListener;
+        font_color = 0xFFFFFFFF;
     }
 
 
@@ -58,7 +61,8 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onItemClick(rv, position);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onItemClick(rv, position);
             }
         });
         return new ItemHolder(v);

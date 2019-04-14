@@ -16,19 +16,22 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
+    private WeakReference<OnItemClickListener> itemClickListener;
     private TwitterUser mUser[];
-    private OnItemClickListener mListener;
-    private int font_color = 0xFFFFFFFF;
-    private boolean loadImage = true;
+    private int font_color;
+    private boolean loadImage;
 
 
-    public UserAdapter(OnItemClickListener mListener) {
+    public UserAdapter(OnItemClickListener l) {
+        itemClickListener = new WeakReference<>(l);
         mUser = new TwitterUser[0];
-        this.mListener = mListener;
+        font_color = 0xFFFFFFFF;
+        loadImage = true;
     }
 
 
@@ -73,7 +76,8 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
             public void onClick(View v) {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
-                mListener.onItemClick(rv, position);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onItemClick(rv, position);
             }
         });
         return new ItemHolder(v);

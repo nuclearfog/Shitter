@@ -8,15 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.lang.ref.WeakReference;
+
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder> {
 
-    private OnImageClickListener l;
+    private WeakReference<OnImageClickListener> itemClickListener;
     private Bitmap images[];
 
+
     public ImageAdapter(OnImageClickListener l) {
+        itemClickListener = new WeakReference<>(l);
         images = new Bitmap[0];
-        this.l = l;
     }
 
 
@@ -52,15 +55,28 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         vh.item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                l.onImageClick(image);
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onImageClick(image);
             }
         });
         vh.item.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                return l.onImageTouch(image);
+                if (itemClickListener.get() != null)
+                    return itemClickListener.get().onImageTouch(image);
+                return false;
             }
         });
+    }
+
+
+    class ImageHolder extends ViewHolder {
+        final ImageView item;
+
+        ImageHolder(ImageView item) {
+            super(item);
+            this.item = item;
+        }
     }
 
 
@@ -79,14 +95,5 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
          * @return perform onImageClick ?
          */
         boolean onImageTouch(Bitmap image);
-    }
-
-    class ImageHolder extends ViewHolder {
-        final ImageView item;
-
-        ImageHolder(ImageView item) {
-            super(item);
-            this.item = item;
-        }
     }
 }
