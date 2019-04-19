@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.lang.ref.WeakReference;
 
 public class AppDatabase extends SQLiteOpenHelper {
     private static final String userTable = "CREATE TABLE IF NOT EXISTS user (" +
@@ -31,18 +30,13 @@ public class AppDatabase extends SQLiteOpenHelper {
 
     private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
     private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
+    private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend ON trend(woeID);";
 
-    private static WeakReference<AppDatabase> mData;
 
-    private AppDatabase(Context context) {
-        super(context, "database.db", null, 3);
+    public AppDatabase(Context context) {
+        super(context, "database.db", null, 4);
     }
 
-    public static synchronized AppDatabase getInstance(Context context) {
-        if (mData == null || mData.get() == null)
-            mData = new WeakReference<>(new AppDatabase(context));
-        return mData.get();
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -57,7 +51,9 @@ public class AppDatabase extends SQLiteOpenHelper {
 
         db.execSQL(INDX_TWEET);
         db.execSQL(INDX_FAVOR);
+        db.execSQL(INDX_TREND);
     }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -70,9 +66,11 @@ public class AppDatabase extends SQLiteOpenHelper {
         if (oldVersion < 3 && newVersion >= 3) {
             db.execSQL("DROP TABLE favorit");
             db.execSQL(favoriteTable);
-
             db.execSQL(INDX_TWEET);
             db.execSQL(INDX_FAVOR);
+        }
+        if(oldVersion < 4 && newVersion >=4) {
+            db.execSQL(INDX_TREND);
         }
     }
 }
