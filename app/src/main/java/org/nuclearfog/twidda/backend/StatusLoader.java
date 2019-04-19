@@ -52,7 +52,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     private TwitterException err;
     private WeakReference<TweetDetail> ui;
     private TimelineAdapter answerAdapter;
-    private DatabaseAdapter database;
     private SimpleDateFormat sdf;
     private NumberFormat formatter;
     private List<Tweet> answers;
@@ -67,7 +66,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         GlobalSettings settings = GlobalSettings.getInstance(context);
         RecyclerView replyList = context.findViewById(R.id.answer_list);
         answerAdapter = (TimelineAdapter) replyList.getAdapter();
-        database = new DatabaseAdapter(context);
         sdf = settings.getDateFormatter();
         formatter = NumberFormat.getIntegerInstance();
         font_color = settings.getFontColor();
@@ -96,37 +94,38 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         final long TWEETID = data[0];
         long sinceId = TWEETID;
         boolean updateStatus = false;
+        DatabaseAdapter db = new DatabaseAdapter(ui.get());
         try {
             switch (mode) {
                 case LOAD:
-                    tweet = database.getStatus(TWEETID);
+                    tweet = db.getStatus(TWEETID);
                     if (tweet != null) {
-                        answers = database.getAnswers(TWEETID);
+                        answers = db.getAnswers(TWEETID);
                         publishProgress();
                         updateStatus = true;
                     }
                 case ANS:
                     tweet = mTwitter.getStatus(TWEETID);
                     if (!updateStatus)
-                        updateStatus = database.containStatus(TWEETID);
+                        updateStatus = db.containStatus(TWEETID);
 
                     if (mode == Mode.ANS || toggleAns) {
                         if (answerAdapter.getItemCount() > 0)
                             sinceId = answerAdapter.getItemId(0);
                         answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
                         if (updateStatus && !answers.isEmpty())
-                            database.storeReplies(answers);
+                            db.storeReplies(answers);
                         answers.addAll(answerAdapter.getData());
                     }
                     publishProgress();
 
                     if (updateStatus)
-                        database.updateStatus(tweet);
+                        db.updateStatus(tweet);
                     break;
 
                 case DELETE:
                     mTwitter.deleteTweet(TWEETID);
-                    database.removeStatus(TWEETID);
+                    db.removeStatus(TWEETID);
                     break;
 
                 case RETWEET:
@@ -134,8 +133,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     publishProgress();
 
                     if (!tweet.retweeted())
-                        database.removeRetweet(TWEETID);
-                    database.updateStatus(tweet);
+                        db.removeRetweet(TWEETID);
+                    db.updateStatus(tweet);
                     break;
 
                 case FAVORITE:
@@ -143,16 +142,16 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     publishProgress();
 
                     if (tweet.favored())
-                        database.storeFavorite(TWEETID);
+                        db.storeFavorite(TWEETID);
                     else
-                        database.removeFavorite(TWEETID);
+                        db.removeFavorite(TWEETID);
                     break;
             }
         } catch (TwitterException err) {
             this.err = err;
             int rCode = err.getErrorCode();
             if (rCode == 144 || rCode == 34 || rCode == 63)
-                database.removeStatus(TWEETID);
+                db.removeStatus(TWEETID);
             failure = true;
         } catch (Exception err) {
             if (err.getMessage() != null)

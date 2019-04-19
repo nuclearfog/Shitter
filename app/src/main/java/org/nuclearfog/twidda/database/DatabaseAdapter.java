@@ -35,7 +35,7 @@ public class DatabaseAdapter {
     private AppDatabase dataHelper;
     private long homeId;
 
-    public DatabaseAdapter(@Nullable Context context) {
+    public DatabaseAdapter(Context context) {
         dataHelper = new AppDatabase(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         homeId = settings.getUserId();
@@ -663,11 +663,12 @@ public class DatabaseAdapter {
         status.put("retweetID", rtId);
         status.put("source", tweet.getSource());
         status.put("replyID", tweet.getReplyId());
-        status.put("replyname", tweet.getReplyName());
         status.put("retweet", tweet.getRetweetCount());
         status.put("favorite", tweet.getFavorCount());
         status.put("retweeterID", tweet.getMyRetweetId());
         status.put("replyUserID", tweet.getReplyUserId());
+        if (tweet.getReplyUserId() > 0)
+            status.put("replyname", tweet.getReplyName());
         storeUser(user, db, CONFLICT_IGNORE);
         db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
     }

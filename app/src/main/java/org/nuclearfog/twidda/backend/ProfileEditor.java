@@ -41,7 +41,6 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
 
     private WeakReference<ProfileEdit> ui;
     private TwitterEngine mTwitter;
-    private DatabaseAdapter mData;
     private TwitterException err;
     private TwitterUser user;
     private Editable edit_name, edit_link, edit_bio, edit_loc;
@@ -52,7 +51,6 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
     public ProfileEditor(@NonNull ProfileEdit c, Mode mode) {
         ui = new WeakReference<>(c);
         mTwitter = TwitterEngine.getInstance(c);
-        mData = new DatabaseAdapter(c);
         popup = new Dialog(c);
         this.mode = mode;
 
@@ -106,7 +104,8 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
                     String user_loc = edit_loc.toString();
                     String user_bio = edit_bio.toString();
                     user = mTwitter.updateProfile(username, user_link, user_loc, user_bio);
-                    mData.storeUser(user);
+                    DatabaseAdapter db = new DatabaseAdapter(ui.get());
+                    db.storeUser(user);
 
                     if (!image_path.trim().isEmpty())
                         mTwitter.updateProfileImage(new File(image_path));

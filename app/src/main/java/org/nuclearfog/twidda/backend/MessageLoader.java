@@ -33,7 +33,6 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
     private MessageAdapter mAdapter;
     private TwitterEngine twitter;
     private TwitterException err;
-    private DatabaseAdapter mData;
     private List<Message> message;
 
 
@@ -42,7 +41,6 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
         RecyclerView dm_list = context.findViewById(R.id.messagelist);
         mAdapter = (MessageAdapter) dm_list.getAdapter();
         twitter = TwitterEngine.getInstance(context);
-        mData = new DatabaseAdapter(context);
         message = new ArrayList<>();
         this.mode = mode;
     }
@@ -60,22 +58,23 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
     @Override
     protected Void doInBackground(Long... param) {
         long messageId = -1;
+        DatabaseAdapter db = new DatabaseAdapter(ui.get());
         try {
             switch (mode) {
                 case GET:
                     message = twitter.getMessages();
-                    mData.storeMessage(message);
+                    db.storeMessage(message);
                     break;
 
                 case DEL:
                     messageId = param[0];
                     twitter.deleteMessage(messageId);
-                    mData.deleteDm(messageId);
+                    db.deleteDm(messageId);
                     break;
             }
         } catch (TwitterException err) {
             if (err.getErrorCode() == 34) {
-                mData.deleteDm(messageId);
+                db.deleteDm(messageId);
             } else {
                 this.err = err;
                 failure = true;
@@ -85,7 +84,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Void> {
                 Log.e("Direct Message", err.getMessage());
             failure = true;
         } finally {
-            message = mData.getMessages();
+            message = db.getMessages();
         }
         return null;
     }

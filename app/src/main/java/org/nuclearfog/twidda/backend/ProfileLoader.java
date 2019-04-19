@@ -58,7 +58,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private DatabaseAdapter database;
     private TwitterUser user;
     private List<Tweet> tweets, favors;
     private NumberFormat formatter;
@@ -82,7 +81,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         formatter = NumberFormat.getIntegerInstance();
-        database = new DatabaseAdapter(context);
         sdf = settings.getDateFormatter();
         imgEnabled = settings.getImageLoad();
         homeId = settings.getUserId();
@@ -118,19 +116,20 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         long page = 1L;
         if (args.length > 2)
             page = args[2];
+        DatabaseAdapter db = new DatabaseAdapter(ui.get());
         isHome = homeId == UID;
         try {
             if (mode == Mode.LDR_PROFILE) {
-                user = database.getUser(UID);
+                user = db.getUser(UID);
                 if (user != null) {
-                    tweets = database.getUserTweets(UID);
-                    favors = database.getUserFavs(UID);
+                    tweets = db.getUserTweets(UID);
+                    favors = db.getUserFavs(UID);
                     publishProgress();
                 }
             }
             user = mTwitter.getUser(UID);
             publishProgress();
-            database.storeUser(user);
+            db.storeUser(user);
 
             if (!isHome) {
                 boolean connection[] = mTwitter.getConnection(UID);
@@ -146,13 +145,13 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                     if (!user.isLocked() || isFollowing || isHome) {
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getUserTweets(UID, 1, page);
-                            database.storeUserTweets(tweets);
+                            db.storeUserTweets(tweets);
                             tweets.addAll(homeTl.getData());
                             publishProgress();
                         }
                         if (favors.isEmpty()) {
                             favors = mTwitter.getUserFavs(UID, 1, page);
-                            database.storeUserFavs(favors, UID);
+                            db.storeUserFavs(favors, UID);
                             favors.addAll(homeFav.getData());
                             publishProgress();
                         }
@@ -165,7 +164,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         if (homeTl.getItemCount() > 0)
                             sinceId = homeTl.getItemId(0);
                         tweets = mTwitter.getUserTweets(UID, sinceId, page);
-                        database.storeUserTweets(tweets);
+                        db.storeUserTweets(tweets);
                         tweets.addAll(homeTl.getData());
                         publishProgress();
                     }
@@ -177,7 +176,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                         if (homeFav.getItemCount() > 0)
                             sinceId = homeFav.getItemId(0);
                         favors = mTwitter.getUserFavs(UID, sinceId, page);
-                        database.storeUserFavs(favors, UID);
+                        db.storeUserFavs(favors, UID);
                         favors.addAll(homeFav.getData());
                         publishProgress();
                     }

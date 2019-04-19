@@ -69,7 +69,7 @@ public class AppDatabase extends SQLiteOpenHelper {
             db.execSQL(INDX_TWEET);
             db.execSQL(INDX_FAVOR);
         }
-        if(oldVersion < 4 && newVersion >=4) {
+        if (oldVersion < 4 && newVersion >= 4) {
             db.execSQL(INDX_TREND);
         }
     }

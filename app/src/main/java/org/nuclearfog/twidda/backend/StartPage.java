@@ -39,10 +39,8 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
 
     private TimelineAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
-    private DatabaseAdapter tweetDb;
     private List<Tweet> tweets, mention;
     private List<Trend> trends;
-
     private int woeId;
 
 
@@ -50,7 +48,6 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        tweetDb = new DatabaseAdapter(context);
         woeId = settings.getWoeId();
 
         tweets = new ArrayList<>();
@@ -72,13 +69,14 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
     protected Void doInBackground(Integer... args) {
         final int PAGE = args[0];
         long sinceId = 1L;
+        DatabaseAdapter db = new DatabaseAdapter(ui.get());
         try {
             switch (mode) {
                 case HOME:
                     if (timelineAdapter.getItemCount() > 0)
                         sinceId = timelineAdapter.getItemId(0);
                     tweets = mTwitter.getHome(PAGE, sinceId);
-                    tweetDb.storeHomeTimeline(tweets);
+                    db.storeHomeTimeline(tweets);
                     tweets.addAll(timelineAdapter.getData());
                     publishProgress();
                     break;
@@ -86,7 +84,7 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
                 case TRND:
                     trends = mTwitter.getTrends(woeId);
                     publishProgress();
-                    tweetDb.storeTrends(trends, woeId);
+                    db.storeTrends(trends, woeId);
                     break;
 
                 case MENT:
@@ -94,14 +92,14 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
                         sinceId = mentionAdapter.getItemId(0);
                     mention = mTwitter.getMention(PAGE, sinceId);
                     mention.addAll(mentionAdapter.getData());
-                    tweetDb.storeMentions(mention);
+                    db.storeMentions(mention);
                     publishProgress();
                     break;
 
                 case DATA:
-                    tweets = tweetDb.getHomeTimeline();
-                    trends = tweetDb.getTrends(woeId);
-                    mention = tweetDb.getMentions();
+                    tweets = db.getHomeTimeline();
+                    trends = db.getTrends(woeId);
+                    mention = db.getMentions();
                     publishProgress();
             }
         } catch (TwitterException err) {
