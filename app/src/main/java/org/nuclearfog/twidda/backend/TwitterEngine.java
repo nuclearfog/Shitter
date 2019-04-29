@@ -59,7 +59,7 @@ public class TwitterEngine {
         twitter = factory.getInstance();
 
         if (settings.getLogin()) {
-            String keys[] = settings.getKeys();
+            String[] keys = settings.getKeys();
             initKeys(keys[0], keys[1]);
             twitterID = settings.getUserId();
         }
@@ -200,7 +200,7 @@ public class TwitterEngine {
      */
     public List<Trend> getTrends(int woeId) throws TwitterException {
         List<Trend> result = new ArrayList<>();
-        twitter4j.Trend trends[] = twitter.getPlaceTrends(woeId).getTrends();
+        twitter4j.Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
 
         for (int i = 0; i < trends.length; i++) {
             Trend item = new Trend(i + 1, trends[i].getName());
@@ -284,7 +284,7 @@ public class TwitterEngine {
      */
     public boolean[] getConnection(long userId) throws TwitterException {
         Relationship connect = twitter.showFriendship(twitterID, userId);
-        boolean connection[] = new boolean[5];
+        boolean[] connection = new boolean[5];
         connection[0] = connect.isSourceFollowingTarget();
         connection[1] = connect.isTargetFollowingSource();
         connection[2] = connect.isSourceBlockingTarget();
@@ -375,7 +375,7 @@ public class TwitterEngine {
      */
     public List<TwitterUser> getFollowing(long userId, long cursor) throws TwitterException {
         IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
-        long ids[] = userIDs.getIDs();
+        long[] ids = userIDs.getIDs();
         if (ids.length == 0)
             return new ArrayList<>();
         return convertUserList(twitter.lookupUsers(ids));
@@ -391,7 +391,7 @@ public class TwitterEngine {
      */
     public List<TwitterUser> getFollower(long userId, long cursor) throws TwitterException {
         IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
-        long ids[] = userIDs.getIDs();
+        long[] ids = userIDs.getIDs();
         if (ids.length == 0)
             return new ArrayList<>();
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
