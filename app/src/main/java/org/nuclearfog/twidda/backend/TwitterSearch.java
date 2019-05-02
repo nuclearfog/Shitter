@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -21,7 +21,7 @@ import twitter4j.TwitterException;
 
 public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
-    private TimelineAdapter searchAdapter;
+    private TweetAdapter searchAdapter;
     private UserAdapter userAdapter;
     private List<Tweet> tweets;
     private List<TwitterUser> users;
@@ -38,7 +38,7 @@ public class TwitterSearch extends AsyncTask<String, Void, Void> {
 
         RecyclerView tweetSearch = context.findViewById(R.id.tweet_result);
         RecyclerView userSearch = context.findViewById(R.id.user_result);
-        searchAdapter = (TimelineAdapter) tweetSearch.getAdapter();
+        searchAdapter = (TweetAdapter) tweetSearch.getAdapter();
         userAdapter = (UserAdapter) userSearch.getAdapter();
     }
 

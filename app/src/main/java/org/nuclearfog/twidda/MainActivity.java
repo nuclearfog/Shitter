@@ -20,7 +20,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.StartPage;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
     private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
     private RecyclerView timelineList, trendList, mentionList;
-    private TimelineAdapter timelineAdapter, mentionAdapter;
+    private TweetAdapter timelineAdapter, mentionAdapter;
     private View tlUnderline, trUnderline, mnUnderline;
     private View lastTab, root;
     private TrendAdapter trendsAdapter;
@@ -126,9 +126,9 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
         } else if (mainAsync == null) {
-            timelineAdapter = new TimelineAdapter(this);
+            timelineAdapter = new TweetAdapter(this);
             trendsAdapter = new TrendAdapter(this);
-            mentionAdapter = new TimelineAdapter(this);
+            mentionAdapter = new TweetAdapter(this);
 
             root.setBackgroundColor(settings.getBackgroundColor());
             timelineAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());

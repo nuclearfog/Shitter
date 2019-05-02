@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
@@ -53,7 +53,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
     private final Mode mode;
     private boolean failure = false;
 
-    private TimelineAdapter homeTl, homeFav;
+    private TweetAdapter homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
@@ -92,8 +92,8 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
         RecyclerView profileTweets = context.findViewById(R.id.ht_list);
         RecyclerView profileFavors = context.findViewById(R.id.hf_list);
-        homeTl = (TimelineAdapter) profileTweets.getAdapter();
-        homeFav = (TimelineAdapter) profileFavors.getAdapter();
+        homeTl = (TweetAdapter) profileTweets.getAdapter();
+        homeFav = (TweetAdapter) profileFavors.getAdapter();
     }
 
 
@@ -132,7 +132,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             db.storeUser(user);
 
             if (!isHome) {
-                boolean connection[] = mTwitter.getConnection(UID);
+                boolean[] connection = mTwitter.getConnection(UID);
                 isFollowing = connection[0];
                 isFollowed = connection[1];
                 isBlocked = connection[2];

@@ -10,41 +10,56 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
+import org.nuclearfog.twidda.adapter.MessageAdapter;
+import org.nuclearfog.twidda.fragment.backend.MessageLoader;
 
-public class MessageListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.fragment.backend.MessageLoader.Mode.LOAD;
+
+
+public class MessageListFragment extends Fragment implements OnRefreshListener{
+
+    private MessageLoader messageTask;
+    private SwipeRefreshLayout root;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        SwipeRefreshLayout reload = new SwipeRefreshLayout(inflater.getContext());
+        root = new SwipeRefreshLayout(inflater.getContext());
         RecyclerView list = new RecyclerView(inflater.getContext());
-        reload.setOnRefreshListener(this);
-        reload.addView(list);
-        return reload;
+        root.setOnRefreshListener(this);
+        root.addView(list);
+        return root;
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-
+        if(messageTask == null) {
+            messageTask = new MessageLoader(root, LOAD);
+            messageTask.execute();
+        }
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
+        if(messageTask != null && messageTask.getStatus() == RUNNING)
+            messageTask.cancel(true);
     }
 
 
     @Override
     public void onRefresh() {
-
+        messageTask = new MessageLoader(root, LOAD);
+        messageTask.execute();
     }
 
 
-    @Override
-    public void onItemClick(RecyclerView rv, int pos) {
 
-    }
+
+
+
 }

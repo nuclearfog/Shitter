@@ -28,7 +28,7 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -55,7 +55,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private static final int TWEET = 2;
 
     private RecyclerView answer_list;
-    private TimelineAdapter answerAdapter;
+    private TweetAdapter answerAdapter;
     private StatusLoader statusAsync;
     private GlobalSettings settings;
     private SwipeRefreshLayout answerReload;
@@ -120,7 +120,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         if (statusAsync == null) {
-            answerAdapter = new TimelineAdapter(this);
+            answerAdapter = new TweetAdapter(this);
             answerAdapter.toggleImage(settings.getImageLoad());
             answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             answer_list.setAdapter(answerAdapter);
@@ -278,7 +278,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public void imageClick(String mediaLinks[]) {
+    public void imageClick(String[] mediaLinks) {
         Intent image = new Intent(this, ImageDetail.class);
         image.putExtra("link", mediaLinks);
         image.putExtra("storable", true);

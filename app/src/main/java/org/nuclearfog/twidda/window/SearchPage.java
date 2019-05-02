@@ -21,7 +21,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.TwitterSearch;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -39,7 +39,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
         OnTabChangeListener, OnItemClickListener {
 
     private RecyclerView tweetSearch, userSearch;
-    private TimelineAdapter searchAdapter;
+    private TweetAdapter searchAdapter;
     private UserAdapter userAdapter;
     private SwipeRefreshLayout tweetReload;
     private GlobalSettings settings;
@@ -106,7 +106,7 @@ public class SearchPage extends AppCompatActivity implements OnRefreshListener,
     protected void onStart() {
         super.onStart();
         if (searchAsync == null) {
-            searchAdapter = new TimelineAdapter(this);
+            searchAdapter = new TweetAdapter(this);
             searchAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             searchAdapter.toggleImage(settings.getImageLoad());
             tweetSearch.setAdapter(searchAdapter);

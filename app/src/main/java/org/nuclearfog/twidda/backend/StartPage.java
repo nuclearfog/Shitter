@@ -8,7 +8,7 @@ import android.util.Log;
 
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -37,7 +37,7 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
     private TwitterEngine mTwitter;
     private TwitterException err;
 
-    private TimelineAdapter timelineAdapter, mentionAdapter;
+    private TweetAdapter timelineAdapter, mentionAdapter;
     private TrendAdapter trendsAdapter;
     private List<Tweet> tweets, mention;
     private List<Trend> trends;
@@ -59,9 +59,9 @@ public class StartPage extends AsyncTask<Integer, Void, Void> {
         RecyclerView trendList = context.findViewById(R.id.tr_list);
         RecyclerView mentionList = context.findViewById(R.id.m_list);
 
-        timelineAdapter = (TimelineAdapter) timelineList.getAdapter();
+        timelineAdapter = (TweetAdapter) timelineList.getAdapter();
         trendsAdapter = (TrendAdapter) trendList.getAdapter();
-        mentionAdapter = (TimelineAdapter) mentionList.getAdapter();
+        mentionAdapter = (TweetAdapter) mentionList.getAdapter();
     }
 
 

@@ -26,10 +26,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
+public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private Tweet tweets[];
+    private Tweet[] tweets;
 
     private NumberFormat formatter;
     private int highlight;
@@ -37,7 +37,7 @@ public class TimelineAdapter extends Adapter<TimelineAdapter.ItemHolder> {
     private boolean img_ldr = true;
 
 
-    public TimelineAdapter(OnItemClickListener l) {
+    public TweetAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
         tweets = new Tweet[0];

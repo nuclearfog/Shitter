@@ -25,7 +25,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -48,7 +48,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     private ProfileLoader profileAsync;
     private GlobalSettings settings;
     private RecyclerView homeList, favoriteList;
-    private TimelineAdapter tweetAdapter, favAdapter;
+    private TweetAdapter tweetAdapter, favAdapter;
     private SwipeRefreshLayout homeReload, favoriteReload;
     private View lastTab, tweetUnderline, favorUnderline;
     private TextView tweetCount, favorCount;
@@ -131,12 +131,12 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     protected void onStart() {
         super.onStart();
         if (profileAsync == null) {
-            tweetAdapter = new TimelineAdapter(this);
+            tweetAdapter = new TweetAdapter(this);
             tweetAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             tweetAdapter.toggleImage(settings.getImageLoad());
             homeList.setAdapter(tweetAdapter);
 
-            favAdapter = new TimelineAdapter(this);
+            favAdapter = new TweetAdapter(this);
             favAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             favAdapter.toggleImage(settings.getImageLoad());
             favoriteList.setAdapter(favAdapter);

@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TimelineAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -51,7 +51,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     private TwitterEngine mTwitter;
     private TwitterException err;
     private WeakReference<TweetDetail> ui;
-    private TimelineAdapter answerAdapter;
+    private TweetAdapter answerAdapter;
     private SimpleDateFormat sdf;
     private NumberFormat formatter;
     private List<Tweet> answers;
@@ -65,7 +65,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         RecyclerView replyList = context.findViewById(R.id.answer_list);
-        answerAdapter = (TimelineAdapter) replyList.getAdapter();
+        answerAdapter = (TweetAdapter) replyList.getAdapter();
         sdf = settings.getDateFormatter();
         formatter = NumberFormat.getIntegerInstance();
         font_color = settings.getFontColor();

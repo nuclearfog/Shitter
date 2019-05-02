@@ -72,7 +72,7 @@ public class TwitterEngine {
      * @param context Main Thread Context
      * @return TwitterEngine Instance
      */
-    static TwitterEngine getInstance(Context context) {
+    public static TwitterEngine getInstance(Context context) {
         if (mTwitter == null) {
             mTwitter = new TwitterEngine(context);
         }

@@ -10,7 +10,7 @@ import org.nuclearfog.twidda.R;
 import twitter4j.TwitterException;
 
 
-abstract class ErrorHandler {
+public abstract class ErrorHandler {
 
     /**
      * Print twitter error message
