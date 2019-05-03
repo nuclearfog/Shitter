@@ -1,20 +1,22 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.TweetLoader;
 import org.nuclearfog.twidda.window.TweetDetail;
 
@@ -44,32 +46,42 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     private TweetLoader tweetTask;
     private SwipeRefreshLayout reload;
     private TweetAdapter adapter;
-    private ViewGroup root;
+    private View root;
 
     private long id;
     private int mode;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        super.onCreateView(inflater,parent,param);
-        reload = new SwipeRefreshLayout(inflater.getContext());
-        RecyclerView list = new RecyclerView(inflater.getContext());
-        adapter = new TweetAdapter(this);
-        list.setAdapter(adapter);
+        super.onCreateView(inflater, parent, param);
+        View v = inflater.inflate(R.layout.fragment_list, parent, false);
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
+
+        reload = v.findViewById(R.id.fragment_reload);
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
-        reload.addView(list);
-        return reload;
+
+        adapter = new TweetAdapter(this);
+        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        adapter.toggleImage(settings.getImageLoad());
+
+        RecyclerView list = v.findViewById(R.id.fragment_list);
+        list.setLayoutManager(new LinearLayoutManager(getContext()));
+        list.setHasFixedSize(true);
+        list.setAdapter(adapter);
+        return v;
     }
 
 
     @Override
     public void onViewCreated(@NonNull View v, Bundle param) {
+        super.onViewCreated(v, param);
         Bundle b = getArguments();
         if(b != null) {
-            mode = b.getInt("mode");
-            id = b.getInt("id");
+            mode = b.getInt("mode", -1);
+            id = b.getLong("id", -1L);
         }
-       root = (ViewGroup) v;
+       root = v;
     }
 
 
@@ -90,7 +102,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
                 case USER_TWEET:
                     tweetTask = new TweetLoader(root, DB_TWEETS);
-                    tweetTask.execute();
+                    tweetTask.execute(id);
                     break;
 
                 case USER_FAVOR:
@@ -107,6 +119,9 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                     tweetTask = new TweetLoader(root, TWEET_SEARCH);
                     tweetTask.execute(id);
                     break;
+
+                default:
+                    throw new IllegalArgumentException();
             }
         }
     }
@@ -152,6 +167,9 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 tweetTask = new TweetLoader(root, TWEET_SEARCH);
                 tweetTask.execute();
                 break;
+
+            default:
+                throw new IllegalArgumentException();
         }
     }
 

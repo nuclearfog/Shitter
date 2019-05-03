@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
+import android.view.View;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.ErrorHandler;
 import org.nuclearfog.twidda.backend.TwitterEngine;
@@ -30,7 +31,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         TWEET_SEARCH
     }
     private Mode mode;
-    private WeakReference<ViewGroup> ui;
+    private WeakReference<View> ui;
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
     private GlobalSettings settings;
@@ -39,12 +40,12 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     private List<Tweet> tweets;
 
 
-    public TweetLoader(@NonNull ViewGroup root, Mode mode) {
+    public TweetLoader(@NonNull View root, Mode mode) {
         ui = new WeakReference<>(root);
         settings = GlobalSettings.getInstance(root.getContext());
-        RecyclerView list = (RecyclerView)root.getChildAt(0);
-        adapter = (TweetAdapter)list.getAdapter();
         mTwitter = TwitterEngine.getInstance(root.getContext());
+        RecyclerView list = root.findViewById(R.id.fragment_list);
+        adapter = (TweetAdapter)list.getAdapter();
         db = new DatabaseAdapter(root.getContext());
         this.mode = mode;
     }
@@ -55,7 +56,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         if(ui.get() == null)
             return;
 
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(true);
     }
 
@@ -156,15 +157,14 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
             return;
 
         if(success) {
-            int range = tweets.size();
             adapter.setData(tweets);
-            adapter.notifyItemRangeChanged(0, range);
+            adapter.notifyDataSetChanged();
         } else {
             if(err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
 
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 
@@ -173,7 +173,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     protected void onCancelled() {
         if(ui.get() == null)
             return;
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 }

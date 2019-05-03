@@ -2,64 +2,36 @@ package org.nuclearfog.twidda;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.design.widget.TabLayout;
+import android.support.design.widget.TabLayout.Tab;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabSpec;
 
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TweetAdapter;
-import org.nuclearfog.twidda.adapter.TrendAdapter;
-import org.nuclearfog.twidda.backend.StartPage;
-import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.adapter.HomeAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
 import org.nuclearfog.twidda.window.SearchPage;
-import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.StartPage.Mode.DATA;
-import static org.nuclearfog.twidda.backend.StartPage.Mode.HOME;
-import static org.nuclearfog.twidda.backend.StartPage.Mode.MENT;
-import static org.nuclearfog.twidda.backend.StartPage.Mode.TRND;
-import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
-
 /**
  * Main Activity
- *
- * @see StartPage
  */
-public class MainActivity extends AppCompatActivity implements OnRefreshListener,
-        OnTabChangeListener, OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
-    private static final int TWEET = 3;
+    private static final int[] icons = {R.drawable.home, R.drawable.hash, R.drawable.mention};
 
-    private SwipeRefreshLayout timelineReload, trendReload, mentionReload;
-    private RecyclerView timelineList, trendList, mentionList;
-    private TweetAdapter timelineAdapter, mentionAdapter;
-    private View tlUnderline, trUnderline, mnUnderline;
-    private View lastTab, root;
-    private TrendAdapter trendsAdapter;
     private GlobalSettings settings;
-    private StartPage mainAsync;
-    private TabHost tabhost;
+    private HomeAdapter adapter;
+    private ViewPager pager;
     private int tabIndex = 0;
 
     @Override
@@ -72,50 +44,24 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        timelineList = findViewById(R.id.tl_list);
-        trendList = findViewById(R.id.tr_list);
-        mentionList = findViewById(R.id.m_list);
-        timelineReload = findViewById(R.id.timeline);
-        trendReload = findViewById(R.id.trends);
-        mentionReload = findViewById(R.id.mention);
-        tabhost = findViewById(R.id.main_tabhost);
-        root = findViewById(R.id.main_layout);
-
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View tlIndicator = inflater.inflate(R.layout.tab_tl, null);
-        View trIndicator = inflater.inflate(R.layout.tab_tr, null);
-        View mnIndicator = inflater.inflate(R.layout.tab_mn, null);
-        tlUnderline = tlIndicator.findViewById(R.id.tl_divider);
-        trUnderline = trIndicator.findViewById(R.id.tr_divider);
-        mnUnderline = mnIndicator.findViewById(R.id.mn_divider);
-
-        tabhost.setup();
-        TabSpec tab1 = tabhost.newTabSpec("timeline");
-        tab1.setContent(R.id.timeline);
-        tab1.setIndicator(tlIndicator);
-        tabhost.addTab(tab1);
-        TabSpec tab2 = tabhost.newTabSpec("trends");
-        tab2.setContent(R.id.trends);
-        tab2.setIndicator(trIndicator);
-        tabhost.addTab(tab2);
-        TabSpec tab3 = tabhost.newTabSpec("mention");
-        tab3.setContent(R.id.mention);
-        tab3.setIndicator(mnIndicator);
-        tabhost.addTab(tab3);
-
-        timelineList.setLayoutManager(new LinearLayoutManager(this));
-        trendList.setLayoutManager(new LinearLayoutManager(this));
-        mentionList.setLayoutManager(new LinearLayoutManager(this));
-        timelineList.setHasFixedSize(true);
-        trendList.setHasFixedSize(true);
-        mentionList.setHasFixedSize(true);
-
-        lastTab = tabhost.getCurrentView();
-        tabhost.setOnTabChangedListener(this);
-        timelineReload.setOnRefreshListener(this);
-        trendReload.setOnRefreshListener(this);
-        mentionReload.setOnRefreshListener(this);
         settings = GlobalSettings.getInstance(this);
+
+        pager = findViewById(R.id.home_pager);
+        TabLayout tab = findViewById(R.id.home_tab);
+        View root = findViewById(R.id.main_layout);
+        root.setBackgroundColor(settings.getBackgroundColor());
+
+        adapter = new HomeAdapter(getSupportFragmentManager());
+        pager.setOffscreenPageLimit(3);
+        pager.setAdapter(adapter);
+        tab.setupWithViewPager(pager);
+        tab.addOnTabSelectedListener(this);
+
+        for(int i = 0 ; i < icons.length ; i++) {
+            Tab t = tab.getTabAt(i);
+            if(t != null)
+                t.setIcon(icons[i]);
+        }
     }
 
 
@@ -125,39 +71,13 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (!settings.getLogin()) {
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
-        } else if (mainAsync == null) {
-            timelineAdapter = new TweetAdapter(this);
-            trendsAdapter = new TrendAdapter(this);
-            mentionAdapter = new TweetAdapter(this);
-
-            root.setBackgroundColor(settings.getBackgroundColor());
-            timelineAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            timelineAdapter.toggleImage(settings.getImageLoad());
-            trendsAdapter.setColor(settings.getFontColor());
-            mentionAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            mentionAdapter.toggleImage(settings.getImageLoad());
-
-            timelineReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-            trendReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-            mentionReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-
-            timelineList.setAdapter(timelineAdapter);
-            trendList.setAdapter(trendsAdapter);
-            mentionList.setAdapter(mentionAdapter);
-
-            mainAsync = new StartPage(this, DATA);
-            mainAsync.execute(1);
-
-            setIndicator();
         }
+
     }
 
 
     @Override
     protected void onStop() {
-        if (mainAsync != null && mainAsync.getStatus() == RUNNING) {
-            mainAsync.cancel(true);
-        }
         super.onStop();
     }
 
@@ -170,13 +90,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
                     finish();
                 break;
 
-            case TWEET:
-                if (returnCode == STAT_CHANGED)
-                    mainAsync = null;
-                break;
-
             case SETTING:
-                mainAsync = null;
+                View root = findViewById(R.id.main_layout);
+                root.setBackgroundColor(settings.getBackgroundColor());
+                adapter.notifyDataSetChanged();
                 break;
         }
         super.onActivityResult(reqCode, returnCode, i);
@@ -254,12 +171,10 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
 
             case R.id.action_tweet:
                 Intent tweet = new Intent(this, TweetPopup.class);
-                startActivityForResult(tweet, TWEET);
+                startActivity(tweet);
                 break;
 
             case R.id.action_settings:
-                if (mainAsync != null && mainAsync.getStatus() == RUNNING)
-                    mainAsync.cancel(true);
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
                 break;
@@ -273,130 +188,22 @@ public class MainActivity extends AppCompatActivity implements OnRefreshListener
         if (tabIndex == 0) {
             super.onBackPressed();
         } else {
-            tabhost.setCurrentTab(0);
+            pager.setCurrentItem(0);
         }
     }
 
 
     @Override
-    public void onRefresh() {
-        if (mainAsync != null && mainAsync.getStatus() == RUNNING)
-            mainAsync.cancel(true);
-
-        switch (tabIndex) {
-            default:
-            case 0:
-                mainAsync = new StartPage(this, HOME);
-                break;
-            case 1:
-                mainAsync = new StartPage(this, TRND);
-                break;
-            case 2:
-                mainAsync = new StartPage(this, MENT);
-                break;
-        }
-        mainAsync.execute(1);
-    }
-
-
-    @Override
-    public void onTabChanged(String tabId) {
-        animate();
-        tabIndex = tabhost.getCurrentTab();
+    public void onTabSelected(TabLayout.Tab tab) {
+        tabIndex = tab.getPosition();
         invalidateOptionsMenu();
-        setIndicator();
     }
 
 
     @Override
-    public void onItemClick(RecyclerView parent, int position) {
-        switch (parent.getId()) {
-            case R.id.tl_list:
-                if (!timelineReload.isRefreshing()) {
-                    Tweet tweet = timelineAdapter.getData(position);
-                    if (tweet.getEmbeddedTweet() != null)
-                        tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
-                }
-                break;
-
-            case R.id.tr_list:
-                if (!trendReload.isRefreshing()) {
-                    String search = trendsAdapter.getData(position).getName();
-                    Intent intent = new Intent(this, SearchPage.class);
-                    if (!search.startsWith("#"))
-                        search = '\"' + search + '\"';
-                    intent.putExtra("search", search);
-                    startActivity(intent);
-                }
-                break;
-
-            case R.id.m_list:
-                if (!mentionReload.isRefreshing()) {
-                    Tweet tweet = mentionAdapter.getData(position);
-                    if (tweet.getEmbeddedTweet() != null)
-                        tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
-                }
-                break;
-        }
-    }
+    public void onTabUnselected(TabLayout.Tab tab) { }
 
 
-    private void setIndicator() {
-        switch (tabIndex) {
-            case 0:
-                tlUnderline.setBackgroundColor(settings.getHighlightColor());
-                trUnderline.setBackgroundColor(0);
-                mnUnderline.setBackgroundColor(0);
-                break;
-
-            case 1:
-                trUnderline.setBackgroundColor(settings.getHighlightColor());
-                tlUnderline.setBackgroundColor(0);
-                mnUnderline.setBackgroundColor(0);
-                break;
-
-            case 2:
-                mnUnderline.setBackgroundColor(settings.getHighlightColor());
-                tlUnderline.setBackgroundColor(0);
-                trUnderline.setBackgroundColor(0);
-                break;
-        }
-    }
-
-
-    private void openTweet(long tweetId, String username) {
-        Intent intent = new Intent(this, TweetDetail.class);
-        intent.putExtra("tweetID", tweetId);
-        intent.putExtra("username", username);
-        startActivityForResult(intent, TWEET);
-    }
-
-
-    private void animate() {
-        final int ANIM_DUR = 300;
-        final float LEFT = -1.0f;
-        final float RIGHT = 1.0f;
-        final float NULL = 0.0f;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
-
-        View currentTab = tabhost.getCurrentView();
-        if (tabhost.getCurrentTab() > tabIndex) {
-            Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
-            Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-            lOut.setDuration(ANIM_DUR);
-            rIn.setDuration(ANIM_DUR);
-            lastTab.setAnimation(lOut);
-            currentTab.setAnimation(rIn);
-        } else {
-            Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-            Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
-            lIn.setDuration(ANIM_DUR);
-            rOut.setDuration(ANIM_DUR);
-            lastTab.setAnimation(rOut);
-            currentTab.setAnimation(lIn);
-        }
-        lastTab = tabhost.getCurrentView();
-    }
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) { }
 }

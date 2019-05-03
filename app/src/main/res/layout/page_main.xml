@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,66 +11,37 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_wide" />
 
-    <TabHost
-        android:id="@+id/main_tabhost"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/home_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/CustomTextAppearance">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/home"
+            android:layout="@layout/tab_home" />
 
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <android.support.design.widget.TabItem
+            android:id="@+id/tab_trend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/hash"
+            android:layout="@layout/tab_home" />
 
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <android.support.design.widget.TabItem
+            android:id="@+id/tab_mention"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:icon="@drawable/mention"
+            android:layout="@layout/tab_home" />
 
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/timeline"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+    </android.support.design.widget.TabLayout>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/tl_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </android.support.v4.widget.SwipeRefreshLayout>
-
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/trends"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/tr_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </android.support.v4.widget.SwipeRefreshLayout>
-
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/mention"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/m_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </android.support.v4.widget.SwipeRefreshLayout>
-
-            </FrameLayout>
-
-        </LinearLayout>
-
-    </TabHost>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

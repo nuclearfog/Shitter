@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         SwipeRefreshLayout reload = new SwipeRefreshLayout(inflater.getContext());
         RecyclerView list = new RecyclerView(inflater.getContext());
+        list.setLayoutManager(new LinearLayoutManager(getContext()));
         reload.setOnRefreshListener(this);
         reload.addView(list);
         return reload;

@@ -4,8 +4,9 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
+import android.view.View;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.ErrorHandler;
 import org.nuclearfog.twidda.backend.TwitterEngine;
@@ -26,7 +27,7 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
         LD_TRND
     }
     private Mode mode;
-    private WeakReference<ViewGroup> ui;
+    private WeakReference<View> ui;
     private TwitterException err;
     private TwitterEngine mTwitter;
     private DatabaseAdapter db;
@@ -35,14 +36,14 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
     private int woeId;
 
 
-    public TrendLoader(@NonNull ViewGroup root, Mode mode) {
+    public TrendLoader(@NonNull View root, Mode mode) {
         ui = new WeakReference<>(root);
         mTwitter = TwitterEngine.getInstance(root.getContext());
         db = new DatabaseAdapter(root.getContext());
         GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
-        woeId = settings.getWoeId();
-        RecyclerView list = (RecyclerView)root.getChildAt(0);
+        RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TrendAdapter) list.getAdapter();
+        woeId = settings.getWoeId();
         this.mode = mode;
     }
 
@@ -51,7 +52,7 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
     protected void onPreExecute() {
         if(ui.get() == null)
             return;
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(true);
     }
 
@@ -92,7 +93,7 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
             if(err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 
@@ -102,7 +103,7 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
         if(ui.get() == null)
             return;
 
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 }
