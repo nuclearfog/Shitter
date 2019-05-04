@@ -15,29 +15,7 @@
         android:id="@+id/home_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextAppearance="@style/CustomTextAppearance">
-
-        <android.support.design.widget.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/home"
-            android:layout="@layout/tab_home" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tab_trend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/hash"
-            android:layout="@layout/tab_home" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tab_mention"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:icon="@drawable/mention"
-            android:layout="@layout/tab_home" />
-
-    </android.support.design.widget.TabLayout>
+        app:tabTextAppearance="@style/CustomTextAppearance"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/home_pager"

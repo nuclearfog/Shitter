@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.nuclearfog.twidda.adapter.HomeAdapter;
+import org.nuclearfog.twidda.adapter.HomeTabAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private static final int[] icons = {R.drawable.home, R.drawable.hash, R.drawable.mention};
 
     private GlobalSettings settings;
-    private HomeAdapter adapter;
+    private HomeTabAdapter adapter;
     private ViewPager pager;
     private int tabIndex = 0;
 
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         View root = findViewById(R.id.main_layout);
         root.setBackgroundColor(settings.getBackgroundColor());
 
-        adapter = new HomeAdapter(getSupportFragmentManager());
+        adapter = new HomeTabAdapter(getSupportFragmentManager());
         pager.setOffscreenPageLimit(3);
         pager.setAdapter(adapter);
         tab.setupWithViewPager(pager);

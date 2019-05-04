@@ -93,7 +93,6 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                     publishProgress();
                     break;
 
-
                 case DB_TWEETS:
                     tweets = db.getUserTweets((long)param[0]);
                     if(!tweets.isEmpty())

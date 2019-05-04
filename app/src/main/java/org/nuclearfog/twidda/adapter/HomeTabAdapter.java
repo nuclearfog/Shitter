@@ -11,7 +11,7 @@ import static org.nuclearfog.twidda.fragment.TweetListFragment.HOME;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.MENT;
 
 
-public class HomeAdapter extends FragmentPagerAdapter {
+public class HomeTabAdapter extends FragmentPagerAdapter {
 
     private static final int COUNT = 3;
     private static final Bundle HOME_TL, MENT_TL;
@@ -25,7 +25,7 @@ public class HomeAdapter extends FragmentPagerAdapter {
         MENT_TL.putInt("mode", MENT);
     }
 
-    public HomeAdapter(FragmentManager fm) {
+    public HomeTabAdapter(FragmentManager fm) {
         super(fm);
         fragments = new Fragment[COUNT];
         fragments[0] = new TweetListFragment();

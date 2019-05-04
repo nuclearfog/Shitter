@@ -3,36 +3,30 @@ package org.nuclearfog.twidda.window;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.design.widget.TabLayout;
+import android.support.design.widget.TabLayout.OnTabSelectedListener;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TweetAdapter;
+import org.nuclearfog.twidda.adapter.ProfileTabAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
 import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 /**
@@ -40,32 +34,32 @@ import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
  *
  * @see ProfileLoader
  */
-public class UserProfile extends AppCompatActivity implements OnRefreshListener,
-        OnTabChangeListener, OnItemClickListener, OnTagClickListener {
+public class UserProfile extends AppCompatActivity implements OnTagClickListener, OnTabSelectedListener {
 
     private static final int TWEET = 1;
 
     private ProfileLoader profileAsync;
-    private GlobalSettings settings;
-    private RecyclerView homeList, favoriteList;
-    private TweetAdapter tweetAdapter, favAdapter;
-    private SwipeRefreshLayout homeReload, favoriteReload;
-    private View lastTab, tweetUnderline, favorUnderline;
-    private TextView tweetCount, favorCount;
-    private TabHost mTab;
-    private NumberFormat formatter;
+    private ViewPager pager;
+    private View[] icons;
+
     private boolean home, isFollowing, isBlocked, isMuted, canDm, requested;
     private String username;
     private long userId;
-    private int tabIndex = 0;
 
+    private int tabIndex = 0;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
 
+        TextView bioTxt = findViewById(R.id.bio);
+        TextView lnkTxt = findViewById(R.id.links);
+        View root = findViewById(R.id.user_view);
+        TabLayout tab = findViewById(R.id.profile_tab);
+        pager = findViewById(R.id.profile_pager);
         Toolbar tool = findViewById(R.id.profile_toolbar);
+
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -78,71 +72,40 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
             username = param.getString("username");
         }
 
-        TextView bioTxt = findViewById(R.id.bio);
-        TextView lnkTxt = findViewById(R.id.links);
-        View root = findViewById(R.id.user_view);
-        homeList = findViewById(R.id.ht_list);
-        homeReload = findViewById(R.id.hometweets);
-        favoriteList = findViewById(R.id.hf_list);
-        favoriteReload = findViewById(R.id.homefavorits);
-        mTab = findViewById(R.id.profile_tab);
-
-        settings = GlobalSettings.getInstance(this);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
-        formatter = NumberFormat.getIntegerInstance();
 
-        homeList.setLayoutManager(new LinearLayoutManager(this));
-        favoriteList.setLayoutManager(new LinearLayoutManager(this));
         root.setBackgroundColor(settings.getBackgroundColor());
         bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
         lnkTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setLinkTextColor(settings.getHighlightColor());
 
+        icons = new View[2];
         LayoutInflater inflater = LayoutInflater.from(this);
-        View tweetIndicator = inflater.inflate(R.layout.tab_tw, null);
-        View favorIndicator = inflater.inflate(R.layout.tab_fa, null);
-        tweetUnderline = tweetIndicator.findViewById(R.id.tweet_divider);
-        favorUnderline = favorIndicator.findViewById(R.id.favor_divider);
-        tweetCount = tweetIndicator.findViewById(R.id.profile_tweet_count);
-        favorCount = favorIndicator.findViewById(R.id.profile_favor_count);
-        homeReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        favoriteReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        icons[0] = inflater.inflate(R.layout.tab_tw, null);
+        icons[1] = inflater.inflate(R.layout.tab_fa, null);
 
-        mTab.setup();
-        TabHost.TabSpec tab1 = mTab.newTabSpec("tweets");
-        tab1.setContent(R.id.hometweets);
-        tab1.setIndicator(tweetIndicator);
-        mTab.addTab(tab1);
-        TabHost.TabSpec tab2 = mTab.newTabSpec("favors");
-        tab2.setContent(R.id.homefavorits);
-        tab2.setIndicator(favorIndicator);
-        mTab.addTab(tab2);
-        lastTab = mTab.getCurrentView();
-        setIndicator();
+        ProfileTabAdapter adapter = new ProfileTabAdapter(getSupportFragmentManager(), userId);
+        pager.setOffscreenPageLimit(2);
+        pager.setAdapter(adapter);
+        tab.setupWithViewPager(pager);
+        tab.addOnTabSelectedListener(this);
 
-        mTab.setOnTabChangedListener(this);
-        homeReload.setOnRefreshListener(this);
-        favoriteReload.setOnRefreshListener(this);
+        for(int i = 0 ; i < icons.length ; i++) {
+            TabLayout.Tab t = tab.getTabAt(i);
+            if(t != null)
+                t.setCustomView(icons[i]);
+        }
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (profileAsync == null) {
-            tweetAdapter = new TweetAdapter(this);
-            tweetAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            tweetAdapter.toggleImage(settings.getImageLoad());
-            homeList.setAdapter(tweetAdapter);
-
-            favAdapter = new TweetAdapter(this);
-            favAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            favAdapter.toggleImage(settings.getImageLoad());
-            favoriteList.setAdapter(favAdapter);
-
-            profileAsync = new ProfileLoader(this, ProfileLoader.Mode.LDR_PROFILE);
-            profileAsync.execute(userId, 0L);
+        if(profileAsync == null) {
+            profileAsync = new ProfileLoader(this, LDR_PROFILE);
+            profileAsync.execute(userId);
         }
     }
 
@@ -157,9 +120,8 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET && returnCode == STAT_CHANGED) {
+        if (reqCode == TWEET && returnCode == STAT_CHANGED)
             profileAsync = null;
-        }
         super.onActivityResult(reqCode, returnCode, i);
     }
 
@@ -292,56 +254,7 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         if (tabIndex == 0) {
             super.onBackPressed();
         } else {
-            mTab.setCurrentTab(0);
-        }
-    }
-
-
-    @Override
-    public void onRefresh() {
-        if (profileAsync != null && profileAsync.getStatus() == RUNNING)
-            profileAsync.cancel(true);
-        switch (tabIndex) {
-            default:
-            case 0:
-                profileAsync = new ProfileLoader(this, ProfileLoader.Mode.GET_TWEETS);
-                break;
-            case 1:
-                profileAsync = new ProfileLoader(this, ProfileLoader.Mode.GET_FAVORS);
-                break;
-        }
-        profileAsync.execute(userId);
-    }
-
-
-    @Override
-    public void onTabChanged(String tabId) {
-        animate();
-        tabIndex = mTab.getCurrentTab();
-        setIndicator();
-    }
-
-
-    @Override
-    public void onItemClick(RecyclerView parent, int position) {
-        switch (parent.getId()) {
-            case R.id.ht_list:
-                if (!homeReload.isRefreshing()) {
-                    Tweet tweet = tweetAdapter.getData(position);
-                    if (tweet.getEmbeddedTweet() != null)
-                        tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
-                }
-                break;
-
-            case R.id.hf_list:
-                if (!favoriteReload.isRefreshing()) {
-                    Tweet tweet = favAdapter.getData(position);
-                    if (tweet.getEmbeddedTweet() != null)
-                        tweet = tweet.getEmbeddedTweet();
-                    openTweet(tweet.getId(), tweet.getUser().getScreenname());
-                }
-                break;
+            pager.setCurrentItem(0);
         }
     }
 
@@ -354,8 +267,25 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
     }
 
 
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        tabIndex = tab.getPosition();
+    }
+
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) { }
+
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) { }
+
+
     public void setTweetCount(int tweets, int favors) {
+        NumberFormat formatter = NumberFormat.getIntegerInstance();
+        TextView tweetCount = icons[0].findViewById(R.id.profile_tweet_count);
         tweetCount.setText(formatter.format(tweets));
+        TextView favorCount = icons[1].findViewById(R.id.profile_favor_count);
         favorCount.setText(formatter.format(favors));
     }
 
@@ -366,58 +296,5 @@ public class UserProfile extends AppCompatActivity implements OnRefreshListener,
         this.isBlocked = isBlocked;
         this.canDm = canDm;
         this.requested = requested;
-    }
-
-
-    private void openTweet(long tweetId, String username) {
-        Intent intent = new Intent(this, TweetDetail.class);
-        intent.putExtra("tweetID", tweetId);
-        intent.putExtra("username", username);
-        startActivityForResult(intent, TWEET);
-    }
-
-
-    private void setIndicator() {
-        switch (tabIndex) {
-            case 0:
-                tweetUnderline.setBackgroundColor(settings.getHighlightColor());
-                favorUnderline.setBackgroundColor(0);
-                favoriteList.smoothScrollToPosition(0);
-                break;
-
-            case 1:
-                favorUnderline.setBackgroundColor(settings.getHighlightColor());
-                tweetUnderline.setBackgroundColor(0);
-                homeList.smoothScrollToPosition(0);
-                break;
-        }
-
-    }
-
-
-    private void animate() {
-        final int ANIM_DUR = 300;
-        final float LEFT = -1.0f;
-        final float RIGHT = 1.0f;
-        final float NULL = 0.0f;
-        final int DIMENS = Animation.RELATIVE_TO_PARENT;
-
-        View currentTab = mTab.getCurrentView();
-        if (mTab.getCurrentTab() > tabIndex) {
-            Animation lOut = new TranslateAnimation(DIMENS, NULL, DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL);
-            Animation rIn = new TranslateAnimation(DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-            lOut.setDuration(ANIM_DUR);
-            rIn.setDuration(ANIM_DUR);
-            lastTab.setAnimation(lOut);
-            currentTab.setAnimation(rIn);
-        } else {
-            Animation lIn = new TranslateAnimation(DIMENS, LEFT, DIMENS, NULL, DIMENS, NULL, DIMENS, NULL);
-            Animation rOut = new TranslateAnimation(DIMENS, NULL, DIMENS, RIGHT, DIMENS, NULL, DIMENS, NULL);
-            lIn.setDuration(ANIM_DUR);
-            rOut.setDuration(ANIM_DUR);
-            lastTab.setAnimation(rOut);
-            currentTab.setAnimation(lIn);
-        }
-        lastTab = mTab.getCurrentView();
     }
 }

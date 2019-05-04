@@ -48,12 +48,23 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     private TweetAdapter adapter;
     private View root;
 
-    private long id;
     private int mode;
+    private String search;
+    private long id;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         super.onCreateView(inflater, parent, param);
+
+        Bundle b = getArguments();
+        if(b != null && b.containsKey("mode")) {
+            mode = b.getInt("mode");
+            id = b.getLong("id", -1);
+            search = b.getString("search", "");
+        } else {
+            throw new AssertionError("Bundle error!");
+        }
+
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
         GlobalSettings settings = GlobalSettings.getInstance(getContext());
 
@@ -67,7 +78,21 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
         RecyclerView list = v.findViewById(R.id.fragment_list);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
-        list.setHasFixedSize(true);
+
+        switch(mode) {
+            default:
+            case USER_TWEET:
+            case USER_FAVOR:
+            case TWEET_ANSR:
+                list.setHasFixedSize(false);
+                break;
+
+            case HOME:
+            case MENT:
+            case SEARCH:
+                list.setHasFixedSize(true);
+                break;
+        }
         list.setAdapter(adapter);
         return v;
     }
@@ -76,12 +101,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onViewCreated(@NonNull View v, Bundle param) {
         super.onViewCreated(v, param);
-        Bundle b = getArguments();
-        if(b != null) {
-            mode = b.getInt("mode", -1);
-            id = b.getLong("id", -1L);
-        }
-       root = v;
+        root = v;
     }
 
 
@@ -150,22 +170,22 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
             case USER_TWEET:
                 tweetTask = new TweetLoader(root, USR_TWEETS);
-                tweetTask.execute();
+                tweetTask.execute(id);
                 break;
 
             case USER_FAVOR:
                 tweetTask = new TweetLoader(root, USR_FAVORS);
-                tweetTask.execute();
+                tweetTask.execute(id);
                 break;
 
             case TWEET_ANSR:
                 tweetTask = new TweetLoader(root, TWEET_ANS);
-                tweetTask.execute();
+                tweetTask.execute(id);
                 break;
 
             case SEARCH:
                 tweetTask = new TweetLoader(root, TWEET_SEARCH);
-                tweetTask.execute();
+                tweetTask.execute(search);
                 break;
 
             default:
@@ -180,7 +200,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             Tweet tweet = adapter.getData(pos);
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
-            Intent intent = new Intent(getContext(), TweetDetail.class);//,
+            Intent intent = new Intent(getContext(), TweetDetail.class);
             intent.putExtra("tweetID", tweet.getId());
             intent.putExtra("username", tweet.getUser().getScreenname());
             startActivity(intent);

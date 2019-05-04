@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -14,11 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import twitter4j.TwitterException;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TweetAdapter;
-import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -29,37 +26,27 @@ import org.nuclearfog.twidda.window.UserProfile;
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import twitter4j.TwitterException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 
-public class ProfileLoader extends AsyncTask<Long, Void, Void> {
+public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
 
     public enum Mode {
         LDR_PROFILE,
-        GET_TWEETS,
-        GET_FAVORS,
         ACTION_FOLLOW,
         ACTION_BLOCK,
         ACTION_MUTE
     }
-
     private final Mode mode;
-    private boolean failure = false;
 
-    private TweetAdapter homeTl, homeFav;
     private WeakReference<UserProfile> ui;
     private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private TwitterUser user;
-    private List<Tweet> tweets, favors;
     private NumberFormat formatter;
     private long homeId;
     private int highlight;
@@ -85,45 +72,20 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
         imgEnabled = settings.getImageLoad();
         homeId = settings.getUserId();
         highlight = settings.getHighlightColor();
-
         this.mode = mode;
-        tweets = new ArrayList<>();
-        favors = new ArrayList<>();
-
-        RecyclerView profileTweets = context.findViewById(R.id.ht_list);
-        RecyclerView profileFavors = context.findViewById(R.id.hf_list);
-        homeTl = (TweetAdapter) profileTweets.getAdapter();
-        homeFav = (TweetAdapter) profileFavors.getAdapter();
     }
 
 
     @Override
-    protected void onPreExecute() {
-        if (ui.get() != null) {
-            if (mode == Mode.LDR_PROFILE) {
-                SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-                SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-                homeReload.setRefreshing(true);
-                favReload.setRefreshing(true);
-            }
-        }
-    }
-
-
-    @Override
-    protected Void doInBackground(Long... args) {
+    protected Boolean doInBackground(Long... args) {
         final long UID = args[0];
-        long page = 1L;
-        if (args.length > 2)
-            page = args[2];
+
         DatabaseAdapter db = new DatabaseAdapter(ui.get());
         isHome = homeId == UID;
         try {
             if (mode == Mode.LDR_PROFILE) {
                 user = db.getUser(UID);
                 if (user != null) {
-                    tweets = db.getUserTweets(UID);
-                    favors = db.getUserFavs(UID);
                     publishProgress();
                 }
             }
@@ -141,47 +103,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             }
 
             switch (mode) {
-                case LDR_PROFILE:
-                    if (!user.isLocked() || isFollowing || isHome) {
-                        if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserTweets(UID, 1, page);
-                            db.storeUserTweets(tweets);
-                            tweets.addAll(homeTl.getData());
-                            publishProgress();
-                        }
-                        if (favors.isEmpty()) {
-                            favors = mTwitter.getUserFavs(UID, 1, page);
-                            db.storeUserFavs(favors, UID);
-                            favors.addAll(homeFav.getData());
-                            publishProgress();
-                        }
-                    }
-                    break;
-
-                case GET_TWEETS:
-                    if (!user.isLocked() || isFollowing || isHome) {
-                        long sinceId = 1;
-                        if (homeTl.getItemCount() > 0)
-                            sinceId = homeTl.getItemId(0);
-                        tweets = mTwitter.getUserTweets(UID, sinceId, page);
-                        db.storeUserTweets(tweets);
-                        tweets.addAll(homeTl.getData());
-                        publishProgress();
-                    }
-                    break;
-
-                case GET_FAVORS:
-                    if (!user.isLocked() || isFollowing || isHome) {
-                        long sinceId = 1;
-                        if (homeFav.getItemCount() > 0)
-                            sinceId = homeFav.getItemId(0);
-                        favors = mTwitter.getUserFavs(UID, sinceId, page);
-                        db.storeUserFavs(favors, UID);
-                        favors.addAll(homeFav.getData());
-                        publishProgress();
-                    }
-                    break;
-
                 case ACTION_FOLLOW:
                     if (user.isLocked()) {
                         if (isFollowing)
@@ -219,32 +140,19 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            failure = true;
+            return false;
         } catch (Exception err) {
             if (err.getMessage() != null)
                 Log.e("ProfileLoader", err.getMessage());
-            failure = true;
+            return false;
         }
-        return null;
+        return true;
     }
 
 
     @Override
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
-
-        if (!tweets.isEmpty()) {
-            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-            homeTl.setData(tweets);
-            homeTl.notifyDataSetChanged();
-            homeReload.setRefreshing(false);
-        }
-        if (!favors.isEmpty()) {
-            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-            homeFav.setData(favors);
-            homeFav.notifyDataSetChanged();
-            favReload.setRefreshing(false);
-        }
 
         TextView txtUser = ui.get().findViewById(R.id.profile_username);
         TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
@@ -341,49 +249,11 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
 
 
     @Override
-    protected void onPostExecute(final Void v) {
+    protected void onPostExecute(final Boolean success) {
         if (ui.get() == null) return;
 
-        if (failure) {
-            SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-            SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-            if (homeReload.isRefreshing())
-                homeReload.setRefreshing(false);
-            if (favReload.isRefreshing())
-                favReload.setRefreshing(false);
-
-            if (err != null) {
-                boolean killActivity = ErrorHandler.printError(ui.get(), err);
-                if (killActivity)
-                    ui.get().finish();
-            }
-        } else {
+        if (success) {
             switch (mode) {
-                case LDR_PROFILE:
-                    if (tweets.isEmpty()) {
-                        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-                        homeReload.setRefreshing(false);
-                    }
-                    if (favors.isEmpty()) {
-                        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-                        favReload.setRefreshing(false);
-                    }
-                    break;
-
-                case GET_TWEETS:
-                    if (tweets.isEmpty()) {
-                        SwipeRefreshLayout homeReload = ui.get().findViewById(R.id.hometweets);
-                        homeReload.setRefreshing(false);
-                    }
-                    break;
-
-                case GET_FAVORS:
-                    if (favors.isEmpty()) {
-                        SwipeRefreshLayout favReload = ui.get().findViewById(R.id.homefavorits);
-                        favReload.setRefreshing(false);
-                    }
-                    break;
-
                 case ACTION_FOLLOW:
                     if (!user.isLocked())
                         if (isFollowing)
@@ -410,31 +280,11 @@ public class ProfileLoader extends AsyncTask<Long, Void, Void> {
                 ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
                 ui.get().invalidateOptionsMenu();
             }
-        }
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (ui.get() != null) {
-            SwipeRefreshLayout homeReload, favReload;
-            switch (mode) {
-                case GET_TWEETS:
-                    homeReload = ui.get().findViewById(R.id.hometweets);
-                    homeReload.setRefreshing(false);
-                    break;
-
-                case GET_FAVORS:
-                    favReload = ui.get().findViewById(R.id.homefavorits);
-                    favReload.setRefreshing(false);
-                    break;
-
-                case LDR_PROFILE:
-                    homeReload = ui.get().findViewById(R.id.hometweets);
-                    favReload = ui.get().findViewById(R.id.homefavorits);
-                    homeReload.setRefreshing(false);
-                    favReload.setRefreshing(false);
-                    break;
+        } else {
+            if (err != null) {
+                boolean killActivity = ErrorHandler.printError(ui.get(), err);
+                if (killActivity)
+                    ui.get().finish();
             }
         }
     }
