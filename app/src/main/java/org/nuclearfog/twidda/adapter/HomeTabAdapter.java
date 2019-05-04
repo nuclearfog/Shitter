@@ -22,7 +22,9 @@ public class HomeTabAdapter extends FragmentPagerAdapter {
         HOME_TL = new Bundle();
         MENT_TL = new Bundle();
         HOME_TL.putInt("mode",HOME);
+        HOME_TL.putBoolean("fix", true);
         MENT_TL.putInt("mode", MENT);
+        MENT_TL.putBoolean("fix", true);
     }
 
     public HomeTabAdapter(FragmentManager fm) {

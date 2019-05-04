@@ -77,12 +77,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-
-    @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         switch (reqCode) {
             case LOGIN:

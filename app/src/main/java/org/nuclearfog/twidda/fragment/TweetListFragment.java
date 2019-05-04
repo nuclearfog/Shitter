@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,26 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.TweetLoader;
+import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.DB_ANS;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.DB_FAVORS;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.DB_HOME;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.DB_MENT;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.DB_TWEETS;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.TL_HOME;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.TL_MENT;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.TWEET_ANS;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.USR_FAVORS;
-import static org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode.USR_TWEETS;
 
 
 public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
@@ -52,15 +42,17 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     private String search;
     private long id;
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         super.onCreateView(inflater, parent, param);
-
+        boolean fixSize;
         Bundle b = getArguments();
         if(b != null && b.containsKey("mode")) {
             mode = b.getInt("mode");
             id = b.getLong("id", -1);
             search = b.getString("search", "");
+            fixSize = b.getBoolean("fix", false);
         } else {
             throw new AssertionError("Bundle error!");
         }
@@ -78,29 +70,15 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
         RecyclerView list = v.findViewById(R.id.fragment_list);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        switch(mode) {
-            default:
-            case USER_TWEET:
-            case USER_FAVOR:
-            case TWEET_ANSR:
-                list.setHasFixedSize(false);
-                break;
-
-            case HOME:
-            case MENT:
-            case SEARCH:
-                list.setHasFixedSize(true);
-                break;
-        }
+        list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
+
         return v;
     }
 
 
     @Override
     public void onViewCreated(@NonNull View v, Bundle param) {
-        super.onViewCreated(v, param);
         root = v;
     }
 
@@ -111,37 +89,33 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         if(tweetTask == null) {
             switch(mode) {
                 case HOME:
-                    tweetTask = new TweetLoader(root, DB_HOME);
+                    tweetTask = new TweetLoader(root, Mode.DB_HOME);
                     tweetTask.execute();
                     break;
-
                 case MENT:
-                    tweetTask = new TweetLoader(root, DB_MENT);
+                    tweetTask = new TweetLoader(root, Mode.DB_MENT);
                     tweetTask.execute();
                     break;
-
                 case USER_TWEET:
-                    tweetTask = new TweetLoader(root, DB_TWEETS);
+                    tweetTask = new TweetLoader(root, Mode.DB_TWEETS);
                     tweetTask.execute(id);
                     break;
-
                 case USER_FAVOR:
-                    tweetTask = new TweetLoader(root, DB_FAVORS);
+                    tweetTask = new TweetLoader(root, Mode.DB_FAVORS);
                     tweetTask.execute(id);
                     break;
-
                 case TWEET_ANSR:
-                    tweetTask = new TweetLoader(root, DB_ANS);
+                    tweetTask = new TweetLoader(root, Mode.DB_ANS);
                     tweetTask.execute(id);
                     break;
-
                 case SEARCH:
-                    tweetTask = new TweetLoader(root, TWEET_SEARCH);
-                    tweetTask.execute(id);
+                    tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
+                    tweetTask.execute(search);
                     break;
-
                 default:
-                    throw new IllegalArgumentException();
+                    if(BuildConfig.DEBUG)
+                        throw new AssertionError("mode failure");
+                    break;
             }
         }
     }
@@ -149,7 +123,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onStop() {
-        if(tweetTask != null && tweetTask.getStatus() == RUNNING)
+        if(tweetTask != null && tweetTask.getStatus() == Status.RUNNING)
             tweetTask.cancel(true);
         super.onStop();
     }
@@ -159,37 +133,33 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public void onRefresh() {
         switch(mode) {
             case HOME:
-                tweetTask = new TweetLoader(root, TL_HOME);
+                tweetTask = new TweetLoader(root, Mode.TL_HOME);
                 tweetTask.execute();
                 break;
-
             case MENT:
-                tweetTask = new TweetLoader(root, TL_MENT);
+                tweetTask = new TweetLoader(root, Mode.TL_MENT);
                 tweetTask.execute();
                 break;
-
             case USER_TWEET:
-                tweetTask = new TweetLoader(root, USR_TWEETS);
+                tweetTask = new TweetLoader(root, Mode.USR_TWEETS);
                 tweetTask.execute(id);
                 break;
-
             case USER_FAVOR:
-                tweetTask = new TweetLoader(root, USR_FAVORS);
+                tweetTask = new TweetLoader(root, Mode.USR_FAVORS);
                 tweetTask.execute(id);
                 break;
-
             case TWEET_ANSR:
-                tweetTask = new TweetLoader(root, TWEET_ANS);
+                tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
                 tweetTask.execute(id);
                 break;
-
             case SEARCH:
-                tweetTask = new TweetLoader(root, TWEET_SEARCH);
+                tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
                 tweetTask.execute(search);
                 break;
-
             default:
-                throw new IllegalArgumentException();
+                if(BuildConfig.DEBUG)
+                    throw new AssertionError("mode failure");
+                break;
         }
     }
 

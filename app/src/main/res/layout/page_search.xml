@@ -10,47 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_wide" />
 
-    <TabHost
+    <android.support.design.widget.TabLayout
         android:id="@+id/search_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <android.support.v4.widget.SwipeRefreshLayout
-                    android:id="@+id/searchtweets"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/tweet_result"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                </android.support.v4.widget.SwipeRefreshLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/user_result"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </FrameLayout>
-
-        </LinearLayout>
-
-    </TabHost>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/search_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

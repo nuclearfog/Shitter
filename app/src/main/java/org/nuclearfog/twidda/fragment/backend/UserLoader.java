@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
+import android.view.View;
 
-
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.ErrorHandler;
 import org.nuclearfog.twidda.backend.TwitterEngine;
@@ -17,27 +17,29 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class UserLoader extends AsyncTask<Long, Void, Boolean> {
+public class UserLoader extends AsyncTask<Object, Void, Boolean> {
 
     public enum Mode {
         FOLLOWS,
         FRIENDS,
         RETWEET,
-        FAVORIT
+        FAVORIT,
+        SEARCH
     }
     private Mode mode;
-    private WeakReference<ViewGroup> ui;
+    private WeakReference<View> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private UserAdapter adapter;
     private List<TwitterUser> users;
 
 
-    public UserLoader(@NonNull ViewGroup root) {
+    public UserLoader(@NonNull View root, Mode mode) {
         ui = new WeakReference<>(root);
         mTwitter = TwitterEngine.getInstance(root.getContext());
-        RecyclerView list = (RecyclerView)root.getChildAt(0);
+        RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (UserAdapter) list.getAdapter();
+        this.mode = mode;
     }
 
 
@@ -46,28 +48,32 @@ public class UserLoader extends AsyncTask<Long, Void, Boolean> {
         if(ui.get() == null)
             return;
 
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(true);
     }
 
 
     @Override
-    protected Boolean doInBackground(Long[] param) {
+    protected Boolean doInBackground(Object[] param) {
         try {
             switch(mode) {
                 case FOLLOWS:
-                    users = mTwitter.getFollower(param[0], -1);
+                    users = mTwitter.getFollower((long)param[0], -1);
                     break;
 
                 case FRIENDS:
-                    users = mTwitter.getFollowing(param[0], -1);
+                    users = mTwitter.getFollowing((long)param[0], -1);
                     break;
 
                 case RETWEET:
-                    users = mTwitter.getRetweeter(param[0], -1);
+                    users = mTwitter.getRetweeter((long)param[0], -1);
                     break;
 
                 case FAVORIT:
+                    break;
+
+                case SEARCH:
+                    users = mTwitter.searchUsers((String)param[0]);
                     break;
             }
         } catch(TwitterException err) {
@@ -92,7 +98,7 @@ public class UserLoader extends AsyncTask<Long, Void, Boolean> {
             if(err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 
@@ -102,7 +108,7 @@ public class UserLoader extends AsyncTask<Long, Void, Boolean> {
         if(ui.get() == null)
             return;
 
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 }
