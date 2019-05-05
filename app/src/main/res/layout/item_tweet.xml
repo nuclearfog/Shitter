@@ -70,7 +70,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:textAlignment="gravity"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 

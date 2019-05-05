@@ -83,7 +83,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     }
                     tweet = mTwitter.getStatus(TWEETID);
                     publishProgress();
-                    if (!updateStatus)
+                    if (updateStatus)
                         db.updateStatus(tweet);
                     break;
 

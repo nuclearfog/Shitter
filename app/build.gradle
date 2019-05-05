@@ -10,11 +10,12 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName '1.4.2'
-        vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary true
     }
 
     buildTypes {
         all {
+            multiDexEnabled true
             buildConfigField "String", "API_KEY_1", TWITTER_CONSUMER_KEY
             buildConfigField "String", "API_KEY_2", TWITTER_CONSUMER_SECRET
         }

@@ -188,7 +188,8 @@
                     android:id="@+id/answer_button"
                     android:layout_width="@dimen/tweet_page_icon"
                     android:layout_height="@dimen/tweet_page_icon"
-                    android:layout_marginRight="@dimen/tweet_footer_icon_dist"
+                    android:layout_marginRight="100dp"
+                    android:layout_marginEnd="100dp"
                     android:contentDescription="@string/answer_button"
                     app:srcCompat="@drawable/answer" />
 
@@ -203,10 +204,11 @@
 
                 <TextView
                     android:id="@+id/no_rt_detail"
-                    android:layout_width="@dimen/tweet_footer_icon_dist"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginRight="5dp"
-                    android:ems="10"
+                    android:layout_marginEnd="5dp"
+                    android:layout_weight="3"
                     android:gravity="center_vertical"
                     android:singleLine="true"
                     android:textSize="12sp" />
@@ -222,9 +224,9 @@
 
                 <TextView
                     android:id="@+id/no_fav_detail"
-                    android:layout_width="@dimen/tweet_footer_icon_dist"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:ems="10"
+                    android:layout_weight="3"
                     android:gravity="center_vertical"
                     android:singleLine="true"
                     android:textSize="12sp" />

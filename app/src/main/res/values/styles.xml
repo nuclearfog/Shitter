@@ -52,8 +52,4 @@
         <item name="android:fontFamily">RobotoTextView</item>
     </style>
 
-    <style name="CustomTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textAllCaps">false</item>
-    </style>
-
 </resources>

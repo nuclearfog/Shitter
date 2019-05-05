@@ -4,7 +4,7 @@
 
     <dimen name="profile_image">64dp</dimen>
     <dimen name="profile_middle">40dp</dimen>
-    <dimen name="profile_small">32dp</dimen>
+    <dimen name="profile_small">36dp</dimen>
 
     <dimen name="icon_size">14dp</dimen>
 
@@ -50,9 +50,10 @@
 
     <!--Tabs-->
     <dimen name="tab_padding_top">5dp</dimen>
-    <dimen name="tweet_footer_icon_dist">100dp</dimen>
+    <dimen name="tweet_footer_icon_dist">80dp</dimen>
 
     <!--Text limitation-->
     <integer name="tweet_max_line">10</integer>
     <integer name="max_bio_lines">5</integer>
+
 </resources>
