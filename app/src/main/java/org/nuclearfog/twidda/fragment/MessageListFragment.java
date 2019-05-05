@@ -1,34 +1,64 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.AsyncTask.Status;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.MessageAdapter;
+import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
+import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.MessageLoader;
+import org.nuclearfog.twidda.window.MessagePopup;
+import org.nuclearfog.twidda.window.SearchPage;
+import org.nuclearfog.twidda.window.UserProfile;
 
-import static android.os.AsyncTask.Status.RUNNING;
+
+import static org.nuclearfog.twidda.fragment.backend.MessageLoader.Mode.DEL;
 import static org.nuclearfog.twidda.fragment.backend.MessageLoader.Mode.LOAD;
 
 
-public class MessageListFragment extends Fragment implements OnRefreshListener {
+public class MessageListFragment extends Fragment implements OnRefreshListener, OnItemSelected {
 
     private MessageLoader messageTask;
-    private SwipeRefreshLayout root;
+    private SwipeRefreshLayout reload;
+    private View root;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        root = new SwipeRefreshLayout(inflater.getContext());
-        RecyclerView list = new RecyclerView(inflater.getContext());
-        root.setOnRefreshListener(this);
-        root.addView(list);
-        return root;
+        View v = inflater.inflate(R.layout.fragment_list, parent, false);
+        RecyclerView list = v.findViewById(R.id.fragment_list);
+        reload = v.findViewById(R.id.fragment_reload);
+
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
+
+        MessageAdapter adapter = new MessageAdapter(this);
+        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        adapter.toggleImage(settings.getImageLoad());
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        list.setLayoutManager(new LinearLayoutManager(getContext()));
+        list.setHasFixedSize(true);
+        list.setAdapter(adapter);
+
+        return v;
     }
+
+
+    @Override
+    public void onViewCreated(@NonNull View v, Bundle param) {
+        root = v;
+    }
+
 
 
     @Override
@@ -44,7 +74,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener {
     @Override
     public void onStop() {
         super.onStop();
-        if (messageTask != null && messageTask.getStatus() == RUNNING)
+        if (messageTask != null && messageTask.getStatus() == Status.RUNNING)
             messageTask.cancel(true);
     }
 
@@ -56,4 +86,42 @@ public class MessageListFragment extends Fragment implements OnRefreshListener {
     }
 
 
+    @Override
+    public void onClick(String tag) {
+        if(!reload.isRefreshing()) {
+            Intent intent = new Intent(getContext(), SearchPage.class);
+            intent.putExtra("search", tag);
+            startActivity(intent);
+        }
+    }
+
+
+    @Override
+    public void onAnswer(Message message) {
+        if(!reload.isRefreshing()) {
+            Intent sendDm = new Intent(getContext(), MessagePopup.class);
+            sendDm.putExtra("username", message.getSender().getScreenname());
+            startActivity(sendDm);
+        }
+    }
+
+
+    @Override
+    public void onDelete(Message message) {
+        if(!reload.isRefreshing()) {
+            messageTask = new MessageLoader(root, DEL);
+            messageTask.execute(message.getId());
+        }
+    }
+
+
+    @Override
+    public void onProfileClick(Message message) {
+        if(!reload.isRefreshing()) {
+            Intent profile = new Intent(getContext(), UserProfile.class);
+            profile.putExtra("userID", message.getSender().getId());
+            profile.putExtra("username", message.getSender().getScreenname());
+            startActivity(profile);
+        }
+    }
 }

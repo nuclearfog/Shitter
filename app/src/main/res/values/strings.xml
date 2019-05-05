@@ -73,7 +73,6 @@
     <string name="yes_confirm">Yes</string>
     <string name="no_confirm">No</string>
     <string name="confirm_unfollow">unfollow user?</string>
-    <string name="confirm_delete_dm">delete message?</string>
     <string name="confirm_block">block user?</string>
     <string name="confirm_log_lout">log out?</string>
     <string name="confirm_cancel_tweet">cancel tweet?</string>

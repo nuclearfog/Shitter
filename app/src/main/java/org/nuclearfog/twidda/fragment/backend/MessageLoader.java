@@ -5,8 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.ViewGroup;
+import android.view.View;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.backend.ErrorHandler;
 import org.nuclearfog.twidda.backend.TwitterEngine;
@@ -28,7 +29,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     }
 
     private Mode mode;
-    private WeakReference<ViewGroup> ui;
+    private WeakReference<View> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private DatabaseAdapter db;
@@ -36,9 +37,9 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     private List<Message> messages;
 
 
-    public MessageLoader(@NonNull ViewGroup root, Mode mode) {
+    public MessageLoader(@NonNull View root, Mode mode) {
         ui = new WeakReference<>(root);
-        RecyclerView rv = (RecyclerView) root.getChildAt(0);
+        RecyclerView rv = root.findViewById(R.id.fragment_list);
         adapter = (MessageAdapter) rv.getAdapter();
         mTwitter = TwitterEngine.getInstance(root.getContext());
         db = new DatabaseAdapter(root.getContext());
@@ -50,8 +51,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     protected void onPreExecute() {
         if (ui.get() == null)
             return;
-
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(true);
     }
 
@@ -92,7 +92,6 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null)
             return;
-
         if (success) {
             adapter.setData(messages);
             adapter.notifyDataSetChanged();
@@ -100,7 +99,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
             if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 
@@ -109,7 +108,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     protected void onCancelled() {
         if (ui.get() == null)
             return;
-        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }
 }

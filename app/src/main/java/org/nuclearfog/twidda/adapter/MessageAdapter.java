@@ -51,7 +51,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public void setImageLoad(boolean loadImage) {
+    public void toggleImage(boolean loadImage) {
         this.loadImage = loadImage;
     }
 
@@ -85,7 +85,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onAnswer(position);
+                    itemClickListener.get().onAnswer(messages[position]);
             }
         });
         view.findViewById(R.id.dm_delete).setOnClickListener(new View.OnClickListener() {
@@ -94,7 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onDelete(position);
+                    itemClickListener.get().onDelete(messages[position]);
             }
         });
         view.findViewById(R.id.dm_profileImg).setOnClickListener(new View.OnClickListener() {
@@ -103,7 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onProfileClick(position);
+                    itemClickListener.get().onProfileClick(messages[position]);
             }
         });
         return new MessageHolder(view);
@@ -163,16 +163,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     }
 
 
-    public interface OnItemSelected extends OnTagClickListener {
-
-        void onAnswer(int pos);
-
-        void onDelete(int pos);
-
-        void onProfileClick(int pos);
-    }
-
-
     class MessageHolder extends ViewHolder {
         final ImageView profile_img;
         final TextView username;
@@ -188,5 +178,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             createdAt = v.findViewById(R.id.dm_time);
             message = v.findViewById(R.id.dm_message);
         }
+    }
+
+
+    public interface OnItemSelected extends OnTagClickListener {
+
+        void onAnswer(Message message);
+
+        void onDelete(Message message);
+
+        void onProfileClick(Message message);
     }
 }

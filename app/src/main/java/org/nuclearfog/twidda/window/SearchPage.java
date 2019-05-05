@@ -41,11 +41,10 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle param = getIntent().getExtras();
-        if (param != null) {
-            if (BuildConfig.DEBUG && !param.containsKey("search"))
-                throw new AssertionError();
+        if (param != null && param.containsKey("search")) {
             search = param.getString("search", "");
-        }
+        } else if (BuildConfig.DEBUG)
+            throw new AssertionError();
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());

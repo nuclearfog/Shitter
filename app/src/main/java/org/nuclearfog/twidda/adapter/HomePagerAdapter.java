@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -46,12 +45,6 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return COUNT;
-    }
-
-
-    @Override
-    public int getItemPosition(@NonNull Object o) {
-        return POSITION_NONE;
     }
 
 
