@@ -102,7 +102,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
 
     @Override
-    public void onItemClick(RecyclerView rv, int pos) {
+    public void onItemClick(int pos) {
         if (!reload.isRefreshing()) {
             TwitterUser user = adapter.getData(pos);
             long userID = user.getId();

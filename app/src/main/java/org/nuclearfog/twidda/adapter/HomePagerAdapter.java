@@ -16,6 +16,15 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
     private static final int COUNT = 3;
     private final Fragment[] fragments;
 
+    private static final Bundle HOME_TL = new Bundle();
+    private static final Bundle MENT_TL = new Bundle();
+
+    static {
+        HOME_TL.putSerializable("mode", TweetType.HOME);
+        MENT_TL.putSerializable("mode", TweetType.MENT);
+        HOME_TL.putBoolean("fix", true);
+        MENT_TL.putBoolean("fix", true);
+    }
 
     public HomePagerAdapter(FragmentManager fm) {
         super(fm);
@@ -23,14 +32,6 @@ public class HomePagerAdapter extends FragmentPagerAdapter {
         fragments[0] = new TweetListFragment();
         fragments[1] = new TrendListFragment();
         fragments[2] = new TweetListFragment();
-
-        Bundle HOME_TL = new Bundle();
-        Bundle MENT_TL = new Bundle();
-        HOME_TL.putSerializable("mode", TweetType.HOME);
-        MENT_TL.putSerializable("mode", TweetType.MENT);
-        HOME_TL.putBoolean("fix", true);
-        MENT_TL.putBoolean("fix", true);
-
         fragments[0].setArguments(HOME_TL);
         fragments[2].setArguments(MENT_TL);
     }

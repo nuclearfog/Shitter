@@ -91,7 +91,7 @@
 
                                 <ImageView
                                     android:id="@+id/tweet_locked"
-                                    android:layout_width="@dimen/icon_size"
+                                    android:layout_width="0dp"
                                     android:layout_height="@dimen/icon_size"
                                     android:layout_marginEnd="@dimen/icon_margin"
                                     android:layout_marginRight="@dimen/icon_margin"
@@ -188,20 +188,9 @@
                     android:id="@+id/answer_button"
                     android:layout_width="@dimen/tweet_page_icon"
                     android:layout_height="@dimen/tweet_page_icon"
-                    android:layout_marginEnd="@dimen/icon_margin"
-                    android:layout_marginRight="@dimen/tweet_icon_margin"
+                    android:layout_marginRight="@dimen/tweet_footer_icon_dist"
                     android:contentDescription="@string/answer_button"
                     app:srcCompat="@drawable/answer" />
-
-                <TextView
-                    android:id="@+id/no_ans_detail"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:gravity="center_vertical"
-                    android:singleLine="true"
-                    android:textSize="12sp" />
 
                 <ImageView
                     android:id="@+id/rt_button_detail"
@@ -214,9 +203,9 @@
 
                 <TextView
                     android:id="@+id/no_rt_detail"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/tweet_footer_icon_dist"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:singleLine="true"
@@ -233,9 +222,8 @@
 
                 <TextView
                     android:id="@+id/no_fav_detail"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/tweet_footer_icon_dist"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:ems="10"
                     android:gravity="center_vertical"
                     android:singleLine="true"
@@ -243,17 +231,10 @@
 
             </LinearLayout>
 
-            <android.support.v4.widget.SwipeRefreshLayout
-                android:id="@+id/answer_reload"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/answer_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-            </android.support.v4.widget.SwipeRefreshLayout>
+            <android.support.v4.view.ViewPager
+                android:id="@+id/tweet_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

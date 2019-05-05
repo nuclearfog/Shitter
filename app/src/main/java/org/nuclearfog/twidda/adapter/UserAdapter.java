@@ -77,7 +77,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(rv, position);
+                    itemClickListener.get().onItemClick(position);
             }
         });
         return new ItemHolder(v);

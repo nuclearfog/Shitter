@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.adapter.MessageAdapter;
@@ -73,13 +74,14 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                     break;
             }
         } catch (TwitterException err) {
-            if (err.getErrorCode() == 34) {
+            if (err.getErrorCode() == 34)
                 db.deleteDm(messageId);
-            } else {
+            else
                 this.err = err;
-            }
             return false;
         } catch (Exception err) {
+            if (err.getMessage() != null)
+                Log.e("Status Loader", err.getMessage());
             return false;
         }
         return true;

@@ -20,7 +20,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private Trend trends[];
+    private Trend[] trends;
     private int font_color;
 
 
@@ -62,7 +62,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(v);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(rv, position);
+                    itemClickListener.get().onItemClick(position);
             }
         });
         return new ItemHolder(v);

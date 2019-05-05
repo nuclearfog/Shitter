@@ -9,12 +9,9 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -28,11 +25,9 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
-import org.nuclearfog.twidda.adapter.TweetAdapter;
+import org.nuclearfog.twidda.adapter.TweetPagerAdapter;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.Mode;
-import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.UserDetail.UserType;
 
@@ -40,21 +35,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class TweetDetail extends AppCompatActivity implements OnClickListener,
-        OnItemClickListener, OnRefreshListener, OnTagClickListener {
+public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTagClickListener {
 
     public static final int STAT_CHANGED = 1;
     private static final int TWEET = 2;
 
-    private RecyclerView answer_list;
-    private TweetAdapter answerAdapter;
-    private StatusLoader statusAsync;
-    private GlobalSettings settings;
-    private SwipeRefreshLayout answerReload;
     private ConnectivityManager mConnect;
-    private String username = "";
+    private StatusLoader statusAsync;
+    private String username;
     private boolean isHome;
-    private long tweetID = 0;
+    private long tweetID;
 
 
     @Override
@@ -65,24 +55,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
 
-        if (link != null) {
-            getTweet(link.getPath());
-        } else if (param != null) {
-            if (BuildConfig.DEBUG && param.size() != 2)
-                throw new AssertionError();
+        if (param != null && param.containsKey("tweetID") && param.containsKey("username")) {
             tweetID = param.getLong("tweetID");
             username = param.getString("username");
-        } else {
-            finish();
+        } else if (link != null) {
+            getTweet(link.getPath());
+        } else if(BuildConfig.DEBUG) {
+            throw new AssertionError();
         }
-
-        Toolbar tool = findViewById(R.id.tweet_toolbar);
-        setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        settings = GlobalSettings.getInstance(this);
-        mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         View root = findViewById(R.id.tweet_layout);
         View retweet = findViewById(R.id.rt_button_detail);
@@ -91,31 +71,35 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         View txtFav = findViewById(R.id.no_fav_detail);
         View answer = findViewById(R.id.answer_button);
         TextView tweetTxt = findViewById(R.id.tweet_detailed);
-        answerReload = findViewById(R.id.answer_reload);
-        answer_list = findViewById(R.id.answer_list);
-        answer_list.setLayoutManager(new LinearLayoutManager(this));
+        Toolbar tool = findViewById(R.id.tweet_toolbar);
+        ViewPager pager = findViewById(R.id.tweet_pager);
+
+        setSupportActionBar(tool);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        TweetPagerAdapter adapter = new TweetPagerAdapter(getSupportFragmentManager(), tweetID, username);
+        mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
         tweetTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
         tweetTxt.setLinkTextColor(settings.getHighlightColor());
-
         root.setBackgroundColor(settings.getBackgroundColor());
-        answerReload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        pager.setOffscreenPageLimit(1);
+        pager.setAdapter(adapter);
 
         favorite.setOnClickListener(this);
         retweet.setOnClickListener(this);
-        answerReload.setOnRefreshListener(this);
         txtFav.setOnClickListener(this);
         txtRt.setOnClickListener(this);
         answer.setOnClickListener(this);
     }
 
 
+    @Override
     protected void onStart() {
         super.onStart();
         if (statusAsync == null) {
-            answerAdapter = new TweetAdapter(this);
-            answerAdapter.toggleImage(settings.getImageLoad());
-            answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-            answer_list.setAdapter(answerAdapter);
             statusAsync = new StatusLoader(this, Mode.LOAD);
             statusAsync.execute(tweetID);
         }
@@ -244,25 +228,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Intent intent = new Intent(this, SearchPage.class);
         intent.putExtra("search", text);
         startActivity(intent);
-    }
-
-
-    @Override
-    public void onItemClick(RecyclerView rv, int position) {
-        if (!answerReload.isRefreshing()) {
-            Tweet tweet = answerAdapter.getData(position);
-            Intent intent = new Intent(this, TweetDetail.class);
-            intent.putExtra("tweetID", tweet.getId());
-            intent.putExtra("username", tweet.getUser().getScreenname());
-            startActivityForResult(intent, TWEET);
-        }
-    }
-
-
-    @Override
-    public void onRefresh() {
-        statusAsync = new StatusLoader(this, Mode.ANS);
-        statusAsync.execute(tweetID);
     }
 
 

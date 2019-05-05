@@ -22,7 +22,7 @@ public class ImageLoader extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<ImageDetail> ui;
     private ImageAdapter imageAdapter;
-    private Bitmap images[];
+    private Bitmap[] images;
 
 
     public ImageLoader(@NonNull ImageDetail context) {

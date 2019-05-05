@@ -85,7 +85,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onItemClick(RecyclerView rv, int pos) {
+    public void onItemClick(int pos) {
         if (!reload.isRefreshing()) {
             String search = adapter.getData(pos).getName();
             Intent intent = new Intent(getContext(), SearchPage.class);

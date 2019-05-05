@@ -62,7 +62,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
 
-
         reload = v.findViewById(R.id.fragment_reload);
         reload.setOnRefreshListener(this);
         adapter = new TweetAdapter(this);
@@ -111,7 +110,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                     break;
                 case TWEET_ANSR:
                     tweetTask = new TweetLoader(root, Mode.DB_ANS);
-                    tweetTask.execute(id);
+                    tweetTask.execute(id, search);
                     break;
                 case SEARCH:
                     tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
@@ -155,7 +154,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 break;
             case TWEET_ANSR:
                 tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
-                tweetTask.execute(id);
+                tweetTask.execute(id, search);
                 break;
             case SEARCH:
                 tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
@@ -170,7 +169,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onItemClick(RecyclerView rv, int pos) {
+    public void onItemClick(int pos) {
         if (!reload.isRefreshing()) {
             Tweet tweet = adapter.getData(pos);
             if (tweet.getEmbeddedTweet() != null)

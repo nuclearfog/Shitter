@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -13,11 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -27,19 +22,17 @@ import org.nuclearfog.twidda.window.UserProfile;
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
 import twitter4j.TwitterException;
+import com.squareup.picasso.Picasso;
 
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
+
 
 public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
     public enum Mode {
         LOAD,
-        ANS,
         RETWEET,
         FAVORITE,
         DELETE
@@ -51,48 +44,31 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     private TwitterEngine mTwitter;
     private TwitterException err;
     private WeakReference<TweetDetail> ui;
-    private TweetAdapter answerAdapter;
     private SimpleDateFormat sdf;
     private NumberFormat formatter;
-    private List<Tweet> answers;
     private Tweet tweet;
-    private int highlight, font_color;
-    private boolean toggleImg, toggleAns;
     private long homeId;
+    private int font_color, highlight;
+    private boolean toggleImg;
 
 
     public StatusLoader(@NonNull TweetDetail context, Mode mode) {
         mTwitter = TwitterEngine.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        RecyclerView replyList = context.findViewById(R.id.answer_list);
-        answerAdapter = (TweetAdapter) replyList.getAdapter();
         sdf = settings.getDateFormatter();
         formatter = NumberFormat.getIntegerInstance();
         font_color = settings.getFontColor();
         highlight = settings.getHighlightColor();
         toggleImg = settings.getImageLoad();
-        toggleAns = settings.getAnswerLoad();
         homeId = settings.getUserId();
         ui = new WeakReference<>(context);
-        answers = new ArrayList<>();
         this.mode = mode;
-    }
-
-
-    @Override
-    protected void onPreExecute() {
-        if (ui.get() == null) return;
-        if (mode == Mode.LOAD && toggleAns) {
-            SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
-            ansReload.setRefreshing(true);
-        }
     }
 
 
     @Override
     protected Void doInBackground(Long... data) {
         final long TWEETID = data[0];
-        long sinceId = TWEETID;
         boolean updateStatus = false;
         DatabaseAdapter db = new DatabaseAdapter(ui.get());
         try {
@@ -100,26 +76,12 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 case LOAD:
                     tweet = db.getStatus(TWEETID);
                     if (tweet != null) {
-                        answers = db.getAnswers(TWEETID);
                         publishProgress();
                         updateStatus = true;
                     }
-                case ANS:
                     tweet = mTwitter.getStatus(TWEETID);
-                    if (!updateStatus)
-                        updateStatus = db.containStatus(TWEETID);
-
-                    if (mode == Mode.ANS || toggleAns) {
-                        if (answerAdapter.getItemCount() > 0)
-                            sinceId = answerAdapter.getItemId(0);
-                        answers = mTwitter.getAnswers(tweet.getUser().getScreenname(), TWEETID, sinceId);
-                        if (updateStatus && !answers.isEmpty())
-                            db.storeReplies(answers);
-                        answers.addAll(answerAdapter.getData());
-                    }
                     publishProgress();
-
-                    if (updateStatus)
+                    if (!updateStatus)
                         db.updateStatus(tweet);
                     break;
 
@@ -155,7 +117,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             failure = true;
         } catch (Exception err) {
             if (err.getMessage() != null)
-                Log.e("Status Loader", err.getMessage());
+                Log.e("StatusLoader", err.getMessage());
             failure = true;
         }
         return null;
@@ -166,19 +128,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     protected void onProgressUpdate(Void... v) {
         if (ui.get() == null) return;
 
-        if (!answers.isEmpty()) {
-            SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
-            ansReload.setRefreshing(false);
-            answerAdapter.setData(answers);
-            answerAdapter.notifyDataSetChanged();
-        }
-
         TextView username = ui.get().findViewById(R.id.usernamedetail);
         TextView scrName = ui.get().findViewById(R.id.scrnamedetail);
         TextView replyName = ui.get().findViewById(R.id.answer_reference_detail);
         TextView txtRet = ui.get().findViewById(R.id.no_rt_detail);
         TextView txtFav = ui.get().findViewById(R.id.no_fav_detail);
-        TextView txtAns = ui.get().findViewById(R.id.no_ans_detail);
         ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
         ImageView retweetButton = ui.get().findViewById(R.id.rt_button_detail);
         ImageView favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
@@ -240,7 +194,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
         txtFav.setText(formatter.format(tweet.getFavorCount()));
         txtRet.setText(formatter.format(tweet.getRetweetCount()));
-        txtAns.setText(formatter.format(answerAdapter.getItemCount()));
 
         if (tweet.getReplyId() > 1) {
             String reply = ui.get().getString(R.string.answering);
@@ -283,11 +236,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     protected void onPostExecute(Void v) {
         if (ui.get() == null) return;
 
-        if (answers.isEmpty()) {
-            SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
-            ansReload.setRefreshing(false);
-        }
-
         if (!failure) {
             if (mode == Mode.DELETE) {
                 Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
@@ -301,14 +249,5 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     ui.get().finish();
             }
         }
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (ui.get() == null) return;
-
-        SwipeRefreshLayout ansReload = ui.get().findViewById(R.id.answer_reload);
-        ansReload.setRefreshing(false);
     }
 }

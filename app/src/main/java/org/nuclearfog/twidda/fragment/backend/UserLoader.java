@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import org.nuclearfog.twidda.R;
@@ -81,6 +82,8 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
+            if (err.getMessage() != null)
+                Log.e("Status Loader", err.getMessage());
             return false;
         }
         return true;

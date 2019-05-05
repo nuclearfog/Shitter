@@ -4,8 +4,10 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.ErrorHandler;
@@ -65,6 +67,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Object[] param) {
         long sinceId = 1;
+
         try {
             switch (mode) {
                 case DB_HOME:
@@ -95,49 +98,57 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                     break;
 
                 case DB_TWEETS:
-                    tweets = db.getUserTweets((long) param[0]);
+                    long tweetId = (long) param[0];
+                    tweets = db.getUserTweets(tweetId);
                     if (!tweets.isEmpty())
                         break;
 
                 case USR_TWEETS:
+                    tweetId = (long) param[0];
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getUserTweets((long) param[0], sinceId, 1);
+                    tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
                     db.storeUserTweets(tweets);
                     tweets.addAll(adapter.getData());
                     break;
 
                 case DB_FAVORS:
-                    tweets = db.getUserFavs((long) param[0]);
+                    tweetId = (long) param[0];
+                    tweets = db.getUserFavs(tweetId);
                     if (!tweets.isEmpty())
                         break;
 
                 case USR_FAVORS:
+                    tweetId = (long) param[0];
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getUserFavs((long) param[0], sinceId, 1);
-                    db.storeUserFavs(tweets, (long) param[0]);
+                    tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
+                    db.storeUserFavs(tweets, tweetId);
                     tweets.addAll(adapter.getData());
                     break;
 
                 case DB_ANS:
-                    tweets = db.getAnswers((long) param[0]);
+                    tweetId = (long) param[0];
+                    tweets = db.getAnswers(tweetId);
                     if (tweets.isEmpty() || !settings.getAnswerLoad())
                         break;
 
                 case TWEET_ANS:
+                    String search = (String) param[1];
+                    tweetId = (long) param[0];
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getAnswers((String) param[1], (long) param[0], sinceId);
-                    if (!tweets.isEmpty() && db.containStatus((long) param[0]))
+                    tweets = mTwitter.getAnswers(search, tweetId, sinceId);
+                    if (!tweets.isEmpty() && db.containStatus(tweetId))
                         db.storeReplies(tweets);
                     tweets.addAll(adapter.getData());
                     break;
 
                 case TWEET_SEARCH:
+                    search = (String) param[0];
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.searchTweets((String) param[0], sinceId);
+                    tweets = mTwitter.searchTweets(search, sinceId);
                     tweets.addAll(adapter.getData());
                     break;
             }
@@ -145,6 +156,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
+            if (err.getMessage() != null)
+                Log.e("TweetLoader", err.getMessage());
             return false;
         }
         return true;
