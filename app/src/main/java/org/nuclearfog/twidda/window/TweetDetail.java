@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -30,24 +31,15 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.StatusLoader;
+import org.nuclearfog.twidda.backend.StatusLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.window.UserDetail.UserType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.StatusLoader.Mode.ANS;
-import static org.nuclearfog.twidda.backend.StatusLoader.Mode.DELETE;
-import static org.nuclearfog.twidda.backend.StatusLoader.Mode.FAVORITE;
-import static org.nuclearfog.twidda.backend.StatusLoader.Mode.LOAD;
-import static org.nuclearfog.twidda.backend.StatusLoader.Mode.RETWEET;
 
-/**
- * Detailed Tweet Activity
- *
- * @see StatusLoader
- */
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnItemClickListener, OnRefreshListener, OnTagClickListener {
 
@@ -124,7 +116,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             answerAdapter.toggleImage(settings.getImageLoad());
             answerAdapter.setColor(settings.getHighlightColor(), settings.getFontColor());
             answer_list.setAdapter(answerAdapter);
-            statusAsync = new StatusLoader(this, LOAD);
+            statusAsync = new StatusLoader(this, Mode.LOAD);
             statusAsync.execute(tweetID);
         }
     }
@@ -132,7 +124,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     protected void onStop() {
-        if (statusAsync != null && statusAsync.getStatus() == RUNNING)
+        if (statusAsync != null && statusAsync.getStatus() == Status.RUNNING)
             statusAsync.cancel(true);
         super.onStop();
     }
@@ -164,7 +156,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
                     Builder deleteDialog = new Builder(this);
@@ -172,9 +164,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (statusAsync != null && statusAsync.getStatus() == RUNNING)
+                            if (statusAsync != null && statusAsync.getStatus() == Status.RUNNING)
                                 statusAsync.cancel(true);
-                            statusAsync = new StatusLoader(TweetDetail.this, DELETE);
+                            statusAsync = new StatusLoader(TweetDetail.this, Mode.DELETE);
                             statusAsync.execute(tweetID);
                         }
                     });
@@ -208,36 +200,32 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
             switch (v.getId()) {
                 case R.id.rt_button_detail:
-                    if (statusAsync != null && statusAsync.getStatus() == RUNNING)
-                        statusAsync.cancel(true);
-                    statusAsync = new StatusLoader(this, RETWEET);
+                    statusAsync = new StatusLoader(this, Mode.RETWEET);
                     statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.fav_button_detail:
-                    if (statusAsync != null && statusAsync.getStatus() == RUNNING)
-                        statusAsync.cancel(true);
-                    statusAsync = new StatusLoader(this, FAVORITE);
+                    statusAsync = new StatusLoader(this, Mode.FAVORITE);
                     statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.no_rt_detail:
-                    Intent retweet = new Intent(this, UserDetail.class);
-                    retweet.putExtra("ID", tweetID);
-                    retweet.putExtra("mode", 2);
-                    startActivity(retweet);
+                    Intent userList = new Intent(this, UserDetail.class);
+                    userList.putExtra("ID", tweetID);
+                    userList.putExtra("mode", UserType.RETWEETS);
+                    startActivity(userList);
                     break;
 
                 case R.id.no_fav_detail:
-                    Intent favorit = new Intent(this, UserDetail.class);
-                    favorit.putExtra("ID", tweetID);
-                    favorit.putExtra("mode", 3);
-                    startActivity(favorit);
+                    userList = new Intent(this, UserDetail.class);
+                    userList.putExtra("ID", tweetID);
+                    userList.putExtra("mode", UserType.FAVORITS);
+                    startActivity(userList);
                     break;
 
                 case R.id.answer_button:
@@ -273,7 +261,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onRefresh() {
-        statusAsync = new StatusLoader(this, ANS);
+        statusAsync = new StatusLoader(this, Mode.ANS);
         statusAsync.execute(tweetID);
     }
 

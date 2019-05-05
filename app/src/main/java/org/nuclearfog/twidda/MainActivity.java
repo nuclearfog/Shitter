@@ -12,7 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.nuclearfog.twidda.adapter.HomeTabAdapter;
+import org.nuclearfog.twidda.adapter.HomePagerAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
-    private static final int[] icons = {R.drawable.home, R.drawable.hash, R.drawable.mention};
 
     private GlobalSettings settings;
-    private HomeTabAdapter adapter;
+    private HomePagerAdapter adapter;
+    private TabLayout tab;
     private ViewPager pager;
     private int tabIndex = 0;
 
@@ -40,28 +40,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         setContentView(R.layout.page_main);
 
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
+        pager = findViewById(R.id.home_pager);
+        tab = findViewById(R.id.home_tab);
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         settings = GlobalSettings.getInstance(this);
 
-        pager = findViewById(R.id.home_pager);
-        TabLayout tab = findViewById(R.id.home_tab);
-        View root = findViewById(R.id.main_layout);
-        root.setBackgroundColor(settings.getBackgroundColor());
-
-        adapter = new HomeTabAdapter(getSupportFragmentManager());
-        pager.setOffscreenPageLimit(3);
+        adapter = new HomePagerAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
+
+        pager.setOffscreenPageLimit(3);
         tab.setupWithViewPager(pager);
         tab.addOnTabSelectedListener(this);
 
-        for(int i = 0 ; i < icons.length ; i++) {
-            Tab t = tab.getTabAt(i);
-            if(t != null)
-                t.setIcon(icons[i]);
-        }
+        initView();
     }
 
 
@@ -72,25 +66,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             Intent i = new Intent(this, LoginPage.class);
             startActivityForResult(i, LOGIN);
         }
-
     }
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
+    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
         switch (reqCode) {
             case LOGIN:
                 if (returnCode == RESULT_CANCELED)
                     finish();
                 break;
-
             case SETTING:
-                View root = findViewById(R.id.main_layout);
-                root.setBackgroundColor(settings.getBackgroundColor());
-                adapter.notifyDataSetChanged();
+                adapter.notifySettingsChanged();
+                initView();
                 break;
         }
-        super.onActivityResult(reqCode, returnCode, i);
+        super.onActivityResult(reqCode, returnCode, intent);
     }
 
 
@@ -132,14 +123,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 setting.setVisible(false);
                 search.collapseActionView();
                 break;
-
             case 1:
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
                 setting.setVisible(true);
                 break;
-
             case 2:
                 profile.setVisible(false);
                 search.setVisible(false);
@@ -162,12 +151,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 user.putExtra("username", "");
                 startActivity(user);
                 break;
-
             case R.id.action_tweet:
                 Intent tweet = new Intent(this, TweetPopup.class);
                 startActivity(tweet);
                 break;
-
             case R.id.action_settings:
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
@@ -195,9 +182,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
     @Override
-    public void onTabUnselected(TabLayout.Tab tab) { }
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
 
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) { }
+    public void onTabReselected(TabLayout.Tab tab) {
+    }
+
+
+    private void initView() {
+        final int[] icons = {R.drawable.home, R.drawable.hash, R.drawable.mention};
+        View root = findViewById(R.id.main_layout);
+        root.setBackgroundColor(settings.getBackgroundColor());
+        tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
+
+        for (int i = 0; i < icons.length; i++) {
+            Tab t = tab.getTabAt(i);
+            if (t != null)
+                t.setIcon(icons[i]);
+        }
+    }
 }

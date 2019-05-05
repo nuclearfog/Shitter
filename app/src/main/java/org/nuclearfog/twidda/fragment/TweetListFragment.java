@@ -1,8 +1,8 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.AsyncTask.Status;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.HomePagerAdapter.OnSettingsChanged;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -24,47 +25,50 @@ import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 
-public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
+public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnSettingsChanged {
 
-    public static final int HOME = 0;
-    public static final int MENT = 1;
-    public static final int USER_TWEET = 2;
-    public static final int USER_FAVOR = 3;
-    public static final int TWEET_ANSR = 4;
-    public static final int SEARCH = 5;
+    public enum TweetType {
+        HOME,
+        MENT,
+        USER_TWEET,
+        USER_FAVOR,
+        TWEET_ANSR,
+        SEARCH,
+    }
 
+    private GlobalSettings settings;
     private TweetLoader tweetTask;
     private SwipeRefreshLayout reload;
     private TweetAdapter adapter;
     private View root;
 
-    private int mode;
+    private TweetType mode;
     private String search;
     private long id;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         super.onCreateView(inflater, parent, param);
         boolean fixSize;
         Bundle b = getArguments();
-        if(b != null && b.containsKey("mode")) {
-            mode = b.getInt("mode");
+        if (b != null && b.containsKey("mode")) {
+            mode = (TweetType) b.getSerializable("mode");
             id = b.getLong("id", -1);
             search = b.getString("search", "");
             fixSize = b.getBoolean("fix", false);
         } else {
-            throw new AssertionError("Bundle error!");
+            throw new AssertionError();
         }
 
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
+
 
         reload = v.findViewById(R.id.fragment_reload);
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
-
         adapter = new TweetAdapter(this);
+
+        settings = GlobalSettings.getInstance(getContext());
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());
 
@@ -86,8 +90,9 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onStart() {
         super.onStart();
-        if(tweetTask == null) {
-            switch(mode) {
+
+        if (tweetTask == null) {
+            switch (mode) {
                 case HOME:
                     tweetTask = new TweetLoader(root, Mode.DB_HOME);
                     tweetTask.execute();
@@ -113,7 +118,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                     tweetTask.execute(search);
                     break;
                 default:
-                    if(BuildConfig.DEBUG)
+                    if (BuildConfig.DEBUG)
                         throw new AssertionError("mode failure");
                     break;
             }
@@ -123,7 +128,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onStop() {
-        if(tweetTask != null && tweetTask.getStatus() == Status.RUNNING)
+        if (tweetTask != null && tweetTask.getStatus() == Status.RUNNING)
             tweetTask.cancel(true);
         super.onStop();
     }
@@ -131,7 +136,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onRefresh() {
-        switch(mode) {
+        switch (mode) {
             case HOME:
                 tweetTask = new TweetLoader(root, Mode.TL_HOME);
                 tweetTask.execute();
@@ -157,7 +162,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 tweetTask.execute(search);
                 break;
             default:
-                if(BuildConfig.DEBUG)
+                if (BuildConfig.DEBUG)
                     throw new AssertionError("mode failure");
                 break;
         }
@@ -175,5 +180,14 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             intent.putExtra("username", tweet.getUser().getScreenname());
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void settingsChanged() {
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        adapter.toggleImage(settings.getImageLoad());
+        adapter.notifyDataSetChanged();
     }
 }

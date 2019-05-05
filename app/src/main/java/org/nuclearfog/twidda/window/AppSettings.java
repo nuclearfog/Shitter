@@ -29,11 +29,7 @@ import org.nuclearfog.twidda.adapter.WorldIdAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-/**
- * App settings page
- *
- * @see GlobalSettings
- */
+
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnDismissListener, OnItemSelectedListener, OnCheckedChangeListener {
 

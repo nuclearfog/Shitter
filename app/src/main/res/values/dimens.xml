@@ -49,9 +49,6 @@
     <dimen name="editprofile_padding">20dp</dimen>
 
     <!--Tabs-->
-    <dimen name="tab_icon_size">24dp</dimen>
-    <dimen name="tab_div_height">2dp</dimen>
-    <dimen name="tab_div_margin">12dp</dimen>
     <dimen name="tab_padding_top">5dp</dimen>
 
     <!--Text limitation-->

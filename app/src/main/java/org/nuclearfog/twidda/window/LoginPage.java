@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,13 +16,7 @@ import android.widget.Toast;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 
-import static android.os.AsyncTask.Status.RUNNING;
 
-/**
- * Login Page
- *
- * @see Registration
- */
 public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     private Registration registerAsync;
@@ -40,7 +35,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
+        if (registerAsync != null && registerAsync.getStatus() == Status.RUNNING)
             registerAsync.cancel(true);
         super.onDestroy();
     }
@@ -55,7 +50,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
+        if (registerAsync != null && registerAsync.getStatus() == Status.RUNNING)
             registerAsync.cancel(true);
 
         switch (v.getId()) {

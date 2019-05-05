@@ -26,6 +26,7 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
         FAVORIT,
         SEARCH
     }
+
     private Mode mode;
     private WeakReference<View> ui;
     private TwitterEngine mTwitter;
@@ -45,7 +46,7 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -56,30 +57,30 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Object[] param) {
         try {
-            switch(mode) {
+            switch (mode) {
                 case FOLLOWS:
-                    users = mTwitter.getFollower((long)param[0], -1);
+                    users = mTwitter.getFollower((long) param[0], -1);
                     break;
 
                 case FRIENDS:
-                    users = mTwitter.getFollowing((long)param[0], -1);
+                    users = mTwitter.getFollowing((long) param[0], -1);
                     break;
 
                 case RETWEET:
-                    users = mTwitter.getRetweeter((long)param[0], -1);
+                    users = mTwitter.getRetweeter((long) param[0], -1);
                     break;
 
                 case FAVORIT:
                     break;
 
                 case SEARCH:
-                    users = mTwitter.searchUsers((String)param[0]);
+                    users = mTwitter.searchUsers((String) param[0]);
                     break;
             }
-        } catch(TwitterException err) {
+        } catch (TwitterException err) {
             this.err = err;
             return false;
-        } catch(Exception err) {
+        } catch (Exception err) {
             return false;
         }
         return true;
@@ -88,14 +89,14 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
-        if(success) {
+        if (success) {
             adapter.setData(users);
             adapter.notifyDataSetChanged();
         } else {
-            if(err != null)
+            if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -105,7 +106,7 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);

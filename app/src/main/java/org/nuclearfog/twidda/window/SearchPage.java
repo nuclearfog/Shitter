@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -13,18 +14,16 @@ import android.view.View;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.SearchTabAdapter;
+import org.nuclearfog.twidda.adapter.SearchPagerAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-/**
- * Search Page
- */
-public class SearchPage extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+
+public class SearchPage extends AppCompatActivity implements OnTabSelectedListener {
 
     private static final int[] icons = {R.drawable.search, R.drawable.user};
 
     private ViewPager pager;
-    private String search = "";
+    private String search;
     private int tabIndex = 0;
 
     @Override
@@ -33,8 +32,8 @@ public class SearchPage extends AppCompatActivity implements TabLayout.OnTabSele
         setContentView(R.layout.page_search);
 
         Toolbar tool = findViewById(R.id.search_toolbar);
-        View root = findViewById(R.id.search_layout);
         TabLayout tab = findViewById(R.id.search_tab);
+        View root = findViewById(R.id.search_layout);
         pager = findViewById(R.id.search_pager);
 
         setSupportActionBar(tool);
@@ -43,21 +42,23 @@ public class SearchPage extends AppCompatActivity implements TabLayout.OnTabSele
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            if (BuildConfig.DEBUG && param.size() != 1)
+            if (BuildConfig.DEBUG && !param.containsKey("search"))
                 throw new AssertionError();
-            search = param.getString("search");
+            search = param.getString("search", "");
         }
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
-        SearchTabAdapter adapter = new SearchTabAdapter(getSupportFragmentManager(), search);
-        pager.setAdapter(adapter);
+        tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
+
+        SearchPagerAdapter adapter = new SearchPagerAdapter(getSupportFragmentManager(), search);
         tab.setupWithViewPager(pager);
         tab.addOnTabSelectedListener(this);
+        pager.setAdapter(adapter);
 
-        for(int i = 0 ; i < icons.length ; i++) {
+        for (int i = 0; i < icons.length; i++) {
             TabLayout.Tab t = tab.getTabAt(i);
-            if(t != null)
+            if (t != null)
                 t.setIcon(icons[i]);
         }
     }
@@ -117,9 +118,11 @@ public class SearchPage extends AppCompatActivity implements TabLayout.OnTabSele
 
 
     @Override
-    public void onTabUnselected(TabLayout.Tab tab) { }
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
 
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) { }
+    public void onTabReselected(TabLayout.Tab tab) {
+    }
 }

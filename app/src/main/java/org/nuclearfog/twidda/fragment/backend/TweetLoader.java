@@ -30,6 +30,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         TWEET_ANS, DB_ANS,
         TWEET_SEARCH
     }
+
     private Mode mode;
     private WeakReference<View> ui;
     private TweetAdapter adapter;
@@ -45,7 +46,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         settings = GlobalSettings.getInstance(root.getContext());
         mTwitter = TwitterEngine.getInstance(root.getContext());
         RecyclerView list = root.findViewById(R.id.fragment_list);
-        adapter = (TweetAdapter)list.getAdapter();
+        adapter = (TweetAdapter) list.getAdapter();
         db = new DatabaseAdapter(root.getContext());
         this.mode = mode;
     }
@@ -53,7 +54,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -65,10 +66,10 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     protected Boolean doInBackground(Object[] param) {
         long sinceId = 1;
         try {
-            switch(mode) {
+            switch (mode) {
                 case DB_HOME:
                     tweets = db.getHomeTimeline();
-                    if(!tweets.isEmpty())
+                    if (!tweets.isEmpty())
                         break;
 
                 case TL_HOME:
@@ -81,54 +82,54 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
                 case DB_MENT:
                     tweets = db.getMentions();
-                    if(!tweets.isEmpty())
+                    if (!tweets.isEmpty())
                         break;
 
                 case TL_MENT:
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
                     tweets = mTwitter.getMention(1, sinceId);
-                    tweets.addAll(adapter.getData());
                     db.storeMentions(tweets);
+                    tweets.addAll(adapter.getData());
                     publishProgress();
                     break;
 
                 case DB_TWEETS:
-                    tweets = db.getUserTweets((long)param[0]);
-                    if(!tweets.isEmpty())
+                    tweets = db.getUserTweets((long) param[0]);
+                    if (!tweets.isEmpty())
                         break;
 
                 case USR_TWEETS:
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getUserTweets((long)param[0], sinceId, 1);
+                    tweets = mTwitter.getUserTweets((long) param[0], sinceId, 1);
                     db.storeUserTweets(tweets);
                     tweets.addAll(adapter.getData());
                     break;
 
                 case DB_FAVORS:
-                    tweets = db.getUserFavs((long)param[0]);
-                    if(!tweets.isEmpty())
+                    tweets = db.getUserFavs((long) param[0]);
+                    if (!tweets.isEmpty())
                         break;
 
                 case USR_FAVORS:
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getUserFavs((long)param[0], sinceId, 1);
-                    db.storeUserFavs(tweets, (long)param[0]);
+                    tweets = mTwitter.getUserFavs((long) param[0], sinceId, 1);
+                    db.storeUserFavs(tweets, (long) param[0]);
                     tweets.addAll(adapter.getData());
                     break;
 
                 case DB_ANS:
-                    tweets = db.getAnswers((long)param[0]);
-                    if(tweets.isEmpty() || !settings.getAnswerLoad())
+                    tweets = db.getAnswers((long) param[0]);
+                    if (tweets.isEmpty() || !settings.getAnswerLoad())
                         break;
 
                 case TWEET_ANS:
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getAnswers((String)param[1], (long)param[0], sinceId);
-                    if (!tweets.isEmpty() && db.containStatus((long)param[0]))
+                    tweets = mTwitter.getAnswers((String) param[1], (long) param[0], sinceId);
+                    if (!tweets.isEmpty() && db.containStatus((long) param[0]))
                         db.storeReplies(tweets);
                     tweets.addAll(adapter.getData());
                     break;
@@ -136,14 +137,14 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                 case TWEET_SEARCH:
                     if (adapter.getItemCount() > 0)
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.searchTweets((String)param[0], sinceId);
+                    tweets = mTwitter.searchTweets((String) param[0], sinceId);
+                    tweets.addAll(adapter.getData());
                     break;
             }
-        } catch(TwitterException err) {
+        } catch (TwitterException err) {
             this.err = err;
             return false;
-        }
-        catch(Exception err) {
+        } catch (Exception err) {
             return false;
         }
         return true;
@@ -152,14 +153,14 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
-        if(success) {
+        if (success) {
             adapter.setData(tweets);
             adapter.notifyDataSetChanged();
         } else {
-            if(err != null)
+            if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
 
@@ -170,7 +171,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);

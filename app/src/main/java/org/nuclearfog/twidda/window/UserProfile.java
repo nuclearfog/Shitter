@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.OnTabSelectedListener;
@@ -14,35 +15,27 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.ProfileTabAdapter;
+import org.nuclearfog.twidda.adapter.ProfilePagerAdapter;
 import org.nuclearfog.twidda.backend.ProfileLoader;
+import org.nuclearfog.twidda.backend.ProfileLoader.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
-import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
-/**
- * User Profile Activity
- *
- * @see ProfileLoader
- */
-public class UserProfile extends AppCompatActivity implements OnTagClickListener, OnTabSelectedListener {
-
-    private static final int TWEET = 1;
+public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener {
 
     private ProfileLoader profileAsync;
     private ViewPager pager;
     private View[] icons;
 
-    private boolean home, isFollowing, isBlocked, isMuted, canDm, requested;
+    private boolean home, isFriend, isBlocked, isMuted, isLocked, canDm, requested;
     private String username;
     private long userId;
 
@@ -53,48 +46,53 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
         super.onCreate(b);
         setContentView(R.layout.page_profile);
 
+        Bundle param = getIntent().getExtras();
+        if (param != null && param.size() == 2) {
+            userId = param.getLong("userID");
+            username = param.getString("username");
+        } else if (BuildConfig.DEBUG) {
+            throw new AssertionError();
+        }
+
+        Toolbar tool = findViewById(R.id.profile_toolbar);
+        TabLayout tab = findViewById(R.id.profile_tab);
         TextView bioTxt = findViewById(R.id.bio);
         TextView lnkTxt = findViewById(R.id.links);
+        View following = findViewById(R.id.following);
+        View follower = findViewById(R.id.follower);
         View root = findViewById(R.id.user_view);
-        TabLayout tab = findViewById(R.id.profile_tab);
         pager = findViewById(R.id.profile_pager);
-        Toolbar tool = findViewById(R.id.profile_toolbar);
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            if (BuildConfig.DEBUG && param.size() != 2)
-                throw new AssertionError();
-            userId = param.getLong("userID");
-            username = param.getString("username");
-        }
-
         GlobalSettings settings = GlobalSettings.getInstance(this);
         home = userId == settings.getUserId();
 
-        root.setBackgroundColor(settings.getBackgroundColor());
         bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
         lnkTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+        tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setLinkTextColor(settings.getHighlightColor());
+        root.setBackgroundColor(settings.getBackgroundColor());
 
         icons = new View[2];
         LayoutInflater inflater = LayoutInflater.from(this);
         icons[0] = inflater.inflate(R.layout.tab_tw, null);
         icons[1] = inflater.inflate(R.layout.tab_fa, null);
 
-        ProfileTabAdapter adapter = new ProfileTabAdapter(getSupportFragmentManager(), userId);
+        ProfilePagerAdapter adapter = new ProfilePagerAdapter(getSupportFragmentManager(), userId);
         pager.setOffscreenPageLimit(2);
         pager.setAdapter(adapter);
         tab.setupWithViewPager(pager);
         tab.addOnTabSelectedListener(this);
+        following.setOnClickListener(this);
+        follower.setOnClickListener(this);
 
-        for(int i = 0 ; i < icons.length ; i++) {
+        for (int i = 0; i < icons.length; i++) {
             TabLayout.Tab t = tab.getTabAt(i);
-            if(t != null)
+            if (t != null)
                 t.setCustomView(icons[i]);
         }
     }
@@ -103,8 +101,8 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
     @Override
     protected void onStart() {
         super.onStart();
-        if(profileAsync == null) {
-            profileAsync = new ProfileLoader(this, LDR_PROFILE);
+        if (profileAsync == null) {
+            profileAsync = new ProfileLoader(this, Mode.LDR_PROFILE);
             profileAsync.execute(userId);
         }
     }
@@ -112,17 +110,9 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
 
     @Override
     protected void onStop() {
-        if (profileAsync != null && profileAsync.getStatus() == RUNNING)
+        if (profileAsync != null && profileAsync.getStatus() == Status.RUNNING)
             profileAsync.cancel(true);
         super.onStop();
-    }
-
-
-    @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET && returnCode == STAT_CHANGED)
-            profileAsync = null;
-        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
@@ -147,7 +137,7 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
             MenuItem muteIcon = m.findItem(R.id.profile_mute);
             MenuItem dmIcon = m.findItem(R.id.profile_message);
 
-            if (isFollowing) {
+            if (isFriend) {
                 followIcon.setIcon(R.drawable.follow_enabled);
                 followIcon.setTitle(R.string.unfollow);
             } else if (requested) {
@@ -179,7 +169,7 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (profileAsync != null && profileAsync.getStatus() != RUNNING) {
+        if (profileAsync != null && profileAsync.getStatus() != Status.RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
@@ -190,7 +180,7 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
 
                 case R.id.profile_follow:
                     profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
-                    if (!isFollowing) {
+                    if (!isFriend) {
                         profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_unfollow)
@@ -268,17 +258,41 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
 
 
     @Override
+    public void onClick(View v) {
+        if (!isLocked) {
+            switch (v.getId()) {
+                case R.id.following:
+                    Intent following = new Intent(this, UserDetail.class);
+                    following.putExtra("ID", userId);
+                    following.putExtra("mode", UserDetail.UserType.FOLLOWING);
+                    startActivity(following);
+                    break;
+
+                case R.id.follower:
+                    Intent follower = new Intent(this, UserDetail.class);
+                    follower.putExtra("ID", userId);
+                    follower.putExtra("mode", UserDetail.UserType.FOLLOWERS);
+                    startActivity(follower);
+                    break;
+            }
+        }
+    }
+
+
+    @Override
     public void onTabSelected(TabLayout.Tab tab) {
         tabIndex = tab.getPosition();
     }
 
 
     @Override
-    public void onTabUnselected(TabLayout.Tab tab) { }
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
 
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) { }
+    public void onTabReselected(TabLayout.Tab tab) {
+    }
 
 
     public void setTweetCount(int tweets, int favors) {
@@ -290,10 +304,12 @@ public class UserProfile extends AppCompatActivity implements OnTagClickListener
     }
 
 
-    public void setConnection(boolean isFollowing, boolean isMuted, boolean isBlocked, boolean canDm, boolean requested) {
-        this.isFollowing = isFollowing;
+    public void setConnection(boolean isFriend, boolean isMuted, boolean isBlocked,
+                              boolean isLocked, boolean canDm, boolean requested) {
+        this.isFriend = isFriend;
         this.isMuted = isMuted;
         this.isBlocked = isBlocked;
+        this.isLocked = isLocked;
         this.canDm = canDm;
         this.requested = requested;
     }

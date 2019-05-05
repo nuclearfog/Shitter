@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import twitter4j.TwitterException;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
@@ -20,13 +19,14 @@ import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.ImageDetail;
-import org.nuclearfog.twidda.window.UserDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import twitter4j.TwitterException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -40,6 +40,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
         ACTION_BLOCK,
         ACTION_MUTE
     }
+
     private final Mode mode;
 
     private WeakReference<UserProfile> ui;
@@ -183,25 +184,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                     followback.setVisibility(VISIBLE);
                 if (user.isLocked()) {
                     locked.setVisibility(VISIBLE);
-                } else {
-                    txtFollowing.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent following = new Intent(ui.get(), UserDetail.class);
-                            following.putExtra("ID", user.getId());
-                            following.putExtra("mode", 0);
-                            ui.get().startActivity(following);
-                        }
-                    });
-                    txtFollower.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent follower = new Intent(ui.get(), UserDetail.class);
-                            follower.putExtra("ID", user.getId());
-                            follower.putExtra("mode", 1);
-                            ui.get().startActivity(follower);
-                        }
-                    });
                 }
                 profile.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -277,7 +259,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                     break;
             }
             if (!isHome) {
-                ui.get().setConnection(isFollowing, isMuted, isBlocked, canDm, user.followRequested());
+                ui.get().setConnection(isFollowing, isMuted, isBlocked, user.isLocked(), canDm, user.followRequested());
                 ui.get().invalidateOptionsMenu();
             }
         } else {

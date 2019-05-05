@@ -20,12 +20,13 @@ import java.util.List;
 import twitter4j.TwitterException;
 
 
-public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
+public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
 
     public enum Mode {
         DB_TRND,
         LD_TRND
     }
+
     private Mode mode;
     private WeakReference<View> ui;
     private TwitterException err;
@@ -50,7 +51,7 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(true);
@@ -60,10 +61,10 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void[] v) {
         try {
-            switch(mode) {
+            switch (mode) {
                 case DB_TRND:
                     trends = db.getTrends(woeId);
-                    if(!trends.isEmpty())
+                    if (!trends.isEmpty())
                         break;
 
                 case LD_TRND:
@@ -71,10 +72,10 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
                     db.storeTrends(trends, woeId);
                     break;
             }
-        } catch(TwitterException err) {
+        } catch (TwitterException err) {
             this.err = err;
             return false;
-        } catch(Exception err) {
+        } catch (Exception err) {
             return false;
         }
         return true;
@@ -83,14 +84,14 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
-        if(success) {
+        if (success) {
             adapter.setData(trends);
             adapter.notifyDataSetChanged();
         } else {
-            if(err != null)
+            if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -100,7 +101,7 @@ public class TrendLoader  extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);

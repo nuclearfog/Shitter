@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.AsyncTask;
+import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,21 +22,16 @@ import android.widget.Toast;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ProfileEditor;
+import org.nuclearfog.twidda.backend.ProfileEditor.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.READ_DATA;
-import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.WRITE_DATA;
 
-/**
- * @see org.nuclearfog.twidda.backend.ProfileEditor
- */
+
 public class ProfileEdit extends AppCompatActivity implements View.OnClickListener {
 
     private ProfileEditor editorAsync;
     private TextView txtImg;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +57,7 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
     protected void onStart() {
         super.onStart();
         if (editorAsync == null) {
-            editorAsync = new ProfileEditor(this, READ_DATA);
+            editorAsync = new ProfileEditor(this, Mode.READ_DATA);
             editorAsync.execute();
         }
     }
@@ -70,7 +65,7 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onStop() {
-        if (editorAsync != null && editorAsync.getStatus() == AsyncTask.Status.RUNNING)
+        if (editorAsync != null && editorAsync.getStatus() == Status.RUNNING)
             editorAsync.cancel(true);
         super.onStop();
     }
@@ -100,12 +95,9 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-                    save();
-                }
-                break;
+        if (item.getItemId() == R.id.action_save) {
+            if (editorAsync == null || editorAsync.getStatus() != Status.RUNNING)
+                save();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -147,9 +139,9 @@ public class ProfileEdit extends AppCompatActivity implements View.OnClickListen
         if (name.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, R.string.edit_empty_name, Toast.LENGTH_SHORT).show();
         } else {
-            if (editorAsync != null && editorAsync.getStatus() == RUNNING)
+            if (editorAsync != null && editorAsync.getStatus() == Status.RUNNING)
                 editorAsync.cancel(true);
-            editorAsync = new ProfileEditor(this, WRITE_DATA);
+            editorAsync = new ProfileEditor(this, Mode.WRITE_DATA);
             editorAsync.execute();
         }
     }

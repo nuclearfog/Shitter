@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,21 +27,16 @@ import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
 
 
-/**
- * @see ImageLoader
- */
 public class ImageDetail extends AppCompatActivity implements OnImageClickListener {
 
     boolean storable;
     private ImageLoader imageAsync;
     private ZoomView zoomImage;
-    private String link[];
+    private String[] link;
     private int width;
-
 
     @Override
     protected void onCreate(Bundle b) {
@@ -78,7 +74,7 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
 
     @Override
     protected void onDestroy() {
-        if (imageAsync != null && imageAsync.getStatus() == RUNNING)
+        if (imageAsync != null && imageAsync.getStatus() == Status.RUNNING)
             imageAsync.cancel(true);
         super.onDestroy();
     }

@@ -10,18 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.fragment.backend.MessageLoader;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.fragment.backend.MessageLoader.Mode.LOAD;
 
 
-public class MessageListFragment extends Fragment implements OnRefreshListener{
+public class MessageListFragment extends Fragment implements OnRefreshListener {
 
     private MessageLoader messageTask;
     private SwipeRefreshLayout root;
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
@@ -36,7 +34,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener{
     @Override
     public void onStart() {
         super.onStart();
-        if(messageTask == null) {
+        if (messageTask == null) {
             messageTask = new MessageLoader(root, LOAD);
             messageTask.execute();
         }
@@ -46,7 +44,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener{
     @Override
     public void onStop() {
         super.onStop();
-        if(messageTask != null && messageTask.getStatus() == RUNNING)
+        if (messageTask != null && messageTask.getStatus() == RUNNING)
             messageTask.cancel(true);
     }
 
@@ -56,10 +54,6 @@ public class MessageListFragment extends Fragment implements OnRefreshListener{
         messageTask = new MessageLoader(root, LOAD);
         messageTask.execute();
     }
-
-
-
-
 
 
 }

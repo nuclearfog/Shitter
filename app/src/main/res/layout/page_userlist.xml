@@ -10,17 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_wide" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/user_refresh"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/user_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/userlist"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

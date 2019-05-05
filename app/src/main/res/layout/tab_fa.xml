@@ -20,7 +20,6 @@
         android:textSize="10sp" />
 
     <View
-        android:id="@+id/favor_divider"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginTop="2dp" />

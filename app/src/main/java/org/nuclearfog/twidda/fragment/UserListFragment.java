@@ -26,29 +26,32 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
 
-    public static final int FOLLOWS = 0;
-    public static final int FRIENDS = 1;
-    public static final int RETWEET = 2;
-    public static final int FAVORIT = 3;
-    public static final int USEARCH = 4;
+    public enum UserType {
+        FOLLOWS,
+        FRIENDS,
+        RETWEET,
+        FAVORIT,
+        USEARCH
+    }
 
     private SwipeRefreshLayout reload;
     private UserAdapter adapter;
     private UserLoader userTask;
     private View root;
+    private UserType mode;
     private String search;
     private long id;
-    private int mode;
-
+    private boolean fixLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         Bundle b = getArguments();
-        if(b != null && b.containsKey("mode")) {
-            mode = b.getInt("mode");
+        if (b != null && b.containsKey("mode")) {
+            mode = (UserType) b.getSerializable("mode");
             id = b.getLong("id", -1);
             search = b.getString("search", "");
-        } else if(BuildConfig.DEBUG) {
+            fixLayout = b.getBoolean("fix", true);
+        } else if (BuildConfig.DEBUG) {
             throw new AssertionError("Bundle error!");
         }
         GlobalSettings settings = GlobalSettings.getInstance(getContext());
@@ -63,7 +66,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         adapter.setColor(settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());
         list.setLayoutManager(new LinearLayoutManager(getContext()));
-        list.setHasFixedSize(true);
+        list.setHasFixedSize(fixLayout);
         list.setAdapter(adapter);
         return v;
     }
@@ -78,7 +81,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     @Override
     public void onStart() {
         super.onStart();
-        if(userTask == null) {
+        if (userTask == null) {
             load();
         }
     }
@@ -86,7 +89,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
     @Override
     public void onStop() {
-        if(userTask != null && userTask.getStatus() == Status.RUNNING)
+        if (userTask != null && userTask.getStatus() == Status.RUNNING)
             userTask.cancel(true);
         super.onStop();
     }
@@ -100,7 +103,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
     @Override
     public void onItemClick(RecyclerView rv, int pos) {
-        if(!reload.isRefreshing()) {
+        if (!reload.isRefreshing()) {
             TwitterUser user = adapter.getData(pos);
             long userID = user.getId();
             String username = user.getScreenname();
@@ -135,7 +138,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
                 userTask.execute(search);
                 break;
             default:
-                if(BuildConfig.DEBUG)
+                if (BuildConfig.DEBUG)
                     throw new AssertionError("mode failure");
                 break;
         }

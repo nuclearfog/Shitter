@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -21,13 +22,8 @@ import org.nuclearfog.twidda.backend.MessageUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.AsyncTask.Status.RUNNING;
 
-/**
- * Message Window
- *
- * @see MessageUpload
- */
+
 public class MessagePopup extends AppCompatActivity implements View.OnClickListener {
 
     private MessageUpload messageAsync;
@@ -74,7 +70,7 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (messageAsync != null && messageAsync.getStatus() == RUNNING)
+                    if (messageAsync != null && messageAsync.getStatus() == Status.RUNNING)
                         messageAsync.cancel(true);
                     finish();
                 }

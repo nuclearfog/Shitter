@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference;
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder> {
 
     private WeakReference<OnImageClickListener> itemClickListener;
-    private Bitmap images[];
+    private Bitmap[] images;
 
 
     public ImageAdapter(OnImageClickListener l) {
@@ -23,7 +23,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
     }
 
 
-    public void setImages(@NonNull Bitmap images[]) {
+    public void setImages(@NonNull Bitmap[] images) {
         this.images = images;
     }
 

@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.window;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -18,19 +19,11 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
+import org.nuclearfog.twidda.backend.MessageLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.backend.MessageLoader.Mode.DEL;
-import static org.nuclearfog.twidda.backend.MessageLoader.Mode.GET;
-import static org.nuclearfog.twidda.backend.MessageLoader.Mode.LDR;
 
-/**
- * Direct Message page
- *
- * @see MessageLoader
- */
 public class DirectMessage extends AppCompatActivity implements OnRefreshListener, OnItemSelected {
 
     private MessageLoader messageAsync;
@@ -38,7 +31,6 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
     private SwipeRefreshLayout messageRefresh;
     private GlobalSettings settings;
     private RecyclerView dmList;
-
 
     @Override
     protected void onCreate(Bundle b) {
@@ -71,7 +63,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
             mAdapter.setColor(settings.getFontColor(), settings.getHighlightColor());
             mAdapter.setImageLoad(settings.getImageLoad());
             dmList.setAdapter(mAdapter);
-            messageAsync = new MessageLoader(this, LDR);
+            messageAsync = new MessageLoader(this, Mode.LDR);
             messageAsync.execute();
         }
     }
@@ -79,7 +71,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     protected void onStop() {
-        if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
+        if (messageAsync != null && messageAsync.getStatus() == Status.RUNNING) {
             messageAsync.cancel(true);
         }
         super.onStop();
@@ -95,12 +87,10 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (messageAsync != null && messageAsync.getStatus() != RUNNING) {
-            switch (item.getItemId()) {
-                case R.id.message:
-                    Intent sendDm = new Intent(this, MessagePopup.class);
-                    startActivity(sendDm);
-                    break;
+        if (messageAsync != null && messageAsync.getStatus() != Status.RUNNING) {
+            if (item.getItemId() == R.id.message) {
+                Intent sendDm = new Intent(this, MessagePopup.class);
+                startActivity(sendDm);
             }
         }
         return super.onOptionsItemSelected(item);
@@ -128,7 +118,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
                     .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            messageAsync = new MessageLoader(DirectMessage.this, DEL);
+                            messageAsync = new MessageLoader(DirectMessage.this, Mode.DEL);
                             messageAsync.execute(messageId);
                         }
                     }).show();
@@ -162,7 +152,7 @@ public class DirectMessage extends AppCompatActivity implements OnRefreshListene
 
     @Override
     public void onRefresh() {
-        messageAsync = new MessageLoader(this, GET);
+        messageAsync = new MessageLoader(this, Mode.GET);
         messageAsync.execute();
     }
 }

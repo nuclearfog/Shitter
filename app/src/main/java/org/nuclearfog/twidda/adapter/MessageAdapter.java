@@ -27,7 +27,7 @@ import java.util.List;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
     private WeakReference<OnItemSelected> itemClickListener;
-    private Message messages[];
+    private Message[] messages;
     private int highlight;
     private int fontColor;
     private boolean loadImage;

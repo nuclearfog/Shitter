@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
+import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,19 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.HomePagerAdapter.OnSettingsChanged;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.TrendLoader;
+import org.nuclearfog.twidda.fragment.backend.TrendLoader.Mode;
 import org.nuclearfog.twidda.window.SearchPage;
 
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.fragment.backend.TrendLoader.Mode.DB_TRND;
-import static org.nuclearfog.twidda.fragment.backend.TrendLoader.Mode.LD_TRND;
 
+public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnSettingsChanged {
 
-public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
-
+    private GlobalSettings settings;
     private TrendLoader trendTask;
     private SwipeRefreshLayout reload;
     private TrendAdapter adapter;
@@ -36,7 +36,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
         super.onCreateView(inflater, parent, param);
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
 
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
+        settings = GlobalSettings.getInstance(getContext());
         adapter = new TrendAdapter(this);
         adapter.setColor(settings.getFontColor());
 
@@ -54,7 +54,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onViewCreated(@NonNull View v, Bundle param) {
-        super.onViewCreated(v,param);
+        super.onViewCreated(v, param);
         root = v;
     }
 
@@ -63,7 +63,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     public void onStart() {
         super.onStart();
         if (trendTask == null) {
-            trendTask = new TrendLoader(root, DB_TRND);
+            trendTask = new TrendLoader(root, Mode.DB_TRND);
             trendTask.execute();
         }
     }
@@ -71,7 +71,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onStop() {
-        if(trendTask != null && trendTask.getStatus() == RUNNING)
+        if (trendTask != null && trendTask.getStatus() == Status.RUNNING)
             trendTask.cancel(true);
         super.onStop();
     }
@@ -79,7 +79,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onRefresh() {
-        trendTask = new TrendLoader(root, LD_TRND);
+        trendTask = new TrendLoader(root, Mode.LD_TRND);
         trendTask.execute();
     }
 
@@ -94,5 +94,13 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
             intent.putExtra("search", search);
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void settingsChanged() {
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        adapter.setColor(settings.getFontColor());
+        adapter.notifyDataSetChanged();
     }
 }

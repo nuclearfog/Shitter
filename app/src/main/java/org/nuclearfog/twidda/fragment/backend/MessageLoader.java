@@ -14,16 +14,18 @@ import org.nuclearfog.twidda.database.DatabaseAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+
 import twitter4j.TwitterException;
 
 
-public class MessageLoader  extends AsyncTask<Long, Void, Boolean> {
+public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
 
 
     public enum Mode {
         LOAD,
         DEL
     }
+
     private Mode mode;
     private WeakReference<ViewGroup> ui;
     private TwitterEngine mTwitter;
@@ -45,10 +47,10 @@ public class MessageLoader  extends AsyncTask<Long, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
         reload.setRefreshing(true);
     }
 
@@ -57,7 +59,7 @@ public class MessageLoader  extends AsyncTask<Long, Void, Boolean> {
     protected Boolean doInBackground(Long[] param) {
         long messageId = 0;
         try {
-            switch(mode) {
+            switch (mode) {
                 case LOAD:
                     messages = mTwitter.getMessages();
                     db.storeMessage(messages);
@@ -70,14 +72,14 @@ public class MessageLoader  extends AsyncTask<Long, Void, Boolean> {
                     messages = db.getMessages();
                     break;
             }
-        } catch(TwitterException err) {
+        } catch (TwitterException err) {
             if (err.getErrorCode() == 34) {
                 db.deleteDm(messageId);
             } else {
                 this.err = err;
             }
             return false;
-        } catch(Exception err) {
+        } catch (Exception err) {
             return false;
         }
         return true;
@@ -86,26 +88,26 @@ public class MessageLoader  extends AsyncTask<Long, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
 
-        if(success) {
+        if (success) {
             adapter.setData(messages);
             adapter.notifyDataSetChanged();
         } else {
-            if(err != null)
+            if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
         reload.setRefreshing(false);
     }
 
 
     @Override
     protected void onCancelled() {
-        if(ui.get() == null)
+        if (ui.get() == null)
             return;
-        SwipeRefreshLayout reload = (SwipeRefreshLayout)ui.get();
+        SwipeRefreshLayout reload = (SwipeRefreshLayout) ui.get();
         reload.setRefreshing(false);
     }
 }

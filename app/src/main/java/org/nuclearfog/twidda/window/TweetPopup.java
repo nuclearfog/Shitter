@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,14 +27,9 @@ import java.util.List;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
-/**
- * Tweet Window
- *
- * @see StatusUploader
- */
+
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private StatusUploader uploaderAsync;
@@ -84,7 +80,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
+        if (uploaderAsync != null && uploaderAsync.getStatus() == Status.RUNNING)
             uploaderAsync.cancel(true);
         super.onDestroy();
     }
@@ -135,7 +131,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.sendTweet:
                 String tweetStr = tweet.getText().toString();
-                if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
+                if (uploaderAsync != null && uploaderAsync.getStatus() == Status.RUNNING)
                     uploaderAsync.cancel(true);
                 uploaderAsync = new StatusUploader(this, tweetStr, inReplyId);
 
