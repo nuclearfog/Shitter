@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
@@ -195,7 +195,7 @@ public class DatabaseAdapter {
      */
     public List<Tweet> getHomeTimeline() {
         SQLiteDatabase db = getDbRead();
-        List<Tweet> tweetList = new ArrayList<>();
+        List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&" + HOM_MASK + ">0 " +
@@ -219,7 +219,7 @@ public class DatabaseAdapter {
      */
     public List<Tweet> getMentions() {
         SQLiteDatabase db = getDbRead();
-        List<Tweet> tweetList = new ArrayList<>();
+        List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&" + MEN_MASK + ">0 " +
@@ -244,7 +244,7 @@ public class DatabaseAdapter {
      */
     public List<Tweet> getUserTweets(long userID) {
         SQLiteDatabase db = getDbRead();
-        List<Tweet> tweetList = new ArrayList<>();
+        List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "WHERE statusregister&" + UTW_MASK + ">0 " +
@@ -272,7 +272,7 @@ public class DatabaseAdapter {
      */
     public List<Tweet> getUserFavs(long ownerID) {
         SQLiteDatabase db = getDbRead();
-        List<Tweet> tweetList = new ArrayList<>();
+        List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
@@ -319,7 +319,7 @@ public class DatabaseAdapter {
      */
     public List<Tweet> getAnswers(long tweetId) {
         SQLiteDatabase db = getDbRead();
-        List<Tweet> tweetList = new ArrayList<>();
+        List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
                 "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + RPL_MASK + ">0 " +
@@ -437,7 +437,7 @@ public class DatabaseAdapter {
      */
     public List<Trend> getTrends(int woeId) {
         SQLiteDatabase db = getDbRead();
-        List<Trend> trends = new ArrayList<>();
+        List<Trend> trends = new LinkedList<>();
         final String query = "SELECT * FROM trend WHERE woeID=" + woeId + " ORDER BY trendpos ASC";
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
@@ -460,7 +460,7 @@ public class DatabaseAdapter {
      * @return list of direct messages
      */
     public List<Message> getMessages() {
-        List<Message> result = new ArrayList<>();
+        List<Message> result = new LinkedList<>();
         SQLiteDatabase db = getDbRead();
         final String query = "SELECT * FROM message ORDER BY messageID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(query, null);
@@ -735,7 +735,7 @@ public class DatabaseAdapter {
 
     private String[] parseMedia(String media) {
         int index;
-        List<String> links = new ArrayList<>();
+        List<String> links = new LinkedList<>();
         do {
             index = media.indexOf(';');
             if (index > 0 && index < media.length()) {

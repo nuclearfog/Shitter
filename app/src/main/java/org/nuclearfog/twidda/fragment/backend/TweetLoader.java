@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.ErrorHandler;
@@ -20,7 +19,6 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import twitter4j.TwitterException;
-
 
 public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
@@ -58,16 +56,20 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     protected void onPreExecute() {
         if (ui.get() == null)
             return;
-
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(true);
+        final SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+        reload.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getStatus() != Status.FINISHED)
+                    reload.setRefreshing(true);
+            }
+        }, 500);
     }
 
 
     @Override
     protected Boolean doInBackground(Object[] param) {
         long sinceId = 1;
-
         try {
             switch (mode) {
                 case DB_HOME:
@@ -130,7 +132,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                 case DB_ANS:
                     tweetId = (long) param[0];
                     tweets = db.getAnswers(tweetId);
-                    if (tweets.isEmpty() || !settings.getAnswerLoad())
+                    if (!tweets.isEmpty() || !settings.getAnswerLoad())
                         break;
 
                 case TWEET_ANS:

@@ -137,9 +137,8 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         else
             vh.verify.setVisibility(View.GONE);
 
-        if (img_ldr) {
+        if (img_ldr)
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
-        }
     }
 
 

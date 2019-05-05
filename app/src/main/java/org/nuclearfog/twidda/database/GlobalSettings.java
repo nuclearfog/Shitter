@@ -289,7 +289,7 @@ public class GlobalSettings {
      * @return access tokens
      */
     public String[] getKeys() {
-        String out[] = new String[2];
+        String[] out = new String[2];
         out[0] = key1;
         out[1] = key2;
         return out;

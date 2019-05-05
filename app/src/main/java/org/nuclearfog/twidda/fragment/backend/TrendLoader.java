@@ -54,8 +54,14 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
     protected void onPreExecute() {
         if (ui.get() == null)
             return;
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(true);
+        final SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+        reload.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (getStatus() != Status.FINISHED)
+                    reload.setRefreshing(true);
+            }
+        }, 500);
     }
 
 

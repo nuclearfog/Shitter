@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -22,8 +24,8 @@ import org.nuclearfog.twidda.window.UserProfile;
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+
 import twitter4j.TwitterException;
-import com.squareup.picasso.Picasso;
 
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;

@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import twitter4j.DirectMessage;
@@ -199,7 +199,7 @@ public class TwitterEngine {
      * @throws TwitterException if access is unavailable
      */
     public List<Trend> getTrends(int woeId) throws TwitterException {
-        List<Trend> result = new ArrayList<>();
+        List<Trend> result = new LinkedList<>();
         twitter4j.Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
 
         for (int i = 0; i < trends.length; i++) {
@@ -377,7 +377,7 @@ public class TwitterEngine {
         IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
         long[] ids = userIDs.getIDs();
         if (ids.length == 0)
-            return new ArrayList<>();
+            return new LinkedList<>();
         return convertUserList(twitter.lookupUsers(ids));
     }
 
@@ -393,7 +393,7 @@ public class TwitterEngine {
         IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
         long[] ids = userIDs.getIDs();
         if (ids.length == 0)
-            return new ArrayList<>();
+            return new LinkedList<>();
         return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
     }
 
@@ -448,7 +448,7 @@ public class TwitterEngine {
      * @throws TwitterException if Access is unavailable
      */
     public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws TwitterException {
-        List<Status> answers = new ArrayList<>();
+        List<Status> answers = new LinkedList<>();
         Query query = new Query("to:" + name + " since_id:" + sinceId + " -filter:retweets");
         query.setCount(load);
         QueryResult result = twitter.search(query);
@@ -521,7 +521,7 @@ public class TwitterEngine {
             tweetID = embeddedStat.getId();
         long[] userIds = twitter.getRetweeterIds(tweetID, load, cursor).getIDs();
         if (userIds.length == 0)
-            return new ArrayList<>();
+            return new LinkedList<>();
         return convertUserList(twitter.lookupUsers(userIds));
     }
 
@@ -534,7 +534,7 @@ public class TwitterEngine {
      */
     public List<Message> getMessages() throws TwitterException {
         List<DirectMessage> dmList = twitter.getDirectMessages(load);
-        List<Message> result = new ArrayList<>();
+        List<Message> result = new LinkedList<>();
         for (DirectMessage dm : dmList) {
             result.add(getMessage(dm));
         }
@@ -607,7 +607,7 @@ public class TwitterEngine {
      * @return TwitterUser
      */
     private List<TwitterUser> convertUserList(List<User> users) {
-        List<TwitterUser> result = new ArrayList<>();
+        List<TwitterUser> result = new LinkedList<>();
         for (User user : users) {
             TwitterUser item = new TwitterUser(user);
             result.add(item);
@@ -623,7 +623,7 @@ public class TwitterEngine {
      * @return TwitterStatus
      */
     private List<Tweet> convertStatusList(List<Status> statuses) {
-        List<Tweet> result = new ArrayList<>();
+        List<Tweet> result = new LinkedList<>();
         for (Status status : statuses)
             result.add(new Tweet(status));
         return result;

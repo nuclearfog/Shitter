@@ -60,7 +60,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             username = param.getString("username");
         } else if (link != null) {
             getTweet(link.getPath());
-        } else if(BuildConfig.DEBUG) {
+        } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
 

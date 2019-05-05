@@ -85,7 +85,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onAnswer(messages[position]);
+                    itemClickListener.get().onClick(messages[position], OnItemSelected.Action.ANSWER);
             }
         });
         view.findViewById(R.id.dm_delete).setOnClickListener(new View.OnClickListener() {
@@ -94,7 +94,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onDelete(messages[position]);
+                    itemClickListener.get().onClick(messages[position], OnItemSelected.Action.DELETE);
             }
         });
         view.findViewById(R.id.dm_profileImg).setOnClickListener(new View.OnClickListener() {
@@ -103,7 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
                 RecyclerView rv = (RecyclerView) parent;
                 int position = rv.getChildLayoutPosition(view);
                 if (itemClickListener.get() != null)
-                    itemClickListener.get().onProfileClick(messages[position]);
+                    itemClickListener.get().onClick(messages[position], OnItemSelected.Action.PROFILE);
             }
         });
         return new MessageHolder(view);
@@ -183,10 +183,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
 
     public interface OnItemSelected extends OnTagClickListener {
 
-        void onAnswer(Message message);
+        enum Action {
+            ANSWER,
+            DELETE,
+            PROFILE
+        }
 
-        void onDelete(Message message);
-
-        void onProfileClick(Message message);
+        void onClick(Message message, Action action);
     }
 }

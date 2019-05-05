@@ -16,7 +16,7 @@ public class TweetPagerAdapter extends FragmentPagerAdapter {
         super(fm);
 
         Bundle param = new Bundle();
-        param.putSerializable("mode",TweetType.TWEET_ANSR);
+        param.putSerializable("mode", TweetType.TWEET_ANSR);
         param.putString("search", name);
         param.putBoolean("fix", false);
         param.putLong("id", id);
