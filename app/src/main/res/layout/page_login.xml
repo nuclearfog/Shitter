@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/button_padding"
-        android:background="@android:color/darker_gray"
+        android:background="@drawable/button"
         android:text="@string/register_link"
         android:textSize="12sp" />
 
@@ -39,7 +39,8 @@
             android:background="@android:color/transparent"
             android:hint="@string/pin"
             android:inputType="numberPassword"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textSize="24sp" />
 
         <ImageButton
             android:id="@+id/clipboard"
@@ -59,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/button_padding"
-        android:background="@android:color/darker_gray"
+        android:background="@drawable/button"
         android:text="@string/verifierbutton"
         android:textSize="12sp" />
 
