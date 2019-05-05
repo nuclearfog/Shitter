@@ -24,6 +24,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
 
 
     public enum Mode {
+        DB,
         LOAD,
         DEL
     }
@@ -67,6 +68,11 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
         long messageId = 0;
         try {
             switch (mode) {
+                case DB:
+                    messages = db.getMessages();
+                    if (!messages.isEmpty())
+                        break;
+
                 case LOAD:
                     messages = mTwitter.getMessages();
                     db.storeMessage(messages);

@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.window.ImageDetail;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 
@@ -35,14 +36,17 @@ public class ImageLoader extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... links) {
         try {
+            int i = 0;
             images = new Bitmap[links.length];
 
-            for (int i = 0; i < links.length; i++) {
-                String link = links[i];
+            for (String link : links) {
                 if (link.startsWith("/"))
-                    images[i] = BitmapFactory.decodeFile(link);
-                else
-                    images[i] = BitmapFactory.decodeStream(new URL(link).openStream());
+                    images[i++] = BitmapFactory.decodeFile(link);
+                else {
+                    URL u = new URL(link);
+                    InputStream stream = u.openStream();
+                    images[i++] = BitmapFactory.decodeStream(stream);
+                }
             }
         } catch (Exception err) {
             if (err.getMessage() != null)

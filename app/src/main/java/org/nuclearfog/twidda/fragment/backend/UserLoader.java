@@ -14,6 +14,7 @@ import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
 import java.util.List;
 
 import twitter4j.TwitterException;
@@ -77,6 +78,7 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
                     break;
 
                 case FAVORIT:
+                    users = new LinkedList<>();  // TODO not jet implemented in Twitter4J
                     break;
 
                 case SEARCH:

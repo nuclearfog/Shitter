@@ -33,16 +33,16 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
         RecyclerView list = v.findViewById(R.id.fragment_list);
         reload = v.findViewById(R.id.fragment_reload);
-
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        reload.setOnRefreshListener(this);
 
         MessageAdapter adapter = new MessageAdapter(this);
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
@@ -61,7 +61,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     public void onStart() {
         super.onStart();
         if (messageTask == null) {
-            messageTask = new MessageLoader(root, Mode.LOAD);
+            messageTask = new MessageLoader(root, Mode.DB);
             messageTask.execute();
         }
     }
