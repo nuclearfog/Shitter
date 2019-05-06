@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,7 +25,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 
-public class MessagePopup extends AppCompatActivity implements View.OnClickListener {
+public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
     private MessageUpload messageAsync;
     private EditText receiver, text;
@@ -38,10 +39,10 @@ public class MessagePopup extends AppCompatActivity implements View.OnClickListe
         String username = "";
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            if (BuildConfig.DEBUG && param.size() > 1)
-                throw new AssertionError();
             if (param.containsKey("username"))
                 username = param.getString("username");
+        } else if (BuildConfig.DEBUG) {
+            throw new AssertionError();
         }
 
         View root = findViewById(R.id.dm_popup);

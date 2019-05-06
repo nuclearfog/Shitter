@@ -22,7 +22,6 @@ import twitter4j.TwitterException;
 
 public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
 
-
     public enum Mode {
         DB,
         LOAD,
@@ -86,10 +85,11 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                     break;
             }
         } catch (TwitterException err) {
-            if (err.getErrorCode() == 34)
+            if (err.getErrorCode() == 34) {
                 db.deleteDm(messageId);
-            else
+                messages = db.getMessages();
                 this.err = err;
+            }
             return false;
         } catch (Exception err) {
             if (err.getMessage() != null)
@@ -104,15 +104,16 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null)
             return;
-        if (success) {
+        if (messages != null) {
             adapter.setData(messages);
             adapter.notifyDataSetChanged();
-        } else {
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
         }
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
+        if (!success) {
+            if (err != null)
+                ErrorHandler.printError(ui.get().getContext(), err);
+        }
     }
 
 

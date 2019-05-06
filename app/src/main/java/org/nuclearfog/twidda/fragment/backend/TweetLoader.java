@@ -35,19 +35,22 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     private WeakReference<View> ui;
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
-    private GlobalSettings settings;
     private TwitterException err;
     private DatabaseAdapter db;
     private List<Tweet> tweets;
+    private boolean loadAnswer;
 
 
     public TweetLoader(@NonNull View root, Mode mode) {
         ui = new WeakReference<>(root);
-        settings = GlobalSettings.getInstance(root.getContext());
         mTwitter = TwitterEngine.getInstance(root.getContext());
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TweetAdapter) list.getAdapter();
         db = new DatabaseAdapter(root.getContext());
+        if (mode == Mode.DB_ANS) {
+            GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
+            loadAnswer = settings.getAnswerLoad();
+        }
         this.mode = mode;
     }
 
@@ -132,7 +135,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                 case DB_ANS:
                     tweetId = (long) param[0];
                     tweets = db.getAnswers(tweetId);
-                    if (!tweets.isEmpty() || !settings.getAnswerLoad())
+                    if (!(tweets.isEmpty() && loadAnswer))
                         break;
 
                 case TWEET_ANS:
@@ -170,7 +173,6 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null)
             return;
-
         if (success) {
             adapter.setData(tweets);
             adapter.notifyDataSetChanged();
@@ -178,7 +180,6 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
             if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
-
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }

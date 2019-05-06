@@ -47,7 +47,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         setContentView(R.layout.page_profile);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.size() == 2) {
+        if (param != null && param.containsKey("userID") && param.containsKey("username")) {
             userId = param.getLong("userID");
             username = param.getString("username");
         } else if (BuildConfig.DEBUG) {

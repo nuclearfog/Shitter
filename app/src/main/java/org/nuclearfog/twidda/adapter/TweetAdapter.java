@@ -21,9 +21,9 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
@@ -63,7 +63,10 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
 
     public List<Tweet> getData() {
-        return Arrays.asList(tweets);
+        List<Tweet> data = new LinkedList<>();
+        for (Tweet tweet : tweets)
+            data.add(tweet);
+        return data;
     }
 
 

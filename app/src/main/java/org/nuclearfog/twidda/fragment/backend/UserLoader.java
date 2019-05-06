@@ -101,7 +101,6 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null)
             return;
-
         if (success) {
             adapter.setData(users);
             adapter.notifyDataSetChanged();
@@ -118,7 +117,6 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
     protected void onCancelled() {
         if (ui.get() == null)
             return;
-
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }

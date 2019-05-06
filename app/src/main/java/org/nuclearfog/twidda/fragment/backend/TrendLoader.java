@@ -95,7 +95,6 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null)
             return;
-
         if (success) {
             adapter.setData(trends);
             adapter.notifyDataSetChanged();
@@ -112,7 +111,6 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
     protected void onCancelled() {
         if (ui.get() == null)
             return;
-
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
         reload.setRefreshing(false);
     }

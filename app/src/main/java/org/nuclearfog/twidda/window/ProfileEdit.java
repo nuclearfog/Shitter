@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 
-public class ProfileEdit extends AppCompatActivity implements View.OnClickListener {
+public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
     private ProfileEditor editorAsync;
     private TextView txtImg;

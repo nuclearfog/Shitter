@@ -21,7 +21,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusUploader;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -49,15 +49,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            if (BuildConfig.DEBUG && param.size() > 2)
-                throw new AssertionError();
             if (param.containsKey("TweetID"))
                 inReplyId = param.getLong("TweetID");
             if (param.containsKey("Addition"))
                 addition = param.getString("Addition") + " ";
+        } else if (BuildConfig.DEBUG) {
+            throw new AssertionError();
         }
 
-        mediaPath = new ArrayList<>();
+        mediaPath = new LinkedList<>();
 
         View tweetButton = findViewById(R.id.sendTweet);
         View closeButton = findViewById(R.id.close);

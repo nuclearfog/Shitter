@@ -12,7 +12,6 @@ import org.nuclearfog.twidda.adapter.UserPagerAdapter;
 import org.nuclearfog.twidda.adapter.UserPagerAdapter.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-
 public class UserDetail extends AppCompatActivity {
 
     public enum UserType {
@@ -31,7 +30,7 @@ public class UserDetail extends AppCompatActivity {
         setContentView(R.layout.page_userlist);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.size() == 2) {
+        if (param != null && param.containsKey("mode") && param.containsKey("ID")) {
             mode = (UserType) param.getSerializable("mode");
             id = param.getLong("ID");
         } else if (BuildConfig.DEBUG) {

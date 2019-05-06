@@ -453,8 +453,8 @@ public class TwitterEngine {
         query.setCount(load);
         QueryResult result = twitter.search(query);
 
-        List<twitter4j.Status> stats = result.getTweets();
-        for (twitter4j.Status reply : stats) {
+        List<Status> stats = result.getTweets();
+        for (Status reply : stats) {
             if (reply.getInReplyToStatusId() == tweetId) {
                 answers.add(reply);
             }

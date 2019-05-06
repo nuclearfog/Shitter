@@ -44,12 +44,11 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
         setContentView(R.layout.page_image);
 
         Bundle param = getIntent().getExtras();
-        if (param != null) {
-            if (BuildConfig.DEBUG && param.size() != 2)
-                throw new AssertionError();
+        if (param != null && param.containsKey("link") && param.containsKey("storable")) {
             link = param.getStringArray("link");
             storable = param.getBoolean("storable");
-        }
+        } else if (BuildConfig.DEBUG)
+            throw new AssertionError();
 
         zoomImage = findViewById(R.id.image_full);
         RecyclerView imageList = findViewById(R.id.image_list);
