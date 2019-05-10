@@ -46,8 +46,8 @@ public class Tweet {
         String api = status.getSource();
         api = api.substring(api.indexOf('>') + 1);
         api = api.substring(0, api.indexOf('<'));
-
         source = api;
+
         if (status.getRetweetedStatus() != null)
             embedded = new Tweet(status.getRetweetedStatus());
         else
@@ -217,12 +217,10 @@ public class Tweet {
      */
     private String[] getMediaLinks(Status status) {
         MediaEntity[] mediaEntities = status.getMediaEntities();
-        String medialinks[] = new String[mediaEntities.length];
-        byte i = 0;
-        for (MediaEntity media : mediaEntities) {
-            medialinks[i++] = media.getMediaURLHttps();
-        }
-        return medialinks;
+        String[] medias = new String[mediaEntities.length];
+        for (int i = 0; i < medias.length; i++)
+            medias[i] = mediaEntities[i].getMediaURLHttps();
+        return medias;
     }
 
     /**
@@ -244,11 +242,8 @@ public class Tweet {
     private String getText(Status status) {
         URLEntity entities[] = status.getURLEntities();
         StringBuilder tweet = new StringBuilder(status.getText());
-
-        for (int i = entities.length - 1; i >= 0; i--) {
-            URLEntity entity = entities[i];
-            tweet.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
-        }
+        for (int i = entities.length - 1; i >= 0; i--)
+            tweet.replace(entities[i].getStart(), entities[i].getEnd(), entities[i].getExpandedURL());
         return tweet.toString();
     }
 }

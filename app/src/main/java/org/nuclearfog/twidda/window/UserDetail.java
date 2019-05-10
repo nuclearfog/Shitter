@@ -8,14 +8,14 @@ import android.view.View;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.UserPagerAdapter;
-import org.nuclearfog.twidda.adapter.UserPagerAdapter.Mode;
+import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 public class UserDetail extends AppCompatActivity {
 
     public enum UserType {
-        FOLLOWING,
+        FRIENDS,
         FOLLOWERS,
         RETWEETS,
         FAVORITS,
@@ -37,7 +37,7 @@ public class UserDetail extends AppCompatActivity {
             throw new AssertionError();
         }
 
-        UserPagerAdapter adapter;
+        FragmentAdapter adapter;
         View root = findViewById(R.id.user_view);
         ViewPager pager = findViewById(R.id.user_pager);
         Toolbar toolbar = findViewById(R.id.user_toolbar);
@@ -47,28 +47,28 @@ public class UserDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         switch (mode) {
-            case FOLLOWING:
+            case FRIENDS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.following);
-                adapter = new UserPagerAdapter(getSupportFragmentManager(), Mode.FOLLOWING, id);
+                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FRIENDS_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             case FOLLOWERS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.follower);
-                adapter = new UserPagerAdapter(getSupportFragmentManager(), Mode.FOLLOWERS, id);
+                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FOLLOWER_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             case RETWEETS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.retweet);
-                adapter = new UserPagerAdapter(getSupportFragmentManager(), Mode.RETWEETER, id);
+                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.RETWEETER_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             case FAVORITS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.favorite);
-                adapter = new UserPagerAdapter(getSupportFragmentManager(), Mode.FAVORS, id);
+                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FAVOR_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             default:

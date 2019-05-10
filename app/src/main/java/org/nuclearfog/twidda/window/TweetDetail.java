@@ -25,7 +25,8 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.TweetPagerAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -79,7 +80,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        TweetPagerAdapter adapter = new TweetPagerAdapter(getSupportFragmentManager(), tweetID, username);
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         tweetTxt.setMovementMethod(ScrollingMovementMethod.getInstance());

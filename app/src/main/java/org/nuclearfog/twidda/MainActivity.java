@@ -12,7 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import org.nuclearfog.twidda.adapter.HomePagerAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private static final int SETTING = 2;
 
     private GlobalSettings settings;
-    private HomePagerAdapter adapter;
+    private FragmentAdapter adapter;
     private TabLayout tab;
     private ViewPager pager;
     private int tabIndex = 0;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         settings = GlobalSettings.getInstance(this);
 
-        adapter = new HomePagerAdapter(getSupportFragmentManager());
+        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.HOME_TAB, 0, "");
         pager.setAdapter(adapter);
 
         pager.setOffscreenPageLimit(3);

@@ -14,7 +14,8 @@ import android.view.View;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.SearchPagerAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 
@@ -50,7 +51,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         root.setBackgroundColor(settings.getBackgroundColor());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
 
-        SearchPagerAdapter adapter = new SearchPagerAdapter(getSupportFragmentManager(), search);
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
         tab.setupWithViewPager(pager);
         tab.addOnTabSelectedListener(this);
         pager.setAdapter(adapter);

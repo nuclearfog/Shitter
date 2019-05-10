@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.HomePagerAdapter.OnSettingsChanged;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.OnSettingsChanged;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;

@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.HomePagerAdapter.OnSettingsChanged;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.OnSettingsChanged;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;

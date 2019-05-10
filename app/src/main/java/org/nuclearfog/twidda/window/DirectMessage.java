@@ -10,7 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.MessagePagerAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 
@@ -30,7 +31,7 @@ public class DirectMessage extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.directmessage);
 
-        MessagePagerAdapter adapter = new MessagePagerAdapter(getSupportFragmentManager());
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.MESSAGE_PAGE, 0, "");
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 

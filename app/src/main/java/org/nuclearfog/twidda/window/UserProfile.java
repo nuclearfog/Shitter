@@ -21,7 +21,8 @@ import android.widget.TextView;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.ProfilePagerAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.ProfileLoader.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -82,7 +83,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         icons[0] = inflater.inflate(R.layout.tab_tw, null);
         icons[1] = inflater.inflate(R.layout.tab_fa, null);
 
-        ProfilePagerAdapter adapter = new ProfilePagerAdapter(getSupportFragmentManager(), userId);
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.PROFILE_TAB, userId, "");
         pager.setOffscreenPageLimit(2);
         pager.setAdapter(adapter);
         tab.setupWithViewPager(pager);
@@ -264,7 +265,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 case R.id.following:
                     Intent following = new Intent(this, UserDetail.class);
                     following.putExtra("ID", userId);
-                    following.putExtra("mode", UserDetail.UserType.FOLLOWING);
+                    following.putExtra("mode", UserDetail.UserType.FRIENDS);
                     startActivity(following);
                     break;
 

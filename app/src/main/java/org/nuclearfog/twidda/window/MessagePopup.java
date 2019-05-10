@@ -17,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -39,10 +38,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         String username = "";
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            if (param.containsKey("username"))
-                username = param.getString("username");
-        } else if (BuildConfig.DEBUG) {
-            throw new AssertionError();
+            username = param.getString("username");
         }
 
         View root = findViewById(R.id.dm_popup);
