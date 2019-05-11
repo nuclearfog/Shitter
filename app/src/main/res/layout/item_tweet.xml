@@ -87,7 +87,6 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/icon_margin"
                         android:layout_marginRight="@dimen/icon_margin"
-                        android:layout_weight="1"
                         android:contentDescription="@string/verify"
                         android:visibility="gone"
                         app:srcCompat="@drawable/lock" />
