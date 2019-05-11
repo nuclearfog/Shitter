@@ -50,7 +50,6 @@
 
     <!--Tabs-->
     <dimen name="tab_padding_top">5dp</dimen>
-    <dimen name="tweet_footer_icon_dist">80dp</dimen>
 
     <!--Text limitation-->
     <integer name="tweet_max_line">10</integer>

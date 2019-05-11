@@ -34,7 +34,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     private NumberFormat formatter;
     private int highlight;
     private int font_color;
-    private boolean img_ldr = true;
+    private boolean image_load;
 
 
     public TweetAdapter(OnItemClickListener l) {
@@ -43,6 +43,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         tweets = new Tweet[0];
         highlight = 0xFFFFFFFF;
         font_color = 0xFFFFFFFF;
+        image_load = true;
     }
 
 
@@ -53,7 +54,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
 
     public void toggleImage(boolean image_load) {
-        img_ldr = image_load;
+        this.image_load = image_load;
     }
 
 
@@ -139,8 +140,11 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.verify.setVisibility(View.VISIBLE);
         else
             vh.verify.setVisibility(View.GONE);
-
-        if (img_ldr)
+        if (tweet.getUser().isLocked())
+            vh.lock.setVisibility(View.VISIBLE);
+        else
+            vh.lock.setVisibility(View.GONE);
+        if (image_load)
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
     }
 
@@ -172,7 +176,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     class ItemHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;
         final TextView favorite, retweeter, time;
-        final ImageView profile, verify;
+        final ImageView profile, verify, lock;
         final ImageView rtButton, fvButton;
 
         ItemHolder(View v) {
@@ -186,6 +190,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             time = v.findViewById(R.id.time);
             profile = v.findViewById(R.id.tweetPb);
             verify = v.findViewById(R.id.list_verify);
+            lock = v.findViewById(R.id.list_locked);
             rtButton = v.findViewById(R.id.rt_button);
             fvButton = v.findViewById(R.id.fv_button);
         }
