@@ -2,8 +2,9 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.support.annotation.NonNull;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 
@@ -75,7 +76,7 @@ public abstract class ErrorHandler {
                 ConnectivityManager mConnect = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
                 if (mConnect.getActiveNetworkInfo() == null || !mConnect.getActiveNetworkInfo().isConnected()) {
                     Toast.makeText(c, R.string.connection_failed, Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (error.getStatusCode() != 401) {
                     String strMsg = error.getMessage();
                     if (strMsg != null && !strMsg.trim().isEmpty())
                         Toast.makeText(c, strMsg, Toast.LENGTH_LONG).show();

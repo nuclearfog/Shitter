@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -16,7 +16,7 @@
             android:gravity="fill_vertical"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 style="@style/ProfileImageCardView"
                 android:layout_width="@dimen/profile_small"
                 android:layout_height="@dimen/profile_small">
@@ -27,7 +27,7 @@
                     android:layout_height="@dimen/profile_small"
                     android:contentDescription="@string/profile_image" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -106,4 +106,4 @@
 
     </LinearLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

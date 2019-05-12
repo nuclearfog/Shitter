@@ -1,22 +1,29 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.OnTabSelectedListener;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog.Builder;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog.Builder;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
@@ -34,9 +41,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     private ProfileLoader profileAsync;
     private ViewPager pager;
+    private TextView lnkTxt;
     private View[] icons;
 
-    private boolean home, isFriend, isBlocked, isMuted, isLocked, canDm, requested;
+    private boolean home, isFriend, isBlocked;
+    private boolean isMuted, isLocked, canDm, requested;
     private String username;
     private long userId;
 
@@ -58,11 +67,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         Toolbar tool = findViewById(R.id.profile_toolbar);
         TabLayout tab = findViewById(R.id.profile_tab);
         TextView bioTxt = findViewById(R.id.bio);
-        TextView lnkTxt = findViewById(R.id.links);
-        View following = findViewById(R.id.following);
-        View follower = findViewById(R.id.follower);
+        Button following = findViewById(R.id.following);
+        Button follower = findViewById(R.id.follower);
         View root = findViewById(R.id.user_view);
         pager = findViewById(R.id.profile_pager);
+        lnkTxt = findViewById(R.id.links);
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
@@ -72,7 +81,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         home = userId == settings.getUserId();
 
         bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
-        lnkTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setLinkTextColor(settings.getHighlightColor());
@@ -260,22 +268,36 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onClick(View v) {
-        if (!isLocked) {
-            switch (v.getId()) {
-                case R.id.following:
+        switch (v.getId()) {
+            case R.id.following:
+                if (!isLocked) {
                     Intent following = new Intent(this, UserDetail.class);
                     following.putExtra("ID", userId);
                     following.putExtra("mode", UserDetail.UserType.FRIENDS);
                     startActivity(following);
-                    break;
+                }
+                break;
 
-                case R.id.follower:
+            case R.id.follower:
+                if (!isLocked) {
                     Intent follower = new Intent(this, UserDetail.class);
                     follower.putExtra("ID", userId);
                     follower.putExtra("mode", UserDetail.UserType.FOLLOWERS);
                     startActivity(follower);
-                    break;
-            }
+                }
+                break;
+
+            case R.id.links:
+                ConnectivityManager mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    String link = lnkTxt.getText().toString();
+                    intent.setData(Uri.parse(link));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

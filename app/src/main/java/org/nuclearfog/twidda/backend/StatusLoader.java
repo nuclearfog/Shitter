@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -10,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.squareup.picasso.Picasso;
 
@@ -145,8 +146,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
                 TextView tweetDate = ui.get().findViewById(R.id.timedetail);
                 TextView tweet_api = ui.get().findViewById(R.id.used_api);
-                View tweet_verify = ui.get().findViewById(R.id.tweet_verify);
-                View tweet_locked = ui.get().findViewById(R.id.tweet_locked);
                 View tweet_footer = ui.get().findViewById(R.id.tweet_foot);
 
                 Spannable sTweet = Tagger.makeText(tweet.getTweet(), highlight, ui.get());
@@ -160,10 +159,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 tweet_api.setTextColor(font_color);
 
                 if (tweet.getUser().isVerified()) {
-                    tweet_verify.setVisibility(VISIBLE);
+                    username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+                } else {
+                    username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 if (tweet.getUser().isLocked()) {
-                    tweet_locked.setVisibility(VISIBLE);
+                    scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+                } else {
+                    scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length > 0) {
                     View mediaButton = ui.get().findViewById(R.id.image_attach);

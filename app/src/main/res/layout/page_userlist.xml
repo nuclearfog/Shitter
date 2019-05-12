@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/user_toolbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_wide" />
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/user_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

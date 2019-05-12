@@ -3,12 +3,13 @@ package org.nuclearfog.twidda.backend;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.window.MessagePopup;

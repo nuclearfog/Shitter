@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -10,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.squareup.picasso.Picasso;
 
@@ -90,10 +91,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                     publishProgress();
                 }
             }
-            user = mTwitter.getUser(UID);
-            publishProgress();
-            db.storeUser(user);
-
             if (!isHome) {
                 boolean[] connection = mTwitter.getConnection(UID);
                 isFriend = connection[0];
@@ -102,6 +99,10 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                 isMuted = connection[3];
                 canDm = connection[4];
             }
+
+            user = mTwitter.getUser(UID);
+            publishProgress();
+            db.storeUser(user);
 
             switch (mode) {
                 case ACTION_FOLLOW:
@@ -164,12 +165,8 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
         TextView txtFollowing = ui.get().findViewById(R.id.following);
         TextView txtFollower = ui.get().findViewById(R.id.follower);
         TextView txtCreated = ui.get().findViewById(R.id.profile_date);
-        View location_ico = ui.get().findViewById(R.id.loction_ico);
-        View link_ico = ui.get().findViewById(R.id.links_ico);
-        View locked = ui.get().findViewById(R.id.profile_locked);
-        View verified = ui.get().findViewById(R.id.profile_verify);
-        View following = ui.get().findViewById(R.id.followback);
         View profile_head = ui.get().findViewById(R.id.profile_header);
+        View follow_back = ui.get().findViewById(R.id.follow_back);
 
         Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
         txtBio.setMovementMethod(LinkMovementMethod.getInstance());
@@ -180,35 +177,35 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
         String date = sdf.format(new Date(user.getCreatedAt()));
         txtCreated.setText(date);
         txtBio.setText(bio);
-        if (profile_head.getVisibility() != VISIBLE)
-            profile_head.setVisibility(VISIBLE);
-        if (isFollower)
-            following.setVisibility(VISIBLE);
-        else
-            following.setVisibility(GONE);
-        if (user.isVerified())
-            verified.setVisibility(VISIBLE);
-        else
-            verified.setVisibility(GONE);
-        if (user.isLocked())
-            locked.setVisibility(VISIBLE);
-        else
-            locked.setVisibility(GONE);
+
+        if (user.isVerified()) {
+            txtUser.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+        } else {
+            txtUser.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        if (user.isLocked()) {
+            txtScrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+        } else {
+            txtScrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        if (isFollower) {
+            follow_back.setVisibility(VISIBLE);
+        } else {
+            follow_back.setVisibility(View.INVISIBLE);
+        }
         if (user.getLocation() != null && !user.getLocation().isEmpty()) {
             txtLocation.setText(user.getLocation());
             txtLocation.setVisibility(VISIBLE);
-            location_ico.setVisibility(VISIBLE);
         } else {
             txtLocation.setVisibility(GONE);
-            location_ico.setVisibility(GONE);
         }
         if (user.getLink() != null && !user.getLink().isEmpty()) {
             txtLink.setText(user.getLink());
             txtLink.setVisibility(VISIBLE);
-            link_ico.setVisibility(VISIBLE);
+            txtLink.setOnClickListener(ui.get());
         } else {
             txtLink.setVisibility(GONE);
-            link_ico.setVisibility(GONE);
+            txtLink.setOnClickListener(null);
         }
         if (imgEnabled) {
             String link = user.getImageLink() + "_bigger";
@@ -225,6 +222,9 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                 }
             });
         }
+        if (profile_head.getVisibility() != VISIBLE)
+            profile_head.setVisibility(VISIBLE);
+
         ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
     }
 

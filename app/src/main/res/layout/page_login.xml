@@ -24,38 +24,25 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_marginEnd="@dimen/layout_margin"
-            android:layout_marginRight="@dimen/layout_margin"
-            android:contentDescription="@string/clipboard_icon"
-            app:srcCompat="@drawable/key" />
-
         <EditText
             android:id="@+id/pin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:drawablePadding="@dimen/drawable_padding"
             android:hint="@string/pin"
             android:inputType="numberPassword"
             android:singleLine="true"
-            android:textSize="24sp" />
-
-        <ImageButton
-            android:id="@+id/clipboard"
-            android:layout_width="@dimen/button_size"
-            android:layout_height="@dimen/button_size"
-            android:layout_marginStart="@dimen/layout_margin"
-            android:layout_marginLeft="@dimen/layout_margin"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/paste_from_clipboard"
-            app:srcCompat="@drawable/copy" />
+            android:textSize="24sp"
+            app:drawableEndCompat="@drawable/copy"
+            app:drawableLeftCompat="@drawable/key"
+            app:drawableRightCompat="@drawable/copy"
+            app:drawableStartCompat="@drawable/key" />
 
     </LinearLayout>
 
     <Button
-        android:id="@+id/get"
+        android:id="@+id/verifier"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

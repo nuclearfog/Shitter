@@ -1,17 +1,19 @@
 package org.nuclearfog.twidda.window;
 
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.LightingColorFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
@@ -27,9 +29,12 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         super.onCreate(b);
         setContentView(R.layout.page_login);
         pin = findViewById(R.id.pin);
-        findViewById(R.id.linkButton).setOnClickListener(this);
-        findViewById(R.id.get).setOnClickListener(this);
-        findViewById(R.id.clipboard).setOnClickListener(this);
+        Button btnLink = findViewById(R.id.linkButton);
+        Button btnVeri = findViewById(R.id.verifier);
+        btnLink.getBackground().setColorFilter(new LightingColorFilter(0xffffffff, 0xff00aa));
+        btnVeri.getBackground().setColorFilter(new LightingColorFilter(0xffffffff, 0xff00aa));
+        btnLink.setOnClickListener(this);
+        btnVeri.setOnClickListener(this);
     }
 
 
@@ -59,26 +64,13 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
                 registerAsync.execute("");
                 break;
 
-            case R.id.get:
+            case R.id.verifier:
                 String twitterPin = pin.getText().toString();
                 if (!twitterPin.trim().isEmpty()) {
                     registerAsync = new Registration(this);
                     registerAsync.execute(twitterPin);
                 } else {
                     Toast.makeText(this, R.string.enter_pin, Toast.LENGTH_LONG).show();
-                }
-                break;
-
-            case R.id.clipboard:
-                ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                if (clip != null && clip.getPrimaryClip() != null) {
-                    String text = clip.getPrimaryClip().getItemAt(0).getText().toString();
-                    if (text.matches("\\d++\n?")) {
-                        pin.setText(text);
-                        Toast.makeText(this, R.string.pin_added, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, R.string.false_format, Toast.LENGTH_LONG).show();
-                    }
                 }
                 break;
         }

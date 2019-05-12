@@ -4,7 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Trend;

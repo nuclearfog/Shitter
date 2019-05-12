@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.backend.items;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
