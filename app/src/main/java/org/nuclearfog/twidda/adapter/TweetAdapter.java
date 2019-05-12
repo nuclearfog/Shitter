@@ -130,21 +130,21 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         vh.time.setTextColor(font_color);
 
         if (tweet.retweeted())
-            vh.rtButton.setImageResource(R.drawable.retweet_enabled);
+            vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         else
-            vh.rtButton.setImageResource(R.drawable.retweet);
+            vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         if (tweet.favored())
-            vh.fvButton.setImageResource(R.drawable.favorite_enabled);
+            vh.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_enabled, 0, 0, 0);
         else
-            vh.fvButton.setImageResource(R.drawable.favorite);
+            vh.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
         if (tweet.getUser().isVerified())
-            vh.verify.setVisibility(View.VISIBLE);
+            vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
         else
-            vh.verify.setVisibility(View.GONE);
+            vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         if (tweet.getUser().isLocked())
-            vh.lock.setVisibility(View.VISIBLE);
+            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
-            vh.lock.setVisibility(View.GONE);
+            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         if (image_load)
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
     }
@@ -177,8 +177,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     class ItemHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;
         final TextView favorite, retweeter, time;
-        final ImageView profile, verify, lock;
-        final ImageView rtButton, fvButton;
+        final ImageView profile;
 
         ItemHolder(View v) {
             super(v);
@@ -190,10 +189,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             retweeter = v.findViewById(R.id.retweeter);
             time = v.findViewById(R.id.time);
             profile = v.findViewById(R.id.tweetPb);
-            verify = v.findViewById(R.id.list_verify);
-            lock = v.findViewById(R.id.list_locked);
-            rtButton = v.findViewById(R.id.rt_button);
-            fvButton = v.findViewById(R.id.fv_button);
         }
     }
 }

@@ -24,28 +24,30 @@
             <EditText
                 android:id="@+id/dm_receiver"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dm_button_size"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/username"
                 android:inputType="text"
                 android:singleLine="true" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/dm_media"
                 android:layout_width="@dimen/dm_button_size"
                 android:layout_height="@dimen/dm_button_size"
                 android:layout_marginStart="@dimen/dm_icon_margin"
                 android:layout_marginLeft="@dimen/dm_icon_margin"
+                android:background="@drawable/button"
                 android:contentDescription="@string/add_image"
                 app:srcCompat="@drawable/image" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/dm_send"
                 android:layout_width="@dimen/dm_button_size"
                 android:layout_height="@dimen/dm_button_size"
                 android:layout_marginStart="@dimen/button_margin"
                 android:layout_marginLeft="@dimen/button_margin"
+                android:background="@drawable/button"
                 android:contentDescription="@string/close_dm"
                 app:srcCompat="@drawable/right" />
 

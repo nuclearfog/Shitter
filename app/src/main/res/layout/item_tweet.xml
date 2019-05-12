@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -21,7 +20,8 @@
             <androidx.cardview.widget.CardView
                 style="@style/ProfileImageCardView"
                 android:layout_width="@dimen/profile_small"
-                android:layout_height="@dimen/profile_small">
+                android:layout_height="@dimen/profile_small"
+                android:layout_marginRight="@dimen/layout_margin">
 
                 <ImageView
                     android:id="@+id/tweetPb"
@@ -43,21 +43,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/list_verify"
-                        android:layout_width="@dimen/icon_size"
-                        android:layout_height="@dimen/icon_size"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/icon_margin"
-                        android:layout_marginRight="@dimen/icon_margin"
-                        android:contentDescription="@string/verify"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/verify" />
-
                     <TextView
                         android:id="@+id/username"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/drawable_padding"
                         android:layout_gravity="start"
                         android:layout_weight="2"
                         android:gravity="start"
@@ -75,29 +65,12 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/screenname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/list_locked"
-                        android:layout_width="@dimen/icon_size"
-                        android:layout_height="@dimen/icon_size"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/icon_margin"
-                        android:layout_marginRight="@dimen/icon_margin"
-                        android:contentDescription="@string/verify"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/lock" />
-
-                    <TextView
-                        android:id="@+id/screenname"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:singleLine="true" />
-                </LinearLayout>
+                    android:drawablePadding="@dimen/drawable_padding"
+                    android:singleLine="true" />
 
             </LinearLayout>
 
@@ -119,41 +92,25 @@
                 android:id="@+id/retweeter"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/rt_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/icon_margin"
-                android:layout_marginRight="@dimen/icon_margin"
-                android:contentDescription="@string/retweet"
-                app:srcCompat="@drawable/retweet" />
 
             <TextView
                 android:id="@+id/retweet_number"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:drawablePadding="@dimen/drawable_padding"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:textSize="12sp" />
-
-            <ImageView
-                android:id="@+id/fv_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/icon_margin"
-                android:layout_marginRight="@dimen/icon_margin"
-                android:contentDescription="@string/favorite"
-                app:srcCompat="@drawable/favorite" />
 
             <TextView
                 android:id="@+id/favorite_number"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:drawablePadding="@dimen/drawable_padding"
+                android:layout_weight="1"
                 android:singleLine="true"
                 android:textSize="12sp" />
 

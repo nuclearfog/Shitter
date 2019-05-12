@@ -4,13 +4,11 @@
     <dimen name="profile_image">64dp</dimen>
     <dimen name="profile_middle">40dp</dimen>
     <dimen name="profile_small">36dp</dimen>
-    <dimen name="icon_size">14dp</dimen>
     <dimen name="layout_margin">5dp</dimen>
     <dimen name="side_padding">10dp</dimen>
     <dimen name="icon_margin">5dp</dimen>
     <dimen name="divider">2dp</dimen>
     <dimen name="load_button">48dp</dimen>
-    <dimen name="button_size">24dp</dimen>
     <dimen name="button_margin">5dp</dimen>
     <dimen name="image_height">300dp</dimen>
     <dimen name="button_padding">40dp</dimen>
@@ -21,9 +19,9 @@
     <dimen name="tweet_profile">56dp</dimen>
     <dimen name="tweet_page_icon">20dp</dimen>
     <dimen name="dm_icon_margin">5dp</dimen>
-    <dimen name="dm_button_size">32dp</dimen>
+    <dimen name="dm_button_size">40dp</dimen>
     <dimen name="tweet_icon_margin">16dp</dimen>
-    <dimen name="tweet_button_size">32dp</dimen>
+    <dimen name="tweet_button_size">40dp</dimen>
     <dimen name="bio_height">150dp</dimen>
     <dimen name="editprofile_padding">20dp</dimen>
     <dimen name="tab_padding_top">5dp</dimen>

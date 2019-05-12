@@ -18,6 +18,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -115,6 +116,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
         Spanned text;
         Message message = messages[index];
+        TwitterUser user = message.getSender();
         if (itemClickListener.get() != null)
             text = Tagger.makeText(message.getText(), highlight, itemClickListener.get());
         else
@@ -123,14 +125,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
         vh.message.setText(text);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.message.setLinkTextColor(highlight);
-        vh.username.setText(message.getSender().getUsername());
-        vh.screenname.setText(message.getSender().getScreenname());
+        vh.username.setText(user.getUsername());
+        vh.screenname.setText(user.getScreenname());
         vh.createdAt.setText(stringTime(message.getTime()));
 
         vh.message.setTextColor(fontColor);
         vh.username.setTextColor(fontColor);
         vh.screenname.setTextColor(fontColor);
         vh.createdAt.setTextColor(fontColor);
+
+        if (user.isVerified())
+            vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+        else
+            vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        if (user.isLocked())
+            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+        else
+            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
         if (loadImage) {
             String link = message.getSender().getImageLink() + "_mini";

@@ -18,13 +18,15 @@
 
             <androidx.cardview.widget.CardView
                 style="@style/ProfileImageCardView"
-                android:layout_width="@dimen/profile_small"
-                android:layout_height="@dimen/profile_small">
+                android:layout_width="@dimen/profile_middle"
+                android:layout_height="@dimen/profile_middle"
+                android:layout_marginRight="@dimen/layout_margin"
+                android:layout_marginEnd="@dimen/layout_margin">
 
                 <ImageView
                     android:id="@+id/dm_profileImg"
-                    android:layout_width="@dimen/profile_small"
-                    android:layout_height="@dimen/profile_small"
+                    android:layout_width="@dimen/profile_middle"
+                    android:layout_height="@dimen/profile_middle"
                     android:contentDescription="@string/profile_image" />
 
             </androidx.cardview.widget.CardView>
@@ -39,6 +41,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -46,6 +49,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:drawablePadding="@dimen/drawable_padding"
                         android:singleLine="true"
                         android:textSize="12sp" />
 
@@ -65,6 +69,7 @@
                     android:id="@+id/dm_screenname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/drawable_padding"
                     android:singleLine="true"
                     android:textSize="12sp" />
 

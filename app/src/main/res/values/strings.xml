@@ -14,15 +14,12 @@
     <string name="font">Font</string>
     <string name="popup" translatable="false">Popup</string>
     <string name="highlight">Highlight</string>
-    <string name="verify">verified</string>
-    <string name="profile_locked">locked</string>
     <string name="load_factor">tweet count</string>
     <string name="block">Block</string>
     <string name="follow">follow</string>
     <string name="retry">retry</string>
     <string name="cancel">cancel!</string>
     <string name="color_settings">Color settings</string>
-    <string name="followback">follows you</string>
     <string name="data_load">data consumption</string>
     <string name="trend_setting">trend setting</string>
     <string name="profile">profile</string>
@@ -33,8 +30,6 @@
     <string name="delete_tweet">delete tweet?</string>
     <string name="connection_failed">connection failed</string>
     <string name="enter_pin">Enter PIN</string>
-    <string name="pin_added">PIN added!</string>
-    <string name="false_format">not valid!</string>
     <string name="delete_database_popup">delete database?</string>
     <string name="rate_limit_exceeded">"Rate limit exceeded, retry after(s): "</string>
     <string name="error_sending_tweet">error while sending</string>
@@ -85,11 +80,7 @@
     <string name="char_limit_reached">char limit reached!</string>
     <string name="link_to_clipboard">copy link to clipboard</string>
     <string name="copied_to_clipboard">Link copied to clipboard!</string>
-    <string name="location_name">Location name</string>
     <string name="profile_link">link</string>
-    <string name="profile_date">profile creation date</string>
-    <string name="paste_from_clipboard">paste from clipboard</string>
-    <string name="clipboard_icon">clipboard icon</string>
     <string name="image_preview_button">image preview button</string>
     <string name="answer_button">answer button</string>
     <string name="retweet_button">retweet button</string>

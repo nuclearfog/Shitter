@@ -2,10 +2,7 @@
 <resources>
     <string name="font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
-    <string name="verify">verifiziert</string>
-    <string name="profile_locked">Privat</string>
     <string name="load_factor">Anzahl Tweets</string>
-    <string name="followback">Folgt dir</string>
     <string name="follow">folgen</string>
     <string name="retry">wiederholen</string>
     <string name="cancel">abbrechen</string>
@@ -25,8 +22,6 @@
     <string name="delete_tweet">Tweet löschen?</string>
     <string name="connection_failed">Keine Internetverbindung!</string>
     <string name="enter_pin">PIN eingeben!</string>
-    <string name="pin_added">PIN eingefügt!</string>
-    <string name="false_format">Falsches Format!</string>
     <string name="delete_database_popup">Datenbank löschen?</string>
     <string name="rate_limit_exceeded">"Rate-Limit erreicht, weiter in (s): "</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
@@ -77,11 +72,7 @@
     <string name="char_limit_reached">Zeichenlimit erreicht!</string>
     <string name="link_to_clipboard">Link in Zwischenablage kopieren</string>
     <string name="copied_to_clipboard">Link in Zwischenablage kopiert!</string>
-    <string name="location_name">Standortname</string>
     <string name="profile_link">Link</string>
-    <string name="profile_date">Profil erstellt am</string>
-    <string name="paste_from_clipboard">Von Zwischenablage einfügen</string>
-    <string name="clipboard_icon">Clipboard Symbol</string>
     <string name="image_preview_button">Bildvorschau button</string>
     <string name="answer_button">Antwort Button</string>
     <string name="retweet_button">Retweet Button</string>

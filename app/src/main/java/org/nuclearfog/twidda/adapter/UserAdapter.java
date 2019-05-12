@@ -88,31 +88,29 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         TwitterUser user = mUser[index];
-        vh.screenname.setText(user.getScreenname());
         vh.username.setText(user.getUsername());
-
-        vh.screenname.setTextColor(font_color);
         vh.username.setTextColor(font_color);
-
+        vh.screenname.setText(user.getScreenname());
+        vh.screenname.setTextColor(font_color);
 
         if (loadImage) {
             Picasso.get().load(user.getImageLink() + "_mini").into(vh.profileImg);
         }
         if (user.isVerified()) {
-            vh.verifyIco.setVisibility(View.VISIBLE);
+            vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
         } else {
-            vh.verifyIco.setVisibility(View.GONE);
+            vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (user.isLocked()) {
-            vh.lockIco.setVisibility(View.VISIBLE);
+            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         } else {
-            vh.lockIco.setVisibility(View.GONE);
+            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
     }
 
 
     class ItemHolder extends ViewHolder {
-        final ImageView profileImg, verifyIco, lockIco;
+        final ImageView profileImg;
         final TextView username, screenname;
 
         ItemHolder(View v) {
@@ -120,8 +118,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
             username = v.findViewById(R.id.username_detail);
             screenname = v.findViewById(R.id.screenname_detail);
             profileImg = v.findViewById(R.id.user_profileimg);
-            verifyIco = v.findViewById(R.id.verified);
-            lockIco = v.findViewById(R.id.locked_profile);
         }
     }
 }

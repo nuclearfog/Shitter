@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -15,7 +14,8 @@
         <androidx.cardview.widget.CardView
             style="@style/ProfileImageCardView"
             android:layout_width="@dimen/profile_middle"
-            android:layout_height="@dimen/profile_middle">
+            android:layout_height="@dimen/profile_middle"
+            android:layout_marginRight="@dimen/layout_margin">
 
             <ImageView
                 android:id="@+id/user_profileimg"
@@ -32,55 +32,19 @@
             android:layout_marginLeft="@dimen/layout_margin"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/username_detail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/drawable_padding"
+                android:singleLine="true" />
 
-                <ImageView
-                    android:id="@+id/verified"
-                    android:layout_width="@dimen/icon_size"
-                    android:layout_height="@dimen/icon_size"
-                    android:layout_marginEnd="@dimen/icon_margin"
-                    android:layout_marginRight="@dimen/icon_margin"
-                    android:contentDescription="@string/verify"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/verify" />
-
-                <TextView
-                    android:id="@+id/username_detail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:singleLine="true" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/screenname_detail"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/locked_profile"
-                    android:layout_width="@dimen/icon_size"
-                    android:layout_height="@dimen/icon_size"
-                    android:layout_marginEnd="@dimen/icon_margin"
-                    android:layout_marginRight="@dimen/icon_margin"
-                    android:contentDescription="@string/profile_locked"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/lock" />
-
-                <TextView
-                    android:id="@+id/screenname_detail"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:singleLine="true" />
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/drawable_padding"
+                android:singleLine="true" />
 
         </LinearLayout>
 
