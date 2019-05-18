@@ -624,19 +624,13 @@ public class DatabaseAdapter {
 
     private void storeUser(TwitterUser user, SQLiteDatabase db, int mode) {
         ContentValues userColumn = new ContentValues();
-        int userRegister = getUserStatus(db, user.getId());
+        int userRegister = 0;
         if (user.isVerified())
             userRegister |= VER_MASK;
-        else
-            userRegister &= ~VER_MASK;
         if (user.isLocked())
             userRegister |= LCK_MASK;
-        else
-            userRegister &= ~LCK_MASK;
         if (user.followRequested())
             userRegister |= FRQ_MASK;
-        else
-            userRegister &= ~FRQ_MASK;
 
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
