@@ -131,7 +131,7 @@ public class ImageDetail extends AppCompatActivity implements OnImageClickListen
             Toast.makeText(this, R.string.image_saved, Toast.LENGTH_LONG).show();
             output.close();
         } catch (Exception err) {
-            err.printStackTrace();
+            Toast.makeText(this, R.string.image_store_failure, Toast.LENGTH_SHORT).show();
         }
     }
 }

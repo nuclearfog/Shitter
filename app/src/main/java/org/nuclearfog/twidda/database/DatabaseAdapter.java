@@ -32,6 +32,7 @@ public class DatabaseAdapter {
     private static final int VER_MASK = 1;          //  USER VERIFIED MASK
     private static final int LCK_MASK = 1 << 1;     //  USER LOCKED MASK
     private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
+    private static final int EXCL_USR = 1 << 3;     //  EXCLUDE USERS TWEETS
 
     private AppDatabase dataHelper;
     private long homeId;
@@ -199,7 +200,7 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
-                "WHERE statusregister&" + HOM_MASK + ">0 " +
+                "WHERE statusregister&" + HOM_MASK + " IS NOT 0 " +
                 "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
@@ -223,7 +224,8 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID=user.userID " +
-                "WHERE statusregister&" + MEN_MASK + ">0 " +
+                "WHERE statusregister&" + MEN_MASK + " IS NOT 0 " +
+                "AND userregister&" + EXCL_USR + " IS 0 " +
                 "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
@@ -248,7 +250,7 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE statusregister&" + UTW_MASK + ">0 " +
+                "WHERE statusregister&" + UTW_MASK + " IS NOT 0 " +
                 "AND user.userID =" + userID +
                 " ORDER BY tweetID DESC LIMIT " + LIMIT;
 
@@ -323,7 +325,7 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + RPL_MASK + ">0 " +
+                "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + RPL_MASK + " IS NOT 0 " +
                 "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
@@ -504,6 +506,33 @@ public class DatabaseAdapter {
         c.close();
         close(db);
         return result;
+    }
+
+
+    /**
+     * remove user from mention results
+     *
+     * @param id   user ID
+     * @param mute true remove user tweets from mention results
+     */
+    public void muteUser(long id, boolean mute) {
+        SQLiteDatabase db = getDbWrite();
+        final String query = "SELECT userregister FROM user WHERE userID=" + id + " LIMIT 1";
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            int index = cursor.getColumnIndex("userregister");
+            int userRegister = cursor.getInt(index);
+            if (mute)
+                userRegister |= EXCL_USR;
+            else
+                userRegister &= ~EXCL_USR;
+
+            ContentValues userColumn = new ContentValues();
+            userColumn.put("userregister", userRegister);
+            db.update("user", userColumn, "user.userID=" + id, null);
+        }
+        cursor.close();
+        commit(db);
     }
 
 

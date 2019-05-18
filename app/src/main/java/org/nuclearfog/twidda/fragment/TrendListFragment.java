@@ -26,7 +26,6 @@ import org.nuclearfog.twidda.window.SearchPage;
 
 public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnSettingsChanged {
 
-    private GlobalSettings settings;
     private TrendLoader trendTask;
     private SwipeRefreshLayout reload;
     private TrendAdapter adapter;
@@ -36,19 +35,16 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         super.onCreateView(inflater, parent, param);
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
-
-        settings = GlobalSettings.getInstance(getContext());
-        adapter = new TrendAdapter(this);
-        adapter.setColor(settings.getFontColor());
-
-        reload = v.findViewById(R.id.fragment_reload);
-        reload.setOnRefreshListener(this);
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-
         RecyclerView list = v.findViewById(R.id.fragment_list);
+        reload = v.findViewById(R.id.fragment_reload);
+
+        reload.setOnRefreshListener(this);
+        adapter = new TrendAdapter(this);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
+
+        onSettingsChange();
         return v;
     }
 
@@ -99,7 +95,8 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void settingsChanged() {
+    public void onSettingsChange() {
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getFontColor());
         adapter.notifyDataSetChanged();

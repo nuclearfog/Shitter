@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.adapter;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -30,7 +31,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     private final Fragment[] fragments;
 
     public FragmentAdapter(FragmentManager fManager, AdapterType mode, long id, String search) {
-        super(fManager);
+        super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         switch (mode) {
             case HOME_TAB:
                 Bundle home_tl = new Bundle();
@@ -139,6 +140,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
 
     @Override
+    @NonNull
     public Fragment getItem(int index) {
         return fragments[index];
     }
@@ -153,13 +155,13 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     public void notifySettingsChanged() {
         for (Fragment fragment : fragments) {
             if (fragment instanceof OnSettingsChanged)
-                ((OnSettingsChanged) fragment).settingsChanged();
+                ((OnSettingsChanged) fragment).onSettingsChange();
         }
     }
 
 
     public interface OnSettingsChanged {
 
-        void settingsChanged();
+        void onSettingsChange();
     }
 }

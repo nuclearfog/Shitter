@@ -37,7 +37,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         SEARCH,
     }
 
-    private GlobalSettings settings;
     private TweetLoader tweetTask;
     private SwipeRefreshLayout reload;
     private TweetAdapter adapter;
@@ -62,20 +61,16 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         }
 
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
-
         reload = v.findViewById(R.id.fragment_reload);
         reload.setOnRefreshListener(this);
         adapter = new TweetAdapter(this);
-
-        settings = GlobalSettings.getInstance(getContext());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-        adapter.toggleImage(settings.getImageLoad());
 
         RecyclerView list = v.findViewById(R.id.fragment_list);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
+
+        onSettingsChange();
 
         return v;
     }
@@ -184,7 +179,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void settingsChanged() {
+    public void onSettingsChange() {
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());

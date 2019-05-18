@@ -129,6 +129,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                         user = mTwitter.unblockUser(UID);
                     isBlocked = !isBlocked;
                     publishProgress();
+                    db.muteUser(UID, isBlocked);
                     break;
 
                 case ACTION_MUTE:
@@ -138,6 +139,7 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                         user = mTwitter.unmuteUser(UID);
                     isMuted = !isMuted;
                     publishProgress();
+                    db.muteUser(UID, isMuted);
                     break;
             }
         } catch (TwitterException err) {
