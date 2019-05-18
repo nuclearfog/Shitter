@@ -151,7 +151,7 @@ public class DatabaseAdapter {
         ContentValues favTable = new ContentValues();
         ContentValues status = new ContentValues();
 
-        int register = getStatRegister(db, tweetID);
+        int register = getTweetStatus(db, tweetID);
         register |= FAV_MASK;
 
         favTable.put("tweetID", tweetID);
@@ -348,7 +348,7 @@ public class DatabaseAdapter {
         SQLiteDatabase db = getDbWrite();
         ContentValues statColumn = new ContentValues();
         ContentValues userColumn = new ContentValues();
-        int register = getStatRegister(db, tweet.getId());
+        int register = getTweetStatus(db, tweet.getId());
         if (tweet.retweeted())
             register |= RTW_MASK;
         else
@@ -412,7 +412,7 @@ public class DatabaseAdapter {
      */
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = getDbWrite();
-        int register = getStatRegister(db, tweetId);
+        int register = getTweetStatus(db, tweetId);
         register &= ~FAV_MASK;
         ContentValues status = new ContentValues();
         status.put("statusregister", register);
@@ -517,21 +517,16 @@ public class DatabaseAdapter {
      */
     public void muteUser(long id, boolean mute) {
         SQLiteDatabase db = getDbWrite();
-        final String query = "SELECT userregister FROM user WHERE userID=" + id + " LIMIT 1";
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            int index = cursor.getColumnIndex("userregister");
-            int userRegister = cursor.getInt(index);
-            if (mute)
-                userRegister |= EXCL_USR;
-            else
-                userRegister &= ~EXCL_USR;
+        int userRegister = getUserStatus(db, id);
 
-            ContentValues userColumn = new ContentValues();
-            userColumn.put("userregister", userRegister);
-            db.update("user", userColumn, "user.userID=" + id, null);
-        }
-        cursor.close();
+        if (mute)
+            userRegister |= EXCL_USR;
+        else
+            userRegister &= ~EXCL_USR;
+
+        ContentValues userColumn = new ContentValues();
+        userColumn.put("userregister", userRegister);
+        db.update("user", userColumn, "user.userID=" + id, null);
         commit(db);
     }
 
@@ -629,13 +624,19 @@ public class DatabaseAdapter {
 
     private void storeUser(TwitterUser user, SQLiteDatabase db, int mode) {
         ContentValues userColumn = new ContentValues();
-        int userRegister = 0;
+        int userRegister = getUserStatus(db, user.getId());
         if (user.isVerified())
             userRegister |= VER_MASK;
+        else
+            userRegister &= ~VER_MASK;
         if (user.isLocked())
             userRegister |= LCK_MASK;
+        else
+            userRegister &= ~LCK_MASK;
         if (user.followRequested())
             userRegister |= FRQ_MASK;
+        else
+            userRegister &= ~FRQ_MASK;
 
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
@@ -667,7 +668,7 @@ public class DatabaseAdapter {
             rtId = rtStat.getId();
         }
 
-        statusRegister |= getStatRegister(db, tweet.getId());
+        statusRegister |= getTweetStatus(db, tweet.getId());
         if (tweet.favored()) {
             statusRegister |= FAV_MASK;
         } else {
@@ -726,12 +727,25 @@ public class DatabaseAdapter {
     }
 
 
-    private int getStatRegister(SQLiteDatabase db, long tweetID) {
+    private int getTweetStatus(SQLiteDatabase db, long tweetID) {
         final String query = "SELECT statusregister FROM tweet WHERE tweetID=" + tweetID + " LIMIT 1;";
         Cursor c = db.rawQuery(query, null);
         int result = 0;
         if (c.moveToFirst()) {
             int pos = c.getColumnIndex("statusregister");
+            result = c.getInt(pos);
+        }
+        c.close();
+        return result;
+    }
+
+
+    private int getUserStatus(SQLiteDatabase db, long userID) {
+        final String query = "SELECT userregister FROM user WHERE userID=" + userID + " LIMIT 1;";
+        Cursor c = db.rawQuery(query, null);
+        int result = 0;
+        if (c.moveToFirst()) {
+            int pos = c.getColumnIndex("userregister");
             result = c.getInt(pos);
         }
         c.close();

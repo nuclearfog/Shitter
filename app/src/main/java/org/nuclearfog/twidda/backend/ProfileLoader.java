@@ -87,9 +87,10 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
         try {
             if (mode == Mode.LDR_PROFILE) {
                 user = db.getUser(UID);
-                if (user != null) {
+                if (user != null)
                     publishProgress();
-                }
+                user = mTwitter.getUser(UID);
+                db.storeUser(user);
             }
             if (!isHome) {
                 boolean[] connection = mTwitter.getConnection(UID);
@@ -98,26 +99,23 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
                 isBlocked = connection[2];
                 isMuted = connection[3];
                 canDm = connection[4];
+                if (isBlocked || isMuted)
+                    db.muteUser(UID, true);
+                else
+                    db.muteUser(UID, false);
             }
-
-            user = mTwitter.getUser(UID);
-            publishProgress();
-            db.storeUser(user);
+            if (user != null)
+                publishProgress();
 
             switch (mode) {
                 case ACTION_FOLLOW:
-                    if (user.isLocked()) {
-                        if (isFriend)
-                            user = mTwitter.unfollowUser(UID);
-                        else if (!user.followRequested())
-                            user = mTwitter.followUser(UID);
-                        // TODO purge follow request
+                    if (!isFriend) {
+                        user = mTwitter.followUser(UID);
+                        if (!user.isLocked())
+                            isFriend = true;
                     } else {
-                        if (!isFriend)
-                            user = mTwitter.followUser(UID);
-                        else
-                            user = mTwitter.unfollowUser(UID);
-                        isFriend = !isFriend;
+                        user = mTwitter.unfollowUser(UID);
+                        isFriend = false;
                     }
                     publishProgress();
                     break;
