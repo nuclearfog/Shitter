@@ -27,8 +27,8 @@
 -dontwarn twitter4j.**
 -keep class twitter4j.** {*;}
 
--dontwarn javax.**
--keep class javax.** {*;}
+#-dontwarn javax.**
+#-keep class javax.** {*;}
 
--dontwarn org.conscrypt**
--keep class org.conscrypt** {*;}
+#-dontwarn org.conscrypt**
+#-keep class org.conscrypt** {*;}
