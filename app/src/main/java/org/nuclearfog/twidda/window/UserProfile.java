@@ -335,5 +335,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         this.isLocked = isLocked;
         this.canDm = canDm;
         this.requested = requested;
+        invalidateOptionsMenu();
     }
 }

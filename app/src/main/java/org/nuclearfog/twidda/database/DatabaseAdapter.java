@@ -508,7 +508,6 @@ public class DatabaseAdapter {
         return result;
     }
 
-
     /**
      * remove user from mention results
      *

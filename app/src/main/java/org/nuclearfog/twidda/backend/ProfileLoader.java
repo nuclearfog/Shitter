@@ -259,7 +259,6 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
             }
             if (!isHome) {
                 ui.get().setConnection(isFriend, isMuted, isBlocked, user.isLocked(), canDm, user.followRequested());
-                ui.get().invalidateOptionsMenu();
             }
         } else {
             if (err != null) {
