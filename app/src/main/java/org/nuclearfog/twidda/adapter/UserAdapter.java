@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +32,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     public UserAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         mUser = new TwitterUser[0];
-        font_color = 0xFFFFFFFF;
+        font_color = Color.WHITE;
         loadImage = true;
     }
 

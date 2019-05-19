@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.graphics.Color;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,8 +43,8 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
         tweets = new Tweet[0];
-        highlight = 0xFFFFFFFF;
-        font_color = 0xFFFFFFFF;
+        highlight = Color.WHITE;
+        font_color = Color.WHITE;
         image_load = true;
     }
 

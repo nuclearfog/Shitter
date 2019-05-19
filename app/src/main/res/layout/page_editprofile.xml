@@ -21,13 +21,13 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/editprofile_padding"
-            android:paddingRight="@dimen/editprofile_padding">
+            android:paddingLeft="@dimen/padding_editprofile"
+            android:paddingRight="@dimen/padding_editprofile">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/layout_margin"
+                android:layout_marginBottom="@dimen/margin_layout"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="10dp">
@@ -65,7 +65,7 @@
                 android:id="@+id/edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/layout_margin"
+                android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@android:color/transparent"
 
                 android:hint="@string/tweet"
@@ -82,7 +82,7 @@
                 android:id="@+id/edit_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/layout_margin"
+                android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:inputType="text"
@@ -98,7 +98,7 @@
                 android:id="@+id/edit_link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/layout_margin"
+                android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:inputType="text"
@@ -113,7 +113,7 @@
             <EditText
                 android:id="@+id/edit_bio"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/bio_height"
+                android:layout_height="@dimen/text_bio_height"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:gravity="top"

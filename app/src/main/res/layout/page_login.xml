@@ -13,7 +13,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/button_padding"
+        android:layout_marginBottom="@dimen/button_size"
         android:background="@drawable/button"
         android:text="@string/register_link"
         android:textSize="12sp" />
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:drawablePadding="@dimen/drawable_padding"
+            android:drawablePadding="@dimen/padding_drawable"
             android:hint="@string/pin"
             android:inputType="numberPassword"
             android:singleLine="true"
@@ -46,7 +46,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/button_padding"
+        android:layout_margin="@dimen/button_size"
         android:background="@drawable/button"
         android:text="@string/verifierbutton"
         android:textSize="12sp" />

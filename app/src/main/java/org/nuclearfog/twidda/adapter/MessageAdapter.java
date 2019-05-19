@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.graphics.Color;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -38,7 +39,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
     public MessageAdapter(OnItemSelected l) {
         itemClickListener = new WeakReference<>(l);
         messages = new Message[0];
-        fontColor = 0xFFFFFFFF;
+        fontColor = Color.WHITE;
         loadImage = true;
     }
 

@@ -31,8 +31,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical"
-                    android:paddingLeft="@dimen/layout_margin"
-                    android:paddingRight="@dimen/layout_margin"
+                    android:paddingLeft="@dimen/margin_layout"
+                    android:paddingRight="@dimen/margin_layout"
                     android:visibility="invisible">
 
                     <LinearLayout
@@ -55,9 +55,9 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/layout_margin"
-                            android:layout_marginLeft="@dimen/layout_margin"
-                            android:layout_marginBottom="@dimen/layout_margin"
+                            android:layout_marginStart="@dimen/margin_layout"
+                            android:layout_marginLeft="@dimen/margin_layout"
+                            android:layout_marginBottom="@dimen/margin_layout"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -65,14 +65,14 @@
                                 android:id="@+id/usernamedetail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:drawablePadding="@dimen/drawable_padding"
+                                android:drawablePadding="@dimen/padding_drawable"
                                 android:singleLine="true" />
 
                             <TextView
                                 android:id="@+id/scrnamedetail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:drawablePadding="@dimen/drawable_padding"
+                                android:drawablePadding="@dimen/padding_drawable"
                                 android:singleLine="true" />
 
                             <TextView
@@ -102,7 +102,7 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:linksClickable="true"
-                        android:maxLines="@integer/tweet_max_line"
+                        android:maxLines="@integer/text_tweet_lines"
                         android:scrollbars="vertical"
                         android:textSize="18sp" />
 
@@ -118,7 +118,7 @@
                         android:id="@+id/image_attach"
                         android:layout_width="64dp"
                         android:layout_height="36dp"
-                        android:layout_margin="@dimen/tweet_icon_margin"
+                        android:layout_margin="@dimen/margin_tweet_icon"
                         android:contentDescription="@string/image_preview_button"
                         android:background="@drawable/button"
                         android:visibility="gone"
@@ -149,21 +149,23 @@
                 android:layout_height="wrap_content"
                 android:addStatesFromChildren="false"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/side_padding"
-                android:paddingTop="@dimen/layout_margin"
-                android:paddingRight="@dimen/side_padding"
-                android:paddingBottom="@dimen/layout_margin"
+                android:paddingLeft="@dimen/padding_side"
+                android:paddingTop="@dimen/margin_layout"
+                android:paddingRight="@dimen/padding_side"
+                android:paddingBottom="@dimen/margin_layout"
                 android:visibility="invisible">
 
                 <Button
                     android:id="@+id/tweet_answer"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
-                    android:layout_marginLeft="@dimen/layout_margin"
-                    android:layout_marginRight="@dimen/layout_margin"
+                    android:layout_marginLeft="@dimen/margin_layout"
+                    android:layout_marginRight="@dimen/margin_layout"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/button"
-                    android:drawablePadding="@dimen/drawable_padding"
+                    android:drawablePadding="@dimen/padding_drawable"
                     android:singleLine="true"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     app:drawableLeftCompat="@drawable/answer"
@@ -173,11 +175,13 @@
                     android:id="@+id/tweet_retweet"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
-                    android:layout_marginLeft="@dimen/layout_margin"
-                    android:layout_marginRight="@dimen/layout_margin"
+                    android:layout_marginLeft="@dimen/margin_layout"
+                    android:layout_marginRight="@dimen/margin_layout"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/button"
-                    android:drawablePadding="@dimen/drawable_padding"
+                    android:drawablePadding="@dimen/padding_drawable"
                     android:singleLine="true"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     app:drawableLeftCompat="@drawable/retweet"
@@ -187,11 +191,13 @@
                     android:id="@+id/tweet_favorit"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
-                    android:layout_marginLeft="@dimen/layout_margin"
-                    android:layout_marginRight="@dimen/layout_margin"
+                    android:layout_marginLeft="@dimen/margin_layout"
+                    android:layout_marginRight="@dimen/margin_layout"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/button"
-                    android:drawablePadding="@dimen/drawable_padding"
+                    android:drawablePadding="@dimen/padding_drawable"
                     android:singleLine="true"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     app:drawableLeftCompat="@drawable/favorite"

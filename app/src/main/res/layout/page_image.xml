@@ -27,6 +27,6 @@
         android:id="@+id/image_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_margin" />
+        android:layout_marginTop="@dimen/margin_layout" />
 
 </LinearLayout>

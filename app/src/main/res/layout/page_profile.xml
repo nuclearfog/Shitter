@@ -31,14 +31,14 @@
                     android:layout_height="match_parent"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
-                    android:paddingLeft="@dimen/side_padding"
-                    android:paddingRight="@dimen/side_padding"
+                    android:paddingLeft="@dimen/padding_side"
+                    android:paddingRight="@dimen/padding_side"
                     android:visibility="invisible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/layout_margin"
+                        android:layout_marginBottom="@dimen/margin_layout"
                         android:orientation="horizontal">
 
                         <androidx.cardview.widget.CardView
@@ -57,15 +57,15 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/layout_margin"
-                            android:layout_marginLeft="@dimen/layout_margin"
+                            android:layout_marginStart="@dimen/margin_layout"
+                            android:layout_marginLeft="@dimen/margin_layout"
                             android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/profile_username"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:drawablePadding="@dimen/drawable_padding"
+                                android:drawablePadding="@dimen/padding_drawable"
                                 android:singleLine="true" />
 
                             <LinearLayout
@@ -78,18 +78,18 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:drawablePadding="@dimen/drawable_padding"
+                                    android:drawablePadding="@dimen/padding_drawable"
                                     android:singleLine="true" />
 
                                 <TextView
                                     android:id="@+id/follow_back"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginStart="5dp"
+                                    android:layout_marginLeft="@dimen/text_padding"
+                                    android:layout_marginStart="@dimen/text_padding"
                                     android:layout_weight="1"
                                     android:text="@string/follows_you"
-                                    android:drawablePadding="5dp"
+                                    android:drawablePadding="@dimen/padding_drawable"
                                     app:drawableLeftCompat="@drawable/followback"
                                     app:drawableStartCompat="@drawable/followback" />
 
@@ -98,7 +98,7 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_marginTop="@dimen/margin_layout"
                                 android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
@@ -106,10 +106,10 @@
                                     android:id="@+id/following"
                                     android:layout_width="0dp"
                                     android:layout_height="@dimen/button_height"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:paddingLeft="5dp"
-                                    android:paddingRight="5dp"
+                                    android:layout_marginLeft="@dimen/button_margin"
+                                    android:layout_marginRight="@dimen/button_margin"
+                                    android:paddingLeft="@dimen/button_padding"
+                                    android:paddingRight="@dimen/button_padding"
                                     android:layout_weight="1"
                                     android:singleLine="true"
                                     android:background="@drawable/button"
@@ -121,10 +121,10 @@
                                     android:id="@+id/follower"
                                     android:layout_width="0dp"
                                     android:layout_height="@dimen/button_height"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:paddingLeft="5dp"
-                                    android:paddingRight="5dp"
+                                    android:layout_marginLeft="@dimen/button_margin"
+                                    android:layout_marginRight="@dimen/button_margin"
+                                    android:paddingLeft="@dimen/button_padding"
+                                    android:paddingRight="@dimen/button_padding"
                                     android:layout_weight="1"
                                     android:singleLine="true"
                                     android:background="@drawable/button"
@@ -144,15 +144,15 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:linksClickable="true"
-                        android:maxLines="@integer/max_bio_lines"
+                        android:maxLines="@integer/text_bio_lines"
                         android:scrollbars="vertical" />
 
                     <TextView
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/layout_margin"
-                        android:drawablePadding="@dimen/drawable_padding"
+                        android:layout_marginTop="@dimen/margin_layout"
+                        android:drawablePadding="@dimen/padding_drawable"
                         android:singleLine="true"
                         android:textSize="12sp"
                         app:drawableLeftCompat="@drawable/location"
@@ -162,8 +162,8 @@
                         android:id="@+id/links"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/layout_margin"
-                        android:drawablePadding="@dimen/drawable_padding"
+                        android:layout_marginTop="@dimen/margin_layout"
+                        android:drawablePadding="@dimen/padding_drawable"
                         android:linksClickable="true"
                         android:singleLine="true"
                         android:textSize="12sp"
@@ -174,8 +174,8 @@
                         android:id="@+id/profile_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/layout_margin"
-                        android:drawablePadding="@dimen/drawable_padding"
+                        android:layout_marginTop="@dimen/margin_layout"
+                        android:drawablePadding="@dimen/padding_drawable"
                         android:singleLine="true"
                         android:textSize="12sp"
                         app:drawableLeftCompat="@drawable/calendar"

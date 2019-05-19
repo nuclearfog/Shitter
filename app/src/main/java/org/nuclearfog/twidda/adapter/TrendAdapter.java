@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,7 +29,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     public TrendAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         trends = new Trend[0];
-        font_color = 0xFFFFFFFF;
+        font_color = Color.WHITE;
     }
 
 

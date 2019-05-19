@@ -8,14 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:padding="@dimen/layout_margin">
+        android:padding="@dimen/margin_layout">
 
         <TextView
             android:id="@+id/trendpos"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/layout_margin"
-            android:layout_marginRight="@dimen/layout_margin"
+            android:layout_marginEnd="@dimen/margin_layout"
+            android:layout_marginRight="@dimen/margin_layout"
             android:layout_weight="1"
             android:gravity="center_vertical|end"
             android:singleLine="true"

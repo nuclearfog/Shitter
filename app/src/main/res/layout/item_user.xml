@@ -9,13 +9,13 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/layout_margin">
+        android:padding="@dimen/margin_layout">
 
         <androidx.cardview.widget.CardView
             style="@style/ProfileImageCardView"
             android:layout_width="@dimen/profile_middle"
             android:layout_height="@dimen/profile_middle"
-            android:layout_marginRight="@dimen/layout_margin">
+            android:layout_marginRight="@dimen/margin_layout">
 
             <ImageView
                 android:id="@+id/user_profileimg"
@@ -28,22 +28,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_margin"
-            android:layout_marginLeft="@dimen/layout_margin"
+            android:layout_marginStart="@dimen/margin_layout"
+            android:layout_marginLeft="@dimen/margin_layout"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/username_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/drawable_padding"
+                android:drawablePadding="@dimen/padding_drawable"
                 android:singleLine="true" />
 
             <TextView
                 android:id="@+id/screenname_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/drawable_padding"
+                android:drawablePadding="@dimen/padding_drawable"
                 android:singleLine="true" />
 
         </LinearLayout>

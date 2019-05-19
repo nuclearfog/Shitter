@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingTop="@dimen/tab_padding_top">
+    android:paddingTop="@dimen/padding_tab">
 
     <ImageView
         android:layout_width="18dp"

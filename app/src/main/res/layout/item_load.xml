@@ -13,8 +13,8 @@
 
     <ImageButton
         android:id="@+id/kill_button"
-        android:layout_width="@dimen/load_button"
-        android:layout_height="@dimen/load_button"
+        android:layout_width="@dimen/button_load"
+        android:layout_height="@dimen/button_load"
         android:layout_gravity="center"
         android:background="@android:color/transparent"
         android:contentDescription="@string/progress_kill"

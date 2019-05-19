@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.window;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.CompoundButtonCompat;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
@@ -39,6 +42,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private static final int HIGHLIGHT = 2;
     private static final int POPUPCOLOR = 3;
 
+    private static final int[][] checkboxStates = new int[][]{{android.R.attr.state_checked}, {}};
+    private final int[] checkboxColor = new int[]{0, Color.WHITE};
+
     private GlobalSettings settings;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private CheckBox toggleImg, toggleAns;
@@ -54,14 +60,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_settings);
-
-        Toolbar toolbar = findViewById(R.id.toolbar_setting);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.settings);
-
-        settings = GlobalSettings.getInstance(this);
-
         Button delButton = findViewById(R.id.delete_db);
         Button load_popup = findViewById(R.id.load_dialog);
         Button logout = findViewById(R.id.logout);
@@ -75,11 +73,21 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
         link = findViewById(R.id.settings_link);
-        root.setBackgroundColor(settings.getBackgroundColor());
 
+        Toolbar toolbar = findViewById(R.id.toolbar_setting);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.settings);
+
+        settings = GlobalSettings.getInstance(this);
+        root.setBackgroundColor(settings.getBackgroundColor());
+        checkboxColor[0] = settings.getHighlightColor();
+        CompoundButtonCompat.setButtonTintList(toggleImg, new ColorStateList(checkboxStates, checkboxColor));
+        CompoundButtonCompat.setButtonTintList(toggleAns, new ColorStateList(checkboxStates, checkboxColor));
+
+        logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
-        logout.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
@@ -224,6 +232,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
                 link.setLinkTextColor(color);
+                checkboxColor[0] = color;
+                CompoundButtonCompat.setButtonTintList(toggleImg, new ColorStateList(checkboxStates, checkboxColor));
+                CompoundButtonCompat.setButtonTintList(toggleAns, new ColorStateList(checkboxStates, checkboxColor));
                 break;
         }
     }
