@@ -25,6 +25,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     private static final int[] icons = {R.drawable.search, R.drawable.user};
 
+    private FragmentAdapter adapter;
     private ViewPager pager;
     private String search;
     private int tabIndex = 0;
@@ -53,7 +54,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         root.setBackgroundColor(settings.getBackgroundColor());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
+        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
         tab.setupWithViewPager(pager);
         tab.addOnTabSelectedListener(this);
         pager.setAdapter(adapter);
@@ -121,6 +122,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
+        adapter.scrollToTop(tab.getPosition());
     }
 
 

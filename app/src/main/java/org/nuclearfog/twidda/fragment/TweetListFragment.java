@@ -16,7 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.OnSettingsChanged;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.OnStateChange;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -26,7 +26,7 @@ import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 
-public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnSettingsChanged {
+public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
 
     public enum TweetType {
         HOME,
@@ -39,6 +39,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     private TweetLoader tweetTask;
     private SwipeRefreshLayout reload;
+    private RecyclerView list;
     private TweetAdapter adapter;
     private View root;
 
@@ -62,16 +63,15 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
         reload = v.findViewById(R.id.fragment_reload);
+        list = v.findViewById(R.id.fragment_list);
+
         reload.setOnRefreshListener(this);
         adapter = new TweetAdapter(this);
-
-        RecyclerView list = v.findViewById(R.id.fragment_list);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
 
         onSettingsChange();
-
         return v;
     }
 
@@ -185,5 +185,11 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onTabChange() {
+        list.smoothScrollToPosition(0);
     }
 }

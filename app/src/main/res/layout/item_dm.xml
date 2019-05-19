@@ -41,7 +41,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
+                    android:layout_marginBottom="@dimen/margin_layout"
                     android:orientation="horizontal">
 
                     <TextView
@@ -51,7 +51,7 @@
                         android:layout_weight="2"
                         android:drawablePadding="@dimen/padding_drawable"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/textsize_name" />
 
                     <TextView
                         android:id="@+id/dm_time"
@@ -61,7 +61,7 @@
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAlignment="gravity"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/textsize_date" />
 
                 </LinearLayout>
 
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/padding_drawable"
                     android:singleLine="true"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/textsize_name" />
 
             </LinearLayout>
 
@@ -98,14 +98,14 @@
                 android:layout_marginEnd="@dimen/padding_side"
                 android:layout_marginRight="@dimen/padding_side"
                 android:text="@string/answer"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_button" />
 
             <TextView
                 android:id="@+id/dm_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/delete_dm"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_button" />
 
         </LinearLayout>
 

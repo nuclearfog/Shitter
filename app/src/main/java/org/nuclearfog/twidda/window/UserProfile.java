@@ -40,6 +40,7 @@ import java.text.NumberFormat;
 public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener {
 
     private ProfileLoader profileAsync;
+    private FragmentAdapter adapter;
     private ViewPager pager;
     private TextView lnkTxt;
     private View[] icons;
@@ -91,7 +92,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         icons[0] = inflater.inflate(R.layout.tab_tw, null);
         icons[1] = inflater.inflate(R.layout.tab_fa, null);
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.PROFILE_TAB, userId, "");
+        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.PROFILE_TAB, userId, "");
         pager.setOffscreenPageLimit(2);
         pager.setAdapter(adapter);
         tab.setupWithViewPager(pager);
@@ -310,6 +311,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
+        adapter.scrollToTop(tab.getPosition());
     }
 
 

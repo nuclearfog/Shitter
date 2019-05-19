@@ -8,8 +8,8 @@
     android:paddingTop="@dimen/padding_tab">
 
     <ImageView
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="@dimen/image_tab_ico"
+        android:layout_height="@dimen/image_tab_ico"
         android:contentDescription="@string/profile_tweets"
         app:srcCompat="@drawable/home" />
 
@@ -17,11 +17,6 @@
         android:id="@+id/profile_tweet_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="2dp" />
+        android:textSize="@dimen/textsize_tab" />
 
 </LinearLayout>

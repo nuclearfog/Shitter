@@ -61,7 +61,7 @@
                         android:layout_weight="1"
                         android:gravity="end"
                         android:textAlignment="gravity"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/textsize_date" />
 
                 </LinearLayout>
 
@@ -94,7 +94,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:singleLine="true"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_button" />
 
             <TextView
                 android:id="@+id/retweet_number"
@@ -103,7 +103,7 @@
                 android:drawablePadding="@dimen/padding_drawable"
                 android:layout_weight="1"
                 android:singleLine="true"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_button" />
 
             <TextView
                 android:id="@+id/favorite_number"
@@ -112,7 +112,7 @@
                 android:drawablePadding="@dimen/padding_drawable"
                 android:layout_weight="1"
                 android:singleLine="true"
-                android:textSize="12sp" />
+                android:textSize="@dimen/textsize_button" />
 
         </LinearLayout>
 

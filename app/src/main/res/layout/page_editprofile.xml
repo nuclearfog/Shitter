@@ -30,7 +30,7 @@
                 android:layout_marginBottom="@dimen/margin_layout"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="@dimen/padding_side">
 
                 <ImageView
                     android:id="@+id/edit_pb"
@@ -42,8 +42,8 @@
                     android:id="@+id/edit_upload"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="@dimen/margin_layout"
+                    android:layout_marginLeft="@dimen/margin_layout"
                     android:contentDescription="@string/upload_button"
                     app:srcCompat="@drawable/upload" />
 
@@ -51,8 +51,8 @@
                     android:id="@+id/pb_path"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp" />
+                    android:layout_marginStart="@dimen/margin_layout"
+                    android:layout_marginLeft="@dimen/margin_layout" />
 
             </LinearLayout>
 
@@ -67,11 +67,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@android:color/transparent"
-
                 android:hint="@string/tweet"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -87,7 +86,7 @@
                 android:ems="10"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -103,7 +102,7 @@
                 android:ems="10"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -118,7 +117,7 @@
                 android:ems="10"
                 android:gravity="top"
                 android:inputType="textMultiLine"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_profileedit" />
 
         </LinearLayout>
 

@@ -154,7 +154,7 @@
                         android:layout_marginTop="@dimen/margin_layout"
                         android:drawablePadding="@dimen/padding_drawable"
                         android:singleLine="true"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/textsize_profile"
                         app:drawableLeftCompat="@drawable/location"
                         app:drawableStartCompat="@drawable/location" />
 
@@ -166,7 +166,7 @@
                         android:drawablePadding="@dimen/padding_drawable"
                         android:linksClickable="true"
                         android:singleLine="true"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/textsize_profile"
                         app:drawableLeftCompat="@drawable/link"
                         app:drawableStartCompat="@drawable/link" />
 
@@ -177,7 +177,7 @@
                         android:layout_marginTop="@dimen/margin_layout"
                         android:drawablePadding="@dimen/padding_drawable"
                         android:singleLine="true"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/textsize_profile"
                         app:drawableLeftCompat="@drawable/calendar"
                         app:drawableStartCompat="@drawable/calendar" />
 

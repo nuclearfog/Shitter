@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:layout_weight="8"
             android:singleLine="true"
-            android:textSize="20sp" />
+            android:textSize="@dimen/textsize_trend" />
 
     </LinearLayout>
 

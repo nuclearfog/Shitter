@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/holo_red_dark"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_count" />
 
             <ImageButton
                 android:id="@+id/img_preview"

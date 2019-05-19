@@ -79,10 +79,10 @@
                                 android:id="@+id/timedetail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                android:layout_marginBottom="2dp"
+                                android:layout_marginTop="@dimen/margin_layout_tweet"
+                                android:layout_marginBottom="@dimen/margin_layout_tweet"
                                 android:singleLine="true"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/textsize_date" />
 
                         </LinearLayout>
 
@@ -93,7 +93,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:singleLine="true"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/textsize_refer"
                         android:visibility="gone" />
 
                     <TextView
@@ -104,7 +104,7 @@
                         android:linksClickable="true"
                         android:maxLines="@integer/text_tweet_lines"
                         android:scrollbars="vertical"
-                        android:textSize="18sp" />
+                        android:textSize="@dimen/textsize_tweet" />
 
                     <TextView
                         android:id="@+id/used_api"
@@ -112,12 +112,12 @@
                         android:layout_height="wrap_content"
                         android:linksClickable="false"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/textsize_refer" />
 
                     <ImageButton
                         android:id="@+id/image_attach"
-                        android:layout_width="64dp"
-                        android:layout_height="36dp"
+                        android:layout_width="@dimen/button_media_width"
+                        android:layout_height="@dimen/button_media_height"
                         android:layout_margin="@dimen/margin_tweet_icon"
                         android:contentDescription="@string/image_preview_button"
                         android:background="@drawable/button"

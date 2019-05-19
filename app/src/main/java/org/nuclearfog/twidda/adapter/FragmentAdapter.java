@@ -154,14 +154,22 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
     public void notifySettingsChanged() {
         for (Fragment fragment : fragments) {
-            if (fragment instanceof OnSettingsChanged)
-                ((OnSettingsChanged) fragment).onSettingsChange();
+            if (fragment instanceof OnStateChange)
+                ((OnStateChange) fragment).onSettingsChange();
         }
     }
 
 
-    public interface OnSettingsChanged {
+    public void scrollToTop(int index) {
+        if (fragments[index] instanceof OnStateChange)
+            ((OnStateChange) fragments[index]).onTabChange();
+    }
+
+
+    public interface OnStateChange {
 
         void onSettingsChange();
+
+        void onTabChange();
     }
 }

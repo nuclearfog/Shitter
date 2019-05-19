@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/color_settings"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_settings" />
 
             <View
                 android:layout_width="match_parent"
@@ -91,7 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/data_load"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_settings" />
 
             <View
                 android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                     android:layout_height="@dimen/button_dm"
                     android:layout_weight="1"
                     android:text="@string/load_factor"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/textsize_checkbox" />
 
                 <CheckBox
                     android:id="@+id/toggleImg"
@@ -121,7 +121,7 @@
                     android:layout_marginLeft="@dimen/padding_side"
                     android:layout_weight="1"
                     android:text="@string/image"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/textsize_checkbox" />
 
                 <CheckBox
                     android:id="@+id/toggleAns"
@@ -131,7 +131,7 @@
                     android:layout_marginLeft="@dimen/padding_side"
                     android:layout_weight="1"
                     android:text="@string/toggle_answer"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/textsize_checkbox" />
 
             </LinearLayout>
 
@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/text_settings"
                 android:text="@string/trend_setting"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_settings" />
 
             <View
                 android:layout_width="match_parent"
@@ -179,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin"
                 android:text="@string/user_data"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_settings" />
 
             <View
                 android:layout_width="match_parent"
@@ -220,7 +220,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin"
                 android:text="@string/settings_info"
-                android:textSize="18sp" />
+                android:textSize="@dimen/textsize_settings" />
 
             <View
                 android:layout_width="match_parent"
@@ -231,7 +231,7 @@
                 android:id="@+id/settings_link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/margin_layout"
                 android:autoLink="web"
                 android:linksClickable="true"
                 android:text="@string/github_link" />

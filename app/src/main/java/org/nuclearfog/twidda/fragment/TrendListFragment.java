@@ -15,7 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.OnSettingsChanged;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.OnStateChange;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -24,10 +24,11 @@ import org.nuclearfog.twidda.fragment.backend.TrendLoader.Mode;
 import org.nuclearfog.twidda.window.SearchPage;
 
 
-public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnSettingsChanged {
+public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
 
     private TrendLoader trendTask;
     private SwipeRefreshLayout reload;
+    private RecyclerView list;
     private TrendAdapter adapter;
     private View root;
 
@@ -35,7 +36,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         super.onCreateView(inflater, parent, param);
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        RecyclerView list = v.findViewById(R.id.fragment_list);
+        list = v.findViewById(R.id.fragment_list);
         reload = v.findViewById(R.id.fragment_reload);
 
         reload.setOnRefreshListener(this);
@@ -100,5 +101,11 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getFontColor());
         adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onTabChange() {
+        list.smoothScrollToPosition(0);
     }
 }
