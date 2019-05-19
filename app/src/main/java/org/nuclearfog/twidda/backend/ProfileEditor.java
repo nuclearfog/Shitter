@@ -8,10 +8,10 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -59,7 +59,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
         EditText link = ui.get().findViewById(R.id.edit_link);
         EditText loc = ui.get().findViewById(R.id.edit_location);
         EditText bio = ui.get().findViewById(R.id.edit_bio);
-        TextView text_path = ui.get().findViewById(R.id.pb_path);
+        Button text_path = ui.get().findViewById(R.id.edit_upload);
 
         edit_name = name.getText();
         edit_link = link.getText();

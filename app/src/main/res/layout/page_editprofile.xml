@@ -38,21 +38,21 @@
                     android:layout_height="@dimen/profile_image"
                     android:contentDescription="@string/image_preview" />
 
-                <ImageView
+                <Button
                     android:id="@+id/edit_upload"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_layout"
-                    android:layout_marginLeft="@dimen/margin_layout"
-                    android:contentDescription="@string/upload_button"
-                    app:srcCompat="@drawable/upload" />
-
-                <TextView
-                    android:id="@+id/pb_path"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_layout"
-                    android:layout_marginLeft="@dimen/margin_layout" />
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/margin_upload_btn"
+                    android:layout_marginStart="@dimen/margin_upload_btn"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
+                    android:drawablePadding="@dimen/padding_drawable"
+                    android:maxLines="2"
+                    android:background="@drawable/button"
+                    app:drawableLeftCompat="@drawable/upload"
+                    app:drawableStartCompat="@drawable/upload"
+                    style="@style/Widget.AppCompat.Button.Borderless" />
 
             </LinearLayout>
 

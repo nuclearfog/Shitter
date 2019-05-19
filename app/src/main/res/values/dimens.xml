@@ -14,6 +14,7 @@
     <dimen name="margin_tweet_icon">16dp</dimen>
     <dimen name="margin_layout">5dp</dimen>
     <dimen name="margin_layout_tweet">2dp</dimen>
+    <dimen name="margin_upload_btn">20dp</dimen>
 
     <dimen name="padding_side">10dp</dimen>
     <dimen name="padding_editprofile">20dp</dimen>

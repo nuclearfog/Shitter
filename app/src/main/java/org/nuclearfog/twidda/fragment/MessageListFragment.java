@@ -42,7 +42,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
         reload.setOnRefreshListener(this);
 
         MessageAdapter adapter = new MessageAdapter(this);
-        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        adapter.setColor(settings.getFontColor(), settings.getHighlightColor());
         adapter.toggleImage(settings.getImageLoad());
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(true);

@@ -13,8 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,25 +33,23 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
     private ProfileEditor editorAsync;
-    private TextView txtImg;
+    private Button txtImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_editprofile);
-
+        View root = findViewById(R.id.page_edit);
+        txtImg = findViewById(R.id.edit_upload);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        View root = findViewById(R.id.page_edit);
-        View uploadButton = findViewById(R.id.edit_upload);
-        txtImg = findViewById(R.id.pb_path);
-
         root.setBackgroundColor(settings.getBackgroundColor());
-        uploadButton.setOnClickListener(this);
+        txtImg.setOnClickListener(this);
     }
 
 
