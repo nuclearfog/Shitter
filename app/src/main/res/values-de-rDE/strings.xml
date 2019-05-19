@@ -74,9 +74,6 @@
     <string name="copied_to_clipboard">Link in Zwischenablage kopiert!</string>
     <string name="profile_link">Link</string>
     <string name="image_preview_button">Bildvorschau button</string>
-    <string name="answer_button">Antwort Button</string>
-    <string name="retweet_button">Retweet Button</string>
-    <string name="favorite_button">Favorit Button</string>
     <string name="close_dm">Direktnachricht schließen</string>
     <string name="user_not_found">Nutzer nicht gefunden!</string>
     <string name="profile_tweets">Profile tweets</string>

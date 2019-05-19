@@ -82,9 +82,6 @@
     <string name="copied_to_clipboard">Link copied to clipboard!</string>
     <string name="profile_link">link</string>
     <string name="image_preview_button">image preview button</string>
-    <string name="answer_button">answer button</string>
-    <string name="retweet_button">retweet button</string>
-    <string name="favorite_button">favorite button</string>
     <string name="close_dm">close direct message</string>
     <string name="user_not_found">user not found!</string>
     <string name="profile_tweets">Profile tweets</string>
