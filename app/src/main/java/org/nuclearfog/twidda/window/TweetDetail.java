@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTagClickListener {
+public class TweetDetail extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener {
 
     public static final int STAT_CHANGED = 1;
     private static final int TWEET = 2;
@@ -67,14 +69,12 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         }
 
         View root = findViewById(R.id.tweet_layout);
-        View retweet = findViewById(R.id.rt_button_detail);
-        View favorite = findViewById(R.id.fav_button_detail);
-        View txtRt = findViewById(R.id.no_rt_detail);
-        View txtFav = findViewById(R.id.no_fav_detail);
-        View answer = findViewById(R.id.answer_button);
+        Button ansButton = findViewById(R.id.tweet_answer);
+        Button rtwButton = findViewById(R.id.tweet_retweet);
+        Button favButton = findViewById(R.id.tweet_favorit);
         TextView tweetTxt = findViewById(R.id.tweet_detailed);
-        Toolbar tool = findViewById(R.id.tweet_toolbar);
         ViewPager pager = findViewById(R.id.tweet_pager);
+        Toolbar tool = findViewById(R.id.tweet_toolbar);
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
@@ -90,11 +90,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
-        favorite.setOnClickListener(this);
-        retweet.setOnClickListener(this);
-        txtFav.setOnClickListener(this);
-        txtRt.setOnClickListener(this);
-        answer.setOnClickListener(this);
+        ansButton.setOnClickListener(this);
+        rtwButton.setOnClickListener(this);
+        favButton.setOnClickListener(this);
+        rtwButton.setOnLongClickListener(this);
+        favButton.setOnLongClickListener(this);
     }
 
 
@@ -188,40 +188,49 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     public void onClick(View v) {
         if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
             switch (v.getId()) {
-                case R.id.rt_button_detail:
-                    statusAsync = new StatusLoader(this, Mode.RETWEET);
-                    statusAsync.execute(tweetID);
-                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                case R.id.tweet_answer:
+                    Intent tweet = new Intent(this, TweetPopup.class);
+                    tweet.putExtra("TweetID", tweetID);
+                    tweet.putExtra("Addition", username);
+                    startActivityForResult(tweet, TWEET);
                     break;
 
-                case R.id.fav_button_detail:
-                    statusAsync = new StatusLoader(this, Mode.FAVORITE);
-                    statusAsync.execute(tweetID);
-                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case R.id.no_rt_detail:
+                case R.id.tweet_retweet:
                     Intent userList = new Intent(this, UserDetail.class);
                     userList.putExtra("ID", tweetID);
                     userList.putExtra("mode", UserType.RETWEETS);
                     startActivity(userList);
                     break;
 
-                case R.id.no_fav_detail:
+                case R.id.tweet_favorit:
                     userList = new Intent(this, UserDetail.class);
                     userList.putExtra("ID", tweetID);
                     userList.putExtra("mode", UserType.FAVORITS);
                     startActivity(userList);
                     break;
-
-                case R.id.answer_button:
-                    Intent tweet = new Intent(this, TweetPopup.class);
-                    tweet.putExtra("TweetID", tweetID);
-                    tweet.putExtra("Addition", username);
-                    startActivityForResult(tweet, TWEET);
-                    break;
             }
         }
+    }
+
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
+            switch (v.getId()) {
+                case R.id.tweet_retweet:
+                    statusAsync = new StatusLoader(this, Mode.RETWEET);
+                    statusAsync.execute(tweetID);
+                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                    return true;
+
+                case R.id.tweet_favorit:
+                    statusAsync = new StatusLoader(this, Mode.FAVORITE);
+                    statusAsync.execute(tweetID);
+                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                    return true;
+            }
+        }
+        return false;
     }
 
 

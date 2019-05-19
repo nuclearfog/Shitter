@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -134,11 +135,9 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         TextView username = ui.get().findViewById(R.id.usernamedetail);
         TextView scrName = ui.get().findViewById(R.id.scrnamedetail);
         TextView replyName = ui.get().findViewById(R.id.answer_reference_detail);
-        TextView txtRet = ui.get().findViewById(R.id.no_rt_detail);
-        TextView txtFav = ui.get().findViewById(R.id.no_fav_detail);
         ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
-        ImageView retweetButton = ui.get().findViewById(R.id.rt_button_detail);
-        ImageView favoriteButton = ui.get().findViewById(R.id.fav_button_detail);
+        Button retweetButton = ui.get().findViewById(R.id.tweet_retweet);
+        Button favoriteButton = ui.get().findViewById(R.id.tweet_favorit);
 
         if (mode == Mode.LOAD) {
             View tweet_header = ui.get().findViewById(R.id.tweet_head);
@@ -197,8 +196,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         scrName.setText(tweet.getUser().getScreenname());
         scrName.setTextColor(font_color);
 
-        txtFav.setText(formatter.format(tweet.getFavorCount()));
-        txtRet.setText(formatter.format(tweet.getRetweetCount()));
+        favoriteButton.setText(formatter.format(tweet.getFavorCount()));
+        retweetButton.setText(formatter.format(tweet.getRetweetCount()));
 
         if (tweet.getReplyId() > 1) {
             String reply = ui.get().getString(R.string.answering);
@@ -222,14 +221,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
         }
         if (tweet.retweeted()) {
-            retweetButton.setImageResource(R.drawable.retweet_enabled);
+            retweetButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         } else {
-            retweetButton.setImageResource(R.drawable.retweet);
+            retweetButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         }
         if (tweet.favored()) {
-            favoriteButton.setImageResource(R.drawable.favorite_enabled);
+            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_enabled, 0, 0, 0);
         } else {
-            favoriteButton.setImageResource(R.drawable.favorite);
+            favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
         }
         if (tweet.getUser().getId() == homeId) {
             ui.get().enableDelete();

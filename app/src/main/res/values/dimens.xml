@@ -26,6 +26,7 @@
     <dimen name="editprofile_padding">20dp</dimen>
     <dimen name="tab_padding_top">5dp</dimen>
     <dimen name="drawable_padding">5dp</dimen>
+    <dimen name="button_height">20dp</dimen>
     <integer name="tweet_max_line">10</integer>
     <integer name="max_bio_lines">5</integer>
 
