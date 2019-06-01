@@ -44,6 +44,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     public static final String KEY_MEDIA_LINK = "link";
     public static final String KEY_MEDIA_TYPE = "mediatype";
+    private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
 
     public enum MediaType {
         IMAGE,
@@ -67,7 +68,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     protected void onCreate(Bundle b) {
         super.onCreate(b);
 
-        setContentView(R.layout.page_image);
+        setContentView(R.layout.page_media);
         RecyclerView imageList = findViewById(R.id.image_list);
         MediaController videoController = new MediaController(this);
         View imageWindow = findViewById(R.id.image_window);
@@ -85,6 +86,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         switch (type) {
             case IMAGE:
             case IMAGE_STORAGE:
+            case ANGIF_STORAGE:
                 imageWindow.setVisibility(VISIBLE);
                 imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
                 imageList.setAdapter(new ImageAdapter(this));
@@ -101,14 +103,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 videoView.setVideoURI(video);
                 break;
 
-            case ANGIF_STORAGE:
-                videoWindow.setVisibility(VISIBLE);
-                videoView.setOnPreparedListener(this);
-                File media = new File(link[0]);
-                video = Uri.fromFile(media);
-                videoView.setVideoURI(video);
-                break;
-
             case VIDEO:
                 videoWindow.setVisibility(VISIBLE);
                 videoView.setMediaController(videoController);
@@ -122,7 +116,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 videoWindow.setVisibility(VISIBLE);
                 videoView.setMediaController(videoController);
                 videoView.setOnPreparedListener(this);
-                media = new File(link[0]);
+                File media = new File(link[0]);
                 video = Uri.fromFile(media);
                 videoView.setVideoURI(video);
                 videoController.show(0);
@@ -141,6 +135,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                     imageAsync.execute(link);
                     break;
 
+                case ANGIF_STORAGE:
                 case IMAGE_STORAGE:
                     imageAsync = new ImageLoader(this, STORAGE);
                     imageAsync.execute(link);
@@ -182,7 +177,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 if (check == PERMISSION_GRANTED) {
                     storeImage(image);
                 } else {
-                    requestPermissions(new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+                    requestPermissions(REQ_WRITE_SD, 1);
                 }
             } else {
                 storeImage(image);
@@ -197,7 +192,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public void onPrepared(MediaPlayer mp) {
         switch (type) {
             case ANGIF:
-            case ANGIF_STORAGE:
                 mp.setLooping(true);
                 mp.start();
                 break;

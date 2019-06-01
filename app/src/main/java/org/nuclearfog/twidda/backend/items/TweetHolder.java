@@ -20,15 +20,34 @@ public class TweetHolder {
     public TweetHolder(String text, long replyId, @NonNull String[] mediaLinks) {
         this.text = text;
         this.replyId = replyId;
-        String extension = mediaLinks[0];
-        extension = extension.substring(extension.lastIndexOf('.'));
 
-        if (extension.equals(".jpg") || extension.equals(".png")) {
-            videoLink = "";
-            imageLink = mediaLinks;
-        } else {
-            imageLink = new String[0];
-            videoLink = mediaLinks[0];
+        String ext = "";
+        String path = mediaLinks[0];
+        int pos = path.lastIndexOf(".") + 1;
+        if (pos > 0 && pos < path.length()) {
+            ext = path.substring(pos);
+            ext = ext.toLowerCase();
+        }
+
+        switch (ext) {
+            case "mp4":
+            case "3gp":
+                imageLink = new String[0];
+                videoLink = mediaLinks[0];
+                break;
+
+            case "jpg":
+            case "jpeg":
+            case "gif":
+            case "png":
+                videoLink = "";
+                imageLink = mediaLinks;
+                break;
+
+            default:
+                videoLink = "";
+                imageLink = new String[0];
+                break;
         }
     }
 

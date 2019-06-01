@@ -8,7 +8,8 @@
     <FrameLayout
         android:id="@+id/image_window"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <org.nuclearfog.zoomview.ZoomView
             android:id="@+id/image_full"
@@ -37,7 +38,7 @@
         android:id="@+id/video_window"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <VideoView
             android:id="@+id/video_view"

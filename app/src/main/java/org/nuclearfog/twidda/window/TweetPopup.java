@@ -53,8 +53,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     }
     private static final String[] READ_STORAGE = {READ_EXTERNAL_STORAGE};
     private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
-    private static final String TYPE_IMAGE = "image/jpeg image/jpg image/png ";
-    private static final String TYPE_VIDEO = "video/mp4 video/3gp video/gif ";
+    private static final String TYPE_IMAGE = "image/*.jpeg image/*.jpg image/*.png ";
+    private static final String TYPE_VIDEO = "video/*.mp4 video/*.3gp video/*.gif ";
     private static final int PICK_MEDIA = 3;
     private static final int CHECK_PERM = 4;
     private static final int MAX_IMAGES = 4;
@@ -122,10 +122,16 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 if (cursor != null && cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(GET_MEDIA[0]);
                     String path = cursor.getString(index);
-                    String ext = path.substring(path.lastIndexOf('.'));
+                    String ext = "";
+                    int pos = path.lastIndexOf(".") + 1;
+                    if (pos > 0 && pos < path.length()) {
+                        ext = path.substring(pos);
+                        ext = ext.toLowerCase();
+                    }
                     switch (ext) {
-                        case ".jpg":
-                        case ".png":
+                        case "png":
+                        case "jpg":
+                        case "jpeg":
                             if (mode == Mode.NONE)
                                 mode = Mode.IMAGE;
                             if (mediaPath.size() < MAX_IMAGES && mode == Mode.IMAGE) {
@@ -138,7 +144,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                             }
                             break;
 
-                        case ".gif":
+                        case "gif":
                             if (mode == Mode.NONE)
                                 mode = Mode.GIF;
                             if (mode == Mode.GIF) {
@@ -148,8 +154,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                             }
                             break;
 
-                        case ".mp4":
-                        case ".3gp":
+                        case "mp4":
+                        case "3gp":
                             if (mode == Mode.NONE)
                                 mode = Mode.VIDEO;
                             if (mode == Mode.VIDEO) {

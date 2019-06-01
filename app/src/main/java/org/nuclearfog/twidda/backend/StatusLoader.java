@@ -177,44 +177,57 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 if (tweet.hasMedia()) {
-                    String link = tweet.getMediaLinks()[0];
 
-                    if (link.contains(".jpg")) { // Image
-                        View imageButton = ui.get().findViewById(R.id.image_attach);
-                        imageButton.setVisibility(VISIBLE);
-                        imageButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent media = new Intent(ui.get(), MediaViewer.class);
-                                media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                                media.putExtra(KEY_MEDIA_TYPE, IMAGE);
-                                ui.get().startActivity(media);
-                            }
-                        });
-                    } else if (link.contains(".mp4")) { // GIF
-                        View videoButton = ui.get().findViewById(R.id.video_attach);
-                        videoButton.setVisibility(VISIBLE);
-                        videoButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent media = new Intent(ui.get(), MediaViewer.class);
-                                media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                                media.putExtra(KEY_MEDIA_TYPE, ANGIF);
-                                ui.get().startActivity(media);
-                            }
-                        });
-                    } else if (link.contains(".m3u8")) { // video stream
-                        View videoButton = ui.get().findViewById(R.id.video_attach);
-                        videoButton.setVisibility(VISIBLE);
-                        videoButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent media = new Intent(ui.get(), MediaViewer.class);
-                                media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                                media.putExtra(KEY_MEDIA_TYPE, VIDEO);
-                                ui.get().startActivity(media);
-                            }
-                        });
+                    String ext = "";
+                    String path = tweet.getMediaLinks()[0];
+                    int pos = path.lastIndexOf(".") + 1;
+                    if (pos > 0 && pos < path.length()) {
+                        ext = path.substring(pos);
+                        ext = ext.toLowerCase();
+                    }
+
+                    switch (ext) {
+                        case "jpg":
+                            View imageButton = ui.get().findViewById(R.id.image_attach);
+                            imageButton.setVisibility(VISIBLE);
+                            imageButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent media = new Intent(ui.get(), MediaViewer.class);
+                                    media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                                    media.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                                    ui.get().startActivity(media);
+                                }
+                            });
+                            break;
+
+                        case "mp4":
+                            View videoButton = ui.get().findViewById(R.id.video_attach);
+                            videoButton.setVisibility(VISIBLE);
+                            videoButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent media = new Intent(ui.get(), MediaViewer.class);
+                                    media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                                    media.putExtra(KEY_MEDIA_TYPE, ANGIF);
+                                    ui.get().startActivity(media);
+                                }
+                            });
+                            break;
+
+                        case "m3u8":
+                            videoButton = ui.get().findViewById(R.id.video_attach);
+                            videoButton.setVisibility(VISIBLE);
+                            videoButton.setOnClickListener(new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent media = new Intent(ui.get(), MediaViewer.class);
+                                    media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                                    media.putExtra(KEY_MEDIA_TYPE, VIDEO);
+                                    ui.get().startActivity(media);
+                                }
+                            });
+                            break;
                     }
                 }
                 profile_img.setOnClickListener(new View.OnClickListener() {
