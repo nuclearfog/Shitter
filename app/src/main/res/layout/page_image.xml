@@ -8,8 +8,7 @@
     <FrameLayout
         android:id="@+id/image_window"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
         <org.nuclearfog.zoomview.ZoomView
             android:id="@+id/image_full"
@@ -38,7 +37,7 @@
         android:id="@+id/video_window"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="invisible">
 
         <VideoView
             android:id="@+id/video_view"
@@ -46,11 +45,6 @@
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 
-        <MediaController
-            android:id="@+id/video_controller"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center" />
     </FrameLayout>
 
 </FrameLayout>

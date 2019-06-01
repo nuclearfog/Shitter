@@ -60,6 +60,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private MediaType type;
     private String[] link;
     private int width;
+    private int lastPos = 0;
 
 
     @Override
@@ -68,7 +69,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
         setContentView(R.layout.page_image);
         RecyclerView imageList = findViewById(R.id.image_list);
-        MediaController videoController = findViewById(R.id.video_controller);
+        MediaController videoController = new MediaController(this);
         View imageWindow = findViewById(R.id.image_window);
         View videoWindow = findViewById(R.id.video_window);
         zoomImage = findViewById(R.id.image_full);
@@ -84,17 +85,16 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         switch (type) {
             case IMAGE:
             case IMAGE_STORAGE:
+                imageWindow.setVisibility(VISIBLE);
                 imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
                 imageList.setAdapter(new ImageAdapter(this));
                 Display d = getWindowManager().getDefaultDisplay();
                 Point size = new Point();
                 d.getSize(size);
                 width = size.x;
-                imageWindow.setVisibility(VISIBLE);
                 break;
 
             case ANGIF:
-                videoController.hide();
                 videoWindow.setVisibility(VISIBLE);
                 videoView.setOnPreparedListener(this);
                 Uri video = Uri.parse(link[0]);
@@ -102,7 +102,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 break;
 
             case ANGIF_STORAGE:
-                videoController.hide();
                 videoWindow.setVisibility(VISIBLE);
                 videoView.setOnPreparedListener(this);
                 File media = new File(link[0]);
@@ -111,18 +110,22 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 break;
 
             case VIDEO:
-                videoController.setAnchorView(videoView);
+                videoWindow.setVisibility(VISIBLE);
                 videoView.setMediaController(videoController);
+                videoView.setOnPreparedListener(this);
                 video = Uri.parse(link[0]);
                 videoView.setVideoURI(video);
+                videoController.show(0);
                 break;
 
             case VIDEO_STORAGE:
-                videoController.setAnchorView(videoView);
+                videoWindow.setVisibility(VISIBLE);
                 videoView.setMediaController(videoController);
+                videoView.setOnPreparedListener(this);
                 media = new File(link[0]);
                 video = Uri.fromFile(media);
                 videoView.setVideoURI(video);
+                videoController.show(0);
                 break;
         }
     }
@@ -131,37 +134,29 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        switch (type) {
-            case IMAGE:
-                if (imageAsync == null) {
+        if (imageAsync == null) {
+            switch (type) {
+                case IMAGE:
                     imageAsync = new ImageLoader(this, ONLINE);
                     imageAsync.execute(link);
-                }
-            case IMAGE_STORAGE:
-                if (imageAsync == null) {
+                    break;
+
+                case IMAGE_STORAGE:
                     imageAsync = new ImageLoader(this, STORAGE);
                     imageAsync.execute(link);
-                }
-                break;
-
-            case VIDEO:
-            case ANGIF:
-            case VIDEO_STORAGE:
-            case ANGIF_STORAGE:
-                if (videoView.getCurrentPosition() == 0)
-                    videoView.start();
-                else
-                    videoView.resume();
-                break;
+                    break;
+            }
         }
     }
 
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        if (type != MediaType.IMAGE && type != MediaType.IMAGE_STORAGE)
+    protected void onStop() {
+        super.onStop();
+        if (type != MediaType.IMAGE && type != MediaType.IMAGE_STORAGE) {
+            lastPos = videoView.getCurrentPosition();
             videoView.pause();
+        }
     }
 
 
@@ -200,8 +195,19 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        if (type == MediaType.ANGIF || type == MediaType.ANGIF_STORAGE)
-            mp.setLooping(true);
+        switch (type) {
+            case ANGIF:
+            case ANGIF_STORAGE:
+                mp.setLooping(true);
+                mp.start();
+                break;
+
+            case VIDEO:
+            case VIDEO_STORAGE:
+                mp.seekTo(lastPos);
+                mp.start();
+                break;
+        }
     }
 
 
