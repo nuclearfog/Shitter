@@ -404,8 +404,9 @@ public class TwitterEngine {
 
     /**
      * send tweet
+     *
      * @param tweet Tweet holder
-     * @throws TwitterException if twitter service is unavailable
+     * @throws TwitterException      if twitter service is unavailable
      * @throws FileNotFoundException if file was not found
      */
     public void uploadStatus(TweetHolder tweet) throws TwitterException, FileNotFoundException {

@@ -77,7 +77,6 @@
     <string name="add_image">add new image</string>
     <string name="send_tweet">send Tweet</string>
     <string name="tweet_close">close tweet</string>
-    <string name="char_limit_reached">char limit reached!</string>
     <string name="link_to_clipboard">copy link to clipboard</string>
     <string name="copied_to_clipboard">Link copied to clipboard!</string>
     <string name="profile_link">link</string>
@@ -87,7 +86,6 @@
     <string name="profile_tweets">Profile tweets</string>
     <string name="cant_send_dm">cannot send dm to user!</string>
     <string name="error_accesstoken">Invalid or expired token!</string>
-    <string name="status_private">You are not authorized to see this Status!</string>
     <string name="status_too_long">Tweet needs to be shorter!</string>
     <string name="duplicate_status">Duplicate Status!</string>
     <string name="directmessage_too_long">direct message text is over the limit!</string>

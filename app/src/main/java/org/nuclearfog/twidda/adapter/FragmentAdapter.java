@@ -32,6 +32,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         RETWEETER_PAGE,
         FAVOR_PAGE
     }
+
     private final Fragment[] fragments;
 
     public FragmentAdapter(FragmentManager fManager, AdapterType mode, long id, String search) {

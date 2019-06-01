@@ -51,6 +51,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         GIF,
         NONE
     }
+
     private static final String[] READ_STORAGE = {READ_EXTERNAL_STORAGE};
     private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
     private static final String TYPE_IMAGE = "image/*.jpeg image/*.jpg image/*.png ";

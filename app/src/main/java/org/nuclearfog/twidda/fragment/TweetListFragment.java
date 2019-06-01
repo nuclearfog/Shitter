@@ -33,6 +33,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public static final String KEY_FRAG_TWEET_SEARCH = "search";
     public static final String KEY_FRAG_TWEET_ID = "ID";
     public static final String KEY_FRAG_TWEET_FIX = "fix";
+
     public enum TweetType {
         HOME,
         MENT,
