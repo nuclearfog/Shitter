@@ -96,29 +96,33 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             case ANGIF:
                 videoController.hide();
                 videoWindow.setVisibility(VISIBLE);
-                videoView.setVideoPath(link[0]);
                 videoView.setOnPreparedListener(this);
+                Uri video = Uri.parse(link[0]);
+                videoView.setVideoURI(video);
                 break;
 
             case ANGIF_STORAGE:
                 videoController.hide();
                 videoWindow.setVisibility(VISIBLE);
-                videoView.setVideoPath(link[0]);
                 videoView.setOnPreparedListener(this);
+                File media = new File(link[0]);
+                video = Uri.fromFile(media);
+                videoView.setVideoURI(video);
                 break;
 
             case VIDEO:
                 videoController.setAnchorView(videoView);
                 videoView.setMediaController(videoController);
-                videoWindow.setVisibility(VISIBLE);
-                videoView.setVideoURI(Uri.parse(link[0]));
+                video = Uri.parse(link[0]);
+                videoView.setVideoURI(video);
                 break;
 
             case VIDEO_STORAGE:
                 videoController.setAnchorView(videoView);
                 videoView.setMediaController(videoController);
-                videoWindow.setVisibility(VISIBLE);
-                videoView.setVideoPath(link[0]);
+                media = new File(link[0]);
+                video = Uri.fromFile(media);
+                videoView.setVideoURI(video);
                 break;
         }
     }
