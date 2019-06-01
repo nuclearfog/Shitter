@@ -177,17 +177,22 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 if (tweet.hasMedia()) {
-
                     String ext = "";
                     String path = tweet.getMediaLinks()[0];
-                    int pos = path.lastIndexOf(".") + 1;
-                    if (pos > 0 && pos < path.length()) {
-                        ext = path.substring(pos);
+                    int start = path.lastIndexOf(".") + 1;
+                    if (start > 0 && start < path.length()) {
+                        int end = path.lastIndexOf("?");
+                        if (end > 0)
+                            ext = path.substring(start, end);
+                        else
+                            ext = path.substring(start);
                         ext = ext.toLowerCase();
                     }
 
                     switch (ext) {
+                        case "png":
                         case "jpg":
+                        case "jpeg":
                             View imageButton = ui.get().findViewById(R.id.image_attach);
                             imageButton.setVisibility(VISIBLE);
                             imageButton.setOnClickListener(new OnClickListener() {
