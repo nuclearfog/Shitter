@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        applicationId "org.nuclearfog.twidda"
+        applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
@@ -15,8 +15,8 @@ android {
 
     buildTypes {
         all {
-            buildConfigField "String", "API_KEY_1", TWITTER_CONSUMER_KEY
-            buildConfigField "String", "API_KEY_2", TWITTER_CONSUMER_SECRET
+            buildConfigField 'String', 'API_KEY_1', TWITTER_CONSUMER_KEY
+            buildConfigField 'String', 'API_KEY_2', TWITTER_CONSUMER_SECRET
         }
         release {
             debuggable false
@@ -25,7 +25,7 @@ android {
         }
         debug {
             minifyEnabled false
-            applicationIdSuffix ".debug"
+            applicationIdSuffix '.debug'
             versionNameSuffix '.DEBUG'
         }
     }
@@ -45,6 +45,6 @@ dependencies {
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
-    implementation 'com.github.nuclearfog:ZoomView:1.0.1'
+    implementation 'com.github.nuclearfog:ZoomView:1.0.2'
     implementation 'com.github.nuclearfog:Tagger:1'
 }

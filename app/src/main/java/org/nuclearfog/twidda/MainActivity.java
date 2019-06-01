@@ -23,6 +23,10 @@ import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
+import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
+
 /**
  * Main Activity
  */
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
+    private static final int[] ICONS = {R.drawable.home, R.drawable.hash, R.drawable.mention};
 
     private GlobalSettings settings;
     private FragmentAdapter adapter;
@@ -66,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onStart() {
         super.onStart();
         if (!settings.getLogin()) {
-            Intent i = new Intent(this, LoginPage.class);
-            startActivityForResult(i, LOGIN);
+            Intent loginIntent = new Intent(this, LoginPage.class);
+            startActivityForResult(loginIntent, LOGIN);
         }
     }
 
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             @Override
             public boolean onQueryTextSubmit(String s) {
                 Intent search = new Intent(MainActivity.this, SearchPage.class);
-                search.putExtra("search", s);
+                search.putExtra(KEY_SEARCH, s);
                 startActivity(search);
                 return false;
             }
@@ -126,12 +131,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 setting.setVisible(false);
                 search.collapseActionView();
                 break;
+
             case 1:
                 profile.setVisible(false);
                 search.setVisible(true);
                 tweet.setVisible(false);
                 setting.setVisible(true);
                 break;
+
             case 2:
                 profile.setVisible(false);
                 search.setVisible(false);
@@ -150,14 +157,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             case R.id.action_profile:
                 long homeId = settings.getUserId();
                 Intent user = new Intent(this, UserProfile.class);
-                user.putExtra("userID", homeId);
-                user.putExtra("username", "");
+                user.putExtra(KEY_PROFILE_ID, homeId);
+                user.putExtra(KEY_PROFILE_NAME, "");
                 startActivity(user);
                 break;
+
             case R.id.action_tweet:
                 Intent tweet = new Intent(this, TweetPopup.class);
                 startActivity(tweet);
                 break;
+
             case R.id.action_settings:
                 Intent settings = new Intent(this, AppSettings.class);
                 startActivityForResult(settings, SETTING);
@@ -196,15 +205,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
     private void initView() {
-        final int[] icons = {R.drawable.home, R.drawable.hash, R.drawable.mention};
         View root = findViewById(R.id.main_layout);
         root.setBackgroundColor(settings.getBackgroundColor());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
 
-        for (int i = 0; i < icons.length; i++) {
+        for (int i = 0; i < ICONS.length; i++) {
             Tab t = tab.getTabAt(i);
             if (t != null)
-                t.setIcon(icons[i]);
+                t.setIcon(ICONS[i]);
         }
     }
 }

@@ -1,11 +1,9 @@
 package org.nuclearfog.twidda.window;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,14 +22,24 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ProfileEditor;
-import org.nuclearfog.twidda.backend.ProfileEditor.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.READ_DATA;
+import static org.nuclearfog.twidda.backend.ProfileEditor.Mode.WRITE_DATA;
 
 
 public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
+    private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
+    private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
+    private static final int REQ_PERM = 3;
+    private static final int REQ_PB = 4;
     private ProfileEditor editorAsync;
     private Button txtImg;
 
@@ -57,7 +65,7 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
     protected void onStart() {
         super.onStart();
         if (editorAsync == null) {
-            editorAsync = new ProfileEditor(this, Mode.READ_DATA);
+            editorAsync = new ProfileEditor(this, READ_DATA);
             editorAsync.execute();
         }
     }
@@ -65,7 +73,7 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onStop() {
-        if (editorAsync != null && editorAsync.getStatus() == Status.RUNNING)
+        if (editorAsync != null && editorAsync.getStatus() == RUNNING)
             editorAsync.cancel(true);
         super.onStop();
     }
@@ -96,7 +104,7 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            if (editorAsync == null || editorAsync.getStatus() != Status.RUNNING)
+            if (editorAsync == null || editorAsync.getStatus() != RUNNING)
                 save();
         }
         return super.onOptionsItemSelected(item);
@@ -106,14 +114,15 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode, returnCode, i);
-        if (returnCode == RESULT_OK && i.getData() != null) {
-            String[] mode = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(i.getData(), mode, null, null, null);
-            if (c != null && c.moveToFirst()) {
-                int index = c.getColumnIndex(mode[0]);
-                String mediaPath = c.getString(index);
-                txtImg.setText(mediaPath);
-                c.close();
+        if (i.getData() != null) {
+            if (reqCode == REQ_PB && returnCode == RESULT_OK) {
+                Cursor c = getContentResolver().query(i.getData(), MEDIA_MODE, null, null, null);
+                if (c != null && c.moveToFirst()) {
+                    int index = c.getColumnIndex(MEDIA_MODE[0]);
+                    String mediaPath = c.getString(index);
+                    txtImg.setText(mediaPath);
+                    c.close();
+                }
             }
         }
     }
@@ -121,7 +130,7 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults[0] == PERMISSION_GRANTED)
+        if (requestCode == REQ_PERM && grantResults[0] == PERMISSION_GRANTED)
             getMedia();
     }
 
@@ -137,11 +146,11 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
     private void save() {
         EditText name = findViewById(R.id.edit_name);
         if (name.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, R.string.edit_empty_name, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.edit_empty_name, LENGTH_SHORT).show();
         } else {
-            if (editorAsync != null && editorAsync.getStatus() == Status.RUNNING)
+            if (editorAsync != null && editorAsync.getStatus() == RUNNING)
                 editorAsync.cancel(true);
-            editorAsync = new ProfileEditor(this, Mode.WRITE_DATA);
+            editorAsync = new ProfileEditor(this, WRITE_DATA);
             editorAsync.execute();
         }
     }
@@ -149,16 +158,16 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
     private void getMedia() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PackageManager.PERMISSION_GRANTED) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 0);
+                Intent i = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, REQ_PB);
             } else {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                requestPermissions(PERM_READ, REQ_PERM);
             }
         } else {
-            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, 0);
+            Intent i = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+            startActivityForResult(i, REQ_PB);
         }
     }
 }

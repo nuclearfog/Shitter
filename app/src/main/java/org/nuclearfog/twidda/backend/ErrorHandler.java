@@ -52,7 +52,7 @@ public abstract class ErrorHandler {
 
             case 179:
             case 136:
-                Toast.makeText(c, R.string.status_private, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.not_authorized, Toast.LENGTH_SHORT).show();
                 break;
 
             case 186:

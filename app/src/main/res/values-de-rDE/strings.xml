@@ -98,4 +98,5 @@
     <string name="settings_info">Information</string>
     <string name="follows_you">folgt dir</string>
     <string name="image_store_failure">Fehler beim Speichern!</string>
+    <string name="not_authorized">Keine Berechtigung!</string>
 </resources>

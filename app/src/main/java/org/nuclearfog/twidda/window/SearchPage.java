@@ -20,9 +20,12 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
+
 
 public class SearchPage extends AppCompatActivity implements OnTabSelectedListener {
 
+    public static final String KEY_SEARCH = "search";
     private static final int[] icons = {R.drawable.search, R.drawable.user};
 
     private FragmentAdapter adapter;
@@ -45,8 +48,8 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey("search")) {
-            search = param.getString("search", "");
+        if (param != null && param.containsKey(KEY_SEARCH)) {
+            search = param.getString(KEY_SEARCH);
         } else if (BuildConfig.DEBUG)
             throw new AssertionError();
 
@@ -106,7 +109,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetPopup.class);
             if (search.startsWith("#"))
-                intent.putExtra("Addition", search);
+                intent.putExtra(KEY_TWEETPOPUP_ADDITION, search);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

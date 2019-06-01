@@ -6,7 +6,7 @@
     <dimen name="profile_image">64dp</dimen>
     <dimen name="profile_middle">40dp</dimen>
     <dimen name="profile_small">36dp</dimen>
-    <dimen name="image_height">300dp</dimen>
+    <dimen name="image_height">400dp</dimen>
     <dimen name="tweet_profile">56dp</dimen>
     <dimen name="image_tab_ico">18dp</dimen>
 
@@ -51,4 +51,6 @@
     <dimen name="button_tweet_size">40dp</dimen>
     <dimen name="button_media_height">36dp</dimen>
     <dimen name="button_media_width">64dp</dimen>
+    <dimen name="preview_divider_margin">5dp</dimen>
+    <dimen name="preview_margin">10dp</dimen>
 </resources>

@@ -14,6 +14,11 @@ import org.nuclearfog.twidda.fragment.TweetListFragment.TweetType;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 import org.nuclearfog.twidda.fragment.UserListFragment.UserType;
 
+import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_FIX;
+import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_SEARCH;
+
 public class FragmentAdapter extends FragmentPagerAdapter {
 
     public enum AdapterType {
@@ -27,7 +32,6 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         RETWEETER_PAGE,
         FAVOR_PAGE
     }
-
     private final Fragment[] fragments;
 
     public FragmentAdapter(FragmentManager fManager, AdapterType mode, long id, String search) {
@@ -36,10 +40,10 @@ public class FragmentAdapter extends FragmentPagerAdapter {
             case HOME_TAB:
                 Bundle home_tl = new Bundle();
                 Bundle ment_tl = new Bundle();
-                home_tl.putSerializable("mode", TweetType.HOME);
-                ment_tl.putSerializable("mode", TweetType.MENT);
-                home_tl.putBoolean("fix", true);
-                ment_tl.putBoolean("fix", true);
+                home_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.HOME);
+                ment_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.MENT);
+                home_tl.putBoolean(KEY_FRAG_TWEET_FIX, true);
+                ment_tl.putBoolean(KEY_FRAG_TWEET_FIX, true);
                 fragments = new Fragment[3];
                 fragments[0] = new TweetListFragment();
                 fragments[1] = new TrendListFragment();
@@ -51,12 +55,12 @@ public class FragmentAdapter extends FragmentPagerAdapter {
             case PROFILE_TAB:
                 Bundle usr_tweet = new Bundle();
                 Bundle usr_favor = new Bundle();
-                usr_tweet.putLong("id", id);
-                usr_favor.putLong("id", id);
-                usr_tweet.putBoolean("fix", false);
-                usr_tweet.putBoolean("fix", false);
-                usr_tweet.putSerializable("mode", TweetType.USER_TWEET);
-                usr_favor.putSerializable("mode", TweetType.USER_FAVOR);
+                usr_tweet.putLong(KEY_FRAG_TWEET_ID, id);
+                usr_favor.putLong(KEY_FRAG_TWEET_ID, id);
+                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX, false);
+                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX, false);
+                usr_tweet.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.USER_TWEET);
+                usr_favor.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.USER_FAVOR);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetListFragment();
                 fragments[1] = new TweetListFragment();
@@ -67,12 +71,12 @@ public class FragmentAdapter extends FragmentPagerAdapter {
             case SEARCH_TAB:
                 Bundle tweetSearch = new Bundle();
                 Bundle userSearch = new Bundle();
-                tweetSearch.putString("search", search);
-                userSearch.putString("search", search);
-                tweetSearch.putSerializable("mode", TweetType.SEARCH);
-                userSearch.putSerializable("mode", UserType.USEARCH);
-                tweetSearch.putBoolean("fix", true);
-                userSearch.putBoolean("fix", true);
+                tweetSearch.putString(KEY_FRAG_TWEET_SEARCH, search);
+                userSearch.putString(KEY_FRAG_TWEET_SEARCH, search);
+                tweetSearch.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.SEARCH);
+                userSearch.putSerializable(KEY_FRAG_TWEET_MODE, UserType.USEARCH);
+                tweetSearch.putBoolean(KEY_FRAG_TWEET_FIX, true);
+                userSearch.putBoolean(KEY_FRAG_TWEET_FIX, true);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetListFragment();
                 fragments[1] = new UserListFragment();
@@ -82,10 +86,10 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
             case TWEET_PAGE:
                 Bundle param = new Bundle();
-                param.putSerializable("mode", TweetType.TWEET_ANSR);
-                param.putString("search", search);
-                param.putBoolean("fix", false);
-                param.putLong("id", id);
+                param.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.TWEET_ANSR);
+                param.putString(KEY_FRAG_TWEET_SEARCH, search);
+                param.putBoolean(KEY_FRAG_TWEET_FIX, false);
+                param.putLong(KEY_FRAG_TWEET_ID, id);
                 fragments = new Fragment[1];
                 fragments[0] = new TweetListFragment();
                 fragments[0].setArguments(param);
@@ -98,8 +102,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
             case FRIENDS_PAGE:
                 Bundle uParam = new Bundle();
-                uParam.putLong("id", id);
-                uParam.putSerializable("mode", UserType.FRIENDS);
+                uParam.putLong(KEY_FRAG_TWEET_ID, id);
+                uParam.putSerializable(KEY_FRAG_TWEET_MODE, UserType.FRIENDS);
                 fragments = new Fragment[1];
                 fragments[0] = new UserListFragment();
                 fragments[0].setArguments(uParam);
@@ -107,8 +111,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
             case FOLLOWER_PAGE:
                 uParam = new Bundle();
-                uParam.putLong("id", id);
-                uParam.putSerializable("mode", UserType.FOLLOWS);
+                uParam.putLong(KEY_FRAG_TWEET_ID, id);
+                uParam.putSerializable(KEY_FRAG_TWEET_MODE, UserType.FOLLOWS);
                 fragments = new Fragment[1];
                 fragments[0] = new UserListFragment();
                 fragments[0].setArguments(uParam);
@@ -116,8 +120,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
             case RETWEETER_PAGE:
                 uParam = new Bundle();
-                uParam.putLong("id", id);
-                uParam.putSerializable("mode", UserType.RETWEET);
+                uParam.putLong(KEY_FRAG_TWEET_ID, id);
+                uParam.putSerializable(KEY_FRAG_TWEET_MODE, UserType.RETWEET);
                 fragments = new Fragment[1];
                 fragments[0] = new UserListFragment();
                 fragments[0].setArguments(uParam);
@@ -125,8 +129,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
             case FAVOR_PAGE:
                 uParam = new Bundle();
-                uParam.putLong("id", id);
-                uParam.putSerializable("mode", UserType.FAVORIT);
+                uParam.putLong(KEY_FRAG_TWEET_ID, id);
+                uParam.putSerializable(KEY_FRAG_TWEET_MODE, UserType.FAVORIT);
                 fragments = new Fragment[1];
                 fragments[0] = new UserListFragment();
                 fragments[0].setArguments(uParam);

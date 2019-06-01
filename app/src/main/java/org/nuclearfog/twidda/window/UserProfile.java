@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.window;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -36,8 +35,21 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 
+import static android.content.Intent.ACTION_VIEW;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
+import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
+import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
+import static org.nuclearfog.twidda.window.UserDetail.UserType.FOLLOWERS;
+import static org.nuclearfog.twidda.window.UserDetail.UserType.FRIENDS;
+
 
 public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener {
+
+    public static final String KEY_PROFILE_ID = "userID";
+    public static final String KEY_PROFILE_NAME = "username";
 
     private ProfileLoader profileAsync;
     private FragmentAdapter adapter;
@@ -58,9 +70,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         setContentView(R.layout.page_profile);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey("userID") && param.containsKey("username")) {
-            userId = param.getLong("userID");
-            username = param.getString("username");
+        if (param != null && param.containsKey(KEY_PROFILE_ID) && param.containsKey(KEY_PROFILE_NAME)) {
+            userId = param.getLong(KEY_PROFILE_ID);
+            username = param.getString(KEY_PROFILE_NAME);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
@@ -184,7 +196,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
                     if (!home)
-                        tweet.putExtra("Addition", username);
+                        tweet.putExtra(KEY_TWEETPOPUP_ADDITION, username);
                     startActivity(tweet);
                     break;
 
@@ -232,9 +244,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                         Intent dm = new Intent(this, DirectMessage.class);
                         startActivity(dm);
                     } else {
-                        Intent sendDm = new Intent(this, MessagePopup.class);
-                        sendDm.putExtra("username", username);
-                        startActivity(sendDm);
+                        Intent dmPopup = new Intent(this, MessagePopup.class);
+                        dmPopup.putExtra(KEY_DM_ADDITION, username);
+                        startActivity(dmPopup);
                     }
                     break;
 
@@ -262,7 +274,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra("search", text);
+        intent.putExtra(KEY_SEARCH, text);
         startActivity(intent);
     }
 
@@ -273,8 +285,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             case R.id.following:
                 if (!isLocked) {
                     Intent following = new Intent(this, UserDetail.class);
-                    following.putExtra("ID", userId);
-                    following.putExtra("mode", UserDetail.UserType.FRIENDS);
+                    following.putExtra(KEY_USERLIST_ID, userId);
+                    following.putExtra(KEY_USERLIST_MODE, FRIENDS);
                     startActivity(following);
                 }
                 break;
@@ -282,21 +294,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             case R.id.follower:
                 if (!isLocked) {
                     Intent follower = new Intent(this, UserDetail.class);
-                    follower.putExtra("ID", userId);
-                    follower.putExtra("mode", UserDetail.UserType.FOLLOWERS);
+                    follower.putExtra(KEY_USERLIST_ID, userId);
+                    follower.putExtra(KEY_USERLIST_MODE, FOLLOWERS);
                     startActivity(follower);
                 }
                 break;
 
             case R.id.links:
-                ConnectivityManager mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                 if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    Intent browserIntent = new Intent(ACTION_VIEW);
                     String link = lnkTxt.getText().toString();
-                    intent.setData(Uri.parse(link));
-                    startActivity(intent);
+                    browserIntent.setData(Uri.parse(link));
+                    startActivity(browserIntent);
                 } else {
-                    Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
                 }
                 break;
         }

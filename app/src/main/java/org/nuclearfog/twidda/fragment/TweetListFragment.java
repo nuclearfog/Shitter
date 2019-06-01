@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +24,15 @@ import org.nuclearfog.twidda.fragment.backend.TweetLoader;
 import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
 
 public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
 
+    public static final String KEY_FRAG_TWEET_MODE = "mode";
+    public static final String KEY_FRAG_TWEET_SEARCH = "search";
+    public static final String KEY_FRAG_TWEET_ID = "ID";
+    public static final String KEY_FRAG_TWEET_FIX = "fix";
     public enum TweetType {
         HOME,
         MENT,
@@ -52,11 +57,11 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         super.onCreateView(inflater, parent, param);
         boolean fixSize;
         Bundle b = getArguments();
-        if (b != null && b.containsKey("mode")) {
-            mode = (TweetType) b.getSerializable("mode");
-            id = b.getLong("id", -1);
-            search = b.getString("search", "");
-            fixSize = b.getBoolean("fix", false);
+        if (b != null && b.containsKey(KEY_FRAG_TWEET_MODE)) {
+            mode = (TweetType) b.getSerializable(KEY_FRAG_TWEET_MODE);
+            id = b.getLong(KEY_FRAG_TWEET_ID, -1);
+            search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
+            fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX, false);
         } else {
             throw new AssertionError();
         }
@@ -123,7 +128,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onStop() {
-        if (tweetTask != null && tweetTask.getStatus() == Status.RUNNING)
+        if (tweetTask != null && tweetTask.getStatus() == RUNNING)
             tweetTask.cancel(true);
         super.onStop();
     }
@@ -136,26 +141,32 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 tweetTask = new TweetLoader(root, Mode.TL_HOME);
                 tweetTask.execute();
                 break;
+
             case MENT:
                 tweetTask = new TweetLoader(root, Mode.TL_MENT);
                 tweetTask.execute();
                 break;
+
             case USER_TWEET:
                 tweetTask = new TweetLoader(root, Mode.USR_TWEETS);
                 tweetTask.execute(id);
                 break;
+
             case USER_FAVOR:
                 tweetTask = new TweetLoader(root, Mode.USR_FAVORS);
                 tweetTask.execute(id);
                 break;
+
             case TWEET_ANSR:
                 tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
                 tweetTask.execute(id, search);
                 break;
+
             case SEARCH:
                 tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
                 tweetTask.execute(search);
                 break;
+
             default:
                 if (BuildConfig.DEBUG)
                     throw new AssertionError("mode failure");
@@ -170,10 +181,10 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             Tweet tweet = adapter.getData(pos);
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
-            Intent intent = new Intent(getContext(), TweetDetail.class);
-            intent.putExtra("tweetID", tweet.getId());
-            intent.putExtra("username", tweet.getUser().getScreenname());
-            startActivity(intent);
+            Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
+            tweetIntent.putExtra("tweetID", tweet.getId());
+            tweetIntent.putExtra("username", tweet.getUser().getScreenname());
+            startActivity(tweetIntent);
         }
     }
 

@@ -31,7 +31,7 @@ public class TwitterUser {
         userID = user.getId();
         username = user.getName();
         screenname = '@' + user.getScreenName();
-        profileImg = user.getOriginalProfileImageURL();
+        profileImg = user.getOriginalProfileImageURLHttps();
         bio = getBio(user);
         link = user.getURLEntity().getExpandedURL();
         location = user.getLocation();
@@ -105,7 +105,7 @@ public class TwitterUser {
     }
 
     /**
-     * get Profile image link
+     * get Profile image_add link
      *
      * @return link
      */
@@ -114,7 +114,7 @@ public class TwitterUser {
     }
 
     /**
-     * get banner image link
+     * get banner image_add link
      *
      * @return link
      */

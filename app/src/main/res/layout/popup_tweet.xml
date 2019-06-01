@@ -46,7 +46,7 @@
                 android:background="@drawable/button"
                 android:contentDescription="@string/image_preview"
                 android:visibility="invisible"
-                app:srcCompat="@drawable/preview" />
+                app:srcCompat="@drawable/image" />
 
             <ImageButton
                 android:id="@+id/image"
@@ -56,7 +56,7 @@
                 android:layout_marginLeft="@dimen/margin_tweet_icon"
                 android:background="@drawable/button"
                 android:contentDescription="@string/add_image"
-                app:srcCompat="@drawable/image" />
+                app:srcCompat="@drawable/image_add" />
 
             <ImageButton
                 android:id="@+id/sendTweet"

@@ -14,29 +14,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-public class StatusUploader extends AsyncTask<String, Void, Boolean> {
+public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<TweetPopup> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private LayoutInflater inflater;
     private Dialog popup;
-    private String tweet;
-    private long replyId;
+    private TweetHolder tweet;
 
 
-    public StatusUploader(@NonNull TweetPopup context, String tweet, long replyId) {
+    public StatusUploader(@NonNull TweetPopup context, TweetHolder tweet) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         inflater = LayoutInflater.from(context);
         popup = new Dialog(context);
-        this.replyId = replyId;
         this.tweet = tweet;
     }
 
@@ -71,13 +70,9 @@ public class StatusUploader extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(String... path) {
+    protected Boolean doInBackground(Void[] v) {
         try {
-            if (path.length == 0) {
-                mTwitter.sendStatus(tweet, replyId, null);
-            } else {
-                mTwitter.sendStatus(tweet, replyId, path);
-            }
+            mTwitter.uploadStatus(tweet);
         } catch (TwitterException err) {
             this.err = err;
             return false;
@@ -119,4 +114,6 @@ public class StatusUploader extends AsyncTask<String, Void, Boolean> {
     protected void onCancelled() {
         popup.dismiss();
     }
+
+
 }

@@ -8,10 +8,14 @@ import twitter4j.URLEntity;
 
 public class Tweet {
 
+    private static final String PHOTO = "photo";
+    private static final String VIDEO = "video";
+    private static final String ANGIF = "animated_gif";
+
     private final long tweetID;
     private final long time;
     private final String tweet;
-    private final String[] media;
+    private final String[] medias;
     private final String source;
 
     private final TwitterUser user;
@@ -37,7 +41,7 @@ public class Tweet {
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
         replyName = '@' + status.getInReplyToScreenName();
-        media = getMediaLinks(status);
+        medias = getMediaLinks(status);
         retweeted = status.isRetweeted();
         favored = status.isFavorited();
         myRetweetId = status.getCurrentUserRetweetId();
@@ -56,7 +60,7 @@ public class Tweet {
 
 
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
-                 String replyName, long replyUserId, String[] media, String source, long replyID,
+                 String replyName, long replyUserId, String[] medias, String source, long replyID,
                  Tweet embedded, long myRetweetId, boolean retweeted, boolean favored) {
         this.tweetID = tweetID;
         this.user = user;
@@ -67,7 +71,7 @@ public class Tweet {
         this.replyID = replyID;
         this.embedded = embedded;
         this.replyName = replyName;
-        this.media = media;
+        this.medias = medias;
         this.source = source;
         this.retweeted = retweeted;
         this.favored = favored;
@@ -185,12 +189,21 @@ public class Tweet {
     }
 
     /**
-     * get media links of tweet
+     * get medias links of tweet
      *
-     * @return media links array
+     * @return medias links array
      */
     public String[] getMediaLinks() {
-        return media;
+        return medias;
+    }
+
+    /**
+     * check if tweet contains media
+     *
+     * @return true if tweet contains media
+     */
+    public boolean hasMedia() {
+        return medias != null && medias.length > 0;
     }
 
     /**
@@ -218,8 +231,25 @@ public class Tweet {
     private String[] getMediaLinks(Status status) {
         MediaEntity[] mediaEntities = status.getMediaEntities();
         String[] medias = new String[mediaEntities.length];
-        for (int i = 0; i < medias.length; i++)
-            medias[i] = mediaEntities[i].getMediaURLHttps();
+        for (int i = 0; i < medias.length; i++) {
+            MediaEntity mediaEntity = mediaEntities[i];
+            switch (mediaEntity.getType()) {
+                case PHOTO:
+                    medias[i] = mediaEntity.getMediaURLHttps();
+                    break;
+
+                case VIDEO:
+                    for (MediaEntity.Variant type : mediaEntity.getVideoVariants()) {
+                        if (type.getContentType().equals("application/x-mpegURL"))
+                            medias[i] = type.getUrl();
+                    }
+                    break;
+
+                case ANGIF:
+                    medias[i] = mediaEntity.getVideoVariants()[0].getUrl();
+                    break;
+            }
+        }
         return medias;
     }
 

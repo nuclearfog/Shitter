@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 
 public class AppDatabase extends SQLiteOpenHelper {
+
+    public static final String DB_NAME = "database.db";
+
     private static final String userTable = "CREATE TABLE IF NOT EXISTS user (" +
             "userID INTEGER PRIMARY KEY,username VARCHAR(50),scrname VARCHAR(15)," +
             "pbLink TEXT,banner TEXT,bio TEXT,location TEXT,link TEXT,userregister INTEGER," +
@@ -34,7 +37,7 @@ public class AppDatabase extends SQLiteOpenHelper {
 
 
     public AppDatabase(Context context) {
-        super(context, "database.db", null, 4);
+        super(context, DB_NAME, null, 4);
     }
 
 

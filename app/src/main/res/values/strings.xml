@@ -107,4 +107,5 @@
     <string name="github_link" translatable="false">github.com/nuclearfog/Shitter</string>
     <string name="follows_you">follows you</string>
     <string name="image_store_failure">image save failed!</string>
+    <string name="not_authorized">Not authorized!</string>
 </resources>

@@ -8,10 +8,13 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -400,29 +403,23 @@ public class TwitterEngine {
 
 
     /**
-     * Send Tweet
-     *
-     * @param text  Tweet Text
-     * @param reply In reply to tweet ID
-     * @param path  Path to the Media File
-     * @throws TwitterException if Access is unavailable
+     * send tweet
+     * @param tweet Tweet holder
+     * @throws TwitterException if twitter service is unavailable
+     * @throws FileNotFoundException if file was not found
      */
-    public void sendStatus(String text, long reply, @Nullable String[] path) throws TwitterException {
-        StatusUpdate mStatus = new StatusUpdate(text);
-        if (reply > 0)
-            mStatus.setInReplyToStatusId(reply);
-
-        if (path != null) {
-            final int count = path.length;
-            long[] mIDs = new long[count];
-            for (int i = 0; i < count; i++) {
-                String current = path[i];
-                UploadedMedia media = twitter.uploadMedia(new File(current));
-                mIDs[i] = media.getMediaId();
-            }
-            mStatus.setMediaIds(mIDs);
+    public void uploadStatus(TweetHolder tweet) throws TwitterException, FileNotFoundException {
+        StatusUpdate mStatus = new StatusUpdate(tweet.getText());
+        if (tweet.isReply())
+            mStatus.setInReplyToStatusId(tweet.getReplyId());
+        if (tweet.hasImages()) {
+            long[] ids = uploadImages(tweet.getImageLink());
+            mStatus.setMediaIds(ids);
+        } else if (tweet.hasVideo()) {
+            long[] ids = uploadVideo(tweet.getVideoLink());
+            mStatus.setMediaIds(ids);
         }
-        twitter.tweets().updateStatus(mStatus);
+        twitter.updateStatus(mStatus);
     }
 
 
@@ -591,9 +588,9 @@ public class TwitterEngine {
 
 
     /**
-     * Update user profile image
+     * Update user profile image_add
      *
-     * @param image image file
+     * @param image image_add file
      * @throws TwitterException if Access is unavailable
      */
     public void updateProfileImage(File image) throws TwitterException {
@@ -639,5 +636,40 @@ public class TwitterEngine {
         User sender = twitter.showUser(dm.getSenderId());
         User receiver = twitter.showUser(dm.getRecipientId());
         return new Message(dm, sender, receiver);
+    }
+
+
+    /**
+     * Upload image to twitter and return unique media IDs
+     *
+     * @param paths Image Paths
+     * @return Media ID array
+     * @throws TwitterException      if twitter service is unavailable
+     * @throws FileNotFoundException if file was not found
+     */
+    private long[] uploadImages(String[] paths) throws TwitterException, FileNotFoundException {
+        long[] ids = new long[paths.length];
+        int i = 0;
+        for (String path : paths) {
+            File file = new File(path);
+            UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
+            ids[i++] = media.getMediaId();
+        }
+        return ids;
+    }
+
+
+    /**
+     * Upload video or gif to twitter and return unique media ID
+     *
+     * @param path path of video or gif
+     * @return media ID
+     * @throws TwitterException      if twitter service is unavailable
+     * @throws FileNotFoundException if file was not found
+     */
+    private long[] uploadVideo(String path) throws TwitterException, FileNotFoundException {
+        File file = new File(path);
+        UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
+        return new long[]{media.getMediaId()};
     }
 }

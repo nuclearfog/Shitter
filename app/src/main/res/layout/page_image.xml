@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_margin="@dimen/preview_margin">
 
     <FrameLayout
+        android:id="@+id/image_window"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_height">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <org.nuclearfog.zoomview.ZoomView
             android:id="@+id/image_full"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center" />
+            app:enable_move="true"
+            app:max_zoom_in="10.0"
+            app:max_zoom_out="0.8" />
 
         <ProgressBar
             android:id="@+id/image_load"
@@ -21,12 +25,32 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:scrollbars="horizontal" />
+
     </FrameLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/image_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_layout" />
+    <FrameLayout
+        android:id="@+id/video_window"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-</LinearLayout>
+        <VideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+
+        <MediaController
+            android:id="@+id/video_controller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</FrameLayout>

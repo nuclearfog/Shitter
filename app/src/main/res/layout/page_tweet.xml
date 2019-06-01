@@ -122,7 +122,17 @@
                         android:contentDescription="@string/image_preview_button"
                         android:background="@drawable/button"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/preview" />
+                        app:srcCompat="@drawable/image" />
+
+                    <ImageButton
+                        android:id="@+id/video_attach"
+                        android:layout_width="@dimen/button_media_width"
+                        android:layout_height="@dimen/button_media_height"
+                        android:layout_margin="@dimen/margin_tweet_icon"
+                        android:contentDescription="@string/image_preview_button"
+                        android:background="@drawable/button"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/video" />
 
                 </LinearLayout>
 

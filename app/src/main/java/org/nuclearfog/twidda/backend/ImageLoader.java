@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
-import org.nuclearfog.twidda.window.ImageDetail;
+import org.nuclearfog.twidda.window.MediaViewer;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -22,15 +22,22 @@ import java.net.URL;
 
 public class ImageLoader extends AsyncTask<String, Void, Boolean> {
 
-    private WeakReference<ImageDetail> ui;
+    public enum Mode {
+        ONLINE,
+        STORAGE
+    }
+
+    private WeakReference<MediaViewer> ui;
     private ImageAdapter imageAdapter;
     private Bitmap[] images;
+    private Mode mode;
 
 
-    public ImageLoader(@NonNull ImageDetail context) {
+    public ImageLoader(@NonNull MediaViewer context, Mode mode) {
         ui = new WeakReference<>(context);
         RecyclerView imageList = context.findViewById(R.id.image_list);
         imageAdapter = (ImageAdapter) imageList.getAdapter();
+        this.mode = mode;
     }
 
 
@@ -39,14 +46,17 @@ public class ImageLoader extends AsyncTask<String, Void, Boolean> {
         try {
             int i = 0;
             images = new Bitmap[links.length];
-
             for (String link : links) {
-                if (link.startsWith("/"))
-                    images[i++] = BitmapFactory.decodeFile(link);
-                else {
-                    URL u = new URL(link);
-                    InputStream stream = u.openStream();
-                    images[i++] = BitmapFactory.decodeStream(stream);
+                switch (mode) {
+                    case ONLINE:
+                        URL url = new URL(link);
+                        InputStream stream = url.openStream();
+                        images[i++] = BitmapFactory.decodeStream(stream);
+                        break;
+
+                    case STORAGE:
+                        images[i++] = BitmapFactory.decodeFile(link);
+                        break;
                 }
             }
         } catch (Exception err) {
@@ -65,7 +75,7 @@ public class ImageLoader extends AsyncTask<String, Void, Boolean> {
         ProgressBar progress = ui.get().findViewById(R.id.image_load);
         progress.setVisibility(View.INVISIBLE);
 
-        if (success) {
+        if (success && images.length > 0) {
             ui.get().setImage(images[0]);
             imageAdapter.setImages(images);
             imageAdapter.notifyDataSetChanged();

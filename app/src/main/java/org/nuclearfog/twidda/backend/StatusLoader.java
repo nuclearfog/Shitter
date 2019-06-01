@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +21,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
@@ -30,6 +32,13 @@ import java.text.SimpleDateFormat;
 import twitter4j.TwitterException;
 
 import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO;
+import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 
@@ -167,22 +176,53 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 } else {
                     scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
-                if (tweet.getMediaLinks() != null && tweet.getMediaLinks().length > 0) {
-                    View mediaButton = ui.get().findViewById(R.id.image_attach);
-                    mediaButton.setVisibility(VISIBLE);
-                    mediaButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ui.get().imageClick(tweet.getMediaLinks());
-                        }
-                    });
+                if (tweet.hasMedia()) {
+                    String link = tweet.getMediaLinks()[0];
+
+                    if (link.contains(".jpg")) { // Image
+                        View imageButton = ui.get().findViewById(R.id.image_attach);
+                        imageButton.setVisibility(VISIBLE);
+                        imageButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent media = new Intent(ui.get(), MediaViewer.class);
+                                media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                                media.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                                ui.get().startActivity(media);
+                            }
+                        });
+                    } else if (link.contains(".mp4")) { // GIF
+                        View videoButton = ui.get().findViewById(R.id.video_attach);
+                        videoButton.setVisibility(VISIBLE);
+                        videoButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent media = new Intent(ui.get(), MediaViewer.class);
+                                media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                                media.putExtra(KEY_MEDIA_TYPE, ANGIF);
+                                ui.get().startActivity(media);
+                            }
+                        });
+                    } else if (link.contains(".m3u8")) { // video stream
+                        View videoButton = ui.get().findViewById(R.id.video_attach);
+                        videoButton.setVisibility(VISIBLE);
+                        videoButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent media = new Intent(ui.get(), MediaViewer.class);
+                                media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                                media.putExtra(KEY_MEDIA_TYPE, VIDEO);
+                                ui.get().startActivity(media);
+                            }
+                        });
+                    }
                 }
                 profile_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent profile = new Intent(ui.get(), UserProfile.class);
-                        profile.putExtra("userID", tweet.getUser().getId());
-                        profile.putExtra("username", tweet.getUser().getScreenname());
+                        profile.putExtra(UserProfile.KEY_PROFILE_ID, tweet.getUser().getId());
+                        profile.putExtra(UserProfile.KEY_PROFILE_NAME, tweet.getUser().getScreenname());
                         ui.get().startActivity(profile);
                     }
                 });
@@ -209,8 +249,8 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(ui.get(), TweetDetail.class);
-                        intent.putExtra("tweetID", tweet.getReplyId());
-                        intent.putExtra("username", tweet.getReplyName());
+                        intent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
+                        intent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
                         ui.get().startActivity(intent);
                     }
                 });

@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
@@ -38,9 +37,19 @@ import org.nuclearfog.twidda.window.UserDetail.UserType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
+import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
+
 
 public class TweetDetail extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener {
 
+    public static final String KEY_TWEET_ID = "tweetID";
+    public static final String KEY_TWEET_NAME = "username";
     public static final int STAT_CHANGED = 1;
     private static final int TWEET = 2;
 
@@ -59,9 +68,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
 
-        if (param != null && param.containsKey("tweetID") && param.containsKey("username")) {
-            tweetID = param.getLong("tweetID");
-            username = param.getString("username");
+        if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
+            tweetID = param.getLong(KEY_TWEET_ID);
+            username = param.getString(KEY_TWEET_NAME);
         } else if (link != null) {
             getTweet(link.getPath());
         } else if (BuildConfig.DEBUG) {
@@ -110,7 +119,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     protected void onStop() {
-        if (statusAsync != null && statusAsync.getStatus() == Status.RUNNING)
+        if (statusAsync != null && statusAsync.getStatus() == RUNNING)
             statusAsync.cancel(true);
         super.onStop();
     }
@@ -118,7 +127,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET && returnCode == STAT_CHANGED) {
+        if (reqCode == TWEET && returnCode == STAT_CHANGED) { // TODO reinitialize list
             statusAsync = null;
         }
         super.onActivityResult(reqCode, returnCode, i);
@@ -142,7 +151,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
                     Builder deleteDialog = new Builder(this);
@@ -150,7 +159,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (statusAsync != null && statusAsync.getStatus() == Status.RUNNING)
+                            if (statusAsync != null && statusAsync.getStatus() == RUNNING)
                                 statusAsync.cancel(true);
                             statusAsync = new StatusLoader(TweetDetail.this, Mode.DELETE);
                             statusAsync.execute(tweetID);
@@ -167,7 +176,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                         intent.setData(Uri.parse(tweetLink));
                         startActivity(intent);
                     } else {
-                        Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
                     }
                     break;
 
@@ -176,7 +185,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
                     clip.setPrimaryClip(linkClip);
-                    Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.copied_to_clipboard, LENGTH_SHORT).show();
                     break;
             }
         }
@@ -186,26 +195,26 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onClick(View v) {
-        if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_answer:
                     Intent tweet = new Intent(this, TweetPopup.class);
-                    tweet.putExtra("TweetID", tweetID);
-                    tweet.putExtra("Addition", username);
+                    tweet.putExtra(KEY_TWEETPOPUP_REPLYID, tweetID);
+                    tweet.putExtra(KEY_TWEETPOPUP_ADDITION, username);
                     startActivityForResult(tweet, TWEET);
                     break;
 
                 case R.id.tweet_retweet:
                     Intent userList = new Intent(this, UserDetail.class);
-                    userList.putExtra("ID", tweetID);
-                    userList.putExtra("mode", UserType.RETWEETS);
+                    userList.putExtra(KEY_USERLIST_ID, tweetID);
+                    userList.putExtra(KEY_USERLIST_MODE, UserType.RETWEETS);
                     startActivity(userList);
                     break;
 
                 case R.id.tweet_favorit:
                     userList = new Intent(this, UserDetail.class);
-                    userList.putExtra("ID", tweetID);
-                    userList.putExtra("mode", UserType.FAVORITS);
+                    userList.putExtra(KEY_USERLIST_ID, tweetID);
+                    userList.putExtra(KEY_USERLIST_MODE, UserType.FAVORITS);
                     startActivity(userList);
                     break;
             }
@@ -215,18 +224,18 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public boolean onLongClick(View v) {
-        if (statusAsync != null && statusAsync.getStatus() != Status.RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_retweet:
                     statusAsync = new StatusLoader(this, Mode.RETWEET);
                     statusAsync.execute(tweetID);
-                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.loading, LENGTH_SHORT).show();
                     return true;
 
                 case R.id.tweet_favorit:
                     statusAsync = new StatusLoader(this, Mode.FAVORITE);
                     statusAsync.execute(tweetID);
-                    Toast.makeText(this, R.string.loading, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.loading, LENGTH_SHORT).show();
                     return true;
             }
         }
@@ -237,16 +246,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra("search", text);
+        intent.putExtra(KEY_SEARCH, text);
         startActivity(intent);
-    }
-
-
-    public void imageClick(String[] mediaLinks) {
-        Intent image = new Intent(this, ImageDetail.class);
-        image.putExtra("link", mediaLinks);
-        image.putExtra("storable", true);
-        startActivity(image);
     }
 
 
@@ -271,7 +272,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 link = link.substring(end + 8);
                 tweetID = Long.parseLong(link);
             } else {
-                Toast.makeText(this, R.string.tweet_not_found, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.tweet_not_found, LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();

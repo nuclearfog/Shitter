@@ -149,7 +149,7 @@ public class GlobalSettings {
     }
 
     /**
-     * image loading enabled
+     * image_add loading enabled
      *
      * @return true if enabled
      */
@@ -158,7 +158,7 @@ public class GlobalSettings {
     }
 
     /**
-     * enable/disable image load
+     * enable/disable image_add load
      *
      * @param image true if enabled
      */

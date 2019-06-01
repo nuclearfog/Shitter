@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +23,15 @@ import org.nuclearfog.twidda.fragment.backend.UserLoader;
 import org.nuclearfog.twidda.fragment.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.window.UserProfile;
 
+import static android.os.AsyncTask.Status.RUNNING;
+
 
 public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
+
+    public static final String KEY_FRAG_USER_MODE = "mode";
+    public static final String KEY_FRAG_USER_SEARCH = "search";
+    public static final String KEY_FRAG_USER_ID = "ID";
+    public static final String KEY_FRAG_USER_FIX = "fix";
 
     public enum UserType {
         FOLLOWS,
@@ -47,11 +53,11 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         Bundle b = getArguments();
-        if (b != null && b.containsKey("mode")) {
-            mode = (UserType) b.getSerializable("mode");
-            id = b.getLong("id", -1);
-            search = b.getString("search", "");
-            fixLayout = b.getBoolean("fix", true);
+        if (b != null && b.containsKey(KEY_FRAG_USER_MODE)) {
+            mode = (UserType) b.getSerializable(KEY_FRAG_USER_MODE);
+            id = b.getLong(KEY_FRAG_USER_ID, -1);
+            search = b.getString(KEY_FRAG_USER_SEARCH, "");
+            fixLayout = b.getBoolean(KEY_FRAG_USER_FIX, true);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError("Bundle error!");
         }
@@ -90,7 +96,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
     @Override
     public void onStop() {
-        if (userTask != null && userTask.getStatus() == Status.RUNNING)
+        if (userTask != null && userTask.getStatus() == RUNNING)
             userTask.cancel(true);
         super.onStop();
     }

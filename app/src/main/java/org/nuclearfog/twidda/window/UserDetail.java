@@ -15,6 +15,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 public class UserDetail extends AppCompatActivity {
 
+    public static final String KEY_USERLIST_MODE = "mode";
+    public static final String KEY_USERLIST_ID = "id";
     public enum UserType {
         FRIENDS,
         FOLLOWERS,
@@ -31,9 +33,9 @@ public class UserDetail extends AppCompatActivity {
         setContentView(R.layout.page_userlist);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey("mode") && param.containsKey("ID")) {
-            mode = (UserType) param.getSerializable("mode");
-            id = param.getLong("ID");
+        if (param != null && param.containsKey(KEY_USERLIST_MODE) && param.containsKey(KEY_USERLIST_ID)) {
+            mode = (UserType) param.getSerializable(KEY_USERLIST_MODE);
+            id = param.getLong(KEY_USERLIST_ID);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }

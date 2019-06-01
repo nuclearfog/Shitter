@@ -84,7 +84,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".window.ImageDetail"
+            android:name=".window.MediaViewer"
             android:screenOrientation="portrait"
             android:theme="@style/HalfTransparency" />
 

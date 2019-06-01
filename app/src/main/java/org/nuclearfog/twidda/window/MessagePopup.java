@@ -3,9 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,10 +20,23 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpload;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE_STORAGE;
 
 
 public class MessagePopup extends AppCompatActivity implements OnClickListener {
+
+    public static final String KEY_DM_ADDITION = "addition";
+    private static final String[] PERM_READ = {Manifest.permission.READ_EXTERNAL_STORAGE};
+    private static final String[] PICK_IMAGE = {MediaStore.Images.Media.DATA};
+    private static final int REQ_PERM_READ = 4;
 
     private MessageUpload messageAsync;
     private EditText receiver, text;
@@ -36,10 +47,10 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_dm);
-        String username = "";
+        String addtion = "";
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            username = param.getString("username");
+            addtion = param.getString(KEY_DM_ADDITION, "");
         }
 
         View root = findViewById(R.id.dm_popup);
@@ -51,7 +62,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
 
-        receiver.append(username);
+        receiver.append(addtion);
         send.setOnClickListener(this);
         media.setOnClickListener(this);
     }
@@ -68,7 +79,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (messageAsync != null && messageAsync.getStatus() == Status.RUNNING)
+                    if (messageAsync != null && messageAsync.getStatus() == RUNNING)
                         messageAsync.cancel(true);
                     finish();
                 }
@@ -81,13 +92,14 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent i) {
         super.onActivityResult(reqCode, returnCode, i);
-        if (returnCode == RESULT_OK && i.getData() != null) {
-            String[] mode = {MediaStore.Images.Media.DATA};
-            Cursor c = getContentResolver().query(i.getData(), mode, null, null, null);
-            if (c != null && c.moveToFirst()) {
-                int index = c.getColumnIndex(mode[0]);
-                mediaPath = c.getString(index);
-                c.close();
+        if (i.getData() != null) {
+            if (reqCode == REQ_PERM_READ && returnCode == RESULT_OK) {
+                Cursor c = getContentResolver().query(i.getData(), PICK_IMAGE, null, null, null);
+                if (c != null && c.moveToFirst()) {
+                    int index = c.getColumnIndex(PICK_IMAGE[0]);
+                    mediaPath = c.getString(index);
+                    c.close();
+                }
             }
         }
     }
@@ -95,7 +107,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults[0] == PERMISSION_GRANTED)
+        if (requestCode == REQ_PERM_READ && grantResults[0] == PERMISSION_GRANTED)
             getMedia();
     }
 
@@ -109,15 +121,15 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
                 messageAsync = new MessageUpload(this);
                 messageAsync.execute(username, message, mediaPath);
             } else {
-                Toast.makeText(this, R.string.error_dm, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
             }
         } else if (v.getId() == R.id.dm_media) {
             if (mediaPath.trim().isEmpty())
                 getMedia();
             else {
-                Intent image = new Intent(this, ImageDetail.class);
-                image.putExtra("link", new String[]{mediaPath});
-                image.putExtra("storable", false);
+                Intent image = new Intent(this, MediaViewer.class);
+                image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
+                image.putExtra(KEY_MEDIA_TYPE, IMAGE_STORAGE);
                 startActivity(image);
             }
         }
@@ -126,16 +138,16 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
     private void getMedia() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int check = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (check == PackageManager.PERMISSION_GRANTED) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, 0);
+            int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
+            if (check == PERMISSION_GRANTED) {
+                Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, REQ_PERM_READ);
             } else {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                requestPermissions(PERM_READ, REQ_PERM_READ);
             }
         } else {
-            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, 0);
+            Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+            startActivityForResult(galleryIntent, REQ_PERM_READ);
         }
     }
 }

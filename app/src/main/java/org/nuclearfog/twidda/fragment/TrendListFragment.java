@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +21,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.TrendLoader;
 import org.nuclearfog.twidda.fragment.backend.TrendLoader.Mode;
 import org.nuclearfog.twidda.window.SearchPage;
+
+import static android.os.AsyncTask.Status.RUNNING;
 
 
 public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
@@ -69,7 +70,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onStop() {
-        if (trendTask != null && trendTask.getStatus() == Status.RUNNING)
+        if (trendTask != null && trendTask.getStatus() == RUNNING)
             trendTask.cancel(true);
         super.onStop();
     }

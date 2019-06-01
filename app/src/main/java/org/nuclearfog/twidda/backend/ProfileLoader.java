@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.ImageDetail;
+import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
@@ -31,6 +31,9 @@ import twitter4j.TwitterException;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 
 
 public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
@@ -215,9 +218,9 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
             profile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent image = new Intent(ui.get(), ImageDetail.class);
-                    image.putExtra("link", new String[]{user.getImageLink()});
-                    image.putExtra("storable", true);
+                    Intent image = new Intent(ui.get(), MediaViewer.class);
+                    image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
+                    image.putExtra(KEY_MEDIA_TYPE, IMAGE);
                     ui.get().startActivity(image);
                 }
             });

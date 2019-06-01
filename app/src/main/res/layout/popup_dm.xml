@@ -39,7 +39,7 @@
                 android:layout_marginLeft="@dimen/margin_dm_icon"
                 android:background="@drawable/button"
                 android:contentDescription="@string/add_image"
-                app:srcCompat="@drawable/image" />
+                app:srcCompat="@drawable/image_add" />
 
             <ImageButton
                 android:id="@+id/dm_send"

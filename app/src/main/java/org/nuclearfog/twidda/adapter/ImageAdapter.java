@@ -83,16 +83,16 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
 
     public interface OnImageClickListener {
         /**
-         * simple click on image
+         * simple click on image_add
          *
-         * @param image selected image bitmap
+         * @param image selected image_add bitmap
          */
         void onImageClick(Bitmap image);
 
         /**
-         * long touch on image
+         * long touch on image_add
          *
-         * @param image selected image bitmap
+         * @param image selected image_add bitmap
          * @return perform onImageClick ?
          */
         boolean onImageTouch(Bitmap image);

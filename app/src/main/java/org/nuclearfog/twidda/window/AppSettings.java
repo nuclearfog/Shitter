@@ -33,17 +33,21 @@ import org.nuclearfog.twidda.adapter.WorldIdAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.database.AppDatabase.DB_NAME;
+
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnDismissListener, OnItemSelectedListener, OnCheckedChangeListener {
+
+    private static final int[][] checkboxStates = new int[][]{{android.R.attr.state_checked}, {}};
+    private final int[] checkboxColor = new int[]{0, Color.WHITE};
 
     private static final int BACKGROUND = 0;
     private static final int FONTCOLOR = 1;
     private static final int HIGHLIGHT = 2;
     private static final int POPUPCOLOR = 3;
-
-    private static final int[][] checkboxStates = new int[][]{{android.R.attr.state_checked}, {}};
-    private final int[] checkboxColor = new int[]{0, Color.WHITE};
 
     private GlobalSettings settings;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
@@ -110,7 +114,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         link.setLinkTextColor(settings.getHighlightColor());
         if (settings.getCustomWidSet()) {
             String text = Long.toString(settings.getWoeId());
-            woeIdText.setVisibility(View.VISIBLE);
+            woeIdText.setVisibility(VISIBLE);
             woeIdText.setText(text);
         }
         toggleImg.setOnCheckedChangeListener(this);
@@ -141,7 +145,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                deleteDatabase("database.db");
+                                deleteDatabase(DB_NAME);
                             }
                         })
                         .show();
@@ -156,7 +160,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.logout();
                                 TwitterEngine.destroyInstance();
-                                deleteDatabase("database.db");
+                                deleteDatabase(DB_NAME);
                                 finish();
                             }
                         })
@@ -243,11 +247,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position == parent.getCount() - 1) {
-            woeIdText.setVisibility(View.VISIBLE);
+            woeIdText.setVisibility(VISIBLE);
             settings.setCustomWidSet(true);
             settings.setWoeId(1);
         } else {
-            woeIdText.setVisibility(View.INVISIBLE);
+            woeIdText.setVisibility(INVISIBLE);
             woeIdText.setText("");
             settings.setCustomWidSet(false);
             settings.setWoeId(id);

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +23,8 @@ import org.nuclearfog.twidda.fragment.backend.MessageLoader.Mode;
 import org.nuclearfog.twidda.window.MessagePopup;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.UserProfile;
+
+import static android.os.AsyncTask.Status.RUNNING;
 
 
 public class MessageListFragment extends Fragment implements OnRefreshListener, OnItemSelected {
@@ -71,7 +72,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     @Override
     public void onStop() {
         super.onStop();
-        if (messageTask != null && messageTask.getStatus() == Status.RUNNING)
+        if (messageTask != null && messageTask.getStatus() == RUNNING)
             messageTask.cancel(true);
     }
 

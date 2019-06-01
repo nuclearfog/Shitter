@@ -1,11 +1,8 @@
 package org.nuclearfog.twidda.window;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.LightingColorFilter;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
+
+import static android.content.Intent.ACTION_VIEW;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class LoginPage extends AppCompatActivity implements OnClickListener {
@@ -31,8 +33,6 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         pin = findViewById(R.id.pin);
         Button btnLink = findViewById(R.id.linkButton);
         Button btnVeri = findViewById(R.id.verifier);
-        btnLink.getBackground().setColorFilter(new LightingColorFilter(0xffffffff, 0xff00aa));
-        btnVeri.getBackground().setColorFilter(new LightingColorFilter(0xffffffff, 0xff00aa));
         btnLink.setOnClickListener(this);
         btnVeri.setOnClickListener(this);
     }
@@ -40,7 +40,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (registerAsync != null && registerAsync.getStatus() == Status.RUNNING)
+        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
             registerAsync.cancel(true);
         super.onDestroy();
     }
@@ -55,7 +55,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (registerAsync != null && registerAsync.getStatus() == Status.RUNNING)
+        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
             registerAsync.cancel(true);
 
         switch (v.getId()) {
@@ -70,7 +70,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
                     registerAsync = new Registration(this);
                     registerAsync.execute(twitterPin);
                 } else {
-                    Toast.makeText(this, R.string.enter_pin, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.enter_pin, LENGTH_LONG).show();
                 }
                 break;
         }
@@ -78,15 +78,15 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
 
     public void connect(String link) {
-        ConnectivityManager mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         if (mConnect != null && mConnect.getActiveNetworkInfo() != null) {
             if (mConnect.getActiveNetworkInfo().isConnected()) {
-                Intent browser = new Intent(Intent.ACTION_VIEW);
+                Intent browser = new Intent(ACTION_VIEW);
                 browser.setData(Uri.parse(link));
                 startActivity(browser);
             }
         } else {
-            Toast.makeText(this, R.string.connection_failed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
         }
     }
 }

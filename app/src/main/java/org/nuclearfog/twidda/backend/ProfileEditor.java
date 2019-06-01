@@ -21,13 +21,17 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.window.ImageDetail;
+import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.ProfileEdit;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
+
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 
 
 public class ProfileEditor extends AsyncTask<Void, Void, Void> {
@@ -149,9 +153,9 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
                     pb_image.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent image = new Intent(ui.get(), ImageDetail.class);
-                            image.putExtra("link", mediaLink);
-                            image.putExtra("storable", false);
+                            Intent image = new Intent(ui.get(), MediaViewer.class);
+                            image.putExtra(KEY_MEDIA_LINK, mediaLink);
+                            image.putExtra(KEY_MEDIA_TYPE, IMAGE);
                             ui.get().startActivity(image);
                         }
                     });

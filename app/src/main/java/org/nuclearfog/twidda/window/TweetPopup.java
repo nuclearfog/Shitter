@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -19,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusUploader;
+import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
@@ -27,10 +27,37 @@ import java.util.List;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF_STORAGE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE_STORAGE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO_STORAGE;
 
 
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
+
+    public static final String KEY_TWEETPOPUP_REPLYID = "replyID";
+    public static final String KEY_TWEETPOPUP_ADDITION = "Addition";
+
+    private enum Mode {
+        IMAGE,
+        VIDEO,
+        GIF,
+        NONE
+    }
+
+    private static final String[] READ_STORAGE = {READ_EXTERNAL_STORAGE};
+    private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
+    private static final String TYPE_IMAGE = "image/jpeg image/jpg image/png ";
+    private static final String TYPE_VIDEO = "video/mp4 video/3gp video/gif ";
+    private static final int PICK_MEDIA = 3;
+    private static final int CHECK_PERM = 4;
 
     private StatusUploader uploaderAsync;
     private View imageButton, previewBtn;
@@ -38,8 +65,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     private TextView imgCount;
     private EditText tweet;
     private String addition = "";
-    private long inReplyId = -1L;
+    private long inReplyId = 0;
     private int imgIndex = 0;
+    private Mode mode = Mode.NONE;
+
 
 
     @Override
@@ -49,10 +78,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            if (param.containsKey("TweetID"))
-                inReplyId = param.getLong("TweetID");
-            if (param.containsKey("Addition"))
-                addition = param.getString("Addition") + " ";
+            if (param.containsKey(KEY_TWEETPOPUP_REPLYID))
+                inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID);
+            if (param.containsKey(KEY_TWEETPOPUP_ADDITION))
+                addition = param.getString(KEY_TWEETPOPUP_ADDITION) + " ";
         }
 
         mediaPath = new LinkedList<>();
@@ -78,7 +107,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     protected void onDestroy() {
-        if (uploaderAsync != null && uploaderAsync.getStatus() == Status.RUNNING)
+        if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
             uploaderAsync.cancel(true);
         super.onDestroy();
     }
@@ -91,26 +120,47 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode, returnCode, i);
-        if (returnCode == RESULT_OK) {
-            String[] mode = {MediaStore.Images.Media.DATA};
-            if (i.getData() != null) {
-                Cursor c = getContentResolver().query(i.getData(), mode, null, null, null);
-                if (c != null && c.moveToFirst()) {
-                    if (imgIndex == 0) {
-                        previewBtn.setVisibility(View.VISIBLE);
+    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+        super.onActivityResult(reqCode, returnCode, intent);
+        if (reqCode == PICK_MEDIA && returnCode == RESULT_OK) {
+            if (intent.getData() != null) {
+                Cursor cursor = getContentResolver().query(intent.getData(), GET_MEDIA, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(GET_MEDIA[0]);
+                    String path = cursor.getString(index);
+                    String ext = path.substring(path.lastIndexOf('.'));
+                    switch (ext) {
+                        case ".jpg":
+                        case ".png":
+                            mode = Mode.IMAGE;
+                            if (imgIndex == 0) {
+                                mediaPath.add(path);
+                                previewBtn.setVisibility(VISIBLE);
+                            } else if (imgIndex < 4) {
+                                mediaPath.add(path);
+                                String count = Integer.toString(imgIndex);
+                                imgCount.setText(count);
+                                if (++imgIndex == 4)
+                                    imageButton.setVisibility(INVISIBLE);
+                            }
+                            break;
+
+                        case ".gif":
+                            mode = Mode.GIF;
+                            mediaPath.add(path);
+                            previewBtn.setVisibility(VISIBLE);
+                            imageButton.setVisibility(INVISIBLE);
+                            break;
+
+                        case ".mp4":
+                        case ".3gp":
+                            mode = Mode.VIDEO;
+                            mediaPath.add(path);
+                            previewBtn.setVisibility(VISIBLE);
+                            imageButton.setVisibility(INVISIBLE);
+                            break;
                     }
-                    if (imgIndex < 4) {
-                        int index = c.getColumnIndex(mode[0]);
-                        mediaPath.add(c.getString(index));
-                        String count = Integer.toString(++imgIndex);
-                        imgCount.setText(count);
-                    }
-                    if (imgIndex == 4) {
-                        imageButton.setVisibility(View.INVISIBLE);
-                    }
-                    c.close();
+                    cursor.close();
                 }
             }
         }
@@ -119,7 +169,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults[0] == PERMISSION_GRANTED)
+        if (requestCode == CHECK_PERM && grantResults[0] == PERMISSION_GRANTED)
             getMedia();
     }
 
@@ -129,19 +179,21 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         switch (v.getId()) {
             case R.id.sendTweet:
                 String tweetStr = tweet.getText().toString();
-                if (uploaderAsync != null && uploaderAsync.getStatus() == Status.RUNNING)
-                    uploaderAsync.cancel(true);
-                uploaderAsync = new StatusUploader(this, tweetStr, inReplyId);
+                String[] paths = new String[mediaPath.size()];
+                paths = mediaPath.toArray(paths);
 
-                if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
-                    Toast.makeText(this, R.string.empty_tweet, Toast.LENGTH_SHORT).show();
-                } else if (tweetStr.length() > 280) {
-                    Toast.makeText(this, R.string.char_limit_reached, Toast.LENGTH_SHORT).show();
-                } else if (!mediaPath.isEmpty()) {
-                    String[] paths = new String[mediaPath.size()];
-                    paths = mediaPath.toArray(paths);
-                    uploaderAsync.execute(paths);
-                } else {
+                if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
+                    uploaderAsync.cancel(true);
+
+                if (tweetStr.trim().isEmpty() && paths.length == 0) {
+                    Toast.makeText(this, R.string.empty_tweet, LENGTH_SHORT).show();
+                } else if (paths.length > 0) {
+                    TweetHolder tweet = new TweetHolder(tweetStr, inReplyId, paths);
+                    uploaderAsync = new StatusUploader(this, tweet);
+                    uploaderAsync.execute();
+                } else if (!tweetStr.trim().isEmpty()) {
+                    TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
+                    uploaderAsync = new StatusUploader(this, tweet);
                     uploaderAsync.execute();
                 }
                 break;
@@ -151,21 +203,36 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 break;
 
             case R.id.image:
-                getMedia();
+                checkPermission();
                 break;
 
             case R.id.img_preview:
-                Intent image = new Intent(this, ImageDetail.class);
-                image.putExtra("link", mediaPath.toArray(new String[0]));
-                image.putExtra("storable", false);
-                startActivity(image);
+                Intent image = new Intent(this, MediaViewer.class);
+                image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
+
+                switch (mode) {
+                    case IMAGE:
+                        image.putExtra(KEY_MEDIA_TYPE, IMAGE_STORAGE);
+                        startActivity(image);
+                        break;
+
+                    case VIDEO:
+                        image.putExtra(KEY_MEDIA_TYPE, VIDEO_STORAGE);
+                        startActivity(image);
+                        break;
+
+                    case GIF:
+                        image.putExtra(KEY_MEDIA_TYPE, ANGIF_STORAGE);
+                        startActivity(image);
+                        break;
+                }
                 break;
         }
     }
 
 
     public void close() {
-        Toast.makeText(this, R.string.tweet_sent, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.tweet_sent, LENGTH_LONG).show();
         finish();
     }
 
@@ -188,18 +255,27 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     }
 
 
-    private void getMedia() {
+    private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PERMISSION_GRANTED) {
-                Intent mediaIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-                startActivityForResult(mediaIntent, 0);
+                getMedia();
             } else {
-                requestPermissions(new String[]{READ_EXTERNAL_STORAGE}, 1);
+                requestPermissions(READ_STORAGE, CHECK_PERM);
             }
         } else {
-            Intent mediaIntent = new Intent(Intent.ACTION_PICK, EXTERNAL_CONTENT_URI);
-            startActivityForResult(mediaIntent, 0);
+            getMedia();
+        }
+    }
+
+    private void getMedia() {
+        if (mode == Mode.NONE) {
+            Intent mediaIntent = new Intent(ACTION_PICK);
+            mediaIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE + TYPE_VIDEO);
+            startActivityForResult(mediaIntent, PICK_MEDIA);
+        } else if (mode == Mode.IMAGE) {
+            Intent imageIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+            startActivityForResult(imageIntent, PICK_MEDIA);
         }
     }
 }

@@ -12,18 +12,17 @@ import androidx.viewpager.widget.ViewPager;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.MESSAGE_PAGE;
 
 
 public class DirectMessage extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_dm);
-
         Toolbar tool = findViewById(R.id.dm_toolbar);
         View root = findViewById(R.id.dm_layout);
         ViewPager pager = findViewById(R.id.dm_pager);
@@ -32,7 +31,7 @@ public class DirectMessage extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.directmessage);
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.MESSAGE_PAGE, 0, "");
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), MESSAGE_PAGE, 0, "");
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
