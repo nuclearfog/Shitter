@@ -41,8 +41,8 @@ import static org.nuclearfog.twidda.database.AppDatabase.DB_NAME;
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnDismissListener, OnItemSelectedListener, OnCheckedChangeListener {
 
-    private static final int[][] checkboxStates = new int[][]{{android.R.attr.state_checked}, {}};
-    private final int[] checkboxColor = new int[]{0, Color.WHITE};
+    private static final int[][] checkboxStates = {{android.R.attr.state_checked}, {}};
+    private final int[] checkboxColor = {0, Color.WHITE};
 
     private static final int BACKGROUND = 0;
     private static final int FONTCOLOR = 1;

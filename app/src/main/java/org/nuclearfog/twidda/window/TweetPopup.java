@@ -64,8 +64,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     private List<String> mediaPath;
     private TextView imgCount;
     private EditText tweet;
-    private String addition;
-    private long inReplyId;
+    private String addition = "";
+    private long inReplyId = 0;
     private Mode mode = Mode.NONE;
 
 
@@ -83,7 +83,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, -1L);
+            inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, 0);
             addition = param.getString(KEY_TWEETPOPUP_ADDITION, "") + " ";
         }
 
@@ -266,6 +266,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
             getMedia();
         }
     }
+
 
     private void getMedia() {
         if (mode == Mode.NONE) {
