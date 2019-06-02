@@ -15,7 +15,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.AppSettings;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -48,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_main);
-
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
         pager = findViewById(R.id.home_pager);
         tab = findViewById(R.id.home_tab);
@@ -57,20 +55,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         settings = GlobalSettings.getInstance(this);
-
-        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.HOME_TAB, 0, "");
-        pager.setAdapter(adapter);
-
-        pager.setOffscreenPageLimit(3);
-        tab.setupWithViewPager(pager);
-        tab.addOnTabSelectedListener(this);
-
-        for (int i = 0; i < ICONS.length; i++) {
-            Tab t = tab.getTabAt(i);
-            if (t != null)
-                t.setIcon(ICONS[i]);
-        }
-        initView();
+        adapter = new FragmentAdapter(getSupportFragmentManager());
     }
 
 
@@ -80,6 +65,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, LOGIN);
+        } else if (pager.getAdapter() == null) {
+            pager.setAdapter(adapter);
+            pager.setOffscreenPageLimit(3);
+            tab.setupWithViewPager(pager);
+            tab.addOnTabSelectedListener(this);
+            for (int i = 0; i < ICONS.length; i++) {
+                Tab t = tab.getTabAt(i);
+                if (t != null)
+                    t.setIcon(ICONS[i]);
+            }
+            initView();
         }
     }
 

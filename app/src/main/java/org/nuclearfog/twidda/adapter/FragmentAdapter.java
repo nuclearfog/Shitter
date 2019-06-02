@@ -35,6 +35,12 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
     private final Fragment[] fragments;
 
+
+    public FragmentAdapter(FragmentManager fManager) {
+        this(fManager, AdapterType.HOME_TAB, 0, "");
+    }
+
+
     public FragmentAdapter(FragmentManager fManager, AdapterType mode, long id, String search) {
         super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         switch (mode) {
