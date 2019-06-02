@@ -35,6 +35,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.MainActivity.APP_LOGOUT;
+import static org.nuclearfog.twidda.MainActivity.DB_CLEARED;
 import static org.nuclearfog.twidda.database.AppDatabase.DB_NAME;
 
 
@@ -146,6 +148,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 deleteDatabase(DB_NAME);
+                                setResult(DB_CLEARED);
                             }
                         })
                         .show();
@@ -161,6 +164,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                                 settings.logout();
                                 TwitterEngine.destroyInstance();
                                 deleteDatabase(DB_NAME);
+                                setResult(APP_LOGOUT);
                                 finish();
                             }
                         })

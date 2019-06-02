@@ -48,6 +48,11 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
+    public boolean isEmpty() {
+        return trends.length == 0;
+    }
+
+
     @Override
     public int getItemCount() {
         return trends.length;

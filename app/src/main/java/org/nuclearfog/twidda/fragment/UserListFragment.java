@@ -86,19 +86,18 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (userTask == null) {
+    public void onStart() {
+        super.onStart();
+        if (userTask == null)
             load();
-        }
     }
 
 
     @Override
-    public void onPause() {
+    public void onStop() {
         if (userTask != null && userTask.getStatus() == RUNNING)
             userTask.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 
@@ -143,10 +142,6 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
             case USEARCH:
                 userTask = new UserLoader(root, Mode.SEARCH);
                 userTask.execute(search);
-                break;
-            default:
-                if (BuildConfig.DEBUG)
-                    throw new AssertionError("mode failure");
                 break;
         }
     }

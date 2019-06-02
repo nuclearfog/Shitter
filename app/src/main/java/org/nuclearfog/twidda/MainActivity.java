@@ -32,6 +32,8 @@ import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
  */
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
+    public static final int DB_CLEARED = 3;
+    public static final int APP_LOGOUT = 4;
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
     private static final int[] ICONS = {R.drawable.home, R.drawable.hash, R.drawable.mention};
@@ -63,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tab.setupWithViewPager(pager);
         tab.addOnTabSelectedListener(this);
 
+        for (int i = 0; i < ICONS.length; i++) {
+            Tab t = tab.getTabAt(i);
+            if (t != null)
+                t.setIcon(ICONS[i]);
+        }
         initView();
     }
 
@@ -84,8 +91,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 if (returnCode == RESULT_CANCELED)
                     finish();
                 break;
+
             case SETTING:
-                adapter.notifySettingsChanged();
+                if (returnCode == DB_CLEARED)
+                    adapter.clearData();
+                else
+                    adapter.notifySettingsChanged();
                 initView();
                 break;
         }
@@ -208,11 +219,5 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         View root = findViewById(R.id.main_layout);
         root.setBackgroundColor(settings.getBackgroundColor());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
-
-        for (int i = 0; i < ICONS.length; i++) {
-            Tab t = tab.getTabAt(i);
-            if (t != null)
-                t.setIcon(ICONS[i]);
-        }
     }
 }

@@ -24,12 +24,6 @@ import twitter4j.TwitterException;
 
 public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
 
-    public enum Mode {
-        DB_TRND,
-        LD_TRND
-    }
-
-    private Mode mode;
     private WeakReference<View> ui;
     private TwitterException err;
     private TwitterEngine mTwitter;
@@ -39,7 +33,7 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
     private int woeId;
 
 
-    public TrendLoader(@NonNull View root, Mode mode) {
+    public TrendLoader(@NonNull View root) {
         ui = new WeakReference<>(root);
         mTwitter = TwitterEngine.getInstance(root.getContext());
         db = new DatabaseAdapter(root.getContext());
@@ -47,7 +41,6 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TrendAdapter) list.getAdapter();
         woeId = settings.getWoeId();
-        this.mode = mode;
     }
 
 
@@ -69,16 +62,15 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void[] v) {
         try {
-            switch (mode) {
-                case DB_TRND:
-                    trends = db.getTrends(woeId);
-                    if (!trends.isEmpty())
-                        break;
-
-                case LD_TRND:
+            if (adapter.isEmpty()) {
+                trends = db.getTrends(woeId);
+                if (trends.isEmpty()) {
                     trends = mTwitter.getTrends(woeId);
                     db.storeTrends(trends, woeId);
-                    break;
+                }
+            } else {
+                trends = mTwitter.getTrends(woeId);
+                db.storeTrends(trends, woeId);
             }
         } catch (TwitterException err) {
             this.err = err;
@@ -113,6 +105,7 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
         if (ui.get() == null)
             return;
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
+        if (reload.isRefreshing())
+            reload.setRefreshing(false);
     }
 }

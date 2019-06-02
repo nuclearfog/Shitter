@@ -171,10 +171,20 @@ public class FragmentAdapter extends FragmentPagerAdapter {
     }
 
 
+    public void clearData() {
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof OnStateChange)
+                ((OnStateChange) fragment).onDataClear();
+        }
+    }
+
+
     public interface OnStateChange {
 
         void onSettingsChange();
 
         void onTabChange();
+
+        void onDataClear();
     }
 }

@@ -119,6 +119,7 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
         if (ui.get() == null)
             return;
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
+        if (reload.isRefreshing())
+            reload.setRefreshing(false);
     }
 }

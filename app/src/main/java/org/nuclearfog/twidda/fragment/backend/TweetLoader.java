@@ -21,14 +21,16 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+import static android.os.AsyncTask.Status.FINISHED;
+
 public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
     public enum Mode {
-        TL_HOME, DB_HOME,
-        TL_MENT, DB_MENT,
-        USR_TWEETS, DB_TWEETS,
-        USR_FAVORS, DB_FAVORS,
-        TWEET_ANS, DB_ANS,
+        TL_HOME,
+        TL_MENT,
+        USR_TWEETS,
+        USR_FAVORS,
+        TWEET_ANS,
         TWEET_SEARCH
     }
 
@@ -48,10 +50,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TweetAdapter) list.getAdapter();
         db = new DatabaseAdapter(root.getContext());
-        if (mode == Mode.DB_ANS) {
-            GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
-            loadAnswer = settings.getAnswerLoad();
-        }
+        GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
+        loadAnswer = settings.getAnswerLoad();
         this.mode = mode;
     }
 
@@ -64,7 +64,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         reload.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getStatus() != Status.FINISHED)
+                if (getStatus() != FINISHED)
                     reload.setRefreshing(true);
             }
         }, 500);
@@ -76,97 +76,103 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         long sinceId = 1;
         try {
             switch (mode) {
-                case DB_HOME:
-                    tweets = db.getHomeTimeline();
-                    if (!tweets.isEmpty())
-                        break;
-
                 case TL_HOME:
-                    if (adapter.getItemCount() > 0)
+                    if (adapter.isEmpty()) {
+                        tweets = db.getHomeTimeline();
+                        if (tweets.isEmpty()) {
+                            tweets = mTwitter.getHome(1, sinceId);
+                            db.storeHomeTimeline(tweets);
+                        }
+                    } else {
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getHome(1, sinceId);
-                    db.storeHomeTimeline(tweets);
+                        tweets = mTwitter.getHome(1, sinceId);
+                        db.storeHomeTimeline(tweets);
+                    }
                     tweets.addAll(adapter.getData());
-                    break;
-
-                case DB_MENT:
-                    tweets = db.getMentions();
-                    if (!tweets.isEmpty())
-                        break;
+                    return true;
 
                 case TL_MENT:
-                    if (adapter.getItemCount() > 0)
+                    if (adapter.isEmpty()) {
+                        tweets = db.getMentions();
+                        if (tweets.isEmpty()) {
+                            tweets = mTwitter.getMention(1, sinceId);
+                            db.storeMentions(tweets);
+                        }
+                    } else {
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getMention(1, sinceId);
-                    db.storeMentions(tweets);
+                        tweets = mTwitter.getMention(1, sinceId);
+                        db.storeMentions(tweets);
+                    }
                     tweets.addAll(adapter.getData());
-                    publishProgress();
-                    break;
-
-                case DB_TWEETS:
-                    long tweetId = (long) param[0];
-                    tweets = db.getUserTweets(tweetId);
-                    if (!tweets.isEmpty())
-                        break;
+                    return true;
 
                 case USR_TWEETS:
-                    tweetId = (long) param[0];
-                    if (adapter.getItemCount() > 0)
+                    long tweetId = (long) param[0];
+                    if (adapter.isEmpty()) {
+                        tweets = db.getUserTweets(tweetId);
+                        if (tweets.isEmpty()) {
+                            tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
+                            db.storeUserTweets(tweets);
+                        }
+                    } else {
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
-                    db.storeUserTweets(tweets);
+                        tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
+                        db.storeUserTweets(tweets);
+                    }
                     tweets.addAll(adapter.getData());
-                    break;
-
-                case DB_FAVORS:
-                    tweetId = (long) param[0];
-                    tweets = db.getUserFavs(tweetId);
-                    if (!tweets.isEmpty())
-                        break;
+                    return true;
 
                 case USR_FAVORS:
                     tweetId = (long) param[0];
-                    if (adapter.getItemCount() > 0)
+                    if (adapter.isEmpty()) {
+                        tweets = db.getUserFavs(tweetId);
+                        if (tweets.isEmpty()) {
+                            tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
+                            db.storeUserFavs(tweets, tweetId);
+                        }
+                    } else {
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
-                    db.storeUserFavs(tweets, tweetId);
+                        tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
+                        db.storeUserFavs(tweets, tweetId);
+                    }
                     tweets.addAll(adapter.getData());
-                    break;
-
-                case DB_ANS:
-                    tweetId = (long) param[0];
-                    tweets = db.getAnswers(tweetId);
-                    if (!(tweets.isEmpty() && loadAnswer))
-                        break;
+                    return true;
 
                 case TWEET_ANS:
-                    String search = (String) param[1];
                     tweetId = (long) param[0];
-                    if (adapter.getItemCount() > 0)
+                    String search = (String) param[1];
+                    if (adapter.isEmpty()) {
+                        tweets = db.getAnswers(tweetId);
+                        if (tweets.isEmpty() && loadAnswer) {
+                            tweets = mTwitter.getAnswers(search, tweetId, sinceId);
+                            if (!tweets.isEmpty() && db.containStatus(tweetId))
+                                db.storeReplies(tweets);
+                        }
+                    } else {
                         sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getAnswers(search, tweetId, sinceId);
-                    if (!tweets.isEmpty() && db.containStatus(tweetId))
-                        db.storeReplies(tweets);
+                        tweets = mTwitter.getAnswers(search, tweetId, sinceId);
+                        if (!tweets.isEmpty() && db.containStatus(tweetId))
+                            db.storeReplies(tweets);
+                    }
                     tweets.addAll(adapter.getData());
-                    break;
+                    return true;
 
                 case TWEET_SEARCH:
                     search = (String) param[0];
-                    if (adapter.getItemCount() > 0)
+                    if (!adapter.isEmpty())
                         sinceId = adapter.getItemId(0);
                     tweets = mTwitter.searchTweets(search, sinceId);
                     tweets.addAll(adapter.getData());
-                    break;
+                    return true;
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             if (err.getMessage() != null)
                 Log.e("TweetLoader", err.getMessage());
-            return false;
+            err.printStackTrace();
         }
-        return true;
+        return false;
     }
 
 
@@ -191,6 +197,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         if (ui.get() == null)
             return;
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
+        if (reload.isRefreshing())
+            reload.setRefreshing(false);
     }
 }

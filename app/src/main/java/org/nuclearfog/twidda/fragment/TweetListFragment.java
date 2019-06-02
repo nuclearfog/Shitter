@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.OnStateChange;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
@@ -92,49 +91,28 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-
+    public void onStart() {
+        super.onStart();
         if (tweetTask == null) {
-            switch (mode) {
-                case HOME:
-                    tweetTask = new TweetLoader(root, Mode.DB_HOME);
-                    tweetTask.execute();
-                    break;
-                case MENT:
-                    tweetTask = new TweetLoader(root, Mode.DB_MENT);
-                    tweetTask.execute();
-                    break;
-                case USER_TWEET:
-                    tweetTask = new TweetLoader(root, Mode.DB_TWEETS);
-                    tweetTask.execute(id);
-                    break;
-                case USER_FAVOR:
-                    tweetTask = new TweetLoader(root, Mode.DB_FAVORS);
-                    tweetTask.execute(id);
-                    break;
-                case TWEET_ANSR:
-                    tweetTask = new TweetLoader(root, Mode.DB_ANS);
-                    tweetTask.execute(id, search);
-                    break;
-                case SEARCH:
-                    tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
-                    tweetTask.execute(search);
-                    break;
-                default:
-                    if (BuildConfig.DEBUG)
-                        throw new AssertionError("mode failure");
-                    break;
-            }
+            load();
         }
     }
 
 
     @Override
-    public void onPause() {
+    public void onResume() {
+        super.onResume();
+        if (tweetTask == null) {
+            load();
+        }
+    }
+
+
+    @Override
+    public void onStop() {
         if (tweetTask != null && tweetTask.getStatus() == RUNNING)
             tweetTask.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 
@@ -148,42 +126,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onRefresh() {
-        switch (mode) {
-            case HOME:
-                tweetTask = new TweetLoader(root, Mode.TL_HOME);
-                tweetTask.execute();
-                break;
-
-            case MENT:
-                tweetTask = new TweetLoader(root, Mode.TL_MENT);
-                tweetTask.execute();
-                break;
-
-            case USER_TWEET:
-                tweetTask = new TweetLoader(root, Mode.USR_TWEETS);
-                tweetTask.execute(id);
-                break;
-
-            case USER_FAVOR:
-                tweetTask = new TweetLoader(root, Mode.USR_FAVORS);
-                tweetTask.execute(id);
-                break;
-
-            case TWEET_ANSR:
-                tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
-                tweetTask.execute(id, search);
-                break;
-
-            case SEARCH:
-                tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
-                tweetTask.execute(search);
-                break;
-
-            default:
-                if (BuildConfig.DEBUG)
-                    throw new AssertionError("mode failure");
-                break;
-        }
+        load();
     }
 
 
@@ -214,5 +157,49 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onTabChange() {
         list.smoothScrollToPosition(0);
+    }
+
+
+    @Override
+    public void onDataClear() {
+        adapter = new TweetAdapter(this);
+        list.setAdapter(adapter);
+        onSettingsChange();
+        tweetTask = null;
+    }
+
+
+    private void load() {
+        switch (mode) {
+            case HOME:
+                tweetTask = new TweetLoader(root, Mode.TL_HOME);
+                tweetTask.execute();
+                break;
+
+            case MENT:
+                tweetTask = new TweetLoader(root, Mode.TL_MENT);
+                tweetTask.execute();
+                break;
+
+            case USER_TWEET:
+                tweetTask = new TweetLoader(root, Mode.USR_TWEETS);
+                tweetTask.execute(id);
+                break;
+
+            case USER_FAVOR:
+                tweetTask = new TweetLoader(root, Mode.USR_FAVORS);
+                tweetTask.execute(id);
+                break;
+
+            case TWEET_ANSR:
+                tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
+                tweetTask.execute(id, search);
+                break;
+
+            case SEARCH:
+                tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
+                tweetTask.execute(search);
+                break;
+        }
     }
 }

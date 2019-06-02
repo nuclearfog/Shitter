@@ -78,6 +78,11 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
 
+    public boolean isEmpty() {
+        return tweets.length == 0;
+    }
+
+
     @Override
     public long getItemId(int pos) {
         return tweets[pos].getId();

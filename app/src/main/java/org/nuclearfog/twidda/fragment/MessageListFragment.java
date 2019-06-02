@@ -60,8 +60,8 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         if (messageTask == null) {
             messageTask = new MessageLoader(root, Mode.DB);
             messageTask.execute();
@@ -70,10 +70,10 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
 
     @Override
-    public void onPause() {
+    public void onStop() {
         if (messageTask != null && messageTask.getStatus() == RUNNING)
             messageTask.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 
@@ -103,10 +103,12 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
                     sendDm.putExtra("username", message.getSender().getScreenname());
                     startActivity(sendDm);
                     break;
+
                 case DELETE:
                     messageTask = new MessageLoader(root, Mode.DEL);
                     messageTask.execute(message.getId());
                     break;
+
                 case PROFILE:
                     Intent profile = new Intent(getContext(), UserProfile.class);
                     profile.putExtra("userID", message.getSender().getId());

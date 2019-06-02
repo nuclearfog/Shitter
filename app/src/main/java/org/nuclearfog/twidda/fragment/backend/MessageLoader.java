@@ -71,19 +71,19 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                 case DB:
                     messages = db.getMessages();
                     if (!messages.isEmpty())
-                        break;
+                        return true;
 
                 case LOAD:
                     messages = mTwitter.getMessages();
                     db.storeMessage(messages);
-                    break;
+                    return true;
 
                 case DEL:
                     messageId = param[0];
                     mTwitter.deleteMessage(messageId);
                     db.deleteDm(messageId);
                     messages = db.getMessages();
-                    break;
+                    return true;
             }
         } catch (TwitterException err) {
             if (err.getErrorCode() == 34) {
@@ -91,13 +91,12 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                 messages = db.getMessages();
                 this.err = err;
             }
-            return false;
         } catch (Exception err) {
             if (err.getMessage() != null)
                 Log.e("Status Loader", err.getMessage());
-            return false;
+            err.printStackTrace();
         }
-        return true;
+        return false;
     }
 
 
@@ -123,6 +122,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
         if (ui.get() == null)
             return;
         SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
+        if (reload.isRefreshing())
+            reload.setRefreshing(false);
     }
 }

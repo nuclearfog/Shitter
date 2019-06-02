@@ -19,7 +19,6 @@ import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.TrendLoader;
-import org.nuclearfog.twidda.fragment.backend.TrendLoader.Mode;
 import org.nuclearfog.twidda.window.SearchPage;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -59,26 +58,26 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         if (trendTask == null) {
-            trendTask = new TrendLoader(root, Mode.DB_TRND);
+            trendTask = new TrendLoader(root);
             trendTask.execute();
         }
     }
 
 
     @Override
-    public void onPause() {
+    public void onStop() {
         if (trendTask != null && trendTask.getStatus() == RUNNING)
             trendTask.cancel(true);
-        super.onPause();
+        super.onStop();
     }
 
 
     @Override
     public void onRefresh() {
-        trendTask = new TrendLoader(root, Mode.LD_TRND);
+        trendTask = new TrendLoader(root);
         trendTask.execute();
     }
 
@@ -108,5 +107,14 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onTabChange() {
         list.smoothScrollToPosition(0);
+    }
+
+
+    @Override
+    public void onDataClear() {
+        adapter = new TrendAdapter(this);
+        list.setAdapter(adapter);
+        onSettingsChange();
+        trendTask = null;
     }
 }
