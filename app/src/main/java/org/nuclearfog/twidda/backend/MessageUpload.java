@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.window.MessagePopup;
 
 import java.lang.ref.WeakReference;

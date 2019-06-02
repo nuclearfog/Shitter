@@ -50,8 +50,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
-    public static final int STAT_CHANGED = 1;
-    private static final int TWEET = 2;
 
     private ConnectivityManager mConnect;
     private StatusLoader statusAsync;
@@ -119,18 +117,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     protected void onStop() {
+        super.onStop();
         if (statusAsync != null && statusAsync.getStatus() == RUNNING)
             statusAsync.cancel(true);
-        super.onStop();
-    }
-
-
-    @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == TWEET && returnCode == STAT_CHANGED) { // TODO reinitialize list
-            statusAsync = null;
-        }
-        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
@@ -201,7 +190,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     Intent tweet = new Intent(this, TweetPopup.class);
                     tweet.putExtra(KEY_TWEETPOPUP_REPLYID, tweetID);
                     tweet.putExtra(KEY_TWEETPOPUP_ADDITION, username);
-                    startActivityForResult(tweet, TWEET);
+                    startActivity(tweet);
                     break;
 
                 case R.id.tweet_retweet:
@@ -251,7 +240,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     }
 
 
-    public void enableDelete() {
+    public void setIsHome() {
         isHome = true;
         invalidateOptionsMenu();
     }

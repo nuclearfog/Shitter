@@ -34,6 +34,9 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public static final String KEY_FRAG_TWEET_ID = "ID";
     public static final String KEY_FRAG_TWEET_FIX = "fix";
 
+    public static final int REQUEST_TWEET_CHANGED = 3;
+    public static final int RETURN_TWEET_CHANGED = 4;
+
     public enum TweetType {
         HOME,
         MENT,
@@ -89,8 +92,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         if (tweetTask == null) {
             switch (mode) {
@@ -128,10 +131,18 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onStop() {
+    public void onPause() {
         if (tweetTask != null && tweetTask.getStatus() == RUNNING)
             tweetTask.cancel(true);
-        super.onStop();
+        super.onPause();
+    }
+
+
+    @Override
+    public void onActivityResult(int reqCode, int returnCode, Intent i) {
+        if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED)
+            tweetTask = null;
+        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
@@ -185,7 +196,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
             tweetIntent.putExtra("tweetID", tweet.getId());
             tweetIntent.putExtra("username", tweet.getUser().getScreenname());
-            startActivity(tweetIntent);
+            startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);
         }
     }
 

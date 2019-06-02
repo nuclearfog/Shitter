@@ -86,8 +86,8 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (userTask == null) {
             load();
         }
@@ -95,10 +95,10 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
 
     @Override
-    public void onStop() {
+    public void onPause() {
         if (userTask != null && userTask.getStatus() == RUNNING)
             userTask.cancel(true);
-        super.onStop();
+        super.onPause();
     }
 
 

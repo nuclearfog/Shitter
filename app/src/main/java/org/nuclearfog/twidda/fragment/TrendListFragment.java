@@ -59,8 +59,8 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (trendTask == null) {
             trendTask = new TrendLoader(root, Mode.DB_TRND);
             trendTask.execute();
@@ -69,10 +69,10 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onStop() {
+    public void onPause() {
         if (trendTask != null && trendTask.getStatus() == RUNNING)
             trendTask.cancel(true);
-        super.onStop();
+        super.onPause();
     }
 
 

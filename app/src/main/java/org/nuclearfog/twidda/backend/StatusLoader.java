@@ -18,6 +18,9 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
+import org.nuclearfog.twidda.backend.helper.FilenameTools;
+import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -32,6 +35,7 @@ import java.text.SimpleDateFormat;
 import twitter4j.TwitterException;
 
 import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.fragment.TweetListFragment.RETURN_TWEET_CHANGED;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF;
@@ -39,7 +43,6 @@ import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.window.TweetDetail.STAT_CHANGED;
 
 
 public class StatusLoader extends AsyncTask<Long, Void, Void> {
@@ -177,22 +180,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                     scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 if (tweet.hasMedia()) {
-                    String ext = "";
-                    String path = tweet.getMediaLinks()[0];
-                    int start = path.lastIndexOf(".") + 1;
-                    if (start > 0 && start < path.length()) {
-                        int end = path.lastIndexOf("?");
-                        if (end > 0)
-                            ext = path.substring(start, end);
-                        else
-                            ext = path.substring(start);
-                        ext = ext.toLowerCase();
-                    }
-
+                    String firstLink = tweet.getMediaLinks()[0];
+                    FileType ext = FilenameTools.getFileType(firstLink);
                     switch (ext) {
-                        case "png":
-                        case "jpg":
-                        case "jpeg":
+                        case IMAGE:
                             View imageButton = ui.get().findViewById(R.id.image_attach);
                             imageButton.setVisibility(VISIBLE);
                             imageButton.setOnClickListener(new OnClickListener() {
@@ -206,7 +197,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                             });
                             break;
 
-                        case "mp4":
+                        case VIDEO:
                             View videoButton = ui.get().findViewById(R.id.video_attach);
                             videoButton.setVisibility(VISIBLE);
                             videoButton.setOnClickListener(new OnClickListener() {
@@ -220,7 +211,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                             });
                             break;
 
-                        case "m3u8":
+                        case STREAM:
                             videoButton = ui.get().findViewById(R.id.video_attach);
                             videoButton.setVisibility(VISIBLE);
                             videoButton.setOnClickListener(new OnClickListener() {
@@ -274,7 +265,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 });
             }
         }
-
         if (toggleImg) {
             Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
         }
@@ -289,7 +279,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
             favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
         }
         if (tweet.getUser().getId() == homeId) {
-            ui.get().enableDelete();
+            ui.get().setIsHome();
         }
     }
 
@@ -301,11 +291,14 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         if (!failure) {
             if (mode == Mode.DELETE) {
                 Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-                ui.get().setResult(STAT_CHANGED);
+                ui.get().setResult(RETURN_TWEET_CHANGED);
                 ui.get().finish();
             }
         } else {
             if (err != null) {
+                int rCode = err.getErrorCode();
+                if (rCode == 144 || rCode == 34 || rCode == 63)
+                    ui.get().setResult(RETURN_TWEET_CHANGED);
                 boolean killActivity = ErrorHandler.printError(ui.get(), err);
                 if (killActivity)
                     ui.get().finish();

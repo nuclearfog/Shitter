@@ -10,8 +10,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
-import org.nuclearfog.twidda.backend.ErrorHandler;
 import org.nuclearfog.twidda.backend.TwitterEngine;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;

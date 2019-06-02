@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.window.MediaViewer;

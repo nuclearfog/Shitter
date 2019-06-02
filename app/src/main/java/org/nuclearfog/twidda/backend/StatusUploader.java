@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.window.TweetPopup;
 

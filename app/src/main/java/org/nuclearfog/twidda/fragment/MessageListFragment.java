@@ -60,8 +60,8 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (messageTask == null) {
             messageTask = new MessageLoader(root, Mode.DB);
             messageTask.execute();
@@ -70,10 +70,10 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
         if (messageTask != null && messageTask.getStatus() == RUNNING)
             messageTask.cancel(true);
+        super.onPause();
     }
 
 

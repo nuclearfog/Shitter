@@ -2,6 +2,10 @@ package org.nuclearfog.twidda.backend.items;
 
 import androidx.annotation.NonNull;
 
+import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.helper.FilenameTools;
+import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
+
 public class TweetHolder {
 
     private final String text;
@@ -18,28 +22,22 @@ public class TweetHolder {
     }
 
     public TweetHolder(String text, long replyId, @NonNull String[] mediaLinks) {
+        if (BuildConfig.DEBUG && mediaLinks.length == 0)
+            throw new AssertionError("media array is empty!");
+
         this.text = text;
         this.replyId = replyId;
 
-        String ext = "";
-        String path = mediaLinks[0];
-        int pos = path.lastIndexOf(".") + 1;
-        if (pos > 0 && pos < path.length()) {
-            ext = path.substring(pos);
-            ext = ext.toLowerCase();
-        }
+        FileType type = FilenameTools.getFileType(mediaLinks[0]);
 
-        switch (ext) {
-            case "mp4":
-            case "3gp":
+        switch (type) {
+            case VIDEO:
                 imageLink = new String[0];
                 videoLink = mediaLinks[0];
                 break;
 
-            case "jpg":
-            case "jpeg":
-            case "gif":
-            case "png":
+            case ANGIF:
+            case IMAGE:
                 videoLink = "";
                 imageLink = mediaLinks;
                 break;

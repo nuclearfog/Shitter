@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend;
+package org.nuclearfog.twidda.backend.helper;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -21,7 +21,6 @@ public abstract class ErrorHandler {
      * @return if Activity should shut down
      */
     public static boolean printError(Context c, @NonNull TwitterException error) {
-
         switch (error.getErrorCode()) {
             case 88:
             case 420:   //
@@ -50,10 +49,10 @@ public abstract class ErrorHandler {
                 Toast.makeText(c, R.string.cant_send_dm, Toast.LENGTH_SHORT).show();
                 break;
 
-            case 179:
             case 136:
+            case 179:
                 Toast.makeText(c, R.string.not_authorized, Toast.LENGTH_SHORT).show();
-                break;
+                return true;
 
             case 186:
                 Toast.makeText(c, R.string.status_too_long, Toast.LENGTH_SHORT).show();
