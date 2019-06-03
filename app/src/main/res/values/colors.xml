@@ -2,7 +2,6 @@
 <resources>
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303f9f</color>
-    <color name="soylentgreen">#76ff03</color>
     <color name="tweetwindow">#19aae8</color>
     <color name="DarkBlue">#050f48</color>
     <color name="halftrancparency">#40000000</color>

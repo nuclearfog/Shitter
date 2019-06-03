@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.window;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +20,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.widget.CompoundButtonCompat;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
@@ -42,9 +39,6 @@ import static org.nuclearfog.twidda.database.AppDatabase.DB_NAME;
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,
         OnDismissListener, OnItemSelectedListener, OnCheckedChangeListener {
-
-    private static final int[][] checkboxStates = {{android.R.attr.state_checked}, {}};
-    private final int[] checkboxColor = {0, Color.WHITE};
 
     private static final int BACKGROUND = 0;
     private static final int FONTCOLOR = 1;
@@ -87,9 +81,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
         settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
-        checkboxColor[0] = settings.getHighlightColor();
-        CompoundButtonCompat.setButtonTintList(toggleImg, new ColorStateList(checkboxStates, checkboxColor));
-        CompoundButtonCompat.setButtonTintList(toggleAns, new ColorStateList(checkboxStates, checkboxColor));
 
         logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
@@ -240,9 +231,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
                 link.setLinkTextColor(color);
-                checkboxColor[0] = color;
-                CompoundButtonCompat.setButtonTintList(toggleImg, new ColorStateList(checkboxStates, checkboxColor));
-                CompoundButtonCompat.setButtonTintList(toggleAns, new ColorStateList(checkboxStates, checkboxColor));
                 break;
         }
     }
