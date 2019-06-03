@@ -44,8 +44,7 @@
             android:id="@+id/video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
+            android:layout_gravity="center" />
 
         <ProgressBar
             android:id="@+id/video_load"

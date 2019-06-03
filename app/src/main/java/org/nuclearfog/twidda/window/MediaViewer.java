@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
@@ -49,7 +50,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     public static final String KEY_MEDIA_LINK = "link";
     public static final String KEY_MEDIA_TYPE = "mediatype";
+
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
+    private static final int REQCODE_SD = 6;
 
     public enum MediaType {
         IMAGE,
@@ -106,25 +109,25 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case ANGIF:
                 videoWindow.setVisibility(VISIBLE);
-                videoView.setOnPreparedListener(this);
                 Uri video = Uri.parse(link[0]);
+                videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
                 break;
 
             case VIDEO:
                 videoWindow.setVisibility(VISIBLE);
+                video = Uri.parse(link[0]);
                 videoView.setMediaController(videoController);
                 videoView.setOnPreparedListener(this);
-                video = Uri.parse(link[0]);
                 videoView.setVideoURI(video);
                 break;
 
             case VIDEO_STORAGE:
                 videoWindow.setVisibility(VISIBLE);
-                videoView.setMediaController(videoController);
-                videoView.setOnPreparedListener(this);
                 File media = new File(link[0]);
                 video = Uri.fromFile(media);
+                videoView.setMediaController(videoController);
+                videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
                 break;
         }
@@ -134,19 +137,28 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (imageAsync == null) {
-            switch (type) {
-                case IMAGE:
+        switch (type) {
+            case IMAGE:
+                if (imageAsync == null) {
                     imageAsync = new ImageLoader(this, ONLINE);
                     imageAsync.execute(link);
-                    break;
+                }
 
-                case ANGIF_STORAGE:
-                case IMAGE_STORAGE:
+                break;
+
+            case ANGIF_STORAGE:
+            case IMAGE_STORAGE:
+                if (imageAsync == null) {
                     imageAsync = new ImageLoader(this, STORAGE);
                     imageAsync.execute(link);
-                    break;
-            }
+                }
+                break;
+
+            case VIDEO:
+            case ANGIF:
+            case VIDEO_STORAGE:
+                videoView.start();
+                break;
         }
     }
 
@@ -170,6 +182,16 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
+    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+        super.onActivityResult(reqCode, returnCode, intent);
+        if (reqCode == REQCODE_SD && returnCode == RESULT_OK) {
+            //storeImage(image); // TODO
+        }
+    }
+
+
+
+    @Override
     public void onImageClick(Bitmap image) {
         setImage(image);
     }
@@ -183,7 +205,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 if (check == PERMISSION_GRANTED) {
                     storeImage(image);
                 } else {
-                    requestPermissions(REQ_WRITE_SD, 1);
+                    requestPermissions(REQ_WRITE_SD, REQCODE_SD);
                 }
             } else {
                 storeImage(image);
@@ -223,8 +245,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case MEDIA_INFO_VIDEO_RENDERING_START:
                 video_progress.setVisibility(INVISIBLE);
-                if (videoView.getVisibility() == INVISIBLE)
-                    videoView.setVisibility(VISIBLE);
                 return true;
 
             default:
