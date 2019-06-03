@@ -4,8 +4,8 @@
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/soylentgreen</item>
         <item name="android:colorBackground">@android:color/black</item>
+        <item name="colorAccent">@android:color/white</item>
         <item name="android:windowAnimationStyle">@style/TransactionPending</item>
         <item name="android:textViewStyle">@style/RobotoTextView</item>
         <item name="android:buttonStyle">@style/RobotoButton</item>
