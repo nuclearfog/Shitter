@@ -45,7 +45,7 @@ import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 
 
-public class StatusLoader extends AsyncTask<Long, Void, Void> {
+public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
 
     public enum Mode {
         LOAD,
@@ -62,7 +62,6 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
     private WeakReference<TweetDetail> ui;
     private SimpleDateFormat sdf;
     private NumberFormat formatter;
-    private Tweet tweet;
     private long homeId;
     private int font_color, highlight;
     private boolean toggleImg;
@@ -84,6 +83,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
     @Override
     protected Void doInBackground(Long... data) {
+        Tweet tweet;
         final long TWEETID = data[0];
         boolean updateStatus = false;
         DatabaseAdapter db = new DatabaseAdapter(ui.get());
@@ -92,11 +92,11 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
                 case LOAD:
                     tweet = db.getStatus(TWEETID);
                     if (tweet != null) {
-                        publishProgress();
+                        publishProgress(tweet);
                         updateStatus = true;
                     }
                     tweet = mTwitter.getStatus(TWEETID);
-                    publishProgress();
+                    publishProgress(tweet);
                     if (updateStatus)
                         db.updateStatus(tweet);
                     break;
@@ -108,7 +108,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
                 case RETWEET:
                     tweet = mTwitter.retweet(TWEETID);
-                    publishProgress();
+                    publishProgress(tweet);
 
                     if (!tweet.retweeted())
                         db.removeRetweet(TWEETID);
@@ -117,10 +117,10 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
                 case FAVORITE:
                     tweet = mTwitter.favorite(TWEETID);
-                    publishProgress();
+                    publishProgress(tweet);
 
                     if (tweet.favored())
-                        db.storeFavorite(TWEETID);
+                        db.storeFavorite(tweet);
                     else
                         db.removeFavorite(TWEETID);
                     break;
@@ -141,7 +141,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
 
 
     @Override
-    protected void onProgressUpdate(Void... v) {
+    protected void onProgressUpdate(Tweet[] tweets) {
         if (ui.get() == null) return;
 
         TextView username = ui.get().findViewById(R.id.usernamedetail);
@@ -151,6 +151,7 @@ public class StatusLoader extends AsyncTask<Long, Void, Void> {
         Button retweetButton = ui.get().findViewById(R.id.tweet_retweet);
         Button favoriteButton = ui.get().findViewById(R.id.tweet_favorit);
 
+        final Tweet tweet = tweets[0];
         if (mode == Mode.LOAD) {
             View tweet_header = ui.get().findViewById(R.id.tweet_head);
             if (tweet_header.getVisibility() != VISIBLE) {

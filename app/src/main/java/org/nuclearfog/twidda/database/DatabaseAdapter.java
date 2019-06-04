@@ -143,23 +143,20 @@ public class DatabaseAdapter {
     /**
      * store tweet ID of a favored tweet by the current user
      *
-     * @param tweetID Tweet ID
+     * @param tweet favored tweet
      */
-    public void storeFavorite(long tweetID) {
+    public void storeFavorite(Tweet tweet) {
         SQLiteDatabase db = getDbWrite();
 
-        ContentValues favTable = new ContentValues();
-        ContentValues status = new ContentValues();
-
+        long tweetID = tweet.getId();
         int register = getTweetStatus(db, tweetID);
         register |= FAV_MASK;
 
+        ContentValues favTable = new ContentValues();
         favTable.put("tweetID", tweetID);
         favTable.put("ownerID", homeId);
-        status.put("statusregister", register);
-
         db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
-        db.update("tweet", status, "tweet.tweetID=" + tweetID, null);
+        storeStatus(tweet, register, db);
         commit(db);
     }
 
