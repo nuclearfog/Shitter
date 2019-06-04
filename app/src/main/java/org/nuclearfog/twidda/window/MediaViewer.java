@@ -1,10 +1,8 @@
 package org.nuclearfog.twidda.window;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.AsyncTask.Status;
@@ -37,8 +35,6 @@ import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
-import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
@@ -46,7 +42,7 @@ import static org.nuclearfog.twidda.backend.ImageLoader.Mode.ONLINE;
 import static org.nuclearfog.twidda.backend.ImageLoader.Mode.STORAGE;
 
 
-public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener, OnInfoListener {
+public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
 
     public static final String KEY_MEDIA_LINK = "link";
     public static final String KEY_MEDIA_TYPE = "mediatype";
@@ -155,6 +151,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 break;
 
             case VIDEO:
+                video_progress.setVisibility(VISIBLE);
             case ANGIF:
             case VIDEO_STORAGE:
                 videoView.start();
@@ -179,16 +176,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             imageAsync.cancel(true);
         super.onDestroy();
     }
-
-
-    @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
-        super.onActivityResult(reqCode, returnCode, intent);
-        if (reqCode == REQCODE_SD && returnCode == RESULT_OK) {
-            //storeImage(image); // TODO
-        }
-    }
-
 
 
     @Override
@@ -220,15 +207,15 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public void onPrepared(MediaPlayer mp) {
         switch (type) {
             case ANGIF:
-                mp.setOnInfoListener(this);
+                mp.setOnBufferingUpdateListener(this);
                 mp.setLooping(true);
                 mp.start();
                 break;
 
             case VIDEO:
+                mp.setOnBufferingUpdateListener(this);
             case VIDEO_STORAGE:
                 videoController.show(0);
-                mp.setOnInfoListener(this);
                 mp.seekTo(lastPos);
                 mp.start();
                 break;
@@ -237,18 +224,13 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
-    public boolean onInfo(MediaPlayer mp, int infoCode, int extra) {
-        switch (infoCode) {
-            case MEDIA_INFO_BUFFERING_START:
-                video_progress.setVisibility(VISIBLE);
-                return true;
-
-            case MEDIA_INFO_VIDEO_RENDERING_START:
+    public void onBufferingUpdate(MediaPlayer mp, int percent) {
+        if (mp.isPlaying()) {
+            if (video_progress.getVisibility() == VISIBLE)
                 video_progress.setVisibility(INVISIBLE);
-                return true;
-
-            default:
-                return false;
+        } else {
+            if (video_progress.getVisibility() == INVISIBLE)
+                video_progress.setVisibility(VISIBLE);
         }
     }
 
