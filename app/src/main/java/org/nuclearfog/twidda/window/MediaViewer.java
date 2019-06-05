@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.window;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.AsyncTask.Status;
@@ -35,6 +36,8 @@ import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
@@ -42,7 +45,7 @@ import static org.nuclearfog.twidda.backend.ImageLoader.Mode.ONLINE;
 import static org.nuclearfog.twidda.backend.ImageLoader.Mode.STORAGE;
 
 
-public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener {
+public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener, OnInfoListener {
 
     public static final String KEY_MEDIA_LINK = "link";
     public static final String KEY_MEDIA_TYPE = "mediatype";
@@ -105,7 +108,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case ANGIF:
                 videoWindow.setVisibility(VISIBLE);
-                video_progress.setVisibility(INVISIBLE);
                 Uri video = Uri.parse(link[0]);
                 videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
@@ -164,7 +166,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        if (type != MediaType.IMAGE && type != MediaType.IMAGE_STORAGE) {
+        if (type == MediaType.VIDEO || type == MediaType.VIDEO_STORAGE) {
             lastPos = videoView.getCurrentPosition();
             videoView.pause();
         }
@@ -214,10 +216,28 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case VIDEO:
             case VIDEO_STORAGE:
+                mp.setOnInfoListener(this);
                 videoController.show(0);
                 mp.seekTo(lastPos);
                 mp.start();
                 break;
+        }
+    }
+
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        switch (what) {
+            case MEDIA_INFO_BUFFERING_END:
+                video_progress.setVisibility(VISIBLE);
+                return true;
+
+            case MEDIA_INFO_BUFFERING_START:
+                video_progress.setVisibility(INVISIBLE);
+                return true;
+
+            default:
+                return false;
         }
     }
 
