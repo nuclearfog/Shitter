@@ -42,7 +42,7 @@ import static org.nuclearfog.twidda.backend.ImageLoader.Mode.ONLINE;
 import static org.nuclearfog.twidda.backend.ImageLoader.Mode.STORAGE;
 
 
-public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener, MediaPlayer.OnBufferingUpdateListener {
+public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener {
 
     public static final String KEY_MEDIA_LINK = "link";
     public static final String KEY_MEDIA_TYPE = "mediatype";
@@ -105,6 +105,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case ANGIF:
                 videoWindow.setVisibility(VISIBLE);
+                video_progress.setVisibility(INVISIBLE);
                 Uri video = Uri.parse(link[0]);
                 videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
@@ -207,30 +208,16 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public void onPrepared(MediaPlayer mp) {
         switch (type) {
             case ANGIF:
-                mp.setOnBufferingUpdateListener(this);
                 mp.setLooping(true);
                 mp.start();
                 break;
 
             case VIDEO:
-                mp.setOnBufferingUpdateListener(this);
             case VIDEO_STORAGE:
                 videoController.show(0);
                 mp.seekTo(lastPos);
                 mp.start();
                 break;
-        }
-    }
-
-
-    @Override
-    public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        if (mp.isPlaying()) {
-            if (video_progress.getVisibility() == VISIBLE)
-                video_progress.setVisibility(INVISIBLE);
-        } else {
-            if (video_progress.getVisibility() == INVISIBLE)
-                video_progress.setVisibility(VISIBLE);
         }
     }
 
