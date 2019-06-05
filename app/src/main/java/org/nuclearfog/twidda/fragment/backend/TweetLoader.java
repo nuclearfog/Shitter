@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -41,7 +40,6 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
     private TwitterException err;
     private DatabaseAdapter db;
     private List<Tweet> tweets;
-    private boolean loadAnswer;
 
 
     public TweetLoader(@NonNull View root, Mode mode) {
@@ -50,8 +48,6 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TweetAdapter) list.getAdapter();
         db = new DatabaseAdapter(root.getContext());
-        GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
-        loadAnswer = settings.getAnswerLoad();
         this.mode = mode;
     }
 
@@ -143,7 +139,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                     String search = (String) param[1];
                     if (adapter.isEmpty()) {
                         tweets = db.getAnswers(tweetId);
-                        if (tweets.isEmpty() && loadAnswer) {
+                        if (tweets.isEmpty()) {
                             tweets = mTwitter.getAnswers(search, tweetId, sinceId);
                             if (!tweets.isEmpty() && db.containStatus(tweetId))
                                 db.storeReplies(tweets);

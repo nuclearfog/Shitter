@@ -9,6 +9,7 @@ import java.util.Locale;
 
 public class GlobalSettings {
 
+    private static final String NAME = "settings";
     private static GlobalSettings ourInstance;
 
     private SharedPreferences settings;
@@ -21,7 +22,6 @@ public class GlobalSettings {
     private int tweet_color;
 
     private boolean loadImage;
-    private boolean loadAnswer;
     private boolean loggedIn;
     private boolean customWorldId;
     private int row;
@@ -33,7 +33,7 @@ public class GlobalSettings {
     private long userId;
 
     private GlobalSettings(Context context) {
-        settings = context.getSharedPreferences("settings", 0);
+        settings = context.getSharedPreferences(NAME, 0);
         woeId = settings.getInt("world_id", 1);
         customWorldId = settings.getBoolean("custom_woeId", false);
         woeIdPos = settings.getInt("world_id_pos", 0);
@@ -43,7 +43,6 @@ public class GlobalSettings {
         tweet_color = settings.getInt("tweet_color", 0xff19aae8);
         row = settings.getInt("preload", 20);
         loadImage = settings.getBoolean("image_load", true);
-        loadAnswer = settings.getBoolean("answer_load", true);
         loggedIn = settings.getBoolean("login", false);
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
@@ -166,27 +165,6 @@ public class GlobalSettings {
         loadImage = image;
         Editor edit = settings.edit();
         edit.putBoolean("image_load", image);
-        edit.apply();
-    }
-
-    /**
-     * answer loading enabled
-     *
-     * @return if answer loading is enabled
-     */
-    public boolean getAnswerLoad() {
-        return loadAnswer;
-    }
-
-    /**
-     * enable/disable answer loading
-     *
-     * @param loadAnswer true if enabled
-     */
-    public void setAnswerLoad(boolean loadAnswer) {
-        this.loadAnswer = loadAnswer;
-        Editor edit = settings.edit();
-        edit.putBoolean("answer_load", loadAnswer);
         edit.apply();
     }
 
@@ -339,11 +317,7 @@ public class GlobalSettings {
     public void logout() {
         loggedIn = false;
         Editor e = settings.edit();
-        e.putBoolean("login", false);
-        e.remove("userID").remove("key1").remove("key2").remove("custom_woeId")
-                .remove("image_load").remove("preload").remove("world_id_pos")
-                .remove("world_id").remove("tweet_color").remove("highlight_color")
-                .remove("highlight_color").remove("font_color").remove("background_color");
+        e.clear();
         e.apply();
     }
 }

@@ -123,16 +123,6 @@
                     android:text="@string/image"
                     android:textSize="@dimen/textsize_checkbox" />
 
-                <CheckBox
-                    android:id="@+id/toggleAns"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
-                    android:layout_marginStart="@dimen/padding_side"
-                    android:layout_marginLeft="@dimen/padding_side"
-                    android:layout_weight="1"
-                    android:text="@string/toggle_answer"
-                    android:textSize="@dimen/textsize_checkbox" />
-
             </LinearLayout>
 
             <TextView
