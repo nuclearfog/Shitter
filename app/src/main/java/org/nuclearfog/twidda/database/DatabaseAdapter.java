@@ -38,7 +38,7 @@ public class DatabaseAdapter {
     private long homeId;
 
     public DatabaseAdapter(Context context) {
-        dataHelper = new AppDatabase(context);
+        dataHelper = AppDatabase.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         homeId = settings.getUserId();
     }
@@ -102,7 +102,7 @@ public class DatabaseAdapter {
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : fav) {
-            if (!containStatus(tweet.getId()))
+            if (!containStatus(tweet.getId(), db))
                 storeStatus(tweet, 0, db);
             ContentValues favTable = new ContentValues();
             favTable.put("tweetID", tweet.getId());
@@ -746,6 +746,22 @@ public class DatabaseAdapter {
             int pos = c.getColumnIndex("userregister");
             result = c.getInt(pos);
         }
+        c.close();
+        return result;
+    }
+
+
+    /**
+     * check if tweet exists in database
+     *
+     * @param id Tweet ID
+     * @param db opened database
+     * @return true if found
+     */
+    private boolean containStatus(long id, SQLiteDatabase db) {
+        final String query = "SELECT tweetID FROM tweet WHERE tweetID=" + id + " LIMIT 1;";
+        Cursor c = db.rawQuery(query, null);
+        boolean result = c.moveToFirst();
         c.close();
         return result;
     }
