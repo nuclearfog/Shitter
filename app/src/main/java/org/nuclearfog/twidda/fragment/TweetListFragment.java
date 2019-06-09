@@ -118,8 +118,10 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED)
+        if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED) {
+            adapter.clear();
             tweetTask = null;
+        }
         super.onActivityResult(reqCode, returnCode, i);
     }
 

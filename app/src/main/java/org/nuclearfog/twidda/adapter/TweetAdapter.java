@@ -78,6 +78,12 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
 
+    public void clear() {
+        tweets = new Tweet[0];
+        notifyDataSetChanged();
+    }
+
+
     public boolean isEmpty() {
         return tweets.length == 0;
     }
