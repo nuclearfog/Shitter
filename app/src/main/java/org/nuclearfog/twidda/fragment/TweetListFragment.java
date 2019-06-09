@@ -118,10 +118,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED) {
-            adapter.clear();
-            tweetTask = null;
-        }
+        if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED)
+            onDataClear();
         super.onActivityResult(reqCode, returnCode, i);
     }
 
@@ -164,9 +162,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onDataClear() {
-        adapter = new TweetAdapter(this);
-        list.setAdapter(adapter);
-        onSettingsChange();
+        adapter.clear();
         tweetTask = null;
     }
 
