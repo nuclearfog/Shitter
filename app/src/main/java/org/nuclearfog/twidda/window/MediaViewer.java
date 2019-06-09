@@ -36,8 +36,6 @@ import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -155,10 +153,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 break;
 
             case VIDEO:
-                if (Build.VERSION.SDK_INT >= 17)
-                    video_progress.setVisibility(VISIBLE);
             case ANGIF:
             case VIDEO_STORAGE:
+                video_progress.setVisibility(VISIBLE);
                 videoView.start();
                 break;
         }
@@ -218,34 +215,22 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case VIDEO:
             case VIDEO_STORAGE:
-                if (Build.VERSION.SDK_INT >= 17)
-                    mp.setOnInfoListener(new OnInfoListener() {
-                        @Override
-                        public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                            switch (what) {
-                                case MEDIA_INFO_VIDEO_RENDERING_START:
-                                    video_progress.setVisibility(INVISIBLE);
-                                    return true;
-
-                                case MEDIA_INFO_BUFFERING_START:
-                                case MEDIA_INFO_BUFFERING_END:
-                                    video_progress.setVisibility(VISIBLE);
-                                    return true;
-
-                                default:
-                                    return false;
-                            }
+                mp.setOnInfoListener(new OnInfoListener() {
+                    @Override
+                    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                        if (what == MEDIA_INFO_VIDEO_RENDERING_START) {
+                            video_progress.setVisibility(INVISIBLE);
+                            return true;
                         }
-                    });
+                        return false;
+                    }
+                });
                 videoController.show(0);
                 mp.seekTo(lastPos);
                 mp.start();
                 break;
         }
     }
-
-
-
 
 
     public void setImage(Bitmap image) {
