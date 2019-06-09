@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -25,7 +24,6 @@ import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.ProfileEdit;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
@@ -35,30 +33,26 @@ import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 
 
-public class ProfileEditor extends AsyncTask<Void, Void, Void> {
+public class ProfileEditor extends AsyncTask<Void, Void, Boolean> {
 
     public enum Mode {
         READ_DATA,
         WRITE_DATA
     }
-
     private final Mode mode;
-    private boolean failure;
-
     private WeakReference<ProfileEdit> ui;
+    private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private TwitterUser user;
     private Editable edit_name, edit_link, edit_bio, edit_loc;
-    private Dialog popup;
     private String image_path;
 
 
     public ProfileEditor(@NonNull ProfileEdit c, Mode mode) {
         ui = new WeakReference<>(c);
+        popup = new WeakReference<>(new Dialog(c));
         mTwitter = TwitterEngine.getInstance(c);
-        popup = new Dialog(c);
-        this.mode = mode;
 
         EditText name = ui.get().findViewById(R.id.edit_name);
         EditText link = ui.get().findViewById(R.id.edit_link);
@@ -71,19 +65,22 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
         edit_loc = loc.getText();
         edit_bio = bio.getText();
         image_path = text_path.getText().toString();
-
-        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.setCanceledOnTouchOutside(false);
-        popup.setContentView(new ProgressBar(c));
+        this.mode = mode;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (popup.getWindow() != null)
-            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (popup.get() == null || ui.get() == null) return;
 
-        popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        Dialog window = popup.get();
+        window.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        window.setCanceledOnTouchOutside(false);
+        window.setContentView(new ProgressBar(ui.get()));
+        if (window.getWindow() != null)
+            window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        window.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 if (getStatus() == Status.RUNNING) {
@@ -92,12 +89,12 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
                 }
             }
         });
-        popup.show();
+        window.show();
     }
 
 
     @Override
-    protected Void doInBackground(Void... v) {
+    protected Boolean doInBackground(Void... v) {
         try {
             switch (mode) {
                 case READ_DATA:
@@ -114,31 +111,25 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
                     db.storeUser(user);
 
                     if (!image_path.trim().isEmpty())
-                        mTwitter.updateProfileImage(new File(image_path));
+                        mTwitter.updateProfileImage(image_path);
                     break;
             }
         } catch (TwitterException err) {
             this.err = err;
-            failure = true;
+            return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("E: ProfileEditor", err.getMessage());
-            failure = true;
+            err.printStackTrace();
+            return false;
         }
-        return null;
+        return true;
     }
 
 
     @Override
-    protected void onPostExecute(Void v) {
-        if (ui.get() == null) return;
+    protected void onPostExecute(Boolean success) {
+        if (ui.get() == null || popup.get() == null) return;
 
-        popup.dismiss();
-
-        if (failure) {
-            ErrorHandler.printError(ui.get(), err);
-            ui.get().finish();
-        } else {
+        if (success) {
             switch (mode) {
                 case READ_DATA:
                     edit_name.append(user.getUsername());
@@ -167,12 +158,17 @@ public class ProfileEditor extends AsyncTask<Void, Void, Void> {
                     ui.get().finish();
                     break;
             }
+        } else {
+            ErrorHandler.printError(ui.get(), err);
+            ui.get().finish();
         }
+        popup.get().dismiss();
     }
 
 
     @Override
     protected void onCancelled() {
-        popup.dismiss();
+        if (popup.get() == null) return;
+        popup.get().dismiss();
     }
 }

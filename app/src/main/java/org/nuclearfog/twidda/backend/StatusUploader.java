@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -25,39 +24,40 @@ import twitter4j.TwitterException;
 public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<TweetPopup> ui;
+    private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private LayoutInflater inflater;
-    private Dialog popup;
     private TweetHolder tweet;
-
 
     public StatusUploader(@NonNull TweetPopup context, TweetHolder tweet) {
         ui = new WeakReference<>(context);
+        popup = new WeakReference<>(new Dialog(context));
         mTwitter = TwitterEngine.getInstance(context);
-        inflater = LayoutInflater.from(context);
-        popup = new Dialog(context);
         this.tweet = tweet;
     }
 
 
     @Override
     protected void onPreExecute() {
-        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.setCanceledOnTouchOutside(false);
-        if (popup.getWindow() != null)
-            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (popup.get() == null || ui.get() == null) return;
+
+        final Dialog window = popup.get();
+        window.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        window.setCanceledOnTouchOutside(false);
+        if (window.getWindow() != null)
+            window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        LayoutInflater inflater = LayoutInflater.from(ui.get());
         View load = inflater.inflate(R.layout.item_load, null, false);
         View cancelButton = load.findViewById(R.id.kill_button);
-        popup.setContentView(load);
+        window.setContentView(load);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popup.dismiss();
+                window.dismiss();
             }
         });
-        popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        window.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 if (getStatus() == Status.RUNNING) {
@@ -66,7 +66,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                 }
             }
         });
-        popup.show();
+        window.show();
     }
 
 
@@ -78,8 +78,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("Status Upload", err.getMessage());
+            err.printStackTrace();
             return false;
         }
         return true;
@@ -88,12 +87,10 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() == null) return;
+        if (ui.get() == null || popup.get() == null) return;
 
-        popup.dismiss();
         if (success) {
             ui.get().close();
-
         } else {
             if (err != null)
                 ErrorHandler.printError(ui.get(), err);
@@ -108,13 +105,13 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                     })
                     .setNegativeButton(R.string.cancel, null).show();
         }
+        popup.get().dismiss();
     }
 
 
     @Override
     protected void onCancelled() {
-        popup.dismiss();
+        if (popup.get() == null) return;
+        popup.get().dismiss();
     }
-
-
 }

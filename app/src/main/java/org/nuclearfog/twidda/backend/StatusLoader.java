@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,7 +44,7 @@ import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 
 
-public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
+public class StatusLoader extends AsyncTask<Long, Tweet, Boolean> {
 
     public enum Mode {
         LOAD,
@@ -53,9 +52,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
         FAVORITE,
         DELETE
     }
-
     private final Mode mode;
-    private boolean failure = false;
 
     private TwitterEngine mTwitter;
     private TwitterException err;
@@ -82,7 +79,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
 
 
     @Override
-    protected Void doInBackground(Long... data) {
+    protected Boolean doInBackground(Long... data) {
         Tweet tweet;
         final long TWEETID = data[0];
         boolean updateStatus = false;
@@ -130,13 +127,12 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
             int rCode = err.getErrorCode();
             if (rCode == 144 || rCode == 34 || rCode == 63)
                 db.removeStatus(TWEETID);
-            failure = true;
+            return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("StatusLoader", err.getMessage());
-            failure = true;
+            err.printStackTrace();
+            return false;
         }
-        return null;
+        return true;
     }
 
 
@@ -286,10 +282,10 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
 
 
     @Override
-    protected void onPostExecute(Void v) {
+    protected void onPostExecute(Boolean success) {
         if (ui.get() == null) return;
 
-        if (!failure) {
+        if (success) {
             switch (mode) {
                 case FAVORITE:
                     ui.get().setResult(RETURN_TWEET_CHANGED);

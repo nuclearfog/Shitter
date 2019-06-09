@@ -22,35 +22,36 @@ import twitter4j.TwitterException;
 public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<MessagePopup> ui;
+    private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private LayoutInflater inflater;
-    private Dialog popup;
-
 
     public MessageUpload(@NonNull MessagePopup c) {
         ui = new WeakReference<>(c);
-        popup = new Dialog(c);
-        inflater = LayoutInflater.from(c);
+        popup = new WeakReference<>(new Dialog(c));
         mTwitter = TwitterEngine.getInstance(c);
     }
 
 
     @Override
     protected void onPreExecute() {
-        popup.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popup.setCanceledOnTouchOutside(false);
-        if (popup.getWindow() != null)
-            popup.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (popup.get() == null || ui.get() == null) return;
+
+        final Dialog window = popup.get();
+        window.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        window.setCanceledOnTouchOutside(false);
+        if (window.getWindow() != null)
+            window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        LayoutInflater inflater = LayoutInflater.from(ui.get());
         View load = inflater.inflate(R.layout.item_load, null, false);
         View cancelButton = load.findViewById(R.id.kill_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popup.dismiss();
+                window.dismiss();
             }
         });
-        popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        window.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 if (getStatus() == Status.RUNNING) {
@@ -59,8 +60,8 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
                 }
             }
         });
-        popup.setContentView(load);
-        popup.show();
+        window.setContentView(load);
+        window.show();
     }
 
 
@@ -87,9 +88,8 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() == null) return;
+        if (ui.get() == null || popup.get() == null) return;
 
-        popup.dismiss();
         if (success) {
             Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
             ui.get().finish();
@@ -97,11 +97,13 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             if (err != null)
                 ErrorHandler.printError(ui.get(), err);
         }
+        popup.get().dismiss();
     }
 
 
     @Override
     protected void onCancelled() {
-        popup.dismiss();
+        if (popup.get() == null) return;
+        popup.get().dismiss();
     }
 }

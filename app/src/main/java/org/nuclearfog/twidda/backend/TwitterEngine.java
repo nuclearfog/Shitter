@@ -591,10 +591,11 @@ public class TwitterEngine {
     /**
      * Update user profile image_add
      *
-     * @param image image_add file
+     * @param path image path
      * @throws TwitterException if Access is unavailable
      */
-    public void updateProfileImage(File image) throws TwitterException {
+    public void updateProfileImage(String path) throws TwitterException {
+        File image = new File(path);
         twitter.updateProfileImage(image);
     }
 
