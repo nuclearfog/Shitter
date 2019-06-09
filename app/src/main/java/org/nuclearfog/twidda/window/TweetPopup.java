@@ -160,6 +160,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                                 imageButton.setVisibility(INVISIBLE);
                             }
                             break;
+
+                        default:
+                            Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
+                            break;
                     }
                     cursor.close();
                 }

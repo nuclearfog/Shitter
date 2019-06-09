@@ -270,10 +270,13 @@ public class Tweet {
      * @return Tweet string with resolved URL entities
      */
     private String getText(Status status) {
-        URLEntity entities[] = status.getURLEntities();
+        URLEntity urlEntities[] = status.getURLEntities();
+        MediaEntity mediaEntities[] = status.getMediaEntities();
         StringBuilder tweet = new StringBuilder(status.getText());
-        for (int i = entities.length - 1; i >= 0; i--)
-            tweet.replace(entities[i].getStart(), entities[i].getEnd(), entities[i].getExpandedURL());
+        for (int i = urlEntities.length - 1; i >= 0; i--)
+            tweet = tweet.replace(urlEntities[i].getStart(), urlEntities[i].getEnd(), urlEntities[i].getExpandedURL());
+        for (int i = mediaEntities.length - 1; i >= 0; i--)
+            tweet = tweet.delete(mediaEntities[i].getStart(), mediaEntities[i].getEnd());
         return tweet.toString();
     }
 }
