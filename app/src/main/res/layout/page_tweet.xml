@@ -106,14 +106,6 @@
                         android:scrollbars="vertical"
                         android:textSize="@dimen/textsize_tweet" />
 
-                    <TextView
-                        android:id="@+id/used_api"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:linksClickable="false"
-                        android:singleLine="true"
-                        android:textSize="@dimen/textsize_refer" />
-
                     <ImageButton
                         android:id="@+id/image_attach"
                         android:layout_width="@dimen/button_media_width"
@@ -133,6 +125,14 @@
                         android:background="@drawable/button"
                         android:visibility="gone"
                         app:srcCompat="@drawable/video" />
+
+                    <TextView
+                        android:id="@+id/used_api"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:linksClickable="false"
+                        android:singleLine="true"
+                        android:textSize="@dimen/textsize_refer" />
 
                 </LinearLayout>
 
