@@ -13,22 +13,18 @@ public class GlobalSettings {
     private static GlobalSettings ourInstance;
 
     private SharedPreferences settings;
-
     private SimpleDateFormat sdf;
-
+    private boolean loadImage;
+    private boolean loadAnswer;
+    private boolean loggedIn;
+    private boolean customWorldId;
     private int background_color;
     private int font_color;
     private int highlight_color;
     private int tweet_color;
-
-    private boolean loadImage;
-    private boolean loggedIn;
-    private boolean customWorldId;
     private int row;
-
     private int woeId;
     private int woeIdPos;
-
     private String key1, key2;
     private long userId;
 
@@ -43,6 +39,7 @@ public class GlobalSettings {
         tweet_color = settings.getInt("tweet_color", 0xff19aae8);
         row = settings.getInt("preload", 20);
         loadImage = settings.getBoolean("image_load", true);
+        loadAnswer = settings.getBoolean("answer_load", true);
         loggedIn = settings.getBoolean("login", false);
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
@@ -148,7 +145,7 @@ public class GlobalSettings {
     }
 
     /**
-     * image_add loading enabled
+     * image load loading enabled
      *
      * @return true if enabled
      */
@@ -157,7 +154,7 @@ public class GlobalSettings {
     }
 
     /**
-     * enable/disable image_add load
+     * enable/disable image load load
      *
      * @param image true if enabled
      */
@@ -165,6 +162,27 @@ public class GlobalSettings {
         loadImage = image;
         Editor edit = settings.edit();
         edit.putBoolean("image_load", image);
+        edit.apply();
+    }
+
+    /**
+     * answer loading enabled
+     *
+     * @return true if enabled
+     */
+    public boolean getAnswerLoad() {
+        return loadAnswer;
+    }
+
+    /**
+     * enable/disable answer load load
+     *
+     * @param loadAnswer true if enabled
+     */
+    public void setAnswerLoad(boolean loadAnswer) {
+        this.loadAnswer = loadAnswer;
+        Editor edit = settings.edit();
+        edit.putBoolean("answer_load", loadAnswer);
         edit.apply();
     }
 

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment.backend;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -30,6 +29,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         USR_TWEETS,
         USR_FAVORS,
         TWEET_ANS,
+        DB_ANS,
         TWEET_SEARCH
     }
 
@@ -85,7 +85,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         db.storeHomeTimeline(tweets);
                     }
                     tweets.addAll(adapter.getData());
-                    return true;
+                    break;
 
                 case TL_MENT:
                     if (adapter.isEmpty()) {
@@ -100,7 +100,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         db.storeMentions(tweets);
                     }
                     tweets.addAll(adapter.getData());
-                    return true;
+                    break;
 
                 case USR_TWEETS:
                     long tweetId = (long) param[0];
@@ -116,7 +116,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         db.storeUserTweets(tweets);
                     }
                     tweets.addAll(adapter.getData());
-                    return true;
+                    break;
 
                 case USR_FAVORS:
                     tweetId = (long) param[0];
@@ -132,7 +132,12 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         db.storeUserFavs(tweets, tweetId);
                     }
                     tweets.addAll(adapter.getData());
-                    return true;
+                    break;
+
+                case DB_ANS:
+                    tweetId = (long) param[0];
+                    tweets = db.getAnswers(tweetId);
+                    break;
 
                 case TWEET_ANS:
                     tweetId = (long) param[0];
@@ -151,7 +156,7 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                             db.storeReplies(tweets);
                     }
                     tweets.addAll(adapter.getData());
-                    return true;
+                    break;
 
                 case TWEET_SEARCH:
                     search = (String) param[0];
@@ -159,16 +164,16 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         sinceId = adapter.getItemId(0);
                     tweets = mTwitter.searchTweets(search, sinceId);
                     tweets.addAll(adapter.getData());
-                    return true;
+                    break;
             }
         } catch (TwitterException err) {
             this.err = err;
+            return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("TweetLoader", err.getMessage());
             err.printStackTrace();
+            return false;
         }
-        return false;
+        return true;
     }
 
 

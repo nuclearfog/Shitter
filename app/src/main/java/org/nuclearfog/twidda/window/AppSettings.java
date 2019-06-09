@@ -47,7 +47,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     private GlobalSettings settings;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
-    private CheckBox toggleImg;
+    private CheckBox toggleImg, toggleAns;
     private EditText woeIdText;
     private TextView link;
     private Spinner woeId;
@@ -68,6 +68,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton3 = findViewById(R.id.color_popup);
         colorButton4 = findViewById(R.id.highlight_color);
         toggleImg = findViewById(R.id.toggleImg);
+        toggleAns = findViewById(R.id.toggleAns);
         woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
@@ -89,6 +90,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
         woeId.setOnItemSelectedListener(this);
+        toggleImg.setOnCheckedChangeListener(this);
+        toggleAns.setOnCheckedChangeListener(this);
     }
 
 
@@ -96,6 +99,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         toggleImg.setChecked(settings.getImageLoad());
+        toggleAns.setChecked(settings.getAnswerLoad());
         woeId.setAdapter(new WorldIdAdapter(this));
         woeId.setSelection(settings.getWoeIdSelection());
         colorButton1.setBackgroundColor(settings.getBackgroundColor());
@@ -108,7 +112,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             woeIdText.setVisibility(VISIBLE);
             woeIdText.setText(text);
         }
-        toggleImg.setOnCheckedChangeListener(this);
     }
 
 
@@ -257,8 +260,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onCheckedChanged(CompoundButton c, boolean checked) {
-        if (c.getId() == R.id.toggleImg) {
-            settings.setImageLoad(checked);
+        switch (c.getId()) {
+            case R.id.toggleImg:
+                settings.setImageLoad(checked);
+                break;
+
+            case R.id.toggleAns:
+                settings.setAnswerLoad(checked);
+                break;
         }
     }
 
