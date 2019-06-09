@@ -370,20 +370,24 @@ public class DatabaseAdapter {
         userColumn.put("following", user.getFollowing());
         userColumn.put("follower", user.getFollower());
 
-        db.update("tweet", statColumn, "tweet.tweetID=" + tweet.getId(), null);
-        db.update("user", userColumn, "user.userID=" + user.getId(), null);
+        final String[] tweetIdArg = {Long.toString(tweet.getId())};
+        final String[] userIdArg = {Long.toString(user.getId())};
+        db.update("tweet", statColumn, "tweet.tweetID=?", tweetIdArg);
+        db.update("user", userColumn, "user.userID=?", userIdArg);
         commit(db);
     }
 
     /**
      * remove status
      *
-     * @param id Tweet ID
+     * @param tweetId Tweet ID
      */
-    public void removeStatus(long id) {
+    public void removeStatus(long tweetId) {
         SQLiteDatabase db = getDbWrite();
-        db.delete("tweet", "tweetID=" + id, null);
-        db.delete("favorit", "tweetID=" + id + " AND ownerID=" + homeId, null);
+        final String[] delTwt = {Long.toString(tweetId)};
+        final String[] delFav = {Long.toString(tweetId), Long.toString(homeId)};
+        db.delete("tweet", "tweetID=?", delTwt);
+        db.delete("favorit", "tweetID=? AND ownerID=?", delFav);
         commit(db);
     }
 
@@ -396,8 +400,8 @@ public class DatabaseAdapter {
         Tweet tweet = getStatus(tweetId);
         if (tweet != null) {
             SQLiteDatabase db = getDbWrite();
-            long retweetedId = tweet.getMyRetweetId();
-            db.delete("tweet", "tweetID=" + retweetedId, null);
+            final String[] args = {Long.toString(tweet.getMyRetweetId())};
+            db.delete("tweet", "tweetID=?", args);
             commit(db);
         }
     }
@@ -409,12 +413,14 @@ public class DatabaseAdapter {
      */
     public void removeFavorite(long tweetId) {
         SQLiteDatabase db = getDbWrite();
+        final String[] delArgs = {Long.toString(tweetId), Long.toString(homeId)};
+        final String[] updateArgs = {Long.toString(tweetId)};
         int register = getTweetStatus(db, tweetId);
         register &= ~FAV_MASK;
         ContentValues status = new ContentValues();
         status.put("statusregister", register);
-        db.delete("favorit", "tweetID=" + tweetId + " AND ownerID=" + homeId, null);
-        db.update("tweet", status, "tweet.tweetID=" + tweetId, null);
+        db.delete("favorit", "tweetID=? AND ownerID=?", delArgs);
+        db.update("tweet", status, "tweet.tweetID=?", updateArgs);
         commit(db);
     }
 
@@ -425,7 +431,8 @@ public class DatabaseAdapter {
      */
     public void deleteDm(long id) {
         SQLiteDatabase db = getDbWrite();
-        db.delete("message", "messageID=" + id, null);
+        final String[] messageId = {Long.toString(id)};
+        db.delete("message", "messageID=?", messageId);
         commit(db);
     }
 

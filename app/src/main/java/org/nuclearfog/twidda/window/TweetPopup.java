@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusUploader;
+import org.nuclearfog.twidda.backend.helper.FilenameTools;
+import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -54,8 +56,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     private static final String[] READ_STORAGE = {READ_EXTERNAL_STORAGE};
     private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
-    private static final String TYPE_IMAGE = "image/*.jpeg image/*.jpg image/*.png ";
-    private static final String TYPE_VIDEO = "video/*.mp4 video/*.3gp video/*.gif ";
+    private static final String TYPE_IMAGE = "image/*";
+    private static final String TYPE_VIDEO = "video/*";
     private static final int PICK_MEDIA = 3;
     private static final int CHECK_PERM = 4;
     private static final int MAX_IMAGES = 4;
@@ -123,16 +125,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 if (cursor != null && cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(GET_MEDIA[0]);
                     String path = cursor.getString(index);
-                    String ext = "";
-                    int pos = path.lastIndexOf(".") + 1;
-                    if (pos > 0 && pos < path.length()) {
-                        ext = path.substring(pos);
-                        ext = ext.toLowerCase();
-                    }
-                    switch (ext) {
-                        case "png":
-                        case "jpg":
-                        case "jpeg":
+                    FileType type = FilenameTools.getFileType(path);
+
+                    switch (type) {
+                        case IMAGE:
                             if (mode == Mode.NONE)
                                 mode = Mode.IMAGE;
                             if (mediaPath.size() < MAX_IMAGES && mode == Mode.IMAGE) {
@@ -145,7 +141,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                             }
                             break;
 
-                        case "gif":
+                        case ANGIF:
                             if (mode == Mode.NONE)
                                 mode = Mode.GIF;
                             if (mode == Mode.GIF) {
@@ -155,8 +151,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                             }
                             break;
 
-                        case "mp4":
-                        case "3gp":
+                        case VIDEO:
                             if (mode == Mode.NONE)
                                 mode = Mode.VIDEO;
                             if (mode == Mode.VIDEO) {
@@ -281,7 +276,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
             mediaIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE + TYPE_VIDEO);
             startActivityForResult(mediaIntent, PICK_MEDIA);
         } else if (mode == Mode.IMAGE) {
-            Intent imageIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+            Intent imageIntent = new Intent(ACTION_PICK);
+            imageIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE);
             startActivityForResult(imageIntent, PICK_MEDIA);
         }
     }

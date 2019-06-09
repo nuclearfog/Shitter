@@ -94,7 +94,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public void onStart() {
         super.onStart();
         if (tweetTask == null) {
-            load();
+            load(false);
         }
     }
 
@@ -103,7 +103,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public void onResume() {
         super.onResume();
         if (tweetTask == null) {
-            load();
+            load(false);
         }
     }
 
@@ -126,7 +126,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onRefresh() {
-        load();
+        load(true);
     }
 
 
@@ -169,7 +169,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     }
 
 
-    private void load() {
+    private void load(boolean loadAnswer) {
         switch (mode) {
             case HOME:
                 tweetTask = new TweetLoader(root, Mode.TL_HOME);
@@ -192,8 +192,10 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 break;
 
             case TWEET_ANSR:
-                tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
-                tweetTask.execute(id, search);
+                if (loadAnswer) {
+                    tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
+                    tweetTask.execute(id, search);
+                }
                 break;
 
             case SEARCH:

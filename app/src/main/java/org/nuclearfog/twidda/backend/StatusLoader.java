@@ -290,20 +290,24 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Void> {
         if (ui.get() == null) return;
 
         if (!failure) {
-            if (mode == Mode.DELETE) {
-                Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
-                ui.get().setResult(RETURN_TWEET_CHANGED);
-                ui.get().finish();
-            }
-        } else {
-            if (err != null) {
-                int rCode = err.getErrorCode();
-                if (rCode == 144 || rCode == 34 || rCode == 63)
+            switch (mode) {
+                case FAVORITE:
                     ui.get().setResult(RETURN_TWEET_CHANGED);
-                boolean killActivity = ErrorHandler.printError(ui.get(), err);
-                if (killActivity)
+                    break;
+
+                case DELETE:
+                    Toast.makeText(ui.get(), R.string.tweet_removed, Toast.LENGTH_SHORT).show();
+                    ui.get().setResult(RETURN_TWEET_CHANGED);
                     ui.get().finish();
+                    break;
             }
+        } else if (err != null) {
+            int rCode = err.getErrorCode();
+            if (rCode == 144 || rCode == 34 || rCode == 63)
+                ui.get().setResult(RETURN_TWEET_CHANGED);
+            boolean killActivity = ErrorHandler.printError(ui.get(), err);
+            if (killActivity)
+                ui.get().finish();
         }
     }
 }
