@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment.backend;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -90,8 +89,7 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
             this.err = err;
             return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("Status Loader", err.getMessage());
+            err.printStackTrace();
             return false;
         }
         return true;

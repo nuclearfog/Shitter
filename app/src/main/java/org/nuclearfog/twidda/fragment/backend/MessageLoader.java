@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.fragment.backend;
 
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -20,6 +19,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+import static android.os.AsyncTask.Status.FINISHED;
 
 public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
 
@@ -56,7 +56,7 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
         reload.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getStatus() != Status.FINISHED)
+                if (getStatus() != FINISHED)
                     reload.setRefreshing(true);
             }
         }, 500);
@@ -71,19 +71,19 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                 case DB:
                     messages = db.getMessages();
                     if (!messages.isEmpty())
-                        return true;
+                        break;
 
                 case LOAD:
                     messages = mTwitter.getMessages();
                     db.storeMessage(messages);
-                    return true;
+                    break;
 
                 case DEL:
                     messageId = param[0];
                     mTwitter.deleteMessage(messageId);
                     db.deleteDm(messageId);
                     messages = db.getMessages();
-                    return true;
+                    break;
             }
         } catch (TwitterException err) {
             if (err.getErrorCode() == 34) {
@@ -91,12 +91,12 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                 messages = db.getMessages();
                 this.err = err;
             }
+            return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("Status Loader", err.getMessage());
             err.printStackTrace();
+            return false;
         }
-        return false;
+        return true;
     }
 
 
@@ -104,16 +104,17 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() == null)
             return;
+
         if (messages != null) {
             adapter.setData(messages);
             adapter.notifyDataSetChanged();
         }
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
         if (!success) {
             if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
         }
+        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+        reload.setRefreshing(false);
     }
 
 

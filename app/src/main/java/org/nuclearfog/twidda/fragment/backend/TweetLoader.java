@@ -83,8 +83,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         sinceId = adapter.getItemId(0);
                         tweets = mTwitter.getHome(1, sinceId);
                         db.storeHomeTimeline(tweets);
+                        tweets.addAll(adapter.getData());
                     }
-                    tweets.addAll(adapter.getData());
                     break;
 
                 case TL_MENT:
@@ -98,8 +98,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         sinceId = adapter.getItemId(0);
                         tweets = mTwitter.getMention(1, sinceId);
                         db.storeMentions(tweets);
+                        tweets.addAll(adapter.getData());
                     }
-                    tweets.addAll(adapter.getData());
                     break;
 
                 case USR_TWEETS:
@@ -114,8 +114,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         sinceId = adapter.getItemId(0);
                         tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
                         db.storeUserTweets(tweets);
+                        tweets.addAll(adapter.getData());
                     }
-                    tweets.addAll(adapter.getData());
                     break;
 
                 case USR_FAVORS:
@@ -130,8 +130,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         sinceId = adapter.getItemId(0);
                         tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
                         db.storeUserFavs(tweets, tweetId);
+                        tweets.addAll(adapter.getData());
                     }
-                    tweets.addAll(adapter.getData());
                     break;
 
                 case DB_ANS:
@@ -154,8 +154,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                         tweets = mTwitter.getAnswers(search, tweetId, sinceId);
                         if (!tweets.isEmpty() && db.containStatus(tweetId))
                             db.storeReplies(tweets);
+                        tweets.addAll(adapter.getData());
                     }
-                    tweets.addAll(adapter.getData());
                     break;
 
                 case TWEET_SEARCH:
@@ -163,7 +163,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
                     if (!adapter.isEmpty())
                         sinceId = adapter.getItemId(0);
                     tweets = mTwitter.searchTweets(search, sinceId);
-                    tweets.addAll(adapter.getData());
+                    if (!adapter.isEmpty())
+                        tweets.addAll(adapter.getData());
                     break;
             }
         } catch (TwitterException err) {

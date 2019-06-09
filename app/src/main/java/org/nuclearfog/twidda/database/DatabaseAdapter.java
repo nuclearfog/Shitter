@@ -102,7 +102,8 @@ public class DatabaseAdapter {
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : fav) {
-            storeStatus(tweet, 0, db);
+            if (!containStatus(tweet.getId()))
+                storeStatus(tweet, 0, db);
             ContentValues favTable = new ContentValues();
             favTable.put("tweetID", tweet.getId());
             favTable.put("ownerID", ownerId);
