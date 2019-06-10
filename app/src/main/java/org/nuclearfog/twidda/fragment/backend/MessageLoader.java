@@ -21,21 +21,19 @@ import twitter4j.TwitterException;
 
 import static android.os.AsyncTask.Status.FINISHED;
 
-public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
+public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
     public enum Mode {
         DB,
         LOAD,
         DEL
     }
-
     private Mode mode;
     private WeakReference<View> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private DatabaseAdapter db;
     private MessageAdapter adapter;
-    private List<Message> messages;
 
 
     public MessageLoader(@NonNull View root, Mode mode) {
@@ -64,7 +62,8 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Long[] param) {
+    protected List<Message> doInBackground(Long[] param) {
+        List<Message> messages = null;
         long messageId = 0;
         try {
             switch (mode) {
@@ -86,44 +85,51 @@ public class MessageLoader extends AsyncTask<Long, Void, Boolean> {
                     break;
             }
         } catch (TwitterException err) {
+            this.err = err;
             if (err.getErrorCode() == 34) {
                 db.deleteDm(messageId);
                 messages = db.getMessages();
-                this.err = err;
             }
-            return false;
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return messages;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        if (ui.get() == null)
-            return;
-
-        if (messages != null) {
-            adapter.setData(messages);
-            adapter.notifyDataSetChanged();
-        }
-        if (!success) {
+    protected void onPostExecute(List<Message> messages) {
+        if (ui.get() != null) {
+            if (messages != null) {
+                adapter.setData(messages);
+                adapter.notifyDataSetChanged();
+            }
             if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
         }
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
     }
 
 
     @Override
     protected void onCancelled() {
-        if (ui.get() == null)
-            return;
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        if (reload.isRefreshing())
+        if (ui.get() != null) {
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
+        }
+    }
+
+
+    @Override
+    protected void onCancelled(List<Message> messages) {
+        if (ui.get() != null) {
+            if (messages != null) {
+                adapter.setData(messages);
+                adapter.notifyDataSetChanged();
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
+        }
     }
 }

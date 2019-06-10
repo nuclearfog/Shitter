@@ -107,4 +107,8 @@
     <string name="not_authorized">Not authorized!</string>
     <string name="error_file_format">file format not supported!</string>
     <string name="load_answer">answer load</string>
+    <string name="tweet_retweeted">tweet retweeted!</string>
+    <string name="tweet_unretweeted">retweet removed!</string>
+    <string name="tweet_favored">tweet_favored</string>
+    <string name="tweet_unfavored">tweet removed from favors!</string>
 </resources>

@@ -19,7 +19,7 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
-public class UserLoader extends AsyncTask<Object, Void, Boolean> {
+public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     public enum Mode {
         FOLLOWS,
@@ -28,13 +28,11 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
         FAVORIT,
         SEARCH
     }
-
     private Mode mode;
     private WeakReference<View> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private UserAdapter adapter;
-    private List<TwitterUser> users;
 
 
     public UserLoader(@NonNull View root, Mode mode) {
@@ -62,19 +60,20 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Object[] param) {
+    protected List<TwitterUser> doInBackground(Object[] param) {
+        List<TwitterUser> users = null;
         try {
             switch (mode) {
                 case FOLLOWS:
-                    users = mTwitter.getFollower((long) param[0], -1);
+                    users = mTwitter.getFollower((long) param[0]);
                     break;
 
                 case FRIENDS:
-                    users = mTwitter.getFollowing((long) param[0], -1);
+                    users = mTwitter.getFollowing((long) param[0]);
                     break;
 
                 case RETWEET:
-                    users = mTwitter.getRetweeter((long) param[0], -1);
+                    users = mTwitter.getRetweeter((long) param[0]);
                     break;
 
                 case FAVORIT:
@@ -87,37 +86,47 @@ public class UserLoader extends AsyncTask<Object, Void, Boolean> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return users;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        if (ui.get() == null)
-            return;
-        if (success) {
-            adapter.setData(users);
-            adapter.notifyDataSetChanged();
-        } else {
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+    protected void onPostExecute(List<TwitterUser> users) {
+        if (ui.get() != null) {
+            if (users != null) {
+                adapter.setData(users);
+                adapter.notifyDataSetChanged();
+            } else {
+                if (err != null)
+                    ErrorHandler.printError(ui.get().getContext(), err);
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
         }
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
     }
 
 
     @Override
     protected void onCancelled() {
-        if (ui.get() == null)
-            return;
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        if (reload.isRefreshing())
+        if (ui.get() != null) {
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
+        }
+    }
+
+
+    @Override
+    protected void onCancelled(List<TwitterUser> users) {
+        if (ui.get() != null) {
+            if (users != null) {
+                adapter.setData(users);
+                adapter.notifyDataSetChanged();
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
+        }
     }
 }

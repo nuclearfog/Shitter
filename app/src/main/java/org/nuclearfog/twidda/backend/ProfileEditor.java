@@ -33,7 +33,7 @@ import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 
 
-public class ProfileEditor extends AsyncTask<Void, Void, Boolean> {
+public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
 
     public enum Mode {
         READ_DATA,
@@ -44,7 +44,6 @@ public class ProfileEditor extends AsyncTask<Void, Void, Boolean> {
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private TwitterUser user;
     private Editable edit_name, edit_link, edit_bio, edit_loc;
     private String image_path;
 
@@ -94,7 +93,8 @@ public class ProfileEditor extends AsyncTask<Void, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Void... v) {
+    protected TwitterUser doInBackground(Void[] v) {
+        TwitterUser user = null;
         try {
             switch (mode) {
                 case READ_DATA:
@@ -116,59 +116,51 @@ public class ProfileEditor extends AsyncTask<Void, Void, Boolean> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return user;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        if (ui.get() == null || popup.get() == null) return;
+    protected void onPostExecute(TwitterUser user) {
+        if (ui.get() != null && popup.get() != null) {
 
-        if (success) {
-            switch (mode) {
-                case READ_DATA:
-                    edit_name.append(user.getUsername());
-                    edit_link.append(user.getLink());
-                    edit_loc.append(user.getLocation());
-                    edit_bio.append(user.getBio());
+            if (user != null) {
+                switch (mode) {
+                    case READ_DATA:
+                        edit_name.append(user.getUsername());
+                        edit_link.append(user.getLink());
+                        edit_loc.append(user.getLocation());
+                        edit_bio.append(user.getBio());
 
-                    ImageView pb_image = ui.get().findViewById(R.id.edit_pb);
-                    String link = user.getImageLink() + "_bigger";
-                    Picasso.get().load(link).into(pb_image);
+                        ImageView pb_image = ui.get().findViewById(R.id.edit_pb);
+                        String link = user.getImageLink() + "_bigger";
+                        Picasso.get().load(link).into(pb_image);
 
-                    final String mediaLink[] = new String[]{user.getImageLink()};
-                    pb_image.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent image = new Intent(ui.get(), MediaViewer.class);
-                            image.putExtra(KEY_MEDIA_LINK, mediaLink);
-                            image.putExtra(KEY_MEDIA_TYPE, IMAGE);
-                            ui.get().startActivity(image);
-                        }
-                    });
-                    break;
+                        final String mediaLink[] = {user.getImageLink()};
+                        pb_image.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent image = new Intent(ui.get(), MediaViewer.class);
+                                image.putExtra(KEY_MEDIA_LINK, mediaLink);
+                                image.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                                ui.get().startActivity(image);
+                            }
+                        });
+                        break;
 
-                case WRITE_DATA:
-                    Toast.makeText(ui.get(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
-                    ui.get().finish();
-                    break;
+                    case WRITE_DATA:
+                        Toast.makeText(ui.get(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
+                        ui.get().finish();
+                        break;
+                }
+            } else {
+                ErrorHandler.printError(ui.get(), err);
+                ui.get().finish();
             }
-        } else {
-            ErrorHandler.printError(ui.get(), err);
-            ui.get().finish();
+            popup.get().dismiss();
         }
-        popup.get().dismiss();
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (popup.get() == null) return;
-        popup.get().dismiss();
     }
 }

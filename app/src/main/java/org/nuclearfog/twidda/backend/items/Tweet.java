@@ -28,21 +28,26 @@ public class Tweet {
     private final int retweetCount;
     private final int favoriteCount;
     private final long myRetweetId;
-    private boolean retweeted;
-    private boolean favored;
+    private final boolean retweeted;
+    private final boolean favored;
 
 
     public Tweet(Status status) {
+        this(status, status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());
+    }
+
+
+    public Tweet(Status status, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
+        this.retweetCount = retweetCount;
+        this.retweeted = retweeted;
+        this.favoriteCount = favoriteCount;
+        this.favored = favored;
         tweetID = status.getId();
         user = new TwitterUser(status.getUser());
-        retweetCount = status.getRetweetCount();
-        favoriteCount = status.getFavoriteCount();
         tweet = getText(status);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
         medias = getMediaLinks(status);
-        retweeted = status.isRetweeted();
-        favored = status.isFavorited();
         myRetweetId = status.getCurrentUserRetweetId();
         replyUserId = status.getInReplyToUserId();
 
@@ -254,16 +259,6 @@ public class Tweet {
             }
         }
         return medias;
-    }
-
-    /**
-     * set retweet false
-     *
-     * @return tweet
-     */
-    public Tweet removeRetweet() {
-        retweeted = false;
-        return this;
     }
 
     /**

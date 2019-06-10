@@ -98,4 +98,8 @@
     <string name="not_authorized">Keine Berechtigung!</string>
     <string name="error_file_format">Dateiformat nicht unterstützt!</string>
     <string name="load_answer">Antworten laden</string>
+    <string name="tweet_retweeted">Tweet retweeted!</string>
+    <string name="tweet_unretweeted">Retweet entfernt!</string>
+    <string name="tweet_favored">Tweet favorisiert!</string>
+    <string name="tweet_unfavored">tweet aus den favoriten entfernt!</string>
 </resources>

@@ -21,7 +21,7 @@ import twitter4j.TwitterException;
 
 import static android.os.AsyncTask.Status.FINISHED;
 
-public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
+public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
     public enum Mode {
         TL_HOME,
@@ -32,14 +32,12 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
         DB_ANS,
         TWEET_SEARCH
     }
-
     private Mode mode;
     private WeakReference<View> ui;
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private DatabaseAdapter db;
-    private List<Tweet> tweets;
 
 
     public TweetLoader(@NonNull View root, Mode mode) {
@@ -68,7 +66,8 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Object[] param) {
+    protected List<Tweet> doInBackground(Object[] param) {
+        List<Tweet> tweets = null;
         long sinceId = 1;
         try {
             switch (mode) {
@@ -169,37 +168,47 @@ public class TweetLoader extends AsyncTask<Object, Void, Boolean> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return tweets;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
-        if (ui.get() == null)
-            return;
-        if (success) {
-            adapter.setData(tweets);
-            adapter.notifyDataSetChanged();
-        } else {
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+    protected void onPostExecute(List<Tweet> tweets) {
+        if (ui.get() != null) {
+            if (tweets != null) {
+                adapter.setData(tweets);
+                adapter.notifyDataSetChanged();
+            } else {
+                if (err != null)
+                    ErrorHandler.printError(ui.get().getContext(), err);
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
         }
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
     }
 
 
     @Override
     protected void onCancelled() {
-        if (ui.get() == null)
-            return;
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        if (reload.isRefreshing())
+        if (ui.get() != null) {
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
+        }
+    }
+
+
+    @Override
+    protected void onCancelled(List<Tweet> tweets) {
+        if (ui.get() != null) {
+            if (tweets != null) {
+                adapter.setData(tweets);
+                adapter.notifyDataSetChanged();
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
+        }
     }
 }

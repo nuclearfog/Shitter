@@ -377,8 +377,8 @@ public class TwitterEngine {
      * @return List of Following User
      * @throws TwitterException if Access is unavailable
      */
-    public List<TwitterUser> getFollowing(long userId, long cursor) throws TwitterException {
-        IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
+    public List<TwitterUser> getFollowing(long userId) throws TwitterException {
+        IDs userIDs = twitter.getFriendsIDs(userId, -1, load);
         long[] ids = userIDs.getIDs();
         if (ids.length == 0)
             return new LinkedList<>();
@@ -393,8 +393,8 @@ public class TwitterEngine {
      * @return List of Follower
      * @throws TwitterException if Access is unavailable
      */
-    public List<TwitterUser> getFollower(long userId, long cursor) throws TwitterException {
-        IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
+    public List<TwitterUser> getFollower(long userId) throws TwitterException {
+        IDs userIDs = twitter.getFollowersIDs(userId, -1, load);
         long[] ids = userIDs.getIDs();
         if (ids.length == 0)
             return new LinkedList<>();
@@ -470,13 +470,19 @@ public class TwitterEngine {
      */
     public Tweet retweet(long tweetId) throws TwitterException {
         Status tweet = twitter.showStatus(tweetId);
+        boolean retweeted = tweet.isRetweeted();
+        boolean favorited = tweet.isFavorited();
+        int retweetCount = tweet.getRetweetCount();
+        int favoritCount = tweet.getFavoriteCount();
+
         if (tweet.isRetweeted()) {
-            tweet = twitter.unRetweetStatus(tweet.getId());
-            return new Tweet(tweet).removeRetweet();
+            twitter.unRetweetStatus(tweet.getId());
+            retweetCount--;
         } else {
-            tweet = twitter.retweetStatus(tweet.getId()).getRetweetedStatus();
-            return new Tweet(tweet);
+            twitter.retweetStatus(tweet.getId());
+            retweetCount++;
         }
+        return new Tweet(tweet, retweetCount, !retweeted, favoritCount, favorited);
     }
 
 
@@ -488,12 +494,19 @@ public class TwitterEngine {
      */
     public Tweet favorite(long tweetId) throws TwitterException {
         Status tweet = twitter.showStatus(tweetId);
-        if (tweet.isFavorited())
-            tweet = twitter.destroyFavorite(tweet.getId());
-        else
-            tweet = twitter.createFavorite(tweet.getId());
+        boolean retweeted = tweet.isRetweeted();
+        boolean favorited = tweet.isFavorited();
+        int retweetCount = tweet.getRetweetCount();
+        int favoritCount = tweet.getFavoriteCount();
 
-        return new Tweet(tweet);
+        if (tweet.isFavorited()) {
+            tweet = twitter.destroyFavorite(tweet.getId());
+            favoritCount--;
+        } else {
+            tweet = twitter.createFavorite(tweet.getId());
+            favoritCount++;
+        }
+        return new Tweet(tweet, retweetCount, retweeted, favoritCount, !favorited);
     }
 
 
@@ -510,15 +523,14 @@ public class TwitterEngine {
      * Get User who retweeted a Tweet
      *
      * @param tweetID Tweet ID
-     * @param cursor  List Cursor
      * @return List of users or empty list if no match
      * @throws TwitterException if Access is unavailable
      */
-    public List<TwitterUser> getRetweeter(long tweetID, long cursor) throws TwitterException {
+    public List<TwitterUser> getRetweeter(long tweetID) throws TwitterException {
         Tweet embeddedStat = getStatus(tweetID).getEmbeddedTweet();
         if (embeddedStat != null)
             tweetID = embeddedStat.getId();
-        long[] userIds = twitter.getRetweeterIds(tweetID, load, cursor).getIDs();
+        long[] userIds = twitter.getRetweeterIds(tweetID, load, -1).getIDs();
         if (userIds.length == 0)
             return new LinkedList<>();
         return convertUserList(twitter.lookupUsers(userIds));

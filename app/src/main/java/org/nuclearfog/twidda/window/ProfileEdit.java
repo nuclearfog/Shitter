@@ -72,14 +72,6 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
 
     @Override
-    protected void onStop() {
-        if (editorAsync != null && editorAsync.getStatus() == RUNNING)
-            editorAsync.cancel(true);
-        super.onStop();
-    }
-
-
-    @Override
     public void onBackPressed() {
         AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
         closeDialog.setMessage(R.string.exit_confirm);
@@ -148,8 +140,6 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
         if (name.getText().toString().trim().isEmpty()) {
             Toast.makeText(this, R.string.edit_empty_name, LENGTH_SHORT).show();
         } else {
-            if (editorAsync != null && editorAsync.getStatus() == RUNNING)
-                editorAsync.cancel(true);
             editorAsync = new ProfileEditor(this, WRITE_DATA);
             editorAsync.execute();
         }

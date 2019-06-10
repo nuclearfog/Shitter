@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -14,6 +15,7 @@ public class GlobalSettings {
 
     private SharedPreferences settings;
     private SimpleDateFormat sdf;
+    private NumberFormat formatter;
     private boolean loadImage;
     private boolean loadAnswer;
     private boolean loggedIn;
@@ -45,6 +47,7 @@ public class GlobalSettings {
         key2 = settings.getString("key2", "");
         userId = settings.getLong("userID", -1L);
         sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.getDefault());
+        formatter = NumberFormat.getIntegerInstance();
     }
 
     /**
@@ -307,6 +310,15 @@ public class GlobalSettings {
      */
     public SimpleDateFormat getDateFormatter() {
         return sdf;
+    }
+
+    /**
+     * get locale specific number formatter
+     *
+     * @return number formatter instance
+     */
+    public NumberFormat getNumberFormatter() {
+        return formatter;
     }
 
     /**

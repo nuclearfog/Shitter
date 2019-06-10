@@ -21,14 +21,13 @@ import java.util.List;
 import twitter4j.TwitterException;
 
 
-public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
+public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
     private WeakReference<View> ui;
     private TwitterException err;
     private TwitterEngine mTwitter;
     private DatabaseAdapter db;
     private TrendAdapter adapter;
-    private List<Trend> trends;
     private int woeId;
 
 
@@ -59,7 +58,8 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Void[] v) {
+    protected List<Trend> doInBackground(Void[] v) {
+        List<Trend> trends = null;
         try {
             if (adapter.isEmpty()) {
                 trends = db.getTrends(woeId);
@@ -73,20 +73,18 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return trends;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(List<Trend> trends) {
         if (ui.get() == null)
             return;
-        if (success) {
+        if (trends != null) {
             adapter.setData(trends);
             adapter.notifyDataSetChanged();
         } else {
@@ -100,10 +98,22 @@ public class TrendLoader extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        if (ui.get() == null)
-            return;
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        if (reload.isRefreshing())
+        if (ui.get() != null) {
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
+        }
+    }
+
+
+    @Override
+    protected void onCancelled(List<Trend> trends) {
+        if (ui.get() != null) {
+            if (trends != null) {
+                adapter.setData(trends);
+                adapter.notifyDataSetChanged();
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
+        }
     }
 }

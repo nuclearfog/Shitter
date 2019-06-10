@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,20 +23,19 @@ import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import twitter4j.TwitterException;
 
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 
 
-public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
+public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
 
     public enum Mode {
         LDR_PROFILE,
@@ -45,18 +43,11 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
         ACTION_BLOCK,
         ACTION_MUTE
     }
-
     private final Mode mode;
-
     private WeakReference<UserProfile> ui;
-    private SimpleDateFormat sdf;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private TwitterUser user;
-    private NumberFormat formatter;
-    private long homeId;
-    private int highlight;
-    private boolean imgEnabled;
+    private GlobalSettings settings;
     private boolean isHome;
     private boolean isFriend;
     private boolean isFollower;
@@ -65,210 +56,202 @@ public class ProfileLoader extends AsyncTask<Long, Void, Boolean> {
     private boolean canDm;
 
 
-    /**
-     * @param context Context to Activity
-     * @see UserProfile
-     */
     public ProfileLoader(@NonNull UserProfile context, Mode mode) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        formatter = NumberFormat.getIntegerInstance();
-        sdf = settings.getDateFormatter();
-        imgEnabled = settings.getImageLoad();
-        homeId = settings.getUserId();
-        highlight = settings.getHighlightColor();
+        settings = GlobalSettings.getInstance(context);
         this.mode = mode;
     }
 
 
     @Override
-    protected Boolean doInBackground(Long... args) {
-        final long UID = args[0];
+    protected TwitterUser doInBackground(Long[] args) {
+        TwitterUser user = null;
+        long userId = args[0];
 
         DatabaseAdapter db = new DatabaseAdapter(ui.get());
-        isHome = homeId == UID;
+        isHome = userId == settings.getUserId();
         try {
             if (mode == Mode.LDR_PROFILE) {
-                user = db.getUser(UID);
+                user = db.getUser(userId);
                 if (user != null)
-                    publishProgress();
-                user = mTwitter.getUser(UID);
+                    publishProgress(user);
+                user = mTwitter.getUser(userId);
                 db.storeUser(user);
             }
             if (!isHome) {
-                boolean[] connection = mTwitter.getConnection(UID);
+                boolean[] connection = mTwitter.getConnection(userId);
                 isFriend = connection[0];
                 isFollower = connection[1];
                 isBlocked = connection[2];
                 isMuted = connection[3];
                 canDm = connection[4];
                 if (isBlocked || isMuted)
-                    db.muteUser(UID, true);
+                    db.muteUser(userId, true);
                 else
-                    db.muteUser(UID, false);
+                    db.muteUser(userId, false);
             }
             if (user != null)
-                publishProgress();
+                publishProgress(user);
 
             switch (mode) {
                 case ACTION_FOLLOW:
                     if (!isFriend) {
-                        user = mTwitter.followUser(UID);
+                        user = mTwitter.followUser(userId);
                         if (!user.isLocked())
                             isFriend = true;
                     } else {
-                        user = mTwitter.unfollowUser(UID);
+                        user = mTwitter.unfollowUser(userId);
                         isFriend = false;
                     }
-                    publishProgress();
+                    publishProgress(user);
                     break;
 
                 case ACTION_BLOCK:
                     if (!isBlocked)
-                        user = mTwitter.blockUser(UID);
+                        user = mTwitter.blockUser(userId);
                     else
-                        user = mTwitter.unblockUser(UID);
+                        user = mTwitter.unblockUser(userId);
                     isBlocked = !isBlocked;
-                    publishProgress();
-                    db.muteUser(UID, isBlocked);
+                    publishProgress(user);
+                    db.muteUser(userId, isBlocked);
                     break;
 
                 case ACTION_MUTE:
                     if (!isMuted)
-                        user = mTwitter.muteUser(UID);
+                        user = mTwitter.muteUser(userId);
                     else
-                        user = mTwitter.unmuteUser(UID);
+                        user = mTwitter.unmuteUser(userId);
                     isMuted = !isMuted;
-                    publishProgress();
-                    db.muteUser(UID, isMuted);
+                    publishProgress(user);
+                    db.muteUser(userId, isMuted);
                     break;
             }
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
-            if (err.getMessage() != null)
-                Log.e("ProfileLoader", err.getMessage());
-            return false;
+            err.printStackTrace();
         }
-        return true;
+        return user;
     }
 
 
     @Override
-    protected void onProgressUpdate(Void... v) {
-        if (ui.get() == null) return;
+    protected void onProgressUpdate(TwitterUser[] users) {
+        if (ui.get() != null) {
+            final TwitterUser user = users[0];
 
-        ImageView profile = ui.get().findViewById(R.id.profile_img);
-        TextView txtUser = ui.get().findViewById(R.id.profile_username);
-        TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
-        TextView txtBio = ui.get().findViewById(R.id.bio);
-        TextView txtLocation = ui.get().findViewById(R.id.location);
-        TextView txtLink = ui.get().findViewById(R.id.links);
-        TextView txtFollowing = ui.get().findViewById(R.id.following);
-        TextView txtFollower = ui.get().findViewById(R.id.follower);
-        TextView txtCreated = ui.get().findViewById(R.id.profile_date);
-        View profile_head = ui.get().findViewById(R.id.profile_header);
-        View follow_back = ui.get().findViewById(R.id.follow_back);
+            ImageView profile = ui.get().findViewById(R.id.profile_img);
+            TextView txtUser = ui.get().findViewById(R.id.profile_username);
+            TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
+            TextView txtBio = ui.get().findViewById(R.id.bio);
+            TextView txtLocation = ui.get().findViewById(R.id.location);
+            TextView txtLink = ui.get().findViewById(R.id.links);
+            TextView txtFollowing = ui.get().findViewById(R.id.following);
+            TextView txtFollower = ui.get().findViewById(R.id.follower);
+            View profile_head = ui.get().findViewById(R.id.profile_header);
+            View follow_back = ui.get().findViewById(R.id.follow_back);
 
-        Spanned bio = Tagger.makeText(user.getBio(), highlight, ui.get());
-        txtBio.setMovementMethod(LinkMovementMethod.getInstance());
-        txtUser.setText(user.getUsername());
-        txtScrName.setText(user.getScreenname());
-        txtFollower.setText(formatter.format(user.getFollower()));
-        txtFollowing.setText(formatter.format(user.getFollowing()));
-        String date = sdf.format(new Date(user.getCreatedAt()));
-        txtCreated.setText(date);
-        txtBio.setText(bio);
-
-        if (user.isVerified()) {
-            txtUser.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-        } else {
-            txtUser.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            String strFollower = settings.getNumberFormatter().format(user.getFollower());
+            String strFollowing = settings.getNumberFormatter().format(user.getFollowing());
+            Spanned bio = Tagger.makeText(user.getBio(), settings.getHighlightColor(), ui.get());
+            txtBio.setMovementMethod(LinkMovementMethod.getInstance());
+            txtUser.setText(user.getUsername());
+            txtScrName.setText(user.getScreenname());
+            txtFollower.setText(strFollower);
+            txtFollowing.setText(strFollowing);
+            txtBio.setText(bio);
+            if (profile_head.getVisibility() != VISIBLE) {
+                profile_head.setVisibility(VISIBLE);
+                TextView txtCreated = ui.get().findViewById(R.id.profile_date);
+                String date = settings.getDateFormatter().format(new Date(user.getCreatedAt()));
+                txtCreated.setText(date);
+            }
+            if (user.isVerified()) {
+                txtUser.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+            } else {
+                txtUser.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+            if (user.isLocked()) {
+                txtScrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            } else {
+                txtScrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+            if (isFollower) {
+                follow_back.setVisibility(VISIBLE);
+            } else {
+                follow_back.setVisibility(INVISIBLE);
+            }
+            if (user.getLocation() != null && !user.getLocation().isEmpty()) {
+                txtLocation.setText(user.getLocation());
+                txtLocation.setVisibility(VISIBLE);
+            } else {
+                txtLocation.setVisibility(GONE);
+            }
+            if (user.getLink() != null && !user.getLink().isEmpty()) {
+                txtLink.setText(user.getLink());
+                txtLink.setVisibility(VISIBLE);
+                txtLink.setOnClickListener(ui.get());
+            } else {
+                txtLink.setVisibility(GONE);
+                txtLink.setOnClickListener(null);
+            }
+            if (settings.getImageLoad()) {
+                String link = user.getImageLink() + "_bigger";
+                Picasso.get().load(link).into(profile);
+            }
+            if (!profile.isClickable()) {
+                profile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent image = new Intent(ui.get(), MediaViewer.class);
+                        image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
+                        image.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                        ui.get().startActivity(image);
+                    }
+                });
+            }
+            ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
         }
-        if (user.isLocked()) {
-            txtScrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-        } else {
-            txtScrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        }
-        if (isFollower) {
-            follow_back.setVisibility(VISIBLE);
-        } else {
-            follow_back.setVisibility(View.INVISIBLE);
-        }
-        if (user.getLocation() != null && !user.getLocation().isEmpty()) {
-            txtLocation.setText(user.getLocation());
-            txtLocation.setVisibility(VISIBLE);
-        } else {
-            txtLocation.setVisibility(GONE);
-        }
-        if (user.getLink() != null && !user.getLink().isEmpty()) {
-            txtLink.setText(user.getLink());
-            txtLink.setVisibility(VISIBLE);
-            txtLink.setOnClickListener(ui.get());
-        } else {
-            txtLink.setVisibility(GONE);
-            txtLink.setOnClickListener(null);
-        }
-        if (imgEnabled) {
-            String link = user.getImageLink() + "_bigger";
-            Picasso.get().load(link).into(profile);
-        }
-        if (!profile.isClickable()) {
-            profile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent image = new Intent(ui.get(), MediaViewer.class);
-                    image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
-                    image.putExtra(KEY_MEDIA_TYPE, IMAGE);
-                    ui.get().startActivity(image);
-                }
-            });
-        }
-        if (profile_head.getVisibility() != VISIBLE)
-            profile_head.setVisibility(VISIBLE);
-
-        ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
     }
 
 
     @Override
-    protected void onPostExecute(final Boolean success) {
-        if (ui.get() == null) return;
+    protected void onPostExecute(TwitterUser user) {
+        if (ui.get() != null) {
+            if (user != null) {
+                switch (mode) {
+                    case ACTION_FOLLOW:
+                        if (!user.isLocked())
+                            if (isFriend)
+                                Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
+                        break;
 
-        if (success) {
-            switch (mode) {
-                case ACTION_FOLLOW:
-                    if (!user.isLocked())
-                        if (isFriend)
-                            Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+                    case ACTION_BLOCK:
+                        if (isBlocked)
+                            Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
-                    break;
+                            Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
+                        break;
 
-                case ACTION_BLOCK:
-                    if (isBlocked)
-                        Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case ACTION_MUTE:
-                    if (isMuted)
-                        Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
-                    break;
-            }
-            if (!isHome) {
-                ui.get().setConnection(isFriend, isMuted, isBlocked, user.isLocked(), canDm, user.followRequested());
-            }
-        } else {
-            if (err != null) {
-                boolean killActivity = ErrorHandler.printError(ui.get(), err);
-                if (killActivity)
-                    ui.get().finish();
+                    case ACTION_MUTE:
+                        if (isMuted)
+                            Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                if (!isHome) {
+                    ui.get().setConnection(isFriend, isMuted, isBlocked, user.isLocked(), canDm, user.followRequested());
+                }
+            } else {
+                if (err != null) {
+                    boolean killActivity = ErrorHandler.printError(ui.get(), err);
+                    if (killActivity)
+                        ui.get().finish();
+                }
             }
         }
     }
