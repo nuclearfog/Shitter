@@ -87,31 +87,32 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() == null || popup.get() == null) return;
+        if (ui.get() != null && popup.get() != null) {
+            if (success) {
+                ui.get().close();
+            } else {
+                if (err != null)
+                    ErrorHandler.printError(ui.get(), err);
 
-        if (success) {
-            ui.get().close();
-        } else {
-            if (err != null)
-                ErrorHandler.printError(ui.get(), err);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
-            builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
-                    .setPositiveButton(R.string.retry, new OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ui.get().findViewById(R.id.sendTweet).callOnClick();
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, null).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
+                builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
+                        .setPositiveButton(R.string.retry, new OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ui.get().findViewById(R.id.sendTweet).callOnClick();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, null).show();
+            }
+            popup.get().dismiss();
         }
-        popup.get().dismiss();
     }
 
 
     @Override
     protected void onCancelled() {
-        if (popup.get() == null) return;
-        popup.get().dismiss();
+        if (popup.get() != null) {
+            popup.get().dismiss();
+        }
     }
 }

@@ -126,7 +126,6 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
     @Override
     protected void onPostExecute(TwitterUser user) {
         if (ui.get() != null && popup.get() != null) {
-
             if (user != null) {
                 switch (mode) {
                     case READ_DATA:

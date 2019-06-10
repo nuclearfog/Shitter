@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,8 +53,6 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
         } catch (TwitterException err) {
             this.err = err;
         } catch (Exception e) {
-            if (e.getMessage() != null)
-                Log.e("Registration", e.getMessage());
             err.printStackTrace();
         }
         return false;
@@ -64,23 +61,23 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() == null) return;
+        if (ui.get() != null) {
+            if (success) {
+                switch (mode) {
+                    case LINK:
+                        ui.get().connect(redirectionURL);
+                        break;
 
-        if (success) {
-            switch (mode) {
-                case LINK:
-                    ui.get().connect(redirectionURL);
-                    break;
-
-                case LOGIN:
-                    ui.get().setResult(Activity.RESULT_OK);
-                    ui.get().finish();
-                    break;
+                    case LOGIN:
+                        ui.get().setResult(Activity.RESULT_OK);
+                        ui.get().finish();
+                        break;
+                }
+            } else if (err != null) {
+                ErrorHandler.printError(ui.get(), err);
+            } else {
+                Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_SHORT).show();
             }
-        } else if (err != null) {
-            ErrorHandler.printError(ui.get(), err);
-        } else {
-            Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_SHORT).show();
         }
     }
 }
