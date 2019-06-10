@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 
 import twitter4j.TwitterException;
 
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.RETURN_TWEET_CHANGED;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
@@ -156,10 +157,14 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Boolean> {
                 TextView tweet_api = ui.get().findViewById(R.id.used_api);
                 View tweet_footer = ui.get().findViewById(R.id.tweet_foot);
 
-                Spannable sTweet = Tagger.makeText(tweet.getTweet(), highlight, ui.get());
-                tweetText.setMovementMethod(LinkMovementMethod.getInstance());
-                tweetText.setText(sTweet);
-                tweetText.setTextColor(font_color);
+                if (!tweet.getTweet().trim().isEmpty()) {
+                    Spannable sTweet = Tagger.makeText(tweet.getTweet(), highlight, ui.get());
+                    tweetText.setMovementMethod(LinkMovementMethod.getInstance());
+                    tweetText.setText(sTweet);
+                    tweetText.setTextColor(font_color);
+                } else {
+                    tweetText.setVisibility(GONE);
+                }
                 tweetDate.setText(sdf.format(tweet.getTime()));
                 tweetDate.setTextColor(font_color);
                 tweet_api.setText(R.string.sent_from);

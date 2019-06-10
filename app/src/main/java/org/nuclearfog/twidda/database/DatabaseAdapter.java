@@ -358,6 +358,7 @@ public class DatabaseAdapter {
         statColumn.put("retweet", tweet.getRetweetCount());
         statColumn.put("favorite", tweet.getFavorCount());
         statColumn.put("retweeterID", tweet.getMyRetweetId());
+        statColumn.put("replyname", tweet.getReplyName());
         statColumn.put("statusregister", register);
 
         TwitterUser user = tweet.getUser();

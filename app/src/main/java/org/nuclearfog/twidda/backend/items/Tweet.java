@@ -40,7 +40,6 @@ public class Tweet {
         tweet = getText(status);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
-        replyName = '@' + status.getInReplyToScreenName();
         medias = getMediaLinks(status);
         retweeted = status.isRetweeted();
         favored = status.isFavorited();
@@ -52,6 +51,10 @@ public class Tweet {
         api = api.substring(0, api.indexOf('<'));
         source = api;
 
+        if (status.getInReplyToScreenName() == null)
+            replyName = "";
+        else
+            replyName = '@' + status.getInReplyToScreenName();
         if (status.getRetweetedStatus() != null)
             embedded = new Tweet(status.getRetweetedStatus());
         else

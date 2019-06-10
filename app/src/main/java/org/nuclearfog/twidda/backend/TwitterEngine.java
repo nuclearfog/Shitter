@@ -448,7 +448,7 @@ public class TwitterEngine {
      */
     public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws TwitterException {
         List<Status> answers = new LinkedList<>();
-        Query query = new Query("to:" + name + " since_id:" + sinceId + " -filter:retweets");
+        Query query = new Query("to:" + name + " since_id:" + sinceId + " +exclude:retweets");
         query.setCount(load);
         QueryResult result = twitter.search(query);
 
