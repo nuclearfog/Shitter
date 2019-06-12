@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -94,7 +95,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
 
     @Override
-    protected void onPostExecute(List<TwitterUser> users) {
+    protected void onPostExecute(@Nullable List<TwitterUser> users) {
         if (ui.get() != null) {
             if (users != null) {
                 adapter.setData(users);
@@ -119,7 +120,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
 
     @Override
-    protected void onCancelled(List<TwitterUser> users) {
+    protected void onCancelled(@Nullable List<TwitterUser> users) {
         if (ui.get() != null) {
             if (users != null) {
                 adapter.setData(users);

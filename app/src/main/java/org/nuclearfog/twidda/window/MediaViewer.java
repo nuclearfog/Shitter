@@ -155,7 +155,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             case VIDEO:
             case ANGIF:
             case VIDEO_STORAGE:
-                video_progress.setVisibility(VISIBLE);
                 videoView.start();
                 break;
         }
@@ -215,21 +214,21 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case VIDEO:
             case VIDEO_STORAGE:
-                mp.setOnInfoListener(new OnInfoListener() {
-                    @Override
-                    public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                        if (what == MEDIA_INFO_VIDEO_RENDERING_START) {
-                            video_progress.setVisibility(INVISIBLE);
-                            return true;
-                        }
-                        return false;
-                    }
-                });
                 videoController.show(0);
                 mp.seekTo(lastPos);
                 mp.start();
                 break;
         }
+        mp.setOnInfoListener(new OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                if (what == MEDIA_INFO_VIDEO_RENDERING_START) {
+                    video_progress.setVisibility(INVISIBLE);
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
 

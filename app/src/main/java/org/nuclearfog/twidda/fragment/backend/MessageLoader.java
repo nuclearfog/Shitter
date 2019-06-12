@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -98,7 +99,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
 
     @Override
-    protected void onPostExecute(List<Message> messages) {
+    protected void onPostExecute(@Nullable List<Message> messages) {
         if (ui.get() != null) {
             if (messages != null) {
                 adapter.setData(messages);
@@ -122,7 +123,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
 
     @Override
-    protected void onCancelled(List<Message> messages) {
+    protected void onCancelled(@Nullable List<Message> messages) {
         if (ui.get() != null) {
             if (messages != null) {
                 adapter.setData(messages);

@@ -39,34 +39,34 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPreExecute() {
-        if (popup.get() == null || ui.get() == null) return;
+        if (popup.get() != null && ui.get() != null) {
+            final Dialog window = popup.get();
+            window.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            window.setCanceledOnTouchOutside(false);
+            if (window.getWindow() != null)
+                window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            LayoutInflater inflater = LayoutInflater.from(ui.get());
+            View load = inflater.inflate(R.layout.item_load, null, false);
+            View cancelButton = load.findViewById(R.id.kill_button);
+            window.setContentView(load);
 
-        final Dialog window = popup.get();
-        window.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        window.setCanceledOnTouchOutside(false);
-        if (window.getWindow() != null)
-            window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        LayoutInflater inflater = LayoutInflater.from(ui.get());
-        View load = inflater.inflate(R.layout.item_load, null, false);
-        View cancelButton = load.findViewById(R.id.kill_button);
-        window.setContentView(load);
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                window.dismiss();
-            }
-        });
-        window.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (getStatus() == Status.RUNNING) {
-                    Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
-                    cancel(true);
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    window.dismiss();
                 }
-            }
-        });
-        window.show();
+            });
+            window.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (getStatus() == Status.RUNNING) {
+                        Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
+                        cancel(true);
+                    }
+                }
+            });
+            window.show();
+        }
     }
 
 

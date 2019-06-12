@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -81,18 +82,18 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 
     @Override
-    protected void onPostExecute(List<Trend> trends) {
-        if (ui.get() == null)
-            return;
-        if (trends != null) {
-            adapter.setData(trends);
-            adapter.notifyDataSetChanged();
-        } else {
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+    protected void onPostExecute(@Nullable List<Trend> trends) {
+        if (ui.get() != null) {
+            if (trends != null) {
+                adapter.setData(trends);
+                adapter.notifyDataSetChanged();
+            } else {
+                if (err != null)
+                    ErrorHandler.printError(ui.get().getContext(), err);
+            }
+            SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
+            reload.setRefreshing(false);
         }
-        SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
-        reload.setRefreshing(false);
     }
 
 
@@ -106,7 +107,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 
     @Override
-    protected void onCancelled(List<Trend> trends) {
+    protected void onCancelled(@Nullable List<Trend> trends) {
         if (ui.get() != null) {
             if (trends != null) {
                 adapter.setData(trends);

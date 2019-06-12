@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
@@ -137,7 +138,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
 
 
     @Override
-    protected void onProgressUpdate(TwitterUser[] users) {
+    protected void onProgressUpdate(@NonNull TwitterUser[] users) {
         if (ui.get() != null) {
             final TwitterUser user = users[0];
 
@@ -217,7 +218,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
 
 
     @Override
-    protected void onPostExecute(TwitterUser user) {
+    protected void onPostExecute(@Nullable TwitterUser user) {
         if (ui.get() != null) {
             if (user != null) {
                 switch (mode) {

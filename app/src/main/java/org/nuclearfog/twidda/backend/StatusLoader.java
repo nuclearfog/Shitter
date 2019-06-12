@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
@@ -124,7 +125,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
 
 
     @Override
-    protected void onProgressUpdate(Tweet[] tweets) {
+    protected void onProgressUpdate(@NonNull Tweet[] tweets) {
         if (ui.get() != null) {
             TextView username = ui.get().findViewById(R.id.usernamedetail);
             TextView scrName = ui.get().findViewById(R.id.scrnamedetail);
@@ -273,7 +274,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
 
 
     @Override
-    protected void onPostExecute(Tweet tweet) {
+    protected void onPostExecute(@Nullable Tweet tweet) {
         if (ui.get() != null) {
             if (tweet != null) {
                 switch (mode) {

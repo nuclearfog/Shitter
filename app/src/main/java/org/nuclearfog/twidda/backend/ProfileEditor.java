@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
@@ -70,25 +71,24 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
 
     @Override
     protected void onPreExecute() {
-        if (popup.get() == null || ui.get() == null) return;
-
-        Dialog window = popup.get();
-        window.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        window.setCanceledOnTouchOutside(false);
-        window.setContentView(new ProgressBar(ui.get()));
-        if (window.getWindow() != null)
-            window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-        window.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (getStatus() == Status.RUNNING) {
-                    cancel(true);
-                    ui.get().finish();
+        if (popup.get() != null && ui.get() != null) {
+            Dialog window = popup.get();
+            window.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            window.setCanceledOnTouchOutside(false);
+            window.setContentView(new ProgressBar(ui.get()));
+            if (window.getWindow() != null)
+                window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            window.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    if (getStatus() == Status.RUNNING) {
+                        cancel(true);
+                        ui.get().finish();
+                    }
                 }
-            }
-        });
-        window.show();
+            });
+            window.show();
+        }
     }
 
 
@@ -124,7 +124,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
 
 
     @Override
-    protected void onPostExecute(TwitterUser user) {
+    protected void onPostExecute(@Nullable TwitterUser user) {
         if (ui.get() != null && popup.get() != null) {
             if (user != null) {
                 switch (mode) {
