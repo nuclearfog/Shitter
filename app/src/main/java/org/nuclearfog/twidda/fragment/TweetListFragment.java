@@ -156,7 +156,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onTabChange() {
-        list.smoothScrollToPosition(0);
+        if (list != null)
+            list.smoothScrollToPosition(0);
     }
 
 
