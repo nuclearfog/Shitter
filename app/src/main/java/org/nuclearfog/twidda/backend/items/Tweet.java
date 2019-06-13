@@ -271,10 +271,18 @@ public class Tweet {
         URLEntity urlEntities[] = status.getURLEntities();
         MediaEntity mediaEntities[] = status.getMediaEntities();
         StringBuilder tweet = new StringBuilder(status.getText());
-        for (int i = urlEntities.length - 1; i >= 0; i--)
-            tweet = tweet.replace(urlEntities[i].getStart(), urlEntities[i].getEnd(), urlEntities[i].getExpandedURL());
-        for (int i = mediaEntities.length - 1; i >= 0; i--)
-            tweet = tweet.delete(mediaEntities[i].getStart(), mediaEntities[i].getEnd());
+        for (int i = urlEntities.length - 1; i >= 0; i--) { // expand shorten links
+            int start = urlEntities[i].getStart();
+            int end = urlEntities[i].getEnd();
+            String expanded = urlEntities[i].getExpandedURL();
+            tweet = tweet.replace(start, end, expanded);
+        }
+        if (mediaEntities.length > 0) { // remove twitter media links from tweet
+            int lastLinkPos = mediaEntities.length - 1;
+            int start = mediaEntities[lastLinkPos].getStart();
+            int end = mediaEntities[lastLinkPos].getEnd() - 1;
+            tweet = tweet.delete(start, end);
+        }
         return tweet.toString();
     }
 }
