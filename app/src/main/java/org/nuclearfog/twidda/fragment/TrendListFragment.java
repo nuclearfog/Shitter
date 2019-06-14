@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.fragment.backend.TrendLoader;
 import org.nuclearfog.twidda.window.SearchPage;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 
 
 public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
@@ -89,7 +90,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
             Intent intent = new Intent(getContext(), SearchPage.class);
             if (!search.startsWith("#"))
                 search = '\"' + search + '\"';
-            intent.putExtra("search", search);
+            intent.putExtra(KEY_SEARCH, search);
             startActivity(intent);
         }
     }

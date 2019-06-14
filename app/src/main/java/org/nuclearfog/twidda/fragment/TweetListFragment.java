@@ -24,6 +24,8 @@ import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 
 
 public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
@@ -137,8 +139,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
-            tweetIntent.putExtra("tweetID", tweet.getId());
-            tweetIntent.putExtra("username", tweet.getUser().getScreenname());
+            tweetIntent.putExtra(KEY_TWEET_ID, tweet.getId());
+            tweetIntent.putExtra(KEY_TWEET_NAME, tweet.getUser().getScreenname());
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);
         }
     }

@@ -24,6 +24,8 @@ import org.nuclearfog.twidda.fragment.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
 
 
 public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
@@ -114,8 +116,8 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
             long userID = user.getId();
             String username = user.getScreenname();
             Intent intent = new Intent(getContext(), UserProfile.class);
-            intent.putExtra("userID", userID);
-            intent.putExtra("username", username);
+            intent.putExtra(KEY_PROFILE_ID, userID);
+            intent.putExtra(KEY_PROFILE_NAME, username);
             startActivity(intent);
         }
     }

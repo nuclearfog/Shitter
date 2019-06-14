@@ -90,7 +90,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             @Override
             public boolean onQueryTextSubmit(String s) {
                 Intent intent = new Intent(SearchPage.this, SearchPage.class);
-                intent.putExtra("search", s);
+                intent.putExtra(KEY_SEARCH, s);
                 startActivity(intent);
                 return true;
             }

@@ -299,12 +299,11 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                         break;
                 }
             } else if (err != null) {
-                int rCode = err.getErrorCode();
-                if (rCode == 144 || rCode == 34 || rCode == 63)
-                    ui.get().setResult(RETURN_TWEET_CHANGED);
                 boolean killActivity = ErrorHandler.printError(ui.get(), err);
-                if (killActivity)
+                if (killActivity) {
+                    ui.get().setResult(RETURN_TWEET_CHANGED);
                     ui.get().finish();
+                }
             }
         }
     }

@@ -280,7 +280,7 @@ public class Tweet {
         if (mediaEntities.length > 0) { // remove twitter media links from tweet
             int lastLinkPos = mediaEntities.length - 1;
             int start = mediaEntities[lastLinkPos].getStart();
-            int end = mediaEntities[lastLinkPos].getEnd() - 1;
+            int end = mediaEntities[lastLinkPos].getEnd();
             tweet = tweet.delete(start, end);
         }
         return tweet.toString();

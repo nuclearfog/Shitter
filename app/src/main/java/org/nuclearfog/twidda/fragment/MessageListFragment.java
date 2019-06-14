@@ -25,6 +25,10 @@ import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
+import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
 
 
 public class MessageListFragment extends Fragment implements OnRefreshListener, OnItemSelected {
@@ -88,7 +92,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     public void onClick(String tag) {
         if (!reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), SearchPage.class);
-            intent.putExtra("search", tag);
+            intent.putExtra(KEY_SEARCH, tag);
             startActivity(intent);
         }
     }
@@ -100,7 +104,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
             switch (action) {
                 case ANSWER:
                     Intent sendDm = new Intent(getContext(), MessagePopup.class);
-                    sendDm.putExtra("username", message.getSender().getScreenname());
+                    sendDm.putExtra(KEY_DM_ADDITION, message.getSender().getScreenname());
                     startActivity(sendDm);
                     break;
 
@@ -111,8 +115,8 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
                 case PROFILE:
                     Intent profile = new Intent(getContext(), UserProfile.class);
-                    profile.putExtra("userID", message.getSender().getId());
-                    profile.putExtra("username", message.getSender().getScreenname());
+                    profile.putExtra(KEY_PROFILE_ID, message.getSender().getId());
+                    profile.putExtra(KEY_PROFILE_NAME, message.getSender().getScreenname());
                     startActivity(profile);
                     break;
             }
