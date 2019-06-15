@@ -27,6 +27,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_settings"
                 android:text="@string/color_settings"
                 android:textSize="@dimen/textsize_settings" />
 
@@ -152,8 +153,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="@dimen/margin_layout">
+                android:orientation="horizontal">
 
                 <Spinner
                     android:id="@+id/woeid"
@@ -185,7 +185,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/button_margin"
+                    android:layout_marginTop="@dimen/text_settings"
                     android:text="@string/user_data"
                     android:textSize="@dimen/textsize_settings" />
 
@@ -228,7 +228,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/button_margin"
+                android:layout_marginTop="@dimen/text_settings"
                 android:text="@string/proxy_settings"
                 android:textSize="@dimen/textsize_settings" />
 
@@ -241,8 +241,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/margin_layout"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/margin_layout_tweet">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/edit_proxyadress"
@@ -265,7 +264,7 @@
                     android:background="@android:color/transparent"
                     android:ems="10"
                     android:hint="@string/proxy_port"
-                    android:inputType="numberPassword"
+                    android:inputType="number"
                     android:singleLine="true" />
 
             </LinearLayout>

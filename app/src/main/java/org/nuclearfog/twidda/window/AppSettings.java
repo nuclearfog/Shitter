@@ -136,13 +136,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onBackPressed() {
+        settings.setProxyAddress(proxyAddr.getText().toString());
+        settings.setProxyPort(proxyPort.getText().toString());
+        settings.setProxyUser(proxyUser.getText().toString());
+        settings.setProxyPass(proxyPass.getText().toString());
+        settings.setProxy();
+
         if (settings.getCustomWidSet()) {
             String woeText = woeIdText.getText().toString();
-            settings.setProxyAddress(proxyAddr.getText().toString());
-            settings.setProxyPort(proxyPort.getText().toString());
-            settings.setProxyUser(proxyUser.getText().toString());
-            settings.setProxyPass(proxyPass.getText().toString());
-            settings.setProxy();
             if (!woeText.isEmpty())
                 settings.setWoeId(Long.parseLong(woeText));
             else
