@@ -92,7 +92,6 @@
     <string name="exit_confirm">Änderungen verwerfen?</string>
     <string name="user_data">Nutzerdaten</string>
     <string name="request_token_error">Request Token abgelaufen, bitte App aktualisieren!</string>
-    <string name="settings_info">Information</string>
     <string name="follows_you">folgt dir</string>
     <string name="image_store_failure">Fehler beim Speichern!</string>
     <string name="not_authorized">Keine Berechtigung!</string>

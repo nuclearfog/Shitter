@@ -75,10 +75,6 @@ public class UserDetail extends AppCompatActivity {
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FAVOR_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
-            default:
-                if (BuildConfig.DEBUG)
-                    throw new AssertionError("mode failure");
-                break;
         }
     }
 }

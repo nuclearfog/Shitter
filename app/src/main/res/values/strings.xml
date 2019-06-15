@@ -100,7 +100,6 @@
     <string name="exit_confirm">discard changes?</string>
     <string name="user_data">User data</string>
     <string name="request_token_error">request token expired! please update app.</string>
-    <string name="settings_info">information</string>
     <string name="follows_you">follows you</string>
     <string name="image_store_failure">image save failed!</string>
     <string name="not_authorized">Not authorized!</string>
