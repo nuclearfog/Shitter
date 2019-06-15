@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -11,9 +13,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
@@ -27,16 +31,32 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     private Registration registerAsync;
     private EditText pin;
+    private View root;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_login);
-        pin = findViewById(R.id.pin);
+        Toolbar toolbar = findViewById(R.id.login_toolbar);
         Button btnLink = findViewById(R.id.linkButton);
         Button btnVeri = findViewById(R.id.verifier);
+        root = findViewById(R.id.login_root);
+        pin = findViewById(R.id.pin);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         btnLink.setOnClickListener(this);
         btnVeri.setOnClickListener(this);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        root.setBackgroundColor(settings.getBackgroundColor());
     }
 
 
@@ -52,6 +72,23 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     public void onBackPressed() {
         setResult(RESULT_CANCELED);
         super.onBackPressed();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.login, m);
+        return super.onCreateOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.login_setting) {
+            Intent settings = new Intent(this, AppSettings.class);
+            startActivity(settings);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

@@ -19,6 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
             android:paddingLeft="@dimen/padding_side"
             android:paddingRight="@dimen/padding_side">
 
@@ -174,11 +176,60 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/user_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/button_margin"
+                    android:text="@string/user_data"
+                    android:textSize="@dimen/textsize_settings" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_layout">
+
+                    <Button
+                        android:id="@+id/delete_db"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/button_dm"
+                        android:layout_margin="@dimen/button_margin"
+                        android:layout_weight="1"
+                        android:background="@android:color/holo_red_dark"
+                        android:text="@string/delete_database" />
+
+                    <Button
+                        android:id="@+id/logout"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/button_dm"
+                        android:layout_margin="@dimen/button_margin"
+                        android:layout_weight="1"
+                        android:background="@android:color/holo_red_dark"
+                        android:text="@string/logout" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/button_margin"
-                android:text="@string/user_data"
+                android:text="@string/proxy_settings"
                 android:textSize="@dimen/textsize_settings" />
 
             <View
@@ -188,53 +239,56 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/margin_layout"
                 android:orientation="horizontal"
-                android:padding="@dimen/margin_layout">
+                android:paddingTop="@dimen/margin_layout_tweet">
 
-                <Button
-                    android:id="@+id/delete_db"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <EditText
+                    android:id="@+id/edit_proxyadress"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
-                    android:layout_margin="@dimen/button_margin"
-                    android:layout_weight="1"
-                    android:background="@android:color/holo_red_dark"
-                    android:text="@string/delete_database" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/padding_side"
+                    android:layout_marginEnd="@dimen/padding_side"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/enter_proxy"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:layout_weight="4"
+                    android:ems="10" />
 
-                <Button
-                    android:id="@+id/logout"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <EditText
+                    android:id="@+id/edit_proxyport"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
-                    android:layout_margin="@dimen/button_margin"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/holo_red_dark"
-                    android:text="@string/logout" />
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="@string/proxy_port"
+                    android:inputType="numberPassword"
+                    android:singleLine="true" />
 
             </LinearLayout>
 
-            <TextView
+            <EditText
+                android:id="@+id/edit_proxyuser"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/button_margin"
-                android:text="@string/settings_info"
-                android:textSize="@dimen/textsize_settings" />
+                android:background="@android:color/transparent"
+                android:hint="@string/edit_proxyuser"
+                android:inputType="textPersonName"
+                android:singleLine="true"
+                android:ems="10" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/divider"
-                android:background="?android:attr/listDivider" />
-
-            <TextView
-                android:id="@+id/settings_link"
+            <EditText
+                android:id="@+id/edit_proxypass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_layout"
-                android:autoLink="web"
-                android:linksClickable="true"
-                android:text="@string/github_link" />
+                android:background="@android:color/transparent"
+                android:hint="@string/proxy_password"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                android:ems="10" />
 
         </LinearLayout>
 

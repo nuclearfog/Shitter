@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Shitter</string>
+    <string name="app_name">Shitter</string>
     <string name="profile_image">profile image</string>
-    <string name="pin" translatable="false">PIN</string>
-    <string name="verifierbutton" translatable="false">login</string>
-    <string name="tweet" translatable="false">Tweet</string>
+    <string name="pin">PIN</string>
+    <string name="verifierbutton">login</string>
+    <string name="tweet">Tweet</string>
     <string name="settings">Settings</string>
-    <string name="following" translatable="false">Following</string>
-    <string name="follower" translatable="false">Follower</string>
+    <string name="following">Following</string>
+    <string name="follower">Follower</string>
     <string name="retweet">Retweet</string>
     <string name="favorite">Favorite</string>
     <string name="background">Background</string>
     <string name="font">Font</string>
-    <string name="popup" translatable="false">Popup</string>
+    <string name="popup">Popup</string>
     <string name="highlight">Highlight</string>
     <string name="load_factor">tweet count</string>
     <string name="block">Block</string>
@@ -48,7 +48,7 @@
     <string name="answering">answering </string>
     <string name="sent_from">sent from: </string>
     <string name="progress_kill">stop loading</string>
-    <string name="woeid" translatable="false">World ID</string>
+    <string name="woeid">World ID</string>
     <string name="mute">mute</string>
     <string name="unmute">un-mute</string>
     <string name="muted">muted</string>
@@ -101,7 +101,6 @@
     <string name="user_data">User data</string>
     <string name="request_token_error">request token expired! please update app.</string>
     <string name="settings_info">information</string>
-    <string name="github_link" translatable="false">github.com/nuclearfog/Shitter</string>
     <string name="follows_you">follows you</string>
     <string name="image_store_failure">image save failed!</string>
     <string name="not_authorized">Not authorized!</string>
@@ -111,4 +110,9 @@
     <string name="tweet_unretweeted">retweet removed!</string>
     <string name="tweet_favored">tweet_favored</string>
     <string name="tweet_unfavored">tweet removed from favors!</string>
+    <string name="proxy_settings">Proxy settings</string>
+    <string name="enter_proxy">Proxy IP or address</string>
+    <string name="proxy_port">Port</string>
+    <string name="edit_proxyuser">username</string>
+    <string name="proxy_password">password</string>
 </resources>

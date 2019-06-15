@@ -1,9 +1,15 @@
 package org.nuclearfog.twidda.window;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -15,7 +21,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +36,10 @@ import org.nuclearfog.twidda.adapter.WorldIdAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.MainActivity.DB_CLEARED;
 import static org.nuclearfog.twidda.database.AppDatabase.DB_NAME;
@@ -46,10 +54,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private static final int POPUPCOLOR = 3;
 
     private GlobalSettings settings;
+    private ConnectivityManager mConnect;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private CheckBox toggleImg, toggleAns;
+    private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private EditText woeIdText;
-    private TextView link;
     private Spinner woeId;
     private View root;
 
@@ -63,24 +72,30 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         Button delButton = findViewById(R.id.delete_db);
         Button load_popup = findViewById(R.id.load_dialog);
         Button logout = findViewById(R.id.logout);
+        View login_layout = findViewById(R.id.user_data_layout);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_popup);
         colorButton4 = findViewById(R.id.highlight_color);
+        proxyAddr = findViewById(R.id.edit_proxyadress);
+        proxyPort = findViewById(R.id.edit_proxyport);
+        proxyUser = findViewById(R.id.edit_proxyuser);
+        proxyPass = findViewById(R.id.edit_proxypass);
         toggleImg = findViewById(R.id.toggleImg);
         toggleAns = findViewById(R.id.toggleAns);
         woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
-        link = findViewById(R.id.settings_link);
-
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
+
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.settings);
 
+        mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getBackgroundColor());
+        if (!settings.getLogin())
+            login_layout.setVisibility(GONE);
 
         logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
@@ -102,11 +117,15 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         toggleAns.setChecked(settings.getAnswerLoad());
         woeId.setAdapter(new WorldIdAdapter(this));
         woeId.setSelection(settings.getWoeIdSelection());
+        root.setBackgroundColor(settings.getBackgroundColor());
         colorButton1.setBackgroundColor(settings.getBackgroundColor());
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
-        link.setLinkTextColor(settings.getHighlightColor());
+        proxyAddr.setText(settings.getProxyAddress());
+        proxyPort.setText(settings.getProxyPort());
+        proxyUser.setText(settings.getProxyUser());
+        proxyPass.setText(settings.getProxyPass());
         if (settings.getCustomWidSet()) {
             String text = Long.toString(settings.getWoeId());
             woeIdText.setVisibility(VISIBLE);
@@ -119,12 +138,40 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     public void onBackPressed() {
         if (settings.getCustomWidSet()) {
             String woeText = woeIdText.getText().toString();
+            settings.setProxyAddress(proxyAddr.getText().toString());
+            settings.setProxyPort(proxyPort.getText().toString());
+            settings.setProxyUser(proxyUser.getText().toString());
+            settings.setProxyPass(proxyPass.getText().toString());
+            settings.setProxy();
             if (!woeText.isEmpty())
                 settings.setWoeId(Long.parseLong(woeText));
             else
                 settings.setWoeId(1);
         }
         super.onBackPressed();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.settings, m);
+        return super.onCreateOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings_info) {
+            if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                String link = "https://github.com/nuclearfog/Shitter";
+                intent.setData(Uri.parse(link));
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -230,7 +277,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             case HIGHLIGHT:
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
-                link.setLinkTextColor(color);
                 break;
         }
     }

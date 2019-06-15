@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -16,6 +18,7 @@ public class GlobalSettings {
     private SharedPreferences settings;
     private SimpleDateFormat sdf;
     private NumberFormat formatter;
+    private String key1, key2;
     private boolean loadImage;
     private boolean loadAnswer;
     private boolean loggedIn;
@@ -27,8 +30,10 @@ public class GlobalSettings {
     private int row;
     private int woeId;
     private int woeIdPos;
-    private String key1, key2;
     private long userId;
+
+    private String proxyAddress, proxyPort;
+    private String proxyUser, proxyPass;
 
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences(NAME, 0);
@@ -46,8 +51,13 @@ public class GlobalSettings {
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
         userId = settings.getLong("userID", -1L);
+        proxyAddress = settings.getString("proxy_addr", "");
+        proxyPort = settings.getString("proxy_port", "");
+        proxyUser = settings.getString("proxy_user", "");
+        proxyPass = settings.getString("proxy_pass", "");
         sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.getDefault());
         formatter = NumberFormat.getIntegerInstance();
+        setProxy();
     }
 
     /**
@@ -274,6 +284,90 @@ public class GlobalSettings {
     }
 
     /**
+     * get proxy address
+     *
+     * @return proxy address
+     */
+    public String getProxyAddress() {
+        return proxyAddress;
+    }
+
+    /**
+     * set proxy address
+     *
+     * @param proxyAddress address of proxy
+     */
+    public void setProxyAddress(String proxyAddress) {
+        this.proxyAddress = proxyAddress;
+        Editor edit = settings.edit();
+        edit.putString("proxy_addr", proxyAddress);
+        edit.apply();
+    }
+
+    /**
+     * get proxy port
+     *
+     * @return proxy port string
+     */
+    public String getProxyPort() {
+        return proxyPort;
+    }
+
+    /**
+     * set proxy port
+     *
+     * @param proxyPort port string
+     */
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
+        Editor edit = settings.edit();
+        edit.putString("proxy_port", proxyPort);
+        edit.apply();
+    }
+
+    /**
+     * get proxy user login
+     *
+     * @return username
+     */
+    public String getProxyUser() {
+        return proxyUser;
+    }
+
+    /**
+     * set proxy user login
+     *
+     * @param proxyUser username
+     */
+    public void setProxyUser(String proxyUser) {
+        this.proxyUser = proxyUser;
+        Editor edit = settings.edit();
+        edit.putString("proxy_user", proxyUser);
+        edit.apply();
+    }
+
+    /**
+     * get proxy password
+     *
+     * @return login password
+     */
+    public String getProxyPass() {
+        return proxyPass;
+    }
+
+    /**
+     * set proxy password
+     *
+     * @param proxyPass login password
+     */
+    public void setProxyPass(String proxyPass) {
+        this.proxyPass = proxyPass;
+        Editor edit = settings.edit();
+        edit.putString("proxy_pass", proxyPass);
+        edit.apply();
+    }
+
+    /**
      * Check if current user is logged in
      *
      * @return true if current user is logged in
@@ -339,6 +433,22 @@ public class GlobalSettings {
         e.putString("key1", key1);
         e.putString("key2", key2);
         e.apply();
+    }
+
+    /**
+     * set proxy
+     */
+    public void setProxy() {
+        System.setProperty("https.proxyHost", proxyAddress);
+        System.setProperty("https.proxyPort", proxyPort);
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                System.setProperty("https.proxyUser", proxyUser);
+                System.setProperty("https.proxyPassword", proxyPass);
+                return new PasswordAuthentication(proxyUser, proxyPass.toCharArray());
+            }
+        });
     }
 
     /**
