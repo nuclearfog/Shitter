@@ -116,4 +116,7 @@
     <string name="proxy_password">password</string>
     <string name="proxy_address_text">HTTPS Proxy</string>
     <string name="proxy_authentication">Authentication</string>
+    <string name="error_woeid_empty">WOEID must be set!</string>
+    <string name="error_empty_port">Port must be set!</string>
+    <string name="error_empty_pass">Proxy password should not be empty!</string>
 </resources>

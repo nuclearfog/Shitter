@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +65,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     private int color = 0;
     private int mode = 0;
+    private boolean customWoeId = false;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -126,7 +128,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
-        if (settings.getCustomWidSet()) {
+        customWoeId = settings.getCustomWidSet();
+        if (customWoeId) {
             String text = Long.toString(settings.getWoeId());
             woeIdText.setVisibility(VISIBLE);
             woeIdText.setText(text);
@@ -136,20 +139,19 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onBackPressed() {
-        settings.setProxyHost(proxyAddr.getText().toString());
-        settings.setProxyPort(proxyPort.getText().toString());
-        settings.setProxyUser(proxyUser.getText().toString());
-        settings.setProxyPass(proxyPass.getText().toString());
-        settings.setProxy();
+        if (validateInputs()) {
+            settings.setProxyHost(proxyAddr.getText().toString());
+            settings.setProxyPort(proxyPort.getText().toString());
+            settings.setProxyUser(proxyUser.getText().toString());
+            settings.setProxyPass(proxyPass.getText().toString());
+            settings.setProxy();
 
-        if (settings.getCustomWidSet()) {
-            String woeText = woeIdText.getText().toString();
-            if (!woeText.isEmpty())
+            if (customWoeId) {
+                String woeText = woeIdText.getText().toString();
                 settings.setWoeId(Long.parseLong(woeText));
-            else
-                settings.setWoeId(1);
+            }
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 
 
@@ -288,12 +290,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         if (position == parent.getCount() - 1) {
             woeIdText.setVisibility(VISIBLE);
             settings.setCustomWidSet(true);
-            settings.setWoeId(1);
+            customWoeId = true;
         } else {
             woeIdText.setVisibility(INVISIBLE);
             woeIdText.setText("");
             settings.setCustomWidSet(false);
             settings.setWoeId(id);
+            customWoeId = false;
         }
         settings.setWoeIdSelection(position);
     }
@@ -331,5 +334,38 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 }).build();
         d.setOnDismissListener(this);
         d.show();
+    }
+
+
+    private boolean validateInputs() {
+        boolean success = true;
+        Editable editAddr = proxyAddr.getText();
+        Editable editUser = proxyUser.getText();
+
+        if (customWoeId) {
+            Editable woeText = woeIdText.getText();
+            if (woeText == null || woeText.toString().isEmpty()) {
+                String errMsg = getString(R.string.error_woeid_empty);
+                woeIdText.setError(errMsg);
+                success = false;
+            }
+        }
+        if (editAddr != null && !editAddr.toString().isEmpty()) {
+            Editable editPort = proxyPort.getText();
+            if (editPort == null || editPort.toString().isEmpty()) {
+                String errMsg = getString(R.string.error_empty_port);
+                proxyPort.setError(errMsg);
+                success = false;
+            }
+        }
+        if (editUser != null && !editUser.toString().isEmpty()) {
+            Editable editPass = proxyPass.getText();
+            if (editPass != null && editPass.toString().isEmpty()) {
+                String errMsg = getString(R.string.error_empty_pass);
+                proxyPass.setError(errMsg);
+                success = false;
+            }
+        }
+        return success;
     }
 }
