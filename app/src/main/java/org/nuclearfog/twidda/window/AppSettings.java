@@ -124,6 +124,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
+        colorButton1.setTextColor(settings.getBackgroundColor() ^ 0xffffff);
+        colorButton2.setTextColor(settings.getFontColor() ^ 0xffffff);
+        colorButton3.setTextColor(settings.getPopupColor() ^ 0xffffff);
+        colorButton4.setTextColor(settings.getHighlightColor() ^ 0xffffff);
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -262,21 +266,25 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 root.setBackgroundColor(color);
                 settings.setBackgroundColor(color);
                 colorButton1.setBackgroundColor(color);
+                colorButton1.setTextColor(color ^ 0xffffff);
                 break;
 
             case FONTCOLOR:
                 settings.setFontColor(color);
                 colorButton2.setBackgroundColor(color);
+                colorButton2.setTextColor(color ^ 0xffffff);
                 break;
 
             case POPUPCOLOR:
                 settings.setPopupColor(color);
                 colorButton3.setBackgroundColor(color);
+                colorButton3.setTextColor(color ^ 0xffffff);
                 break;
 
             case HIGHLIGHT:
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
+                colorButton4.setTextColor(color ^ 0xffffff);
                 break;
         }
     }
