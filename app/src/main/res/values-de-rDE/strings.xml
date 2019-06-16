@@ -103,15 +103,17 @@
     <string name="tweet_unfavored">tweet aus den favoriten entfernt!</string>
     <string name="proxy_port">Port</string>
     <string name="proxy_settings">Proxy Einstellung</string>
-    <string name="verifierbutton" translatable="false">Login</string>
-    <string name="woeid" translatable="false">World ID</string>
+    <string name="verifierbutton">Login</string>
+    <string name="woeid">World ID</string>
     <string name="popup">Popup</string>
     <string name="pin">PIN</string>
-    <string name="following" translatable="false">Following</string>
-    <string name="follower" translatable="false">Follower</string>
+    <string name="following">Following</string>
+    <string name="follower">Follower</string>
     <string name="enter_proxy">Proxy IP oder Adresse</string>
     <string name="edit_proxyuser">Nutzername</string>
     <string name="app_name">Shitter</string>
     <string name="tweet">Tweet</string>
     <string name="proxy_password">Passwort</string>
+    <string name="proxy_address_text">HTTPS Proxy</string>
+    <string name="proxy_authentication">Authentifierung</string>
 </resources>

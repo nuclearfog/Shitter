@@ -114,4 +114,6 @@
     <string name="proxy_port">Port</string>
     <string name="edit_proxyuser">username</string>
     <string name="proxy_password">password</string>
+    <string name="proxy_address_text">HTTPS Proxy</string>
+    <string name="proxy_authentication">Authentication</string>
 </resources>

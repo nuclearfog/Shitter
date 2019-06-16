@@ -243,18 +243,24 @@
                 android:layout_marginTop="@dimen/margin_layout"
                 android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:singleLine="true"
+                    android:text="@string/proxy_address_text" />
+
                 <EditText
                     android:id="@+id/edit_proxyadress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/padding_side"
-                    android:layout_marginEnd="@dimen/padding_side"
+                    android:layout_weight="4"
                     android:background="@android:color/transparent"
+                    android:ems="10"
                     android:hint="@string/enter_proxy"
                     android:inputType="textPersonName"
                     android:singleLine="true"
-                    android:layout_weight="4"
-                    android:ems="10" />
+                    android:textSize="14sp" />
 
                 <EditText
                     android:id="@+id/edit_proxyport"
@@ -265,29 +271,48 @@
                     android:ems="10"
                     android:hint="@string/proxy_port"
                     android:inputType="number"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/edit_proxyuser"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="@string/edit_proxyuser"
-                android:inputType="textPersonName"
-                android:singleLine="true"
-                android:ems="10" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edit_proxypass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="@string/proxy_password"
-                android:inputType="textPassword"
-                android:singleLine="true"
-                android:ems="10" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:singleLine="true"
+                    android:text="@string/proxy_authentication" />
+
+                <EditText
+                    android:id="@+id/edit_proxyuser"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="@string/edit_proxyuser"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edit_proxypass"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="@string/proxy_password"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
