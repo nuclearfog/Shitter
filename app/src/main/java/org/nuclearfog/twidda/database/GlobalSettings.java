@@ -10,6 +10,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class GlobalSettings {
 
     private static final String NAME = "settings";
@@ -36,7 +38,7 @@ public class GlobalSettings {
     private String proxyUser, proxyPass;
 
     private GlobalSettings(Context context) {
-        settings = context.getSharedPreferences(NAME, 0);
+        settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
         woeId = settings.getInt("world_id", 1);
         customWorldId = settings.getBoolean("custom_woeId", false);
         woeIdPos = settings.getInt("world_id_pos", 0);
@@ -57,7 +59,7 @@ public class GlobalSettings {
         proxyPass = settings.getString("proxy_pass", "");
         sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.getDefault());
         formatter = NumberFormat.getIntegerInstance();
-        setProxy();
+        configureProxy();
     }
 
     /**
@@ -296,11 +298,21 @@ public class GlobalSettings {
      * set proxy address
      *
      * @param proxyHost address of proxy
+     * @param proxyPort port of proxy
      */
-    public void setProxyHost(String proxyHost) {
-        this.proxyHost = proxyHost;
+    public void setProxyServer(String proxyHost, String proxyPort) {
         Editor edit = settings.edit();
-        edit.putString("proxy_addr", proxyHost);
+        if (proxyHost.trim().isEmpty()) {
+            this.proxyHost = "";
+            this.proxyPort = "";
+            edit.putString("proxy_addr", "");
+            edit.putString("proxy_port", "");
+        } else {
+            this.proxyHost = proxyHost;
+            this.proxyPort = proxyPort;
+            edit.putString("proxy_addr", proxyHost);
+            edit.putString("proxy_port", proxyPort);
+        }
         edit.apply();
     }
 
@@ -311,18 +323,6 @@ public class GlobalSettings {
      */
     public String getProxyPort() {
         return proxyPort;
-    }
-
-    /**
-     * set proxy port
-     *
-     * @param proxyPort port string
-     */
-    public void setProxyPort(String proxyPort) {
-        this.proxyPort = proxyPort;
-        Editor edit = settings.edit();
-        edit.putString("proxy_port", proxyPort);
-        edit.apply();
     }
 
     /**
@@ -337,12 +337,22 @@ public class GlobalSettings {
     /**
      * set proxy user login
      *
-     * @param proxyUser username
+     * @param proxyUser proxy username
+     * @param proxyPass proxy password
      */
-    public void setProxyUser(String proxyUser) {
-        this.proxyUser = proxyUser;
+    public void setProxyLogin(String proxyUser, String proxyPass) {
         Editor edit = settings.edit();
-        edit.putString("proxy_user", proxyUser);
+        if (proxyUser.trim().isEmpty()) {
+            this.proxyUser = "";
+            this.proxyPass = "";
+            edit.putString("proxy_user", "");
+            edit.putString("proxy_pass", "");
+        } else {
+            this.proxyUser = proxyUser;
+            this.proxyPass = proxyPass;
+            edit.putString("proxy_user", proxyUser);
+            edit.putString("proxy_pass", proxyPass);
+        }
         edit.apply();
     }
 
@@ -353,18 +363,6 @@ public class GlobalSettings {
      */
     public String getProxyPass() {
         return proxyPass;
-    }
-
-    /**
-     * set proxy password
-     *
-     * @param proxyPass login password
-     */
-    public void setProxyPass(String proxyPass) {
-        this.proxyPass = proxyPass;
-        Editor edit = settings.edit();
-        edit.putString("proxy_pass", proxyPass);
-        edit.apply();
     }
 
     /**
@@ -438,7 +436,7 @@ public class GlobalSettings {
     /**
      * set JAVA VM proxy
      */
-    public void setProxy() {
+    public void configureProxy() {
         try {
             if (proxyHost.trim().isEmpty()) {
                 System.clearProperty("https.proxyHost");
