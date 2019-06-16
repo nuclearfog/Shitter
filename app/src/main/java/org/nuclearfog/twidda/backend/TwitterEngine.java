@@ -512,10 +512,11 @@ public class TwitterEngine {
 
     /**
      * @param tweetId Tweet ID
+     * @return dummy tweet
      * @throws TwitterException if Access is unavailable
      */
-    public void deleteTweet(long tweetId) throws TwitterException {
-        twitter.destroyStatus(tweetId);
+    public Tweet deleteTweet(long tweetId) throws TwitterException {
+        return new Tweet(twitter.destroyStatus(tweetId));
     }
 
 

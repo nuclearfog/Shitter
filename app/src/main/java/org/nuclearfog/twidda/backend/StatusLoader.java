@@ -90,7 +90,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                     break;
 
                 case DELETE:
-                    mTwitter.deleteTweet(tweetId);
+                    tweet = mTwitter.deleteTweet(tweetId);
                     db.removeStatus(tweetId);
                     break;
 
