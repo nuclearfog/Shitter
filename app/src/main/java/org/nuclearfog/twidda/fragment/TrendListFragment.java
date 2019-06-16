@@ -100,8 +100,10 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     public void onSettingsChange() {
         GlobalSettings settings = GlobalSettings.getInstance(getContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        adapter.clear();
         adapter.setColor(settings.getFontColor());
         adapter.notifyDataSetChanged();
+        trendTask = null;
     }
 
 

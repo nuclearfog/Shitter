@@ -48,6 +48,11 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
+    public void clear() {
+        trends = new Trend[0];
+    }
+
+
     public boolean isEmpty() {
         return trends.length == 0;
     }
