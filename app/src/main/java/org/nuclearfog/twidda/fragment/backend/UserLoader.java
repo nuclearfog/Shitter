@@ -29,6 +29,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
         FAVORIT,
         SEARCH
     }
+
     private Mode mode;
     private WeakReference<View> ui;
     private TwitterEngine mTwitter;

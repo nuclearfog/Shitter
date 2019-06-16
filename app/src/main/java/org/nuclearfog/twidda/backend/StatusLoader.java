@@ -53,6 +53,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
         FAVORITE,
         DELETE
     }
+
     private final Mode mode;
     private WeakReference<TweetDetail> ui;
     private TwitterEngine mTwitter;

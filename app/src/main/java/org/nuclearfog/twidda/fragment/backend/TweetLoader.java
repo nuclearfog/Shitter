@@ -33,6 +33,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         DB_ANS,
         TWEET_SEARCH
     }
+
     private Mode mode;
     private WeakReference<View> ui;
     private TweetAdapter adapter;

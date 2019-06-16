@@ -25,6 +25,7 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap[]> {
         ONLINE,
         STORAGE
     }
+
     private WeakReference<MediaViewer> ui;
     private ImageAdapter imageAdapter;
     private Mode mode;

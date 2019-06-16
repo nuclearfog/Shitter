@@ -29,6 +29,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         LOAD,
         DEL
     }
+
     private Mode mode;
     private WeakReference<View> ui;
     private TwitterEngine mTwitter;

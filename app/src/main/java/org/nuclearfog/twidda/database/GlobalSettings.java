@@ -32,7 +32,7 @@ public class GlobalSettings {
     private int woeIdPos;
     private long userId;
 
-    private String proxyAddress, proxyPort;
+    private String proxyHost, proxyPort;
     private String proxyUser, proxyPass;
 
     private GlobalSettings(Context context) {
@@ -51,7 +51,7 @@ public class GlobalSettings {
         key1 = settings.getString("key1", "");
         key2 = settings.getString("key2", "");
         userId = settings.getLong("userID", -1L);
-        proxyAddress = settings.getString("proxy_addr", "");
+        proxyHost = settings.getString("proxy_addr", "");
         proxyPort = settings.getString("proxy_port", "");
         proxyUser = settings.getString("proxy_user", "");
         proxyPass = settings.getString("proxy_pass", "");
@@ -288,19 +288,19 @@ public class GlobalSettings {
      *
      * @return proxy address
      */
-    public String getProxyAddress() {
-        return proxyAddress;
+    public String getProxyHost() {
+        return proxyHost;
     }
 
     /**
      * set proxy address
      *
-     * @param proxyAddress address of proxy
+     * @param proxyHost address of proxy
      */
-    public void setProxyAddress(String proxyAddress) {
-        this.proxyAddress = proxyAddress;
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
         Editor edit = settings.edit();
-        edit.putString("proxy_addr", proxyAddress);
+        edit.putString("proxy_addr", proxyHost);
         edit.apply();
     }
 
@@ -436,19 +436,37 @@ public class GlobalSettings {
     }
 
     /**
-     * set proxy
+     * set JAVA VM proxy
      */
     public void setProxy() {
-        System.setProperty("https.proxyHost", proxyAddress);
-        System.setProperty("https.proxyPort", proxyPort);
-        Authenticator.setDefault(new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                System.setProperty("https.proxyUser", proxyUser);
-                System.setProperty("https.proxyPassword", proxyPass);
-                return new PasswordAuthentication(proxyUser, proxyPass.toCharArray());
+        try {
+            if (proxyHost.trim().isEmpty()) {
+                System.clearProperty("https.proxyHost");
+            } else {
+                System.setProperty("https.proxyHost", proxyHost);
             }
-        });
+            if (proxyPort.trim().isEmpty()) {
+                System.clearProperty("https.proxyPort");
+            } else {
+                System.setProperty("https.proxyPort", proxyPort);
+            }
+            if (proxyUser.trim().isEmpty()) {
+                System.clearProperty("https.proxyUser");
+            }
+            if (proxyPass.trim().isEmpty()) {
+                System.clearProperty("https.proxyPassword");
+            }
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    System.setProperty("https.proxyUser", proxyUser);
+                    System.setProperty("https.proxyPassword", proxyPass);
+                    return new PasswordAuthentication(proxyUser, proxyPass.toCharArray());
+                }
+            });
+        } catch (SecurityException sErr) {
+            sErr.printStackTrace();
+        }
     }
 
     /**

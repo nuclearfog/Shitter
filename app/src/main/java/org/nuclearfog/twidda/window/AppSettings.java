@@ -122,7 +122,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
-        proxyAddr.setText(settings.getProxyAddress());
+        proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
@@ -136,7 +136,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onBackPressed() {
-        settings.setProxyAddress(proxyAddr.getText().toString());
+        settings.setProxyHost(proxyAddr.getText().toString());
         settings.setProxyPort(proxyPort.getText().toString());
         settings.setProxyUser(proxyUser.getText().toString());
         settings.setProxyPass(proxyPass.getText().toString());

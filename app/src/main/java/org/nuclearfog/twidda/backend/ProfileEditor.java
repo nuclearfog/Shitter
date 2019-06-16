@@ -40,6 +40,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
         READ_DATA,
         WRITE_DATA
     }
+
     private final Mode mode;
     private WeakReference<ProfileEdit> ui;
     private WeakReference<Dialog> popup;

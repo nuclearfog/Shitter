@@ -44,6 +44,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
         ACTION_BLOCK,
         ACTION_MUTE
     }
+
     private final Mode mode;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
