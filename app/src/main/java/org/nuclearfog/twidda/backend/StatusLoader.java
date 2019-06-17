@@ -29,6 +29,7 @@ import org.nuclearfog.twidda.window.TweetDetail;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 
 import twitter4j.TwitterException;
 
@@ -152,7 +153,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                     } else {
                         tweetText.setVisibility(GONE);
                     }
-                    tweetDate.setText(settings.getDateFormatter().format(tweet.getTime()));
+                    tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
                     tweetDate.setTextColor(settings.getFontColor());
                     tweet_api.setText(R.string.sent_from);
                     tweet_api.append(tweet.getSource());

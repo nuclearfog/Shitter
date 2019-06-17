@@ -7,8 +7,6 @@ import android.content.SharedPreferences.Editor;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -18,7 +16,6 @@ public class GlobalSettings {
     private static GlobalSettings ourInstance;
 
     private SharedPreferences settings;
-    private SimpleDateFormat sdf;
     private NumberFormat formatter;
     private String key1, key2;
     private boolean loadImage;
@@ -57,7 +54,6 @@ public class GlobalSettings {
         proxyPort = settings.getString("proxy_port", "");
         proxyUser = settings.getString("proxy_user", "");
         proxyPass = settings.getString("proxy_pass", "");
-        sdf = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss", Locale.getDefault());
         formatter = NumberFormat.getIntegerInstance();
         configureProxy();
     }
@@ -342,7 +338,7 @@ public class GlobalSettings {
      */
     public void setProxyLogin(String proxyUser, String proxyPass) {
         Editor edit = settings.edit();
-        if (proxyUser.trim().isEmpty()) {
+        if (proxyUser.trim().isEmpty() || proxyHost.trim().isEmpty()) {
             this.proxyUser = "";
             this.proxyPass = "";
             edit.putString("proxy_user", "");
@@ -393,15 +389,6 @@ public class GlobalSettings {
      */
     public long getUserId() {
         return userId;
-    }
-
-    /**
-     * get Datetime Formatter for the current location
-     *
-     * @return Datetime Formatter
-     */
-    public SimpleDateFormat getDateFormatter() {
-        return sdf;
     }
 
     /**

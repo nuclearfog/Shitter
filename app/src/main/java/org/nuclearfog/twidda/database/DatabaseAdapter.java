@@ -386,10 +386,9 @@ public class DatabaseAdapter {
      */
     public void removeStatus(long tweetId) {
         SQLiteDatabase db = getDbWrite();
-        final String[] delTwt = {Long.toString(tweetId)};
-        final String[] delFav = {Long.toString(tweetId), Long.toString(homeId)};
-        db.delete("tweet", "tweetID=?", delTwt);
-        db.delete("favorit", "tweetID=? AND ownerID=?", delFav);
+        final String[] args = {Long.toString(tweetId)};
+        db.delete("tweet", "tweetID=?", args);
+        db.delete("favorit", "tweetID=?", args);
         commit(db);
     }
 

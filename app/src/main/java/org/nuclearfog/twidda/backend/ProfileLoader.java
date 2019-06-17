@@ -24,7 +24,7 @@ import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import twitter4j.TwitterException;
 
@@ -166,7 +166,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
             if (profile_head.getVisibility() != VISIBLE) {
                 profile_head.setVisibility(VISIBLE);
                 TextView txtCreated = ui.get().findViewById(R.id.profile_date);
-                String date = settings.getDateFormatter().format(new Date(user.getCreatedAt()));
+                String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
                 txtCreated.setText(date);
             }
             if (user.isVerified()) {
