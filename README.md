@@ -8,12 +8,13 @@ Features:
 - fast access to tweets and userprofiles
 - customizable colors
 - text highlighting
-- image upload
-- image preview
+- image/video upload
+- image/video preview
 - twitter trends
 - twitter search
 - Directmessage
-- Edit Twitter profile
+- Twitter profile editor
+- Proxy setup
 
 Screenshots:
 
