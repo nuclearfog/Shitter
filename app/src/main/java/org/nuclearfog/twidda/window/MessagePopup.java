@@ -90,11 +90,11 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode, returnCode, i);
-        if (i.getData() != null) {
-            if (reqCode == REQ_PERM_READ && returnCode == RESULT_OK) {
-                Cursor c = getContentResolver().query(i.getData(), PICK_IMAGE, null, null, null);
+    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+        super.onActivityResult(reqCode, returnCode, intent);
+        if (reqCode == REQ_PERM_READ && returnCode == RESULT_OK) {
+            if (intent != null && intent.getData() != null) {
+                Cursor c = getContentResolver().query(intent.getData(), PICK_IMAGE, null, null, null);
                 if (c != null && c.moveToFirst()) {
                     int index = c.getColumnIndex(PICK_IMAGE[0]);
                     mediaPath = c.getString(index);

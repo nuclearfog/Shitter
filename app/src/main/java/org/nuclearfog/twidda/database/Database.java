@@ -12,7 +12,7 @@ import java.io.File;
  */
 public class Database {
 
-    public static final String DB_NAME = "database.db";
+    private static final String DB_NAME = "database.db";
 
     private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS user (" +
             "userID INTEGER PRIMARY KEY,username VARCHAR(50),scrname VARCHAR(15)," +

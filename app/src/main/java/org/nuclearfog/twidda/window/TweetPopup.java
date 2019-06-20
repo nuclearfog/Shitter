@@ -120,7 +120,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
         if (reqCode == PICK_MEDIA && returnCode == RESULT_OK) {
-            if (intent.getData() != null) {
+            if (intent != null && intent.getData() != null) {
                 Cursor cursor = getContentResolver().query(intent.getData(), GET_MEDIA, null, null, null);
                 if (cursor != null && cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(GET_MEDIA[0]);

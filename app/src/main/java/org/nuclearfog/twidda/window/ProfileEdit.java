@@ -104,11 +104,11 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent i) {
-        super.onActivityResult(reqCode, returnCode, i);
-        if (i.getData() != null) {
-            if (reqCode == REQ_PB && returnCode == RESULT_OK) {
-                Cursor c = getContentResolver().query(i.getData(), MEDIA_MODE, null, null, null);
+    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+        super.onActivityResult(reqCode, returnCode, intent);
+        if (reqCode == REQ_PB && returnCode == RESULT_OK) {
+            if (intent != null && intent.getData() != null) {
+                Cursor c = getContentResolver().query(intent.getData(), MEDIA_MODE, null, null, null);
                 if (c != null && c.moveToFirst()) {
                     int index = c.getColumnIndex(MEDIA_MODE[0]);
                     String mediaPath = c.getString(index);

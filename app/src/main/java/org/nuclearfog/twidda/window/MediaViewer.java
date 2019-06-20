@@ -9,7 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Display;
 import android.view.View;
 import android.widget.MediaController;
@@ -28,8 +28,6 @@ import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.zoomview.ZoomView;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -49,6 +47,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final String KEY_MEDIA_LINK = "link";
     public static final String KEY_MEDIA_TYPE = "mediatype";
 
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
     private static final int REQCODE_SD = 6;
 
@@ -122,8 +121,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
             case VIDEO_STORAGE:
                 videoWindow.setVisibility(VISIBLE);
-                File media = new File(link[0]);
-                video = Uri.fromFile(media);
+                video = Uri.parse(link[0]);
                 videoView.setMediaController(videoController);
                 videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
@@ -242,21 +240,10 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     private void storeImage(Bitmap image) {
-        String path = Environment.getExternalStorageDirectory().toString();
-        path += "/Pictures/Shitter";
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
-        String name = "shitter_" + formatter.format(new Date()) + ".png";
-
-        File dir = new File(path);
-        if (dir.mkdirs())
-            Toast.makeText(this, R.string.image_folder_created, Toast.LENGTH_SHORT).show();
-        File file = new File(dir, name);
-
+        String name = "shitter_" + formatter.format(new Date());
         try {
-            FileOutputStream output = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.PNG, 0, output);
+            MediaStore.Images.Media.insertImage(getContentResolver(), image, name, "");
             Toast.makeText(this, R.string.image_saved, Toast.LENGTH_LONG).show();
-            output.close();
         } catch (Exception err) {
             Toast.makeText(this, R.string.image_store_failure, Toast.LENGTH_SHORT).show();
         }
