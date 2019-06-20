@@ -71,7 +71,6 @@
     <string name="confirm_block">block user?</string>
     <string name="confirm_log_lout">log out?</string>
     <string name="confirm_cancel_tweet">cancel tweet?</string>
-    <string name="image_folder_created">folder created under Pictures!</string>
     <string name="image_saved">image saved!</string>
     <string name="image_preview">Image preview</string>
     <string name="add_image">add new image</string>

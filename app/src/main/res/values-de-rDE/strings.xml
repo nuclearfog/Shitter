@@ -63,7 +63,6 @@
     <string name="confirm_log_lout">ausloggen?</string>
     <string name="confirm_unfollow">User entfolgen?</string>
     <string name="confirm_block">user sperren?</string>
-    <string name="image_folder_created">Ordner erstellt unter Pictures</string>
     <string name="image_saved">Bild gespeichert!</string>
     <string name="tweet_close">Tweetfenster schließen</string>
     <string name="send_tweet">Tweet senden</string>
