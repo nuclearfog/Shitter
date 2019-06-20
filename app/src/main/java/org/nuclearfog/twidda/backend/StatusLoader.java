@@ -60,11 +60,13 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     private TwitterEngine mTwitter;
     private TwitterException err;
     private GlobalSettings settings;
+    private DatabaseAdapter db;
 
 
     public StatusLoader(@NonNull TweetDetail context, Mode mode) {
         mTwitter = TwitterEngine.getInstance(context);
         settings = GlobalSettings.getInstance(context);
+        db = new DatabaseAdapter(context);
         ui = new WeakReference<>(context);
         this.mode = mode;
     }
@@ -75,7 +77,6 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
         Tweet tweet = null;
         long tweetId = data[0];
         boolean updateStatus = false;
-        DatabaseAdapter db = new DatabaseAdapter(ui.get());
         try {
             switch (mode) {
                 case LOAD:

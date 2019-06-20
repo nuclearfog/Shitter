@@ -2,10 +2,15 @@ package org.nuclearfog.twidda.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
+import org.nuclearfog.twidda.BuildConfig;
 
-public class AppDatabase extends SQLiteOpenHelper {
+import java.io.File;
+
+/**
+ * Memory leak save version of SQLiteOpenHelper
+ */
+public class Database {
 
     public static final String DB_NAME = "database.db";
 
@@ -35,54 +40,46 @@ public class AppDatabase extends SQLiteOpenHelper {
     private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
     private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend ON trend(woeID);";
 
-    private static AppDatabase instance;
+    private static Database instance;
+
+    private final File databasePath;
+
+    private SQLiteDatabase db;
 
 
-    private AppDatabase(Context context) {
-        super(context, DB_NAME, null, 4);
-    }
+    private Database(Context context) {
+        databasePath = context.getDatabasePath(DB_NAME);
+        db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
 
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
         db.execSQL(TABLE_USER);
         db.execSQL(TABLE_TWEET);
-
         db.execSQL(TABLE_FAVORS);
-
         db.execSQL(TABLE_TRENDS);
-
         db.execSQL(TABLE_MESSAGES);
-
         db.execSQL(INDX_TWEET);
         db.execSQL(INDX_FAVOR);
         db.execSQL(INDX_TREND);
     }
 
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2 && newVersion >= 2) {
-            final String T_QUERY = "ALTER TABLE user ADD COLUMN tweetCount INTEGER DEFAULT 0;";
-            db.execSQL(T_QUERY);
-            final String F_QUERY = "ALTER TABLE user ADD COLUMN favorCount INTEGER DEFAULT 0;";
-            db.execSQL(F_QUERY);
-        }
-        if (oldVersion < 3 && newVersion >= 3) {
-            db.execSQL("DROP TABLE favorit");
-            db.execSQL(TABLE_FAVORS);
-            db.execSQL(INDX_TWEET);
-            db.execSQL(INDX_FAVOR);
-        }
-        if (oldVersion < 4 && newVersion >= 4) {
-            db.execSQL(INDX_TREND);
-        }
+    public synchronized SQLiteDatabase getDatabase() {
+        if (BuildConfig.DEBUG && db.isDbLockedByCurrentThread())
+            throw new AssertionError("DB locked!");
+        if (!db.isOpen())
+            db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
+        return db;
     }
 
 
-    public static AppDatabase getInstance(Context c) {
+    public static Database getInstance(Context context) {
         if (instance == null)
-            instance = new AppDatabase(c);
+            instance = new Database(context);
         return instance;
+    }
+
+
+    public static void deleteDatabase(Context c) {
+        SQLiteDatabase.deleteDatabase(c.getDatabasePath(DB_NAME));
+        instance = null;
     }
 }

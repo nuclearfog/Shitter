@@ -44,11 +44,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private ViewPager pager;
     private int tabIndex = 0;
 
+    static {
+        // Enable vector drawable support
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Enable vector drawable support
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
         setContentView(R.layout.page_main);
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
         pager = findViewById(R.id.home_pager);

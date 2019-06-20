@@ -35,6 +35,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.WorldIdAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
+import org.nuclearfog.twidda.database.Database;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.view.View.GONE;
@@ -43,7 +44,6 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.MainActivity.DB_CLEARED;
-import static org.nuclearfog.twidda.database.AppDatabase.DB_NAME;
 
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,
@@ -189,7 +189,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                deleteDatabase(DB_NAME);
+                                Database.deleteDatabase(getApplicationContext());
                                 setResult(DB_CLEARED);
                             }
                         })
@@ -205,7 +205,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.logout();
                                 TwitterEngine.destroyInstance();
-                                deleteDatabase(DB_NAME);
+                                Database.deleteDatabase(getApplicationContext());
                                 setResult(APP_LOGOUT);
                                 finish();
                             }

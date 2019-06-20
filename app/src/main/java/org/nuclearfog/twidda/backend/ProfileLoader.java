@@ -50,6 +50,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
     private TwitterEngine mTwitter;
     private TwitterException err;
     private GlobalSettings settings;
+    private DatabaseAdapter db;
     private boolean isHome;
     private boolean isFriend;
     private boolean isFollower;
@@ -62,6 +63,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         settings = GlobalSettings.getInstance(context);
+        db = new DatabaseAdapter(context);
         this.mode = mode;
     }
 
@@ -71,7 +73,6 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
         TwitterUser user = null;
         long userId = args[0];
 
-        DatabaseAdapter db = new DatabaseAdapter(ui.get());
         isHome = userId == settings.getUserId();
         try {
             if (mode == Mode.LDR_PROFILE) {

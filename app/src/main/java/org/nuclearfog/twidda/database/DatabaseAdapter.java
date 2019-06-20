@@ -34,11 +34,11 @@ public class DatabaseAdapter {
     private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
     private static final int EXCL_USR = 1 << 3;     //  EXCLUDE USERS TWEETS
 
-    private AppDatabase dataHelper;
+    private Database dataHelper;
     private long homeId;
 
     public DatabaseAdapter(Context context) {
-        dataHelper = AppDatabase.getInstance(context);
+        dataHelper = Database.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         homeId = settings.getUserId();
     }
@@ -168,9 +168,8 @@ public class DatabaseAdapter {
      */
     public void storeMessage(List<Message> messages) {
         SQLiteDatabase db = getDbWrite();
-        for (Message message : messages) {
+        for (Message message : messages)
             storeMessage(message, db);
-        }
         commit(db);
     }
 
@@ -183,9 +182,7 @@ public class DatabaseAdapter {
     @Nullable
     public TwitterUser getUser(long userId) {
         SQLiteDatabase db = getDbRead();
-        TwitterUser result = getUser(userId, db);
-        close(db);
-        return result;
+        return getUser(userId, db);
     }
 
     /**
@@ -208,7 +205,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return tweetList;
     }
 
@@ -233,7 +229,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return tweetList;
     }
 
@@ -261,7 +256,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return tweetList;
     }
 
@@ -287,7 +281,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return tweetList;
     }
 
@@ -308,7 +301,6 @@ public class DatabaseAdapter {
         if (cursor.moveToFirst())
             result = getStatus(cursor);
         cursor.close();
-        close(db);
         return result;
     }
 
@@ -323,7 +315,9 @@ public class DatabaseAdapter {
         List<Tweet> tweetList = new LinkedList<>();
         final String SQL_GET_HOME = "SELECT * FROM tweet " +
                 "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE tweet.replyID=" + tweetId + " AND statusregister&" + RPL_MASK + " IS NOT 0 " +
+                "WHERE tweet.replyID=" + tweetId + " " +
+                "AND statusregister&" + RPL_MASK + " IS NOT 0 " +
+                "AND userregister&" + EXCL_USR + " IS 0 " +
                 "ORDER BY tweetID DESC LIMIT " + LIMIT;
         Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
         if (cursor.moveToFirst()) {
@@ -333,7 +327,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return tweetList;
     }
 
@@ -458,7 +451,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return trends;
     }
 
@@ -493,7 +485,6 @@ public class DatabaseAdapter {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        close(db);
         return result;
     }
 
@@ -509,7 +500,6 @@ public class DatabaseAdapter {
         Cursor c = db.rawQuery(query, null);
         boolean result = c.moveToFirst();
         c.close();
-        close(db);
         return result;
     }
 
@@ -768,17 +758,12 @@ public class DatabaseAdapter {
 
 
     private synchronized SQLiteDatabase getDbRead() {
-        return dataHelper.getReadableDatabase();
-    }
-
-
-    private synchronized void close(SQLiteDatabase db) {
-        db.close();
+        return dataHelper.getDatabase();
     }
 
 
     private synchronized SQLiteDatabase getDbWrite() {
-        SQLiteDatabase db = dataHelper.getWritableDatabase();
+        SQLiteDatabase db = dataHelper.getDatabase();
         db.beginTransaction();
         return db;
     }
@@ -787,7 +772,6 @@ public class DatabaseAdapter {
     private synchronized void commit(SQLiteDatabase db) {
         db.setTransactionSuccessful();
         db.endTransaction();
-        db.close();
     }
 
 
