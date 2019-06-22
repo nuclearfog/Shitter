@@ -249,12 +249,11 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
                 if (!isHome) {
                     ui.get().setConnection(isFriend, isMuted, isBlocked, user.isLocked(), canDm, user.followRequested());
                 }
-            } else {
-                if (err != null) {
-                    boolean killActivity = ErrorHandler.printError(ui.get(), err);
-                    if (killActivity)
-                        ui.get().finish();
-                }
+            }
+            if (err != null) {
+                boolean killActivity = ErrorHandler.printError(ui.get(), err);
+                if (killActivity)
+                    ui.get().finish();
             }
         }
     }

@@ -88,7 +88,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
         if (ui.get() != null) {
             if (trends != null)
                 adapter.setData(trends);
-            else if (err != null)
+            if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);

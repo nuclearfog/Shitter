@@ -301,7 +301,8 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                         ui.get().finish();
                         break;
                 }
-            } else if (err != null) {
+            }
+            if (err != null) {
                 boolean killActivity = ErrorHandler.printError(ui.get(), err);
                 if (killActivity) {
                     ui.get().setResult(RETURN_TWEET_CHANGED);

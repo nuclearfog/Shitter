@@ -175,7 +175,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         if (ui.get() != null) {
             if (tweets != null)
                 adapter.setData(tweets);
-            else if (err != null)
+            if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
