@@ -148,8 +148,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (statusAsync != null && statusAsync.getStatus() == RUNNING)
-                                statusAsync.cancel(true);
                             statusAsync = new StatusLoader(TweetDetail.this, Mode.DELETE);
                             statusAsync.execute(tweetID);
                         }
@@ -160,8 +158,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
                 case R.id.tweet_link:
                     if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
                         String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(tweetLink));
                         startActivity(intent);
                     } else {

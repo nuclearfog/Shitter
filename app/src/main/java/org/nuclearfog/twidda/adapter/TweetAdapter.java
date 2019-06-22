@@ -81,6 +81,20 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
 
+    public void removeItem(long id) {
+        int index = -1;
+        for (int pos = 0; pos < tweets.size() && index < 0; pos++) {
+            if (tweets.get(pos).getId() == id) {
+                tweets.remove(pos);
+                index = pos;
+            }
+        }
+        if (index != -1) {
+            notifyItemRemoved(index);
+        }
+    }
+
+
     @Override
     public long getItemId(int index) {
         return tweets.get(index).getId();

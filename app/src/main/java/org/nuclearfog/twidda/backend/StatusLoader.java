@@ -61,6 +61,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     private TwitterException err;
     private GlobalSettings settings;
     private DatabaseAdapter db;
+    private boolean statusNotFound = false;
 
 
     public StatusLoader(@NonNull TweetDetail context, Mode mode) {
@@ -118,8 +119,10 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
         } catch (TwitterException err) {
             this.err = err;
             int rCode = err.getErrorCode();
-            if (rCode == 144 || rCode == 34 || rCode == 63)
+            if (rCode == 144 || rCode == 34 || rCode == 63) {
                 db.removeStatus(tweetId);
+                statusNotFound = true;
+            }
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -305,7 +308,8 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
             if (err != null) {
                 boolean killActivity = ErrorHandler.printError(ui.get(), err);
                 if (killActivity) {
-                    ui.get().setResult(RETURN_TWEET_CHANGED);
+                    if (statusNotFound)
+                        ui.get().setResult(RETURN_TWEET_CHANGED);
                     ui.get().finish();
                 }
             }

@@ -56,7 +56,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     private TweetType mode;
     private String search;
-    private long id;
+    private long id, tweetId;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
@@ -123,7 +123,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onActivityResult(int reqCode, int returnCode, Intent i) {
         if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED)
-            onDataClear();
+            adapter.removeItem(tweetId);
         super.onActivityResult(reqCode, returnCode, i);
     }
 
@@ -138,10 +138,11 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public void onItemClick(int pos) {
         if (reload != null && !reload.isRefreshing()) {
             Tweet tweet = adapter.getData(pos);
+            tweetId = tweet.getId();
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
-            tweetIntent.putExtra(KEY_TWEET_ID, tweet.getId());
+            tweetIntent.putExtra(KEY_TWEET_ID, tweetId);
             tweetIntent.putExtra(KEY_TWEET_NAME, tweet.getUser().getScreenname());
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);
         }
