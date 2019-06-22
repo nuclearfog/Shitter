@@ -138,35 +138,28 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_settings"
-                android:text="@string/trend_setting"
-                android:textSize="@dimen/textsize_settings" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/divider"
-                android:background="?android:attr/listDivider" />
-
             <LinearLayout
+                android:id="@+id/Login_options"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/text_settings"
+                    android:text="@string/trend_setting"
+                    android:textSize="@dimen/textsize_settings" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider"
+                    android:background="?android:attr/listDivider" />
 
                 <Spinner
                     android:id="@+id/woeid"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/user_data_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -208,7 +201,6 @@
                         android:text="@string/logout" />
 
                 </LinearLayout>
-
             </LinearLayout>
 
             <TextView

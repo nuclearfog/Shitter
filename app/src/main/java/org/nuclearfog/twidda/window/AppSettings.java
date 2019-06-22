@@ -73,7 +73,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         Button delButton = findViewById(R.id.delete_db);
         Button load_popup = findViewById(R.id.load_dialog);
         Button logout = findViewById(R.id.logout);
-        View login_layout = findViewById(R.id.user_data_layout);
+        View login_layout = findViewById(R.id.Login_options);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_popup);
@@ -132,7 +132,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
 
-        if (adapter.getCount() <= 1) {
+        if (settings.getLogin() && adapter.getCount() <= 1) {
             locationAsync = new LocationLoader(this);
             locationAsync.execute();
         }
