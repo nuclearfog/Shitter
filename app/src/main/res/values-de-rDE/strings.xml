@@ -103,7 +103,6 @@
     <string name="proxy_port">Port</string>
     <string name="proxy_settings">Proxy Einstellung</string>
     <string name="verifierbutton">Login</string>
-    <string name="woeid">World ID</string>
     <string name="popup">Popup</string>
     <string name="pin">PIN</string>
     <string name="following">Following</string>
@@ -116,6 +115,5 @@
     <string name="proxy_address_text">HTTPS Proxy</string>
     <string name="proxy_authentication">Authentifierung</string>
     <string name="error_empty_port">Proxy port muss gesetzt werden!</string>
-    <string name="error_woeid_empty">WOEID musst gesetzt werden!</string>
     <string name="error_empty_pass">Proxy Passort darf nicht leer sein!</string>
 </resources>

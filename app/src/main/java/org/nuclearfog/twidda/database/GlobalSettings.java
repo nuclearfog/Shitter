@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import org.nuclearfog.twidda.backend.items.TrendLocation;
+
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.text.NumberFormat;
@@ -17,18 +19,16 @@ public class GlobalSettings {
 
     private SharedPreferences settings;
     private NumberFormat formatter;
+    private TrendLocation location;
     private String key1, key2;
     private boolean loadImage;
     private boolean loadAnswer;
     private boolean loggedIn;
-    private boolean customWorldId;
     private int background_color;
     private int font_color;
     private int highlight_color;
     private int tweet_color;
     private int row;
-    private int woeId;
-    private int woeIdPos;
     private long userId;
 
     private String proxyHost, proxyPort;
@@ -36,9 +36,6 @@ public class GlobalSettings {
 
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
-        woeId = settings.getInt("world_id", 1);
-        customWorldId = settings.getBoolean("custom_woeId", false);
-        woeIdPos = settings.getInt("world_id_pos", 0);
         background_color = settings.getInt("background_color", 0xff0f114a);
         highlight_color = settings.getInt("highlight_color", 0xffff00ff);
         font_color = settings.getInt("font_color", 0xffffffff);
@@ -54,6 +51,9 @@ public class GlobalSettings {
         proxyPort = settings.getString("proxy_port", "");
         proxyUser = settings.getString("proxy_user", "");
         proxyPass = settings.getString("proxy_pass", "");
+        String place = settings.getString("location", "");
+        int woeId = settings.getInt("world_id", 1);
+        location = new TrendLocation(place, woeId);
         formatter = NumberFormat.getIntegerInstance();
         configureProxy();
     }
@@ -197,68 +197,20 @@ public class GlobalSettings {
         edit.apply();
     }
 
-    /**
-     * get World ID for trends
-     *
-     * @return World ID
-     */
-    public int getWoeId() {
-        return woeId;
+
+    public TrendLocation getTrendLocation() {
+        return location;
     }
 
-    /**
-     * set World ID for trends
-     *
-     * @param id World ID
-     */
-    public void setWoeId(long id) {
-        woeId = (int) id;
+
+    public void setTrendLocation(TrendLocation location) {
+        this.location = location;
         Editor edit = settings.edit();
-        edit.putInt("world_id", (int) id);
+        edit.putInt("world_id", location.getWoeId());
+        edit.putString("location", location.getName());
         edit.apply();
     }
 
-    /**
-     * return position of the world id dropdown list
-     *
-     * @return position
-     */
-    public int getWoeIdSelection() {
-        return woeIdPos;
-    }
-
-    /**
-     * set last position of the dropdown list
-     *
-     * @param pos position of the last selection
-     */
-    public void setWoeIdSelection(int pos) {
-        woeIdPos = pos;
-        Editor edit = settings.edit();
-        edit.putInt("world_id_pos", pos);
-        edit.apply();
-    }
-
-    /**
-     * Check if custom World ID is set
-     *
-     * @return if custom world ID is set
-     */
-    public boolean getCustomWidSet() {
-        return customWorldId;
-    }
-
-    /**
-     * Set custom World ID
-     *
-     * @param customWoeId true if Custom world ID is set
-     */
-    public void setCustomWidSet(boolean customWoeId) {
-        customWorldId = customWoeId;
-        Editor edit = settings.edit();
-        edit.putBoolean("custom_woeId", customWoeId);
-        edit.apply();
-    }
 
     /**
      * get loading limit of tweets/users

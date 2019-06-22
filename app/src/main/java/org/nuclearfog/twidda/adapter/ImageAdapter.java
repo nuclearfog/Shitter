@@ -6,13 +6,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import java.lang.ref.WeakReference;
 
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder> {
+public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
 
     private WeakReference<OnImageClickListener> itemClickListener;
     private Bitmap[] images;

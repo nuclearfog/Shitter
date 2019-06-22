@@ -2,12 +2,13 @@ package org.nuclearfog.twidda.backend.items;
 
 public class Trend {
 
-    private final int position;
-    private final String trend;
+    private final String position;
+    private final String name;
 
-    public Trend(int position, String trend) {
-        this.position = position;
-        this.trend = trend;
+
+    public Trend(int pos, String name) {
+        this.position = pos + 1 + ".";
+        this.name = name;
     }
 
     /**
@@ -16,7 +17,7 @@ public class Trend {
      * @return trend name
      */
     public String getName() {
-        return trend;
+        return name;
     }
 
     /**
@@ -24,7 +25,7 @@ public class Trend {
      *
      * @return trend rank
      */
-    public int getPosition() {
+    public String getPosition() {
         return position;
     }
 

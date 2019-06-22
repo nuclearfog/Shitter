@@ -39,7 +39,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
         GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TrendAdapter) list.getAdapter();
-        woeId = settings.getWoeId();
+        woeId = settings.getTrendLocation().getWoeId();
     }
 
 

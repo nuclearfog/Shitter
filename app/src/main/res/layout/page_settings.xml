@@ -157,22 +157,8 @@
 
                 <Spinner
                     android:id="@+id/woeid"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3" />
-
-                <EditText
-                    android:id="@+id/woe_id"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/padding_side"
-                    android:layout_marginLeft="@dimen/padding_side"
-                    android:layout_weight="2"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/woeid"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:visibility="invisible" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 

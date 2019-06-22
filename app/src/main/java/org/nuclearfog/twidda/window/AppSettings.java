@@ -13,8 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -33,21 +32,21 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.WorldIdAdapter;
+import org.nuclearfog.twidda.backend.LocationLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
+import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.database.Database;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.MainActivity.DB_CLEARED;
 
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,
-        OnDismissListener, OnItemSelectedListener, OnCheckedChangeListener {
+        OnDismissListener, OnCheckedChangeListener {
 
     private static final int BACKGROUND = 0;
     private static final int FONTCOLOR = 1;
@@ -56,16 +55,16 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
     private GlobalSettings settings;
     private ConnectivityManager mConnect;
+    private LocationLoader locationAsync;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
-    private CheckBox toggleImg, toggleAns;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-    private EditText woeIdText;
+    private CheckBox toggleImg, toggleAns;
+    private ArrayAdapter adapter;
     private Spinner woeId;
     private View root;
 
     private int color = 0;
     private int mode = 0;
-    private boolean customWoeId = false;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -85,7 +84,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         proxyPass = findViewById(R.id.edit_proxypass);
         toggleImg = findViewById(R.id.toggleImg);
         toggleAns = findViewById(R.id.toggleAns);
-        woeIdText = findViewById(R.id.woe_id);
         woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
@@ -99,6 +97,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         if (!settings.getLogin())
             login_layout.setVisibility(GONE);
 
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
+        adapter.add(settings.getTrendLocation());
+        woeId.setAdapter(adapter);
+
         logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
@@ -106,7 +108,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setOnClickListener(this);
         colorButton3.setOnClickListener(this);
         colorButton4.setOnClickListener(this);
-        woeId.setOnItemSelectedListener(this);
         toggleImg.setOnCheckedChangeListener(this);
         toggleAns.setOnCheckedChangeListener(this);
     }
@@ -117,8 +118,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         super.onStart();
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
-        woeId.setAdapter(new WorldIdAdapter(this));
-        woeId.setSelection(settings.getWoeIdSelection());
         root.setBackgroundColor(settings.getBackgroundColor());
         colorButton1.setBackgroundColor(settings.getBackgroundColor());
         colorButton2.setBackgroundColor(settings.getFontColor());
@@ -132,11 +131,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
-        customWoeId = settings.getCustomWidSet();
-        if (customWoeId) {
-            String text = Long.toString(settings.getWoeId());
-            woeIdText.setVisibility(VISIBLE);
-            woeIdText.setText(text);
+
+        if (adapter.getCount() <= 1) {
+            locationAsync = new LocationLoader(this);
+            locationAsync.execute();
         }
     }
 
@@ -147,12 +145,18 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             settings.setProxyServer(proxyAddr.getText().toString(), proxyPort.getText().toString());
             settings.setProxyLogin(proxyUser.getText().toString(), proxyPass.getText().toString());
             settings.configureProxy();
-            if (customWoeId) {
-                String woeText = woeIdText.getText().toString();
-                settings.setWoeId(Long.parseLong(woeText));
-            }
+            TrendLocation location = (TrendLocation) woeId.getSelectedItem();
+            settings.setTrendLocation(location);
             super.onBackPressed();
         }
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (locationAsync != null && locationAsync.getStatus() == RUNNING)
+            locationAsync.cancel(true);
     }
 
 
@@ -291,29 +295,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (position == parent.getCount() - 1) {
-            woeIdText.setVisibility(VISIBLE);
-            settings.setCustomWidSet(true);
-            customWoeId = true;
-        } else {
-            woeIdText.setVisibility(INVISIBLE);
-            woeIdText.setText("");
-            settings.setCustomWidSet(false);
-            settings.setWoeId(id);
-            customWoeId = false;
-        }
-        settings.setWoeIdSelection(position);
-    }
-
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        woeId.setSelection(settings.getWoeIdSelection());
-    }
-
-
-    @Override
     public void onCheckedChanged(CompoundButton c, boolean checked) {
         switch (c.getId()) {
             case R.id.toggleImg:
@@ -347,14 +328,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         Editable editAddr = proxyAddr.getText();
         Editable editUser = proxyUser.getText();
 
-        if (customWoeId) {
-            Editable woeText = woeIdText.getText();
-            if (woeText == null || woeText.toString().isEmpty()) {
-                String errMsg = getString(R.string.error_woeid_empty);
-                woeIdText.setError(errMsg);
-                success = false;
-            }
-        }
         if (editAddr != null && !editAddr.toString().isEmpty()) {
             Editable editPort = proxyPort.getText();
             if (editPort == null || editPort.toString().isEmpty()) {
