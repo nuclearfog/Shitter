@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -16,19 +15,20 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Trend;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private Trend[] trends;
+    private List<Trend> trends;
     private int font_color;
 
 
     public TrendAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
-        trends = new Trend[0];
+        trends = new ArrayList<>();
         font_color = Color.WHITE;
     }
 
@@ -38,30 +38,32 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
-    public Trend getData(int pos) {
-        return trends[pos];
+    public Trend getData(int index) {
+        return trends.get(index);
     }
 
 
     public void setData(@NonNull List<Trend> trendList) {
-        trends = trendList.toArray(new Trend[0]);
+        trends.clear();
+        trends.addAll(trendList);
+        notifyDataSetChanged();
     }
 
 
     public void clear() {
-        trends = new Trend[0];
+        trends.clear();
         notifyDataSetChanged();
     }
 
 
     public boolean isEmpty() {
-        return trends.length == 0;
+        return trends.isEmpty();
     }
 
 
     @Override
     public int getItemCount() {
-        return trends.length;
+        return trends.size();
     }
 
 
@@ -69,27 +71,25 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
-        v.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RecyclerView rv = (RecyclerView) parent;
-                int position = rv.getChildLayoutPosition(v);
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(position);
-            }
-        });
         return new ItemHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        Trend trend = trends[index];
+    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
+        Trend trend = trends.get(index);
         String posStr = trend.getPosition();
         vh.trends.setText(trend.getName());
         vh.trends.setTextColor(font_color);
         vh.pos.setText(posStr);
         vh.pos.setTextColor(font_color);
+        vh.itemView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onItemClick(index);
+            }
+        });
     }
 
 

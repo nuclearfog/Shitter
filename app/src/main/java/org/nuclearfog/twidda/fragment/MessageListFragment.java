@@ -52,7 +52,6 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
-
         return v;
     }
 

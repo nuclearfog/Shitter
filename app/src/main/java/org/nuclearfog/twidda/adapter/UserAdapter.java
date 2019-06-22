@@ -19,31 +19,34 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private TwitterUser mUser[];
+    private List<TwitterUser> users;
     private int font_color;
     private boolean loadImage;
 
 
     public UserAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
-        mUser = new TwitterUser[0];
+        users = new ArrayList<>();
         font_color = Color.WHITE;
         loadImage = true;
     }
 
 
-    public TwitterUser getData(int pos) {
-        return mUser[pos];
+    public TwitterUser getData(int index) {
+        return users.get(index);
     }
 
 
     public void setData(@NonNull List<TwitterUser> userList) {
-        mUser = userList.toArray(new TwitterUser[0]);
+        users.clear();
+        users.addAll(userList);
+        notifyDataSetChanged();
     }
 
 
@@ -59,13 +62,13 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @Override
     public int getItemCount() {
-        return mUser.length;
+        return users.size();
     }
 
 
     @Override
-    public long getItemId(int pos) {
-        return mUser[pos].getId();
+    public long getItemId(int index) {
+        return users.get(index).getId();
     }
 
 
@@ -88,7 +91,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        TwitterUser user = mUser[index];
+        TwitterUser user = users.get(index);
         vh.username.setText(user.getUsername());
         vh.username.setTextColor(font_color);
         vh.screenname.setText(user.getScreenname());

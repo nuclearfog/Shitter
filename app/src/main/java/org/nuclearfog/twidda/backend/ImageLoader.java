@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
@@ -41,10 +42,9 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap[]> {
 
     @Override
     protected Bitmap[] doInBackground(String[] links) {
-        Bitmap[] images = new Bitmap[0];
         try {
             int i = 0;
-            images = new Bitmap[links.length];
+            Bitmap[] images = new Bitmap[links.length];
             for (String link : links) {
                 switch (mode) {
                     case ONLINE:
@@ -58,20 +58,20 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap[]> {
                         break;
                 }
             }
+            return images;
         } catch (Exception err) {
             err.printStackTrace();
         }
-        return images;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Bitmap[] images) {
+    protected void onPostExecute(@Nullable Bitmap[] images) {
         if (ui.get() != null) {
             ProgressBar progress = ui.get().findViewById(R.id.image_load);
             progress.setVisibility(View.INVISIBLE);
-
-            if (images.length > 0 && images[0] != null) {
+            if (images != null && images.length > 0) {
                 ui.get().setImage(images[0]);
                 imageAdapter.setImages(images);
                 imageAdapter.notifyDataSetChanged();

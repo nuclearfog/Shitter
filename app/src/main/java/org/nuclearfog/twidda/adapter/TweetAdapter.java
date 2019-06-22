@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -18,20 +17,18 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.TimeFormat;
 import org.nuclearfog.twidda.backend.items.Tweet;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private Tweet[] tweets;
+    private List<Tweet> tweets;
 
     private NumberFormat formatter;
     private int highlight;
@@ -42,7 +39,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     public TweetAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
-        tweets = new Tweet[0];
+        tweets = new ArrayList<>();
         highlight = Color.WHITE;
         font_color = Color.WHITE;
         image_load = true;
@@ -60,44 +57,39 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
 
-    public Tweet getData(int pos) {
-        return tweets[pos];
-    }
-
-
-    public List<Tweet> getData() {
-        List<Tweet> data = new LinkedList<>();
-        for (Tweet tweet : tweets)
-            data.add(tweet);
-        return data;
+    public Tweet getData(int index) {
+        return tweets.get(index);
     }
 
 
     public void setData(@NonNull List<Tweet> newTweets) {
-        tweets = newTweets.toArray(new Tweet[0]);
+        if (!newTweets.isEmpty()) {
+            tweets.addAll(0, newTweets);
+            notifyItemInserted(0);
+        }
     }
 
 
     public void clear() {
-        tweets = new Tweet[0];
+        tweets.clear();
         notifyDataSetChanged();
     }
 
 
     public boolean isEmpty() {
-        return tweets.length == 0;
+        return tweets.isEmpty();
     }
 
 
     @Override
-    public long getItemId(int pos) {
-        return tweets[pos].getId();
+    public long getItemId(int index) {
+        return tweets.get(index).getId();
     }
 
 
     @Override
     public int getItemCount() {
-        return tweets.length;
+        return tweets.size();
     }
 
 
@@ -105,22 +97,14 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-        v.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RecyclerView rv = (RecyclerView) parent;
-                int position = rv.getChildLayoutPosition(v);
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(position);
-            }
-        });
         return new ItemHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        Tweet tweet = tweets[index];
+    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
+        Tweet tweet = tweets.get(index);
+        Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
         if (tweet.getEmbeddedTweet() != null) {
             String retweeter = "RT " + tweet.getUser().getScreenname();
             vh.retweeter.setText(retweeter);
@@ -128,19 +112,23 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
-        Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
         vh.username.setText(tweet.getUser().getUsername());
         vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);
         vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
         vh.favorite.setText(formatter.format(tweet.getFavorCount()));
-        vh.time.setText(stringTime(tweet.getTime()));
-
+        vh.time.setText(TimeFormat.getString(tweet.getTime()));
         vh.username.setTextColor(font_color);
         vh.screenname.setTextColor(font_color);
         vh.tweet.setTextColor(font_color);
         vh.time.setTextColor(font_color);
-
+        vh.itemView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onItemClick(index);
+            }
+        });
         if (tweet.retweeted())
             vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         else
@@ -159,30 +147,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         if (image_load)
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
-    }
-
-
-    private String stringTime(long mills) {
-        Calendar now = Calendar.getInstance();
-        long diff = now.getTimeInMillis() - mills;
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-        long weeks = days / 7;
-        if (weeks > 4) {
-            Date tweetDate = new Date(mills);
-            return SimpleDateFormat.getDateInstance().format(tweetDate);
-        }
-        if (weeks > 0)
-            return weeks + " w";
-        if (days > 0)
-            return days + " d";
-        if (hours > 0)
-            return hours + " h";
-        if (minutes > 0)
-            return minutes + " m";
-        return seconds + " s";
     }
 
 

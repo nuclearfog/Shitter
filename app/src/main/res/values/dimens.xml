@@ -51,4 +51,5 @@
     <dimen name="button_media_height">36dp</dimen>
     <dimen name="button_media_width">64dp</dimen>
     <dimen name="preview_margin">10dp</dimen>
+    <dimen name="dm_item_button_height">20dp</dimen>
 </resources>

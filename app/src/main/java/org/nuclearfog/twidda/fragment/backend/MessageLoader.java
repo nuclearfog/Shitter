@@ -102,10 +102,8 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     @Override
     protected void onPostExecute(@Nullable List<Message> messages) {
         if (ui.get() != null) {
-            if (messages != null) {
+            if (messages != null)
                 adapter.setData(messages);
-                adapter.notifyDataSetChanged();
-            }
             if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -126,10 +124,8 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     @Override
     protected void onCancelled(@Nullable List<Message> messages) {
         if (ui.get() != null) {
-            if (messages != null) {
+            if (messages != null)
                 adapter.setData(messages);
-                adapter.notifyDataSetChanged();
-            }
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
         }

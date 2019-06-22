@@ -21,6 +21,8 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+import static android.os.AsyncTask.Status.FINISHED;
+
 
 public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
@@ -51,7 +53,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
         reload.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (getStatus() != Status.FINISHED)
+                if (getStatus() != FINISHED)
                     reload.setRefreshing(true);
             }
         }, 500);
@@ -84,13 +86,10 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
     @Override
     protected void onPostExecute(@Nullable List<Trend> trends) {
         if (ui.get() != null) {
-            if (trends != null) {
+            if (trends != null)
                 adapter.setData(trends);
-                adapter.notifyDataSetChanged();
-            } else {
-                if (err != null)
-                    ErrorHandler.printError(ui.get().getContext(), err);
-            }
+            else if (err != null)
+                ErrorHandler.printError(ui.get().getContext(), err);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
         }
@@ -109,10 +108,8 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
     @Override
     protected void onCancelled(@Nullable List<Trend> trends) {
         if (ui.get() != null) {
-            if (trends != null) {
+            if (trends != null)
                 adapter.setData(trends);
-                adapter.notifyDataSetChanged();
-            }
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
         }
