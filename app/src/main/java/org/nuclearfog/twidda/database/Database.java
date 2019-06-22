@@ -30,7 +30,7 @@ public class Database {
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
     private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS trend (" +
-            "woeID INTEGER,trendpos INTEGER,trendname TEXT,trendlink TEXT);";
+            "woeID INTEGER,trendpos INTEGER,trendname TEXT);";
 
     private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS message (" +
             "messageID INTEGER PRIMARY KEY,time INTEGER,senderID INTEGER,receiverID INTEGER," +

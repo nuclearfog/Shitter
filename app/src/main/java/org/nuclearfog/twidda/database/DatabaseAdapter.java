@@ -20,7 +20,7 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class DatabaseAdapter {
 
-    public static final int LIMIT = 100;    //  DATABASE ENTRY LIMIT
+    public static final String LIMIT = "100";    //  DATABASE ENTRY LIMIT
 
     private static final int FAV_MASK = 1;          //  FAVORITE MASK
     private static final int RTW_MASK = 1 << 1;     //  RETWEET MASK
@@ -61,9 +61,8 @@ public class DatabaseAdapter {
      */
     public void storeHomeTimeline(List<Tweet> home) {
         SQLiteDatabase db = getDbWrite();
-        for (Tweet tweet : home) {
+        for (Tweet tweet : home)
             storeStatus(tweet, HOM_MASK, db);
-        }
         commit(db);
     }
 
@@ -74,9 +73,8 @@ public class DatabaseAdapter {
      */
     public void storeMentions(List<Tweet> mentions) {
         SQLiteDatabase db = getDbWrite();
-        for (Tweet tweet : mentions) {
+        for (Tweet tweet : mentions)
             storeStatus(tweet, MEN_MASK, db);
-        }
         commit(db);
     }
 
@@ -87,9 +85,8 @@ public class DatabaseAdapter {
      */
     public void storeUserTweets(List<Tweet> stats) {
         SQLiteDatabase db = getDbWrite();
-        for (Tweet tweet : stats) {
+        for (Tweet tweet : stats)
             storeStatus(tweet, UTW_MASK, db);
-        }
         commit(db);
     }
 
@@ -132,12 +129,14 @@ public class DatabaseAdapter {
      * @param woeId  Yahoo World ID
      */
     public void storeTrends(final List<Trend> trends, int woeId) {
+        final String[] ARGS = new String[]{Integer.toString(woeId)};
+
         SQLiteDatabase db = getDbWrite();
-        final String query = "DELETE FROM trend WHERE woeID=" + woeId;
-        db.execSQL(query);
-        for (Trend trend : trends) {
+        db.delete("trend", "woeid=?", ARGS);
+
+        for (Trend trend : trends)
             storeTrends(trend, woeId, db);
-        }
+
         commit(db);
     }
 
@@ -191,13 +190,14 @@ public class DatabaseAdapter {
      * @return tweet list
      */
     public List<Tweet> getHomeTimeline() {
+        final String[] ARGS = new String[]{Integer.toString(HOM_MASK), LIMIT};
+        final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+                "WHERE statusregister&? IS NOT 0 ORDER BY tweetID DESC LIMIT ?";
+
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
-        final String SQL_GET_HOME = "SELECT * FROM tweet " +
-                "INNER JOIN user ON tweet.userID=user.userID " +
-                "WHERE statusregister&" + HOM_MASK + " IS NOT 0 " +
-                "ORDER BY tweetID DESC LIMIT " + LIMIT;
-        Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
+
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
@@ -214,14 +214,14 @@ public class DatabaseAdapter {
      * @return tweet list
      */
     public List<Tweet> getMentions() {
+        final String[] ARGS = new String[]{Integer.toString(MEN_MASK), Integer.toString(LCK_MASK), LIMIT};
+        final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+                "WHERE statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
+
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
-        final String SQL_GET_HOME = "SELECT * FROM tweet " +
-                "INNER JOIN user ON tweet.userID=user.userID " +
-                "WHERE statusregister&" + MEN_MASK + " IS NOT 0 " +
-                "AND userregister&" + EXCL_USR + " IS 0 " +
-                "ORDER BY tweetID DESC LIMIT " + LIMIT;
-        Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
+
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
@@ -239,16 +239,14 @@ public class DatabaseAdapter {
      * @return Tweet list of user tweets
      */
     public List<Tweet> getUserTweets(long userID) {
+        final String[] ARGS = new String[]{Integer.toString(UTW_MASK), Long.toString(userID), LIMIT};
+        final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+                "WHERE statusregister&? IS NOT 0 AND user.userID=? ORDER BY tweetID DESC LIMIT ?";
+
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
-        final String SQL_GET_HOME = "SELECT * FROM tweet " +
-                "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE statusregister&" + UTW_MASK + " IS NOT 0 " +
-                "AND user.userID =" + userID +
-                " ORDER BY tweetID DESC LIMIT " + LIMIT;
 
-        Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
-
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
@@ -266,14 +264,14 @@ public class DatabaseAdapter {
      * @return favored tweets by user
      */
     public List<Tweet> getUserFavs(long ownerID) {
+        final String[] ARGS = new String[]{Long.toString(ownerID), LIMIT};
+        final String QUERY = "SELECT * FROM tweet INNER JOIN favorit on tweet.tweetID=favorit.tweetID " +
+                "INNER JOIN user ON tweet.userID=user.userID WHERE favorit.ownerID=? ORDER BY tweetID DESC LIMIT ?";
+
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
-        final String SQL_GET_HOME = "SELECT * FROM tweet " +
-                "INNER JOIN favorit on tweet.tweetID = favorit.tweetID " +
-                "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE favorit.ownerID =" + ownerID +
-                " ORDER BY tweetID DESC LIMIT " + LIMIT;
-        Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
+
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
@@ -292,12 +290,14 @@ public class DatabaseAdapter {
      */
     @Nullable
     public Tweet getStatus(long tweetId) {
+        final String[] ARGS = new String[]{Long.toString(tweetId)};
+        final String QUERY = "SELECT * FROM tweet INNER JOIN user " +
+                "ON user.userID = tweet.userID WHERE tweet.tweetID=? LIMIT 1";
+
         SQLiteDatabase db = getDbRead();
         Tweet result = null;
-        final String query = "SELECT * FROM tweet " +
-                "INNER JOIN user ON user.userID = tweet.userID " +
-                "WHERE tweet.tweetID==" + tweetId + " LIMIT 1";
-        Cursor cursor = db.rawQuery(query, null);
+
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst())
             result = getStatus(cursor);
         cursor.close();
@@ -311,15 +311,14 @@ public class DatabaseAdapter {
      * @return list of tweet answers
      */
     public List<Tweet> getAnswers(long tweetId) {
+        final String[] ARGS = new String[]{Long.toString(tweetId), Integer.toString(RPL_MASK), Integer.toString(EXCL_USR), LIMIT};
+        final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+                "WHERE tweet.replyID=? AND statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
+
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
-        final String SQL_GET_HOME = "SELECT * FROM tweet " +
-                "INNER JOIN user ON tweet.userID = user.userID " +
-                "WHERE tweet.replyID=" + tweetId + " " +
-                "AND statusregister&" + RPL_MASK + " IS NOT 0 " +
-                "AND userregister&" + EXCL_USR + " IS 0 " +
-                "ORDER BY tweetID DESC LIMIT " + LIMIT;
-        Cursor cursor = db.rawQuery(SQL_GET_HOME, null);
+
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 Tweet tweet = getStatus(cursor);
@@ -336,6 +335,9 @@ public class DatabaseAdapter {
      * @param tweet Tweet
      */
     public void updateStatus(Tweet tweet) {
+        final String[] tweetIdArg = {Long.toString(tweet.getId())};
+        final String[] userIdArg = {Long.toString(tweet.getUser().getId())};
+
         SQLiteDatabase db = getDbWrite();
         ContentValues statColumn = new ContentValues();
         ContentValues userColumn = new ContentValues();
@@ -365,8 +367,6 @@ public class DatabaseAdapter {
         userColumn.put("following", user.getFollowing());
         userColumn.put("follower", user.getFollower());
 
-        final String[] tweetIdArg = {Long.toString(tweet.getId())};
-        final String[] userIdArg = {Long.toString(user.getId())};
         db.update("tweet", statColumn, "tweet.tweetID=?", tweetIdArg);
         db.update("user", userColumn, "user.userID=?", userIdArg);
         commit(db);
@@ -378,8 +378,9 @@ public class DatabaseAdapter {
      * @param tweetId Tweet ID
      */
     public void removeStatus(long tweetId) {
-        SQLiteDatabase db = getDbWrite();
         final String[] args = {Long.toString(tweetId)};
+
+        SQLiteDatabase db = getDbWrite();
         db.delete("tweet", "tweetID=?", args);
         db.delete("favorit", "tweetID=?", args);
         commit(db);
@@ -393,8 +394,8 @@ public class DatabaseAdapter {
     public void removeRetweet(long tweetId) {
         Tweet tweet = getStatus(tweetId);
         if (tweet != null) {
-            SQLiteDatabase db = getDbWrite();
             final String[] args = {Long.toString(tweet.getMyRetweetId())};
+            SQLiteDatabase db = getDbWrite();
             db.delete("tweet", "tweetID=?", args);
             commit(db);
         }
@@ -406,9 +407,10 @@ public class DatabaseAdapter {
      * @param tweetId tweet ID
      */
     public void removeFavorite(long tweetId) {
-        SQLiteDatabase db = getDbWrite();
         final String[] delArgs = {Long.toString(tweetId), Long.toString(homeId)};
         final String[] updateArgs = {Long.toString(tweetId)};
+
+        SQLiteDatabase db = getDbWrite();
         int register = getTweetStatus(db, tweetId);
         register &= ~FAV_MASK;
         ContentValues status = new ContentValues();
@@ -424,8 +426,9 @@ public class DatabaseAdapter {
      * @param id Direct Message ID
      */
     public void deleteDm(long id) {
-        SQLiteDatabase db = getDbWrite();
         final String[] messageId = {Long.toString(id)};
+
+        SQLiteDatabase db = getDbWrite();
         db.delete("message", "messageID=?", messageId);
         commit(db);
     }
@@ -437,10 +440,12 @@ public class DatabaseAdapter {
      * @return list of trends
      */
     public List<Trend> getTrends(int woeId) {
-        SQLiteDatabase db = getDbRead();
+        final String[] ARGS = new String[]{Integer.toString(woeId)};
+        final String QUERY = "SELECT * FROM trend WHERE woeID=? ORDER BY trendpos ASC";
+
         List<Trend> trends = new LinkedList<>();
-        final String query = "SELECT * FROM trend WHERE woeID=" + woeId + " ORDER BY trendpos ASC";
-        Cursor cursor = db.rawQuery(query, null);
+        SQLiteDatabase db = getDbRead();
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 int index = cursor.getColumnIndex("trendpos");
@@ -460,10 +465,12 @@ public class DatabaseAdapter {
      * @return list of direct messages
      */
     public List<Message> getMessages() {
+        final String[] ARGS = new String[]{LIMIT};
+        final String QUERY = "SELECT * FROM message ORDER BY messageID DESC LIMIT ?";
+
         List<Message> result = new LinkedList<>();
         SQLiteDatabase db = getDbRead();
-        final String query = "SELECT * FROM message ORDER BY messageID DESC LIMIT " + LIMIT;
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 int index = cursor.getColumnIndex("senderID");
@@ -495,9 +502,11 @@ public class DatabaseAdapter {
      * @return true if found
      */
     public boolean containStatus(long id) {
+        final String[] ARGS = new String[]{Long.toString(id)};
+        final String QUERY = "SELECT tweetID FROM tweet WHERE tweetID=? LIMIT 1;";
+
         SQLiteDatabase db = getDbRead();
-        final String query = "SELECT tweetID FROM tweet WHERE tweetID=" + id + " LIMIT 1;";
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(QUERY, ARGS);
         boolean result = c.moveToFirst();
         c.close();
         return result;
@@ -510,8 +519,10 @@ public class DatabaseAdapter {
      * @param mute true remove user tweets from mention results
      */
     public void muteUser(long id, boolean mute) {
+        final String[] ARGS = new String[]{Long.toString(id)};
+
         SQLiteDatabase db = getDbWrite();
-        int userRegister = getUserStatus(db, id);
+        int userRegister = getUserStatusRegister(db, id);
 
         if (mute)
             userRegister |= EXCL_USR;
@@ -520,7 +531,7 @@ public class DatabaseAdapter {
 
         ContentValues userColumn = new ContentValues();
         userColumn.put("userregister", userRegister);
-        db.update("user", userColumn, "user.userID=" + id, null);
+        db.update("user", userColumn, "user.userID=?", ARGS);
         commit(db);
     }
 
@@ -567,10 +578,13 @@ public class DatabaseAdapter {
     }
 
 
+    @Nullable
     private TwitterUser getUser(long userId, SQLiteDatabase db) {
+        final String[] ARGS = new String[]{Long.toString(userId)};
+        final String QUERY = "SELECT * FROM user WHERE userID=? LIMIT 1";
+
         TwitterUser user = null;
-        final String query = "SELECT * FROM user WHERE userID=" + userId + " LIMIT 1";
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst())
             user = getUser(cursor);
         cursor.close();
@@ -716,8 +730,10 @@ public class DatabaseAdapter {
 
 
     private int getTweetStatus(SQLiteDatabase db, long tweetID) {
-        final String query = "SELECT statusregister FROM tweet WHERE tweetID=" + tweetID + " LIMIT 1;";
-        Cursor c = db.rawQuery(query, null);
+        final String[] ARGS = new String[]{Long.toString(tweetID)};
+        final String QUERY = "SELECT statusregister FROM tweet WHERE tweetID=? LIMIT 1;";
+
+        Cursor c = db.rawQuery(QUERY, ARGS);
         int result = 0;
         if (c.moveToFirst()) {
             int pos = c.getColumnIndex("statusregister");
@@ -728,9 +744,11 @@ public class DatabaseAdapter {
     }
 
 
-    private int getUserStatus(SQLiteDatabase db, long userID) {
-        final String query = "SELECT userregister FROM user WHERE userID=" + userID + " LIMIT 1;";
-        Cursor c = db.rawQuery(query, null);
+    private int getUserStatusRegister(SQLiteDatabase db, long userID) {
+        final String[] ARGS = new String[]{Long.toString(userID)};
+        final String QUERY = "SELECT userregister FROM user WHERE userID=? LIMIT 1;";
+
+        Cursor c = db.rawQuery(QUERY, ARGS);
         int result = 0;
         if (c.moveToFirst()) {
             int pos = c.getColumnIndex("userregister");
@@ -749,8 +767,10 @@ public class DatabaseAdapter {
      * @return true if found
      */
     private boolean containStatus(long id, SQLiteDatabase db) {
-        final String query = "SELECT tweetID FROM tweet WHERE tweetID=" + id + " LIMIT 1;";
-        Cursor c = db.rawQuery(query, null);
+        final String[] ARGS = new String[]{Long.toString(id)};
+        final String QUERY = "SELECT tweetID FROM tweet WHERE tweetID=? LIMIT 1;";
+
+        Cursor c = db.rawQuery(QUERY, ARGS);
         boolean result = c.moveToFirst();
         c.close();
         return result;
@@ -785,7 +805,6 @@ public class DatabaseAdapter {
                 media = media.substring(index + 1);
             }
         } while (index > 0);
-        String[] result = new String[links.size()];
-        return links.toArray(result);
+        return links.toArray(new String[0]);
     }
 }
