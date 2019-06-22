@@ -7,6 +7,8 @@ import org.nuclearfog.twidda.BuildConfig;
 
 import java.io.File;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Memory leak save version of SQLiteOpenHelper
  */
@@ -49,7 +51,7 @@ public class Database {
 
     private Database(Context context) {
         databasePath = context.getDatabasePath(DB_NAME);
-        db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
+        db = context.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
 
         db.execSQL(TABLE_USER);
         db.execSQL(TABLE_TWEET);
