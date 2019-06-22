@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -111,12 +112,22 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    RecyclerView rv = (RecyclerView) parent;
+                    int index = rv.getChildLayoutPosition(v);
+                    itemClickListener.get().onItemClick(index);
+                }
+            }
+        });
         return new ItemHolder(v);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
         Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
         if (tweet.getEmbeddedTweet() != null) {
@@ -136,13 +147,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         vh.screenname.setTextColor(font_color);
         vh.tweet.setTextColor(font_color);
         vh.time.setTextColor(font_color);
-        vh.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(index);
-            }
-        });
         if (tweet.retweeted())
             vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         else

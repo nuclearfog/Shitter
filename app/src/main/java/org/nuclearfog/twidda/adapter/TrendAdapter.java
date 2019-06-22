@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -71,6 +72,16 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    RecyclerView rv = (RecyclerView) parent;
+                    int index = rv.getChildLayoutPosition(v);
+                    itemClickListener.get().onItemClick(index);
+                }
+            }
+        });
         return new ItemHolder(v);
     }
 
@@ -83,13 +94,6 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         vh.trends.setTextColor(font_color);
         vh.pos.setText(posStr);
         vh.pos.setTextColor(font_color);
-        vh.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(index);
-            }
-        });
     }
 
 
