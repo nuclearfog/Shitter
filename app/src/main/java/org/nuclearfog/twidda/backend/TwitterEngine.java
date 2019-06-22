@@ -491,7 +491,8 @@ public class TwitterEngine {
 
         if (tweet.isRetweeted()) {
             twitter.unRetweetStatus(tweet.getId());
-            retweetCount--;
+            if (retweetCount > 0)
+                retweetCount--;
         } else {
             twitter.retweetStatus(tweet.getId());
             retweetCount++;
@@ -515,7 +516,8 @@ public class TwitterEngine {
 
         if (tweet.isFavorited()) {
             tweet = twitter.destroyFavorite(tweet.getId());
-            favoritCount--;
+            if (favoritCount > 0)
+                favoritCount--;
         } else {
             tweet = twitter.createFavorite(tweet.getId());
             favoritCount++;

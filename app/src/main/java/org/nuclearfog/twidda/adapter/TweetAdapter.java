@@ -129,7 +129,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
-        Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
         if (tweet.getEmbeddedTweet() != null) {
             String retweeter = "RT " + tweet.getUser().getScreenname();
             vh.retweeter.setText(retweeter);
@@ -137,6 +136,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
+        Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
         vh.username.setText(tweet.getUser().getUsername());
         vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);
