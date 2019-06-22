@@ -83,13 +83,14 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
 
-        onSettingsChange();
+        setColors();
         return v;
     }
 
 
     @Override
     public void onViewCreated(@NonNull View v, Bundle param) {
+        super.onViewCreated(v, param);
         root = v;
     }
 
@@ -138,11 +139,11 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     public void onItemClick(int pos) {
         if (reload != null && !reload.isRefreshing()) {
             Tweet tweet = adapter.getData(pos);
-            tweetId = tweet.getId();
+            tweetId = tweet.getId(); // Mark tweet
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
-            tweetIntent.putExtra(KEY_TWEET_ID, tweetId);
+            tweetIntent.putExtra(KEY_TWEET_ID, tweet.getId());
             tweetIntent.putExtra(KEY_TWEET_NAME, tweet.getUser().getScreenname());
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);
         }
@@ -151,10 +152,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
-        if (reload != null)
-            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-        adapter.toggleImage(settings.getImageLoad());
+        setColors();
         adapter.clear();
         tweetTask = null;
     }
@@ -210,5 +208,13 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 tweetTask.execute(search);
                 break;
         }
+    }
+
+
+    private void setColors() {
+        if (reload != null)
+            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
+        adapter.toggleImage(settings.getImageLoad());
     }
 }

@@ -54,6 +54,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
+        super.onCreateView(inflater, parent, param);
         Bundle b = getArguments();
         if (b != null && b.containsKey(KEY_FRAG_USER_MODE)) {
             mode = (UserType) b.getSerializable(KEY_FRAG_USER_MODE);
@@ -63,12 +64,12 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError("Bundle error!");
         }
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
 
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
         RecyclerView list = v.findViewById(R.id.fragment_list);
         reload = v.findViewById(R.id.fragment_reload);
 
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
         adapter = new UserAdapter(this);
@@ -77,12 +78,14 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(fixLayout);
         list.setAdapter(adapter);
+
         return v;
     }
 
 
     @Override
     public void onViewCreated(@NonNull View v, Bundle param) {
+        super.onViewCreated(v, param);
         root = v;
     }
 

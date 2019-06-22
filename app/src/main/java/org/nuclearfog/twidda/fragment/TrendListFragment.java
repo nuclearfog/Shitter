@@ -48,7 +48,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
 
-        onSettingsChange();
+        setColors();
         return v;
     }
 
@@ -100,9 +100,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
-        if (reload != null)
-            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        adapter.setColor(settings.getFontColor());
+        setColors();
         adapter.clear();
         trendTask = null;
     }
@@ -119,5 +117,12 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     public void onDataClear() {
         adapter.clear();
         trendTask = null;
+    }
+
+
+    private void setColors() {
+        if (reload != null)
+            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        adapter.setColor(settings.getFontColor());
     }
 }
