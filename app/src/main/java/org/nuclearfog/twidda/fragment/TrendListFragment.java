@@ -31,6 +31,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     private SwipeRefreshLayout reload;
     private RecyclerView list;
     private TrendAdapter adapter;
+    private GlobalSettings settings;
     private View root;
 
     @Override
@@ -40,6 +41,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
         list = v.findViewById(R.id.fragment_list);
         reload = v.findViewById(R.id.fragment_reload);
 
+        settings = GlobalSettings.getInstance(getContext());
         reload.setOnRefreshListener(this);
         adapter = new TrendAdapter(this);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -98,8 +100,8 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        if (reload != null)
+            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getFontColor());
         adapter.clear();
         trendTask = null;

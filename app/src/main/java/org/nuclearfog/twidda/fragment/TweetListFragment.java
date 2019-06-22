@@ -155,6 +155,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());
+        adapter.clear();
+        tweetTask = null;
     }
 
 
