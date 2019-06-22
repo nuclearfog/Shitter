@@ -71,7 +71,7 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap[]> {
             ProgressBar progress = ui.get().findViewById(R.id.image_load);
             progress.setVisibility(View.INVISIBLE);
 
-            if (images.length > 0) {
+            if (images.length > 0 && images[0] != null) {
                 ui.get().setImage(images[0]);
                 imageAdapter.setImages(images);
                 imageAdapter.notifyDataSetChanged();

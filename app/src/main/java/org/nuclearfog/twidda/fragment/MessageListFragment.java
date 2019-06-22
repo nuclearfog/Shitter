@@ -90,7 +90,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
     @Override
     public void onClick(String tag) {
-        if (!reload.isRefreshing()) {
+        if (reload != null && !reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), SearchPage.class);
             intent.putExtra(KEY_SEARCH, tag);
             startActivity(intent);
@@ -100,7 +100,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
     @Override
     public void onClick(Message message, Action action) {
-        if (!reload.isRefreshing()) {
+        if (reload != null && !reload.isRefreshing()) {
             switch (action) {
                 case ANSWER:
                     Intent sendDm = new Intent(getContext(), MessagePopup.class);

@@ -14,7 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.OnStateChange;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -28,7 +28,7 @@ import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 
 
-public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
+public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_TWEET_MODE = "mode";
     public static final String KEY_FRAG_TWEET_SEARCH = "search";
@@ -48,6 +48,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     }
 
     private TweetLoader tweetTask;
+    private GlobalSettings settings;
     private SwipeRefreshLayout reload;
     private RecyclerView list;
     private TweetAdapter adapter;
@@ -75,6 +76,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         reload = v.findViewById(R.id.fragment_reload);
         list = v.findViewById(R.id.fragment_list);
 
+        settings = GlobalSettings.getInstance(getContext());
         reload.setOnRefreshListener(this);
         adapter = new TweetAdapter(this);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -134,7 +136,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onItemClick(int pos) {
-        if (!reload.isRefreshing()) {
+        if (reload != null && !reload.isRefreshing()) {
             Tweet tweet = adapter.getData(pos);
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
@@ -148,11 +150,10 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        if (reload != null)
+            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.toggleImage(settings.getImageLoad());
-        adapter.notifyDataSetChanged();
     }
 
 
@@ -193,7 +194,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
                 break;
 
             case TWEET_ANSR:
-                GlobalSettings settings = GlobalSettings.getInstance(getContext());
                 boolean loadAnswer = settings.getAnswerLoad();
                 if (tweetTask != null || loadAnswer)
                     tweetTask = new TweetLoader(root, Mode.TWEET_ANS);

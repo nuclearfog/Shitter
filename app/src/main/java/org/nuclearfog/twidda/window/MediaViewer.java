@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -230,7 +231,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public void setImage(Bitmap image) {
+    public void setImage(@NonNull Bitmap image) {
         float ratio = image.getWidth() / (float) width;
         int destHeight = (int) (image.getHeight() / ratio);
         image = Bitmap.createScaledBitmap(image, width, destHeight, false);

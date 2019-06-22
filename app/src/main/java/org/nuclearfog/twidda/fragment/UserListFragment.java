@@ -111,7 +111,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
     @Override
     public void onItemClick(int pos) {
-        if (!reload.isRefreshing()) {
+        if (reload != null && !reload.isRefreshing()) {
             TwitterUser user = adapter.getData(pos);
             long userID = user.getId();
             String username = user.getScreenname();

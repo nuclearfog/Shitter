@@ -14,7 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.OnStateChange;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -25,7 +25,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 
 
-public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, OnStateChange {
+public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
     private TrendLoader trendTask;
     private SwipeRefreshLayout reload;
@@ -100,24 +100,22 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     public void onSettingsChange() {
         GlobalSettings settings = GlobalSettings.getInstance(getContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        adapter.clear();
         adapter.setColor(settings.getFontColor());
-        adapter.notifyDataSetChanged();
+        adapter.clear();
         trendTask = null;
     }
 
 
     @Override
     public void onTabChange() {
-        list.smoothScrollToPosition(0);
+        if (list != null)
+            list.smoothScrollToPosition(0);
     }
 
 
     @Override
     public void onDataClear() {
-        adapter = new TrendAdapter(this);
-        list.setAdapter(adapter);
-        onSettingsChange();
+        adapter.clear();
         trendTask = null;
     }
 }
