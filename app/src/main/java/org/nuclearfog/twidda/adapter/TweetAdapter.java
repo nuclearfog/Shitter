@@ -161,6 +161,8 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         if (image_load)
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
+        else
+            vh.profile.setImageResource(0);
     }
 
 
