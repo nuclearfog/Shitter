@@ -57,6 +57,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_TWEET_NAME = "username";
 
     private ConnectivityManager mConnect;
+    private GlobalSettings settings;
     private StatusLoader statusAsync;
     private String username;
     private boolean isHome;
@@ -92,9 +93,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        settings = GlobalSettings.getInstance(this);
 
         tweetTxt.setMovementMethod(new ScrollingMovementMethod());
         tweetTxt.setLinkTextColor(settings.getHighlightColor());
@@ -262,7 +263,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
 
     private void getTweet(String link) {
-        if (link != null) {
+        if (!settings.getLogin()) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else if (link != null) {
             Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
             Matcher linkMatch = linkPattern.matcher(link);
             if (linkMatch.matches()) {
@@ -271,7 +276,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 else
                     link = '@' + link.substring(1);
                 int end = link.indexOf('/');
-
                 username = link.substring(0, end);
                 link = link.substring(end + 8);
                 tweetID = Long.parseLong(link);
