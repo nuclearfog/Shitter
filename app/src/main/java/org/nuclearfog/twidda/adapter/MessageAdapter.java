@@ -30,9 +30,10 @@ import java.util.List;
 public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
     private WeakReference<OnItemSelected> itemClickListener;
+
     private List<Message> messages;
-    private int highlight;
-    private int fontColor;
+
+    private int highlight, fontColor;
     private boolean loadImage;
 
 
@@ -44,26 +45,21 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     }
 
 
-    public Message getData(int index) {
-        return messages.get(index);
-    }
-
-
-    public void setData(@NonNull List<Message> messageList) {
+    public void replaceAll(@NonNull List<Message> messageList) {
         messages.clear();
         messages.addAll(messageList);
         notifyDataSetChanged();
     }
 
 
-    public void toggleImage(boolean loadImage) {
-        this.loadImage = loadImage;
-    }
-
-
     public void setColor(int fontColor, int highlight) {
         this.fontColor = fontColor;
         this.highlight = highlight;
+    }
+
+
+    public void setImage(boolean loadImage) {
+        this.loadImage = loadImage;
     }
 
 

@@ -74,7 +74,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         reload.setOnRefreshListener(this);
         adapter = new UserAdapter(this);
         adapter.setColor(settings.getFontColor());
-        adapter.toggleImage(settings.getImageLoad());
+        adapter.setImage(settings.getImageLoad());
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(fixLayout);
         list.setAdapter(adapter);

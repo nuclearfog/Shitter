@@ -29,9 +29,8 @@ import java.util.List;
 public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private List<Tweet> tweets;
-
     private NumberFormat formatter;
+    private List<Tweet> tweets;
     private int highlight;
     private int font_color;
     private boolean image_load;
@@ -53,20 +52,20 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
 
-    public void toggleImage(boolean image_load) {
+    public void setImage(boolean image_load) {
         this.image_load = image_load;
     }
 
 
-    public Tweet getData(int index) {
+    public Tweet get(int index) {
         return tweets.get(index);
     }
 
 
-    public void setData(@NonNull List<Tweet> newTweets) {
+    public void addFirst(@NonNull List<Tweet> newTweets) {
         if (!newTweets.isEmpty()) {
             tweets.addAll(0, newTweets);
-            notifyItemInserted(0);
+            notifyItemRangeInserted(0, newTweets.size());
         }
     }
 
@@ -82,7 +81,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
 
-    public void removeItem(long id) {
+    public void remove(long id) {
         int index = -1;
         for (int pos = 0; pos < tweets.size() && index < 0; pos++) {
             if (tweets.get(pos).getId() == id) {

@@ -53,7 +53,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
         GlobalSettings settings = GlobalSettings.getInstance(getContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getFontColor(), settings.getHighlightColor());
-        adapter.toggleImage(settings.getImageLoad());
+        adapter.setImage(settings.getImageLoad());
 
         return v;
     }

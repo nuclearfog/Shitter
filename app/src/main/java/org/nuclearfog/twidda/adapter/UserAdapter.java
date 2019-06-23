@@ -43,20 +43,20 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     }
 
 
-    public void setData(@NonNull List<TwitterUser> userList) {
+    public void replaceAll(@NonNull List<TwitterUser> userList) {
         users.clear();
         users.addAll(userList);
         notifyDataSetChanged();
     }
 
 
-    public void toggleImage(boolean image) {
-        loadImage = image;
+    public void setColor(int font_color) {
+        this.font_color = font_color;
     }
 
 
-    public void setColor(int font_color) {
-        this.font_color = font_color;
+    public void setImage(boolean image) {
+        loadImage = image;
     }
 
 

@@ -174,7 +174,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
     protected void onPostExecute(@Nullable List<Tweet> tweets) {
         if (ui.get() != null) {
             if (tweets != null)
-                adapter.setData(tweets);
+                adapter.addFirst(tweets);
             if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -196,7 +196,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
     protected void onCancelled(@Nullable List<Tweet> tweets) {
         if (ui.get() != null) {
             if (tweets != null)
-                adapter.setData(tweets);
+                adapter.addFirst(tweets);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
         }

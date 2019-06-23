@@ -99,7 +99,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     protected void onPostExecute(@Nullable List<TwitterUser> users) {
         if (ui.get() != null) {
             if (users != null)
-                adapter.setData(users);
+                adapter.replaceAll(users);
             else if (err != null)
                 ErrorHandler.printError(ui.get().getContext(), err);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
@@ -121,7 +121,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     protected void onCancelled(@Nullable List<TwitterUser> users) {
         if (ui.get() != null) {
             if (users != null)
-                adapter.setData(users);
+                adapter.replaceAll(users);
             SwipeRefreshLayout reload = ui.get().findViewById(R.id.fragment_reload);
             reload.setRefreshing(false);
         }

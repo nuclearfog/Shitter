@@ -4,79 +4,132 @@ import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
+
+import static android.widget.ListPopupWindow.MATCH_PARENT;
+import static android.widget.ListPopupWindow.WRAP_CONTENT;
 
 
 public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
 
+    private static final int PICTURE = 0;
+    private static final int LOADING = 1;
+
     private WeakReference<OnImageClickListener> itemClickListener;
-    private Bitmap[] images;
+    private List<Bitmap> images;
+    private boolean loading;
 
 
     public ImageAdapter(OnImageClickListener l) {
         itemClickListener = new WeakReference<>(l);
-        images = new Bitmap[0];
+        images = new LinkedList<>();
+        loading = true;
     }
 
 
-    public void setImages(@NonNull Bitmap[] images) {
-        this.images = images;
+    public void addLast(@NonNull Bitmap image) {
+        int imagePos = images.size();
+        images.add(image);
+        notifyItemInserted(imagePos);
+    }
+
+
+    public Bitmap top() {
+        return images.get(0);
+    }
+
+
+    public void disableLoading() {
+        int circlePos = images.size();
+        loading = false;
+        notifyItemRemoved(circlePos);
+    }
+
+
+    public boolean isEmpty() {
+        return images.isEmpty();
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+        if (loading && position == images.size())
+            return LOADING;
+        return PICTURE;
     }
 
 
     @Override
     public int getItemCount() {
-        return images.length;
+        if (loading)
+            return images.size() + 1;
+        return images.size();
     }
 
 
     @NonNull
     @Override
     public ImageAdapter.ImageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        ImageView imageView = new ImageView(parent.getContext());
-        return new ImageHolder(imageView);
+        if (viewType == LOADING) {
+            ProgressBar circle = new ProgressBar(parent.getContext());
+            LayoutParams param = new LayoutParams(WRAP_CONTENT, MATCH_PARENT);
+            circle.setLayoutParams(param);
+            return new ImageHolder(circle);
+        } else {
+            return new ImageHolder(new ImageView(parent.getContext()));
+        }
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull final ImageAdapter.ImageHolder vh, int index) {
-        final Bitmap image = images[index];
+    public void onBindViewHolder(@NonNull ImageAdapter.ImageHolder vh, int index) {
+        if (vh.view instanceof ImageView) {
+            final Bitmap image = images.get(index);
+            ImageView imageView = (ImageView) vh.view;
+            imageView.setImageBitmap(downscale(image));
+            imageView.setBackgroundColor(0xffffffff);
+            imageView.setPadding(1, 1, 1, 1);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (itemClickListener.get() != null)
+                        itemClickListener.get().onImageClick(image);
+                }
+            });
+            imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (itemClickListener.get() != null)
+                        return itemClickListener.get().onImageTouch(image);
+                    return false;
+                }
+            });
+        }
+    }
+
+
+    private Bitmap downscale(Bitmap image) {
         float ratio = image.getHeight() / 256.0f;
         int destWidth = (int) (image.getWidth() / ratio);
-        Bitmap result = Bitmap.createScaledBitmap(image, destWidth, 256, false);
-
-        vh.item.setImageBitmap(result);
-        vh.item.setBackgroundColor(0xffffffff);
-        vh.item.setPadding(1, 1, 1, 1);
-        vh.item.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onImageClick(image);
-            }
-        });
-        vh.item.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (itemClickListener.get() != null)
-                    return itemClickListener.get().onImageTouch(image);
-                return false;
-            }
-        });
+        return Bitmap.createScaledBitmap(image, destWidth, 256, false);
     }
 
 
     class ImageHolder extends ViewHolder {
-        final ImageView item;
+        final View view;
 
-        ImageHolder(ImageView item) {
-            super(item);
-            this.item = item;
+        ImageHolder(View view) {
+            super(view);
+            this.view = view;
         }
     }
 

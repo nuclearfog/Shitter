@@ -21,7 +21,6 @@ import java.util.List;
 
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
-
     private WeakReference<OnItemClickListener> itemClickListener;
     private List<Trend> trends;
     private int font_color;

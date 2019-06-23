@@ -8,7 +8,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
@@ -20,7 +19,7 @@ import java.lang.ref.WeakReference;
 import java.net.URL;
 
 
-public class ImageLoader extends AsyncTask<String, Void, Bitmap[]> {
+public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
     public enum Mode {
         ONLINE,
@@ -41,40 +40,51 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap[]> {
 
 
     @Override
-    protected Bitmap[] doInBackground(String[] links) {
+    protected Boolean doInBackground(String[] links) {
         try {
-            int i = 0;
-            Bitmap[] images = new Bitmap[links.length];
-            for (String link : links) {
-                switch (mode) {
-                    case ONLINE:
+            switch (mode) {
+                case ONLINE:
+                    for (String link : links) {
                         URL url = new URL(link);
                         InputStream stream = url.openStream();
-                        images[i++] = BitmapFactory.decodeStream(stream);
-                        break;
+                        Bitmap image = BitmapFactory.decodeStream(stream);
+                        publishProgress(image);
+                    }
+                    break;
 
-                    case STORAGE:
-                        images[i++] = BitmapFactory.decodeFile(link);
-                        break;
-                }
+                case STORAGE:
+                    for (String link : links) {
+                        Bitmap image = BitmapFactory.decodeFile(link);
+                        publishProgress(image);
+                    }
+                    break;
             }
-            return images;
         } catch (Exception err) {
             err.printStackTrace();
+            return false;
         }
-        return null;
+        return true;
     }
 
 
     @Override
-    protected void onPostExecute(@Nullable Bitmap[] images) {
+    protected void onProgressUpdate(Bitmap[] btm) {
         if (ui.get() != null) {
-            ProgressBar progress = ui.get().findViewById(R.id.image_load);
-            progress.setVisibility(View.INVISIBLE);
-            if (images != null && images.length > 0) {
-                ui.get().setImage(images[0]);
-                imageAdapter.setImages(images);
-                imageAdapter.notifyDataSetChanged();
+            if (imageAdapter.getItemCount() == 1) {
+                ProgressBar progress = ui.get().findViewById(R.id.image_load);
+                progress.setVisibility(View.INVISIBLE);
+                ui.get().setImage(imageAdapter.top());
+            }
+            imageAdapter.addLast(btm[0]);
+        }
+    }
+
+
+    @Override
+    protected void onPostExecute(Boolean success) {
+        if (ui.get() != null) {
+            if (success) {
+                imageAdapter.disableLoading();
             } else {
                 Toast.makeText(ui.get(), R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 ui.get().finish();

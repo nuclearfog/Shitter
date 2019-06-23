@@ -124,7 +124,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onActivityResult(int reqCode, int returnCode, Intent i) {
         if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED)
-            adapter.removeItem(tweetId);
+            adapter.remove(tweetId);
         super.onActivityResult(reqCode, returnCode, i);
     }
 
@@ -138,7 +138,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onItemClick(int pos) {
         if (reload != null && !reload.isRefreshing()) {
-            Tweet tweet = adapter.getData(pos);
+            Tweet tweet = adapter.get(pos);
             tweetId = tweet.getId(); // Mark tweet
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
@@ -215,6 +215,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         if (reload != null)
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-        adapter.toggleImage(settings.getImageLoad());
+        adapter.setImage(settings.getImageLoad());
     }
 }
