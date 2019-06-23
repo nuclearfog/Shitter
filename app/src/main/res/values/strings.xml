@@ -37,7 +37,7 @@
     <string name="error">Error!</string>
     <string name="tweet_delete">Delete</string>
     <string name="get_tweetlink">Open in Browser</string>
-    <string name="tweet_not_found">Tweet not found</string>
+    <string name="not_found">not found!</string>
     <string name="unfollow">unfollow</string>
     <string name="unblock">unblock</string>
     <string name="followed">followed</string>

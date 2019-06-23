@@ -410,6 +410,7 @@ public class GlobalSettings {
      * Remove all user content from Shared Preferences
      */
     public void logout() {
+        ourInstance = null;
         loggedIn = false;
         Editor e = settings.edit();
         e.clear();

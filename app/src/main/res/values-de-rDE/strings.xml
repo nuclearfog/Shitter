@@ -29,7 +29,7 @@
     <string name="error">Fehler!</string>
     <string name="tweet_delete">Tweet löschen</string>
     <string name="get_tweetlink">Im Browser öffnen</string>
-    <string name="tweet_not_found">Tweet wurde nicht gefunden</string>
+    <string name="not_found">night gefunden!</string>
     <string name="unfollow">entfolgen</string>
     <string name="block">blocken</string>
     <string name="unblock">entblocken</string>

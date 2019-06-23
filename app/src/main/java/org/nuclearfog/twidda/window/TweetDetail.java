@@ -259,7 +259,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 link = link.substring(end + 8);
                 tweetID = Long.parseLong(link);
             } else {
-                Toast.makeText(this, R.string.tweet_not_found, LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.not_found, LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();

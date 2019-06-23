@@ -42,7 +42,7 @@ public abstract class ErrorHandler {
 
             case 34:    //
             case 144:   // TWEET not found
-                Toast.makeText(c, R.string.tweet_not_found, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.not_found, Toast.LENGTH_SHORT).show();
                 return true;
 
             case 150:
