@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.items.Trend;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ import java.util.List;
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
-    private List<Trend> trends;
+    private List<String> trends;
     private int font_color;
 
 
@@ -38,12 +37,12 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
-    public Trend getData(int index) {
+    public String getData(int index) {
         return trends.get(index);
     }
 
 
-    public void setData(@NonNull List<Trend> trendList) {
+    public void setData(@NonNull List<String> trendList) {
         trends.clear();
         trends.addAll(trendList);
         notifyDataSetChanged();
@@ -87,12 +86,11 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
-        Trend trend = trends.get(index);
-        String posStr = trend.getPosition();
-        vh.trends.setText(trend.getName());
-        vh.trends.setTextColor(font_color);
+        String posStr = index + 1 + ".";
         vh.pos.setText(posStr);
+        vh.trends.setText(trends.get(index));
         vh.pos.setTextColor(font_color);
+        vh.trends.setTextColor(font_color);
     }
 
 

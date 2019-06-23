@@ -10,8 +10,10 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.text.NumberFormat;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
@@ -46,7 +50,8 @@ import static org.nuclearfog.twidda.window.UserDetail.UserType.FOLLOWERS;
 import static org.nuclearfog.twidda.window.UserDetail.UserType.FRIENDS;
 
 
-public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener {
+public class UserProfile extends AppCompatActivity implements OnClickListener, OnTouchListener,
+        OnTagClickListener, OnTabSelectedListener {
 
     public static final String KEY_PROFILE_ID = "userID";
     public static final String KEY_PROFILE_NAME = "username";
@@ -111,6 +116,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         tab.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
+        bioTxt.setOnTouchListener(this);
 
         for (int i = 0; i < icons.length; i++) {
             TabLayout.Tab t = tab.getTabAt(i);
@@ -312,6 +318,17 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        int action = event.getActionMasked() & event.getAction();
+        if (action == ACTION_UP || action == ACTION_DOWN) {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        }
+        return v.performClick();
     }
 
 

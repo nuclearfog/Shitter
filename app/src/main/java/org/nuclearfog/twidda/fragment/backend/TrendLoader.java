@@ -12,7 +12,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
-import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -24,7 +23,7 @@ import twitter4j.TwitterException;
 import static android.os.AsyncTask.Status.FINISHED;
 
 
-public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
+public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
 
     private WeakReference<View> ui;
     private TwitterException err;
@@ -61,8 +60,8 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 
     @Override
-    protected List<Trend> doInBackground(Void[] v) {
-        List<Trend> trends = null;
+    protected List<String> doInBackground(Void[] v) {
+        List<String> trends = null;
         try {
             if (adapter.isEmpty()) {
                 trends = db.getTrends(woeId);
@@ -84,7 +83,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 
     @Override
-    protected void onPostExecute(@Nullable List<Trend> trends) {
+    protected void onPostExecute(@Nullable List<String> trends) {
         if (ui.get() != null) {
             if (trends != null)
                 adapter.setData(trends);
@@ -106,7 +105,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<Trend>> {
 
 
     @Override
-    protected void onCancelled(@Nullable List<Trend> trends) {
+    protected void onCancelled(@Nullable List<String> trends) {
         if (ui.get() != null) {
             if (trends != null)
                 adapter.setData(trends);

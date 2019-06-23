@@ -101,6 +101,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:autoLink="web"
+                        android:fadeScrollbars="false"
                         android:linksClickable="true"
                         android:maxLines="@integer/text_tweet_lines"
                         android:scrollbars="vertical"

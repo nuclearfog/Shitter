@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
@@ -128,15 +127,18 @@ public class DatabaseAdapter {
      * @param trends List of Trends
      * @param woeId  Yahoo World ID
      */
-    public void storeTrends(final List<Trend> trends, int woeId) {
+    public void storeTrends(final List<String> trends, int woeId) {
         final String[] ARGS = new String[]{Integer.toString(woeId)};
 
         SQLiteDatabase db = getDbWrite();
         db.delete("trend", "woeid=?", ARGS);
 
-        for (Trend trend : trends)
-            storeTrends(trend, woeId, db);
-
+        for (String trend : trends) {
+            ContentValues trendColumn = new ContentValues();
+            trendColumn.put("woeID", woeId);
+            trendColumn.put("trendname", trend);
+            db.insertWithOnConflict("trend", null, trendColumn, CONFLICT_REPLACE);
+        }
         commit(db);
     }
 
@@ -439,20 +441,18 @@ public class DatabaseAdapter {
      * @param woeId Yahoo World ID
      * @return list of trends
      */
-    public List<Trend> getTrends(int woeId) {
+    public List<String> getTrends(int woeId) {
         final String[] ARGS = new String[]{Integer.toString(woeId)};
         final String QUERY = "SELECT * FROM trend WHERE woeID=? ORDER BY trendpos ASC";
 
-        List<Trend> trends = new LinkedList<>();
+        List<String> trends = new LinkedList<>();
         SQLiteDatabase db = getDbRead();
         Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
-                int index = cursor.getColumnIndex("trendpos");
-                int position = cursor.getInt(index);
-                index = cursor.getColumnIndex("trendname");
-                String name = cursor.getString(index);
-                trends.add(new Trend(position, name));
+                int index = cursor.getColumnIndex("trendname");
+                String trendName = cursor.getString(index);
+                trends.add(trendName);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -717,15 +717,6 @@ public class DatabaseAdapter {
         storeUser(message.getSender(), db, CONFLICT_IGNORE);
         storeUser(message.getReceiver(), db, CONFLICT_IGNORE);
         db.insertWithOnConflict("message", null, messageColumn, CONFLICT_IGNORE);
-    }
-
-
-    private void storeTrends(Trend trend, int woeId, SQLiteDatabase db) {
-        ContentValues trendColumn = new ContentValues();
-        trendColumn.put("woeID", woeId);
-        trendColumn.put("trendpos", trend.getPosition());
-        trendColumn.put("trendname", trend.getName());
-        db.insertWithOnConflict("trend", null, trendColumn, CONFLICT_REPLACE);
     }
 
 

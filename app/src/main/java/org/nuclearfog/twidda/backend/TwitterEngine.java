@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
@@ -28,6 +27,7 @@ import twitter4j.QueryResult;
 import twitter4j.Relationship;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
+import twitter4j.Trend;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -204,11 +204,11 @@ public class TwitterEngine {
      * @return Trend Resource
      * @throws TwitterException if access is unavailable
      */
-    public List<Trend> getTrends(int woeId) throws TwitterException {
-        List<Trend> result = new LinkedList<>();
-        twitter4j.Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
-        for (int i = 0; i < trends.length; i++)
-            result.add(new Trend(i, trends[i].getName()));
+    public List<String> getTrends(int woeId) throws TwitterException {
+        List<String> result = new LinkedList<>();
+        Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
+        for (Trend trend : trends)
+            result.add(trend.getName());
         return result;
     }
 

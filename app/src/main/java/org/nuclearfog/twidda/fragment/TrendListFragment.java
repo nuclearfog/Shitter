@@ -88,7 +88,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onItemClick(int pos) {
         if (!reload.isRefreshing()) {
-            String search = adapter.getData(pos).getName();
+            String search = adapter.getData(pos);
             Intent intent = new Intent(getContext(), SearchPage.class);
             if (!search.startsWith("#"))
                 search = '\"' + search + '\"';

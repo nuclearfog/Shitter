@@ -145,6 +145,7 @@
                         android:autoLink="web"
                         android:linksClickable="true"
                         android:maxLines="@integer/text_bio_lines"
+                        android:fadeScrollbars="false"
                         android:scrollbars="vertical" />
 
                     <TextView
