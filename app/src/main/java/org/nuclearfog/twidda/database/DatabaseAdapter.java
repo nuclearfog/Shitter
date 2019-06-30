@@ -522,8 +522,7 @@ public class DatabaseAdapter {
         final String[] ARGS = new String[]{Long.toString(id)};
 
         SQLiteDatabase db = getDbWrite();
-        int userRegister = getUserStatusRegister(db, id);
-
+        int userRegister = getUserStatus(db, id);
         if (mute)
             userRegister |= EXCL_USR;
         else
@@ -632,13 +631,19 @@ public class DatabaseAdapter {
 
     private void storeUser(TwitterUser user, SQLiteDatabase db, int mode) {
         ContentValues userColumn = new ContentValues();
-        int userRegister = 0;
+        int userRegister = getUserStatus(db, user.getId());
         if (user.isVerified())
             userRegister |= VER_MASK;
+        else
+            userRegister &= ~VER_MASK;
         if (user.isLocked())
             userRegister |= LCK_MASK;
+        else
+            userRegister &= ~LCK_MASK;
         if (user.followRequested())
             userRegister |= FRQ_MASK;
+        else
+            userRegister &= ~FRQ_MASK;
 
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
@@ -735,7 +740,7 @@ public class DatabaseAdapter {
     }
 
 
-    private int getUserStatusRegister(SQLiteDatabase db, long userID) {
+    private int getUserStatus(SQLiteDatabase db, long userID) {
         final String[] ARGS = new String[]{Long.toString(userID)};
         final String QUERY = "SELECT userregister FROM user WHERE userID=? LIMIT 1;";
 
