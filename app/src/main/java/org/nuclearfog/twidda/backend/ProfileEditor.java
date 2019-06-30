@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.ProfileEdit;
 
@@ -44,7 +44,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
     private final Mode mode;
     private WeakReference<ProfileEdit> ui;
     private WeakReference<Dialog> popup;
-    private DatabaseAdapter db;
+    private AppDatabase db;
     private TwitterEngine mTwitter;
     private TwitterException err;
     private Editable edit_name, edit_link, edit_bio, edit_loc;
@@ -55,7 +55,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
         ui = new WeakReference<>(c);
         popup = new WeakReference<>(new Dialog(c));
         mTwitter = TwitterEngine.getInstance(c);
-        db = new DatabaseAdapter(ui.get());
+        db = new AppDatabase(ui.get());
 
         EditText name = ui.get().findViewById(R.id.edit_name);
         EditText link = ui.get().findViewById(R.id.edit_link);

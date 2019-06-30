@@ -11,6 +11,7 @@ public class Tweet {
     private static final String PHOTO = "photo";
     private static final String VIDEO = "video";
     private static final String ANGIF = "animated_gif";
+    private static final String MEDIA_VIDEO = "application/x-mpegURL";
 
     private final long tweetID;
     private final long time;
@@ -248,7 +249,7 @@ public class Tweet {
 
                 case VIDEO:
                     for (MediaEntity.Variant type : mediaEntity.getVideoVariants()) {
-                        if (type.getContentType().equals("application/x-mpegURL"))
+                        if (type.getContentType().equals(MEDIA_VIDEO))
                             medias[i] = type.getUrl();
                     }
                     break;

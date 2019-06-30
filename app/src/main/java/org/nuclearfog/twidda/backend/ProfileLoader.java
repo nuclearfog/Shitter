@@ -18,7 +18,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.UserProfile;
@@ -50,7 +50,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
     private TwitterEngine mTwitter;
     private TwitterException err;
     private GlobalSettings settings;
-    private DatabaseAdapter db;
+    private AppDatabase db;
     private boolean isHome;
     private boolean isFriend;
     private boolean isFollower;
@@ -63,7 +63,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         settings = GlobalSettings.getInstance(context);
-        db = new DatabaseAdapter(context);
+        db = new AppDatabase(context);
         this.mode = mode;
     }
 

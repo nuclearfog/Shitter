@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FilenameTools;
 import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.TweetDetail;
@@ -60,14 +60,14 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     private TwitterEngine mTwitter;
     private TwitterException err;
     private GlobalSettings settings;
-    private DatabaseAdapter db;
+    private AppDatabase db;
     private boolean statusNotFound = false;
 
 
     public StatusLoader(@NonNull TweetDetail context, Mode mode) {
         mTwitter = TwitterEngine.getInstance(context);
         settings = GlobalSettings.getInstance(context);
-        db = new DatabaseAdapter(context);
+        db = new AppDatabase(context);
         ui = new WeakReference<>(context);
         this.mode = mode;
     }

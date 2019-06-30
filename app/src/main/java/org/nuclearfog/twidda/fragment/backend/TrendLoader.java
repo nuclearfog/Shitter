@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
@@ -28,7 +28,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
     private WeakReference<View> ui;
     private TwitterException err;
     private TwitterEngine mTwitter;
-    private DatabaseAdapter db;
+    private AppDatabase db;
     private TrendAdapter adapter;
     private int woeId;
 
@@ -36,7 +36,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
     public TrendLoader(@NonNull View root) {
         ui = new WeakReference<>(root);
         mTwitter = TwitterEngine.getInstance(root.getContext());
-        db = new DatabaseAdapter(root.getContext());
+        db = new AppDatabase(root.getContext());
         GlobalSettings settings = GlobalSettings.getInstance(root.getContext());
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TrendAdapter) list.getAdapter();

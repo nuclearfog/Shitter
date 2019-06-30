@@ -35,7 +35,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.LocationLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
-import org.nuclearfog.twidda.database.Database;
+import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -193,7 +193,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Database.deleteDatabase(getApplicationContext());
+                                DatabaseAdapter.deleteDatabase(getApplicationContext());
                                 setResult(DB_CLEARED);
                             }
                         })
@@ -209,7 +209,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.logout();
                                 TwitterEngine.destroyInstance();
-                                Database.deleteDatabase(getApplicationContext());
+                                DatabaseAdapter.deleteDatabase(getApplicationContext());
                                 setResult(APP_LOGOUT);
                                 finish();
                             }

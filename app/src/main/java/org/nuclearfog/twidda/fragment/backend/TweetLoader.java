@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.database.DatabaseAdapter;
+import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -39,7 +39,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private DatabaseAdapter db;
+    private AppDatabase db;
 
 
     public TweetLoader(@NonNull View root, Mode mode) {
@@ -47,7 +47,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         mTwitter = TwitterEngine.getInstance(root.getContext());
         RecyclerView list = root.findViewById(R.id.fragment_list);
         adapter = (TweetAdapter) list.getAdapter();
-        db = new DatabaseAdapter(root.getContext());
+        db = new AppDatabase(root.getContext());
         this.mode = mode;
     }
 
