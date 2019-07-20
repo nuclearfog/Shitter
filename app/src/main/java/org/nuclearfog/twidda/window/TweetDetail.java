@@ -71,6 +71,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
+        settings = GlobalSettings.getInstance(this);
 
         if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
             tweetID = param.getLong(KEY_TWEET_ID);
@@ -95,7 +96,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        settings = GlobalSettings.getInstance(this);
 
         tweetTxt.setMovementMethod(new ScrollingMovementMethod());
         tweetTxt.setLinkTextColor(settings.getHighlightColor());

@@ -279,10 +279,10 @@ public class Tweet {
             tweet = tweet.replace(start, end, expanded);
         }
         if (mediaEntities.length > 0) { // remove twitter media links from tweet
-            int lastLinkPos = mediaEntities.length - 1;
-            int start = mediaEntities[lastLinkPos].getStart();
-            int end = mediaEntities[lastLinkPos].getEnd();
-            tweet = tweet.delete(start, end);
+            int linkpos = tweet.indexOf("https://t.co/");
+            int lastpos = tweet.length();
+            if (linkpos >= 0)
+                tweet.delete(linkpos, lastpos);
         }
         return tweet.toString();
     }
