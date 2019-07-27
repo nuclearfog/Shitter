@@ -6,7 +6,6 @@ import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,6 +19,10 @@ import org.nuclearfog.twidda.window.TweetPopup;
 import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
+
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.Window.FEATURE_NO_TITLE;
+import static android.widget.Toast.LENGTH_LONG;
 
 public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
@@ -40,32 +43,32 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         if (popup.get() != null && ui.get() != null) {
-            final Dialog window = popup.get();
-            window.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            window.setCanceledOnTouchOutside(false);
-            if (window.getWindow() != null)
-                window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            final Dialog loadingCircle = popup.get();
+            loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+            loadingCircle.setCanceledOnTouchOutside(false);
+            if (loadingCircle.getWindow() != null)
+                loadingCircle.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             LayoutInflater inflater = LayoutInflater.from(ui.get());
             View load = inflater.inflate(R.layout.item_load, null, false);
             View cancelButton = load.findViewById(R.id.kill_button);
-            window.setContentView(load);
+            loadingCircle.setContentView(load);
 
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    window.dismiss();
+                    loadingCircle.dismiss();
                 }
             });
-            window.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            loadingCircle.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
-                    if (getStatus() == Status.RUNNING) {
+                    if (ui.get() != null && getStatus() == RUNNING) {
                         Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
                         cancel(true);
                     }
                 }
             });
-            window.show();
+            loadingCircle.show();
         }
     }
 
@@ -89,7 +92,8 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null && popup.get() != null) {
             if (success) {
-                ui.get().close();
+                Toast.makeText(ui.get(), R.string.tweet_sent, LENGTH_LONG).show();
+                ui.get().finish();
             } else {
                 if (err != null)
                     ErrorHandler.printError(ui.get(), err);
@@ -99,7 +103,8 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                         .setPositiveButton(R.string.retry, new OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ui.get().findViewById(R.id.sendTweet).callOnClick();
+                                if (ui.get() != null)
+                                    ui.get().findViewById(R.id.sendTweet).callOnClick();
                             }
                         })
                         .setNegativeButton(R.string.cancel, null).show();

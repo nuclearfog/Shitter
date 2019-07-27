@@ -33,7 +33,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
@@ -233,12 +232,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 }
                 break;
         }
-    }
-
-
-    public void close() {
-        Toast.makeText(this, R.string.tweet_sent, LENGTH_LONG).show();
-        finish();
     }
 
 
