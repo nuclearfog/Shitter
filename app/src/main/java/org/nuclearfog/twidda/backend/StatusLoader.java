@@ -135,8 +135,8 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
         if (ui.get() != null) {
             TextView username = ui.get().findViewById(R.id.usernamedetail);
             TextView scrName = ui.get().findViewById(R.id.scrnamedetail);
-            TextView replyName = ui.get().findViewById(R.id.answer_reference_detail);
             ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
+            Button replyName = ui.get().findViewById(R.id.answer_reference_detail);
             Button retweetButton = ui.get().findViewById(R.id.tweet_retweet);
             Button favoriteButton = ui.get().findViewById(R.id.tweet_favorit);
 
@@ -247,17 +247,16 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                 reply += tweet.getReplyName();
                 replyName.setText(reply);
                 replyName.setVisibility(VISIBLE);
-                if (!replyName.isClickable()) {
-                    replyName.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(ui.get(), TweetDetail.class);
-                            intent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
-                            intent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
-                            ui.get().startActivity(intent);
-                        }
-                    });
-                }
+
+                replyName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(ui.get(), TweetDetail.class);
+                        intent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
+                        intent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
+                        ui.get().startActivity(intent);
+                    }
+                });
             }
             if (settings.getImageLoad()) {
                 Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);

@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
@@ -38,6 +37,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.text.NumberFormat;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -55,6 +55,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     public static final String KEY_PROFILE_ID = "userID";
     public static final String KEY_PROFILE_NAME = "username";
+    public static final int REQUEST_PROFILE_CHANGED = 1;
+    public static final int RETURN_PROFILE_CHANGED = 2;
 
     private ProfileLoader profileAsync;
     private FragmentAdapter adapter;
@@ -138,9 +140,19 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     protected void onStop() {
-        if (profileAsync != null && profileAsync.getStatus() == Status.RUNNING)
+        if (profileAsync != null && profileAsync.getStatus() == RUNNING)
             profileAsync.cancel(true);
         super.onStop();
+    }
+
+
+    @Override
+    public void onActivityResult(int reqCode, int returnCode, Intent i) {
+        if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED) {
+            profileAsync = null;
+            adapter.clearData();
+        }
+        super.onActivityResult(reqCode, returnCode, i);
     }
 
 
@@ -197,7 +209,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (profileAsync != null && profileAsync.getStatus() != Status.RUNNING) {
+        if (profileAsync != null && profileAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
@@ -258,8 +270,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
                 case R.id.profile_settings:
                     Intent editProfile = new Intent(this, ProfileEdit.class);
-                    startActivity(editProfile);
-                    profileAsync = null;
+                    startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
                     break;
             }
         }

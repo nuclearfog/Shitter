@@ -79,6 +79,7 @@
     <string name="copied_to_clipboard">Link copied to clipboard!</string>
     <string name="profile_link">link</string>
     <string name="image_preview_button">image preview button</string>
+    <string name="video_preview_button">video preview button</string>
     <string name="close_dm">close direct message</string>
     <string name="user_not_found">user not found!</string>
     <string name="profile_tweets">Profile tweets</string>
@@ -113,7 +114,7 @@
     <string name="edit_proxyuser">username</string>
     <string name="proxy_password">password</string>
     <string name="proxy_address_text">HTTPS Proxy</string>
-    <string name="proxy_authentication">Authentication</string>
+    <string name="proxy_authentication">Proxy login</string>
     <string name="error_empty_port">Port must be set!</string>
     <string name="error_empty_pass">Proxy password should not be empty!</string>
 </resources>

@@ -71,7 +71,7 @@
     <string name="link_to_clipboard">Link in Zwischenablage kopieren</string>
     <string name="copied_to_clipboard">Link in Zwischenablage kopiert!</string>
     <string name="profile_link">Link</string>
-    <string name="image_preview_button">Bildvorschau button</string>
+    <string name="image_preview_button">Bildvorschau Button</string>
     <string name="close_dm">Direktnachricht schließen</string>
     <string name="user_not_found">Nutzer nicht gefunden!</string>
     <string name="profile_tweets">Profile tweets</string>
@@ -113,7 +113,8 @@
     <string name="tweet">Tweet</string>
     <string name="proxy_password">Passwort</string>
     <string name="proxy_address_text">HTTPS Proxy</string>
-    <string name="proxy_authentication">Authentifierung</string>
+    <string name="proxy_authentication">Proxy Login</string>
     <string name="error_empty_port">Proxy port muss gesetzt werden!</string>
     <string name="error_empty_pass">Proxy Passort darf nicht leer sein!</string>
+    <string name="video_preview_button">Videovorschau Button</string>
 </resources>

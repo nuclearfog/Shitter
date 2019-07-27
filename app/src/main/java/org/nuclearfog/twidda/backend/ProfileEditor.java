@@ -32,6 +32,7 @@ import twitter4j.TwitterException;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
+import static org.nuclearfog.twidda.window.UserProfile.RETURN_PROFILE_CHANGED;
 
 
 public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
@@ -153,6 +154,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
 
                     case WRITE_DATA:
                         Toast.makeText(ui.get(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
+                        ui.get().setResult(RETURN_PROFILE_CHANGED);
                         ui.get().finish();
                         break;
                 }

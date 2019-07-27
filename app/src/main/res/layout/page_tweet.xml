@@ -29,7 +29,6 @@
                     android:id="@+id/tweet_head"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_horizontal|center_vertical"
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/margin_layout"
                     android:paddingRight="@dimen/margin_layout"
@@ -88,13 +87,17 @@
 
                     </LinearLayout>
 
-                    <TextView
+                    <Button
                         android:id="@+id/answer_reference_detail"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/button_height"
+                        android:paddingLeft="@dimen/button_padding"
+                        android:paddingRight="@dimen/button_padding"
+                        android:background="@drawable/button"
                         android:singleLine="true"
                         android:textSize="@dimen/textsize_refer"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        style="@style/Widget.AppCompat.Button.Borderless" />
 
                     <TextView
                         android:id="@+id/tweet_detailed"
@@ -111,9 +114,10 @@
                         android:id="@+id/image_attach"
                         android:layout_width="@dimen/button_media_width"
                         android:layout_height="@dimen/button_media_height"
-                        android:layout_margin="@dimen/margin_tweet_icon"
-                        android:contentDescription="@string/image_preview_button"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/tweet_media_button_margin"
                         android:background="@drawable/button"
+                        android:contentDescription="@string/image_preview_button"
                         android:visibility="gone"
                         app:srcCompat="@drawable/image" />
 
@@ -121,9 +125,10 @@
                         android:id="@+id/video_attach"
                         android:layout_width="@dimen/button_media_width"
                         android:layout_height="@dimen/button_media_height"
-                        android:layout_margin="@dimen/margin_tweet_icon"
-                        android:contentDescription="@string/image_preview_button"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/tweet_media_button_margin"
                         android:background="@drawable/button"
+                        android:contentDescription="@string/video_preview_button"
                         android:visibility="gone"
                         app:srcCompat="@drawable/video" />
 
