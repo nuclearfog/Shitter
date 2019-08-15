@@ -96,8 +96,15 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            if (editorAsync == null || editorAsync.getStatus() != RUNNING)
-                save();
+            if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
+                EditText name = findViewById(R.id.edit_name);
+                if (name.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(this, R.string.edit_empty_name, LENGTH_SHORT).show();
+                } else {
+                    editorAsync = new ProfileEditor(this, WRITE_DATA);
+                    editorAsync.execute();
+                }
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -131,17 +138,6 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.edit_upload) {
             getMedia();
-        }
-    }
-
-
-    private void save() {
-        EditText name = findViewById(R.id.edit_name);
-        if (name.getText().toString().trim().isEmpty()) {
-            Toast.makeText(this, R.string.edit_empty_name, LENGTH_SHORT).show();
-        } else {
-            editorAsync = new ProfileEditor(this, WRITE_DATA);
-            editorAsync.execute();
         }
     }
 

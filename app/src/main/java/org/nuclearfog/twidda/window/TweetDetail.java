@@ -123,10 +123,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
         if (statusAsync != null && statusAsync.getStatus() == RUNNING)
             statusAsync.cancel(true);
+        super.onDestroy();
     }
 
 

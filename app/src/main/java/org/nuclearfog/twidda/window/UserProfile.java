@@ -31,7 +31,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.ProfileLoader.Mode;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -41,6 +40,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
 import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
@@ -132,17 +132,17 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     protected void onStart() {
         super.onStart();
         if (profileAsync == null) {
-            profileAsync = new ProfileLoader(this, Mode.LDR_PROFILE);
+            profileAsync = new ProfileLoader(this, LDR_PROFILE);
             profileAsync.execute(userId);
         }
     }
 
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         if (profileAsync != null && profileAsync.getStatus() == RUNNING)
             profileAsync.cancel(true);
-        super.onStop();
+        super.onDestroy();
     }
 
 
