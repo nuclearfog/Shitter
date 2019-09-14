@@ -100,8 +100,9 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
+        if (adapter != null)
+            adapter.clear();
         setColors();
-        adapter.clear();
         trendTask = null;
     }
 
@@ -115,7 +116,8 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onDataClear() {
-        adapter.clear();
+        if (adapter != null)
+            adapter.clear();
         trendTask = null;
     }
 

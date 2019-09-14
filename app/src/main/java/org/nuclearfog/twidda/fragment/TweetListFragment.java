@@ -152,8 +152,9 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
+        if (adapter != null)
+            adapter.clear();
         setColors();
-        adapter.clear();
         tweetTask = null;
     }
 
@@ -167,7 +168,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onDataClear() {
-        adapter.clear();
+        if (adapter != null)
+            adapter.clear();
         tweetTask = null;
     }
 
