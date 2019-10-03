@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -77,7 +78,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             tweetID = param.getLong(KEY_TWEET_ID);
             username = param.getString(KEY_TWEET_NAME);
         } else if (link != null) {
-            getTweet(link.getPath());
+            getTweet(link);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
@@ -262,29 +263,25 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     }
 
 
-    private void getTweet(String link) {
-        if (!settings.getLogin()) {
+    private void getTweet(@NonNull Uri link) {
+        String path = link.getPath() == null ? "" : link.getPath();
+        Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
+        Matcher linkMatch = linkPattern.matcher(path);
+
+        if (linkMatch.matches() && settings.getLogin()) {
+            if (path.startsWith("/@"))
+                path = path.substring(1);
+            else
+                path = '@' + path.substring(1);
+            int end = path.indexOf('/');
+            username = path.substring(0, end);
+            path = path.substring(end + 8);
+            tweetID = Long.parseLong(path);
+        } else {
+            Toast.makeText(this, R.string.failed_open_link, LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
-        } else if (link != null) {
-            Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
-            Matcher linkMatch = linkPattern.matcher(link);
-            if (linkMatch.matches()) {
-                if (link.startsWith("/@"))
-                    link = link.substring(1);
-                else
-                    link = '@' + link.substring(1);
-                int end = link.indexOf('/');
-                username = link.substring(0, end);
-                link = link.substring(end + 8);
-                tweetID = Long.parseLong(link);
-            } else {
-                Toast.makeText(this, R.string.not_found, LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
         }
     }
 }

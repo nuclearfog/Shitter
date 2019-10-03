@@ -1,11 +1,14 @@
 package org.nuclearfog.twidda.window;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -15,11 +18,13 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
 
 
@@ -30,7 +35,8 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     private FragmentAdapter adapter;
     private ViewPager pager;
-    private String search;
+    private GlobalSettings settings;
+    private String search = "";
     private int tabIndex = 0;
 
     @Override
@@ -48,12 +54,16 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle param = getIntent().getExtras();
+        Uri link = getIntent().getData();
+        settings = GlobalSettings.getInstance(this);
+
         if (param != null && param.containsKey(KEY_SEARCH)) {
             search = param.getString(KEY_SEARCH);
+        } else if (link != null) {
+            getSearchString(link);
         } else if (BuildConfig.DEBUG)
             throw new AssertionError();
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
 
@@ -131,5 +141,27 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
+    }
+
+
+    private void getSearchString(@NonNull Uri link) {
+        String path = link.getPath();
+        String query = link.getQuery();
+
+        if (path != null) {
+            if (path.startsWith("/hashtag/")) {
+                search = '#' + path.substring(9);
+            } else if (path.startsWith("/search")) {
+                if (query != null && query.length() > 2) {
+                    search = query.substring(2).replace('+', ' ');
+                }
+            }
+        }
+        if (search.isEmpty() || !settings.getLogin()) {
+            Toast.makeText(this, R.string.failed_open_link, LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

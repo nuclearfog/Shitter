@@ -113,13 +113,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 break;
 
             case VIDEO:
-                videoWindow.setVisibility(VISIBLE);
-                video = Uri.parse(link[0]);
-                videoView.setMediaController(videoController);
-                videoView.setOnPreparedListener(this);
-                videoView.setVideoURI(video);
-                break;
-
             case VIDEO_STORAGE:
                 videoWindow.setVisibility(VISIBLE);
                 video = Uri.parse(link[0]);

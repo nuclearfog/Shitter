@@ -117,4 +117,5 @@
     <string name="error_empty_port">Proxy port muss gesetzt werden!</string>
     <string name="error_empty_pass">Proxy Passort darf nicht leer sein!</string>
     <string name="video_preview_button">Videovorschau Button</string>
+    <string name="failed_open_link">Fehler beim Öffnen des links!</string>
 </resources>

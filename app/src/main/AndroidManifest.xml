@@ -30,7 +30,25 @@
         <activity
             android:name=".window.SearchPage"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="*.twitter.com"
+                    android:pathPattern="\\/search"
+                    android:scheme="https" />
+                <data
+                    android:host="*.twitter.com"
+                    android:pathPattern="\\/hashtag\\/..*"
+                    android:scheme="https" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".window.UserProfile"
