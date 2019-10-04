@@ -88,7 +88,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                 imageAdapter.disableLoading();
             } else {
                 Toast.makeText(ui.get(), R.string.connection_failed, Toast.LENGTH_SHORT).show();
-                ui.get().finish();
+                //ui.get().finish();
             }
         }
     }

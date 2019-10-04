@@ -150,10 +150,18 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
         if (path != null) {
             if (path.startsWith("/hashtag/")) {
-                search = '#' + path.substring(9);
+                int end = path.indexOf('&');
+                if (end > 9)
+                    search = '#' + path.substring(9, end);
+                else
+                    search = '#' + path.substring(9);
             } else if (path.startsWith("/search")) {
                 if (query != null && query.length() > 2) {
-                    search = query.substring(2).replace('+', ' ');
+                    int end = query.indexOf('&');
+                    if (end > 2)
+                        search = query.substring(2, end).replace('+', ' ');
+                    else
+                        search = query.substring(2).replace('+', ' ');
                 }
             }
         }
