@@ -34,18 +34,16 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
-                    android:host="*.twitter.com"
-                    android:pathPattern="\\/search"
-                    android:scheme="https" />
+                    android:scheme="https"
+                    android:host="*twitter.com"
+                    android:pathPattern="\\/search" />
                 <data
-                    android:host="*.twitter.com"
-                    android:pathPattern="\\/hashtag\\/..*"
-                    android:scheme="https" />
+                    android:scheme="https"
+                    android:host="*twitter.com"
+                    android:pathPattern="\\/hashtag\\/..*" />
             </intent-filter>
 
         </activity>
@@ -80,9 +78,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="*.twitter.com"
-                    android:pathPattern="\\/..*\\/status\\/..*"
-                    android:scheme="https" />
+                    android:scheme="https"
+                    android:host="*twitter.com"
+                    android:pathPattern="\\/..*\\/status\\/..*" />
             </intent-filter>
 
         </activity>
