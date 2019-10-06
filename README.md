@@ -2,14 +2,13 @@
 
 Alternative Twitter App for Android <img src="/images/twitter4j.gif" width="138" height="30">
 
-[![](https://img.shields.io/badge/download-apk-brightgreen.svg)](https://github.com/nuclearfog/Shitter/releases/download/1.5.4/SH1TT3R.apk)
+[![](https://img.shields.io/badge/download-apk-brightgreen.svg)](https://github.com/nuclearfog/Shitter/releases/download/1.5.5/SH1TT3R.apk)
 
 Features:
 - fast access to tweets and userprofiles
 - customizable colors
 - text highlighting
-- image/video upload
-- image/video preview
+- image/video upload & preview
 - twitter trends
 - twitter search
 - Directmessage
