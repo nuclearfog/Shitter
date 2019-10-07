@@ -19,7 +19,7 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class AppDatabase {
 
-    public static final String LIMIT = "100";    //  DATABASE ENTRY LIMIT
+    public static final String LIMIT = "100";       //  DATABASE ENTRY LIMIT
 
     private static final int FAV_MASK = 1;          //  FAVORITE MASK
     private static final int RTW_MASK = 1 << 1;     //  RETWEET MASK
@@ -98,15 +98,8 @@ public class AppDatabase {
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
         SQLiteDatabase db = getDbWrite();
         for (Tweet tweet : fav) {
-            if (!containsFavor(ownerId, tweet.getId(), db)) {
-                if (!containStatus(tweet.getId(), db))
-                    storeStatus(tweet, 0, db);
-                ContentValues favTable = new ContentValues();
-                favTable.put("tweetID", tweet.getId());
-                favTable.put("ownerID", ownerId);
-
-                db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
-            }
+            storeStatus(tweet, 0, db);
+            storeFavorite(tweet, ownerId, db);
         }
         commit(db);
     }
@@ -116,11 +109,10 @@ public class AppDatabase {
      *
      * @param replies tweet replies
      */
-    public void storeReplies(final List<Tweet> replies) {
+    public void storeReplies(List<Tweet> replies) {
         SQLiteDatabase db = getDbWrite();
-        for (Tweet tweet : replies) {
+        for (Tweet tweet : replies)
             storeStatus(tweet, RPL_MASK, db);
-        }
         commit(db);
     }
 
@@ -130,12 +122,11 @@ public class AppDatabase {
      * @param trends List of Trends
      * @param woeId  Yahoo World ID
      */
-    public void storeTrends(final List<String> trends, int woeId) {
+    public void storeTrends(List<String> trends, int woeId) {
         final String[] ARGS = new String[]{Integer.toString(woeId)};
 
         SQLiteDatabase db = getDbWrite();
         db.delete("trend", "woeid=?", ARGS);
-
         for (String trend : trends) {
             ContentValues trendColumn = new ContentValues();
             trendColumn.put("woeID", woeId);
@@ -155,14 +146,8 @@ public class AppDatabase {
         long tweetID = tweet.getId();
 
         if (!containsFavor(homeId, tweetID, db)) {
-            int register = getTweetStatus(db, tweetID);
-            register |= FAV_MASK;
-
-            ContentValues favTable = new ContentValues();
-            favTable.put("tweetID", tweetID);
-            favTable.put("ownerID", homeId);
-            db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
-            storeStatus(tweet, register, db);
+            storeStatus(tweet, 0, db);
+            storeFavorite(tweet, homeId, db);
         }
         commit(db);
     }
@@ -708,6 +693,16 @@ public class AppDatabase {
             status.put("replyname", tweet.getReplyName());
         storeUser(user, db, CONFLICT_IGNORE);
         db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
+    }
+
+
+    private void storeFavorite(Tweet tweet, long ownerId, SQLiteDatabase db) {
+        if (!containsFavor(ownerId, tweet.getId(), db)) {
+            ContentValues favTable = new ContentValues();
+            favTable.put("tweetID", tweet.getId());
+            favTable.put("ownerID", ownerId);
+            db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
+        }
     }
 
 
