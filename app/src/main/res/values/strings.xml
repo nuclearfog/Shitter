@@ -82,7 +82,6 @@
     <string name="video_preview_button">video preview button</string>
     <string name="close_dm">close direct message</string>
     <string name="user_not_found">user not found!</string>
-    <string name="profile_tweets">Profile tweets</string>
     <string name="cant_send_dm">cannot send dm to user!</string>
     <string name="error_accesstoken">Invalid or expired token!</string>
     <string name="status_too_long">Tweet needs to be shorter!</string>

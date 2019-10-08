@@ -140,7 +140,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
                         String link = user.getImageLink() + "_bigger";
                         Picasso.get().load(link).into(pb_image);
 
-                        final String mediaLink[] = {user.getImageLink()};
+                        final String[] mediaLink = {user.getImageLink()};
                         pb_image.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

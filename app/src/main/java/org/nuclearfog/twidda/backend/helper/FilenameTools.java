@@ -12,7 +12,7 @@ public abstract class FilenameTools {
         NONE
     }
 
-    public static String getExtension(@NonNull String path) {
+    private static String getExtension(@NonNull String path) {
         String filename = getFilename(path);
         String ext = "";
         int start = lastIndexOf(filename, '.') + 1;
@@ -27,7 +27,7 @@ public abstract class FilenameTools {
         return ext;
     }
 
-    public static String getFilename(@NonNull String path) {
+    private static String getFilename(@NonNull String path) {
         String filename = "";
         int end = lastIndexOf(path, '/') + 1;
         if (end > 0 && end < path.length())

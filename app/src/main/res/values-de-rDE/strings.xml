@@ -74,7 +74,6 @@
     <string name="image_preview_button">Bildvorschau Button</string>
     <string name="close_dm">Direktnachricht schließen</string>
     <string name="user_not_found">Nutzer nicht gefunden!</string>
-    <string name="profile_tweets">Profile tweets</string>
     <string name="cant_send_dm">Nachricht kann nicht an den User gesendet werden!</string>
     <string name="error_accesstoken">ungültiger Zugangsschlüssel!</string>
     <string name="status_too_long">Status ist zu lang!</string>

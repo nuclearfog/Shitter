@@ -219,7 +219,7 @@ public class TwitterUser {
      * @return Description String
      */
     private String getBio(User user) {
-        URLEntity entities[] = user.getDescriptionURLEntities();
+        URLEntity[] entities = user.getDescriptionURLEntities();
         StringBuilder bio = new StringBuilder(user.getDescription());
         for (int i = entities.length - 1; i >= 0; i--) {
             URLEntity entity = entities[i];

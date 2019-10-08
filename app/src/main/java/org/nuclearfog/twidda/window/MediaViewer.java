@@ -92,35 +92,37 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         } else if (BuildConfig.DEBUG)
             throw new AssertionError();
 
-        switch (type) {
-            case IMAGE:
-            case IMAGE_STORAGE:
-            case ANGIF_STORAGE:
-                imageWindow.setVisibility(VISIBLE);
-                imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                imageList.setAdapter(new ImageAdapter(this));
-                Display d = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                d.getSize(size);
-                width = size.x;
-                break;
+        if (type != null)
+            switch (type) {
+                case IMAGE:
+                case IMAGE_STORAGE:
+                case ANGIF_STORAGE:
+                    imageWindow.setVisibility(VISIBLE);
+                    imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                    imageList.setAdapter(new ImageAdapter(this));
+                    Display d = getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    d.getSize(size);
+                    width = size.x;
+                    break;
 
-            case ANGIF:
-                videoWindow.setVisibility(VISIBLE);
-                Uri video = Uri.parse(link[0]);
-                videoView.setOnPreparedListener(this);
-                videoView.setVideoURI(video);
-                break;
+                case ANGIF:
+                    videoWindow.setVisibility(VISIBLE);
+                    Uri video = Uri.parse(link[0]);
+                    videoView.setOnPreparedListener(this);
+                    videoView.setVideoURI(video);
+                    break;
 
-            case VIDEO:
-            case VIDEO_STORAGE:
-                videoWindow.setVisibility(VISIBLE);
-                video = Uri.parse(link[0]);
-                videoView.setMediaController(videoController);
-                videoView.setOnPreparedListener(this);
-                videoView.setVideoURI(video);
-                break;
-        }
+                case VIDEO:
+                case VIDEO_STORAGE:
+                    videoWindow.setVisibility(VISIBLE);
+                    video = Uri.parse(link[0]);
+                    videoView.setMediaController(videoController);
+                    videoView.setOnPreparedListener(this);
+                    videoView.setVideoURI(video);
+                    break;
+            }
+        else finish();
     }
 
 

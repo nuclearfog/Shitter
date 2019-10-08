@@ -80,7 +80,7 @@ public class Message {
      * @return Tweet string with resolved URL entities
      */
     private String getText(DirectMessage message) {
-        URLEntity entities[] = message.getURLEntities();
+        URLEntity[] entities = message.getURLEntities();
         StringBuilder text = new StringBuilder(message.getText());
 
         for (int i = entities.length - 1; i >= 0; i--) {

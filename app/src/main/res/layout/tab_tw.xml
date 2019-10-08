@@ -7,16 +7,12 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/padding_tab">
 
-    <ImageView
-        android:layout_width="@dimen/image_tab_ico"
-        android:layout_height="@dimen/image_tab_ico"
-        android:contentDescription="@string/profile_tweets"
-        app:srcCompat="@drawable/home" />
-
     <TextView
         android:id="@+id/profile_tweet_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/textsize_tab" />
+        android:gravity="center"
+        android:textSize="@dimen/textsize_tab"
+        app:drawableTopCompat="@drawable/home_profile" />
 
 </LinearLayout>

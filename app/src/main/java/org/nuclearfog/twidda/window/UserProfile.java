@@ -55,7 +55,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     public static final String KEY_PROFILE_ID = "userID";
     public static final String KEY_PROFILE_NAME = "username";
-    public static final int REQUEST_PROFILE_CHANGED = 1;
+    private static final int REQUEST_PROFILE_CHANGED = 1;
     public static final int RETURN_PROFILE_CHANGED = 2;
 
     private ProfileLoader profileAsync;

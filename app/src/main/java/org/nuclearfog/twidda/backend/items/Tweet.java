@@ -269,8 +269,8 @@ public class Tweet {
      * @return Tweet string with resolved URL entities
      */
     private String getText(Status status) {
-        URLEntity urlEntities[] = status.getURLEntities();
-        MediaEntity mediaEntities[] = status.getMediaEntities();
+        URLEntity[] urlEntities = status.getURLEntities();
+        MediaEntity[] mediaEntities = status.getMediaEntities();
         StringBuilder tweet = new StringBuilder(status.getText());
         for (int i = urlEntities.length - 1; i >= 0; i--) { // expand shorten links
             int start = urlEntities[i].getStart();

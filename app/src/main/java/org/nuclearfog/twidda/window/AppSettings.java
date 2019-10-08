@@ -59,7 +59,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private CheckBox toggleImg, toggleAns;
-    private ArrayAdapter adapter;
+    private ArrayAdapter<TrendLocation> adapter;
     private Spinner woeId;
     private View root;
 

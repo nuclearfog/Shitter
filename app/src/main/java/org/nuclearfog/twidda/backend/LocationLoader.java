@@ -48,7 +48,9 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
         if (ui.get() != null) {
             if (locations != null && !locations.isEmpty()) {
                 Spinner woeId = ui.get().findViewById(R.id.woeid);
-                ArrayAdapter adapter = (ArrayAdapter) woeId.getAdapter();
+
+                @SuppressWarnings("unchecked")
+                ArrayAdapter<TrendLocation> adapter = (ArrayAdapter<TrendLocation>) woeId.getAdapter();
                 adapter.clear();
                 adapter.addAll(locations);
                 adapter.notifyDataSetChanged();
