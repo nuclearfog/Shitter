@@ -26,3 +26,6 @@
 
 -dontwarn twitter4j.**
 -keep class twitter4j.** {*;}
+
+-dontwarn javax.management.DynamicMBean
+-keep class javax.management.DynamicMBean {*;}
