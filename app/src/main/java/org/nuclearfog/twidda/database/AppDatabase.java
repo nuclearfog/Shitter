@@ -31,16 +31,16 @@ public class AppDatabase {
     private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
     private static final int EXCL_USR = 1 << 3;     //  EXCLUDE USERS TWEETS
 
-    private final String limit;       //  DATABASE ENTRY limit
+    private final int limit;       //  DATABASE ENTRY limit
+    private final long homeId;
 
     private DatabaseAdapter dataHelper;
-    private long homeId;
 
     public AppDatabase(Context context) {
         dataHelper = DatabaseAdapter.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         homeId = settings.getUserId();
-        limit = Integer.toString(settings.getRowLimit());
+        limit = settings.getRowLimit();
     }
 
     /**
@@ -183,7 +183,7 @@ public class AppDatabase {
      * @return tweet list
      */
     public List<Tweet> getHomeTimeline() {
-        final String[] ARGS = new String[]{Integer.toString(HOM_MASK), limit};
+        final String[] ARGS = new String[]{Integer.toString(HOM_MASK), Integer.toString(limit)};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&? IS NOT 0 ORDER BY tweetID DESC LIMIT ?";
 
@@ -207,7 +207,7 @@ public class AppDatabase {
      * @return tweet list
      */
     public List<Tweet> getMentions() {
-        final String[] ARGS = new String[]{Integer.toString(MEN_MASK), Integer.toString(EXCL_USR), limit};
+        final String[] ARGS = new String[]{Integer.toString(MEN_MASK), Integer.toString(EXCL_USR), Integer.toString(limit)};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
 
@@ -232,7 +232,7 @@ public class AppDatabase {
      * @return Tweet list of user tweets
      */
     public List<Tweet> getUserTweets(long userID) {
-        final String[] ARGS = new String[]{Integer.toString(UTW_MASK), Long.toString(userID), limit};
+        final String[] ARGS = new String[]{Integer.toString(UTW_MASK), Long.toString(userID), Integer.toString(limit)};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&? IS NOT 0 AND user.userID=? ORDER BY tweetID DESC LIMIT ?";
 
@@ -257,7 +257,7 @@ public class AppDatabase {
      * @return favored tweets by user
      */
     public List<Tweet> getUserFavs(long ownerID) {
-        final String[] ARGS = new String[]{Long.toString(ownerID), limit};
+        final String[] ARGS = new String[]{Long.toString(ownerID), Integer.toString(limit)};
         final String QUERY = "SELECT * FROM tweet INNER JOIN favorit on tweet.tweetID=favorit.tweetID " +
                 "INNER JOIN user ON tweet.userID=user.userID WHERE favorit.ownerID=? ORDER BY tweetID DESC LIMIT ?";
 
@@ -304,7 +304,8 @@ public class AppDatabase {
      * @return list of tweet answers
      */
     public List<Tweet> getAnswers(long tweetId) {
-        final String[] ARGS = new String[]{Long.toString(tweetId), Integer.toString(RPL_MASK), Integer.toString(EXCL_USR), limit};
+        final String[] ARGS = new String[]{Long.toString(tweetId), Integer.toString(RPL_MASK),
+                Integer.toString(EXCL_USR), Integer.toString(limit)};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE tweet.replyID=? AND statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
 
@@ -456,7 +457,7 @@ public class AppDatabase {
      * @return list of direct messages
      */
     public List<Message> getMessages() {
-        final String[] ARGS = new String[]{limit};
+        final String[] ARGS = new String[]{Integer.toString(limit)};
         final String QUERY = "SELECT * FROM message ORDER BY messageID DESC LIMIT ?";
 
         List<Message> result = new LinkedList<>();
