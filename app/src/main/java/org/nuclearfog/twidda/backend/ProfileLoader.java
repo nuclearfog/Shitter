@@ -203,7 +203,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
                 String link = user.getImageLink() + "_bigger";
                 Picasso.get().load(link).into(profile);
             }
-            if (!profile.isClickable() && user.getImageLink() != null) {
+            if (user.getImageLink() != null) {
                 profile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
