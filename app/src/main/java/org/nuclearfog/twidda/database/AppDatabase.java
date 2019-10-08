@@ -19,8 +19,6 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class AppDatabase {
 
-    public static final String LIMIT = "100";       //  DATABASE ENTRY LIMIT
-
     private static final int FAV_MASK = 1;          //  FAVORITE MASK
     private static final int RTW_MASK = 1 << 1;     //  RETWEET MASK
     private static final int HOM_MASK = 1 << 2;     //  HOME TWEET MASK
@@ -33,6 +31,8 @@ public class AppDatabase {
     private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
     private static final int EXCL_USR = 1 << 3;     //  EXCLUDE USERS TWEETS
 
+    private final String limit;       //  DATABASE ENTRY limit
+
     private DatabaseAdapter dataHelper;
     private long homeId;
 
@@ -40,6 +40,7 @@ public class AppDatabase {
         dataHelper = DatabaseAdapter.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         homeId = settings.getUserId();
+        limit = Integer.toString(settings.getRowLimit());
     }
 
     /**
@@ -182,7 +183,7 @@ public class AppDatabase {
      * @return tweet list
      */
     public List<Tweet> getHomeTimeline() {
-        final String[] ARGS = new String[]{Integer.toString(HOM_MASK), LIMIT};
+        final String[] ARGS = new String[]{Integer.toString(HOM_MASK), limit};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&? IS NOT 0 ORDER BY tweetID DESC LIMIT ?";
 
@@ -206,7 +207,7 @@ public class AppDatabase {
      * @return tweet list
      */
     public List<Tweet> getMentions() {
-        final String[] ARGS = new String[]{Integer.toString(MEN_MASK), Integer.toString(EXCL_USR), LIMIT};
+        final String[] ARGS = new String[]{Integer.toString(MEN_MASK), Integer.toString(EXCL_USR), limit};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
 
@@ -231,7 +232,7 @@ public class AppDatabase {
      * @return Tweet list of user tweets
      */
     public List<Tweet> getUserTweets(long userID) {
-        final String[] ARGS = new String[]{Integer.toString(UTW_MASK), Long.toString(userID), LIMIT};
+        final String[] ARGS = new String[]{Integer.toString(UTW_MASK), Long.toString(userID), limit};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE statusregister&? IS NOT 0 AND user.userID=? ORDER BY tweetID DESC LIMIT ?";
 
@@ -256,7 +257,7 @@ public class AppDatabase {
      * @return favored tweets by user
      */
     public List<Tweet> getUserFavs(long ownerID) {
-        final String[] ARGS = new String[]{Long.toString(ownerID), LIMIT};
+        final String[] ARGS = new String[]{Long.toString(ownerID), limit};
         final String QUERY = "SELECT * FROM tweet INNER JOIN favorit on tweet.tweetID=favorit.tweetID " +
                 "INNER JOIN user ON tweet.userID=user.userID WHERE favorit.ownerID=? ORDER BY tweetID DESC LIMIT ?";
 
@@ -303,7 +304,7 @@ public class AppDatabase {
      * @return list of tweet answers
      */
     public List<Tweet> getAnswers(long tweetId) {
-        final String[] ARGS = new String[]{Long.toString(tweetId), Integer.toString(RPL_MASK), Integer.toString(EXCL_USR), LIMIT};
+        final String[] ARGS = new String[]{Long.toString(tweetId), Integer.toString(RPL_MASK), Integer.toString(EXCL_USR), limit};
         final String QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
                 "WHERE tweet.replyID=? AND statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
 
@@ -455,7 +456,7 @@ public class AppDatabase {
      * @return list of direct messages
      */
     public List<Message> getMessages() {
-        final String[] ARGS = new String[]{LIMIT};
+        final String[] ARGS = new String[]{limit};
         final String QUERY = "SELECT * FROM message ORDER BY messageID DESC LIMIT ?";
 
         List<Message> result = new LinkedList<>();

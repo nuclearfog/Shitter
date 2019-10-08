@@ -77,6 +77,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
                 case LOAD:
                     messages = mTwitter.getMessages();
                     db.storeMessage(messages);
+                    messages = db.getMessages();
                     break;
 
                 case DEL:
