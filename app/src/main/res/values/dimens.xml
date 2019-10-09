@@ -16,7 +16,6 @@
 
     <dimen name="padding_side">10dp</dimen>
     <dimen name="padding_editprofile">20dp</dimen>
-    <dimen name="padding_tab">5dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
 
     <dimen name="text_padding">5dp</dimen>
@@ -36,7 +35,6 @@
     <dimen name="textsize_name">12sp</dimen>
     <dimen name="textsize_refer">12sp</dimen>
     <dimen name="textsize_checkbox">10sp</dimen>
-    <dimen name="textsize_tab">12sp</dimen>
     <integer name="text_tweet_lines">9</integer>
     <integer name="text_bio_lines">5</integer>
 

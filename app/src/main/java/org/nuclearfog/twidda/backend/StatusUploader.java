@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
@@ -48,8 +47,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
             loadingCircle.setCanceledOnTouchOutside(false);
             if (loadingCircle.getWindow() != null)
                 loadingCircle.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            LayoutInflater inflater = LayoutInflater.from(ui.get());
-            View load = inflater.inflate(R.layout.item_load, null, false);
+            View load = View.inflate(ui.get(), R.layout.item_load, null);
             View cancelButton = load.findViewById(R.id.kill_button);
             loadingCircle.setContentView(load);
 

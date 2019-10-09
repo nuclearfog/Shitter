@@ -118,4 +118,5 @@
     <string name="video_preview_button">Videovorschau Button</string>
     <string name="failed_open_link">Fehler beim Öffnen des links!</string>
     <string name="image_download_fail">Bild konnte nicht geladen werden!</string>
+    <string name="error_cant_send_to_user">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
 </resources>

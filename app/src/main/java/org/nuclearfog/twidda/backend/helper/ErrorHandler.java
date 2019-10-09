@@ -62,6 +62,10 @@ public abstract class ErrorHandler {
                 Toast.makeText(c, R.string.duplicate_status, Toast.LENGTH_SHORT).show();
                 break;
 
+            case 349:
+                Toast.makeText(c, R.string.error_cant_send_to_user, Toast.LENGTH_SHORT).show();
+                break;
+
             case 354:
                 Toast.makeText(c, R.string.directmessage_too_long, Toast.LENGTH_SHORT).show();
                 break;

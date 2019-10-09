@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
@@ -41,8 +40,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
             window.setCanceledOnTouchOutside(false);
             if (window.getWindow() != null)
                 window.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            LayoutInflater inflater = LayoutInflater.from(ui.get());
-            View load = inflater.inflate(R.layout.item_load, null, false);
+            View load = View.inflate(ui.get(), R.layout.item_load, null);
             View cancelButton = load.findViewById(R.id.kill_button);
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override

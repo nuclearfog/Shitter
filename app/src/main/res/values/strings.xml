@@ -118,4 +118,5 @@
     <string name="error_empty_pass">Proxy password should not be empty!</string>
     <string name="failed_open_link">Failed to open link!</string>
     <string name="image_download_fail">Image could not be loaded!</string>
+    <string name="error_cant_send_to_user">Cannot send directmessage to this user!</string>
 </resources>
