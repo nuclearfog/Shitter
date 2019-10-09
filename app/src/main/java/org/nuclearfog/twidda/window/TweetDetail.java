@@ -11,11 +11,9 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +39,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
@@ -51,8 +47,7 @@ import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
 
 
-public class TweetDetail extends AppCompatActivity implements OnClickListener, OnLongClickListener,
-        OnTouchListener, OnTagClickListener {
+public class TweetDetail extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener {
 
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
@@ -107,7 +102,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
         favButton.setOnClickListener(this);
-        tweetTxt.setOnTouchListener(this);
         rtwButton.setOnLongClickListener(this);
         favButton.setOnLongClickListener(this);
     }
@@ -243,17 +237,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         Intent intent = new Intent(this, SearchPage.class);
         intent.putExtra(KEY_SEARCH, text);
         startActivity(intent);
-    }
-
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        int action = event.getActionMasked() & event.getAction();
-        if (action == ACTION_UP || action == ACTION_DOWN) {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        }
-        return v.performClick();
     }
 
 
