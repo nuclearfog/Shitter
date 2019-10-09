@@ -25,8 +25,10 @@
         android:id="@+id/profile_message"
         android:icon="@drawable/message"
         android:title="@string/directmessage"
+        android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile_settings"
+        android:visible="false"
         android:title="@string/edit_profile" />
 </menu>

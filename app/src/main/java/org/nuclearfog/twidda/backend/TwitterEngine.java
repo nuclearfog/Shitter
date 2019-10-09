@@ -10,6 +10,7 @@ import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
@@ -24,7 +25,6 @@ import twitter4j.Location;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
-import twitter4j.Relationship;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Trend;
@@ -297,18 +297,11 @@ public class TwitterEngine {
      * Efficient Access of Connection Information
      *
      * @param userId User ID compared with Home ID
-     * @return array of connection states Index 0: I follow user, 1: user follows me, 2: blocked 3: muted 4: canDM
+     * @return User Properties
      * @throws TwitterException if Connection is unavailable
      */
-    public boolean[] getConnection(long userId) throws TwitterException {
-        Relationship connect = twitter.showFriendship(twitterID, userId);
-        boolean[] connection = new boolean[5];
-        connection[0] = connect.isSourceFollowingTarget();
-        connection[1] = connect.isTargetFollowingSource();
-        connection[2] = connect.isSourceBlockingTarget();
-        connection[3] = connect.isSourceMutingTarget();
-        connection[4] = connect.canSourceDm();
-        return connection;
+    public UserProperties getConnection(long userId) throws TwitterException {
+        return new UserProperties(twitter.showFriendship(twitterID, userId));
     }
 
 

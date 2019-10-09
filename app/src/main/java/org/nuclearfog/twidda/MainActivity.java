@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     public static final int APP_LOGOUT = 4;
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
-    private static final int[] ICONS = {R.drawable.home, R.drawable.hash, R.drawable.mention};
 
     private GlobalSettings settings;
     private FragmentAdapter adapter;
-    private TabLayout tab;
+    private TabLayout tablayout;
     private ViewPager pager;
+    private View root;
     private int tabIndex = 0;
 
     static {
@@ -56,13 +56,28 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         setContentView(R.layout.page_main);
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
         pager = findViewById(R.id.home_pager);
-        tab = findViewById(R.id.home_tab);
+        tablayout = findViewById(R.id.home_tab);
+        root = findViewById(R.id.main_layout);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         settings = GlobalSettings.getInstance(this);
         adapter = new FragmentAdapter(getSupportFragmentManager());
+        pager.setAdapter(adapter);
+        pager.setOffscreenPageLimit(3);
+        tablayout.setupWithViewPager(pager);
+        tablayout.addOnTabSelectedListener(this);
+
+        Tab tlTab = tablayout.getTabAt(0);
+        Tab trTab = tablayout.getTabAt(1);
+        Tab mnTab = tablayout.getTabAt(2);
+
+        if (tlTab != null && trTab != null && mnTab != null) {
+            tlTab.setIcon(R.drawable.home);
+            trTab.setIcon(R.drawable.hash);
+            mnTab.setIcon(R.drawable.mention);
+        }
     }
 
 
@@ -72,18 +87,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, LOGIN);
-        } else if (pager.getAdapter() == null) {
-            pager.setAdapter(adapter);
-            pager.setOffscreenPageLimit(3);
-            tab.setupWithViewPager(pager);
-            tab.addOnTabSelectedListener(this);
-            for (int i = 0; i < ICONS.length; i++) {
-                Tab t = tab.getTabAt(i);
-                if (t != null)
-                    t.setIcon(ICONS[i]);
-            }
-            initView();
         }
+        root.setBackgroundColor(settings.getBackgroundColor());
+        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
     }
 
 
@@ -100,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     adapter.clearData();
                 else
                     adapter.notifySettingsChanged();
-                initView();
                 break;
         }
         super.onActivityResult(reqCode, returnCode, intent);
@@ -215,12 +220,5 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-    }
-
-
-    private void initView() {
-        View root = findViewById(R.id.main_layout);
-        root.setBackgroundColor(settings.getBackgroundColor());
-        tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
     }
 }

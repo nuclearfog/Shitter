@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
+import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.MainActivity;
@@ -31,7 +32,6 @@ import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
 public class SearchPage extends AppCompatActivity implements OnTabSelectedListener {
 
     public static final String KEY_SEARCH = "search";
-    private static final int[] icons = {R.drawable.search, R.drawable.user};
 
     private FragmentAdapter adapter;
     private ViewPager pager;
@@ -45,7 +45,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         setContentView(R.layout.page_search);
 
         Toolbar tool = findViewById(R.id.search_toolbar);
-        TabLayout tab = findViewById(R.id.search_tab);
+        TabLayout tablayout = findViewById(R.id.search_tab);
         View root = findViewById(R.id.search_layout);
         pager = findViewById(R.id.search_pager);
 
@@ -65,17 +65,19 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             throw new AssertionError();
 
         root.setBackgroundColor(settings.getBackgroundColor());
-        tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
+        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
 
         adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
-        tab.setupWithViewPager(pager);
-        tab.addOnTabSelectedListener(this);
+        tablayout.setupWithViewPager(pager);
+        tablayout.addOnTabSelectedListener(this);
         pager.setAdapter(adapter);
 
-        for (int i = 0; i < icons.length; i++) {
-            TabLayout.Tab t = tab.getTabAt(i);
-            if (t != null)
-                t.setIcon(icons[i]);
+        Tab twtSearch = tablayout.getTabAt(0);
+        Tab usrSearch = tablayout.getTabAt(1);
+
+        if (twtSearch != null && usrSearch != null) {
+            twtSearch.setIcon(R.drawable.search);
+            usrSearch.setIcon(R.drawable.user);
         }
     }
 

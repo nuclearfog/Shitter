@@ -85,6 +85,7 @@
                                     android:id="@+id/follow_back"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
+                                    android:visibility="gone"
                                     android:layout_marginLeft="@dimen/text_padding"
                                     android:layout_marginStart="@dimen/text_padding"
                                     android:layout_weight="1"
