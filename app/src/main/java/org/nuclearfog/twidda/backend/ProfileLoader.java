@@ -18,6 +18,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.UserBundle;
 import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -36,7 +37,7 @@ import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 
 
-public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
+public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserBundle> {
 
     public enum Mode {
         LDR_PROFILE,
@@ -49,7 +50,6 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private UserProperties connection;
     private GlobalSettings settings;
     private AppDatabase db;
 
@@ -64,37 +64,40 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
 
 
     @Override
-    protected TwitterUser doInBackground(Long[] args) {
-        TwitterUser user = null;
+    protected UserBundle doInBackground(Long[] args) {
+        UserProperties connection;
+        TwitterUser user;
         long userId = args[0];
         try {
-            if (mode == Mode.LDR_PROFILE) {
-                user = db.getUser(userId);
-                if (user != null)
-                    publishProgress(user);
-                user = mTwitter.getUser(userId);
-                publishProgress(user);
-                db.storeUser(user);
-            }
-            connection = mTwitter.getConnection(userId);
-            if (!connection.isHome()) {
-                if (connection.isBlocked() || connection.isMuted())
-                    db.muteUser(userId, true);
-                else
-                    db.muteUser(userId, false);
-            }
-
             switch (mode) {
+                case LDR_PROFILE:
+                    user = db.getUser(userId);
+                    if (user != null)
+                        publishProgress(user);
+                    user = mTwitter.getUser(userId);
+                    publishProgress(user);
+                    db.storeUser(user);
+
+                    connection = mTwitter.getConnection(userId);
+                    if (!connection.isHome())
+                        if (connection.isBlocked() || connection.isMuted())
+                            db.muteUser(userId, true);
+                        else
+                            db.muteUser(userId, false);
+                    return new UserBundle(user, connection);
+
                 case ACTION_FOLLOW:
+                    connection = mTwitter.getConnection(userId);
                     if (!connection.isFriend())
                         user = mTwitter.followUser(userId);
                     else
                         user = mTwitter.unfollowUser(userId);
                     publishProgress(user);
                     connection = mTwitter.getConnection(userId);
-                    break;
+                    return new UserBundle(user, connection);
 
                 case ACTION_BLOCK:
+                    connection = mTwitter.getConnection(userId);
                     if (!connection.isBlocked()) {
                         user = mTwitter.blockUser(userId);
                         db.muteUser(userId, true);
@@ -104,9 +107,10 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
                     }
                     publishProgress(user);
                     connection = mTwitter.getConnection(userId);
-                    break;
+                    return new UserBundle(user, connection);
 
                 case ACTION_MUTE:
+                    connection = mTwitter.getConnection(userId);
                     if (!connection.isMuted()) {
                         user = mTwitter.muteUser(userId);
                         db.muteUser(userId, true);
@@ -116,22 +120,21 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
                     }
                     publishProgress(user);
                     connection = mTwitter.getConnection(userId);
-                    break;
+                    return new UserBundle(user, connection);
             }
         } catch (TwitterException err) {
             this.err = err;
         } catch (Exception err) {
             err.printStackTrace();
         }
-        return user;
+        return null;
     }
 
 
     @Override
-    protected void onProgressUpdate(@NonNull TwitterUser[] users) {
-        if (ui.get() != null) {
-            final TwitterUser user = users[0];
-
+    protected void onProgressUpdate(TwitterUser[] users) {
+        final TwitterUser user = users[0];
+        if (ui.get() != null && user != null) {
             ImageView profile = ui.get().findViewById(R.id.profile_img);
             TextView txtUser = ui.get().findViewById(R.id.profile_username);
             TextView txtScrName = ui.get().findViewById(R.id.profile_screenname);
@@ -202,33 +205,33 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, TwitterUser> {
 
 
     @Override
-    protected void onPostExecute(@Nullable TwitterUser user) {
+    protected void onPostExecute(@Nullable UserBundle bundle) {
         if (ui.get() != null) {
-            if (user != null && connection != null) {
+            if (bundle != null) {
                 switch (mode) {
                     case ACTION_FOLLOW:
-                        if (!user.isLocked())
-                            if (connection.isFriend())
+                        if (!bundle.getUser().isLocked())
+                            if (bundle.getProperties().isFriend())
                                 Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
                             else
                                 Toast.makeText(ui.get(), R.string.unfollowed, Toast.LENGTH_SHORT).show();
                         break;
 
                     case ACTION_BLOCK:
-                        if (connection.isBlocked())
+                        if (bundle.getProperties().isBlocked())
                             Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
                         break;
 
                     case ACTION_MUTE:
-                        if (connection.isMuted())
+                        if (bundle.getProperties().isMuted())
                             Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
                         break;
                 }
-                ui.get().setConnection(user, connection);
+                ui.get().setConnection(bundle);
             }
             if (err != null) {
                 boolean killActivity = ErrorHandler.printError(ui.get(), err);

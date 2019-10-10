@@ -30,8 +30,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserProperties;
+import org.nuclearfog.twidda.backend.items.UserBundle;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -65,8 +64,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ViewPager pager;
     private View follow_back;
 
-    private UserProperties connection;
-    private TwitterUser user;
+    private UserBundle mUser;
     private String username;
     private long userId;
 
@@ -170,10 +168,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (user != null && connection != null) {
+        if (mUser != null) {
             MenuItem dmIcon = m.findItem(R.id.profile_message);
             MenuItem setting = m.findItem(R.id.profile_settings);
-            if (connection.isHome()) {
+            if (mUser.getProperties().isHome()) {
                 dmIcon.setVisible(true);
                 setting.setVisible(true);
             } else {
@@ -184,30 +182,30 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 blockIcon.setVisible(true);
                 muteIcon.setVisible(true);
 
-                if (connection.isFriend()) {
+                if (mUser.getProperties().isFriend()) {
                     followIcon.setIcon(R.drawable.follow_enabled);
                     followIcon.setTitle(R.string.unfollow);
-                } else if (user.followRequested()) {
+                } else if (mUser.getUser().followRequested()) {
                     followIcon.setIcon(R.drawable.follow_requested);
                     followIcon.setTitle(R.string.follow_requested);
                 } else {
                     followIcon.setIcon(R.drawable.follow);
                     followIcon.setTitle(R.string.follow);
                 }
-                if (connection.isBlocked()) {
+                if (mUser.getProperties().isBlocked()) {
                     blockIcon.setTitle(R.string.unblock);
                     followIcon.setVisible(false);
                 } else {
                     blockIcon.setTitle(R.string.block);
                     followIcon.setVisible(true);
                 }
-                if (connection.isMuted())
+                if (mUser.getProperties().isMuted())
                     muteIcon.setTitle(R.string.unmute);
                 else
                     muteIcon.setTitle(R.string.mute);
-                if (connection.canDm())
+                if (mUser.getProperties().canDm())
                     dmIcon.setVisible(true);
-                if (connection.isFollower())
+                if (mUser.getProperties().isFollower())
                     follow_back.setVisibility(VISIBLE);
             }
         }
@@ -217,18 +215,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (profileAsync != null && profileAsync.getStatus() != RUNNING && connection != null) {
+        if (profileAsync != null && profileAsync.getStatus() != RUNNING && mUser != null) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
-                    if (!connection.isHome())
+                    if (!mUser.getProperties().isHome())
                         tweet.putExtra(KEY_TWEETPOPUP_ADDITION, username);
                     startActivity(tweet);
                     break;
 
                 case R.id.profile_follow:
                     profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
-                    if (!connection.isFriend()) {
+                    if (!mUser.getProperties().isFriend()) {
                         profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_unfollow)
@@ -245,7 +243,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                 case R.id.profile_block:
                     profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
-                    if (connection.isBlocked()) {
+                    if (mUser.getProperties().isBlocked()) {
                         profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_block)
@@ -266,7 +264,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.profile_message:
-                    if (connection.isHome()) {
+                    if (mUser.getProperties().isHome()) {
                         Intent dmPage = new Intent(this, DirectMessage.class);
                         startActivity(dmPage);
                     } else {
@@ -306,10 +304,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (user != null && connection != null) {
+        if (mUser != null) {
             switch (v.getId()) {
                 case R.id.following:
-                    if (!user.isLocked() || connection.isFriend()) {
+                    if (!mUser.getUser().isLocked() || mUser.getProperties().isFriend()) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERLIST_ID, userId);
                         following.putExtra(KEY_USERLIST_MODE, FRIENDS);
@@ -318,7 +316,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.follower:
-                    if (!user.isLocked() || connection.isFriend()) {
+                    if (!mUser.getUser().isLocked() || mUser.getProperties().isFriend()) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERLIST_ID, userId);
                         follower.putExtra(KEY_USERLIST_MODE, FOLLOWERS);
@@ -330,7 +328,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                     if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         Intent browserIntent = new Intent(ACTION_VIEW);
-                        String link = user.getLink();
+                        String link = mUser.getUser().getLink();
                         browserIntent.setData(Uri.parse(link));
                         startActivity(browserIntent);
                     } else {
@@ -366,9 +364,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public void setConnection(TwitterUser user, UserProperties connection) {
-        this.connection = connection;
-        this.user = user;
+    public void setConnection(UserBundle mUser) {
+        this.mUser = mUser;
         invalidateOptionsMenu();
     }
 }
