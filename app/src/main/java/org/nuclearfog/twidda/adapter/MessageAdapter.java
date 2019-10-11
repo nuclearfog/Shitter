@@ -21,7 +21,6 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.TimeFormat;
 import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -88,7 +87,6 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     public void onBindViewHolder(@NonNull MessageHolder vh, final int index) {
         Spanned text;
         Message message = messages.get(index);
-        TwitterUser user = message.getSender();
         if (itemClickListener.get() != null)
             text = Tagger.makeText(message.getText(), highlight, itemClickListener.get());
         else
@@ -96,12 +94,14 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         vh.message.setText(text);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.message.setLinkTextColor(highlight);
-        vh.username.setText(user.getUsername());
-        vh.screenname.setText(user.getScreenname());
+        vh.username.setText(message.getSender().getUsername());
+        vh.screenname.setText(message.getSender().getScreenname());
         vh.createdAt.setText(TimeFormat.getString(message.getTime()));
+        vh.receivername.setText(message.getReceiver().getScreenname());
         vh.message.setTextColor(fontColor);
         vh.username.setTextColor(fontColor);
         vh.screenname.setTextColor(fontColor);
+        vh.receivername.setTextColor(fontColor);
         vh.createdAt.setTextColor(fontColor);
         vh.answer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,11 +124,11 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
                     itemClickListener.get().onClick(messages.get(index), OnItemSelected.Action.PROFILE);
             }
         });
-        if (user.isVerified())
+        if (message.getSender().isVerified())
             vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
         else
             vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (user.isLocked())
+        if (message.getSender().isLocked())
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -143,6 +143,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         final ImageView profile_img;
         final TextView username;
         final TextView screenname;
+        final TextView receivername;
         final TextView createdAt;
         final TextView message;
         final Button answer;
@@ -153,6 +154,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             profile_img = v.findViewById(R.id.dm_profileImg);
             username = v.findViewById(R.id.dm_username);
             screenname = v.findViewById(R.id.dm_screenname);
+            receivername = v.findViewById(R.id.dm_receiver);
             createdAt = v.findViewById(R.id.dm_time);
             message = v.findViewById(R.id.dm_message);
             answer = v.findViewById(R.id.dm_answer);

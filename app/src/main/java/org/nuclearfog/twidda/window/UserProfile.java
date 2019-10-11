@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -39,6 +41,8 @@ import java.text.NumberFormat;
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.Gravity.CENTER;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
@@ -52,7 +56,7 @@ import static org.nuclearfog.twidda.window.UserDetail.UserType.FRIENDS;
 
 
 public class UserProfile extends AppCompatActivity implements OnClickListener,
-        OnTagClickListener, OnTabSelectedListener {
+        OnTouchListener, OnTagClickListener, OnTabSelectedListener {
 
     public static final String KEY_PROFILE_ID = "userID";
     private static final int REQUEST_PROFILE_CHANGED = 1;
@@ -100,7 +104,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
 
-        bioTxt.setMovementMethod(ScrollingMovementMethod.getInstance());
+        bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setLinkTextColor(settings.getHighlightColor());
@@ -127,6 +131,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tab.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
+        bioTxt.setOnTouchListener(this);
     }
 
 
@@ -336,6 +341,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
             }
         }
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case ACTION_DOWN:
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                break;
+
+            case ACTION_UP:
+                v.getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+        }
+        return v.performClick();
     }
 
 

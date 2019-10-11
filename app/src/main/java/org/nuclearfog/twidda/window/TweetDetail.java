@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
@@ -47,7 +51,8 @@ import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
 
 
-public class TweetDetail extends AppCompatActivity implements OnClickListener, OnLongClickListener, OnTagClickListener {
+public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTouchListener,
+        OnLongClickListener, OnTagClickListener {
 
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
@@ -93,12 +98,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        tweetTxt.setMovementMethod(new ScrollingMovementMethod());
+        tweetTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tweetTxt.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
+        tweetTxt.setOnTouchListener(this);
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
         favButton.setOnClickListener(this);
@@ -237,6 +243,21 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         Intent intent = new Intent(this, SearchPage.class);
         intent.putExtra(KEY_SEARCH, text);
         startActivity(intent);
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case ACTION_DOWN:
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                break;
+
+            case ACTION_UP:
+                v.getParent().requestDisallowInterceptTouchEvent(false);
+                break;
+        }
+        return v.performClick();
     }
 
 

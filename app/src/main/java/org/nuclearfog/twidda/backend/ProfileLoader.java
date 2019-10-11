@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -148,7 +147,6 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserBundle> {
             String strFollower = settings.getNumberFormatter().format(user.getFollower());
             String strFollowing = settings.getNumberFormatter().format(user.getFollowing());
             Spanned bio = Tagger.makeText(user.getBio(), settings.getHighlightColor(), ui.get());
-            txtBio.setMovementMethod(LinkMovementMethod.getInstance());
             txtUser.setText(user.getUsername());
             txtScrName.setText(user.getScreenname());
             txtFollower.setText(strFollower);

@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.Spannable;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -151,9 +150,8 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
 
                     if (!tweet.getTweet().trim().isEmpty()) {
                         Spannable sTweet = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor(), ui.get());
-                        tweetText.setMovementMethod(LinkMovementMethod.getInstance());
-                        tweetText.setText(sTweet);
                         tweetText.setTextColor(settings.getFontColor());
+                        tweetText.setText(sTweet);
                     } else {
                         tweetText.setVisibility(GONE);
                     }

@@ -69,7 +69,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     public void onStart() {
         super.onStart();
         if (messageTask == null)
-            load();
+            load(Mode.DB);
     }
 
 
@@ -84,7 +84,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     @Override
     public void onRefresh() {
         if (messageTask != null && messageTask.getStatus() != RUNNING)
-            load();
+            load(Mode.LOAD);
     }
 
 
@@ -123,8 +123,8 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     }
 
 
-    private void load() {
-        messageTask = new MessageLoader(root, Mode.LOAD);
+    private void load(Mode m) {
+        messageTask = new MessageLoader(root, m);
         messageTask.execute();
     }
 }
