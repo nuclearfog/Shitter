@@ -63,10 +63,8 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onStart() {
         super.onStart();
-        if (trendTask == null) {
-            trendTask = new TrendLoader(root);
-            trendTask.execute();
-        }
+        if (trendTask == null)
+            load();
     }
 
 
@@ -80,8 +78,8 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onRefresh() {
-        trendTask = new TrendLoader(root);
-        trendTask.execute();
+        if (trendTask != null && trendTask.getStatus() != RUNNING)
+            load();
     }
 
 
@@ -119,6 +117,12 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
         if (adapter != null)
             adapter.clear();
         trendTask = null;
+    }
+
+
+    private void load() {
+        trendTask = new TrendLoader(root);
+        trendTask.execute();
     }
 
 

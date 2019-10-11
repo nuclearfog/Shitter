@@ -263,9 +263,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.profile_message:
-                    Intent dmPage = new Intent(this, DirectMessage.class);
-                    if (!userBundle.getProperties().isHome())
+                    Intent dmPage;
+                    if (userBundle.getProperties().isHome()) {
+                        dmPage = new Intent(this, DirectMessage.class);
+                    } else {
+                        dmPage = new Intent(this, MessagePopup.class);
                         dmPage.putExtra(KEY_DM_ADDITION, userBundle.getUser().getScreenname());
+                    }
                     startActivity(dmPage);
                     break;
 

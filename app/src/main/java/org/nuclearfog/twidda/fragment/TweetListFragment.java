@@ -107,9 +107,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onResume() {
         super.onResume();
-        if (tweetTask == null) {
+        if (tweetTask == null)
             load();
-        }
     }
 
 
@@ -131,7 +130,8 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onRefresh() {
-        load();
+        if (tweetTask != null && tweetTask.getStatus() != RUNNING)
+            load();
     }
 
 

@@ -107,7 +107,8 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
     @Override
     public void onRefresh() {
-        load();
+        if (userTask != null && userTask.getStatus() != RUNNING)
+            load();
     }
 
 
