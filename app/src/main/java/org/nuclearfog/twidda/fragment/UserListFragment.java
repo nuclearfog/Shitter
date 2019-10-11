@@ -25,7 +25,6 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
 
 
 public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
@@ -116,11 +115,8 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     public void onItemClick(int pos) {
         if (reload != null && !reload.isRefreshing()) {
             TwitterUser user = adapter.getData(pos);
-            long userID = user.getId();
-            String username = user.getScreenname();
             Intent intent = new Intent(getContext(), UserProfile.class);
-            intent.putExtra(KEY_PROFILE_ID, userID);
-            intent.putExtra(KEY_PROFILE_NAME, username);
+            intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);
         }
     }

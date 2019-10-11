@@ -28,7 +28,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
 
 
 public class MessageListFragment extends Fragment implements OnRefreshListener, OnItemSelected {
@@ -119,7 +118,6 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
                 case PROFILE:
                     Intent profile = new Intent(getContext(), UserProfile.class);
                     profile.putExtra(KEY_PROFILE_ID, message.getSender().getId());
-                    profile.putExtra(KEY_PROFILE_NAME, message.getSender().getScreenname());
                     startActivity(profile);
                     break;
             }

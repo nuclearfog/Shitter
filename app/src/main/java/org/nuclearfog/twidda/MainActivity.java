@@ -25,7 +25,6 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_NAME;
 
 /**
  * Main Activity
@@ -177,7 +176,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 long homeId = settings.getUserId();
                 Intent user = new Intent(this, UserProfile.class);
                 user.putExtra(KEY_PROFILE_ID, homeId);
-                user.putExtra(KEY_PROFILE_NAME, "");
                 startActivity(user);
                 break;
 

@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -54,7 +55,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnTagClickListener, OnTabSelectedListener {
 
     public static final String KEY_PROFILE_ID = "userID";
-    public static final String KEY_PROFILE_NAME = "username";
     private static final int REQUEST_PROFILE_CHANGED = 1;
     public static final int RETURN_PROFILE_CHANGED = 2;
 
@@ -64,8 +64,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ViewPager pager;
     private View follow_back;
 
-    private UserBundle mUser;
-    private String username;
+    @Nullable
+    private UserBundle userBundle;
     private long userId;
 
     private int tabIndex = 0;
@@ -76,9 +76,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.page_profile);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_PROFILE_ID) && param.containsKey(KEY_PROFILE_NAME)) {
+        if (param != null && param.containsKey(KEY_PROFILE_ID)) {
             userId = param.getLong(KEY_PROFILE_ID);
-            username = param.getString(KEY_PROFILE_NAME);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
@@ -168,10 +167,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (mUser != null) {
+        if (userBundle != null) {
             MenuItem dmIcon = m.findItem(R.id.profile_message);
             MenuItem setting = m.findItem(R.id.profile_settings);
-            if (mUser.getProperties().isHome()) {
+            if (userBundle.getProperties().isHome()) {
                 dmIcon.setVisible(true);
                 setting.setVisible(true);
             } else {
@@ -182,30 +181,30 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 blockIcon.setVisible(true);
                 muteIcon.setVisible(true);
 
-                if (mUser.getProperties().isFriend()) {
+                if (userBundle.getProperties().isFriend()) {
                     followIcon.setIcon(R.drawable.follow_enabled);
                     followIcon.setTitle(R.string.unfollow);
-                } else if (mUser.getUser().followRequested()) {
+                } else if (userBundle.getUser().followRequested()) {
                     followIcon.setIcon(R.drawable.follow_requested);
                     followIcon.setTitle(R.string.follow_requested);
                 } else {
                     followIcon.setIcon(R.drawable.follow);
                     followIcon.setTitle(R.string.follow);
                 }
-                if (mUser.getProperties().isBlocked()) {
+                if (userBundle.getProperties().isBlocked()) {
                     blockIcon.setTitle(R.string.unblock);
                     followIcon.setVisible(false);
                 } else {
                     blockIcon.setTitle(R.string.block);
                     followIcon.setVisible(true);
                 }
-                if (mUser.getProperties().isMuted())
+                if (userBundle.getProperties().isMuted())
                     muteIcon.setTitle(R.string.unmute);
                 else
                     muteIcon.setTitle(R.string.mute);
-                if (mUser.getProperties().canDm())
+                if (userBundle.getProperties().canDm())
                     dmIcon.setVisible(true);
-                if (mUser.getProperties().isFollower())
+                if (userBundle.getProperties().isFollower())
                     follow_back.setVisibility(VISIBLE);
             }
         }
@@ -215,18 +214,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (profileAsync != null && profileAsync.getStatus() != RUNNING && mUser != null) {
+        if (profileAsync != null && profileAsync.getStatus() != RUNNING && userBundle != null) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
                     Intent tweet = new Intent(this, TweetPopup.class);
-                    if (!mUser.getProperties().isHome())
-                        tweet.putExtra(KEY_TWEETPOPUP_ADDITION, username);
+                    if (!userBundle.getProperties().isHome())
+                        tweet.putExtra(KEY_TWEETPOPUP_ADDITION, userBundle.getUser().getScreenname());
                     startActivity(tweet);
                     break;
 
                 case R.id.profile_follow:
                     profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
-                    if (!mUser.getProperties().isFriend()) {
+                    if (!userBundle.getProperties().isFriend()) {
                         profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_unfollow)
@@ -243,7 +242,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                 case R.id.profile_block:
                     profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
-                    if (mUser.getProperties().isBlocked()) {
+                    if (userBundle.getProperties().isBlocked()) {
                         profileAsync.execute(userId);
                     } else {
                         new Builder(this).setMessage(R.string.confirm_block)
@@ -264,14 +263,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.profile_message:
-                    if (mUser.getProperties().isHome()) {
-                        Intent dmPage = new Intent(this, DirectMessage.class);
-                        startActivity(dmPage);
-                    } else {
-                        Intent dmPopup = new Intent(this, MessagePopup.class);
-                        dmPopup.putExtra(KEY_DM_ADDITION, username);
-                        startActivity(dmPopup);
-                    }
+                    Intent dmPage = new Intent(this, DirectMessage.class);
+                    if (!userBundle.getProperties().isHome())
+                        dmPage.putExtra(KEY_DM_ADDITION, userBundle.getUser().getScreenname());
+                    startActivity(dmPage);
                     break;
 
                 case R.id.profile_settings:
@@ -304,10 +299,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (mUser != null) {
+        if (userBundle != null) {
             switch (v.getId()) {
                 case R.id.following:
-                    if (!mUser.getUser().isLocked() || mUser.getProperties().isFriend()) {
+                    if (!userBundle.getUser().isLocked() || userBundle.getProperties().isFriend()) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERLIST_ID, userId);
                         following.putExtra(KEY_USERLIST_MODE, FRIENDS);
@@ -316,7 +311,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.follower:
-                    if (!mUser.getUser().isLocked() || mUser.getProperties().isFriend()) {
+                    if (!userBundle.getUser().isLocked() || userBundle.getProperties().isFriend()) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERLIST_ID, userId);
                         follower.putExtra(KEY_USERLIST_MODE, FOLLOWERS);
@@ -328,7 +323,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                     if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         Intent browserIntent = new Intent(ACTION_VIEW);
-                        String link = mUser.getUser().getLink();
+                        String link = userBundle.getUser().getLink();
                         browserIntent.setData(Uri.parse(link));
                         startActivity(browserIntent);
                     } else {
@@ -365,7 +360,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     public void setConnection(UserBundle mUser) {
-        this.mUser = mUser;
+        this.userBundle = mUser;
         invalidateOptionsMenu();
     }
 }

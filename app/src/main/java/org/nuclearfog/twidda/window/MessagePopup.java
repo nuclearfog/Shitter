@@ -49,8 +49,8 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         setContentView(R.layout.popup_dm);
         String addtion = "";
         Bundle param = getIntent().getExtras();
-        if (param != null) {
-            addtion = param.getString(KEY_DM_ADDITION, "");
+        if (param != null && param.containsKey(KEY_DM_ADDITION)) {
+            addtion = param.getString(KEY_DM_ADDITION);
         }
 
         View root = findViewById(R.id.dm_popup);
