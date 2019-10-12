@@ -138,6 +138,7 @@
                         android:layout_height="wrap_content"
                         android:linksClickable="false"
                         android:singleLine="true"
+                        android:text="@string/sent_from"
                         android:textSize="@dimen/textsize_refer" />
 
                 </LinearLayout>

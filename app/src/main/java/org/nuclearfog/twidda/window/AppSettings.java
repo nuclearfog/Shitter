@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -123,10 +124,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
-        colorButton1.setTextColor(settings.getBackgroundColor() ^ 0xffffff);
-        colorButton2.setTextColor(settings.getFontColor() ^ 0xffffff);
-        colorButton3.setTextColor(settings.getPopupColor() ^ 0xffffff);
-        colorButton4.setTextColor(settings.getHighlightColor() ^ 0xffffff);
+        colorButton1.setTextColor(settings.getBackgroundColor() ^ Color.WHITE);
+        colorButton2.setTextColor(settings.getFontColor() ^ Color.WHITE);
+        colorButton3.setTextColor(settings.getPopupColor() ^ Color.WHITE);
+        colorButton4.setTextColor(settings.getHighlightColor() ^ Color.WHITE);
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -172,7 +173,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         if (item.getItemId() == R.id.settings_info) {
             if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                String link = "https://github.com/nuclearfog/Shitter";
+                String link = getString(R.string.information_link);
                 intent.setData(Uri.parse(link));
                 startActivity(intent);
             } else {
@@ -270,25 +271,25 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 root.setBackgroundColor(color);
                 settings.setBackgroundColor(color);
                 colorButton1.setBackgroundColor(color);
-                colorButton1.setTextColor(color ^ 0xffffff);
+                colorButton1.setTextColor(color ^ Color.WHITE);
                 break;
 
             case FONTCOLOR:
                 settings.setFontColor(color);
                 colorButton2.setBackgroundColor(color);
-                colorButton2.setTextColor(color ^ 0xffffff);
+                colorButton2.setTextColor(color ^ Color.WHITE);
                 break;
 
             case POPUPCOLOR:
                 settings.setPopupColor(color);
                 colorButton3.setBackgroundColor(color);
-                colorButton3.setTextColor(color ^ 0xffffff);
+                colorButton3.setTextColor(color ^ Color.WHITE);
                 break;
 
             case HIGHLIGHT:
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
-                colorButton4.setTextColor(color ^ 0xffffff);
+                colorButton4.setTextColor(color ^ Color.WHITE);
                 break;
         }
     }

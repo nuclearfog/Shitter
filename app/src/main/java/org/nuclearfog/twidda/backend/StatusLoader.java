@@ -157,7 +157,6 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                     }
                     tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
                     tweetDate.setTextColor(settings.getFontColor());
-                    tweet_api.setText(R.string.sent_from);
                     tweet_api.append(tweet.getSource());
                     tweet_api.setTextColor(settings.getFontColor());
 
@@ -240,11 +239,9 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
             retweetButton.setText(retweetCount);
 
             if (tweet.getReplyId() > 1) {
-                String reply = ui.get().getString(R.string.answering);
-                reply += tweet.getReplyName();
-                replyName.setText(reply);
+                replyName.setText(R.string.answering);
+                replyName.append(tweet.getReplyName());
                 replyName.setVisibility(VISIBLE);
-
                 replyName.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
