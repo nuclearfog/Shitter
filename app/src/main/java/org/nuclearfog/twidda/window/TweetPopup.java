@@ -186,9 +186,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 String[] paths = new String[mediaPath.size()];
                 paths = mediaPath.toArray(paths);
 
-                if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
-                    uploaderAsync.cancel(true);
-
                 if (tweetStr.trim().isEmpty() && paths.length == 0) {
                     Toast.makeText(this, R.string.empty_tweet, LENGTH_SHORT).show();
                 } else if (paths.length > 0) {

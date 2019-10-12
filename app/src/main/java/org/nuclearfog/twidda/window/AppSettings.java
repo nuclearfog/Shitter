@@ -153,10 +153,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
         if (locationAsync != null && locationAsync.getStatus() == RUNNING)
             locationAsync.cancel(true);
+        super.onDestroy();
     }
 
 

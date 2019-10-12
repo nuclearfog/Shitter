@@ -72,6 +72,14 @@ public class ProfileEdit extends AppCompatActivity implements OnClickListener {
 
 
     @Override
+    protected void onDestroy() {
+        if (editorAsync != null && editorAsync.getStatus() == RUNNING)
+            editorAsync.cancel(true);
+        super.onDestroy();
+    }
+
+
+    @Override
     public void onBackPressed() {
         AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
         closeDialog.setMessage(R.string.exit_confirm);

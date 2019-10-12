@@ -79,13 +79,19 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (messageAsync != null && messageAsync.getStatus() == RUNNING)
-                        messageAsync.cancel(true);
                     finish();
                 }
             });
             closeDialog.show();
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        if (messageAsync != null && messageAsync.getStatus() == RUNNING)
+            messageAsync.cancel(true);
+        super.onDestroy();
     }
 
 
