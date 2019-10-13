@@ -15,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -27,7 +28,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
 
 
-public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener {
+public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_USER_MODE = "mode";
     public static final String KEY_FRAG_USER_SEARCH = "search";
@@ -45,6 +46,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     private SwipeRefreshLayout reload;
     private UserAdapter adapter;
     private UserLoader userTask;
+    private RecyclerView list;
     private View root;
     private UserType mode;
     private String search;
@@ -65,7 +67,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         }
 
         View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        RecyclerView list = v.findViewById(R.id.fragment_list);
+        list = v.findViewById(R.id.fragment_list);
         reload = v.findViewById(R.id.fragment_reload);
 
         GlobalSettings settings = GlobalSettings.getInstance(getContext());
@@ -120,6 +122,23 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
             intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void onTabChange() {
+        if (list != null)
+            list.smoothScrollToPosition(0);
+    }
+
+
+    @Override
+    public void onSettingsChange() {
+    }
+
+
+    @Override
+    public void onDataClear() {
     }
 
 
