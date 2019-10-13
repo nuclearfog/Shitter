@@ -34,7 +34,6 @@
     <string name="block">blocken</string>
     <string name="unblock">entblocken</string>
     <string name="followed">gefolgt!</string>
-    <string name="unfollowed">entfolgt!</string>
     <string name="blocked">geblockt!</string>
     <string name="unblocked">entblockt!</string>
     <string name="tweet_removed">Tweet gelöscht!</string>

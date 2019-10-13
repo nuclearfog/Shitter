@@ -33,7 +33,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
-import org.nuclearfog.twidda.backend.items.UserBundle;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -68,10 +69,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private NumberFormat formatter;
     private ViewPager pager;
     private View follow_back;
-
     @Nullable
-    private UserBundle userBundle;
+    private UserProperties properties;
+    @Nullable
+    private TwitterUser user;
+
     private long userId;
+    private boolean isHome;
 
     private int tabIndex = 0;
 
@@ -80,6 +84,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         super.onCreate(b);
         setContentView(R.layout.page_profile);
 
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_PROFILE_ID)) {
             userId = param.getLong(KEY_PROFILE_ID);
@@ -99,12 +104,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tweetTabTxt = new TextView(getApplicationContext());
         favorTabTxt = new TextView(getApplicationContext());
         formatter = NumberFormat.getIntegerInstance();
+        isHome = userId == settings.getUserId();
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
@@ -167,51 +173,52 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
+        if (isHome) {
+            MenuItem dmIcon = m.findItem(R.id.profile_message);
+            MenuItem setting = m.findItem(R.id.profile_settings);
+            dmIcon.setVisible(true);
+            setting.setVisible(true);
+        } else {
+            MenuItem followIcon = m.findItem(R.id.profile_follow);
+            MenuItem blockIcon = m.findItem(R.id.profile_block);
+            MenuItem muteIcon = m.findItem(R.id.profile_mute);
+            followIcon.setVisible(true);
+            blockIcon.setVisible(true);
+            muteIcon.setVisible(true);
+        }
         return super.onCreateOptionsMenu(m);
     }
 
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (userBundle != null) {
-            MenuItem dmIcon = m.findItem(R.id.profile_message);
-            MenuItem setting = m.findItem(R.id.profile_settings);
-            if (userBundle.getProperties().isHome()) {
-                dmIcon.setVisible(true);
-                setting.setVisible(true);
-            } else {
+        if (properties != null) {
+            if (properties.isFriend()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
+                followIcon.setIcon(R.drawable.follow_enabled);
+                followIcon.setTitle(R.string.unfollow);
+            }
+            if (properties.isBlocked()) {
                 MenuItem blockIcon = m.findItem(R.id.profile_block);
+                blockIcon.setTitle(R.string.unblock);
+            }
+            if (properties.isMuted()) {
                 MenuItem muteIcon = m.findItem(R.id.profile_mute);
-                followIcon.setVisible(true);
-                blockIcon.setVisible(true);
-                muteIcon.setVisible(true);
-
-                if (userBundle.getProperties().isFriend()) {
-                    followIcon.setIcon(R.drawable.follow_enabled);
-                    followIcon.setTitle(R.string.unfollow);
-                } else if (userBundle.getUser().followRequested()) {
-                    followIcon.setIcon(R.drawable.follow_requested);
-                    followIcon.setTitle(R.string.follow_requested);
-                } else {
-                    followIcon.setIcon(R.drawable.follow);
-                    followIcon.setTitle(R.string.follow);
-                }
-                if (userBundle.getProperties().isBlocked()) {
-                    blockIcon.setTitle(R.string.unblock);
-                    followIcon.setVisible(false);
-                } else {
-                    blockIcon.setTitle(R.string.block);
-                    followIcon.setVisible(true);
-                }
-                if (userBundle.getProperties().isMuted())
-                    muteIcon.setTitle(R.string.unmute);
-                else
-                    muteIcon.setTitle(R.string.mute);
-                if (userBundle.getProperties().canDm())
-                    dmIcon.setVisible(true);
-                if (userBundle.getProperties().isFollower())
-                    follow_back.setVisibility(VISIBLE);
+                muteIcon.setTitle(R.string.unmute);
+            }
+            if (properties.canDm()) {
+                MenuItem dmIcon = m.findItem(R.id.profile_message);
+                dmIcon.setVisible(true);
+            }
+            if (properties.isFollower()) {
+                follow_back.setVisibility(VISIBLE);
+            }
+        }
+        if (user != null) {
+            if (user.followRequested()) {
+                MenuItem followIcon = m.findItem(R.id.profile_follow);
+                followIcon.setIcon(R.drawable.follow_requested);
+                followIcon.setTitle(R.string.follow_requested);
             }
         }
         return super.onPrepareOptionsMenu(m);
@@ -220,46 +227,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (profileAsync != null && profileAsync.getStatus() != RUNNING && userBundle != null) {
+        if (profileAsync != null && profileAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
-                    Intent tweet = new Intent(this, TweetPopup.class);
-                    if (!userBundle.getProperties().isHome())
-                        tweet.putExtra(KEY_TWEETPOPUP_ADDITION, userBundle.getUser().getScreenname());
-                    startActivity(tweet);
-                    break;
-
-                case R.id.profile_follow:
-                    profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
-                    if (!userBundle.getProperties().isFriend()) {
-                        profileAsync.execute(userId);
-                    } else {
-                        new Builder(this).setMessage(R.string.confirm_unfollow)
-                                .setNegativeButton(R.string.no_confirm, null)
-                                .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        profileAsync.execute(userId);
-                                    }
-                                })
-                                .show();
-                    }
-                    break;
-
-                case R.id.profile_block:
-                    profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
-                    if (userBundle.getProperties().isBlocked()) {
-                        profileAsync.execute(userId);
-                    } else {
-                        new Builder(this).setMessage(R.string.confirm_block)
-                                .setNegativeButton(R.string.no_confirm, null)
-                                .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        profileAsync.execute(userId);
-                                    }
-                                })
-                                .show();
+                    if (user != null) {
+                        Intent tweet = new Intent(this, TweetPopup.class);
+                        if (!isHome)
+                            tweet.putExtra(KEY_TWEETPOPUP_ADDITION, user.getScreenname());
+                        startActivity(tweet);
                     }
                     break;
 
@@ -268,21 +243,61 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     profileAsync.execute(userId);
                     break;
 
-                case R.id.profile_message:
-                    Intent dmPage;
-                    if (userBundle.getProperties().isHome()) {
-                        dmPage = new Intent(this, DirectMessage.class);
-                    } else {
-                        dmPage = new Intent(this, MessagePopup.class);
-                        dmPage.putExtra(KEY_DM_ADDITION, userBundle.getUser().getScreenname());
-                    }
-                    startActivity(dmPage);
-                    break;
-
                 case R.id.profile_settings:
                     Intent editProfile = new Intent(this, ProfileEdit.class);
                     startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
                     break;
+
+                case R.id.profile_follow:
+                    if (properties != null) {
+                        profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
+                        if (!properties.isFriend()) {
+                            profileAsync.execute(userId);
+                        } else {
+                            new Builder(this).setMessage(R.string.confirm_unfollow)
+                                    .setNegativeButton(R.string.no_confirm, null)
+                                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            profileAsync.execute(userId);
+                                        }
+                                    }).show();
+                        }
+                    }
+                    break;
+
+                case R.id.profile_block:
+                    if (properties != null) {
+                        profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
+                        if (properties.isBlocked()) {
+                            profileAsync.execute(userId);
+                        } else {
+                            new Builder(this).setMessage(R.string.confirm_block)
+                                    .setNegativeButton(R.string.no_confirm, null)
+                                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            profileAsync.execute(userId);
+                                        }
+                                    }).show();
+                        }
+                    }
+                    break;
+
+                case R.id.profile_message:
+                    if (properties != null) {
+                        Intent dmPage;
+                        if (properties.isHome()) {
+                            dmPage = new Intent(this, DirectMessage.class);
+                        } else {
+                            dmPage = new Intent(this, MessagePopup.class);
+                            dmPage.putExtra(KEY_DM_ADDITION, properties.getTargetScreenname());
+                        }
+                        startActivity(dmPage);
+                    }
+                    break;
+
+
             }
         }
         return super.onOptionsItemSelected(item);
@@ -309,39 +324,44 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (userBundle != null) {
-            switch (v.getId()) {
-                case R.id.following:
-                    if (!userBundle.getUser().isLocked() || userBundle.getProperties().isFriend()) {
+        switch (v.getId()) {
+            case R.id.following:
+                if (user != null && properties != null) {
+                    if (!user.isLocked() || properties.isFriend()) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERLIST_ID, userId);
                         following.putExtra(KEY_USERLIST_MODE, FRIENDS);
                         startActivity(following);
                     }
-                    break;
+                }
+                break;
 
-                case R.id.follower:
-                    if (!userBundle.getUser().isLocked() || userBundle.getProperties().isFriend()) {
+            case R.id.follower:
+                if (user != null && properties != null) {
+                    if (!user.isLocked() || properties.isFriend()) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERLIST_ID, userId);
                         follower.putExtra(KEY_USERLIST_MODE, FOLLOWERS);
                         startActivity(follower);
                     }
-                    break;
+                }
+                break;
 
-                case R.id.links:
+            case R.id.links:
+                if (user != null) {
                     ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                     if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         Intent browserIntent = new Intent(ACTION_VIEW);
-                        String link = userBundle.getUser().getLink();
+                        String link = user.getLink();
                         browserIntent.setData(Uri.parse(link));
                         startActivity(browserIntent);
                     } else {
                         Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
                     }
-                    break;
-            }
+                }
+                break;
         }
+
     }
 
 
@@ -377,10 +397,25 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public void setConnection(UserBundle userBundle) {
-        this.userBundle = userBundle;
-        tweetTabTxt.setText(formatter.format(userBundle.getUser().getTweetCount()));
-        favorTabTxt.setText(formatter.format(userBundle.getUser().getFavorCount()));
+    /**
+     * Set User Information
+     *
+     * @param user User data
+     */
+    public void setUser(TwitterUser user) {
+        this.user = user;
+        tweetTabTxt.setText(formatter.format(user.getTweetCount()));
+        favorTabTxt.setText(formatter.format(user.getFavorCount()));
+    }
+
+
+    /**
+     * Set User Relationship
+     *
+     * @param properties relationship to the current user
+     */
+    public void setConnection(UserProperties properties) {
+        this.properties = properties;
         invalidateOptionsMenu();
     }
 }

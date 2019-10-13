@@ -41,7 +41,6 @@
     <string name="unfollow">unfollow</string>
     <string name="unblock">unblock</string>
     <string name="followed">followed</string>
-    <string name="unfollowed">unfollowed!</string>
     <string name="blocked">blocked</string>
     <string name="unblocked">unblocked</string>
     <string name="tweet_removed">Tweet removed!</string>

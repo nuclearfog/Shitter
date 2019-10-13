@@ -4,6 +4,7 @@ import twitter4j.Relationship;
 
 public class UserProperties {
 
+    private final String targetScreenname;
     private final boolean isHome;
     private final boolean isFriend;
     private final boolean isFollower;
@@ -13,12 +14,17 @@ public class UserProperties {
 
 
     public UserProperties(Relationship connect) {
+        targetScreenname = connect.getTargetUserScreenName();
         isHome = connect.getSourceUserId() == connect.getTargetUserId();
         isFriend = connect.isSourceFollowingTarget();
         isFollower = connect.isTargetFollowingSource();
         isBlocked = connect.isSourceBlockingTarget();
         isMuted = connect.isSourceMutingTarget();
         canDm = connect.canSourceDm();
+    }
+
+    public String getTargetScreenname() {
+        return targetScreenname;
     }
 
     public boolean isHome() {
