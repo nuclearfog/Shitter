@@ -65,6 +65,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ProfileLoader profileAsync;
     private FragmentAdapter adapter;
     private TextView tweetTabTxt, favorTabTxt;
+    private NumberFormat formatter;
     private ViewPager pager;
     private View follow_back;
 
@@ -97,13 +98,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         pager = findViewById(R.id.profile_pager);
         tweetTabTxt = new TextView(getApplicationContext());
         favorTabTxt = new TextView(getApplicationContext());
+        formatter = NumberFormat.getIntegerInstance();
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
@@ -360,31 +361,26 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onTabSelected(TabLayout.Tab tab) {
+    public void onTabSelected(Tab tab) {
         tabIndex = tab.getPosition();
     }
 
 
     @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
+    public void onTabUnselected(Tab tab) {
         adapter.scrollToTop(tab.getPosition());
     }
 
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) {
+    public void onTabReselected(Tab tab) {
     }
 
 
-    public void setTweetCount(int tweets, int favors) {
-        NumberFormat formatter = NumberFormat.getIntegerInstance();
-        tweetTabTxt.setText(formatter.format(tweets));
-        favorTabTxt.setText(formatter.format(favors));
-    }
-
-
-    public void setConnection(UserBundle mUser) {
-        this.userBundle = mUser;
+    public void setConnection(UserBundle userBundle) {
+        this.userBundle = userBundle;
+        tweetTabTxt.setText(formatter.format(userBundle.getUser().getTweetCount()));
+        favorTabTxt.setText(formatter.format(userBundle.getUser().getFavorCount()));
         invalidateOptionsMenu();
     }
 }

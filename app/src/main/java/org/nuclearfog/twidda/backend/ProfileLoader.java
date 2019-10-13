@@ -197,7 +197,6 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserBundle> {
                     }
                 });
             }
-            ui.get().setTweetCount(user.getTweetCount(), user.getFavorCount());
         }
     }
 

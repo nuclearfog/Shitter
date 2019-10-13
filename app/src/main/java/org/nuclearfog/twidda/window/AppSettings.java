@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,6 +52,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private static final int FONTCOLOR = 1;
     private static final int HIGHLIGHT = 2;
     private static final int POPUPCOLOR = 3;
+    private static final int INVERT = 0xffffff;
 
     private GlobalSettings settings;
     private ConnectivityManager mConnect;
@@ -124,10 +124,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
         colorButton4.setBackgroundColor(settings.getHighlightColor());
-        colorButton1.setTextColor(settings.getBackgroundColor() ^ Color.WHITE);
-        colorButton2.setTextColor(settings.getFontColor() ^ Color.WHITE);
-        colorButton3.setTextColor(settings.getPopupColor() ^ Color.WHITE);
-        colorButton4.setTextColor(settings.getHighlightColor() ^ Color.WHITE);
+        colorButton1.setTextColor(settings.getBackgroundColor() ^ INVERT);
+        colorButton2.setTextColor(settings.getFontColor() ^ INVERT);
+        colorButton3.setTextColor(settings.getPopupColor() ^ INVERT);
+        colorButton4.setTextColor(settings.getHighlightColor() ^ INVERT);
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -271,25 +271,25 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 root.setBackgroundColor(color);
                 settings.setBackgroundColor(color);
                 colorButton1.setBackgroundColor(color);
-                colorButton1.setTextColor(color ^ Color.WHITE);
+                colorButton1.setTextColor(color ^ INVERT);
                 break;
 
             case FONTCOLOR:
                 settings.setFontColor(color);
                 colorButton2.setBackgroundColor(color);
-                colorButton2.setTextColor(color ^ Color.WHITE);
+                colorButton2.setTextColor(color ^ INVERT);
                 break;
 
             case POPUPCOLOR:
                 settings.setPopupColor(color);
                 colorButton3.setBackgroundColor(color);
-                colorButton3.setTextColor(color ^ Color.WHITE);
+                colorButton3.setTextColor(color ^ INVERT);
                 break;
 
             case HIGHLIGHT:
                 settings.setHighlightColor(color);
                 colorButton4.setBackgroundColor(color);
-                colorButton4.setTextColor(color ^ Color.WHITE);
+                colorButton4.setTextColor(color ^ INVERT);
                 break;
         }
     }

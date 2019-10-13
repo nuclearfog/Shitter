@@ -105,14 +105,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if (tweetTask == null)
-            load();
-    }
-
-
-    @Override
     public void onStop() {
         if (tweetTask != null && tweetTask.getStatus() == RUNNING)
             tweetTask.cancel(true);
