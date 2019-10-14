@@ -238,11 +238,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     }
                     break;
 
-                case R.id.profile_mute:
-                    profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_MUTE);
-                    profileAsync.execute(userId);
-                    break;
-
                 case R.id.profile_settings:
                     Intent editProfile = new Intent(this, ProfileEdit.class);
                     startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
@@ -255,6 +250,24 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                             profileAsync.execute(userId);
                         } else {
                             new Builder(this).setMessage(R.string.confirm_unfollow)
+                                    .setNegativeButton(R.string.no_confirm, null)
+                                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            profileAsync.execute(userId);
+                                        }
+                                    }).show();
+                        }
+                    }
+                    break;
+
+                case R.id.profile_mute:
+                    if (properties != null) {
+                        profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_MUTE);
+                        if (properties.isMuted()) {
+                            profileAsync.execute(userId);
+                        } else {
+                            new Builder(this).setMessage(R.string.confirm_mute)
                                     .setNegativeButton(R.string.no_confirm, null)
                                     .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                                         @Override
