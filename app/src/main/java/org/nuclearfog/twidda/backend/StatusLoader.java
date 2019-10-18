@@ -1,48 +1,23 @@
 package org.nuclearfog.twidda.backend;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.text.Spannable;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.squareup.picasso.Picasso;
-
-import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
-import org.nuclearfog.twidda.backend.helper.FilenameTools;
-import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.MediaViewer;
 import org.nuclearfog.twidda.window.TweetDetail;
-import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 
 import twitter4j.TwitterException;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.RETURN_TWEET_CHANGED;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO;
-import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 
 
 public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
@@ -58,14 +33,12 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     private WeakReference<TweetDetail> ui;
     private TwitterEngine mTwitter;
     private TwitterException err;
-    private GlobalSettings settings;
     private AppDatabase db;
     private boolean statusNotFound = false;
 
 
     public StatusLoader(@NonNull TweetDetail context, Mode mode) {
         mTwitter = TwitterEngine.getInstance(context);
-        settings = GlobalSettings.getInstance(context);
         db = new AppDatabase(context);
         ui = new WeakReference<>(context);
         this.mode = mode;
@@ -130,144 +103,10 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
 
 
     @Override
-    protected void onProgressUpdate(@NonNull Tweet[] tweets) {
-        if (ui.get() != null) {
-            TextView username = ui.get().findViewById(R.id.usernamedetail);
-            TextView scrName = ui.get().findViewById(R.id.scrnamedetail);
-            ImageView profile_img = ui.get().findViewById(R.id.profileimage_detail);
-            Button replyName = ui.get().findViewById(R.id.answer_reference_detail);
-            Button retweetButton = ui.get().findViewById(R.id.tweet_retweet);
-            Button favoriteButton = ui.get().findViewById(R.id.tweet_favorit);
-
-            final Tweet tweet = tweets[0];
-            if (mode == Mode.LOAD) {
-                View tweet_header = ui.get().findViewById(R.id.tweet_head);
-                if (tweet_header.getVisibility() != VISIBLE) {
-                    TextView tweetText = ui.get().findViewById(R.id.tweet_detailed);
-                    TextView tweetDate = ui.get().findViewById(R.id.timedetail);
-                    TextView tweet_api = ui.get().findViewById(R.id.used_api);
-                    View tweet_footer = ui.get().findViewById(R.id.tweet_foot);
-
-                    if (!tweet.getTweet().trim().isEmpty()) {
-                        Spannable sTweet = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor(), ui.get());
-                        tweetText.setTextColor(settings.getFontColor());
-                        tweetText.setText(sTweet);
-                    } else {
-                        tweetText.setVisibility(GONE);
-                    }
-                    tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
-                    tweetDate.setTextColor(settings.getFontColor());
-                    tweet_api.append(tweet.getSource());
-                    tweet_api.setTextColor(settings.getFontColor());
-
-                    if (tweet.getUser().isVerified()) {
-                        username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-                    } else {
-                        username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                    }
-                    if (tweet.getUser().isLocked()) {
-                        scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-                    } else {
-                        scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                    }
-                    if (tweet.hasMedia()) {
-                        String firstLink = tweet.getMediaLinks()[0];
-                        FileType ext = FilenameTools.getFileType(firstLink);
-                        switch (ext) {
-                            case IMAGE:
-                                View imageButton = ui.get().findViewById(R.id.image_attach);
-                                imageButton.setVisibility(VISIBLE);
-                                imageButton.setOnClickListener(new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent media = new Intent(ui.get(), MediaViewer.class);
-                                        media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                                        media.putExtra(KEY_MEDIA_TYPE, IMAGE);
-                                        ui.get().startActivity(media);
-                                    }
-                                });
-                                break;
-
-                            case VIDEO:
-                                View videoButton = ui.get().findViewById(R.id.video_attach);
-                                videoButton.setVisibility(VISIBLE);
-                                videoButton.setOnClickListener(new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent media = new Intent(ui.get(), MediaViewer.class);
-                                        media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                                        media.putExtra(KEY_MEDIA_TYPE, ANGIF);
-                                        ui.get().startActivity(media);
-                                    }
-                                });
-                                break;
-
-                            case STREAM:
-                                videoButton = ui.get().findViewById(R.id.video_attach);
-                                videoButton.setVisibility(VISIBLE);
-                                videoButton.setOnClickListener(new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Intent media = new Intent(ui.get(), MediaViewer.class);
-                                        media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                                        media.putExtra(KEY_MEDIA_TYPE, VIDEO);
-                                        ui.get().startActivity(media);
-                                    }
-                                });
-                                break;
-                        }
-                    }
-                    profile_img.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent profile = new Intent(ui.get(), UserProfile.class);
-                            profile.putExtra(UserProfile.KEY_PROFILE_ID, tweet.getUser().getId());
-                            ui.get().startActivity(profile);
-                        }
-                    });
-                    tweet_header.setVisibility(VISIBLE);
-                    tweet_footer.setVisibility(VISIBLE);
-                }
-            }
-            username.setText(tweet.getUser().getUsername());
-            username.setTextColor(settings.getFontColor());
-            scrName.setText(tweet.getUser().getScreenname());
-            scrName.setTextColor(settings.getFontColor());
-            String favorCount = settings.getNumberFormatter().format(tweet.getFavorCount());
-            String retweetCount = settings.getNumberFormatter().format(tweet.getRetweetCount());
-            favoriteButton.setText(favorCount);
-            retweetButton.setText(retweetCount);
-
-            if (tweet.getReplyId() > 1) {
-                replyName.setText(R.string.answering);
-                replyName.append(tweet.getReplyName());
-                replyName.setVisibility(VISIBLE);
-                replyName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(ui.get(), TweetDetail.class);
-                        intent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
-                        intent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
-                        ui.get().startActivity(intent);
-                    }
-                });
-            }
-            if (settings.getImageLoad()) {
-                Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
-            }
-            if (tweet.retweeted()) {
-                retweetButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
-            } else {
-                retweetButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-            }
-            if (tweet.favored()) {
-                favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_enabled, 0, 0, 0);
-            } else {
-                favoriteButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
-            }
-            if (tweet.getUser().getId() == settings.getUserId()) {
-                ui.get().setIsHome();
-            }
+    protected void onProgressUpdate(Tweet[] tweets) {
+        Tweet tweet = tweets[0];
+        if (ui.get() != null && tweet != null) {
+            ui.get().setTweet(tweet);
         }
     }
 

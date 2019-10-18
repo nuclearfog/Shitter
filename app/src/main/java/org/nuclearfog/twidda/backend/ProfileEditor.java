@@ -98,30 +98,28 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
 
     @Override
     protected TwitterUser doInBackground(Void[] v) {
-        TwitterUser user = null;
         try {
             switch (mode) {
                 case READ_DATA:
-                    user = mTwitter.getCurrentUser();
-                    break;
+                    return mTwitter.getCurrentUser();
 
                 case WRITE_DATA:
                     String username = edit_name.toString();
                     String user_link = edit_link.toString();
                     String user_loc = edit_loc.toString();
                     String user_bio = edit_bio.toString();
-                    user = mTwitter.updateProfile(username, user_link, user_loc, user_bio);
+                    TwitterUser user = mTwitter.updateProfile(username, user_link, user_loc, user_bio);
                     db.storeUser(user);
                     if (!image_path.trim().isEmpty())
                         mTwitter.updateProfileImage(image_path);
-                    break;
+                    return user;
             }
         } catch (TwitterException err) {
             this.err = err;
         } catch (Exception err) {
             err.printStackTrace();
         }
-        return user;
+        return null;
     }
 
 

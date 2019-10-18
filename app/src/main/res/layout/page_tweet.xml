@@ -103,6 +103,7 @@
                         android:id="@+id/tweet_detailed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:autoLink="web"
                         android:fadeScrollbars="false"
                         android:linksClickable="true"
@@ -138,7 +139,6 @@
                         android:layout_height="wrap_content"
                         android:linksClickable="false"
                         android:singleLine="true"
-                        android:text="@string/sent_from"
                         android:textSize="@dimen/textsize_refer" />
 
                 </LinearLayout>
@@ -174,49 +174,49 @@
 
                 <Button
                     android:id="@+id/tweet_answer"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_marginLeft="@dimen/margin_layout"
                     android:layout_marginRight="@dimen/margin_layout"
-                    android:paddingLeft="@dimen/button_padding"
-                    android:paddingRight="@dimen/button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/button"
                     android:drawablePadding="@dimen/padding_drawable"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     android:singleLine="true"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     app:drawableLeftCompat="@drawable/answer"
                     app:drawableStartCompat="@drawable/answer" />
 
                 <Button
                     android:id="@+id/tweet_retweet"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_marginLeft="@dimen/margin_layout"
                     android:layout_marginRight="@dimen/margin_layout"
-                    android:paddingLeft="@dimen/button_padding"
-                    android:paddingRight="@dimen/button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/button"
                     android:drawablePadding="@dimen/padding_drawable"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     android:singleLine="true"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     app:drawableLeftCompat="@drawable/retweet"
                     app:drawableStartCompat="@drawable/retweet" />
 
                 <Button
                     android:id="@+id/tweet_favorit"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_marginLeft="@dimen/margin_layout"
                     android:layout_marginRight="@dimen/margin_layout"
-                    android:paddingLeft="@dimen/button_padding"
-                    android:paddingRight="@dimen/button_padding"
                     android:layout_weight="1"
                     android:background="@drawable/button"
                     android:drawablePadding="@dimen/padding_drawable"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     android:singleLine="true"
-                    style="@style/Widget.AppCompat.Button.Borderless"
                     app:drawableLeftCompat="@drawable/favorite"
                     app:drawableStartCompat="@drawable/favorite" />
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,7 +28,9 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
+import com.squareup.picasso.Picasso;
 
+import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
@@ -38,15 +42,20 @@ import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.Gravity.CENTER;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
@@ -65,17 +74,20 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     private ProfileLoader profileAsync;
     private FragmentAdapter adapter;
-    private TextView tweetTabTxt, favorTabTxt;
-    private NumberFormat formatter;
+    private GlobalSettings settings;
+
+    private TextView tweetTabTxt, favorTabTxt, txtUser, txtScrName;
+    private TextView txtLocation, txtCreated, lnkTxt, bioTxt;
+    private Button following, follower;
+    private ImageView profile;
+    private View follow_back, profile_head;
     private ViewPager pager;
-    private View follow_back;
+
     @Nullable
     private UserProperties properties;
     @Nullable
     private TwitterUser user;
-
     private long userId;
-    private boolean isHome;
 
     private int tabIndex = 0;
 
@@ -84,27 +96,30 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         super.onCreate(b);
         setContentView(R.layout.page_profile);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_PROFILE_ID)) {
             userId = param.getLong(KEY_PROFILE_ID);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
-
         Toolbar tool = findViewById(R.id.profile_toolbar);
         TabLayout tab = findViewById(R.id.profile_tab);
-        TextView bioTxt = findViewById(R.id.bio);
-        Button following = findViewById(R.id.following);
-        Button follower = findViewById(R.id.follower);
         ViewGroup root = findViewById(R.id.user_view);
-        TextView lnkTxt = findViewById(R.id.links);
+        bioTxt = findViewById(R.id.bio);
+        following = findViewById(R.id.following);
+        follower = findViewById(R.id.follower);
+        lnkTxt = findViewById(R.id.links);
+        profile = findViewById(R.id.profile_img);
+        txtUser = findViewById(R.id.profile_username);
+        txtScrName = findViewById(R.id.profile_screenname);
+        txtLocation = findViewById(R.id.location);
+        profile_head = findViewById(R.id.profile_header);
+        txtCreated = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
         tweetTabTxt = new TextView(getApplicationContext());
         favorTabTxt = new TextView(getApplicationContext());
-        formatter = NumberFormat.getIntegerInstance();
-        isHome = userId == settings.getUserId();
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
@@ -138,6 +153,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tab.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
+        profile.setOnClickListener(this);
+        lnkTxt.setOnClickListener(this);
         bioTxt.setOnTouchListener(this);
     }
 
@@ -173,7 +190,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
-        if (isHome) {
+        if (userId == settings.getUserId()) {
             MenuItem dmIcon = m.findItem(R.id.profile_message);
             MenuItem setting = m.findItem(R.id.profile_settings);
             dmIcon.setVisible(true);
@@ -232,7 +249,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 case R.id.profile_tweet:
                     if (user != null) {
                         Intent tweet = new Intent(this, TweetPopup.class);
-                        if (!isHome)
+                        if (userId != settings.getUserId())
                             tweet.putExtra(KEY_TWEETPOPUP_ADDITION, user.getScreenname());
                         startActivity(tweet);
                     }
@@ -309,8 +326,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                         startActivity(dmPage);
                     }
                     break;
-
-
             }
         }
         return super.onOptionsItemSelected(item);
@@ -361,7 +376,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 break;
 
             case R.id.links:
-                if (user != null) {
+                if (user != null && !user.getLink().isEmpty()) {
                     ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
                     if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         Intent browserIntent = new Intent(ACTION_VIEW);
@@ -373,8 +388,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     }
                 }
                 break;
-        }
 
+            case R.id.profile_img:
+                if (user != null) {
+                    Intent image = new Intent(getApplicationContext(), MediaViewer.class);
+                    image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
+                    image.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                    startActivity(image);
+                }
+        }
     }
 
 
@@ -415,10 +437,44 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      *
      * @param user User data
      */
-    public void setUser(TwitterUser user) {
+    public void setUser(final TwitterUser user) {
         this.user = user;
+        NumberFormat formatter = settings.getNumberFormatter();
+        Spanned bio = Tagger.makeText(user.getBio(), settings.getHighlightColor(), this);
+        int verify = user.isVerified() ? R.drawable.verify : 0;
+        int locked = user.isLocked() ? R.drawable.lock : 0;
+
+        txtUser.setCompoundDrawablesWithIntrinsicBounds(verify, 0, 0, 0);
+        txtScrName.setCompoundDrawablesWithIntrinsicBounds(locked, 0, 0, 0);
         tweetTabTxt.setText(formatter.format(user.getTweetCount()));
         favorTabTxt.setText(formatter.format(user.getFavorCount()));
+        following.setText(formatter.format(user.getFollowing()));
+        follower.setText(formatter.format(user.getFollower()));
+        txtUser.setText(user.getUsername());
+        txtScrName.setText(user.getScreenname());
+        bioTxt.setText(bio);
+
+        if (profile_head.getVisibility() != VISIBLE) {
+            profile_head.setVisibility(VISIBLE);
+            String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
+            txtCreated.setText(date);
+        }
+        if (!user.getLocation().isEmpty()) {
+            txtLocation.setText(user.getLocation());
+            txtLocation.setVisibility(VISIBLE);
+        } else {
+            txtLocation.setVisibility(GONE);
+        }
+        if (!user.getLink().isEmpty()) {
+            lnkTxt.setText(user.getLink());
+            lnkTxt.setVisibility(VISIBLE);
+        } else {
+            lnkTxt.setVisibility(GONE);
+        }
+        if (settings.getImageLoad()) {
+            String link = user.getImageLink() + "_bigger";
+            Picasso.get().load(link).into(profile);
+        }
     }
 
 

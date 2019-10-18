@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,15 +18,20 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import com.squareup.picasso.Picasso;
+
+import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.MainActivity;
@@ -34,16 +40,26 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.Mode;
+import org.nuclearfog.twidda.backend.helper.FilenameTools;
+import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.UserDetail.UserType;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
+import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_REPLYID;
@@ -57,13 +73,20 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
 
+    private View header, footer, videoButton, imageButton;
+    private TextView tweet_api, tweetDate, tweetText, scrName, usrName;
+    private Button rtwButton, favButton, replyName;
+    private ImageView profile_img;
+
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
+    private NumberFormat format;
     private StatusLoader statusAsync;
-    private String username;
-    private boolean isHome;
-    private long tweetID;
 
+    @Nullable
+    private Tweet tweet;
+    private String username;
+    private long tweetID;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -73,6 +96,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
         settings = GlobalSettings.getInstance(this);
+        format = settings.getNumberFormatter();
 
         if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
             tweetID = param.getLong(KEY_TWEET_ID);
@@ -82,14 +106,23 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError();
         }
-
-        View root = findViewById(R.id.tweet_layout);
-        Button ansButton = findViewById(R.id.tweet_answer);
-        Button rtwButton = findViewById(R.id.tweet_retweet);
-        Button favButton = findViewById(R.id.tweet_favorit);
-        TextView tweetTxt = findViewById(R.id.tweet_detailed);
         ViewPager pager = findViewById(R.id.tweet_pager);
         Toolbar tool = findViewById(R.id.tweet_toolbar);
+        View root = findViewById(R.id.tweet_layout);
+        Button ansButton = findViewById(R.id.tweet_answer);
+        header = findViewById(R.id.tweet_head);
+        footer = findViewById(R.id.tweet_foot);
+        rtwButton = findViewById(R.id.tweet_retweet);
+        favButton = findViewById(R.id.tweet_favorit);
+        usrName = findViewById(R.id.usernamedetail);
+        scrName = findViewById(R.id.scrnamedetail);
+        profile_img = findViewById(R.id.profileimage_detail);
+        replyName = findViewById(R.id.answer_reference_detail);
+        tweetText = findViewById(R.id.tweet_detailed);
+        tweetDate = findViewById(R.id.timedetail);
+        tweet_api = findViewById(R.id.used_api);
+        imageButton = findViewById(R.id.image_attach);
+        videoButton = findViewById(R.id.video_attach);
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
@@ -98,18 +131,22 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        tweetTxt.setMovementMethod(LinkMovementMethod.getInstance());
-        tweetTxt.setLinkTextColor(settings.getHighlightColor());
+        tweetText.setMovementMethod(LinkMovementMethod.getInstance());
+        tweetText.setLinkTextColor(settings.getHighlightColor());
+        tweetText.setTextColor(settings.getFontColor());
         root.setBackgroundColor(settings.getBackgroundColor());
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
-        tweetTxt.setOnTouchListener(this);
+        tweetText.setOnTouchListener(this);
+        replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
         favButton.setOnClickListener(this);
         rtwButton.setOnLongClickListener(this);
         favButton.setOnLongClickListener(this);
+        profile_img.setOnClickListener(this);
+
     }
 
 
@@ -140,7 +177,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (isHome)
+        if (tweet != null && tweet.getUser().getId() == settings.getUserId())
             m.findItem(R.id.delete_tweet).setVisible(true);
         return super.onPrepareOptionsMenu(m);
     }
@@ -193,10 +230,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_answer:
-                    Intent tweet = new Intent(this, TweetPopup.class);
-                    tweet.putExtra(KEY_TWEETPOPUP_REPLYID, tweetID);
-                    tweet.putExtra(KEY_TWEETPOPUP_ADDITION, username);
-                    startActivity(tweet);
+                    Intent tweetPopup = new Intent(this, TweetPopup.class);
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetID);
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_ADDITION, username);
+                    startActivity(tweetPopup);
                     break;
 
                 case R.id.tweet_retweet:
@@ -211,6 +248,23 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     userList.putExtra(KEY_USERLIST_ID, tweetID);
                     userList.putExtra(KEY_USERLIST_MODE, UserType.FAVORITS);
                     startActivity(userList);
+                    break;
+
+                case R.id.profileimage_detail:
+                    if (tweet != null) {
+                        Intent profile = new Intent(getApplicationContext(), UserProfile.class);
+                        profile.putExtra(UserProfile.KEY_PROFILE_ID, tweet.getUser().getId());
+                        startActivity(profile);
+                    }
+                    break;
+
+                case R.id.answer_reference_detail:
+                    if (tweet != null) {
+                        Intent intent = new Intent(getApplicationContext(), TweetDetail.class);
+                        intent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
+                        intent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
+                        startActivity(intent);
+                    }
                     break;
             }
         }
@@ -261,9 +315,88 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     }
 
 
-    public void setIsHome() {
-        isHome = true;
+    public void setTweet(final Tweet tweet) {
+        this.tweet = tweet;
         invalidateOptionsMenu();
+
+        int rtwDraw = tweet.retweeted() ? R.drawable.retweet_enabled : R.drawable.retweet;
+        int favDraw = tweet.favored() ? R.drawable.favorite_enabled : R.drawable.favorite;
+        int verDraw = tweet.getUser().isVerified() ? R.drawable.verify : 0;
+        int locDraw = tweet.getUser().isLocked() ? R.drawable.lock : 0;
+        rtwButton.setCompoundDrawablesWithIntrinsicBounds(rtwDraw, 0, 0, 0);
+        favButton.setCompoundDrawablesWithIntrinsicBounds(favDraw, 0, 0, 0);
+        usrName.setCompoundDrawablesWithIntrinsicBounds(verDraw, 0, 0, 0);
+        scrName.setCompoundDrawablesWithIntrinsicBounds(locDraw, 0, 0, 0);
+        usrName.setText(tweet.getUser().getUsername());
+        scrName.setText(tweet.getUser().getScreenname());
+        usrName.setTextColor(settings.getFontColor());
+        scrName.setTextColor(settings.getFontColor());
+        tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
+        tweetDate.setTextColor(settings.getFontColor());
+        tweet_api.setTextColor(settings.getFontColor());
+        favButton.setText(format.format(tweet.getFavorCount()));
+        rtwButton.setText(format.format(tweet.getRetweetCount()));
+        tweet_api.setText(R.string.sent_from);
+        tweet_api.append(tweet.getSource());
+        header.setVisibility(VISIBLE);
+        footer.setVisibility(VISIBLE);
+
+        if (!tweet.getTweet().trim().isEmpty()) {
+            Spannable sTweet = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor(), this);
+            tweetText.setVisibility(VISIBLE);
+            tweetText.setText(sTweet);
+        }
+        if (tweet.getReplyId() > 1) {
+            replyName.setText(R.string.answering);
+            replyName.append(tweet.getReplyName());
+            replyName.setVisibility(VISIBLE);
+        }
+        if (tweet.hasMedia()) {
+            String[] links = tweet.getMediaLinks();
+            FilenameTools.FileType ext = FilenameTools.getFileType(links[0]);
+            switch (ext) {
+                case IMAGE:
+                    imageButton.setVisibility(VISIBLE);
+                    imageButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent media = new Intent(getApplicationContext(), MediaViewer.class);
+                            media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                            media.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                            startActivity(media);
+                        }
+                    });
+                    break;
+
+                case VIDEO:
+                    videoButton.setVisibility(VISIBLE);
+                    videoButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent media = new Intent(getApplicationContext(), MediaViewer.class);
+                            media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                            media.putExtra(KEY_MEDIA_TYPE, ANGIF);
+                            startActivity(media);
+                        }
+                    });
+                    break;
+
+                case STREAM:
+                    videoButton.setVisibility(VISIBLE);
+                    videoButton.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent media = new Intent(getApplicationContext(), MediaViewer.class);
+                            media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                            media.putExtra(KEY_MEDIA_TYPE, VIDEO);
+                            startActivity(media);
+                        }
+                    });
+                    break;
+            }
+        }
+        if (settings.getImageLoad())
+            Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
     }
 
 

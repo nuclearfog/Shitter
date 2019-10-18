@@ -112,9 +112,10 @@ public class TwitterEngine {
      *
      * @param twitterPin PIN for accessing account
      * @throws TwitterException if pin is false
+     * @throws IllegalStateException if request token is not set
      * @see #initKeys(String, String)
      */
-    public void initialize(String twitterPin) throws TwitterException {
+    public void initialize(String twitterPin) throws TwitterException, IllegalStateException {
         if (reqToken != null) {
             AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
             String key1 = accessToken.getToken();
@@ -122,6 +123,8 @@ public class TwitterEngine {
             initKeys(key1, key2);
             twitterID = twitter.getId();
             settings.setConnection(key1, key2, twitterID);
+        } else {
+            throw new IllegalStateException("request token is null!");
         }
     }
 
