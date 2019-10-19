@@ -14,7 +14,7 @@ public class UserProperties {
 
 
     public UserProperties(Relationship connect) {
-        targetScreenname = connect.getTargetUserScreenName();
+        targetScreenname = '@' + connect.getTargetUserScreenName();
         isHome = connect.getSourceUserId() == connect.getTargetUserId();
         isFriend = connect.isSourceFollowingTarget();
         isFollower = connect.isTargetFollowingSource();

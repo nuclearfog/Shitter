@@ -43,7 +43,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() == null)
+        if (ui.get() != null)
             ui.get().setRefresh(true);
     }
 

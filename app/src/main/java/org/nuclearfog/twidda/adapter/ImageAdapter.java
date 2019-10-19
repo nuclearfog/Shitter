@@ -44,8 +44,8 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
 
 
     public void disableLoading() {
-        int circlePos = images.size();
         loading = false;
+        int circlePos = images.size();
         notifyItemRemoved(circlePos);
     }
 

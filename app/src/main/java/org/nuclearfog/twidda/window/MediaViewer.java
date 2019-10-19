@@ -240,7 +240,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    private void setImage(@NonNull Bitmap image) {
+    public void setImage(@NonNull Bitmap image) {
         float ratio = image.getWidth() / (float) width;
         int destHeight = (int) (image.getHeight() / ratio);
         image = Bitmap.createScaledBitmap(image, width, destHeight, false);
