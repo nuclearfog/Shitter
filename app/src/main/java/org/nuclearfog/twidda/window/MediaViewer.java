@@ -64,6 +64,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private ImageLoader imageAsync;
     private ProgressBar video_progress;
     private MediaController videoController;
+    private ImageAdapter adapter;
+    private ProgressBar progress;
     private VideoView videoView;
     private ZoomView zoomImage;
     private MediaType type;
@@ -80,10 +82,12 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         RecyclerView imageList = findViewById(R.id.image_list);
         View imageWindow = findViewById(R.id.image_window);
         View videoWindow = findViewById(R.id.video_window);
+        progress = findViewById(R.id.image_load);
         video_progress = findViewById(R.id.video_load);
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         videoController = new MediaController(this);
+        adapter = new ImageAdapter(this);
 
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_MEDIA_LINK) && param.containsKey(KEY_MEDIA_TYPE)) {
@@ -99,7 +103,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 case ANGIF_STORAGE:
                     imageWindow.setVisibility(VISIBLE);
                     imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                    imageList.setAdapter(new ImageAdapter(this));
+                    imageList.setAdapter(adapter);
                     Display d = getWindowManager().getDefaultDisplay();
                     Point size = new Point();
                     d.getSize(size);
@@ -226,7 +230,17 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public void setImage(@NonNull Bitmap image) {
+    public ImageAdapter getAdapter() {
+        return adapter;
+    }
+
+
+    public void disableProgressbar() {
+        progress.setVisibility(View.INVISIBLE);
+    }
+
+
+    private void setImage(@NonNull Bitmap image) {
         float ratio = image.getWidth() / (float) width;
         int destHeight = (int) (image.getHeight() / ratio);
         image = Bitmap.createScaledBitmap(image, width, destHeight, false);

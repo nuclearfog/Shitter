@@ -309,6 +309,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     }
 
 
+    public ArrayAdapter<TrendLocation> getAdapter() {
+        return adapter;
+    }
+
+
+    public void setWoeIdSelection() {
+        int position = adapter.getPosition(settings.getTrendLocation());
+        woeId.setSelection(position);
+    }
+
+
     private void setColor(int preColor) {
         Dialog d = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)

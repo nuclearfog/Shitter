@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.window.MessagePopup;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.UserProfile;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
@@ -34,7 +35,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
     private MessageLoader messageTask;
     private SwipeRefreshLayout reload;
-    private View root;
+    private MessageAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
@@ -44,7 +45,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
         reload = v.findViewById(R.id.fragment_reload);
 
         reload.setOnRefreshListener(this);
-        MessageAdapter adapter = new MessageAdapter(this);
+        adapter = new MessageAdapter(this);
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
@@ -55,13 +56,6 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
         adapter.setImage(settings.getImageLoad());
 
         return v;
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View v, Bundle param) {
-        super.onViewCreated(v, param);
-        root = v;
     }
 
 
@@ -109,7 +103,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
                     break;
 
                 case DELETE:
-                    messageTask = new MessageLoader(root, Mode.DEL);
+                    messageTask = new MessageLoader(this, Mode.DEL);
                     messageTask.execute(message.getId());
                     break;
 
@@ -123,8 +117,28 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     }
 
 
+    public MessageAdapter getAdapter() {
+        return adapter;
+    }
+
+
+    public void setRefresh(boolean enable) {
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (messageTask.getStatus() != FINISHED)
+                        reload.setRefreshing(true);
+                }
+            }, 500);
+        } else {
+            reload.setRefreshing(false);
+        }
+    }
+
+
     private void load(Mode m) {
-        messageTask = new MessageLoader(root, m);
+        messageTask = new MessageLoader(this, m);
         messageTask.execute();
     }
 }

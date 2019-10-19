@@ -23,6 +23,7 @@ import org.nuclearfog.twidda.fragment.backend.TweetLoader;
 import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
@@ -52,7 +53,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     private SwipeRefreshLayout reload;
     private RecyclerView list;
     private TweetAdapter adapter;
-    private View root;
 
     private TweetType mode;
     private String search;
@@ -85,13 +85,6 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
         setColors();
         return v;
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View v, Bundle param) {
-        super.onViewCreated(v, param);
-        root = v;
     }
 
 
@@ -144,9 +137,10 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
-        if (adapter != null)
+        if (adapter != null && reload != null) {
             adapter.clear();
-        setColors();
+            setColors();
+        }
         tweetTask = null;
     }
 
@@ -166,39 +160,59 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     }
 
 
+    public TweetAdapter getAdapter() {
+        return adapter;
+    }
+
+
+    public void setRefresh(boolean enable) {
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (tweetTask.getStatus() != FINISHED)
+                        reload.setRefreshing(true);
+                }
+            }, 500);
+        } else {
+            reload.setRefreshing(false);
+        }
+    }
+
+
     private void load() {
         switch (mode) {
             case HOME:
-                tweetTask = new TweetLoader(root, Mode.TL_HOME);
+                tweetTask = new TweetLoader(this, Mode.TL_HOME);
                 tweetTask.execute();
                 break;
 
             case MENT:
-                tweetTask = new TweetLoader(root, Mode.TL_MENT);
+                tweetTask = new TweetLoader(this, Mode.TL_MENT);
                 tweetTask.execute();
                 break;
 
             case USER_TWEET:
-                tweetTask = new TweetLoader(root, Mode.USR_TWEETS);
+                tweetTask = new TweetLoader(this, Mode.USR_TWEETS);
                 tweetTask.execute(id);
                 break;
 
             case USER_FAVOR:
-                tweetTask = new TweetLoader(root, Mode.USR_FAVORS);
+                tweetTask = new TweetLoader(this, Mode.USR_FAVORS);
                 tweetTask.execute(id);
                 break;
 
             case TWEET_ANSR:
                 boolean loadAnswer = settings.getAnswerLoad();
                 if (tweetTask != null || loadAnswer)
-                    tweetTask = new TweetLoader(root, Mode.TWEET_ANS);
+                    tweetTask = new TweetLoader(this, Mode.TWEET_ANS);
                 else
-                    tweetTask = new TweetLoader(root, Mode.DB_ANS);
+                    tweetTask = new TweetLoader(this, Mode.DB_ANS);
                 tweetTask.execute(id, search);
                 break;
 
             case SEARCH:
-                tweetTask = new TweetLoader(root, Mode.TWEET_SEARCH);
+                tweetTask = new TweetLoader(this, Mode.TWEET_SEARCH);
                 tweetTask.execute(search);
                 break;
         }
@@ -206,8 +220,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
 
     private void setColors() {
-        if (reload != null)
-            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
         adapter.setImage(settings.getImageLoad());
     }

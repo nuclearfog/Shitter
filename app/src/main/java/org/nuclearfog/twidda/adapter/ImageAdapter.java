@@ -43,11 +43,6 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
     }
 
 
-    public Bitmap top() {
-        return images.get(0);
-    }
-
-
     public void disableLoading() {
         int circlePos = images.size();
         loading = false;

@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.backend.TrendLoader;
 import org.nuclearfog.twidda.window.SearchPage;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
 
@@ -32,7 +33,6 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     private RecyclerView list;
     private TrendAdapter adapter;
     private GlobalSettings settings;
-    private View root;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
@@ -50,13 +50,6 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
         setColors();
         return v;
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View v, Bundle param) {
-        super.onViewCreated(v, param);
-        root = v;
     }
 
 
@@ -98,9 +91,10 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public void onSettingsChange() {
-        if (adapter != null)
+        if (adapter != null && reload != null) {
             adapter.clear();
-        setColors();
+            setColors();
+        }
         trendTask = null;
     }
 
@@ -120,15 +114,34 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
     }
 
 
+    public TrendAdapter getAdapter() {
+        return adapter;
+    }
+
+
+    public void setRefresh(boolean enable) {
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (trendTask.getStatus() != FINISHED)
+                        reload.setRefreshing(true);
+                }
+            }, 500);
+        } else {
+            reload.setRefreshing(false);
+        }
+    }
+
+
     private void load() {
-        trendTask = new TrendLoader(root);
+        trendTask = new TrendLoader(this);
         trendTask.execute();
     }
 
 
     private void setColors() {
-        if (reload != null)
-            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getFontColor());
     }
 }

@@ -3,12 +3,9 @@ package org.nuclearfog.twidda.backend;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
@@ -33,8 +30,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
     public ImageLoader(@NonNull MediaViewer context, Mode mode) {
         ui = new WeakReference<>(context);
-        RecyclerView imageList = context.findViewById(R.id.image_list);
-        imageAdapter = (ImageAdapter) imageList.getAdapter();
+        imageAdapter = context.getAdapter();
         this.mode = mode;
     }
 
@@ -71,12 +67,9 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     protected void onProgressUpdate(Bitmap[] btm) {
         Bitmap image = btm[0];
         if (ui.get() != null && image != null) {
+            if (imageAdapter.getItemCount() == 2)
+                ui.get().disableProgressbar();
             imageAdapter.addLast(btm[0]);
-            if (imageAdapter.getItemCount() == 2) {
-                ProgressBar progress = ui.get().findViewById(R.id.image_load);
-                progress.setVisibility(View.INVISIBLE);
-                ui.get().setImage(imageAdapter.top());
-            }
         }
     }
 

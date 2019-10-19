@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.fragment.backend.UserLoader;
 import org.nuclearfog.twidda.fragment.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.window.UserProfile;
 
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
 
@@ -47,7 +48,6 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     private UserAdapter adapter;
     private UserLoader userTask;
     private RecyclerView list;
-    private View root;
     private UserType mode;
     private String search;
     private long id;
@@ -81,13 +81,6 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         list.setAdapter(adapter);
 
         return v;
-    }
-
-
-    @Override
-    public void onViewCreated(@NonNull View v, Bundle param) {
-        super.onViewCreated(v, param);
-        root = v;
     }
 
 
@@ -142,26 +135,46 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     }
 
 
+    public UserAdapter getAdapter() {
+        return adapter;
+    }
+
+
+    public void setRefresh(boolean enable) {
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (userTask.getStatus() != FINISHED)
+                        reload.setRefreshing(true);
+                }
+            }, 500);
+        } else {
+            reload.setRefreshing(false);
+        }
+    }
+
+
     private void load() {
         switch (mode) {
             case FOLLOWS:
-                userTask = new UserLoader(root, Mode.FOLLOWS);
+                userTask = new UserLoader(this, Mode.FOLLOWS);
                 userTask.execute(id);
                 break;
             case FRIENDS:
-                userTask = new UserLoader(root, Mode.FRIENDS);
+                userTask = new UserLoader(this, Mode.FRIENDS);
                 userTask.execute(id);
                 break;
             case RETWEET:
-                userTask = new UserLoader(root, Mode.RETWEET);
+                userTask = new UserLoader(this, Mode.RETWEET);
                 userTask.execute(id);
                 break;
             case FAVORIT:
-                userTask = new UserLoader(root, Mode.FAVORIT);
+                userTask = new UserLoader(this, Mode.FAVORIT);
                 userTask.execute(id);
                 break;
             case USEARCH:
-                userTask = new UserLoader(root, Mode.SEARCH);
+                userTask = new UserLoader(this, Mode.SEARCH);
                 userTask.execute(search);
                 break;
         }
