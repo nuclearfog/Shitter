@@ -10,6 +10,7 @@ import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -600,15 +601,16 @@ public class TwitterEngine {
     /**
      * Update user profile
      *
-     * @param name     new Username
-     * @param url      new link
-     * @param location new location
-     * @param bio      new bio
+     * @param userHolder User data
      * @return updated user profile
      * @throws TwitterException if Access is unavailable
      */
-    public TwitterUser updateProfile(String name, String url, String location, String bio) throws TwitterException {
-        User user = twitter.updateProfile(name, url, location, bio);
+    public TwitterUser updateProfile(UserHolder userHolder) throws TwitterException {
+        String username = userHolder.getName();
+        String user_link = userHolder.getLink();
+        String user_loc = userHolder.getLocation();
+        String user_bio = userHolder.getBio();
+        User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
         return new TwitterUser(user);
     }
 

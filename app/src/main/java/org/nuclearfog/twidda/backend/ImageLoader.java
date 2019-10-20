@@ -44,29 +44,31 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                         URL url = new URL(link);
                         InputStream stream = url.openStream();
                         Bitmap image = BitmapFactory.decodeStream(stream);
-                        publishProgress(image);
+                        if (image != null)
+                            publishProgress(image);
+                        else
+                            return false;
                     }
-                    break;
+                    return true;
 
                 case STORAGE:
                     for (String link : links) {
                         Bitmap image = BitmapFactory.decodeFile(link);
                         publishProgress(image);
                     }
-                    break;
+                    return true;
             }
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return false;
     }
 
 
     @Override
     protected void onProgressUpdate(Bitmap[] btm) {
         Bitmap image = btm[0];
-        if (ui.get() != null && image != null) {
+        if (ui.get() != null) {
             if (imageAdapter.getItemCount() == 1) {
                 ui.get().disableProgressbar();
                 ui.get().setImage(image);
