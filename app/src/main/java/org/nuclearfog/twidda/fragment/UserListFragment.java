@@ -31,10 +31,10 @@ import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
 
 public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
-    public static final String KEY_FRAG_USER_MODE = "mode";
-    public static final String KEY_FRAG_USER_SEARCH = "search";
-    public static final String KEY_FRAG_USER_ID = "ID";
-    public static final String KEY_FRAG_USER_FIX = "fix";
+    public static final String KEY_FRAG_USER_MODE = "user_mode";
+    public static final String KEY_FRAG_USER_SEARCH = "user_search";
+    public static final String KEY_FRAG_USER_ID = "user_id";
+    public static final String KEY_FRAG_USER_FIX_LAYOUT = "user_fixed_layout";
 
     public enum UserType {
         FOLLOWS,
@@ -61,7 +61,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
             mode = (UserType) b.getSerializable(KEY_FRAG_USER_MODE);
             id = b.getLong(KEY_FRAG_USER_ID, -1);
             search = b.getString(KEY_FRAG_USER_SEARCH, "");
-            fixLayout = b.getBoolean(KEY_FRAG_USER_FIX, true);
+            fixLayout = b.getBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
         } else if (BuildConfig.DEBUG) {
             throw new AssertionError("Bundle error!");
         }
@@ -93,10 +93,10 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
 
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         if (userTask != null && userTask.getStatus() == RUNNING)
             userTask.cancel(true);
-        super.onStop();
+        super.onDestroy();
     }
 
 

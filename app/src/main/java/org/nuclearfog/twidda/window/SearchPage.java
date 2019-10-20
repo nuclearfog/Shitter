@@ -26,12 +26,12 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 
 
 public class SearchPage extends AppCompatActivity implements OnTabSelectedListener {
 
-    public static final String KEY_SEARCH = "search";
+    public static final String KEY_SEARCH_QUERY = "search_query";
 
     private FragmentAdapter adapter;
     private ViewPager pager;
@@ -57,8 +57,8 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         Uri link = getIntent().getData();
         settings = GlobalSettings.getInstance(this);
 
-        if (param != null && param.containsKey(KEY_SEARCH)) {
-            search = param.getString(KEY_SEARCH);
+        if (param != null && param.containsKey(KEY_SEARCH_QUERY)) {
+            search = param.getString(KEY_SEARCH_QUERY);
         } else if (link != null) {
             getSearchString(link);
         } else if (BuildConfig.DEBUG)
@@ -102,7 +102,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             @Override
             public boolean onQueryTextSubmit(String s) {
                 Intent intent = new Intent(SearchPage.this, SearchPage.class);
-                intent.putExtra(KEY_SEARCH, s);
+                intent.putExtra(KEY_SEARCH_QUERY, s);
                 startActivity(intent);
                 return true;
             }
@@ -121,7 +121,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetPopup.class);
             if (search.startsWith("#"))
-                intent.putExtra(KEY_TWEETPOPUP_ADDITION, search);
+                intent.putExtra(KEY_TWEETPOPUP_PREFIX, search);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

@@ -15,8 +15,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 public class UserDetail extends AppCompatActivity {
 
-    public static final String KEY_USERLIST_MODE = "mode";
-    public static final String KEY_USERLIST_ID = "id";
+    public static final String KEY_USERLIST_MODE = "userlist_mode";
+    public static final String KEY_USERLIST_ID = "userlist_owner_id";
 
     public enum UserType {
         FRIENDS,

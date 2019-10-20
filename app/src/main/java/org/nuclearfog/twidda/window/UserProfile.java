@@ -56,9 +56,9 @@ import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
-import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
+import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
 import static org.nuclearfog.twidda.window.UserDetail.UserType.FOLLOWERS;
@@ -68,7 +68,7 @@ import static org.nuclearfog.twidda.window.UserDetail.UserType.FRIENDS;
 public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnTouchListener, OnTagClickListener, OnTabSelectedListener {
 
-    public static final String KEY_PROFILE_ID = "userID";
+    public static final String KEY_PROFILE_ID = "profile_uid";
     private static final int REQUEST_PROFILE_CHANGED = 1;
     public static final int RETURN_PROFILE_CHANGED = 2;
 
@@ -250,13 +250,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     if (user != null) {
                         Intent tweet = new Intent(this, TweetPopup.class);
                         if (userId != settings.getUserId())
-                            tweet.putExtra(KEY_TWEETPOPUP_ADDITION, user.getScreenname());
+                            tweet.putExtra(KEY_TWEETPOPUP_PREFIX, user.getScreenname());
                         startActivity(tweet);
                     }
                     break;
 
                 case R.id.profile_settings:
-                    Intent editProfile = new Intent(this, ProfileEdit.class);
+                    Intent editProfile = new Intent(this, ProfileSettings.class);
                     startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
                     break;
 
@@ -321,7 +321,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                             dmPage = new Intent(this, DirectMessage.class);
                         } else {
                             dmPage = new Intent(this, MessagePopup.class);
-                            dmPage.putExtra(KEY_DM_ADDITION, properties.getTargetScreenname());
+                            dmPage.putExtra(KEY_DM_PREFIX, properties.getTargetScreenname());
                         }
                         startActivity(dmPage);
                     }
@@ -345,7 +345,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public void onClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra(KEY_SEARCH, text);
+        intent.putExtra(KEY_SEARCH_QUERY, text);
         startActivity(intent);
     }
 

@@ -42,7 +42,7 @@ import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE_STORAGE;
 
 
-public class ProfileEdit extends AppCompatActivity implements OnClickListener {
+public class ProfileSettings extends AppCompatActivity implements OnClickListener {
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};

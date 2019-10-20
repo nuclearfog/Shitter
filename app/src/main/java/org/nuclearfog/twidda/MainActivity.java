@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.TweetPopup;
 import org.nuclearfog.twidda.window.UserProfile;
 
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
 
 /**
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             @Override
             public boolean onQueryTextSubmit(String s) {
                 Intent search = new Intent(MainActivity.this, SearchPage.class);
-                search.putExtra(KEY_SEARCH, s);
+                search.putExtra(KEY_SEARCH_QUERY, s);
                 startActivity(search);
                 return false;
             }

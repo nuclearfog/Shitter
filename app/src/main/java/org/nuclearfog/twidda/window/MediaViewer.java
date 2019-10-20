@@ -45,21 +45,12 @@ import static org.nuclearfog.twidda.backend.ImageLoader.Mode.STORAGE;
 
 public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener {
 
-    public static final String KEY_MEDIA_LINK = "link";
-    public static final String KEY_MEDIA_TYPE = "mediatype";
+    public static final String KEY_MEDIA_LINK = "media_link";
+    public static final String KEY_MEDIA_TYPE = "media_type";
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
     private static final int REQCODE_SD = 6;
-
-    public enum MediaType {
-        IMAGE,
-        IMAGE_STORAGE,
-        VIDEO,
-        VIDEO_STORAGE,
-        ANGIF,
-        ANGIF_STORAGE
-    }
 
     private ImageLoader imageAsync;
     private ProgressBar video_progress;
@@ -72,6 +63,15 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private String[] link;
     private int width;
     private int lastPos = 0;
+
+    public enum MediaType {
+        IMAGE,
+        IMAGE_STORAGE,
+        VIDEO,
+        VIDEO_STORAGE,
+        ANGIF,
+        ANGIF_STORAGE
+    }
 
 
     @Override

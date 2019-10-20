@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpload;
+import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -33,7 +34,7 @@ import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE_STORAGE;
 
 public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
-    public static final String KEY_DM_ADDITION = "addition";
+    public static final String KEY_DM_PREFIX = "dm_prefix";
     private static final String[] PERM_READ = {Manifest.permission.READ_EXTERNAL_STORAGE};
     private static final String[] PICK_IMAGE = {MediaStore.Images.Media.DATA};
     private static final int REQ_PERM_READ = 4;
@@ -49,8 +50,8 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         setContentView(R.layout.popup_dm);
         String addtion = "";
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_DM_ADDITION)) {
-            addtion = param.getString(KEY_DM_ADDITION);
+        if (param != null && param.containsKey(KEY_DM_PREFIX)) {
+            addtion = param.getString(KEY_DM_PREFIX);
         }
 
         View root = findViewById(R.id.dm_popup);
@@ -124,8 +125,9 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             String username = receiver.getText().toString();
             String message = text.getText().toString();
             if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
-                messageAsync = new MessageUpload(this);
-                messageAsync.execute(username, message, mediaPath);
+                MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
+                messageAsync = new MessageUpload(this, messageHolder);
+                messageAsync.execute();
             } else {
                 Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
             }

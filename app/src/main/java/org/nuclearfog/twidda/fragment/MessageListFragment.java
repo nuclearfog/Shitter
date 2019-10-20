@@ -26,8 +26,8 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_ADDITION;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
+import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
 
 
@@ -68,10 +68,10 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         if (messageTask != null && messageTask.getStatus() == RUNNING)
             messageTask.cancel(true);
-        super.onStop();
+        super.onDestroy();
     }
 
 
@@ -86,7 +86,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
     public void onClick(String tag) {
         if (reload != null && !reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), SearchPage.class);
-            intent.putExtra(KEY_SEARCH, tag);
+            intent.putExtra(KEY_SEARCH_QUERY, tag);
             startActivity(intent);
         }
     }
@@ -98,7 +98,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
             switch (action) {
                 case ANSWER:
                     Intent sendDm = new Intent(getContext(), MessagePopup.class);
-                    sendDm.putExtra(KEY_DM_ADDITION, message.getSender().getScreenname());
+                    sendDm.putExtra(KEY_DM_PREFIX, message.getSender().getScreenname());
                     startActivity(sendDm);
                     break;
 

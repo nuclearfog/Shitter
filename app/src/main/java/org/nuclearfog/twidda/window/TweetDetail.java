@@ -60,8 +60,8 @@ import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_ADDITION;
+import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
@@ -232,7 +232,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 case R.id.tweet_answer:
                     Intent tweetPopup = new Intent(this, TweetPopup.class);
                     tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetID);
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_ADDITION, username);
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_PREFIX, username);
                     startActivity(tweetPopup);
                     break;
 
@@ -295,7 +295,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra(KEY_SEARCH, text);
+        intent.putExtra(KEY_SEARCH_QUERY, text);
         startActivity(intent);
     }
 

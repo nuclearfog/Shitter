@@ -14,11 +14,11 @@ import org.nuclearfog.twidda.fragment.TweetListFragment.TweetType;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 import org.nuclearfog.twidda.fragment.UserListFragment.UserType;
 
-import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_FIX;
+import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_FIX_LAYOUT;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_USER_FIX;
+import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_USER_FIX_LAYOUT;
 import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_USER_SEARCH;
@@ -53,8 +53,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 Bundle ment_tl = new Bundle();
                 home_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.HOME);
                 ment_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.MENT);
-                home_tl.putBoolean(KEY_FRAG_TWEET_FIX, true);
-                ment_tl.putBoolean(KEY_FRAG_TWEET_FIX, true);
+                home_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
+                ment_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
                 fragments = new Fragment[3];
                 fragments[0] = new TweetListFragment();
                 fragments[1] = new TrendListFragment();
@@ -68,8 +68,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 Bundle usr_favor = new Bundle();
                 usr_tweet.putLong(KEY_FRAG_TWEET_ID, id);
                 usr_favor.putLong(KEY_FRAG_TWEET_ID, id);
-                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX, false);
-                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX, false);
+                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
+                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
                 usr_tweet.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.USER_TWEET);
                 usr_favor.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.USER_FAVOR);
                 fragments = new Fragment[2];
@@ -86,8 +86,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 userSearch.putString(KEY_FRAG_USER_SEARCH, search);
                 tweetSearch.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.SEARCH);
                 userSearch.putSerializable(KEY_FRAG_USER_MODE, UserType.USEARCH);
-                tweetSearch.putBoolean(KEY_FRAG_TWEET_FIX, true);
-                userSearch.putBoolean(KEY_FRAG_USER_FIX, true);
+                tweetSearch.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
+                userSearch.putBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetListFragment();
                 fragments[1] = new UserListFragment();
@@ -99,7 +99,7 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 Bundle param = new Bundle();
                 param.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.TWEET_ANSR);
                 param.putString(KEY_FRAG_TWEET_SEARCH, search);
-                param.putBoolean(KEY_FRAG_TWEET_FIX, false);
+                param.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
                 param.putLong(KEY_FRAG_TWEET_ID, id);
                 fragments = new Fragment[1];
                 fragments[0] = new TweetListFragment();

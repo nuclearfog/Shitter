@@ -43,15 +43,8 @@ import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO_STORAGE;
 
 public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
-    public static final String KEY_TWEETPOPUP_REPLYID = "replyID";
-    public static final String KEY_TWEETPOPUP_ADDITION = "Addition";
-
-    private enum Mode {
-        IMAGE,
-        VIDEO,
-        GIF,
-        NONE
-    }
+    public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
+    public static final String KEY_TWEETPOPUP_PREFIX = "tweet_prefix";
 
     private static final String[] READ_STORAGE = {READ_EXTERNAL_STORAGE};
     private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
@@ -70,6 +63,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     private long inReplyId = 0;
     private Mode mode = Mode.NONE;
 
+    private enum Mode {
+        IMAGE,
+        VIDEO,
+        GIF,
+        NONE
+    }
 
     @Override
     protected void onCreate(Bundle b) {
@@ -86,7 +85,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
         Bundle param = getIntent().getExtras();
         if (param != null) {
             inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, 0);
-            addition = param.getString(KEY_TWEETPOPUP_ADDITION, "") + " ";
+            addition = param.getString(KEY_TWEETPOPUP_PREFIX, "") + " ";
         }
 
         mediaPath = new LinkedList<>();

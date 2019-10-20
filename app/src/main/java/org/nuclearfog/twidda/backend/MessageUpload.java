@@ -11,24 +11,26 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
+import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.window.MessagePopup;
 
 import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-public class MessageUpload extends AsyncTask<String, Void, Boolean> {
+public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<MessagePopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
     private TwitterException err;
+    private MessageHolder message;
 
-
-    public MessageUpload(@NonNull MessagePopup c) {
+    public MessageUpload(@NonNull MessagePopup c, MessageHolder message) {
         ui = new WeakReference<>(c);
         popup = new WeakReference<>(new Dialog(c));
         mTwitter = TwitterEngine.getInstance(c);
+        this.message = message;
     }
 
 
@@ -64,22 +66,16 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(String... param) {
-        String username = param[0];
-        String message = param[1];
-        String path = param[2];
+    protected Boolean doInBackground(Void[] v) {
         try {
-            if (!username.startsWith("@"))
-                username = '@' + username;
-            mTwitter.sendMessage(username, message, path);
+            mTwitter.sendMessage(message);
+            return true;
         } catch (TwitterException err) {
             this.err = err;
-            return false;
         } catch (Exception err) {
             err.printStackTrace();
-            return false;
         }
-        return true;
+        return false;
     }
 
 
@@ -100,8 +96,7 @@ public class MessageUpload extends AsyncTask<String, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        if (popup.get() != null) {
+        if (popup.get() != null)
             popup.get().dismiss();
-        }
     }
 }

@@ -51,7 +51,7 @@ public class GlobalSettings {
         proxyPort = settings.getString("proxy_port", "");
         proxyUser = settings.getString("proxy_user", "");
         proxyPass = settings.getString("proxy_pass", "");
-        String place = settings.getString("location", "");
+        String place = settings.getString("location", "Worldwide");
         int woeId = settings.getInt("world_id", 1);
         location = new TrendLocation(place, woeId);
         formatter = NumberFormat.getIntegerInstance();

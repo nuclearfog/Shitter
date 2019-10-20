@@ -31,10 +31,10 @@ import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
 
 public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
-    public static final String KEY_FRAG_TWEET_MODE = "mode";
-    public static final String KEY_FRAG_TWEET_SEARCH = "search";
-    public static final String KEY_FRAG_TWEET_ID = "ID";
-    public static final String KEY_FRAG_TWEET_FIX = "fix";
+    public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
+    public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
+    public static final String KEY_FRAG_TWEET_ID = "tweet_id";
+    public static final String KEY_FRAG_TWEET_FIX_LAYOUT = "tweet_fix_layout";
 
     private static final int REQUEST_TWEET_CHANGED = 3;
     public static final int RETURN_TWEET_CHANGED = 4;
@@ -67,7 +67,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             mode = (TweetType) b.getSerializable(KEY_FRAG_TWEET_MODE);
             id = b.getLong(KEY_FRAG_TWEET_ID, -1);
             search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
-            fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX, false);
+            fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
         } else {
             throw new AssertionError();
         }
@@ -91,17 +91,16 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
     @Override
     public void onStart() {
         super.onStart();
-        if (tweetTask == null) {
+        if (tweetTask == null)
             load();
-        }
     }
 
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         if (tweetTask != null && tweetTask.getStatus() == RUNNING)
             tweetTask.cancel(true);
-        super.onStop();
+        super.onDestroy();
     }
 
 

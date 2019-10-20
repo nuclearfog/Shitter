@@ -2,10 +2,9 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
@@ -570,19 +569,17 @@ public class TwitterEngine {
     /**
      * Send direct message
      *
-     * @param username receiver name
-     * @param msg      Message Text
-     * @param path     media path
+     * @param messageHolder message informations
      * @throws TwitterException if access is unavailable
      */
-    public void sendMessage(String username, String msg, @Nullable String path) throws TwitterException {
-        long id = twitter.showUser(username).getId();
-        if (path != null && !path.trim().isEmpty()) {
-            UploadedMedia media = twitter.uploadMedia(new File(path));
+    public void sendMessage(MessageHolder messageHolder) throws TwitterException {
+        long id = twitter.showUser(messageHolder.getUsername()).getId();
+        if (messageHolder.hasMedia()) {
+            UploadedMedia media = twitter.uploadMedia(new File(messageHolder.getMediaPath()));
             long mediaId = media.getMediaId();
-            twitter.sendDirectMessage(id, msg, mediaId);
+            twitter.sendDirectMessage(id, messageHolder.getMessage(), mediaId);
         } else {
-            twitter.sendDirectMessage(id, msg);
+            twitter.sendDirectMessage(id, messageHolder.getMessage());
         }
     }
 
