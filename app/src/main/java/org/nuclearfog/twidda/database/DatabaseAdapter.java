@@ -52,15 +52,7 @@ public class DatabaseAdapter {
     private DatabaseAdapter(Context context) {
         databasePath = context.getDatabasePath(DB_NAME);
         db = context.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
-
-        db.execSQL(TABLE_USER);
-        db.execSQL(TABLE_TWEET);
-        db.execSQL(TABLE_FAVORS);
-        db.execSQL(TABLE_TRENDS);
-        db.execSQL(TABLE_MESSAGES);
-        db.execSQL(INDX_TWEET);
-        db.execSQL(INDX_FAVOR);
-        db.execSQL(INDX_TREND);
+        initTables();
     }
 
 
@@ -83,5 +75,17 @@ public class DatabaseAdapter {
     public static void deleteDatabase(Context c) {
         SQLiteDatabase.deleteDatabase(c.getDatabasePath(DB_NAME));
         instance = null;
+    }
+
+
+    private void initTables() {
+        db.execSQL(TABLE_USER);
+        db.execSQL(TABLE_TWEET);
+        db.execSQL(TABLE_FAVORS);
+        db.execSQL(TABLE_TRENDS);
+        db.execSQL(TABLE_MESSAGES);
+        db.execSQL(INDX_TWEET);
+        db.execSQL(INDX_FAVOR);
+        db.execSQL(INDX_TREND);
     }
 }

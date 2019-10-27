@@ -1,8 +1,12 @@
 package org.nuclearfog.twidda.window;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,6 +30,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.LinkedList;
 import java.util.List;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
@@ -41,12 +46,13 @@ import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE_STORAGE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO_STORAGE;
 
 
-public class TweetPopup extends AppCompatActivity implements OnClickListener {
+public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener {
 
     public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
     public static final String KEY_TWEETPOPUP_PREFIX = "tweet_prefix";
 
-    private static final String[] READ_STORAGE = {READ_EXTERNAL_STORAGE};
+    private static final String[] PERM_STORAGE = {READ_EXTERNAL_STORAGE};
+    private static final String[] PERM_LOCATION = {ACCESS_FINE_LOCATION};
     private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
     private static final String TYPE_IMAGE = "image/*";
     private static final String TYPE_VIDEO = "video/*";
@@ -54,13 +60,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     private static final int CHECK_PERM = 4;
     private static final int MAX_IMAGES = 4;
 
+    private LocationManager mLocation;
     private StatusUploader uploaderAsync;
-    private View imageButton, previewBtn;
     private List<String> mediaPath;
+    private View mediaBtn, previewBtn, locationBtn;
     private TextView imgCount;
     private EditText tweet;
     private String addition = "";
     private long inReplyId = 0;
+    private double[] gpsLocation;
     private Mode mode = Mode.NONE;
 
     private enum Mode {
@@ -74,13 +82,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_tweet);
-        View tweetButton = findViewById(R.id.sendTweet);
-        View closeButton = findViewById(R.id.close);
         View root = findViewById(R.id.tweet_popup);
-        imageButton = findViewById(R.id.image);
-        previewBtn = findViewById(R.id.img_preview);
+        View tweetButton = findViewById(R.id.tweet_send);
+        View closeButton = findViewById(R.id.close);
+        mediaBtn = findViewById(R.id.tweet_add_media);
+        previewBtn = findViewById(R.id.tweet_prev_media);
+        locationBtn = findViewById(R.id.tweet_add_location);
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
+        mLocation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
@@ -95,8 +105,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
-        imageButton.setOnClickListener(this);
+        mediaBtn.setOnClickListener(this);
         previewBtn.setOnClickListener(this);
+        locationBtn.setOnClickListener(this);
     }
 
 
@@ -135,7 +146,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                                 String count = Integer.toString(mediaPath.size());
                                 imgCount.setText(count);
                                 if (mediaPath.size() == MAX_IMAGES)
-                                    imageButton.setVisibility(INVISIBLE);
+                                    mediaBtn.setVisibility(INVISIBLE);
                             }
                             break;
 
@@ -145,7 +156,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                             if (mode == Mode.GIF) {
                                 mediaPath.add(path);
                                 previewBtn.setVisibility(VISIBLE);
-                                imageButton.setVisibility(INVISIBLE);
+                                mediaBtn.setVisibility(INVISIBLE);
                             }
                             break;
 
@@ -155,7 +166,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                             if (mode == Mode.VIDEO) {
                                 mediaPath.add(path);
                                 previewBtn.setVisibility(VISIBLE);
-                                imageButton.setVisibility(INVISIBLE);
+                                mediaBtn.setVisibility(INVISIBLE);
                             }
                             break;
 
@@ -172,27 +183,35 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == CHECK_PERM && grantResults[0] == PERMISSION_GRANTED)
-            getMedia();
+        if (requestCode == CHECK_PERM && permissions.length > 0 && grantResults.length > 0) {
+            switch (permissions[0]) {
+                case READ_EXTERNAL_STORAGE:
+                    if (grantResults[0] == PERMISSION_GRANTED)
+                        getMedia();
+                    break;
+
+                case ACCESS_FINE_LOCATION:
+                    if (grantResults[0] == PERMISSION_GRANTED)
+                        getLocation();
+                    break;
+            }
+        }
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.sendTweet:
+            case R.id.tweet_send:
                 String tweetStr = tweet.getText().toString();
-                String[] paths = new String[mediaPath.size()];
-                paths = mediaPath.toArray(paths);
-
-                if (tweetStr.trim().isEmpty() && paths.length == 0) {
+                if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                     Toast.makeText(this, R.string.empty_tweet, LENGTH_SHORT).show();
-                } else if (paths.length > 0) {
-                    TweetHolder tweet = new TweetHolder(tweetStr, inReplyId, paths);
-                    uploaderAsync = new StatusUploader(this, tweet);
-                    uploaderAsync.execute();
-                } else if (!tweetStr.trim().isEmpty()) {
+                } else {
                     TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
+                    if (!mediaPath.isEmpty())
+                        tweet.addMedia(mediaPath.toArray(new String[0]));
+                    if (gpsLocation != null)
+                        tweet.addLocation(gpsLocation);
                     uploaderAsync = new StatusUploader(this, tweet);
                     uploaderAsync.execute();
                 }
@@ -202,11 +221,11 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                 showClosingMsg();
                 break;
 
-            case R.id.image:
-                checkPermission();
+            case R.id.tweet_add_media:
+                getMedia();
                 break;
 
-            case R.id.img_preview:
+            case R.id.tweet_prev_media:
                 Intent image = new Intent(this, MediaViewer.class);
                 image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
 
@@ -227,7 +246,34 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
                         break;
                 }
                 break;
+
+            case R.id.tweet_add_location:
+                getLocation();
+                break;
         }
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        gpsLocation = new double[2];
+        gpsLocation[0] = location.getLatitude();
+        gpsLocation[1] = location.getLongitude();
+    }
+
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+
+    @Override
+    public void onProviderDisabled(String provider) {
     }
 
 
@@ -249,29 +295,41 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener {
     }
 
 
-    private void checkPermission() {
+    private void getMedia() {
+        boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
-            if (check == PERMISSION_GRANTED) {
-                getMedia();
-            } else {
-                requestPermissions(READ_STORAGE, CHECK_PERM);
+            if (checkSelfPermission(PERM_STORAGE[0]) != PERMISSION_GRANTED) {
+                requestPermissions(PERM_STORAGE, CHECK_PERM);
+                accessGranted = false;
             }
-        } else {
-            getMedia();
+        }
+        if (accessGranted) {
+            if (mode == Mode.NONE) {
+                Intent mediaIntent = new Intent(ACTION_PICK);
+                mediaIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE + TYPE_VIDEO);
+                startActivityForResult(mediaIntent, PICK_MEDIA);
+            } else if (mode == Mode.IMAGE) {
+                Intent imageIntent = new Intent(ACTION_PICK);
+                imageIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE);
+                startActivityForResult(imageIntent, PICK_MEDIA);
+            }
         }
     }
 
 
-    private void getMedia() {
-        if (mode == Mode.NONE) {
-            Intent mediaIntent = new Intent(ACTION_PICK);
-            mediaIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE + TYPE_VIDEO);
-            startActivityForResult(mediaIntent, PICK_MEDIA);
-        } else if (mode == Mode.IMAGE) {
-            Intent imageIntent = new Intent(ACTION_PICK);
-            imageIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE);
-            startActivityForResult(imageIntent, PICK_MEDIA);
+    private void getLocation() {
+        boolean accessGranted = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(PERM_LOCATION[0]) != PERMISSION_GRANTED) {
+                requestPermissions(PERM_LOCATION, CHECK_PERM);
+                accessGranted = false;
+            }
+        }
+        if (accessGranted) {
+            if (mLocation.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                mLocation.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
+            else
+                Toast.makeText(this, R.string.error_location, LENGTH_SHORT).show();
         }
     }
 }

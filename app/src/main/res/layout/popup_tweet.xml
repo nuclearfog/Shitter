@@ -40,7 +40,7 @@
                 android:textSize="@dimen/textsize_count" />
 
             <ImageButton
-                android:id="@+id/img_preview"
+                android:id="@+id/tweet_prev_media"
                 android:layout_width="@dimen/button_tweet_size"
                 android:layout_height="@dimen/button_tweet_size"
                 android:layout_marginStart="@dimen/margin_tweet_icon"
@@ -51,7 +51,7 @@
                 app:srcCompat="@drawable/image" />
 
             <ImageButton
-                android:id="@+id/image"
+                android:id="@+id/tweet_add_media"
                 android:layout_width="@dimen/button_tweet_size"
                 android:layout_height="@dimen/button_tweet_size"
                 android:layout_marginStart="@dimen/margin_tweet_icon"
@@ -61,7 +61,17 @@
                 app:srcCompat="@drawable/image_add" />
 
             <ImageButton
-                android:id="@+id/sendTweet"
+                android:id="@+id/tweet_add_location"
+                android:layout_width="@dimen/button_tweet_size"
+                android:layout_height="@dimen/button_tweet_size"
+                android:layout_marginStart="@dimen/margin_tweet_icon"
+                android:layout_marginLeft="@dimen/margin_tweet_icon"
+                android:background="@drawable/button"
+                android:contentDescription="@string/send_tweet"
+                app:srcCompat="@drawable/location" />
+
+            <ImageButton
+                android:id="@+id/tweet_send"
                 android:layout_width="@dimen/button_tweet_size"
                 android:layout_height="@dimen/button_tweet_size"
                 android:layout_marginStart="@dimen/margin_tweet_icon"

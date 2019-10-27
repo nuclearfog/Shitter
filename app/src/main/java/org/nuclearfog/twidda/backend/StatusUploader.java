@@ -102,7 +102,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (ui.get() != null)
-                                    ui.get().findViewById(R.id.sendTweet).callOnClick();
+                                    ui.get().findViewById(R.id.tweet_send).callOnClick();
                             }
                         })
                         .setNegativeButton(R.string.cancel, null).show();

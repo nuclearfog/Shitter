@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import twitter4j.DirectMessage;
+import twitter4j.GeoLocation;
 import twitter4j.IDs;
 import twitter4j.Location;
 import twitter4j.Paging;
@@ -423,12 +424,14 @@ public class TwitterEngine {
         StatusUpdate mStatus = new StatusUpdate(tweet.getText());
         if (tweet.isReply())
             mStatus.setInReplyToStatusId(tweet.getReplyId());
+        if (tweet.hasLocation())
+            mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
         if (tweet.hasImages()) {
             long[] ids = uploadImages(tweet.getImageLink());
             mStatus.setMediaIds(ids);
         } else if (tweet.hasVideo()) {
-            long[] ids = uploadVideo(tweet.getVideoLink());
-            mStatus.setMediaIds(ids);
+            long id = uploadVideo(tweet.getVideoLink());
+            mStatus.setMediaIds(id);
         }
         twitter.updateStatus(mStatus);
     }
@@ -693,9 +696,9 @@ public class TwitterEngine {
      * @throws TwitterException      if twitter service is unavailable
      * @throws FileNotFoundException if file was not found
      */
-    private long[] uploadVideo(String path) throws TwitterException, FileNotFoundException {
+    private long uploadVideo(String path) throws TwitterException, FileNotFoundException {
         File file = new File(path);
         UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
-        return new long[]{media.getMediaId()};
+        return media.getMediaId();
     }
 }
