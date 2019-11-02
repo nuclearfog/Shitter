@@ -1,9 +1,11 @@
 package org.nuclearfog.twidda.fragment.backend;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
@@ -29,7 +31,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     private Mode mode;
     private WeakReference<UserListFragment> ui;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private UserAdapter adapter;
 
 
@@ -67,10 +69,10 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
                 case SEARCH:
                     return mTwitter.searchUsers((String) param[0]);
             }
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
     }
@@ -79,10 +81,12 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     @Override
     protected void onPostExecute(@Nullable List<TwitterUser> users) {
         if (ui.get() != null) {
-            if (users != null)
+            if (users != null) {
                 adapter.replaceAll(users);
-            else if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+                if (mode == Mode.FAVORIT)
+                    Toast.makeText(ui.get().getContext(), R.string.info_not_implemented, Toast.LENGTH_SHORT).show();
+            } else if (twException != null)
+                ErrorHandler.printError(ui.get().getContext(), twException);
             ui.get().setRefresh(false);
         }
     }

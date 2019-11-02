@@ -76,15 +76,17 @@ public abstract class ErrorHandler {
 
             case -1:
             default:
-                ConnectivityManager mConnect = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (mConnect.getActiveNetworkInfo() == null || !mConnect.getActiveNetworkInfo().isConnected()) {
-                    Toast.makeText(c, R.string.connection_failed, Toast.LENGTH_SHORT).show();
-                } else if (error.getStatusCode() != 401) {
+                if (error.getStatusCode() != 401) {
                     String strMsg = error.getMessage();
                     if (strMsg != null && !strMsg.trim().isEmpty())
                         Toast.makeText(c, strMsg, Toast.LENGTH_LONG).show();
                     else
                         Toast.makeText(c, R.string.error, Toast.LENGTH_LONG).show();
+                } else {
+                    ConnectivityManager mConnect = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+                    if (mConnect != null)
+                        if (mConnect.getActiveNetworkInfo() == null || !mConnect.getActiveNetworkInfo().isConnected())
+                            Toast.makeText(c, R.string.connection_failed, Toast.LENGTH_SHORT).show();
                 }
         }
         return false;

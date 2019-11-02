@@ -32,7 +32,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     private final Mode mode;
     private WeakReference<TweetDetail> ui;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private AppDatabase db;
     private boolean statusNotFound = false;
 
@@ -88,15 +88,15 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                         db.removeFavorite(tweetId);
                     break;
             }
-        } catch (TwitterException err) {
-            this.err = err;
-            int rCode = err.getErrorCode();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+            int rCode = twException.getErrorCode();
             if (rCode == 144 || rCode == 34 || rCode == 63) {
                 db.removeStatus(tweetId);
                 statusNotFound = true;
             }
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return tweet;
     }
@@ -137,8 +137,8 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                         break;
                 }
             }
-            if (err != null) {
-                boolean killActivity = ErrorHandler.printError(ui.get(), err);
+            if (twException != null) {
+                boolean killActivity = ErrorHandler.printError(ui.get(), twException);
                 if (killActivity) {
                     if (statusNotFound)
                         ui.get().setResult(RETURN_TWEET_CHANGED);

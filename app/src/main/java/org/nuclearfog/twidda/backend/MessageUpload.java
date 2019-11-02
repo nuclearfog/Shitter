@@ -23,7 +23,7 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
     private WeakReference<MessagePopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private MessageHolder message;
 
     public MessageUpload(@NonNull MessagePopup c, MessageHolder message) {
@@ -70,10 +70,10 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
         try {
             mTwitter.sendMessage(message);
             return true;
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return false;
     }
@@ -86,8 +86,8 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
                 Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
                 ui.get().finish();
             } else {
-                if (err != null)
-                    ErrorHandler.printError(ui.get(), err);
+                if (twException != null)
+                    ErrorHandler.printError(ui.get(), twException);
             }
             popup.get().dismiss();
         }

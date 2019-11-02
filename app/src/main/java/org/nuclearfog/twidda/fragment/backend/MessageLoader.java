@@ -28,7 +28,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     private Mode mode;
     private WeakReference<MessageListFragment> ui;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private AppDatabase db;
     private MessageAdapter adapter;
 
@@ -73,14 +73,14 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
                     messages = db.getMessages();
                     break;
             }
-        } catch (TwitterException err) {
-            this.err = err;
-            if (err.getErrorCode() == 34) {
+        } catch (TwitterException twException) {
+            this.twException = twException;
+            if (twException.getErrorCode() == 34) {
                 db.deleteDm(messageId);
                 messages = db.getMessages();
             }
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return messages;
     }
@@ -91,8 +91,8 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         if (ui.get() != null) {
             if (messages != null)
                 adapter.replaceAll(messages);
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+            if (twException != null)
+                ErrorHandler.printError(ui.get().getContext(), twException);
             ui.get().setRefresh(false);
         }
     }

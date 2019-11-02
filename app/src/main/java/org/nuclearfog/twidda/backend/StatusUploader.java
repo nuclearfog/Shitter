@@ -28,7 +28,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
     private WeakReference<TweetPopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private TweetHolder tweet;
 
     public StatusUploader(@NonNull TweetPopup context, TweetHolder tweet) {
@@ -75,11 +75,11 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void[] v) {
         try {
             mTwitter.uploadStatus(tweet);
-        } catch (TwitterException err) {
-            this.err = err;
+        } catch (TwitterException twException) {
+            this.twException = twException;
             return false;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
             return false;
         }
         return true;
@@ -93,8 +93,8 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                 Toast.makeText(ui.get(), R.string.tweet_sent, LENGTH_LONG).show();
                 ui.get().finish();
             } else {
-                if (err != null)
-                    ErrorHandler.printError(ui.get(), err);
+                if (twException != null)
+                    ErrorHandler.printError(ui.get(), twException);
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
                 builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)

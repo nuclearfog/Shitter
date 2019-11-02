@@ -33,7 +33,7 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
     private WeakReference<TweetListFragment> ui;
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private AppDatabase db;
 
 
@@ -148,10 +148,10 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
                     tweets = mTwitter.searchTweets(search, sinceId);
                     break;
             }
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return tweets;
     }
@@ -162,8 +162,8 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         if (ui.get() != null) {
             if (tweets != null)
                 adapter.addFirst(tweets);
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+            if (twException != null)
+                ErrorHandler.printError(ui.get().getContext(), twException);
             ui.get().setRefresh(false);
         }
     }

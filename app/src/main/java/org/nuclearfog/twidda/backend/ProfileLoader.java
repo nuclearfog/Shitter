@@ -30,7 +30,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
     private final Mode mode;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private AppDatabase db;
 
 
@@ -98,10 +98,10 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
                     publishProgress(user);
                     return mTwitter.getConnection(userId);
             }
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
     }
@@ -142,8 +142,8 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
                         break;
                 }
             }
-            if (err != null) {
-                boolean killActivity = ErrorHandler.printError(ui.get(), err);
+            if (twException != null) {
+                boolean killActivity = ErrorHandler.printError(ui.get(), twException);
                 if (killActivity)
                     ui.get().finish();
             }

@@ -24,8 +24,8 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
-    private TwitterException err;
-    private String redirectionURL = "";
+    private TwitterException twException;
+    private String redirectionURL;
     private Mode mode;
 
 
@@ -50,10 +50,10 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                         mTwitter.initialize(pin);
                     return true;
             }
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception e) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return false;
     }
@@ -73,8 +73,8 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
                         ui.get().finish();
                         break;
                 }
-            } else if (err != null) {
-                ErrorHandler.printError(ui.get(), err);
+            } else if (twException != null) {
+                ErrorHandler.printError(ui.get(), twException);
             } else {
                 Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_SHORT).show();
             }

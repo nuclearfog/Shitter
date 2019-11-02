@@ -29,7 +29,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
     private WeakReference<Dialog> popup;
     private UserHolder userHolder;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
     private AppDatabase db;
 
 
@@ -92,10 +92,10 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
                 TwitterUser user = mTwitter.updateProfile(userHolder);
                 db.storeUser(user);
             }
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
     }
@@ -112,7 +112,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
                 ui.get().setResult(RETURN_PROFILE_CHANGED);
                 ui.get().finish();
             } else {
-                ErrorHandler.printError(ui.get(), err);
+                ErrorHandler.printError(ui.get(), twException);
                 ui.get().finish();
             }
         }

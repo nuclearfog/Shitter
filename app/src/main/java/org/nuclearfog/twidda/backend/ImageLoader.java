@@ -58,8 +58,8 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                     }
                     return true;
             }
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return false;
     }

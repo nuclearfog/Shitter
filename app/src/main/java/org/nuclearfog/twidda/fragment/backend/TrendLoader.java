@@ -21,7 +21,7 @@ import twitter4j.TwitterException;
 public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
 
     private WeakReference<TrendListFragment> ui;
-    private TwitterException err;
+    private TwitterException twException;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private TrendAdapter adapter;
@@ -60,10 +60,10 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
                 db.storeTrends(trends, woeId);
             }
             return trends;
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
     }
@@ -74,8 +74,8 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
         if (ui.get() != null) {
             if (trends != null)
                 adapter.setData(trends);
-            if (err != null)
-                ErrorHandler.printError(ui.get().getContext(), err);
+            if (twException != null)
+                ErrorHandler.printError(ui.get().getContext(), twException);
             ui.get().setRefresh(false);
         }
     }

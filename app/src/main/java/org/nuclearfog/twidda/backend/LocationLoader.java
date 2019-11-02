@@ -16,7 +16,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
 
     private WeakReference<AppSettings> ui;
     private TwitterEngine mTwitter;
-    private TwitterException err;
+    private TwitterException twException;
 
 
     public LocationLoader(AppSettings context) {
@@ -29,10 +29,10 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
     protected List<TrendLocation> doInBackground(Void[] v) {
         try {
             return mTwitter.getLocations();
-        } catch (TwitterException err) {
-            this.err = err;
-        } catch (Exception err) {
-            err.printStackTrace();
+        } catch (TwitterException twException) {
+            this.twException = twException;
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
         return null;
     }
@@ -47,8 +47,8 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
                 adapter.addAll(locations);
                 adapter.notifyDataSetChanged();
                 ui.get().setWoeIdSelection();
-            } else if (err != null) {
-                ErrorHandler.printError(ui.get(), err);
+            } else if (twException != null) {
+                ErrorHandler.printError(ui.get(), twException);
             }
         }
     }

@@ -36,11 +36,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
 
-    private GlobalSettings settings;
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private ViewPager pager;
     private View root;
+    private long homeId;
     private int tabIndex = 0;
 
     static {
@@ -61,31 +61,34 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-        settings = GlobalSettings.getInstance(this);
-        adapter = new FragmentAdapter(getSupportFragmentManager());
-        pager.setAdapter(adapter);
-        pager.setOffscreenPageLimit(3);
+
         tablayout.setupWithViewPager(pager);
         tablayout.addOnTabSelectedListener(this);
-
-        Tab tlTab = tablayout.getTabAt(0);
-        Tab trTab = tablayout.getTabAt(1);
-        Tab mnTab = tablayout.getTabAt(2);
-
-        if (tlTab != null && trTab != null && mnTab != null) {
-            tlTab.setIcon(R.drawable.home);
-            trTab.setIcon(R.drawable.hash);
-            mnTab.setIcon(R.drawable.mention);
-        }
+        pager.setOffscreenPageLimit(3);
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, LOGIN);
+        } else if (adapter == null) {
+            adapter = new FragmentAdapter(getSupportFragmentManager());
+            pager.setAdapter(adapter);
+            homeId = settings.getUserId();
+
+            Tab tlTab = tablayout.getTabAt(0);
+            Tab trTab = tablayout.getTabAt(1);
+            Tab mnTab = tablayout.getTabAt(2);
+
+            if (tlTab != null && trTab != null && mnTab != null) {
+                tlTab.setIcon(R.drawable.home);
+                trTab.setIcon(R.drawable.hash);
+                mnTab.setIcon(R.drawable.mention);
+            }
         }
         root.setBackgroundColor(settings.getBackgroundColor());
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
@@ -103,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             case SETTING:
                 if (returnCode == DB_CLEARED)
                     adapter.clearData();
+                else if (returnCode == APP_LOGOUT)
+                    adapter = null;
                 else
                     adapter.notifySettingsChanged();
                 break;
@@ -173,7 +178,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_profile:
-                long homeId = settings.getUserId();
                 Intent user = new Intent(this, UserProfile.class);
                 user.putExtra(KEY_PROFILE_ID, homeId);
                 startActivity(user);
