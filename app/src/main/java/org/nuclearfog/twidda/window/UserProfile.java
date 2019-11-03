@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
@@ -243,7 +244,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (profileAsync != null && profileAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.profile_tweet:
@@ -378,7 +379,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             case R.id.links:
                 if (user != null && !user.getLink().isEmpty()) {
                     ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                    if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                    if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         Intent browserIntent = new Intent(ACTION_VIEW);
                         String link = user.getLink();
                         browserIntent.setData(Uri.parse(link));

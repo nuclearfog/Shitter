@@ -123,4 +123,5 @@
     <string name="info_not_implemented">Diese Funktion wurde noch nicht hinzugefügt!</string>
     <string name="error_cant_copy_clipboard">Link konnte nicht kopiert werden!</string>
     <string name="info_gps_attached">GPS Position hinzugefügt</string>
+    <string name="info_get_location">starte GPS lokalisierung</string>
 </resources>

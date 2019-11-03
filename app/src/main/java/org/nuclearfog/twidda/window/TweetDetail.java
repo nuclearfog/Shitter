@@ -73,6 +73,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
 
+    private static final Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}/?.*");
+
     private View header, footer, videoButton, imageButton;
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName;
     private Button rtwButton, favButton, replyName;
@@ -406,7 +408,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     private void getTweet(@NonNull Uri link) {
         String path = link.getPath() == null ? "" : link.getPath();
-        Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}");
         Matcher linkMatch = linkPattern.matcher(path);
 
         if (linkMatch.matches() && settings.getLogin()) {
@@ -417,6 +418,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             int end = path.indexOf('/');
             username = path.substring(0, end);
             path = path.substring(end + 8);
+            end = path.indexOf('/');
+            if (end > 0)
+                path = path.substring(0, end);
             tweetID = Long.parseLong(path);
         } else {
             Toast.makeText(this, R.string.failed_open_link, LENGTH_SHORT).show();
