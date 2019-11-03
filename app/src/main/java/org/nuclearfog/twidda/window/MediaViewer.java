@@ -39,8 +39,8 @@ import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
-import static org.nuclearfog.twidda.backend.ImageLoader.Mode.ONLINE;
-import static org.nuclearfog.twidda.backend.ImageLoader.Mode.STORAGE;
+import static org.nuclearfog.twidda.backend.ImageLoader.Action.ONLINE;
+import static org.nuclearfog.twidda.backend.ImageLoader.Action.STORAGE;
 
 
 public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener {

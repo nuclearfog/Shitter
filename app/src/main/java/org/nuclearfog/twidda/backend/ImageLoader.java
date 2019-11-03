@@ -15,30 +15,38 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.URL;
 
-
+/**
+ * Background task to load images from twitter and storage
+ */
 public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
-    public enum Mode {
+    public enum Action {
         ONLINE,
         STORAGE
     }
 
     private WeakReference<MediaViewer> ui;
     private ImageAdapter imageAdapter;
-    private Mode mode;
+    private Action action;
 
 
-    public ImageLoader(@NonNull MediaViewer context, Mode mode) {
+    /**
+     * initialize image loader
+     *
+     * @param context Activity context
+     * @param action  information from image location
+     */
+    public ImageLoader(@NonNull MediaViewer context, Action action) {
         ui = new WeakReference<>(context);
         imageAdapter = context.getAdapter();
-        this.mode = mode;
+        this.action = action;
     }
 
 
     @Override
     protected Boolean doInBackground(String[] links) {
         try {
-            switch (mode) {
+            switch (action) {
                 case ONLINE:
                     for (String link : links) {
                         URL url = new URL(link);

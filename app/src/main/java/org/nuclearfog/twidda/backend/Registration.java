@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.window.LoginPage;
@@ -14,42 +12,48 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-
-public class Registration extends AsyncTask<String, Void, Boolean> {
-
-    public enum Mode {
-        LINK,
-        LOGIN
-    }
+/**
+ * Background task for app login
+ */
+public class Registration extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
     private TwitterException twException;
-    private String redirectionURL;
-    private Mode mode;
+    private String redirectionURL, loginPin;
 
 
-    public Registration(@NonNull LoginPage context, Mode mode) {
+    /**
+     * Get Twitter redirection URL
+     *
+     * @param context Activity Context
+     */
+    public Registration(LoginPage context) {
+        this(context, null);
+    }
+
+
+    /**
+     * Login to twitter with PIN
+     *
+     * @param context  Activity Context
+     * @param loginPin PIN from twitter website
+     */
+    public Registration(LoginPage context, String loginPin) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
-        this.mode = mode;
+        this.loginPin = loginPin;
     }
 
 
     @Override
-    protected Boolean doInBackground(String... twitterPin) {
+    protected Boolean doInBackground(Void... v) {
         try {
-            switch (mode) {
-                case LINK:
-                    redirectionURL = mTwitter.request();
-                    return true;
-
-                case LOGIN:
-                    String pin = twitterPin[0];
-                    if (!pin.trim().isEmpty())
-                        mTwitter.initialize(pin);
-                    return true;
-            }
+            if (loginPin == null)
+                redirectionURL = mTwitter.request();
+            else
+                mTwitter.initialize(loginPin);
+            return true;
         } catch (TwitterException twException) {
             this.twException = twException;
         } catch (Exception exception) {
@@ -63,15 +67,11 @@ public class Registration extends AsyncTask<String, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null) {
             if (success) {
-                switch (mode) {
-                    case LINK:
-                        ui.get().connect(redirectionURL);
-                        break;
-
-                    case LOGIN:
-                        ui.get().setResult(Activity.RESULT_OK);
-                        ui.get().finish();
-                        break;
+                if (redirectionURL != null) {
+                    ui.get().connect(redirectionURL);
+                } else if (loginPin != null) {
+                    ui.get().setResult(Activity.RESULT_OK);
+                    ui.get().finish();
                 }
             } else if (twException != null) {
                 ErrorHandler.printError(ui.get(), twException);

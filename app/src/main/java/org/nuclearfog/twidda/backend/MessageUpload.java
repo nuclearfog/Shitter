@@ -18,6 +18,9 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
+/**
+ * Background task to send direct messages
+ */
 public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
 
     private WeakReference<MessagePopup> ui;
@@ -26,6 +29,12 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
     private TwitterException twException;
     private MessageHolder message;
 
+    /**
+     * send direct message
+     *
+     * @param c       Activity context
+     * @param message message to send
+     */
     public MessageUpload(@NonNull MessagePopup c, MessageHolder message) {
         ui = new WeakReference<>(c);
         popup = new WeakReference<>(new Dialog(c));

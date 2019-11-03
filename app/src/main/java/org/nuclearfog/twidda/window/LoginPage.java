@@ -23,8 +23,6 @@ import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.backend.Registration.Mode.LINK;
-import static org.nuclearfog.twidda.backend.Registration.Mode.LOGIN;
 
 
 public class LoginPage extends AppCompatActivity implements OnClickListener {
@@ -99,15 +97,15 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
         switch (v.getId()) {
             case R.id.linkButton:
-                registerAsync = new Registration(this, LINK);
-                registerAsync.execute("");
+                registerAsync = new Registration(this);
+                registerAsync.execute();
                 break;
 
             case R.id.verifier:
                 String twitterPin = pin.getText().toString();
                 if (!twitterPin.trim().isEmpty()) {
-                    registerAsync = new Registration(this, LOGIN);
-                    registerAsync.execute(twitterPin);
+                    registerAsync = new Registration(this, twitterPin);
+                    registerAsync.execute();
                 } else {
                     Toast.makeText(this, R.string.enter_pin, LENGTH_LONG).show();
                 }

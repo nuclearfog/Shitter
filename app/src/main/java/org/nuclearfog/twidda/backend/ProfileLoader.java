@@ -17,28 +17,30 @@ import java.lang.ref.WeakReference;
 
 import twitter4j.TwitterException;
 
-
+/**
+ * Twitter profile page loader
+ */
 public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> {
 
-    public enum Mode {
+    public enum Action {
         LDR_PROFILE,
         ACTION_FOLLOW,
         ACTION_BLOCK,
         ACTION_MUTE
     }
 
-    private final Mode mode;
+    private final Action action;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
     private TwitterException twException;
     private AppDatabase db;
 
 
-    public ProfileLoader(@NonNull UserProfile context, Mode mode) {
+    public ProfileLoader(@NonNull UserProfile context, Action action) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         db = new AppDatabase(context);
-        this.mode = mode;
+        this.action = action;
     }
 
 
@@ -48,7 +50,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
         TwitterUser user;
         long userId = args[0];
         try {
-            switch (mode) {
+            switch (action) {
                 case LDR_PROFILE:
                     user = db.getUser(userId);
                     if (user != null)
@@ -121,7 +123,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
         if (ui.get() != null) {
             if (properties != null) {
                 ui.get().setConnection(properties);
-                switch (mode) {
+                switch (action) {
                     case ACTION_FOLLOW:
                         if (properties.isFriend())
                             Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();

@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
-import org.nuclearfog.twidda.backend.StatusLoader.Mode;
+import org.nuclearfog.twidda.backend.StatusLoader.Action;
 import org.nuclearfog.twidda.backend.helper.FilenameTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -154,7 +154,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     protected void onStart() {
         super.onStart();
         if (statusAsync == null) {
-            statusAsync = new StatusLoader(this, Mode.LOAD);
+            statusAsync = new StatusLoader(this, Action.LOAD);
             statusAsync.execute(tweetID);
         }
     }
@@ -184,7 +184,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
@@ -193,7 +193,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            statusAsync = new StatusLoader(TweetDetail.this, Mode.DELETE);
+                            statusAsync = new StatusLoader(TweetDetail.this, Action.DELETE);
                             statusAsync.execute(tweetID);
                         }
                     });
@@ -215,9 +215,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 case R.id.link_copy:
                     String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
                     ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                    ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
-                    clip.setPrimaryClip(linkClip);
-                    Toast.makeText(this, R.string.copied_to_clipboard, LENGTH_SHORT).show();
+                    if (clip != null) {
+                        ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+                        clip.setPrimaryClip(linkClip);
+                        Toast.makeText(this, R.string.copied_to_clipboard, LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, R.string.error_cant_copy_clipboard, LENGTH_SHORT).show();
+                    }
                     break;
             }
         }
@@ -276,13 +280,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_retweet:
-                    statusAsync = new StatusLoader(this, Mode.RETWEET);
+                    statusAsync = new StatusLoader(this, Action.RETWEET);
                     statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.loading, LENGTH_SHORT).show();
                     return true;
 
                 case R.id.tweet_favorit:
-                    statusAsync = new StatusLoader(this, Mode.FAVORITE);
+                    statusAsync = new StatusLoader(this, Action.FAVORITE);
                     statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.loading, LENGTH_SHORT).show();
                     return true;

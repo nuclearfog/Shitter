@@ -22,14 +22,14 @@ import static org.nuclearfog.twidda.fragment.TweetListFragment.RETURN_TWEET_CHAN
 
 public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
 
-    public enum Mode {
+    public enum Action {
         LOAD,
         RETWEET,
         FAVORITE,
         DELETE
     }
 
-    private final Mode mode;
+    private final Action action;
     private WeakReference<TweetDetail> ui;
     private TwitterEngine mTwitter;
     private TwitterException twException;
@@ -37,11 +37,11 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     private boolean statusNotFound = false;
 
 
-    public StatusLoader(@NonNull TweetDetail context, Mode mode) {
+    public StatusLoader(@NonNull TweetDetail context, Action action) {
         mTwitter = TwitterEngine.getInstance(context);
         db = new AppDatabase(context);
         ui = new WeakReference<>(context);
-        this.mode = mode;
+        this.action = action;
     }
 
 
@@ -51,7 +51,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
         long tweetId = data[0];
         boolean updateStatus = false;
         try {
-            switch (mode) {
+            switch (action) {
                 case LOAD:
                     tweet = db.getStatus(tweetId);
                     if (tweet != null) {
@@ -115,7 +115,7 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
     protected void onPostExecute(@Nullable Tweet tweet) {
         if (ui.get() != null) {
             if (tweet != null) {
-                switch (mode) {
+                switch (action) {
                     case RETWEET:
                         if (tweet.retweeted())
                             Toast.makeText(ui.get(), R.string.tweet_retweeted, LENGTH_SHORT).show();

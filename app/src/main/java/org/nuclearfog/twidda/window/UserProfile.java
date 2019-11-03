@@ -52,7 +52,7 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Mode.LDR_PROFILE;
+import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
@@ -262,7 +262,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                 case R.id.profile_follow:
                     if (properties != null) {
-                        profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_FOLLOW);
+                        profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_FOLLOW);
                         if (!properties.isFriend()) {
                             profileAsync.execute(userId);
                         } else {
@@ -280,7 +280,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                 case R.id.profile_mute:
                     if (properties != null) {
-                        profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_MUTE);
+                        profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_MUTE);
                         if (properties.isMuted()) {
                             profileAsync.execute(userId);
                         } else {
@@ -298,7 +298,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                 case R.id.profile_block:
                     if (properties != null) {
-                        profileAsync = new ProfileLoader(this, ProfileLoader.Mode.ACTION_BLOCK);
+                        profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_BLOCK);
                         if (properties.isBlocked()) {
                             profileAsync.execute(userId);
                         } else {

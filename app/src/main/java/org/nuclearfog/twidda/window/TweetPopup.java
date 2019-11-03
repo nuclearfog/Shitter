@@ -63,7 +63,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private LocationManager mLocation;
     private StatusUploader uploaderAsync;
     private List<String> mediaPath;
-    private View mediaBtn, previewBtn, locationBtn;
+    private View mediaBtn, previewBtn;
     private TextView imgCount;
     private EditText tweet;
     private String addition = "";
@@ -85,9 +85,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         View root = findViewById(R.id.tweet_popup);
         View tweetButton = findViewById(R.id.tweet_send);
         View closeButton = findViewById(R.id.close);
+        View locationBtn = findViewById(R.id.tweet_add_location);
         mediaBtn = findViewById(R.id.tweet_add_media);
         previewBtn = findViewById(R.id.tweet_prev_media);
-        locationBtn = findViewById(R.id.tweet_add_location);
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
         mLocation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -259,6 +259,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         gpsLocation = new double[2];
         gpsLocation[0] = location.getLatitude();
         gpsLocation[1] = location.getLongitude();
+        Toast.makeText(this, R.string.info_gps_attached, LENGTH_SHORT).show();
     }
 
 
@@ -277,6 +278,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     }
 
 
+    /**
+     * show confirmation dialog when closing edited tweet
+     */
     private void showClosingMsg() {
         if (!addition.equals(tweet.getText().toString()) || !mediaPath.isEmpty()) {
             Builder closeDialog = new Builder(this);
@@ -295,6 +299,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     }
 
 
+    /**
+     * get images or video from storage to attach to tweet
+     */
     private void getMedia() {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -317,6 +324,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     }
 
 
+    /**
+     * Get current GPS location to attach to tweet
+     */
     private void getLocation() {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -326,10 +336,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             }
         }
         if (accessGranted) {
-            if (mLocation.isProviderEnabled(LocationManager.GPS_PROVIDER))
+            if (mLocation.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                Toast.makeText(this, R.string.info_get_location, LENGTH_SHORT).show();
                 mLocation.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
-            else
+            } else {
                 Toast.makeText(this, R.string.error_location, LENGTH_SHORT).show();
+            }
         }
     }
 }

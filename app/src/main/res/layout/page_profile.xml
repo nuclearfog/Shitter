@@ -157,8 +157,8 @@
                         android:drawablePadding="@dimen/padding_drawable"
                         android:singleLine="true"
                         android:textSize="@dimen/textsize_profile"
-                        app:drawableLeftCompat="@drawable/location"
-                        app:drawableStartCompat="@drawable/location" />
+                        app:drawableLeftCompat="@drawable/userlocation"
+                        app:drawableStartCompat="@drawable/userlocation" />
 
                     <TextView
                         android:id="@+id/links"

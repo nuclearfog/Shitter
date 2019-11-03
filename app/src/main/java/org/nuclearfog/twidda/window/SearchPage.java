@@ -28,7 +28,9 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 
-
+/**
+ * Twitter search Activity
+ */
 public class SearchPage extends AppCompatActivity implements OnTabSelectedListener {
 
     public static final String KEY_SEARCH_QUERY = "search_query";
@@ -146,6 +148,11 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     }
 
 
+    /**
+     * get search string from twitter link
+     *
+     * @param link twitter link
+     */
     private void getSearchString(@NonNull Uri link) {
         String path = link.getPath();
         String query = link.getQuery();

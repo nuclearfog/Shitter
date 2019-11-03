@@ -12,6 +12,9 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+/**
+ * Background task to load location information used by twitter
+ */
 public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
 
     private WeakReference<AppSettings> ui;
@@ -19,6 +22,11 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
     private TwitterException twException;
 
 
+    /**
+     * load location data from twitter
+     *
+     * @param context Activity context
+     */
     public LocationLoader(AppSettings context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
