@@ -50,4 +50,5 @@
     <dimen name="preview_margin">10dp</dimen>
     <dimen name="dm_item_button_height">20dp</dimen>
     <dimen name="tweet_media_button_margin">5dp</dimen>
+    <dimen name="editprofile_upload_button_padding">12dp</dimen>
 </resources>

@@ -102,12 +102,14 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
                 break;
 
             case R.id.verifier:
-                String twitterPin = pin.getText().toString();
-                if (!twitterPin.trim().isEmpty()) {
-                    registerAsync = new Registration(this, twitterPin);
-                    registerAsync.execute();
-                } else {
-                    Toast.makeText(this, R.string.enter_pin, LENGTH_LONG).show();
+                if (pin.getText() != null) {
+                    String twitterPin = pin.getText().toString();
+                    if (!twitterPin.trim().isEmpty()) {
+                        registerAsync = new Registration(this);
+                        registerAsync.execute(twitterPin);
+                    } else {
+                        Toast.makeText(this, R.string.enter_pin, LENGTH_LONG).show();
+                    }
                 }
                 break;
         }

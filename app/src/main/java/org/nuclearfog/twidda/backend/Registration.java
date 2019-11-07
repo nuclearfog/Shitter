@@ -15,61 +15,46 @@ import twitter4j.TwitterException;
 /**
  * Background task for app login
  */
-public class Registration extends AsyncTask<Void, Void, Boolean> {
+public class Registration extends AsyncTask<String, Void, String> {
 
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
     private TwitterException twException;
-    private String redirectionURL, loginPin;
-
-
-    /**
-     * Get Twitter redirection URL
-     *
-     * @param context Activity Context
-     */
-    public Registration(LoginPage context) {
-        this(context, null);
-    }
-
 
     /**
      * Login to twitter with PIN
      *
      * @param context  Activity Context
-     * @param loginPin PIN from twitter website
      */
-    public Registration(LoginPage context, String loginPin) {
+    public Registration(LoginPage context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
-        this.loginPin = loginPin;
     }
 
 
     @Override
-    protected Boolean doInBackground(Void... v) {
+    protected String doInBackground(String... param) {
         try {
-            if (loginPin == null)
-                redirectionURL = mTwitter.request();
-            else
-                mTwitter.initialize(loginPin);
-            return true;
+            if (param.length == 0)
+                return mTwitter.request();
+            mTwitter.initialize(param[0]);
+            return "";
         } catch (TwitterException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        return false;
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(String redirectionURL) {
         if (ui.get() != null) {
-            if (success) {
-                if (redirectionURL != null) {
+            if (redirectionURL != null) {
+                if (!redirectionURL.isEmpty()) {
                     ui.get().connect(redirectionURL);
-                } else if (loginPin != null) {
+                } else {
                     ui.get().setResult(Activity.RESULT_OK);
                     ui.get().finish();
                 }

@@ -40,19 +40,18 @@
 
                 <Button
                     android:id="@+id/edit_upload"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="@dimen/margin_upload_btn"
                     android:layout_marginStart="@dimen/margin_upload_btn"
-                    android:paddingLeft="@dimen/button_padding"
-                    android:paddingRight="@dimen/button_padding"
-                    android:drawablePadding="@dimen/padding_drawable"
-                    android:maxLines="2"
+                    android:layout_marginLeft="@dimen/margin_upload_btn"
+                    android:layout_weight="1"
                     android:background="@drawable/button"
+                    android:maxLines="2"
+                    android:paddingLeft="@dimen/editprofile_upload_button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     app:drawableLeftCompat="@drawable/upload"
-                    app:drawableStartCompat="@drawable/upload"
-                    style="@style/Widget.AppCompat.Button.Borderless" />
+                    app:drawableStartCompat="@drawable/upload" />
 
             </LinearLayout>
 

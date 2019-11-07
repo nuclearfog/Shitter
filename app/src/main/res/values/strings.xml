@@ -124,5 +124,5 @@
     <string name="info_not_implemented">This function is not implemented yet!</string>
     <string name="error_cant_copy_clipboard">can\'t copy link to clipboard!</string>
     <string name="info_gps_attached">GPS position added</string>
-    <string name="info_get_location">starting location</string>
+    <string name="info_get_location">starting location...</string>
 </resources>
