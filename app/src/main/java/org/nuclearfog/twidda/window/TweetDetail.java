@@ -139,6 +139,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        tweetLoc.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         tweetText.setTextColor(settings.getFontColor());
@@ -413,18 +414,20 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         SpannableStringBuilder locationText = new SpannableStringBuilder("");
         if (!tweet.getLocationName().isEmpty()) {
             locationText.append(tweet.getLocationName());
+            locationText.append(" ");
             tweetLoc.setText(locationText);
             tweetLoc.setVisibility(VISIBLE);
         }
         if (!tweet.getLocationCoordinates().isEmpty()) {
             final int start = locationText.length();
             locationText.append(tweet.getLocationCoordinates());
-            final int end = locationText.length() - 1;
+            final int end = locationText.length();
             locationText.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
                     Intent locationIntent = new Intent(Intent.ACTION_VIEW);
                     locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
+                    startActivity(locationIntent);
                 }
                 @Override
                 public void updateDrawState(@NonNull TextPaint ds) {

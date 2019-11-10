@@ -84,10 +84,10 @@ public class Tweet {
             locationCoordinates = geo.getLatitude() + "," + geo.getLongitude();
         else
             locationCoordinates = "";
-        if (status.getInReplyToScreenName() == null)
-            replyName = "";
-        else
+        if (status.getInReplyToScreenName() != null)
             replyName = '@' + status.getInReplyToScreenName();
+        else
+            replyName = "";
         if (status.getRetweetedStatus() != null)
             embedded = new Tweet(status.getRetweetedStatus());
         else
