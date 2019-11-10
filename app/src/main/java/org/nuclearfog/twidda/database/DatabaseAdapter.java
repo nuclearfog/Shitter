@@ -101,5 +101,8 @@ public class DatabaseAdapter {
         db.execSQL(INDX_TWEET);
         db.execSQL(INDX_FAVOR);
         db.execSQL(INDX_TREND);
+        /// Database just created? set current version
+        if (db.getVersion() == 0)
+            db.setVersion(DB_VERSION);
     }
 }

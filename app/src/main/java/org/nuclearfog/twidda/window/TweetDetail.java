@@ -410,8 +410,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
 
         SpannableStringBuilder locationText = new SpannableStringBuilder("");
-        if (!tweet.getLocationName().isEmpty())
+        if (!tweet.getLocationName().isEmpty()) {
             locationText.append(tweet.getLocationName());
+            tweetLoc.setText(locationText);
+            tweetLoc.setVisibility(VISIBLE);
+        }
         if (!tweet.getLocationCoordinates().isEmpty()) {
             final int start = locationText.length();
             locationText.append(tweet.getLocationCoordinates());
@@ -422,7 +425,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     Intent locationIntent = new Intent(Intent.ACTION_VIEW);
                     locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
                 }
-
                 @Override
                 public void updateDrawState(@NonNull TextPaint ds) {
                     ds.setColor(settings.getHighlightColor());
