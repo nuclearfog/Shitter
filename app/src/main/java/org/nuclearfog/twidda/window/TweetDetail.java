@@ -84,6 +84,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     private Button rtwButton, favButton, replyName;
     private ImageView profile_img;
 
+    @Nullable
     private ConnectivityManager mConnect;
     private GlobalSettings settings;
     private NumberFormat format;
@@ -209,7 +210,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     break;
 
                 case R.id.tweet_link:
-                    if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+                    if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                         String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(tweetLink));

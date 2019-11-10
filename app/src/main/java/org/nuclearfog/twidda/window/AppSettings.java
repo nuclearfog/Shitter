@@ -23,6 +23,7 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -54,8 +55,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private static final int POPUPCOLOR = 3;
     private static final int INVERTCOLOR = 0xffffff;
 
-    private GlobalSettings settings;
+    @Nullable
     private ConnectivityManager mConnect;
+    private GlobalSettings settings;
     private LocationLoader locationAsync;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
@@ -171,7 +173,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
-            if (mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+            if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 String link = getString(R.string.information_link);
                 intent.setData(Uri.parse(link));

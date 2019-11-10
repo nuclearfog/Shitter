@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -60,6 +61,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private static final int CHECK_PERM = 4;
     private static final int MAX_IMAGES = 4;
 
+    @Nullable
     private LocationManager mLocation;
     private StatusUploader uploaderAsync;
     private List<String> mediaPath;
@@ -338,7 +340,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             }
         }
         if (accessGranted) {
-            if (mLocation.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (mLocation != null && mLocation.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Toast.makeText(this, R.string.info_get_location, LENGTH_SHORT).show();
                 mLocation.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
             } else {
