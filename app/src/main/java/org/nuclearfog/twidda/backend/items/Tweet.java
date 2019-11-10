@@ -2,7 +2,9 @@ package org.nuclearfog.twidda.backend.items;
 
 import androidx.annotation.Nullable;
 
+import twitter4j.GeoLocation;
 import twitter4j.MediaEntity;
+import twitter4j.Place;
 import twitter4j.Status;
 import twitter4j.URLEntity;
 
@@ -32,12 +34,27 @@ public class Tweet {
     private final boolean retweeted;
     private final boolean favored;
 
+    private final String locationName;
+    private final String locationCoordinates;
 
+
+    /**
+     * Tweet Constructor
+     *
+     * @param status Twitter4J status
+     */
     public Tweet(Status status) {
         this(status, status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());
     }
 
-
+    /**
+     * Tweet constructor
+     * @param status twitter4j status
+     * @param retweetCount set retweet count
+     * @param retweeted set if tweet is retweeted by current user
+     * @param favoriteCount set favor count
+     * @param favored set if tweet is favored by current user
+     */
     public Tweet(Status status, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
         this.retweetCount = retweetCount;
         this.retweeted = retweeted;
@@ -57,6 +74,16 @@ public class Tweet {
         api = api.substring(0, api.indexOf('<'));
         source = api;
 
+        Place place = status.getPlace();
+        GeoLocation geo = status.getGeoLocation();
+        if (place != null)
+            locationName = place.getFullName();
+        else
+            locationName = "";
+        if (geo != null)
+            locationCoordinates = geo.getLatitude() + "," + geo.getLongitude();
+        else
+            locationCoordinates = "";
         if (status.getInReplyToScreenName() == null)
             replyName = "";
         else
@@ -67,10 +94,29 @@ public class Tweet {
             embedded = null;
     }
 
-
+    /**
+     * Tweet constructor for database tweets
+     * @param tweetID unique id of tweet
+     * @param retweetCount number of retweets
+     * @param favoriteCount number of favors
+     * @param user tweet author
+     * @param tweet tweet text
+     * @param time time long format
+     * @param replyName author's name of replied tweet
+     * @param replyUserId quthor's ID of replied tweet
+     * @param medias Media links attached to tweet
+     * @param source used API of the tweet
+     * @param replyID ID of replied tweet
+     * @param embedded quoted tweet
+     * @param myRetweetId ID of the current users retweeted tweet
+     * @param retweeted tweet is retweeted by current user
+     * @param favored tweet is favored by current user
+     * @param coordinates location gps coordinates
+     * @param place location full place name
+     */
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] medias, String source, long replyID,
-                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored) {
+                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, String place, String coordinates) {
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
@@ -86,6 +132,8 @@ public class Tweet {
         this.favored = favored;
         this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
+        this.locationName = place;
+        this.locationCoordinates = coordinates;
     }
 
     /**
@@ -231,6 +279,24 @@ public class Tweet {
      */
     public boolean favored() {
         return favored;
+    }
+
+    /**
+     * get location of tweet if any
+     *
+     * @return full location name
+     */
+    public String getLocationName() {
+        return locationName;
+    }
+
+    /**
+     * get location coordinate
+     *
+     * @return latitude and longitude
+     */
+    public String getLocationCoordinates() {
+        return locationCoordinates;
     }
 
     /**

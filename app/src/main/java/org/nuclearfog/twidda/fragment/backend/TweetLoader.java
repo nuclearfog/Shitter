@@ -17,6 +17,9 @@ import java.util.List;
 import twitter4j.TwitterException;
 
 
+/**
+ * Timeline loader Task
+ */
 public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
     public enum Mode {
@@ -29,11 +32,12 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         TWEET_SEARCH
     }
 
+    @Nullable
+    private TwitterException twException;
     private Mode mode;
     private WeakReference<TweetListFragment> ui;
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
     private AppDatabase db;
 
 

@@ -545,6 +545,10 @@ public class AppDatabase {
         String source = cursor.getString(index);
         index = cursor.getColumnIndex("media");
         String medialinks = cursor.getString(index);
+        index = cursor.getColumnIndex("place");
+        String place = cursor.getString(index);
+        index = cursor.getColumnIndex("geo");
+        String geo = cursor.getString(index);
         index = cursor.getColumnIndex("replyUserID");
         long replyUserId = cursor.getLong(index);
         index = cursor.getColumnIndex("statusregister");
@@ -559,7 +563,7 @@ public class AppDatabase {
         if (retweetId > 1)
             embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId, retweet, favorit, user, tweettext, time, replyname, replyUserId, medias,
-                source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited);
+                source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited, place, geo);
     }
 
 
@@ -690,6 +694,9 @@ public class AppDatabase {
         status.put("retweet", tweet.getRetweetCount());
         status.put("favorite", tweet.getFavorCount());
         status.put("retweeterID", tweet.getMyRetweetId());
+        status.put("replyUserID", tweet.getReplyUserId());
+        status.put("place", tweet.getLocationName());
+        status.put("geo", tweet.getLocationCoordinates());
         status.put("replyUserID", tweet.getReplyUserId());
         if (tweet.getReplyUserId() > 0)
             status.put("replyname", tweet.getReplyName());

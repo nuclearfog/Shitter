@@ -28,12 +28,13 @@
     <dimen name="textsize_profileedit">18sp</dimen>
     <dimen name="textsize_count">18sp</dimen>
     <dimen name="textsize_tweet">18sp</dimen>
+    <dimen name="textsize_tweet_locale">12sp</dimen>
     <dimen name="textsize_settings">18sp</dimen>
     <dimen name="textsize_profile">12sp</dimen>
     <dimen name="textsize_button">12sp</dimen>
     <dimen name="textsize_date">12sp</dimen>
     <dimen name="textsize_name">12sp</dimen>
-    <dimen name="textsize_refer">12sp</dimen>
+    <dimen name="tweet_textsize_api">12sp</dimen>
     <dimen name="textsize_checkbox">10sp</dimen>
     <integer name="text_tweet_lines">9</integer>
     <integer name="text_bio_lines">5</integer>

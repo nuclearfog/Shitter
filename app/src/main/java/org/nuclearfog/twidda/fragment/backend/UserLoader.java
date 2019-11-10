@@ -18,6 +18,9 @@ import java.util.List;
 
 import twitter4j.TwitterException;
 
+/**
+ * User list loader task
+ */
 public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     public enum Mode {
@@ -28,10 +31,11 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
         SEARCH
     }
 
+    @Nullable
+    private TwitterException twException;
     private Mode mode;
     private WeakReference<UserListFragment> ui;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
     private UserAdapter adapter;
 
 

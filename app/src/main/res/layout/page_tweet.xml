@@ -95,7 +95,7 @@
                         android:paddingRight="@dimen/button_padding"
                         android:background="@drawable/button"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_refer"
+                        android:textSize="@dimen/tweet_textsize_api"
                         android:visibility="gone"
                         style="@style/Widget.AppCompat.Button.Borderless" />
 
@@ -103,13 +103,23 @@
                         android:id="@+id/tweet_detailed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         android:autoLink="web"
                         android:fadeScrollbars="false"
                         android:linksClickable="true"
                         android:maxLines="@integer/text_tweet_lines"
                         android:scrollbars="vertical"
-                        android:textSize="@dimen/textsize_tweet" />
+                        android:textSize="@dimen/textsize_tweet"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tweet_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:visibility="gone"
+                        android:textSize="@dimen/textsize_tweet_locale"
+                        app:drawableLeftCompat="@drawable/userlocation"
+                        app:drawableStartCompat="@drawable/userlocation" />
 
                     <ImageButton
                         android:id="@+id/image_attach"
@@ -139,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:linksClickable="false"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_refer" />
+                        android:textSize="@dimen/tweet_textsize_api" />
 
                 </LinearLayout>
 

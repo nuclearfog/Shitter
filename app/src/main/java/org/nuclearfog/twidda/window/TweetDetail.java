@@ -9,7 +9,10 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -51,6 +54,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.VISIBLE;
@@ -76,7 +80,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     private static final Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}/?.*");
 
     private View header, footer, videoButton, imageButton;
-    private TextView tweet_api, tweetDate, tweetText, scrName, usrName;
+    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLoc;
     private Button rtwButton, favButton, replyName;
     private ImageView profile_img;
 
@@ -123,6 +127,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         tweetText = findViewById(R.id.tweet_detailed);
         tweetDate = findViewById(R.id.timedetail);
         tweet_api = findViewById(R.id.used_api);
+        tweetLoc = findViewById(R.id.tweet_location);
         imageButton = findViewById(R.id.image_attach);
         videoButton = findViewById(R.id.video_attach);
 
@@ -403,6 +408,30 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         }
         if (settings.getImageLoad())
             Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
+
+        SpannableStringBuilder locationText = new SpannableStringBuilder("");
+        if (!tweet.getLocationName().isEmpty())
+            locationText.append(tweet.getLocationName());
+        if (!tweet.getLocationCoordinates().isEmpty()) {
+            final int start = locationText.length();
+            locationText.append(tweet.getLocationCoordinates());
+            final int end = locationText.length() - 1;
+            locationText.setSpan(new ClickableSpan() {
+                @Override
+                public void onClick(@NonNull View widget) {
+                    Intent locationIntent = new Intent(Intent.ACTION_VIEW);
+                    locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
+                }
+
+                @Override
+                public void updateDrawState(@NonNull TextPaint ds) {
+                    ds.setColor(settings.getHighlightColor());
+                    ds.setUnderlineText(false);
+                }
+            }, start, end, SPAN_EXCLUSIVE_EXCLUSIVE);
+            tweetLoc.setText(locationText);
+            tweetLoc.setVisibility(VISIBLE);
+        }
     }
 
 

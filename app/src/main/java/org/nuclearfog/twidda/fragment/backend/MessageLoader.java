@@ -25,10 +25,11 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         DEL
     }
 
+    @Nullable
+    private TwitterException twException;
     private Mode mode;
     private WeakReference<MessageListFragment> ui;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
     private AppDatabase db;
     private MessageAdapter adapter;
 

@@ -20,8 +20,9 @@ import twitter4j.TwitterException;
 
 public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
 
-    private WeakReference<TrendListFragment> ui;
+    @Nullable
     private TwitterException twException;
+    private WeakReference<TrendListFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private TrendAdapter adapter;

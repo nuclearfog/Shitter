@@ -275,6 +275,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     @Override
     public void onProviderDisabled(String provider) {
+        if (gpsLocation == null)
+            Toast.makeText(this, R.string.error_gps, LENGTH_SHORT).show();
     }
 
 

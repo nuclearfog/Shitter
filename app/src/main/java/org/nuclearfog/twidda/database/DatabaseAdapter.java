@@ -14,17 +14,18 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class DatabaseAdapter {
 
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "database.db";
 
     private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS user (" +
-            "userID INTEGER PRIMARY KEY,username VARCHAR(50),scrname VARCHAR(15)," +
+            "userID INTEGER PRIMARY KEY,username TEXT,scrname TEXT," +
             "pbLink TEXT,banner TEXT,bio TEXT,location TEXT,link TEXT,userregister INTEGER," +
             "createdAt INTEGER,following INTEGER,follower INTEGER,tweetCount INTEGER,favorCount INTEGER);";
 
     private static final String TABLE_TWEET = "CREATE TABLE IF NOT EXISTS tweet (" +
             "tweetID INTEGER PRIMARY KEY,userID INTEGER,retweetID INTEGER,replyID INTEGER,retweeterID INTEGER," +
             "replyname TEXT,replyUserID INTEGER,time INTEGER,tweet TEXT,media TEXT,retweet INTEGER,favorite INTEGER," +
-            "statusregister INTEGER,source VARCHAR(32),FOREIGN KEY (userID) REFERENCES user(userID));";
+            "statusregister INTEGER,source TEXT,place TEXT,geo TEXT,FOREIGN KEY (userID) REFERENCES user(userID));";
 
     private static final String TABLE_FAVORS = "CREATE TABLE IF NOT EXISTS favorit (" +
             "ownerID INTEGER,tweetID INTEGER," +
@@ -42,6 +43,9 @@ public class DatabaseAdapter {
     private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
     private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend ON trend(woeID);";
 
+    private static final String TABLE_TWEET_ADD_PLACE = "ALTER TABLE tweet ADD COLUMN place TEXT";
+    private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE tweet ADD COLUMN geo TEXT";
+
     private static DatabaseAdapter instance;
 
     private final File databasePath;
@@ -53,6 +57,7 @@ public class DatabaseAdapter {
         databasePath = context.getDatabasePath(DB_NAME);
         db = context.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
         initTables();
+        updateTable();
     }
 
 
@@ -75,6 +80,15 @@ public class DatabaseAdapter {
     public static void deleteDatabase(Context c) {
         SQLiteDatabase.deleteDatabase(c.getDatabasePath(DB_NAME));
         instance = null;
+    }
+
+
+    private void updateTable() {
+        if (db.getVersion() < DB_VERSION) {
+            db.execSQL(TABLE_TWEET_ADD_PLACE);
+            db.execSQL(TABLE_TWEET_ADD_GEO);
+            db.setVersion(DB_VERSION);
+        }
     }
 
 
