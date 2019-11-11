@@ -70,9 +70,12 @@ public class Tweet {
         myRetweetId = status.getCurrentUserRetweetId();
         replyUserId = status.getInReplyToUserId();
 
+        // remove HTML tag
         String api = status.getSource();
-        api = api.substring(api.indexOf('>') + 1);
-        api = api.substring(0, api.indexOf('<'));
+        int start = api.indexOf('>') + 1;
+        int end = api.lastIndexOf('<');
+        if (start > 0 && end > 0)
+            api = api.substring(start, end);
         source = api;
 
         Place place = status.getPlace();

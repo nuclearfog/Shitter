@@ -49,7 +49,9 @@
                     android:background="@drawable/button"
                     android:maxLines="2"
                     android:paddingLeft="@dimen/editprofile_upload_button_padding"
+                    android:paddingStart="@dimen/editprofile_upload_button_padding"
                     android:paddingRight="@dimen/button_padding"
+                    android:paddingEnd="@dimen/button_padding"
                     app:drawableLeftCompat="@drawable/upload"
                     app:drawableStartCompat="@drawable/upload" />
 

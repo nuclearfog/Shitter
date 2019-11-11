@@ -65,13 +65,13 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     @Nullable
     private LocationManager mLocation;
     private StatusUploader uploaderAsync;
+    private Location location;
     private List<String> mediaPath;
     private View mediaBtn, previewBtn, locationProg, locationBtn;
     private TextView imgCount;
     private EditText tweet;
     private String addition = "";
     private long inReplyId = 0;
-    private double[] gpsLocation;
     private Mode mode = Mode.NONE;
 
     private enum Mode {
@@ -214,8 +214,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                     TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
                     if (!mediaPath.isEmpty())
                         tweet.addMedia(mediaPath.toArray(new String[0]));
-                    if (gpsLocation != null)
-                        tweet.addLocation(gpsLocation);
+                    if (location != null)
+                        tweet.addLocation(location);
                     uploaderAsync = new StatusUploader(this, tweet);
                     uploaderAsync.execute();
                 }
@@ -260,9 +260,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     @Override
     public void onLocationChanged(Location location) {
-        gpsLocation = new double[2];
-        gpsLocation[0] = location.getLatitude();
-        gpsLocation[1] = location.getLongitude();
+        this.location = location;
         Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
         locationProg.setVisibility(INVISIBLE);
         locationBtn.setVisibility(VISIBLE);
@@ -281,7 +279,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     @Override
     public void onProviderDisabled(String provider) {
-        if (gpsLocation == null)
+        if (location == null)
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         locationProg.setVisibility(INVISIBLE);
         locationBtn.setVisibility(VISIBLE);

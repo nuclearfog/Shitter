@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.items;
 
+import android.location.Location;
+
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.helper.FilenameTools;
@@ -42,9 +44,9 @@ public class TweetHolder {
         }
     }
 
-    public void addLocation(double[] location) {
-        this.latitude = location[0];
-        this.longitude = location[1];
+    public void addLocation(Location location) {
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
         hasLocation = true;
     }
 
