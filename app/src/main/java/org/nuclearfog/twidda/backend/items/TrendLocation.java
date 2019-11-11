@@ -4,11 +4,19 @@ import androidx.annotation.NonNull;
 
 import twitter4j.Location;
 
+/**
+ * Trend location holder
+ */
 public class TrendLocation {
 
     private final String placeName;
     private final int id;
 
+    /**
+     * construct location object from online
+     *
+     * @param location twitter4j location
+     */
     public TrendLocation(Location location) {
         String country = location.getCountryName();
         String placeName = location.getName();
@@ -20,18 +28,28 @@ public class TrendLocation {
         this.id = location.getWoeid();
     }
 
-
+    /**
+     * construct location object from local
+     * @param placeName name of locale
+     * @param id woe id
+     */
     public TrendLocation(String placeName, int id) {
         this.placeName = placeName;
         this.id = id;
     }
 
-
+    /**
+     * get place name
+     * @return country followed by place
+     */
     public String getName() {
         return placeName;
     }
 
-
+    /**
+     * get World ID
+     * @return woeID
+     */
     public int getWoeId() {
         return id;
     }

@@ -45,6 +45,7 @@ import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.Action;
 import org.nuclearfog.twidda.backend.helper.FilenameTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.window.UserDetail.UserType;
 
@@ -332,16 +333,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         this.tweet = tweet;
         invalidateOptionsMenu();
 
+        TwitterUser author = tweet.getUser();
         int rtwDraw = tweet.retweeted() ? R.drawable.retweet_enabled : R.drawable.retweet;
         int favDraw = tweet.favored() ? R.drawable.favorite_enabled : R.drawable.favorite;
-        int verDraw = tweet.getUser().isVerified() ? R.drawable.verify : 0;
-        int locDraw = tweet.getUser().isLocked() ? R.drawable.lock : 0;
+        int verDraw = author.isVerified() ? R.drawable.verify : 0;
+        int locDraw = author.isLocked() ? R.drawable.lock : 0;
         rtwButton.setCompoundDrawablesWithIntrinsicBounds(rtwDraw, 0, 0, 0);
         favButton.setCompoundDrawablesWithIntrinsicBounds(favDraw, 0, 0, 0);
         usrName.setCompoundDrawablesWithIntrinsicBounds(verDraw, 0, 0, 0);
         scrName.setCompoundDrawablesWithIntrinsicBounds(locDraw, 0, 0, 0);
-        usrName.setText(tweet.getUser().getUsername());
-        scrName.setText(tweet.getUser().getScreenname());
+        usrName.setText(author.getUsername());
+        scrName.setText(author.getScreenname());
         usrName.setTextColor(settings.getFontColor());
         scrName.setTextColor(settings.getFontColor());
         tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
@@ -409,24 +411,26 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             }
         }
         if (settings.getImageLoad())
-            Picasso.get().load(tweet.getUser().getImageLink() + "_bigger").into(profile_img);
+            Picasso.get().load(author.getImageLink() + "_bigger").into(profile_img);
 
+        final String placeName = tweet.getLocationName();
+        final String location = tweet.getLocationCoordinates();
         SpannableStringBuilder locationText = new SpannableStringBuilder("");
-        if (!tweet.getLocationName().isEmpty()) {
-            locationText.append(tweet.getLocationName());
+        if (placeName != null && !placeName.isEmpty()) {
+            locationText.append(placeName);
             locationText.append(" ");
             tweetLoc.setText(locationText);
             tweetLoc.setVisibility(VISIBLE);
         }
-        if (!tweet.getLocationCoordinates().isEmpty()) {
+        if (location != null && !location.isEmpty()) {
             final int start = locationText.length();
-            locationText.append(tweet.getLocationCoordinates());
+            locationText.append(location);
             final int end = locationText.length();
             locationText.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
                     Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-                    locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
+                    locationIntent.setData(Uri.parse("geo:" + location));
                     startActivity(locationIntent);
                 }
                 @Override

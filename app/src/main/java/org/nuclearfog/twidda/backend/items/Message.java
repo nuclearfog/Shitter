@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.items;
 
+import androidx.annotation.NonNull;
+
 import twitter4j.DirectMessage;
 import twitter4j.URLEntity;
 import twitter4j.User;
@@ -12,6 +14,13 @@ public class Message {
     private final TwitterUser receiver;
     private final String message;
 
+    /**
+     * construct message object from twitter information
+     *
+     * @param dm       direct message information
+     * @param sender   sender user
+     * @param receiver receiver user
+     */
     public Message(DirectMessage dm, User sender, User receiver) {
         this.sender = new TwitterUser(sender);
         this.receiver = new TwitterUser(receiver);
@@ -20,6 +29,14 @@ public class Message {
         message = getText(dm);
     }
 
+    /**
+     * construct message object from database information
+     * @param messageId ID of direct message
+     * @param sender sender user
+     * @param receiver receiver user
+     * @param time timestamp long format
+     * @param message message text
+     */
     public Message(long messageId, TwitterUser sender, TwitterUser receiver, long time, String message) {
         this.messageId = messageId;
         this.sender = sender;
@@ -88,5 +105,11 @@ public class Message {
             text.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
         }
         return text.toString();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return sender.getScreenname() + " to " + receiver.getScreenname() + " " + message;
     }
 }

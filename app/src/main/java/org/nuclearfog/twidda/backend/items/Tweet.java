@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.items;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import twitter4j.GeoLocation;
@@ -111,12 +112,12 @@ public class Tweet {
      * @param myRetweetId ID of the current users retweeted tweet
      * @param retweeted tweet is retweeted by current user
      * @param favored tweet is favored by current user
-     * @param coordinates location gps coordinates
+     * @param geo location gps coordinates
      * @param place location full place name
      */
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] medias, String source, long replyID,
-                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, String place, String coordinates) {
+                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, String place, String geo) {
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
@@ -133,7 +134,7 @@ public class Tweet {
         this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
         this.locationName = place;
-        this.locationCoordinates = coordinates;
+        this.locationCoordinates = geo;
     }
 
     /**
@@ -351,5 +352,11 @@ public class Tweet {
                 tweet.delete(linkpos, lastpos);
         }
         return tweet.toString();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return user.getScreenname() + ": " + tweet;
     }
 }

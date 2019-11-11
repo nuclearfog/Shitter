@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.items;
 
+import androidx.annotation.NonNull;
+
 import twitter4j.URLEntity;
 import twitter4j.User;
 
@@ -70,7 +72,6 @@ public class TwitterUser {
 
     /**
      * get user id
-     *
      * @return id
      */
     public long getId() {
@@ -79,7 +80,6 @@ public class TwitterUser {
 
     /**
      * get User name
-     *
      * @return username
      */
     public String getUsername() {
@@ -88,7 +88,6 @@ public class TwitterUser {
 
     /**
      * get @screenname
-     *
      * @return screen name
      */
     public String getScreenname() {
@@ -97,7 +96,6 @@ public class TwitterUser {
 
     /**
      * get date of creation
-     *
      * @return raw time
      */
     public long getCreatedAt() {
@@ -106,7 +104,6 @@ public class TwitterUser {
 
     /**
      * get Profile image_add link
-     *
      * @return link
      */
     public String getImageLink() {
@@ -115,7 +112,6 @@ public class TwitterUser {
 
     /**
      * get banner image_add link
-     *
      * @return link
      */
     public String getBannerLink() {
@@ -124,7 +120,6 @@ public class TwitterUser {
 
     /**
      * get user bio
-     *
      * @return bio text
      */
     public String getBio() {
@@ -133,7 +128,6 @@ public class TwitterUser {
 
     /**
      * get location name
-     *
      * @return name
      */
     public String getLocation() {
@@ -142,7 +136,6 @@ public class TwitterUser {
 
     /**
      * get link
-     *
      * @return link
      */
     public String getLink() {
@@ -151,7 +144,6 @@ public class TwitterUser {
 
     /**
      * user verified
-     *
      * @return if verified
      */
     public boolean isVerified() {
@@ -160,7 +152,6 @@ public class TwitterUser {
 
     /**
      * user locked
-     *
      * @return if locked
      */
     public boolean isLocked() {
@@ -169,7 +160,6 @@ public class TwitterUser {
 
     /**
      * requested follow
-     *
      * @return if a follow was requested
      */
     public boolean followRequested() {
@@ -178,7 +168,6 @@ public class TwitterUser {
 
     /**
      * get following count
-     *
      * @return following
      */
     public int getFollowing() {
@@ -187,7 +176,6 @@ public class TwitterUser {
 
     /**
      * get follower count
-     *
      * @return follower count
      */
     public int getFollower() {
@@ -196,7 +184,6 @@ public class TwitterUser {
 
     /**
      * get Tweet count of user
-     *
      * @return tweet count
      */
     public int getTweetCount() {
@@ -205,7 +192,6 @@ public class TwitterUser {
 
     /**
      * get count of favored tweets
-     *
      * @return tweet count
      */
     public int getFavorCount() {
@@ -214,7 +200,6 @@ public class TwitterUser {
 
     /**
      * Resolve shortened links from user description
-     *
      * @param user Twitter user
      * @return Description String
      */
@@ -226,5 +211,11 @@ public class TwitterUser {
             bio.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
         }
         return bio.toString();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return username + " " + screenname;
     }
 }

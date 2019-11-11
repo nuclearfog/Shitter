@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.items;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.backend.helper.FilenameTools;
 import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
 
@@ -39,7 +41,6 @@ public class TweetHolder {
                 break;
         }
     }
-
 
     public void addLocation(double[] location) {
         this.latitude = location[0];
@@ -85,5 +86,13 @@ public class TweetHolder {
 
     public boolean isReply() {
         return replyId > 0;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "to=" + replyId + ", location added=" + hasLocation + ", image added=" + hasImage + ", video added=" + hasVideo
+                + "\n" + text;
+
     }
 }
