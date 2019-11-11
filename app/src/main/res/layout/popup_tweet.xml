@@ -60,15 +60,28 @@
                 android:contentDescription="@string/add_image"
                 app:srcCompat="@drawable/image_add" />
 
-            <ImageButton
-                android:id="@+id/tweet_add_location"
-                android:layout_width="@dimen/button_tweet_size"
-                android:layout_height="@dimen/button_tweet_size"
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_tweet_icon"
-                android:layout_marginLeft="@dimen/margin_tweet_icon"
-                android:background="@drawable/button"
-                android:contentDescription="@string/send_tweet"
-                app:srcCompat="@drawable/location" />
+                android:layout_marginLeft="@dimen/margin_tweet_icon">
+
+                <ProgressBar
+                    android:id="@+id/location_progress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="@dimen/tweet_location_progress_size"
+                    android:layout_height="@dimen/tweet_location_progress_size"
+                    android:layout_gravity="center"
+                    android:visibility="invisible" />
+
+                <ImageButton
+                    android:id="@+id/tweet_add_location"
+                    android:layout_width="@dimen/button_tweet_size"
+                    android:layout_height="@dimen/button_tweet_size"
+                    android:background="@drawable/button"
+                    android:contentDescription="@string/send_tweet"
+                    app:srcCompat="@drawable/location" />
+            </FrameLayout>
 
             <ImageButton
                 android:id="@+id/tweet_send"

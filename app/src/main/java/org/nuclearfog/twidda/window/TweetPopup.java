@@ -39,6 +39,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
@@ -65,7 +66,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private LocationManager mLocation;
     private StatusUploader uploaderAsync;
     private List<String> mediaPath;
-    private View mediaBtn, previewBtn;
+    private View mediaBtn, previewBtn, locationProg, locationBtn;
     private TextView imgCount;
     private EditText tweet;
     private String addition = "";
@@ -87,11 +88,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         View root = findViewById(R.id.tweet_popup);
         View tweetButton = findViewById(R.id.tweet_send);
         View closeButton = findViewById(R.id.close);
-        View locationBtn = findViewById(R.id.tweet_add_location);
+        locationBtn = findViewById(R.id.tweet_add_location);
         mediaBtn = findViewById(R.id.tweet_add_media);
         previewBtn = findViewById(R.id.tweet_prev_media);
         tweet = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
+        locationProg = findViewById(R.id.location_progress);
         mLocation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Bundle param = getIntent().getExtras();
@@ -261,7 +263,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         gpsLocation = new double[2];
         gpsLocation[0] = location.getLatitude();
         gpsLocation[1] = location.getLongitude();
-        Toast.makeText(this, R.string.info_gps_attached, LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
+        locationProg.setVisibility(INVISIBLE);
+        locationBtn.setVisibility(VISIBLE);
     }
 
 
@@ -278,7 +282,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     @Override
     public void onProviderDisabled(String provider) {
         if (gpsLocation == null)
-            Toast.makeText(this, R.string.error_gps, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
+        locationProg.setVisibility(INVISIBLE);
+        locationBtn.setVisibility(VISIBLE);
     }
 
 
@@ -343,6 +349,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             if (mLocation != null && mLocation.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 Toast.makeText(this, R.string.info_get_location, LENGTH_SHORT).show();
                 mLocation.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
+                locationProg.setVisibility(VISIBLE);
+                locationBtn.setVisibility(INVISIBLE);
             } else {
                 Toast.makeText(this, R.string.error_location, LENGTH_SHORT).show();
             }
