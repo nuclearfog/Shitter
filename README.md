@@ -3,6 +3,9 @@
 Alternative Twitter App for Android <img src="/images/twitter4j.gif" width="138" height="30">
 [![](https://img.shields.io/badge/download-apk-brightgreen.svg)](https://github.com/nuclearfog/Shitter/releases/download/1.5.7/SH1TT3R.apk)
 
+App & 3rd party libs licensed under
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 
 Features:
 - fast access to tweets and userprofiles
@@ -19,9 +22,6 @@ Screenshots:
 
 <img src="/images/shitter_1.jpg" width="180"/> <img src="/images/shitter_2.jpg" width="180"/> <img src="/images/shitter_3.jpg" width="180"/>
 
-
-All used libraries are licensed under 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Credits:
 - <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
