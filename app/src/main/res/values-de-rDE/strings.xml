@@ -102,7 +102,7 @@
     <string name="proxy_settings">Proxy Einstellung</string>
     <string name="verifierbutton">Login</string>
     <string name="popup">Popup</string>
-    <string name="pin">PIN</string>
+    <string name="login_pin">PIN eingeben</string>
     <string name="following">Following</string>
     <string name="follower">Follower</string>
     <string name="enter_proxy">Proxy IP oder Adresse</string>

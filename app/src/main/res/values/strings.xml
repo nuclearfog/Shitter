@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Shitter</string>
     <string name="profile_image">profile image</string>
-    <string name="pin">PIN</string>
+    <string name="login_pin">Enter PIN</string>
     <string name="verifierbutton">login</string>
     <string name="tweet">Tweet</string>
     <string name="settings">Settings</string>

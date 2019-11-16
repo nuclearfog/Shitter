@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:drawablePadding="@dimen/padding_drawable"
-                android:hint="@string/pin"
+                android:hint="@string/login_pin"
                 android:inputType="numberPassword"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_login_key"
