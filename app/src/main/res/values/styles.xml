@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:colorBackground">@android:color/black</item>
         <item name="android:windowAnimationStyle">@style/TransactionPending</item>
         <item name="android:textViewStyle">@style/RobotoTextView</item>
         <item name="android:buttonStyle">@style/RobotoButton</item>
         <item name="android:textAllCaps">false</item>
+        <item name="colorAccent">@android:color/white</item>
     </style>
 
     <style name="Transparency" parent="AppTheme">
