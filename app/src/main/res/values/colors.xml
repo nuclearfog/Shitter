@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3f51b5</color>
-    <color name="colorPrimaryDark">#303f9f</color>
-    <color name="tweetwindow">#19aae8</color>
     <color name="halftrancparency">#40000000</color>
     <color name="darktrancparency">#80000000</color>
 </resources>

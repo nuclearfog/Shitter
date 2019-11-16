@@ -12,7 +12,6 @@
         android:id="@+id/tweet_popup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/tweetwindow"
         android:orientation="vertical"
         android:padding="@dimen/margin_layout">
 
