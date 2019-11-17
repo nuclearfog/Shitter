@@ -111,16 +111,6 @@
                         android:textSize="@dimen/textsize_tweet"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tweet_location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:visibility="gone"
-                        android:textSize="@dimen/textsize_tweet_locale"
-                        app:drawableLeftCompat="@drawable/userlocation"
-                        app:drawableStartCompat="@drawable/userlocation" />
-
                     <ImageButton
                         android:id="@+id/image_attach"
                         android:layout_width="@dimen/button_media_width"
@@ -142,6 +132,16 @@
                         android:contentDescription="@string/video_preview_button"
                         android:visibility="gone"
                         app:srcCompat="@drawable/video" />
+
+                    <TextView
+                        android:id="@+id/tweet_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textSize="@dimen/textsize_tweet_locale"
+                        android:visibility="gone"
+                        app:drawableLeftCompat="@drawable/userlocation"
+                        app:drawableStartCompat="@drawable/userlocation" />
 
                     <TextView
                         android:id="@+id/used_api"

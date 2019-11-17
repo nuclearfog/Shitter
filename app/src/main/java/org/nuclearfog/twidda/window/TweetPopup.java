@@ -119,6 +119,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     protected void onDestroy() {
         if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
             uploaderAsync.cancel(true);
+        if (mLocation != null)
+            mLocation.removeUpdates(this);
         super.onDestroy();
     }
 
@@ -210,7 +212,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                 String tweetStr = tweet.getText().toString();
                 if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                     Toast.makeText(this, R.string.empty_tweet, LENGTH_SHORT).show();
-                } else {
+                } else if (locationProg.getVisibility() == INVISIBLE) {
                     TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
                     if (!mediaPath.isEmpty())
                         tweet.addMedia(mediaPath.toArray(new String[0]));
