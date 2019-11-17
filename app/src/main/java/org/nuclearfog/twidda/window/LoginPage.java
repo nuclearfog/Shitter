@@ -30,6 +30,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     private Registration registerAsync;
     private EditText pin;
     private View root;
+    private String link;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -97,12 +98,18 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
         switch (v.getId()) {
             case R.id.linkButton:
-                registerAsync = new Registration(this);
-                registerAsync.execute();
+                if (link == null) {
+                    registerAsync = new Registration(this);
+                    registerAsync.execute();
+                } else {
+                    connect(link);
+                }
                 break;
 
             case R.id.verifier:
-                if (pin.getText() != null) {
+                if (link == null) {
+                    Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
+                } else if (pin.getText() != null) {
                     String twitterPin = pin.getText().toString();
                     if (!twitterPin.trim().isEmpty()) {
                         registerAsync = new Registration(this);
@@ -118,12 +125,11 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     public void connect(String link) {
         ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        if (mConnect != null && mConnect.getActiveNetworkInfo() != null) {
-            if (mConnect.getActiveNetworkInfo().isConnected()) {
-                Intent browser = new Intent(ACTION_VIEW);
-                browser.setData(Uri.parse(link));
-                startActivity(browser);
-            }
+        if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
+            Intent browser = new Intent(ACTION_VIEW);
+            browser.setData(Uri.parse(link));
+            startActivity(browser);
+            this.link = link;
         } else {
             Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
         }

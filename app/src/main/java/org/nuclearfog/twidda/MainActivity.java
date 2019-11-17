@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private static final int LOGIN = 1;
     private static final int SETTING = 2;
 
+    @Nullable
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private ViewPager pager;
@@ -104,12 +106,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 break;
 
             case SETTING:
-                if (returnCode == DB_CLEARED)
-                    adapter.clearData();
-                else if (returnCode == APP_LOGOUT)
-                    adapter = null;
-                else
-                    adapter.notifySettingsChanged();
+                if (adapter != null) {
+                    if (returnCode == DB_CLEARED) {
+                        adapter.clearData();
+                    } else if (returnCode == APP_LOGOUT) {
+                        adapter.clearData();
+                        adapter = null;
+                    } else {
+                        adapter.notifySettingsChanged();
+                    }
+                }
                 break;
         }
         super.onActivityResult(reqCode, returnCode, intent);
@@ -216,7 +222,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @Override
     public void onTabUnselected(Tab tab) {
-        adapter.scrollToTop(tab.getPosition());
+        if (adapter != null)
+            adapter.scrollToTop(tab.getPosition());
     }
 
 

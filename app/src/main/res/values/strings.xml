@@ -126,4 +126,5 @@
     <string name="info_gps_attached">GPS position added</string>
     <string name="info_get_location">starting location…</string>
     <string name="error_gps">could not fetch GPS data!</string>
+    <string name="info_get_link">Get Twitter PIN from browser first. Please press the first button!</string>
 </resources>
