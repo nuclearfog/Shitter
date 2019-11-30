@@ -1,13 +1,13 @@
 package org.nuclearfog.twidda.fragment.backend;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.TrendListFragment;
@@ -15,13 +15,13 @@ import org.nuclearfog.twidda.fragment.TrendListFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
 
     @Nullable
-    private TwitterException twException;
+    private TwitterEngine.EngineException twException;
     private WeakReference<TrendListFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
@@ -61,7 +61,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
                 db.storeTrends(trends, woeId);
             }
             return trends;
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -76,7 +76,7 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
             if (trends != null)
                 adapter.setData(trends);
             if (twException != null)
-                ErrorHandler.printError(ui.get().getContext(), twException);
+                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
             ui.get().setRefresh(false);
         }
     }

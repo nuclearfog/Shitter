@@ -1,12 +1,12 @@
 package org.nuclearfog.twidda.fragment.backend;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.MessageListFragment;
@@ -14,7 +14,7 @@ import org.nuclearfog.twidda.fragment.MessageListFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 
 public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
@@ -26,7 +26,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     }
 
     @Nullable
-    private TwitterException twException;
+    private TwitterEngine.EngineException twException;
     private Mode mode;
     private WeakReference<MessageListFragment> ui;
     private TwitterEngine mTwitter;
@@ -74,9 +74,9 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
                     messages = db.getMessages();
                     break;
             }
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
-            if (twException.getErrorCode() == 34) {
+            if (twException.statusNotFound()) {
                 db.deleteDm(messageId);
                 messages = db.getMessages();
             }
@@ -93,7 +93,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
             if (messages != null)
                 adapter.replaceAll(messages);
             if (twException != null)
-                ErrorHandler.printError(ui.get().getContext(), twException);
+                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
             ui.get().setRefresh(false);
         }
     }

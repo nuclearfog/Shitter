@@ -2,7 +2,10 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 
+import androidx.annotation.StringRes;
+
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
@@ -97,12 +100,16 @@ public class TwitterEngine {
      * Request Registration Website
      *
      * @return Link to App Registration
-     * @throws TwitterException if internet connection is unavailable
+     * @throws EngineException if internet connection is unavailable
      */
-    public String request() throws TwitterException {
-        if (reqToken == null) {
-            reqToken = twitter.getOAuthRequestToken();
-            redirectionUrl = reqToken.getAuthenticationURL();
+    public String request() throws EngineException {
+        try {
+            if (reqToken == null) {
+                reqToken = twitter.getOAuthRequestToken();
+                redirectionUrl = reqToken.getAuthenticationURL();
+            }
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
         return redirectionUrl;
     }
@@ -112,20 +119,23 @@ public class TwitterEngine {
      * Get Access-Token, store and initialize Twitter
      *
      * @param twitterPin PIN for accessing account
-     * @throws TwitterException if pin is false
-     * @throws IllegalStateException if request token is not set
+     * @throws EngineException if pin is false or request token is null
      * @see #initKeys(String, String)
      */
-    public void initialize(String twitterPin) throws TwitterException, IllegalStateException {
-        if (reqToken != null) {
-            AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
-            String key1 = accessToken.getToken();
-            String key2 = accessToken.getTokenSecret();
-            initKeys(key1, key2);
-            twitterID = twitter.getId();
-            settings.setConnection(key1, key2, twitterID);
-        } else {
-            throw new IllegalStateException("request token is null!");
+    public void initialize(String twitterPin) throws EngineException {
+        try {
+            if (reqToken != null) {
+                AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
+                String key1 = accessToken.getToken();
+                String key2 = accessToken.getTokenSecret();
+                initKeys(key1, key2);
+                twitterID = twitter.getId();
+                settings.setConnection(key1, key2, twitterID);
+            } else {
+                throw new EngineException(EngineException.TOKENNOTSET);
+            }
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
     }
 
@@ -159,11 +169,15 @@ public class TwitterEngine {
      * @param page   current page
      * @param lastId Tweet ID of the earliest Tweet
      * @return List of Tweets
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getHome(int page, long lastId) throws TwitterException {
-        List<Status> homeTweets = twitter.getHomeTimeline(new Paging(page, load, lastId));
-        return convertStatusList(homeTweets);
+    public List<Tweet> getHome(int page, long lastId) throws EngineException {
+        try {
+            List<Status> homeTweets = twitter.getHomeTimeline(new Paging(page, load, lastId));
+            return convertStatusList(homeTweets);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -173,11 +187,15 @@ public class TwitterEngine {
      * @param page current page
      * @param id   ID of the earliest Tweet
      * @return List of Mention Tweets
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getMention(int page, long id) throws TwitterException {
-        List<Status> mentions = twitter.getMentionsTimeline(new Paging(page, load, id));
-        return convertStatusList(mentions);
+    public List<Tweet> getMention(int page, long id) throws EngineException {
+        try {
+            List<Status> mentions = twitter.getMentionsTimeline(new Paging(page, load, id));
+            return convertStatusList(mentions);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -187,16 +205,20 @@ public class TwitterEngine {
      * @param search Search String
      * @param id     Since ID
      * @return List of Tweets
-     * @throws TwitterException if acces is unavailable
+     * @throws EngineException if acces is unavailable
      */
-    public List<Tweet> searchTweets(String search, long id) throws TwitterException {
-        Query q = new Query();
-        q.setQuery(search + " +exclude:retweets");
-        q.setCount(load);
-        q.setSinceId(id);
-        QueryResult result = twitter.search(q);
-        List<Status> results = result.getTweets();
-        return convertStatusList(results);
+    public List<Tweet> searchTweets(String search, long id) throws EngineException {
+        try {
+            Query q = new Query();
+            q.setQuery(search + " +exclude:retweets");
+            q.setCount(load);
+            q.setSinceId(id);
+            QueryResult result = twitter.search(q);
+            List<Status> results = result.getTweets();
+            return convertStatusList(results);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -205,14 +227,18 @@ public class TwitterEngine {
      *
      * @param woeId Yahoo World ID
      * @return Trend Resource
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<String> getTrends(int woeId) throws TwitterException {
-        List<String> result = new LinkedList<>();
-        Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
-        for (Trend trend : trends)
-            result.add(trend.getName());
-        return result;
+    public List<String> getTrends(int woeId) throws EngineException {
+        try {
+            List<String> result = new LinkedList<>();
+            Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
+            for (Trend trend : trends)
+                result.add(trend.getName());
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -220,14 +246,18 @@ public class TwitterEngine {
      * get available locations
      *
      * @return list of locations
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<TrendLocation> getLocations() throws TwitterException {
-        List<TrendLocation> result = new LinkedList<>();
-        List<Location> locations = twitter.getAvailableTrends();
-        for (Location location : locations)
-            result.add(new TrendLocation(location));
-        return result;
+    public List<TrendLocation> getLocations() throws EngineException {
+        try {
+            List<TrendLocation> result = new LinkedList<>();
+            List<Location> locations = twitter.getAvailableTrends();
+            for (Location location : locations)
+                result.add(new TrendLocation(location));
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -236,10 +266,14 @@ public class TwitterEngine {
      *
      * @param search Search String
      * @return List of Users
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<TwitterUser> searchUsers(String search) throws TwitterException {
-        return convertUserList(twitter.searchUsers(search, -1));
+    public List<TwitterUser> searchUsers(String search) throws EngineException {
+        try {
+            return convertUserList(twitter.searchUsers(search, -1));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -250,11 +284,15 @@ public class TwitterEngine {
      * @param sinceId minimum tweet ID
      * @param page    current page
      * @return List of User Tweets
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getUserTweets(long userId, long sinceId, long page) throws TwitterException {
-        List<Status> result = twitter.getUserTimeline(userId, new Paging((int) page, load, sinceId));
-        return convertStatusList(result);
+    public List<Tweet> getUserTweets(long userId, long sinceId, long page) throws EngineException {
+        try {
+            Paging paging = new Paging((int) page, load, sinceId);
+            return convertStatusList(twitter.getUserTimeline(userId, paging));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -265,11 +303,16 @@ public class TwitterEngine {
      * @param sinceId minimum tweet ID
      * @param page    current page
      * @return List of User Favs
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getUserFavs(long userId, long sinceId, long page) throws TwitterException {
-        List<Status> favorits = twitter.getFavorites(userId, new Paging((int) page, load, sinceId));
-        return convertStatusList(favorits);
+    public List<Tweet> getUserFavs(long userId, long sinceId, long page) throws EngineException {
+        try {
+            Paging paging = new Paging((int) page, load, sinceId);
+            List<Status> favorits = twitter.getFavorites(userId, paging);
+            return convertStatusList(favorits);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -278,10 +321,14 @@ public class TwitterEngine {
      *
      * @param userId User ID
      * @return User Object
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser getUser(long userId) throws TwitterException {
-        return new TwitterUser(twitter.showUser(userId));
+    public TwitterUser getUser(long userId) throws EngineException {
+        try {
+            return new TwitterUser(twitter.showUser(userId));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -289,10 +336,14 @@ public class TwitterEngine {
      * Get current user
      *
      * @return curent user
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser getCurrentUser() throws TwitterException {
-        return new TwitterUser(twitter.showUser(twitterID));
+    public TwitterUser getCurrentUser() throws EngineException {
+        try {
+            return new TwitterUser(twitter.showUser(twitterID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -301,10 +352,14 @@ public class TwitterEngine {
      *
      * @param userId User ID compared with Home ID
      * @return User Properties
-     * @throws TwitterException if Connection is unavailable
+     * @throws EngineException if Connection is unavailable
      */
-    public UserProperties getConnection(long userId) throws TwitterException {
-        return new UserProperties(twitter.showFriendship(twitterID, userId));
+    public UserProperties getConnection(long userId) throws EngineException {
+        try {
+            return new UserProperties(twitter.showFriendship(twitterID, userId));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -313,10 +368,14 @@ public class TwitterEngine {
      *
      * @param userID User ID
      * @return Twitter User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser followUser(long userID) throws TwitterException {
-        return new TwitterUser(twitter.createFriendship(userID));
+    public TwitterUser followUser(long userID) throws EngineException {
+        try {
+            return new TwitterUser(twitter.createFriendship(userID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -325,10 +384,14 @@ public class TwitterEngine {
      *
      * @param userID User ID
      * @return Twitter User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser unfollowUser(long userID) throws TwitterException {
-        return new TwitterUser(twitter.destroyFriendship(userID));
+    public TwitterUser unfollowUser(long userID) throws EngineException {
+        try {
+            return new TwitterUser(twitter.destroyFriendship(userID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -337,10 +400,14 @@ public class TwitterEngine {
      *
      * @param UserID User ID
      * @return Twitter User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser blockUser(long UserID) throws TwitterException {
-        return new TwitterUser(twitter.createBlock(UserID));
+    public TwitterUser blockUser(long UserID) throws EngineException {
+        try {
+            return new TwitterUser(twitter.createBlock(UserID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -349,10 +416,14 @@ public class TwitterEngine {
      *
      * @param UserID User ID
      * @return Twitter User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser unblockUser(long UserID) throws TwitterException {
-        return new TwitterUser(twitter.destroyBlock(UserID));
+    public TwitterUser unblockUser(long UserID) throws EngineException {
+        try {
+            return new TwitterUser(twitter.destroyBlock(UserID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -361,10 +432,14 @@ public class TwitterEngine {
      *
      * @param UserID User ID
      * @return Twitter User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser muteUser(long UserID) throws TwitterException {
-        return new TwitterUser(twitter.createMute(UserID));
+    public TwitterUser muteUser(long UserID) throws EngineException {
+        try {
+            return new TwitterUser(twitter.createMute(UserID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -373,10 +448,14 @@ public class TwitterEngine {
      *
      * @param UserID User ID
      * @return Twitter User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser unmuteUser(long UserID) throws TwitterException {
-        return new TwitterUser(twitter.destroyMute(UserID));
+    public TwitterUser unmuteUser(long UserID) throws EngineException {
+        try {
+            return new TwitterUser(twitter.destroyMute(UserID));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -385,14 +464,18 @@ public class TwitterEngine {
      *
      * @param userId User ID
      * @return List of Following User
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public List<TwitterUser> getFollowing(long userId) throws TwitterException {
-        IDs userIDs = twitter.getFriendsIDs(userId, -1, load);
-        long[] ids = userIDs.getIDs();
-        if (ids.length == 0)
-            return new LinkedList<>();
-        return convertUserList(twitter.lookupUsers(ids));
+    public List<TwitterUser> getFollowing(long userId) throws EngineException {
+        try {
+            IDs userIDs = twitter.getFriendsIDs(userId, -1, load);
+            long[] ids = userIDs.getIDs();
+            if (ids.length == 0)
+                return new LinkedList<>();
+            return convertUserList(twitter.lookupUsers(ids));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -401,14 +484,18 @@ public class TwitterEngine {
      *
      * @param userId User ID
      * @return List of Follower
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public List<TwitterUser> getFollower(long userId) throws TwitterException {
-        IDs userIDs = twitter.getFollowersIDs(userId, -1, load);
-        long[] ids = userIDs.getIDs();
-        if (ids.length == 0)
-            return new LinkedList<>();
-        return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
+    public List<TwitterUser> getFollower(long userId) throws EngineException {
+        try {
+            IDs userIDs = twitter.getFollowersIDs(userId, -1, load);
+            long[] ids = userIDs.getIDs();
+            if (ids.length == 0)
+                return new LinkedList<>();
+            return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -416,23 +503,26 @@ public class TwitterEngine {
      * send tweet
      *
      * @param tweet Tweet holder
-     * @throws TwitterException      if twitter service is unavailable
-     * @throws FileNotFoundException if file was not found
+     * @throws EngineException if twitter service is unavailable or media was not found
      */
-    public void uploadStatus(TweetHolder tweet) throws TwitterException, FileNotFoundException {
-        StatusUpdate mStatus = new StatusUpdate(tweet.getText());
-        if (tweet.isReply())
-            mStatus.setInReplyToStatusId(tweet.getReplyId());
-        if (tweet.hasLocation())
-            mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
-        if (tweet.hasImages()) {
-            long[] ids = uploadImages(tweet.getImageLink());
-            mStatus.setMediaIds(ids);
-        } else if (tweet.hasVideo()) {
-            long id = uploadVideo(tweet.getVideoLink());
-            mStatus.setMediaIds(id);
+    public void uploadStatus(TweetHolder tweet) throws EngineException {
+        try {
+            StatusUpdate mStatus = new StatusUpdate(tweet.getText());
+            if (tweet.isReply())
+                mStatus.setInReplyToStatusId(tweet.getReplyId());
+            if (tweet.hasLocation())
+                mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
+            if (tweet.hasImages()) {
+                long[] ids = uploadImages(tweet.getImageLink());
+                mStatus.setMediaIds(ids);
+            } else if (tweet.hasVideo()) {
+                long id = uploadVideo(tweet.getVideoLink());
+                mStatus.setMediaIds(id);
+            }
+            twitter.updateStatus(mStatus);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
-        twitter.updateStatus(mStatus);
     }
 
 
@@ -441,11 +531,15 @@ public class TwitterEngine {
      *
      * @param tweetId Tweet ID
      * @return Tweet Object
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public Tweet getStatus(long tweetId) throws TwitterException {
-        Status tweet = twitter.showStatus(tweetId);
-        return new Tweet(tweet);
+    public Tweet getStatus(long tweetId) throws EngineException {
+        try {
+            Status tweet = twitter.showStatus(tweetId);
+            return new Tweet(tweet);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -456,21 +550,24 @@ public class TwitterEngine {
      * @param tweetId tweet ID
      * @param sinceId last tweet
      * @return List of Answers
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws TwitterException {
-        List<Status> answers = new LinkedList<>();
-        Query query = new Query("to:" + name + " since_id:" + sinceId + " +exclude:retweets");
-        query.setCount(load);
-        QueryResult result = twitter.search(query);
-
-        List<Status> stats = result.getTweets();
-        for (Status reply : stats) {
-            if (reply.getInReplyToStatusId() == tweetId) {
-                answers.add(reply);
+    public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws EngineException {
+        try {
+            List<Status> answers = new LinkedList<>();
+            Query query = new Query("to:" + name + " since_id:" + sinceId + " +exclude:retweets");
+            query.setCount(load);
+            QueryResult result = twitter.search(query);
+            List<Status> stats = result.getTweets();
+            for (Status reply : stats) {
+                if (reply.getInReplyToStatusId() == tweetId) {
+                    answers.add(reply);
+                }
             }
+            return convertStatusList(answers);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
-        return convertStatusList(answers);
     }
 
 
@@ -478,24 +575,28 @@ public class TwitterEngine {
      * Retweet Action
      *
      * @param tweetId Tweet ID
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public Tweet retweet(long tweetId) throws TwitterException {
-        Status tweet = twitter.showStatus(tweetId);
-        boolean retweeted = tweet.isRetweeted();
-        boolean favorited = tweet.isFavorited();
-        int retweetCount = tweet.getRetweetCount();
-        int favoritCount = tweet.getFavoriteCount();
+    public Tweet retweet(long tweetId) throws EngineException {
+        try {
+            Status tweet = twitter.showStatus(tweetId);
+            boolean retweeted = tweet.isRetweeted();
+            boolean favorited = tweet.isFavorited();
+            int retweetCount = tweet.getRetweetCount();
+            int favoritCount = tweet.getFavoriteCount();
 
-        if (tweet.isRetweeted()) {
-            twitter.unRetweetStatus(tweet.getId());
-            if (retweetCount > 0)
-                retweetCount--;
-        } else {
-            twitter.retweetStatus(tweet.getId());
-            retweetCount++;
+            if (tweet.isRetweeted()) {
+                twitter.unRetweetStatus(tweet.getId());
+                if (retweetCount > 0)
+                    retweetCount--;
+            } else {
+                twitter.retweetStatus(tweet.getId());
+                retweetCount++;
+            }
+            return new Tweet(tweet, retweetCount, !retweeted, favoritCount, favorited);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
-        return new Tweet(tweet, retweetCount, !retweeted, favoritCount, favorited);
     }
 
 
@@ -503,34 +604,42 @@ public class TwitterEngine {
      * Favorite Action
      *
      * @param tweetId Tweet ID
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public Tweet favorite(long tweetId) throws TwitterException {
-        Status tweet = twitter.showStatus(tweetId);
-        boolean retweeted = tweet.isRetweeted();
-        boolean favorited = tweet.isFavorited();
-        int retweetCount = tweet.getRetweetCount();
-        int favoritCount = tweet.getFavoriteCount();
+    public Tweet favorite(long tweetId) throws EngineException {
+        try {
+            Status tweet = twitter.showStatus(tweetId);
+            boolean retweeted = tweet.isRetweeted();
+            boolean favorited = tweet.isFavorited();
+            int retweetCount = tweet.getRetweetCount();
+            int favoritCount = tweet.getFavoriteCount();
 
-        if (tweet.isFavorited()) {
-            tweet = twitter.destroyFavorite(tweet.getId());
-            if (favoritCount > 0)
-                favoritCount--;
-        } else {
-            tweet = twitter.createFavorite(tweet.getId());
-            favoritCount++;
+            if (tweet.isFavorited()) {
+                tweet = twitter.destroyFavorite(tweet.getId());
+                if (favoritCount > 0)
+                    favoritCount--;
+            } else {
+                tweet = twitter.createFavorite(tweet.getId());
+                favoritCount++;
+            }
+            return new Tweet(tweet, retweetCount, retweeted, favoritCount, !favorited);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
-        return new Tweet(tweet, retweetCount, retweeted, favoritCount, !favorited);
     }
 
 
     /**
      * @param tweetId Tweet ID
      * @return dummy tweet
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public Tweet deleteTweet(long tweetId) throws TwitterException {
-        return new Tweet(twitter.destroyStatus(tweetId));
+    public Tweet deleteTweet(long tweetId) throws EngineException {
+        try {
+            return new Tweet(twitter.destroyStatus(tweetId));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -539,16 +648,20 @@ public class TwitterEngine {
      *
      * @param tweetID Tweet ID
      * @return List of users or empty list if no match
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public List<TwitterUser> getRetweeter(long tweetID) throws TwitterException {
-        Tweet embeddedStat = getStatus(tweetID).getEmbeddedTweet();
-        if (embeddedStat != null)
-            tweetID = embeddedStat.getId();
-        long[] userIds = twitter.getRetweeterIds(tweetID, load, -1).getIDs();
-        if (userIds.length == 0)
-            return new LinkedList<>();
-        return convertUserList(twitter.lookupUsers(userIds));
+    public List<TwitterUser> getRetweeter(long tweetID) throws EngineException {
+        try {
+            Tweet embeddedStat = getStatus(tweetID).getEmbeddedTweet();
+            if (embeddedStat != null)
+                tweetID = embeddedStat.getId();
+            long[] userIds = twitter.getRetweeterIds(tweetID, load, -1).getIDs();
+            if (userIds.length == 0)
+                return new LinkedList<>();
+            return convertUserList(twitter.lookupUsers(userIds));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -556,15 +669,19 @@ public class TwitterEngine {
      * get list of Direct Messages
      *
      * @return DM List
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<Message> getMessages() throws TwitterException {
-        List<DirectMessage> dmList = twitter.getDirectMessages(load);
-        List<Message> result = new LinkedList<>();
-        for (DirectMessage dm : dmList) {
-            result.add(getMessage(dm));
+    public List<Message> getMessages() throws EngineException {
+        try {
+            List<DirectMessage> dmList = twitter.getDirectMessages(load);
+            List<Message> result = new LinkedList<>();
+            for (DirectMessage dm : dmList) {
+                result.add(getMessage(dm));
+            }
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
-        return result;
     }
 
 
@@ -572,16 +689,20 @@ public class TwitterEngine {
      * Send direct message
      *
      * @param messageHolder message informations
-     * @throws TwitterException if access is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public void sendMessage(MessageHolder messageHolder) throws TwitterException {
-        long id = twitter.showUser(messageHolder.getUsername()).getId();
-        if (messageHolder.hasMedia()) {
-            UploadedMedia media = twitter.uploadMedia(new File(messageHolder.getMediaPath()));
-            long mediaId = media.getMediaId();
-            twitter.sendDirectMessage(id, messageHolder.getMessage(), mediaId);
-        } else {
-            twitter.sendDirectMessage(id, messageHolder.getMessage());
+    public void sendMessage(MessageHolder messageHolder) throws EngineException {
+        try {
+            long id = twitter.showUser(messageHolder.getUsername()).getId();
+            if (messageHolder.hasMedia()) {
+                UploadedMedia media = twitter.uploadMedia(new File(messageHolder.getMediaPath()));
+                long mediaId = media.getMediaId();
+                twitter.sendDirectMessage(id, messageHolder.getMessage(), mediaId);
+            } else {
+                twitter.sendDirectMessage(id, messageHolder.getMessage());
+            }
+        } catch (TwitterException err) {
+            throw new EngineException(err);
         }
     }
 
@@ -602,15 +723,19 @@ public class TwitterEngine {
      *
      * @param userHolder User data
      * @return updated user profile
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public TwitterUser updateProfile(UserHolder userHolder) throws TwitterException {
-        String username = userHolder.getName();
-        String user_link = userHolder.getLink();
-        String user_loc = userHolder.getLocation();
-        String user_bio = userHolder.getBio();
-        User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
-        return new TwitterUser(user);
+    public TwitterUser updateProfile(UserHolder userHolder) throws EngineException {
+        try {
+            String username = userHolder.getName();
+            String user_link = userHolder.getLink();
+            String user_loc = userHolder.getLocation();
+            String user_bio = userHolder.getBio();
+            User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
+            return new TwitterUser(user);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -618,11 +743,15 @@ public class TwitterEngine {
      * Update user profile image_add
      *
      * @param path image path
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable
      */
-    public void updateProfileImage(String path) throws TwitterException {
-        File image = new File(path);
-        twitter.updateProfileImage(image);
+    public void updateProfileImage(String path) throws EngineException {
+        try {
+            File image = new File(path);
+            twitter.updateProfileImage(image);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -659,11 +788,16 @@ public class TwitterEngine {
     /**
      * @param dm Twitter4J directmessage
      * @return dm item
+     * @throws EngineException if Access is unavailable
      */
-    private Message getMessage(DirectMessage dm) throws TwitterException {
-        User sender = twitter.showUser(dm.getSenderId());
-        User receiver = twitter.showUser(dm.getRecipientId());
-        return new Message(dm, sender, receiver);
+    private Message getMessage(DirectMessage dm) throws EngineException {
+        try {
+            User sender = twitter.showUser(dm.getSenderId());
+            User receiver = twitter.showUser(dm.getRecipientId());
+            return new Message(dm, sender, receiver);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -672,18 +806,23 @@ public class TwitterEngine {
      *
      * @param paths Image Paths
      * @return Media ID array
-     * @throws TwitterException      if twitter service is unavailable
-     * @throws FileNotFoundException if file was not found
+     * @throws EngineException if twitter service is unavailable or media not found
      */
-    private long[] uploadImages(String[] paths) throws TwitterException, FileNotFoundException {
-        long[] ids = new long[paths.length];
-        int i = 0;
-        for (String path : paths) {
-            File file = new File(path);
-            UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
-            ids[i++] = media.getMediaId();
+    private long[] uploadImages(String[] paths) throws EngineException {
+        try {
+            long[] ids = new long[paths.length];
+            int i = 0;
+            for (String path : paths) {
+                File file = new File(path);
+                UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
+                ids[i++] = media.getMediaId();
+            }
+            return ids;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        } catch (FileNotFoundException err) {
+            throw new EngineException(EngineException.FILENOTFOUND);
         }
-        return ids;
     }
 
 
@@ -692,12 +831,149 @@ public class TwitterEngine {
      *
      * @param path path of video or gif
      * @return media ID
-     * @throws TwitterException      if twitter service is unavailable
-     * @throws FileNotFoundException if file was not found
+     * @throws EngineException if twitter service is unavailable or media not found
      */
-    private long uploadVideo(String path) throws TwitterException, FileNotFoundException {
-        File file = new File(path);
-        UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
-        return media.getMediaId();
+    private long uploadVideo(String path) throws EngineException {
+        try {
+            File file = new File(path);
+            UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
+            return media.getMediaId();
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        } catch (FileNotFoundException err) {
+            throw new EngineException(EngineException.FILENOTFOUND);
+        }
+    }
+
+
+    /**
+     * Internal Exception
+     */
+    public class EngineException extends Exception {
+
+        public static final int FILENOTFOUND = 600;
+        public static final int TOKENNOTSET = 601;
+
+        @StringRes
+        private int messageResource;
+        private boolean hardFault = false;
+        private boolean statusNotFound = false;
+
+        /**
+         * Constructor for Twitter4J errors
+         *
+         * @param error Twitter4J Exception
+         */
+        public EngineException(TwitterException error) {
+            switch (error.getErrorCode()) {
+                case 88:
+                case 420:   //
+                case 429:   // Rate limit exceeded!
+                    messageResource = R.string.error_limit_exceeded;
+                    break;
+
+                case 17:
+                case 50:    // USER not found
+                case 63:    // USER suspended
+                    messageResource = R.string.user_not_found;
+                    statusNotFound = true;
+                    hardFault = true;
+                    break;
+
+                case 32:
+                    messageResource = R.string.request_token_error;
+                    break;
+
+                case 34:    //
+                case 144:   // TWEET not found
+                    messageResource = R.string.not_found;
+                    statusNotFound = true;
+                    hardFault = true;
+                    break;
+
+                case 150:
+                    messageResource = R.string.cant_send_dm;
+                    break;
+
+                case 136:
+                case 179:
+                    messageResource = R.string.not_authorized;
+                    hardFault = true;
+                    break;
+
+                case 186:
+                    messageResource = R.string.status_too_long;
+                    break;
+
+                case 187:
+                    messageResource = R.string.duplicate_status;
+                    break;
+
+                case 349:
+                    messageResource = R.string.error_cant_send_to_user;
+                    break;
+
+                case 354:
+                    messageResource = R.string.directmessage_too_long;
+                    break;
+
+                case 89:
+                    messageResource = R.string.error_accesstoken;
+                    break;
+
+                default:
+                    messageResource = R.string.error;
+                    break;
+            }
+        }
+
+        /**
+         * Constructor for non Twitter4J errors
+         *
+         * @param errorCode custom error code
+         */
+        public EngineException(int errorCode) {
+            switch (errorCode) {
+                case FILENOTFOUND:
+                    messageResource = R.string.error_media_not_found;
+                    break;
+
+                case TOKENNOTSET:
+                    messageResource = R.string.error_token_not_set;
+                    break;
+
+                default:
+                    messageResource = R.string.error;
+                    break;
+            }
+        }
+
+        /**
+         * get String resource of error message
+         *
+         * @return string recource for
+         */
+        @StringRes
+        public int getMessageResource() {
+            return messageResource;
+        }
+
+        /**
+         * return if activity should closed
+         *
+         * @return true if hard fault
+         */
+        public boolean isHardFault() {
+            return hardFault;
+        }
+
+        /**
+         * return if tweet or author was not found
+         *
+         * @return true if author or tweet not found
+         */
+        public boolean statusNotFound() {
+            return statusNotFound;
+        }
     }
 }

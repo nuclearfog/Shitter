@@ -8,30 +8,30 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.window.TweetPopup;
 
 import java.lang.ref.WeakReference;
 
-import twitter4j.TwitterException;
-
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task for uploading tweet
  */
 public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
 
+    @Nullable
+    private TwitterEngine.EngineException twException;
     private WeakReference<TweetPopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
     private TweetHolder tweet;
 
     /**
@@ -84,7 +84,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void[] v) {
         try {
             mTwitter.uploadStatus(tweet);
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
             return false;
         } catch (Exception exception) {
@@ -103,8 +103,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                 ui.get().finish();
             } else {
                 if (twException != null)
-                    ErrorHandler.printError(ui.get(), twException);
-
+                    Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
                 AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
                 builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
                         .setPositiveButton(R.string.retry, new OnClickListener() {

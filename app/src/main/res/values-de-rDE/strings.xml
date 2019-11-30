@@ -23,7 +23,7 @@
     <string name="connection_failed">Keine Internetverbindung!</string>
     <string name="enter_pin">PIN eingeben!</string>
     <string name="delete_database_popup">Datenbank löschen?</string>
-    <string name="rate_limit_exceeded">"Rate-Limit erreicht, weiter in (s): "</string>
+    <string name="error_limit_exceeded">Anfragelimit erreicht!</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="tweet_sent">Tweet gesendet</string>
     <string name="error">Fehler!</string>
@@ -126,4 +126,6 @@
     <string name="info_get_location">starte GPS lokalisierung…</string>
     <string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
     <string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
+    <string name="error_media_not_found">Datei wurde nicht gefunden!</string>
+    <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
 </resources>

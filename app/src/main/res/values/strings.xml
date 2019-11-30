@@ -31,7 +31,7 @@
     <string name="connection_failed">connection failed</string>
     <string name="enter_pin">Enter PIN</string>
     <string name="delete_database_popup">delete database?</string>
-    <string name="rate_limit_exceeded">"Rate limit exceeded, retry after(s): "</string>
+    <string name="error_limit_exceeded">"Rate limit exceeded!"</string>
     <string name="error_sending_tweet">error while sending</string>
     <string name="tweet_sent">tweet sent</string>
     <string name="error">Error!</string>
@@ -127,4 +127,6 @@
     <string name="info_get_location">starting location…</string>
     <string name="error_gps">could not fetch GPS data!</string>
     <string name="info_get_link">Get Twitter PIN from browser first. Please press the first button!</string>
+    <string name="error_media_not_found">Media not found!</string>
+    <string name="error_token_not_set">Please get link first!</string>
 </resources>

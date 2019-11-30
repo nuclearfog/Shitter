@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.TwitterEngine;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
@@ -16,7 +15,7 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * User list loader task
@@ -32,7 +31,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     }
 
     @Nullable
-    private TwitterException twException;
+    private TwitterEngine.EngineException twException;
     private Mode mode;
     private WeakReference<UserListFragment> ui;
     private TwitterEngine mTwitter;
@@ -73,7 +72,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
                 case SEARCH:
                     return mTwitter.searchUsers((String) param[0]);
             }
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -90,7 +89,7 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
                 if (mode == Mode.FAVORIT)
                     Toast.makeText(ui.get().getContext(), R.string.info_not_implemented, Toast.LENGTH_SHORT).show();
             } else if (twException != null)
-                ErrorHandler.printError(ui.get().getContext(), twException);
+                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
             ui.get().setRefresh(false);
         }
     }

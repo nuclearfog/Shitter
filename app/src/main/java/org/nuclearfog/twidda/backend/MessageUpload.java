@@ -8,25 +8,26 @@ import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.window.MessagePopup;
 
 import java.lang.ref.WeakReference;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task to send direct messages
  */
 public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
 
+    @Nullable
+    private TwitterEngine.EngineException twException;
     private WeakReference<MessagePopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
     private MessageHolder message;
 
     /**
@@ -79,7 +80,7 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
         try {
             mTwitter.sendMessage(message);
             return true;
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -96,7 +97,7 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
                 ui.get().finish();
             } else {
                 if (twException != null)
-                    ErrorHandler.printError(ui.get(), twException);
+                    Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
             }
             popup.get().dismiss();
         }

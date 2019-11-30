@@ -2,24 +2,27 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.window.AppSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task to load location information used by twitter
  */
 public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
 
+    @Nullable
+    private TwitterEngine.EngineException twException;
     private WeakReference<AppSettings> ui;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
 
 
     /**
@@ -37,7 +40,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
     protected List<TrendLocation> doInBackground(Void[] v) {
         try {
             return mTwitter.getLocations();
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -56,7 +59,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
                 adapter.notifyDataSetChanged();
                 ui.get().setWoeIdSelection();
             } else if (twException != null) {
-                ErrorHandler.printError(ui.get(), twException);
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
             }
         }
     }

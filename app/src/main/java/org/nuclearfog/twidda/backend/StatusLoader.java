@@ -7,14 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 import java.lang.ref.WeakReference;
-
-import twitter4j.TwitterException;
 
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.fragment.TweetListFragment.RETURN_TWEET_CHANGED;
@@ -29,12 +26,12 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
         DELETE
     }
 
-    private final Action action;
-    private WeakReference<TweetDetail> ui;
+    @Nullable
+    private TwitterEngine.EngineException twException;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
+    private WeakReference<TweetDetail> ui;
     private AppDatabase db;
-    private boolean statusNotFound = false;
+    private final Action action;
 
 
     public StatusLoader(@NonNull TweetDetail context, Action action) {
@@ -88,12 +85,10 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                         db.removeFavorite(tweetId);
                     break;
             }
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
-            int rCode = twException.getErrorCode();
-            if (rCode == 144 || rCode == 34 || rCode == 63) {
+            if (twException.statusNotFound()) {
                 db.removeStatus(tweetId);
-                statusNotFound = true;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -138,9 +133,9 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                 }
             }
             if (twException != null) {
-                boolean killActivity = ErrorHandler.printError(ui.get(), twException);
-                if (killActivity) {
-                    if (statusNotFound)
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
+                if (twException.isHardFault()) {
+                    if (twException.statusNotFound())
                         ui.get().setResult(RETURN_TWEET_CHANGED);
                     ui.get().finish();
                 }

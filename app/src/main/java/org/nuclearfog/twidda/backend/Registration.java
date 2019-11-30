@@ -4,22 +4,24 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.window.LoginPage;
 
 import java.lang.ref.WeakReference;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task for app login
  */
 public class Registration extends AsyncTask<String, Void, String> {
 
+    @Nullable
+    private TwitterEngine.EngineException twException;
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
 
     /**
      * Login to twitter with PIN
@@ -39,7 +41,7 @@ public class Registration extends AsyncTask<String, Void, String> {
                 return mTwitter.request();
             mTwitter.initialize(param[0]);
             return "";
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -59,7 +61,7 @@ public class Registration extends AsyncTask<String, Void, String> {
                     ui.get().finish();
                 }
             } else if (twException != null) {
-                ErrorHandler.printError(ui.get(), twException);
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
             } else {
                 Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_SHORT).show();
             }

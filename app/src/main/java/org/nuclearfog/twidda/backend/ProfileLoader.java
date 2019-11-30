@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -15,7 +14,7 @@ import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
 
-import twitter4j.TwitterException;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Twitter profile page loader
@@ -32,7 +31,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
     private final Action action;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
+    private TwitterEngine.EngineException twException;
     private AppDatabase db;
 
 
@@ -100,7 +99,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
                     publishProgress(user);
                     return mTwitter.getConnection(userId);
             }
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -145,8 +144,8 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
                 }
             }
             if (twException != null) {
-                boolean killActivity = ErrorHandler.printError(ui.get(), twException);
-                if (killActivity)
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
+                if (twException.isHardFault())
                     ui.get().finish();
             }
         }

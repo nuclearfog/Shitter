@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -18,8 +17,7 @@ import org.nuclearfog.twidda.window.ProfileSettings;
 
 import java.lang.ref.WeakReference;
 
-import twitter4j.TwitterException;
-
+import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.window.UserProfile.RETURN_PROFILE_CHANGED;
 
 
@@ -29,7 +27,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
     private WeakReference<Dialog> popup;
     private UserHolder userHolder;
     private TwitterEngine mTwitter;
-    private TwitterException twException;
+    private TwitterEngine.EngineException twException;
     private AppDatabase db;
 
 
@@ -92,7 +90,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
                 TwitterUser user = mTwitter.updateProfile(userHolder);
                 db.storeUser(user);
             }
-        } catch (TwitterException twException) {
+        } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -112,7 +110,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
                 ui.get().setResult(RETURN_PROFILE_CHANGED);
                 ui.get().finish();
             } else {
-                ErrorHandler.printError(ui.get(), twException);
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
                 ui.get().finish();
             }
         }
