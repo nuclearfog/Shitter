@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     if (returnCode == DB_CLEARED) {
                         adapter.clearData();
                     } else if (returnCode == APP_LOGOUT) {
-                        adapter.clearData();
                         adapter = null;
                     } else {
                         adapter.notifySettingsChanged();

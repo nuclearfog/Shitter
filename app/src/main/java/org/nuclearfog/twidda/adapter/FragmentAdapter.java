@@ -26,7 +26,6 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_USER_SEAR
 public class FragmentAdapter extends FragmentPagerAdapter {
 
     public enum AdapterType {
-        HOME_TAB,
         PROFILE_TAB,
         SEARCH_TAB,
         TWEET_PAGE,
@@ -41,28 +40,25 @@ public class FragmentAdapter extends FragmentPagerAdapter {
 
 
     public FragmentAdapter(FragmentManager fManager) {
-        this(fManager, AdapterType.HOME_TAB, 0, "");
+        super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        Bundle home_tl = new Bundle();
+        Bundle ment_tl = new Bundle();
+        home_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.HOME);
+        ment_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.MENT);
+        home_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
+        ment_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
+        fragments = new Fragment[3];
+        fragments[0] = new TweetListFragment();
+        fragments[1] = new TrendListFragment();
+        fragments[2] = new TweetListFragment();
+        fragments[0].setArguments(home_tl);
+        fragments[2].setArguments(ment_tl);
     }
 
 
     public FragmentAdapter(FragmentManager fManager, AdapterType mode, long id, String search) {
         super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         switch (mode) {
-            case HOME_TAB:
-                Bundle home_tl = new Bundle();
-                Bundle ment_tl = new Bundle();
-                home_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.HOME);
-                ment_tl.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.MENT);
-                home_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
-                ment_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
-                fragments = new Fragment[3];
-                fragments[0] = new TweetListFragment();
-                fragments[1] = new TrendListFragment();
-                fragments[2] = new TweetListFragment();
-                fragments[0].setArguments(home_tl);
-                fragments[2].setArguments(ment_tl);
-                break;
-
             case PROFILE_TAB:
                 Bundle usr_tweet = new Bundle();
                 Bundle usr_favor = new Bundle();

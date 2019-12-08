@@ -865,6 +865,7 @@ public class TwitterEngine {
          * @param error Twitter4J Exception
          */
         public EngineException(TwitterException error) {
+            super(error);
             switch (error.getErrorCode()) {
                 case 88:
                 case 420:   //
@@ -922,7 +923,15 @@ public class TwitterEngine {
                     break;
 
                 default:
-                    messageResource = R.string.error;
+                    switch (error.getStatusCode()) {
+                        case 401:
+                            messageResource = R.string.not_authorized;
+                            break;
+
+                        default:
+                            messageResource = R.string.error;
+                            break;
+                    }
                     break;
             }
         }
