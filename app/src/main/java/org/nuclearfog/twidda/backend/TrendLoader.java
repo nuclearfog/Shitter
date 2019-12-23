@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.fragment.backend;
+package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.TrendAdapter;
-import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.TrendListFragment;

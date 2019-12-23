@@ -4,8 +4,8 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.helper.FilenameTools;
-import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
+import org.nuclearfog.twidda.backend.helper.StringTools;
+import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
 
 public class TweetHolder {
 
@@ -26,7 +26,7 @@ public class TweetHolder {
 
 
     public void addMedia(String[] mediaLinks) {
-        FileType type = FilenameTools.getFileType(mediaLinks[0]);
+        FileType type = StringTools.getFileType(mediaLinks[0]);
 
         switch (type) {
             case VIDEO:

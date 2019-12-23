@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.fragment.backend;
+package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -6,7 +6,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.TweetAdapter;
-import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.TweetListFragment;

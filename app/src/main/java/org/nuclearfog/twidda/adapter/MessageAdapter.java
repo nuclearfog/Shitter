@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.TimeFormat;
+import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Message;
 
 import java.lang.ref.WeakReference;
@@ -96,7 +96,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         vh.message.setLinkTextColor(highlight);
         vh.username.setText(message.getSender().getUsername());
         vh.screenname.setText(message.getSender().getScreenname());
-        vh.createdAt.setText(TimeFormat.getString(message.getTime()));
+        vh.createdAt.setText(StringTools.getString(message.getTime()));
         vh.receivername.setText(message.getReceiver().getScreenname());
         vh.message.setTextColor(fontColor);
         vh.username.setTextColor(fontColor);

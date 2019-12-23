@@ -16,10 +16,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
+import org.nuclearfog.twidda.backend.MessageLoader;
+import org.nuclearfog.twidda.backend.MessageLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.backend.MessageLoader;
-import org.nuclearfog.twidda.fragment.backend.MessageLoader.Mode;
 import org.nuclearfog.twidda.window.MessagePopup;
 import org.nuclearfog.twidda.window.SearchPage;
 import org.nuclearfog.twidda.window.UserProfile;
@@ -127,7 +127,7 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (messageTask.getStatus() != FINISHED)
+                    if (messageTask.getStatus() != FINISHED && !reload.isRefreshing())
                         reload.setRefreshing(true);
                 }
             }, 500);

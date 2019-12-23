@@ -18,10 +18,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.UserAdapter;
+import org.nuclearfog.twidda.backend.UserLoader;
+import org.nuclearfog.twidda.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.backend.UserLoader;
-import org.nuclearfog.twidda.fragment.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.FINISHED;
@@ -145,7 +145,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (userTask.getStatus() != FINISHED)
+                    if (userTask.getStatus() != FINISHED && !reload.isRefreshing())
                         reload.setRefreshing(true);
                 }
             }, 500);

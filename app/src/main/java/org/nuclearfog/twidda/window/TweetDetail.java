@@ -43,7 +43,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.Action;
-import org.nuclearfog.twidda.backend.helper.FilenameTools;
+import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -368,7 +368,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         }
         if (tweet.hasMedia()) {
             String[] links = tweet.getMediaLinks();
-            FilenameTools.FileType ext = FilenameTools.getFileType(links[0]);
+            StringTools.FileType ext = StringTools.getFileType(links[0]);
             switch (ext) {
                 case IMAGE:
                     imageButton.setVisibility(VISIBLE);
@@ -442,6 +442,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             tweetLoc.setText(locationText);
             tweetLoc.setVisibility(VISIBLE);
         }
+    }
+
+
+    public boolean tweetSet() {
+        return tweet != null;
     }
 
 

@@ -23,8 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusUploader;
-import org.nuclearfog.twidda.backend.helper.FilenameTools;
-import org.nuclearfog.twidda.backend.helper.FilenameTools.FileType;
+import org.nuclearfog.twidda.backend.helper.StringTools;
+import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -140,7 +140,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                 if (cursor != null && cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(GET_MEDIA[0]);
                     String path = cursor.getString(index);
-                    FileType type = FilenameTools.getFileType(path);
+                    FileType type = StringTools.getFileType(path);
 
                     switch (type) {
                         case IMAGE:

@@ -17,10 +17,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
+import org.nuclearfog.twidda.backend.TweetLoader;
+import org.nuclearfog.twidda.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.backend.TweetLoader;
-import org.nuclearfog.twidda.fragment.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.window.TweetDetail;
 
 import static android.os.AsyncTask.Status.FINISHED;
@@ -169,7 +169,7 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (tweetTask.getStatus() != FINISHED)
+                    if (tweetTask.getStatus() != FINISHED && !reload.isRefreshing())
                         reload.setRefreshing(true);
                 }
             }, 500);
