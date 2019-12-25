@@ -817,6 +817,40 @@ public class TwitterEngine {
         }
     }
 
+    /**
+     * Get member of a list
+     *
+     * @param listId ID of the list
+     * @return list of users
+     * @throws EngineException if access is unavailable
+     */
+    List<TwitterUser> getListMember(long listId) throws EngineException {
+        try {
+            return convertUserList(twitter.getUserListMembers(listId, -1));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
+     * get tweets of a lists
+     *
+     * @param listId  ID of the list
+     * @param sinceId Id of the recent tweet
+     * @param page    tweet page
+     * @return list of tweets
+     * @throws EngineException if access is unavailable
+     */
+    List<Tweet> getListTweets(long listId, long sinceId, int page) throws EngineException {
+        try {
+            Paging paging = new Paging(page, load, sinceId);
+            return convertStatusList(twitter.getUserListStatuses(listId, paging));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
 
     /**
      * convert #twitter4j.User to TwitterUser List

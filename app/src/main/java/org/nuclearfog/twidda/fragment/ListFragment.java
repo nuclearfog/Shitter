@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.activity.ListDetail;
 import org.nuclearfog.twidda.activity.UserDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
@@ -23,6 +24,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_NAME;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.UserType.SUBSCRIBER;
@@ -50,6 +53,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         GlobalSettings settings = GlobalSettings.getInstance(context);
 
         adapter = new ListAdapter(this);
+        adapter.setColor(settings.getFontColor());
 
         RecyclerView listView = new RecyclerView(inflater.getContext());
         listView.setLayoutManager(new LinearLayoutManager(context));
@@ -88,27 +92,36 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
 
     @Override
-    public void onClick(long id, Action action) {
-        switch (action) {
-            case PROFILE:
-                Intent profile = new Intent(getContext(), UserProfile.class);
-                profile.putExtra(KEY_PROFILE_ID, id);
-                startActivity(profile);
-                break;
+    public void onClick(long id, String name, Action action) {
+        if (!reloadLayout.isRefreshing()) {
+            switch (action) {
+                case PROFILE:
+                    Intent profile = new Intent(getContext(), UserProfile.class);
+                    profile.putExtra(KEY_PROFILE_ID, id);
+                    startActivity(profile);
+                    break;
 
-            case FOLLOW:
-                if (listTask != null && listTask.getStatus() != RUNNING) {
-                    listTask = new ListLoader(this, FOLLOW);
-                    listTask.execute(id);
-                }
-                break;
+                case FOLLOW:
+                    if (listTask != null && listTask.getStatus() != RUNNING) {
+                        listTask = new ListLoader(this, FOLLOW);
+                        listTask.execute(id);
+                    }
+                    break;
 
-            case SUBSCRIBER:
-                Intent following = new Intent(getContext(), UserDetail.class);
-                following.putExtra(KEY_USERDETAIL_ID, id);
-                following.putExtra(KEY_USERDETAIL_MODE, SUBSCRIBER);
-                startActivity(following);
-                break;
+                case SUBSCRIBER:
+                    Intent following = new Intent(getContext(), UserDetail.class);
+                    following.putExtra(KEY_USERDETAIL_ID, id);
+                    following.putExtra(KEY_USERDETAIL_MODE, SUBSCRIBER);
+                    startActivity(following);
+                    break;
+
+                case MEMBER:
+                    Intent list = new Intent(getContext(), ListDetail.class);
+                    list.putExtra(KEY_LISTDETAIL_ID, id);
+                    list.putExtra(KEY_LISTDETAIL_NAME, name);
+                    startActivity(list);
+                    break;
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.fragment.ListFragment;
@@ -64,7 +65,7 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
     }
 
     @Override
-    protected void onPostExecute(List<TwitterList> result) {
+    protected void onPostExecute(@Nullable List<TwitterList> result) {
         if (ui.get() != null) {
             if (result != null) {
                 switch (action) {
@@ -73,7 +74,12 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
                         break;
 
                     case FOLLOW:
-                        adapter.updateItem(result.get(0));
+                        TwitterList list = result.get(0);
+                        adapter.updateItem(list);
+                        if (list.isFollowing())
+                            Toast.makeText(ui.get().getContext(), R.string.followed, LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(ui.get().getContext(), R.string.info_unfollowed, LENGTH_SHORT).show();
                         break;
                 }
             }

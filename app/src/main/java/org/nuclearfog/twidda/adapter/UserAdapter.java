@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -29,7 +30,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     private int font_color;
     private boolean loadImage;
 
-
     public UserAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         users = new ArrayList<>();
@@ -37,40 +37,34 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         loadImage = true;
     }
 
-
     public TwitterUser getData(int index) {
         return users.get(index);
     }
 
-
+    @MainThread
     public void replaceAll(@NonNull List<TwitterUser> userList) {
         users.clear();
         users.addAll(userList);
         notifyDataSetChanged();
     }
 
-
     public void setColor(int font_color) {
         this.font_color = font_color;
     }
 
-
     public void setImage(boolean image) {
         loadImage = image;
     }
-
 
     @Override
     public int getItemCount() {
         return users.size();
     }
 
-
     @Override
     public long getItemId(int index) {
         return users.get(index).getId();
     }
-
 
     @NonNull
     @Override
@@ -87,7 +81,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         });
         return new ItemHolder(v);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
@@ -111,7 +104,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
     }
-
 
     class ItemHolder extends ViewHolder {
         final ImageView profileImg;

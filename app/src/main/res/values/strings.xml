@@ -18,7 +18,7 @@
     <string name="block">Block</string>
     <string name="follow">follow</string>
     <string name="retry">retry</string>
-    <string name="cancel">cancel!</string>
+    <string name="cancel">cancel</string>
     <string name="color_settings">Color settings</string>
     <string name="data_load">data consumption</string>
     <string name="trend_setting">trend setting</string>
@@ -41,7 +41,7 @@
     <string name="unfollow">unfollow</string>
     <string name="unblock">unblock</string>
     <string name="followed">followed</string>
-    <string name="blocked">blocked</string>
+    <string name="blocked">blocked!</string>
     <string name="unblocked">unblocked</string>
     <string name="tweet_removed">Tweet removed!</string>
     <string name="answering">answering </string>
@@ -134,4 +134,5 @@
     <string name="list_created">created:</string>
     <string name="list_appbar">Lists</string>
     <string name="user_list_subscr">List subscriber</string>
+    <string name="info_unfollowed">unfollowed!</string>
 </resources>

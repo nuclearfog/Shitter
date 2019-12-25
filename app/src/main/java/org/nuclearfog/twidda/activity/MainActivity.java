@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
@@ -26,7 +27,7 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 /**
  * Main Activity
  */
-public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnTabSelectedListener {
 
     public static final int DB_CLEARED = 3;
     public static final int APP_LOGOUT = 4;

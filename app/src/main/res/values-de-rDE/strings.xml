@@ -133,4 +133,5 @@
     <string name="list_created">"erstellt am: "</string>
     <string name="list_appbar">Listen</string>
     <string name="user_list_subscr">Listenbeobachter</string>
+    <string name="info_unfollowed">entfolgt!</string>
 </resources>

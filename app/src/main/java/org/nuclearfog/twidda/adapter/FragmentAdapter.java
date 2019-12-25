@@ -37,7 +37,8 @@ public class FragmentAdapter extends FragmentPagerAdapter {
         RETWEETER_PAGE,
         FAVOR_PAGE,
         LIST_PAGE,
-        SUBSCRIBER_PAGE
+        SUBSCRIBER_PAGE,
+        LISTCONTENT_PAGE
     }
 
     private final Fragment[] fragments;
@@ -162,6 +163,22 @@ public class FragmentAdapter extends FragmentPagerAdapter {
                 fragments = new Fragment[1];
                 fragments[0] = new UserFragment();
                 fragments[0].setArguments(uParam);
+                break;
+
+            case LISTCONTENT_PAGE:
+                Bundle tweetList = new Bundle();
+                Bundle userList = new Bundle();
+                tweetList.putLong(KEY_FRAG_TWEET_ID, id);
+                userList.putLong(KEY_FRAG_USER_ID, id);
+                tweetList.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.LIST);
+                userList.putSerializable(KEY_FRAG_USER_MODE, UserType.LIST);
+                tweetList.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
+                userList.putBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
+                fragments = new Fragment[2];
+                fragments[0] = new TweetFragment();
+                fragments[1] = new UserFragment();
+                fragments[0].setArguments(tweetList);
+                fragments[1].setArguments(userList);
                 break;
 
             default:

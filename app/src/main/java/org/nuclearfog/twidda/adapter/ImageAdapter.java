@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -35,20 +36,19 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         loading = true;
     }
 
-
+    @MainThread
     public void addLast(@NonNull Bitmap image) {
         int imagePos = images.size();
         images.add(image);
         notifyItemInserted(imagePos);
     }
 
-
+    @MainThread
     public void disableLoading() {
         loading = false;
         int circlePos = images.size();
         notifyItemRemoved(circlePos);
     }
-
 
     @Override
     public int getItemViewType(int position) {
@@ -57,14 +57,12 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         return PICTURE;
     }
 
-
     @Override
     public int getItemCount() {
         if (loading)
             return images.size() + 1;
         return images.size();
     }
-
 
     @NonNull
     @Override
@@ -78,7 +76,6 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
             return new ImageHolder(new ImageView(parent.getContext()));
         }
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull ImageAdapter.ImageHolder vh, int index) {
@@ -106,13 +103,11 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         }
     }
 
-
     private Bitmap downscale(Bitmap image) {
         float ratio = image.getHeight() / 256.0f;
         int destWidth = (int) (image.getWidth() / ratio);
         return Bitmap.createScaledBitmap(image, destWidth, 256, false);
     }
-
 
     class ImageHolder extends ViewHolder {
         final View view;
@@ -122,7 +117,6 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
             this.view = view;
         }
     }
-
 
     public interface OnImageClickListener {
         /**

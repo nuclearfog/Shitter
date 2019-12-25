@@ -41,7 +41,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, OnItemC
         RETWEET,
         FAVORIT,
         USEARCH,
-        SUBSCR
+        SUBSCR,
+        LIST
     }
 
     private SwipeRefreshLayout reload;
@@ -178,6 +179,10 @@ public class UserFragment extends Fragment implements OnRefreshListener, OnItemC
                 break;
             case SUBSCR:
                 userTask = new UserLoader(this, Mode.SUBSCRIBER);
+                userTask.execute(id);
+                break;
+            case LIST:
+                userTask = new UserLoader(this, Mode.LIST);
                 userTask.execute(id);
                 break;
 

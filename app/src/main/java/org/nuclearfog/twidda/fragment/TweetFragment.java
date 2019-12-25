@@ -46,6 +46,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
         USER_FAVOR,
         TWEET_ANSR,
         SEARCH,
+        LIST
     }
 
     private TweetLoader tweetTask;
@@ -212,6 +213,11 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
             case SEARCH:
                 tweetTask = new TweetLoader(this, Mode.TWEET_SEARCH);
                 tweetTask.execute(search);
+                break;
+
+            case LIST:
+                tweetTask = new TweetLoader(this, Mode.LIST);
+                tweetTask.execute(id, 1);
                 break;
         }
     }

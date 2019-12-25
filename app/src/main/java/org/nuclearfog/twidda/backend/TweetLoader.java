@@ -28,7 +28,8 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         USR_FAVORS,
         TWEET_ANS,
         DB_ANS,
-        TWEET_SEARCH
+        TWEET_SEARCH,
+        LIST
     }
 
     @Nullable
@@ -153,6 +154,14 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
                     if (!adapter.isEmpty())
                         sinceId = adapter.getItemId(0);
                     tweets = mTwitter.searchTweets(search, sinceId);
+                    break;
+
+                case LIST:
+                    long listId = (long) param[0];
+                    page = (int) param[1];
+                    if (!adapter.isEmpty())
+                        sinceId = adapter.getItemId(0);
+                    tweets = mTwitter.getListTweets(listId, sinceId, page);
                     break;
             }
         } catch (TwitterEngine.EngineException twException) {

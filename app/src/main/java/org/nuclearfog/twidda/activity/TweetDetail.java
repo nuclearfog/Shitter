@@ -36,7 +36,6 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserDetail.UserType;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
@@ -110,8 +109,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             username = param.getString(KEY_TWEET_NAME);
         } else if (link != null) {
             getTweet(link);
-        } else if (BuildConfig.DEBUG) {
-            throw new AssertionError();
         }
         ViewPager pager = findViewById(R.id.tweet_pager);
         Toolbar tool = findViewById(R.id.tweet_toolbar);

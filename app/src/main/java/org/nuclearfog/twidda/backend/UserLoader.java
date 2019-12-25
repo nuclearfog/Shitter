@@ -27,7 +27,8 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
         RETWEET,
         FAVORIT,
         SEARCH,
-        SUBSCRIBER
+        SUBSCRIBER,
+        LIST
     }
 
     @Nullable
@@ -74,6 +75,10 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
                 case SUBSCRIBER:
                     return mTwitter.getListFollower((long) param[0]);
+
+                case LIST:
+                    return mTwitter.getListMember((long) param[0]);
+
             }
         } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;

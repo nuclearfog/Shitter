@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_layout"
+    android:id="@+id/listdetail_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/profile_toolbar"
+        android:id="@+id/listdetail_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_wide" />
+        android:layout_height="@dimen/bar_wide"
+        android:theme="?attr/actionBarTheme" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/home_tab"
+        android:id="@+id/listdetail_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </com.google.android.material.tabs.TabLayout>
+        android:layout_height="wrap_content" />
 
     <androidx.viewpager.widget.ViewPager
-        android:id="@+id/home_pager"
+        android:id="@+id/listdetail_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </LinearLayout>

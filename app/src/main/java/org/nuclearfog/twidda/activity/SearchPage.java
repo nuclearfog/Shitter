@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
@@ -62,8 +61,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             search = param.getString(KEY_SEARCH_QUERY);
         } else if (link != null) {
             getSearchString(link);
-        } else if (BuildConfig.DEBUG)
-            throw new AssertionError();
+        }
 
         root.setBackgroundColor(settings.getBackgroundColor());
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());

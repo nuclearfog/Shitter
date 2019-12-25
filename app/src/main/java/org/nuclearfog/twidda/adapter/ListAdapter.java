@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -39,14 +40,14 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         fontColor = Color.WHITE;
     }
 
-
+    @MainThread
     public void setData(List<TwitterList> newData) {
         data.clear();
         data.addAll(newData);
         notifyDataSetChanged();
     }
 
-
+    @MainThread
     public void updateItem(TwitterList newItem) {
         int index = data.indexOf(newItem);
         if (index != -1) {
@@ -90,23 +91,34 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             @Override
             public void onClick(View v) {
                 if (listener.get() != null)
-                    listener.get().onClick(owner.getId(), ListClickListener.Action.PROFILE);
+                    listener.get().onClick(owner.getId(), item.getShortName(), ListClickListener.Action.PROFILE);
             }
         });
         vh.followList.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener.get() != null)
-                    listener.get().onClick(item.getId(), ListClickListener.Action.FOLLOW);
+                    listener.get().onClick(item.getId(), item.getShortName(), ListClickListener.Action.FOLLOW);
             }
         });
         vh.subscriberCount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener.get() != null)
-                    listener.get().onClick(item.getId(), ListClickListener.Action.SUBSCRIBER);
+                    listener.get().onClick(item.getId(), item.getShortName(), ListClickListener.Action.SUBSCRIBER);
             }
         });
+        vh.memberCount.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener.get() != null)
+                    listener.get().onClick(item.getId(), item.getShortName(), ListClickListener.Action.MEMBER);
+            }
+        });
+        if (item.isFollowing())
+            vh.followList.setText(R.string.unfollow);
+        else
+            vh.followList.setText(R.string.follow);
     }
 
     class ListHolder extends ViewHolder {
@@ -133,9 +145,10 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         enum Action {
             PROFILE,
             FOLLOW,
-            SUBSCRIBER
+            SUBSCRIBER,
+            MEMBER
         }
 
-        void onClick(long id, Action action);
+        void onClick(long id, String name, Action action);
     }
 }

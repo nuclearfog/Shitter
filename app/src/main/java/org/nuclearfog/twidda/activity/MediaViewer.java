@@ -22,7 +22,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
@@ -93,8 +92,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         if (param != null && param.containsKey(KEY_MEDIA_LINK) && param.containsKey(KEY_MEDIA_TYPE)) {
             link = param.getStringArray(KEY_MEDIA_LINK);
             type = (MediaType) param.getSerializable(KEY_MEDIA_TYPE);
-        } else if (BuildConfig.DEBUG)
-            throw new AssertionError();
+        }
 
         if (type != null)
             switch (type) {

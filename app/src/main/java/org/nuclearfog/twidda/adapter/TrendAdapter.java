@@ -7,6 +7,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -24,47 +25,41 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     private List<String> trends;
     private int font_color;
 
-
     public TrendAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         trends = new ArrayList<>();
         font_color = Color.WHITE;
     }
 
-
     public void setColor(int font_color) {
         this.font_color = font_color;
     }
-
 
     public String getData(int index) {
         return trends.get(index);
     }
 
-
+    @MainThread
     public void setData(@NonNull List<String> trendList) {
         trends.clear();
         trends.addAll(trendList);
         notifyDataSetChanged();
     }
 
-
+    @MainThread
     public void clear() {
         trends.clear();
         notifyDataSetChanged();
     }
 
-
     public boolean isEmpty() {
         return trends.isEmpty();
     }
-
 
     @Override
     public int getItemCount() {
         return trends.size();
     }
-
 
     @NonNull
     @Override
@@ -83,7 +78,6 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         return new ItemHolder(v);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
         String posStr = index + 1 + ".";
@@ -92,7 +86,6 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         vh.pos.setTextColor(font_color);
         vh.trends.setTextColor(font_color);
     }
-
 
     class ItemHolder extends ViewHolder {
         final TextView trends, pos;

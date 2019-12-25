@@ -52,20 +52,20 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
     @Override
     protected List<Message> doInBackground(Long[] param) {
-        List<Message> messages = null;
         long messageId = 0;
         try {
             switch (mode) {
                 case DB:
-                    messages = db.getMessages();
-                    if (!messages.isEmpty())
-                        break;
+                    List<Message> messages = db.getMessages();
+                    if (messages.isEmpty())
+                        messages = mTwitter.getMessages();
+                    return messages;
 
                 case LOAD:
                     messages = mTwitter.getMessages();
                     db.storeMessage(messages);
                     messages = db.getMessages();
-                    break;
+                    return messages;
 
                 case DEL:
                     messageId = param[0];
@@ -81,7 +81,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        return messages;
+        return null;
     }
 
 
@@ -90,7 +90,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         if (ui.get() != null) {
             if (messages != null)
                 adapter.replaceAll(messages);
-            if (twException != null) {
+            else if (twException != null) {
                 Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
                 if (twException.statusNotFound())
                     adapter.remove(id);

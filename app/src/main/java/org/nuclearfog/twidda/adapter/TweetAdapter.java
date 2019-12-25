@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -35,7 +36,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     private int font_color;
     private boolean image_load;
 
-
     public TweetAdapter(OnItemClickListener l) {
         itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
@@ -45,23 +45,20 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         image_load = true;
     }
 
-
     public void setColor(int highlight, int font_color) {
         this.highlight = highlight;
         this.font_color = font_color;
     }
 
-
     public void setImage(boolean image_load) {
         this.image_load = image_load;
     }
-
 
     public Tweet get(int index) {
         return tweets.get(index);
     }
 
-
+    @MainThread
     public void addFirst(@NonNull List<Tweet> newTweets) {
         if (!newTweets.isEmpty()) {
             tweets.addAll(0, newTweets);
@@ -69,17 +66,15 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         }
     }
 
-
+    @MainThread
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
     }
 
-
     public boolean isEmpty() {
         return tweets.isEmpty();
     }
-
 
     public void remove(long id) {
         int index = -1;
@@ -93,18 +88,15 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             notifyItemRemoved(index);
     }
 
-
     @Override
     public long getItemId(int index) {
         return tweets.get(index).getId();
     }
 
-
     @Override
     public int getItemCount() {
         return tweets.size();
     }
-
 
     @NonNull
     @Override
@@ -122,7 +114,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         });
         return new ItemHolder(v);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
@@ -166,7 +157,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         else
             vh.profile.setImageResource(0);
     }
-
 
     class ItemHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;

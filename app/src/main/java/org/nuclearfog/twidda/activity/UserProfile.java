@@ -34,7 +34,6 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
@@ -103,8 +102,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_PROFILE_ID)) {
             userId = param.getLong(KEY_PROFILE_ID);
-        } else if (BuildConfig.DEBUG) {
-            throw new AssertionError();
         }
         Toolbar tool = findViewById(R.id.profile_toolbar);
         TabLayout tab = findViewById(R.id.profile_tab);
