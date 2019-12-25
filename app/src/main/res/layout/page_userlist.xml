@@ -8,7 +8,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/user_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_wide" />
+        android:layout_height="@dimen/toolbar_height" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/user_pager"

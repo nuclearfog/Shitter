@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/editprofile_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_wide" />
+        android:layout_height="@dimen/toolbar_height" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/username" />
+                android:hint="@string/username" />
 
             <EditText
                 android:id="@+id/edit_name"
@@ -85,6 +85,7 @@
                 android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@android:color/transparent"
                 android:ems="10"
+                android:hint="@string/edit_location_hint"
                 android:inputType="text"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
@@ -92,6 +93,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/edit_hint_link"
                 android:text="@string/profile_link" />
 
             <EditText
@@ -101,6 +103,7 @@
                 android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@android:color/transparent"
                 android:ems="10"
+                android:hint="@string/edit_hint_link"
                 android:inputType="text"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
@@ -117,6 +120,7 @@
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:gravity="top"
+                android:hint="@string/edit_hint_enter_descr"
                 android:inputType="textMultiLine"
                 android:textSize="@dimen/textsize_profileedit" />
 

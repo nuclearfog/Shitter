@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bar_wide">45dp</dimen>
+    <dimen name="toolbar_height">45dp</dimen>
     <dimen name="divider">2dp</dimen>
 
     <dimen name="profile_image">64dp</dimen>

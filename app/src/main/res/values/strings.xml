@@ -135,4 +135,7 @@
     <string name="list_appbar">Lists</string>
     <string name="user_list_subscr">List subscriber</string>
     <string name="info_unfollowed">unfollowed!</string>
+    <string name="edit_location_hint">Enter location</string>
+    <string name="edit_hint_link">enter internetlink</string>
+    <string name="edit_hint_enter_descr">enter profile description</string>
 </resources>

@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_setting"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_wide" />
+        android:layout_height="@dimen/toolbar_height" />
 
     <ScrollView
         android:layout_width="match_parent"

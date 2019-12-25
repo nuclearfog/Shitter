@@ -11,8 +11,7 @@ public class TwitterList {
 
     private final long id;
     private final long createdAt;
-    private final String shortName;
-    private final String fullName;
+    private final String title;
     private final String description;
 
     private final TwitterUser owner;
@@ -24,8 +23,7 @@ public class TwitterList {
 
     public TwitterList(UserList list, long homeId) {
         id = list.getId();
-        shortName = list.getName();
-        fullName = list.getFullName();
+        title = list.getName();
         createdAt = list.getCreatedAt().getTime();
         description = list.getDescription();
         owner = new TwitterUser(list.getUser());
@@ -55,21 +53,12 @@ public class TwitterList {
     }
 
     /**
-     * get short name of list
+     * get title of list
      *
-     * @return name
+     * @return title name
      */
-    public String getShortName() {
-        return shortName;
-    }
-
-    /**
-     * get full name of list
-     *
-     * @return name
-     */
-    public String getFullName() {
-        return fullName;
+    public String getTitle() {
+        return title;
     }
 
     /**
@@ -139,7 +128,7 @@ public class TwitterList {
     @Override
     @NonNull
     public String toString() {
-        return shortName + " " + description;
+        return title + " " + description;
     }
 
     @Override

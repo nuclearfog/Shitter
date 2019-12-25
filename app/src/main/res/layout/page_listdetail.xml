@@ -8,8 +8,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/listdetail_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bar_wide"
-        android:theme="?attr/actionBarTheme" />
+        android:layout_height="@dimen/toolbar_height" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/listdetail_tab"

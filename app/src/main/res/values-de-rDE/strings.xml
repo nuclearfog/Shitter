@@ -134,4 +134,7 @@
     <string name="list_appbar">Listen</string>
     <string name="user_list_subscr">Listenbeobachter</string>
     <string name="info_unfollowed">entfolgt!</string>
+    <string name="edit_hint_enter_descr">Profilebeschreibung eingeben</string>
+    <string name="edit_hint_link">Link eingeben</string>
+    <string name="edit_location_hint">Standortnamen eingeben</string>
 </resources>
