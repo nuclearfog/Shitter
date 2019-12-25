@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda;
+package org.nuclearfog.twidda.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,16 +16,12 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.Tab;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.AppSettings;
-import org.nuclearfog.twidda.window.LoginPage;
-import org.nuclearfog.twidda.window.SearchPage;
-import org.nuclearfog.twidda.window.TweetPopup;
-import org.nuclearfog.twidda.window.UserProfile;
 
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 /**
  * Main Activity

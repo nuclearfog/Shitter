@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
 
@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".window.SearchPage"
+            android:name=".activity.SearchPage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
 
@@ -50,27 +50,27 @@
         </activity>
 
         <activity
-            android:name=".window.UserProfile"
+            android:name=".activity.UserProfile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".window.TweetPopup"
+            android:name=".activity.TweetPopup"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 
         <activity
-            android:name=".window.MessagePopup"
+            android:name=".activity.MessagePopup"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 
         <activity
-            android:name=".window.AppSettings"
+            android:name=".activity.AppSettings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".window.TweetDetail"
+            android:name=".activity.TweetDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
 
@@ -87,27 +87,32 @@
         </activity>
 
         <activity
-            android:name=".window.UserDetail"
+            android:name=".activity.UserDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".window.LoginPage"
+            android:name=".activity.LoginPage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".window.DirectMessage"
+            android:name=".activity.DirectMessage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".window.MediaViewer"
+            android:name=".activity.MediaViewer"
             android:screenOrientation="portrait"
             android:theme="@style/HalfTransparency" />
 
         <activity
-            android:name=".window.ProfileSettings"
+            android:name=".activity.ProfileSettings"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".activity.UserList"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

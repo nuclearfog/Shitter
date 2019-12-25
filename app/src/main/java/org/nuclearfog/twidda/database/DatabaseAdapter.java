@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.BuildConfig;
 
 import java.io.File;
@@ -70,7 +72,7 @@ public class DatabaseAdapter {
     }
 
 
-    public static DatabaseAdapter getInstance(Context context) {
+    public static DatabaseAdapter getInstance(@NonNull Context context) {
         if (instance == null)
             instance = new DatabaseAdapter(context);
         return instance;

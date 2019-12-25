@@ -7,10 +7,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.window.UserProfile;
 
 import java.lang.ref.WeakReference;
 

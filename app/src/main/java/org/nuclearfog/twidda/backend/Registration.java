@@ -7,7 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.window.LoginPage;
+import org.nuclearfog.twidda.activity.LoginPage;
 
 import java.lang.ref.WeakReference;
 

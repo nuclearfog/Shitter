@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,25 +14,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.MessagePopup;
+import org.nuclearfog.twidda.activity.SearchPage;
+import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
 import org.nuclearfog.twidda.backend.MessageLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.MessagePopup;
-import org.nuclearfog.twidda.window.SearchPage;
-import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 
-public class MessageListFragment extends Fragment implements OnRefreshListener, OnItemSelected {
+public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected {
 
     private MessageLoader messageTask;
     private SwipeRefreshLayout reload;
@@ -39,23 +39,24 @@ public class MessageListFragment extends Fragment implements OnRefreshListener, 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        super.onCreateView(inflater, parent, param);
-        View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        RecyclerView list = v.findViewById(R.id.fragment_list);
-        reload = v.findViewById(R.id.fragment_reload);
+        Context context = inflater.getContext();
+        GlobalSettings settings = GlobalSettings.getInstance(context);
 
-        reload.setOnRefreshListener(this);
         adapter = new MessageAdapter(this);
-        list.setLayoutManager(new LinearLayoutManager(getContext()));
-        list.setHasFixedSize(true);
-        list.setAdapter(adapter);
-
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         adapter.setColor(settings.getFontColor(), settings.getHighlightColor());
         adapter.setImage(settings.getImageLoad());
 
-        return v;
+        RecyclerView list = new RecyclerView(context);
+        list.setLayoutManager(new LinearLayoutManager(context));
+        list.setHasFixedSize(true);
+        list.setAdapter(adapter);
+
+        reload = new SwipeRefreshLayout(context);
+        reload.addView(list);
+        reload.setOnRefreshListener(this);
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+
+        return reload;
     }
 
 

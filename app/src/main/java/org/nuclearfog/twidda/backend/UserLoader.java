@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.fragment.UserListFragment;
+import org.nuclearfog.twidda.fragment.UserFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
@@ -26,18 +26,19 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
         FRIENDS,
         RETWEET,
         FAVORIT,
-        SEARCH
+        SEARCH,
+        SUBSCRIBER
     }
 
     @Nullable
     private TwitterEngine.EngineException twException;
     private Mode mode;
-    private WeakReference<UserListFragment> ui;
+    private WeakReference<UserFragment> ui;
     private TwitterEngine mTwitter;
     private UserAdapter adapter;
 
 
-    public UserLoader(UserListFragment fragment, Mode mode) {
+    public UserLoader(UserFragment fragment, Mode mode) {
         ui = new WeakReference<>(fragment);
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
         adapter = fragment.getAdapter();
@@ -70,6 +71,9 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
                 case SEARCH:
                     return mTwitter.searchUsers((String) param[0]);
+
+                case SUBSCRIBER:
+                    return mTwitter.getListFollower((long) param[0]);
             }
         } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;

@@ -6,8 +6,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import org.nuclearfog.twidda.activity.AppSettings;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
-import org.nuclearfog.twidda.window.AppSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

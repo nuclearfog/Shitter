@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -37,8 +37,8 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.BuildConfig;
-import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.UserDetail.UserType;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
@@ -47,7 +47,6 @@ import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.UserDetail.UserType;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -60,16 +59,16 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_REPLYID;
-import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
-import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.ANGIF;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.VIDEO;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 
 
 public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTouchListener,
@@ -252,15 +251,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
                 case R.id.tweet_retweet:
                     Intent userList = new Intent(this, UserDetail.class);
-                    userList.putExtra(KEY_USERLIST_ID, tweetID);
-                    userList.putExtra(KEY_USERLIST_MODE, UserType.RETWEETS);
+                    userList.putExtra(KEY_USERDETAIL_ID, tweetID);
+                    userList.putExtra(KEY_USERDETAIL_MODE, UserType.RETWEETS);
                     startActivity(userList);
                     break;
 
                 case R.id.tweet_favorit:
                     userList = new Intent(this, UserDetail.class);
-                    userList.putExtra(KEY_USERLIST_ID, tweetID);
-                    userList.putExtra(KEY_USERLIST_MODE, UserType.FAVORITS);
+                    userList.putExtra(KEY_USERDETAIL_ID, tweetID);
+                    userList.putExtra(KEY_USERDETAIL_MODE, UserType.FAVORITS);
                     startActivity(userList);
                     break;
 

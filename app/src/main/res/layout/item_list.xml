@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/CardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/list_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/listitem_margin"
+            android:orientation="horizontal">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="@dimen/profile_middle"
+                android:layout_height="@dimen/profile_middle">
+
+                <ImageView
+                    android:id="@+id/list_owner_profile"
+                    android:layout_width="@dimen/profile_middle"
+                    android:layout_height="@dimen/profile_middle"
+                    android:contentDescription="@string/item_list_pb_desc" />
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/list_padding"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/list_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/list_ownername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/list_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/listitem_margin"
+                android:text="@string/list_created" />
+
+            <TextView
+                android:id="@+id/list_createdat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/list_bar_padding">
+
+            <TextView
+                android:id="@+id/list_member"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/listitem_margin"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/padding_drawable"
+                android:singleLine="true"
+                app:drawableStartCompat="@drawable/member" />
+
+            <TextView
+                android:id="@+id/list_subscriber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/listitem_margin"
+                android:layout_weight="1"
+                android:drawablePadding="@dimen/padding_drawable"
+                app:drawableStartCompat="@drawable/subscriber" />
+
+            <Button
+                android:id="@+id/list_follow"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/list_button_height"
+                android:layout_margin="@dimen/listitem_margin"
+                android:layout_weight="1"
+                android:background="@drawable/button"
+                android:singleLine="true"
+                android:text="@string/follow"
+                app:srcCompat="@drawable/follow" />
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

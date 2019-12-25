@@ -7,14 +7,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.window.TweetDetail;
 
 import java.lang.ref.WeakReference;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.fragment.TweetListFragment.RETURN_TWEET_CHANGED;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
 
 public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {

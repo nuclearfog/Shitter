@@ -128,4 +128,9 @@
     <string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
     <string name="error_media_not_found">Datei wurde nicht gefunden!</string>
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
+    <string name="profile_lists">Listen</string>
+    <string name="item_list_pb_desc">Profile Listenbesitzer</string>
+    <string name="list_created">"erstellt am: "</string>
+    <string name="list_appbar">Listen</string>
+    <string name="user_list_subscr">Listenbeobachter</string>
 </resources>

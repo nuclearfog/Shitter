@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,11 +41,11 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.ANGIF_STORAGE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE_STORAGE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.VIDEO_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.ANGIF_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.VIDEO_STORAGE;
 
 
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener {

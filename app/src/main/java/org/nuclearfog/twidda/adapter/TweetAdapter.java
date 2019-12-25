@@ -89,9 +89,8 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
                 index = pos;
             }
         }
-        if (index != -1) {
+        if (index != -1)
             notifyItemRemoved(index);
-        }
     }
 
 
@@ -141,7 +140,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         vh.tweet.setText(text);
         vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
         vh.favorite.setText(formatter.format(tweet.getFavorCount()));
-        vh.time.setText(StringTools.getString(tweet.getTime()));
+        vh.time.setText(StringTools.getTimeString(tweet.getTime()));
         vh.username.setTextColor(font_color);
         vh.screenname.setTextColor(font_color);
         vh.tweet.setTextColor(font_color);

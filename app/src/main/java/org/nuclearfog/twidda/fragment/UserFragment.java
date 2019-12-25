@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.BuildConfig;
-import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.UserAdapter;
@@ -22,14 +22,13 @@ import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.UserProfile;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 
-public class UserListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
+public class UserFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_USER_MODE = "user_mode";
     public static final String KEY_FRAG_USER_SEARCH = "user_search";
@@ -41,7 +40,8 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
         FRIENDS,
         RETWEET,
         FAVORIT,
-        USEARCH
+        USEARCH,
+        SUBSCR
     }
 
     private SwipeRefreshLayout reload;
@@ -51,36 +51,35 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
     private UserType mode;
     private String search;
     private long id;
-    private boolean fixLayout;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        super.onCreateView(inflater, parent, param);
         Bundle b = getArguments();
-        if (b != null && b.containsKey(KEY_FRAG_USER_MODE)) {
+        Context context = inflater.getContext();
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        boolean fixLayout = false;
+        if (b != null) {
             mode = (UserType) b.getSerializable(KEY_FRAG_USER_MODE);
             id = b.getLong(KEY_FRAG_USER_ID, -1);
             search = b.getString(KEY_FRAG_USER_SEARCH, "");
             fixLayout = b.getBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
-        } else if (BuildConfig.DEBUG) {
-            throw new AssertionError("Bundle error!");
         }
-
-        View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        list = v.findViewById(R.id.fragment_list);
-        reload = v.findViewById(R.id.fragment_reload);
-
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        reload.setOnRefreshListener(this);
         adapter = new UserAdapter(this);
         adapter.setColor(settings.getFontColor());
         adapter.setImage(settings.getImageLoad());
-        list.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        list = new RecyclerView(context);
+        list.setLayoutManager(new LinearLayoutManager(context));
         list.setHasFixedSize(fixLayout);
         list.setAdapter(adapter);
 
-        return v;
+        reload = new SwipeRefreshLayout(context);
+        reload.addView(list);
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        reload.setOnRefreshListener(this);
+
+        return reload;
     }
 
 
@@ -177,6 +176,11 @@ public class UserListFragment extends Fragment implements OnRefreshListener, OnI
                 userTask = new UserLoader(this, Mode.SEARCH);
                 userTask.execute(search);
                 break;
+            case SUBSCR:
+                userTask = new UserLoader(this, Mode.SUBSCRIBER);
+                userTask.execute(id);
+                break;
+
         }
     }
 }

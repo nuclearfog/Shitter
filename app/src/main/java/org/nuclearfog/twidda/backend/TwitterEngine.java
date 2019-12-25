@@ -11,6 +11,7 @@ import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
+import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.backend.items.UserProperties;
@@ -29,6 +30,7 @@ import twitter4j.Location;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
+import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Trend;
@@ -37,6 +39,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.UploadedMedia;
 import twitter4j.User;
+import twitter4j.UserList;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
@@ -83,9 +86,8 @@ public class TwitterEngine {
      * @return TwitterEngine Instance
      */
     public static TwitterEngine getInstance(Context context) {
-        if (mTwitter == null) {
+        if (mTwitter == null)
             mTwitter = new TwitterEngine(context);
-        }
         mTwitter.setLoad();
         return mTwitter;
     }
@@ -286,9 +288,9 @@ public class TwitterEngine {
      * @return List of User Tweets
      * @throws EngineException if access is unavailable
      */
-    List<Tweet> getUserTweets(long userId, long sinceId, long page) throws EngineException {
+    List<Tweet> getUserTweets(long userId, long sinceId, int page) throws EngineException {
         try {
-            Paging paging = new Paging((int) page, load, sinceId);
+            Paging paging = new Paging(page, load, sinceId);
             return convertStatusList(twitter.getUserTimeline(userId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -305,9 +307,9 @@ public class TwitterEngine {
      * @return List of User Favs
      * @throws EngineException if access is unavailable
      */
-    List<Tweet> getUserFavs(long userId, long sinceId, long page) throws EngineException {
+    List<Tweet> getUserFavs(long userId, long sinceId, int page) throws EngineException {
         try {
-            Paging paging = new Paging((int) page, load, sinceId);
+            Paging paging = new Paging(page, load, sinceId);
             List<Status> favorits = twitter.getFavorites(userId, paging);
             return convertStatusList(favorits);
         } catch (TwitterException err) {
@@ -711,10 +713,14 @@ public class TwitterEngine {
      * Delete Direct Message
      *
      * @param id Message ID
-     * @throws TwitterException if Access is unavailable
+     * @throws EngineException if Access is unavailable or message not found
      */
-    void deleteMessage(long id) throws TwitterException {
-        twitter.destroyDirectMessage(id);
+    void deleteMessage(long id) throws EngineException {
+        try {
+            twitter.destroyDirectMessage(id);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
     }
 
 
@@ -743,12 +749,69 @@ public class TwitterEngine {
      * Update user profile image_add
      *
      * @param path image path
-     * @throws EngineException if Access is unavailable
+     * @throws EngineException if access is unavailable
      */
     void updateProfileImage(String path) throws EngineException {
         try {
             File image = new File(path);
             twitter.updateProfileImage(image);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
+     * get user list
+     *
+     * @param userId id of the list owner
+     * @return list information
+     * @throws EngineException if access is unavailable
+     */
+    List<TwitterList> getUserList(long userId) throws EngineException {
+        try {
+            List<TwitterList> result = new LinkedList<>();
+            ResponseList<UserList> lists = twitter.getUserLists(userId);
+            for (UserList list : lists)
+                result.add(new TwitterList(list, twitterID));
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
+     * Follow action for twitter list
+     *
+     * @param listId ID of the list
+     * @return List information
+     * @throws EngineException if access is unavailable
+     */
+    TwitterList followUserList(long listId) throws EngineException {
+        try {
+            UserList list = twitter.showUserList(listId);
+            if (list.isFollowing())
+                list = twitter.destroyUserListSubscription(listId);
+            else
+                list = twitter.createUserListSubscription(listId);
+            return new TwitterList(list, twitterID);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
+     * Get subscriber of a user list
+     *
+     * @param listId ID of the list
+     * @return list of users following the list
+     * @throws EngineException if access is unavailable
+     */
+    List<TwitterUser> getListFollower(long listId) throws EngineException {
+        try {
+            return convertUserList(twitter.getUserListSubscribers(listId, -1));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -923,15 +986,10 @@ public class TwitterEngine {
                     break;
 
                 default:
-                    switch (error.getStatusCode()) {
-                        case 401:
-                            messageResource = R.string.not_authorized;
-                            break;
-
-                        default:
-                            messageResource = R.string.error;
-                            break;
-                    }
+                    if (error.getStatusCode() == 401)
+                        messageResource = R.string.not_authorized;
+                    else
+                        messageResource = R.string.error;
                     break;
             }
         }

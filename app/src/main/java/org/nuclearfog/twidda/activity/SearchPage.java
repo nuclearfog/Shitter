@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -19,14 +19,13 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.BuildConfig;
-import org.nuclearfog.twidda.MainActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 
 /**
  * Twitter search Activity

@@ -28,6 +28,9 @@
         android:visible="false"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/profile_lists"
+        android:title="@string/profile_lists" />
+    <item
         android:id="@+id/profile_settings"
         android:visible="false"
         android:title="@string/edit_profile" />

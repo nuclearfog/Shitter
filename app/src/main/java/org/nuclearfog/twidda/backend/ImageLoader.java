@@ -8,8 +8,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.MediaViewer;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
-import org.nuclearfog.twidda.window.MediaViewer;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,20 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.backend.TrendLoader;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.SearchPage;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
 
-public class TrendListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
+public class TrendFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
     private TrendLoader trendTask;
     private SwipeRefreshLayout reload;
@@ -36,20 +36,22 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        super.onCreateView(inflater, parent, param);
-        View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        list = v.findViewById(R.id.fragment_list);
-        reload = v.findViewById(R.id.fragment_reload);
+        Context context = inflater.getContext();
 
-        settings = GlobalSettings.getInstance(getContext());
-        reload.setOnRefreshListener(this);
+        settings = GlobalSettings.getInstance(context);
         adapter = new TrendAdapter(this);
-        list.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        list = new RecyclerView(context);
+        list.setLayoutManager(new LinearLayoutManager(context));
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
 
+        reload = new SwipeRefreshLayout(context);
+        reload.addView(list);
+        reload.setOnRefreshListener(this);
+
         setColors();
-        return v;
+        return reload;
     }
 
 
@@ -136,7 +138,7 @@ public class TrendListFragment extends Fragment implements OnRefreshListener, On
 
     private void load() {
         trendTask = new TrendLoader(this);
-        trendTask.execute();
+        trendTask.execute(settings.getTrendLocation().getWoeId());
     }
 
 

@@ -15,7 +15,7 @@ public abstract class StringTools {
         NONE
     }
 
-    public static String getString(long time) {
+    public static String getTimeString(long time) {
         long diff = new Date().getTime() - time;
         long seconds = diff / 1000;
         long minutes = seconds / 60;

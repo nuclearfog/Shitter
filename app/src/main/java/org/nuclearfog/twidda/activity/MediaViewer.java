@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;

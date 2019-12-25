@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -42,8 +42,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.MainActivity.APP_LOGOUT;
-import static org.nuclearfog.twidda.MainActivity.DB_CLEARED;
+import static org.nuclearfog.twidda.activity.MainActivity.APP_LOGOUT;
+import static org.nuclearfog.twidda.activity.MainActivity.DB_CLEARED;
 
 
 public class AppSettings extends AppCompatActivity implements OnClickListener,

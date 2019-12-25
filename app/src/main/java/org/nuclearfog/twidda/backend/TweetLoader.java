@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.TweetListFragment;
+import org.nuclearfog.twidda.fragment.TweetFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -34,13 +34,13 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
     @Nullable
     private TwitterEngine.EngineException twException;
     private Mode mode;
-    private WeakReference<TweetListFragment> ui;
+    private WeakReference<TweetFragment> ui;
     private TweetAdapter adapter;
     private TwitterEngine mTwitter;
     private AppDatabase db;
 
 
-    public TweetLoader(TweetListFragment fragment, Mode mode) {
+    public TweetLoader(TweetFragment fragment, Mode mode) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
@@ -64,59 +64,63 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
         try {
             switch (mode) {
                 case TL_HOME:
+                    int page = (int) param[0];
                     if (adapter.isEmpty()) {
                         tweets = db.getHomeTimeline();
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getHome(1, sinceId);
+                            tweets = mTwitter.getHome(page, sinceId);
                             db.storeHomeTimeline(tweets);
                         }
                     } else {
                         sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getHome(1, sinceId);
+                        tweets = mTwitter.getHome(page, sinceId);
                         db.storeHomeTimeline(tweets);
                     }
                     break;
 
                 case TL_MENT:
+                    page = (int) param[0];
                     if (adapter.isEmpty()) {
                         tweets = db.getMentions();
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getMention(1, sinceId);
+                            tweets = mTwitter.getMention(page, sinceId);
                             db.storeMentions(tweets);
                         }
                     } else {
                         sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getMention(1, sinceId);
+                        tweets = mTwitter.getMention(page, sinceId);
                         db.storeMentions(tweets);
                     }
                     break;
 
                 case USR_TWEETS:
                     long tweetId = (long) param[0];
+                    page = (int) param[1];
                     if (adapter.isEmpty()) {
                         tweets = db.getUserTweets(tweetId);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
+                            tweets = mTwitter.getUserTweets(tweetId, sinceId, page);
                             db.storeUserTweets(tweets);
                         }
                     } else {
                         sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getUserTweets(tweetId, sinceId, 1);
+                        tweets = mTwitter.getUserTweets(tweetId, sinceId, page);
                         db.storeUserTweets(tweets);
                     }
                     break;
 
                 case USR_FAVORS:
                     tweetId = (long) param[0];
+                    page = (int) param[1];
                     if (adapter.isEmpty()) {
                         tweets = db.getUserFavs(tweetId);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
+                            tweets = mTwitter.getUserFavs(tweetId, sinceId, page);
                             db.storeUserFavs(tweets, tweetId);
                         }
                     } else {
                         sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getUserFavs(tweetId, sinceId, 1);
+                        tweets = mTwitter.getUserFavs(tweetId, sinceId, page);
                         db.storeUserFavs(tweets, tweetId);
                     }
                     break;

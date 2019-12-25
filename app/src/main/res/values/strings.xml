@@ -129,4 +129,9 @@
     <string name="info_get_link">Get Twitter PIN from browser first. Please press the first button!</string>
     <string name="error_media_not_found">Media not found!</string>
     <string name="error_token_not_set">Please get link first!</string>
+    <string name="item_list_pb_desc">owner profile</string>
+    <string name="profile_lists">Lists</string>
+    <string name="list_created">created:</string>
+    <string name="list_appbar">Lists</string>
+    <string name="user_list_subscr">List subscriber</string>
 </resources>

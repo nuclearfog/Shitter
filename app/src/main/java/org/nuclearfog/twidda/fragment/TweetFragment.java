@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
@@ -21,15 +22,14 @@ import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.window.TweetDetail;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.window.TweetDetail.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
 
 
-public class TweetListFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
+public class TweetFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
     public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
@@ -60,31 +60,30 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        super.onCreateView(inflater, parent, param);
-        boolean fixSize;
+        boolean fixSize = false;
         Bundle b = getArguments();
-        if (b != null && b.containsKey(KEY_FRAG_TWEET_MODE)) {
+        Context context = inflater.getContext();
+
+        if (b != null) {
             mode = (TweetType) b.getSerializable(KEY_FRAG_TWEET_MODE);
             id = b.getLong(KEY_FRAG_TWEET_ID, -1);
             search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
             fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
-        } else {
-            throw new AssertionError();
         }
 
-        View v = inflater.inflate(R.layout.fragment_list, parent, false);
-        reload = v.findViewById(R.id.fragment_reload);
-        list = v.findViewById(R.id.fragment_list);
-
-        settings = GlobalSettings.getInstance(getContext());
-        reload.setOnRefreshListener(this);
+        settings = GlobalSettings.getInstance(context);
         adapter = new TweetAdapter(this);
-        list.setLayoutManager(new LinearLayoutManager(getContext()));
+        list = new RecyclerView(context);
+        list.setLayoutManager(new LinearLayoutManager(context));
         list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
 
+        reload = new SwipeRefreshLayout(context);
+        reload.addView(list);
+        reload.setOnRefreshListener(this);
+
         setColors();
-        return v;
+        return reload;
     }
 
 
@@ -183,22 +182,22 @@ public class TweetListFragment extends Fragment implements OnRefreshListener, On
         switch (mode) {
             case HOME:
                 tweetTask = new TweetLoader(this, Mode.TL_HOME);
-                tweetTask.execute();
+                tweetTask.execute(1);
                 break;
 
             case MENT:
                 tweetTask = new TweetLoader(this, Mode.TL_MENT);
-                tweetTask.execute();
+                tweetTask.execute(1);
                 break;
 
             case USER_TWEET:
                 tweetTask = new TweetLoader(this, Mode.USR_TWEETS);
-                tweetTask.execute(id);
+                tweetTask.execute(id, 1);
                 break;
 
             case USER_FAVOR:
                 tweetTask = new TweetLoader(this, Mode.USR_FAVORS);
-                tweetTask.execute(id);
+                tweetTask.execute(id, 1);
                 break;
 
             case TWEET_ANSR:

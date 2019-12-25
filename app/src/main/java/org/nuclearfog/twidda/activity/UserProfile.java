@@ -1,7 +1,8 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,17 +54,18 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE;
+import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activity.UserDetail.UserType.FOLLOWERS;
+import static org.nuclearfog.twidda.activity.UserDetail.UserType.FRIENDS;
+import static org.nuclearfog.twidda.activity.UserList.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.window.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.window.MediaViewer.MediaType.IMAGE;
-import static org.nuclearfog.twidda.window.MessagePopup.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.window.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.window.TweetPopup.KEY_TWEETPOPUP_PREFIX;
-import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_ID;
-import static org.nuclearfog.twidda.window.UserDetail.KEY_USERLIST_MODE;
-import static org.nuclearfog.twidda.window.UserDetail.UserType.FOLLOWERS;
-import static org.nuclearfog.twidda.window.UserDetail.UserType.FRIENDS;
 
 
 public class UserProfile extends AppCompatActivity implements OnClickListener,
@@ -119,8 +121,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         txtCreated = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
-        tweetTabTxt = new TextView(getApplicationContext());
-        favorTabTxt = new TextView(getApplicationContext());
+        tweetTabTxt = new TextView(this);
+        favorTabTxt = new TextView(this);
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
@@ -132,8 +134,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
-        tweetTabTxt.setTextColor(settings.getFontColor());
-        favorTabTxt.setTextColor(settings.getFontColor());
+        tweetTabTxt.setTextColor(Color.WHITE);
+        favorTabTxt.setTextColor(Color.WHITE);
         tweetTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.home_profile, 0, 0);
         favorTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favorite_profile, 0, 0);
         tweetTabTxt.setGravity(CENTER);
@@ -327,6 +329,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                         startActivity(dmPage);
                     }
                     break;
+
+                case R.id.profile_lists:
+                    Intent listPage = new Intent(this, UserList.class);
+                    listPage.putExtra(KEY_USERLIST_ID, userId);
+                    startActivity(listPage);
+                    break;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -358,8 +366,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 if (user != null && properties != null) {
                     if (!user.isLocked() || properties.isFriend()) {
                         Intent following = new Intent(this, UserDetail.class);
-                        following.putExtra(KEY_USERLIST_ID, userId);
-                        following.putExtra(KEY_USERLIST_MODE, FRIENDS);
+                        following.putExtra(KEY_USERDETAIL_ID, userId);
+                        following.putExtra(KEY_USERDETAIL_MODE, FRIENDS);
                         startActivity(following);
                     }
                 }
@@ -369,8 +377,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 if (user != null && properties != null) {
                     if (!user.isLocked() || properties.isFriend()) {
                         Intent follower = new Intent(this, UserDetail.class);
-                        follower.putExtra(KEY_USERLIST_ID, userId);
-                        follower.putExtra(KEY_USERLIST_MODE, FOLLOWERS);
+                        follower.putExtra(KEY_USERDETAIL_ID, userId);
+                        follower.putExtra(KEY_USERDETAIL_MODE, FOLLOWERS);
                         startActivity(follower);
                     }
                 }
@@ -392,7 +400,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
             case R.id.profile_img:
                 if (user != null) {
-                    Intent image = new Intent(getApplicationContext(), MediaViewer.class);
+                    Intent image = new Intent(this, MediaViewer.class);
                     image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
                     image.putExtra(KEY_MEDIA_TYPE, IMAGE);
                     startActivity(image);

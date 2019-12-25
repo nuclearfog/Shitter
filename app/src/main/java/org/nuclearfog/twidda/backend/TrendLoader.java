@@ -8,8 +8,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.TrendListFragment;
+import org.nuclearfog.twidda.fragment.TrendFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -17,23 +16,20 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
+public class TrendLoader extends AsyncTask<Integer, Void, List<String>> {
 
     @Nullable
     private TwitterEngine.EngineException twException;
-    private WeakReference<TrendListFragment> ui;
+    private WeakReference<TrendFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private TrendAdapter adapter;
-    private int woeId;
 
 
-    public TrendLoader(@NonNull TrendListFragment fragment) {
+    public TrendLoader(@NonNull TrendFragment fragment) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        GlobalSettings settings = GlobalSettings.getInstance(fragment.getContext());
-        woeId = settings.getTrendLocation().getWoeId();
         adapter = fragment.getAdapter();
     }
 
@@ -46,8 +42,9 @@ public class TrendLoader extends AsyncTask<Void, Void, List<String>> {
 
 
     @Override
-    protected List<String> doInBackground(Void[] v) {
+    protected List<String> doInBackground(Integer[] param) {
         List<String> trends;
+        int woeId = param[0];
         try {
             if (adapter.isEmpty()) {
                 trends = db.getTrends(woeId);

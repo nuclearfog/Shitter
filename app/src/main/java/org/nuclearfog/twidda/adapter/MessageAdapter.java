@@ -51,6 +51,19 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     }
 
 
+    public void remove(long id) {
+        int pos = -1;
+        for (int index = 0; index < messages.size() && pos < 0; index++) {
+            if (messages.get(index).getId() == id) {
+                messages.remove(index);
+                pos = index;
+            }
+        }
+        if (pos != -1)
+            notifyItemRemoved(pos);
+    }
+
+
     public void setColor(int fontColor, int highlight) {
         this.fontColor = fontColor;
         this.highlight = highlight;
@@ -96,7 +109,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         vh.message.setLinkTextColor(highlight);
         vh.username.setText(message.getSender().getUsername());
         vh.screenname.setText(message.getSender().getScreenname());
-        vh.createdAt.setText(StringTools.getString(message.getTime()));
+        vh.createdAt.setText(StringTools.getTimeString(message.getTime()));
         vh.receivername.setText(message.getReceiver().getScreenname());
         vh.message.setTextColor(fontColor);
         vh.username.setTextColor(fontColor);

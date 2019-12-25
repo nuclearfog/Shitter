@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
-import org.nuclearfog.twidda.window.MessagePopup;
 
 import java.lang.ref.WeakReference;
 

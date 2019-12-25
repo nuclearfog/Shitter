@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.window;
+package org.nuclearfog.twidda.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
@@ -15,14 +14,15 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 public class UserDetail extends AppCompatActivity {
 
-    public static final String KEY_USERLIST_MODE = "userlist_mode";
-    public static final String KEY_USERLIST_ID = "userlist_owner_id";
+    public static final String KEY_USERDETAIL_MODE = "userlist_mode";
+    public static final String KEY_USERDETAIL_ID = "userlist_owner_id";
 
     public enum UserType {
         FRIENDS,
         FOLLOWERS,
         RETWEETS,
         FAVORITS,
+        SUBSCRIBER
     }
 
     private UserType mode;
@@ -34,11 +34,9 @@ public class UserDetail extends AppCompatActivity {
         setContentView(R.layout.page_userlist);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_USERLIST_MODE) && param.containsKey(KEY_USERLIST_ID)) {
-            mode = (UserType) param.getSerializable(KEY_USERLIST_MODE);
-            id = param.getLong(KEY_USERLIST_ID);
-        } else if (BuildConfig.DEBUG) {
-            throw new AssertionError();
+        if (param != null && param.containsKey(KEY_USERDETAIL_MODE) && param.containsKey(KEY_USERDETAIL_ID)) {
+            mode = (UserType) param.getSerializable(KEY_USERDETAIL_MODE);
+            id = param.getLong(KEY_USERDETAIL_ID);
         }
 
         FragmentAdapter adapter;
@@ -75,6 +73,11 @@ public class UserDetail extends AppCompatActivity {
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FAVOR_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
+            case SUBSCRIBER:
+                if (getSupportActionBar() != null)
+                    getSupportActionBar().setTitle(R.string.user_list_subscr);
+                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SUBSCRIBER_PAGE, id, "");
+                pager.setAdapter(adapter);
         }
     }
 }

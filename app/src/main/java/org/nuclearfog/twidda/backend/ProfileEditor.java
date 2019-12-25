@@ -10,15 +10,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.ProfileSettings;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.window.ProfileSettings;
 
 import java.lang.ref.WeakReference;
 
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.window.UserProfile.RETURN_PROFILE_CHANGED;
+import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 
 public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {

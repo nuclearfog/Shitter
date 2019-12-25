@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 
 import java.net.Authenticator;
@@ -64,7 +66,7 @@ public class GlobalSettings {
      * @param context Application Context needed for Shared preferences
      * @return instance of this class
      */
-    public static GlobalSettings getInstance(Context context) {
+    public static GlobalSettings getInstance(@NonNull Context context) {
         if (ourInstance == null) {
             ourInstance = new GlobalSettings(context);
         }

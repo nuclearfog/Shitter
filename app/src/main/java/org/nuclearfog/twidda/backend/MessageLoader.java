@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.MessageListFragment;
+import org.nuclearfog.twidda.fragment.MessageFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -27,13 +27,14 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     @Nullable
     private TwitterEngine.EngineException twException;
     private Mode mode;
-    private WeakReference<MessageListFragment> ui;
+    private WeakReference<MessageFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private MessageAdapter adapter;
+    private long id;
 
 
-    public MessageLoader(MessageListFragment fragment, Mode mode) {
+    public MessageLoader(MessageFragment fragment, Mode mode) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
@@ -68,17 +69,15 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
                 case DEL:
                     messageId = param[0];
+                    id = messageId;
                     mTwitter.deleteMessage(messageId);
                     db.deleteDm(messageId);
-                    messages = db.getMessages();
                     break;
             }
         } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
-            if (twException.statusNotFound()) {
+            if (twException.statusNotFound())
                 db.deleteDm(messageId);
-                messages = db.getMessages();
-            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -91,8 +90,12 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         if (ui.get() != null) {
             if (messages != null)
                 adapter.replaceAll(messages);
-            if (twException != null)
+            if (twException != null) {
                 Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
+                if (twException.statusNotFound())
+                    adapter.remove(id);
+            } else if (mode == Mode.DEL)
+                adapter.remove(id);
             ui.get().setRefresh(false);
         }
     }
