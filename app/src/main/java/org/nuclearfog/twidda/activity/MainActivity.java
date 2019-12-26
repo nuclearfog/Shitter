@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Override
     protected void onStart() {
         super.onStart();
-
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, LOGIN);

@@ -10,7 +10,6 @@ import org.nuclearfog.twidda.backend.items.TrendLocation;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.text.NumberFormat;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -20,7 +19,6 @@ public class GlobalSettings {
     private static GlobalSettings ourInstance;
 
     private SharedPreferences settings;
-    private NumberFormat formatter;
     private TrendLocation location;
     private String key1, key2;
     private boolean loadImage;
@@ -38,26 +36,7 @@ public class GlobalSettings {
 
     private GlobalSettings(Context context) {
         settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
-        background_color = settings.getInt("background_color", 0xff0f114a);
-        highlight_color = settings.getInt("highlight_color", 0xffff00ff);
-        font_color = settings.getInt("font_color", 0xffffffff);
-        tweet_color = settings.getInt("tweet_color", 0xff19aae8);
-        row = settings.getInt("preload", 20);
-        loadImage = settings.getBoolean("image_load", true);
-        loadAnswer = settings.getBoolean("answer_load", true);
-        loggedIn = settings.getBoolean("login", false);
-        key1 = settings.getString("key1", "");
-        key2 = settings.getString("key2", "");
-        userId = settings.getLong("userID", -1L);
-        proxyHost = settings.getString("proxy_addr", "");
-        proxyPort = settings.getString("proxy_port", "");
-        proxyUser = settings.getString("proxy_user", "");
-        proxyPass = settings.getString("proxy_pass", "");
-        String place = settings.getString("location", "Worldwide");
-        int woeId = settings.getInt("world_id", 1);
-        location = new TrendLocation(place, woeId);
-        formatter = NumberFormat.getIntegerInstance();
-        configureProxy();
+        initialize();
     }
 
     /**
@@ -67,9 +46,8 @@ public class GlobalSettings {
      * @return instance of this class
      */
     public static GlobalSettings getInstance(@NonNull Context context) {
-        if (ourInstance == null) {
+        if (ourInstance == null)
             ourInstance = new GlobalSettings(context);
-        }
         return ourInstance;
     }
 
@@ -199,12 +177,20 @@ public class GlobalSettings {
         edit.apply();
     }
 
-
+    /**
+     * get selected location information
+     *
+     * @return saved location information
+     */
     public TrendLocation getTrendLocation() {
         return location;
     }
 
-
+    /**
+     * set selected location information
+     *
+     * @param location location information
+     */
     public void setTrendLocation(TrendLocation location) {
         this.location = location;
         Editor edit = settings.edit();
@@ -346,15 +332,6 @@ public class GlobalSettings {
     }
 
     /**
-     * get locale specific number formatter
-     *
-     * @return number formatter instance
-     */
-    public NumberFormat getNumberFormatter() {
-        return formatter;
-    }
-
-    /**
      * Set Access tokens and user ID
      *
      * @param key1   1st access token
@@ -411,9 +388,33 @@ public class GlobalSettings {
     /**
      * Remove all user content from Shared Preferences
      */
-    public void logout(Context c) {
+    public void logout() {
         settings.edit().clear().apply();
-        loggedIn = false;
-        ourInstance = new GlobalSettings(c);
+        initialize();
+    }
+
+    /**
+     * Init setting values
+     */
+    private void initialize() {
+        background_color = settings.getInt("background_color", 0xff0f114a);
+        highlight_color = settings.getInt("highlight_color", 0xffff00ff);
+        font_color = settings.getInt("font_color", 0xffffffff);
+        tweet_color = settings.getInt("tweet_color", 0xff19aae8);
+        row = settings.getInt("preload", 20);
+        loadImage = settings.getBoolean("image_load", true);
+        loadAnswer = settings.getBoolean("answer_load", true);
+        loggedIn = settings.getBoolean("login", false);
+        key1 = settings.getString("key1", "");
+        key2 = settings.getString("key2", "");
+        userId = settings.getLong("userID", -1L);
+        proxyHost = settings.getString("proxy_addr", "");
+        proxyPort = settings.getString("proxy_port", "");
+        proxyUser = settings.getString("proxy_user", "");
+        proxyPass = settings.getString("proxy_pass", "");
+        String place = settings.getString("location", "Worldwide");
+        int woeId = settings.getInt("world_id", 1);
+        location = new TrendLocation(place, woeId);
+        configureProxy();
     }
 }

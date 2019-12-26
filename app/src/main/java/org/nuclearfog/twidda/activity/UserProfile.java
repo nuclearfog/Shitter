@@ -445,7 +445,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      */
     public void setUser(final TwitterUser user) {
         this.user = user;
-        NumberFormat formatter = settings.getNumberFormatter();
+        NumberFormat formatter = NumberFormat.getIntegerInstance();
         Spanned bio = Tagger.makeText(user.getBio(), settings.getHighlightColor(), this);
         int verify = user.isVerified() ? R.drawable.verify : 0;
         int locked = user.isLocked() ? R.drawable.lock : 0;

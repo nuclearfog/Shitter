@@ -210,7 +210,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                settings.logout(getApplicationContext());
+                                settings.logout();
                                 TwitterEngine.destroyInstance();
                                 DatabaseAdapter.deleteDatabase(getApplicationContext());
                                 setResult(APP_LOGOUT);

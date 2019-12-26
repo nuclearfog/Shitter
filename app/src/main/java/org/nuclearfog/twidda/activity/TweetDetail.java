@@ -102,7 +102,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
         settings = GlobalSettings.getInstance(this);
-        format = settings.getNumberFormatter();
+        format = NumberFormat.getIntegerInstance();
 
         if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
             tweetID = param.getLong(KEY_TWEET_ID);
