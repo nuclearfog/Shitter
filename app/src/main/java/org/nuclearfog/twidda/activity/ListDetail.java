@@ -48,12 +48,13 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             getSupportActionBar().setTitle(name);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        root.setBackgroundColor(settings.getBackgroundColor());
         adapter = new FragmentAdapter(getSupportFragmentManager(), LISTCONTENT_PAGE, id, "");
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-        root.setBackgroundColor(settings.getBackgroundColor());
+        tablayout.addOnTabSelectedListener(this);
 
         Tab tlTab = tablayout.getTabAt(0);
         Tab trTab = tablayout.getTabAt(1);
