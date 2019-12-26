@@ -237,7 +237,8 @@
                     android:background="@android:color/transparent"
                     android:ems="10"
                     android:hint="@string/enter_proxy"
-                    android:inputType="textPersonName"
+                    android:inputType="number|numberDecimal"
+                    android:digits="0123456789."
                     android:singleLine="true"
                     android:textSize="14sp" />
 

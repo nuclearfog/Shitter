@@ -209,11 +209,24 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
+        if (user != null) {
+            if (user.followRequested()) {
+                MenuItem followIcon = m.findItem(R.id.profile_follow);
+                followIcon.setIcon(R.drawable.follow_requested);
+                followIcon.setTitle(R.string.follow_requested);
+            }
+            if (user.isLocked()) {
+                MenuItem listItem = m.findItem(R.id.profile_lists);
+                listItem.setVisible(false);
+            }
+        }
         if (properties != null) {
             if (properties.isFriend()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
+                MenuItem listItem = m.findItem(R.id.profile_lists);
                 followIcon.setIcon(R.drawable.follow_enabled);
                 followIcon.setTitle(R.string.unfollow);
+                listItem.setVisible(true);
             }
             if (properties.isBlocked()) {
                 MenuItem blockIcon = m.findItem(R.id.profile_block);
@@ -231,13 +244,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 follow_back.setVisibility(VISIBLE);
             }
         }
-        if (user != null) {
-            if (user.followRequested()) {
-                MenuItem followIcon = m.findItem(R.id.profile_follow);
-                followIcon.setIcon(R.drawable.follow_requested);
-                followIcon.setTitle(R.string.follow_requested);
-            }
-        }
+
         return super.onPrepareOptionsMenu(m);
     }
 

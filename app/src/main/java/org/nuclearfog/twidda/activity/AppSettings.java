@@ -340,10 +340,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private boolean validateInputs() {
         boolean success = true;
         Editable editAddr = proxyAddr.getText();
+        Editable editPort = proxyPort.getText();
         Editable editUser = proxyUser.getText();
+        Editable editPass = proxyPass.getText();
 
         if (editAddr != null && !editAddr.toString().isEmpty()) {
-            Editable editPort = proxyPort.getText();
             if (editPort == null || editPort.toString().isEmpty()) {
                 String errMsg = getString(R.string.error_empty_port);
                 proxyPort.setError(errMsg);
@@ -351,7 +352,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
             }
         }
         if (editUser != null && !editUser.toString().isEmpty()) {
-            Editable editPass = proxyPass.getText();
             if (editPass != null && editPass.toString().isEmpty()) {
                 String errMsg = getString(R.string.error_empty_pass);
                 proxyPass.setError(errMsg);
