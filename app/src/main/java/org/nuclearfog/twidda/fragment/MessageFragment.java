@@ -42,9 +42,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);
 
-        adapter = new MessageAdapter(this);
-        adapter.setColor(settings.getFontColor(), settings.getHighlightColor());
-        adapter.setImage(settings.getImageLoad());
+        adapter = new MessageAdapter(this, settings);
 
         RecyclerView list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
@@ -52,10 +50,9 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         list.setAdapter(adapter);
 
         reload = new SwipeRefreshLayout(context);
-        reload.addView(list);
-        reload.setOnRefreshListener(this);
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-
+        reload.setOnRefreshListener(this);
+        reload.addView(list);
         return reload;
     }
 

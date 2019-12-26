@@ -52,8 +52,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);
 
-        adapter = new ListAdapter(this);
-        adapter.setColor(settings.getFontColor());
+        adapter = new ListAdapter(this, settings);
 
         RecyclerView listView = new RecyclerView(inflater.getContext());
         listView.setLayoutManager(new LinearLayoutManager(context));
@@ -62,8 +61,8 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
         reloadLayout = new SwipeRefreshLayout(context);
         reloadLayout.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        reloadLayout.addView(listView);
         reloadLayout.setOnRefreshListener(this);
+        reloadLayout.addView(listView);
         return reloadLayout;
     }
 

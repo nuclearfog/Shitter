@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.nuclearfog.twidda.fragment.ListFragment;
 import org.nuclearfog.twidda.fragment.MessageFragment;
@@ -25,7 +25,7 @@ import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_SEARCH;
 
-public class FragmentAdapter extends FragmentPagerAdapter {
+public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     public enum AdapterType {
         PROFILE_TAB,

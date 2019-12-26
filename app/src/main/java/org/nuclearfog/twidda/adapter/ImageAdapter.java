@@ -29,16 +29,17 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
     private List<Bitmap> images;
     private boolean loading;
 
-
     public ImageAdapter(OnImageClickListener l) {
         itemClickListener = new WeakReference<>(l);
         images = new LinkedList<>();
-        loading = true;
+        loading = false;
     }
 
     @MainThread
     public void addLast(@NonNull Bitmap image) {
         int imagePos = images.size();
+        if (imagePos == 0)
+            loading = true;
         images.add(image);
         notifyItemInserted(imagePos);
     }

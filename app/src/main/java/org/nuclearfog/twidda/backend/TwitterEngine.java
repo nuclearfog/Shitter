@@ -791,11 +791,13 @@ public class TwitterEngine {
     TwitterList followUserList(long listId) throws EngineException {
         try {
             UserList list = twitter.showUserList(listId);
-            if (list.isFollowing())
-                list = twitter.destroyUserListSubscription(listId);
-            else
-                list = twitter.createUserListSubscription(listId);
-            return new TwitterList(list, twitterID);
+            if (list.isFollowing()) {
+                twitter.destroyUserListSubscription(listId);
+                return new TwitterList(list, twitterID, false);
+            } else {
+                twitter.createUserListSubscription(listId);
+                return new TwitterList(list, twitterID, true);
+            }
         } catch (TwitterException err) {
             throw new EngineException(err);
         }

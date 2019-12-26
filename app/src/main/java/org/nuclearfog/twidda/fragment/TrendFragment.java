@@ -39,7 +39,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
         Context context = inflater.getContext();
 
         settings = GlobalSettings.getInstance(context);
-        adapter = new TrendAdapter(this);
+        adapter = new TrendAdapter(this, settings);
 
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
@@ -47,10 +47,8 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
         list.setAdapter(adapter);
 
         reload = new SwipeRefreshLayout(context);
-        reload.addView(list);
         reload.setOnRefreshListener(this);
-
-        setColors();
+        reload.addView(list);
         return reload;
     }
 
@@ -60,6 +58,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
         super.onStart();
         if (trendTask == null)
             load();
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
     }
 
 
@@ -93,10 +92,8 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
 
     @Override
     public void onSettingsChange() {
-        if (adapter != null && reload != null) {
-            adapter.clear();
-            setColors();
-        }
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
         trendTask = null;
     }
 
@@ -139,11 +136,5 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
     private void load() {
         trendTask = new TrendLoader(this);
         trendTask.execute(settings.getTrendLocation().getWoeId());
-    }
-
-
-    private void setColors() {
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        adapter.setColor(settings.getFontColor());
     }
 }

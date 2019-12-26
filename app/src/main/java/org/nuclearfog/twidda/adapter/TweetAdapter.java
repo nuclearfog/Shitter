@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Color;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
@@ -32,26 +32,13 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     private WeakReference<OnItemClickListener> itemClickListener;
     private NumberFormat formatter;
     private List<Tweet> tweets;
-    private int highlight;
-    private int font_color;
-    private boolean image_load;
+    private GlobalSettings settings;
 
-    public TweetAdapter(OnItemClickListener l) {
+    public TweetAdapter(OnItemClickListener l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
         tweets = new ArrayList<>();
-        highlight = Color.WHITE;
-        font_color = Color.WHITE;
-        image_load = true;
-    }
-
-    public void setColor(int highlight, int font_color) {
-        this.highlight = highlight;
-        this.font_color = font_color;
-    }
-
-    public void setImage(boolean image_load) {
-        this.image_load = image_load;
+        this.settings = settings;
     }
 
     public Tweet get(int index) {
@@ -72,10 +59,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         notifyDataSetChanged();
     }
 
-    public boolean isEmpty() {
-        return tweets.isEmpty();
-    }
-
+    @MainThread
     public void remove(long id) {
         int index = -1;
         for (int pos = 0; pos < tweets.size() && index < 0; pos++) {
@@ -86,6 +70,10 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         }
         if (index != -1)
             notifyItemRemoved(index);
+    }
+
+    public boolean isEmpty() {
+        return tweets.isEmpty();
     }
 
     @Override
@@ -125,17 +113,17 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
-        Spanned text = Tagger.makeText(tweet.getTweet(), highlight);
+        Spanned text = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor());
         vh.username.setText(tweet.getUser().getUsername());
         vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);
         vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
         vh.favorite.setText(formatter.format(tweet.getFavorCount()));
         vh.time.setText(StringTools.getTimeString(tweet.getTime()));
-        vh.username.setTextColor(font_color);
-        vh.screenname.setTextColor(font_color);
-        vh.tweet.setTextColor(font_color);
-        vh.time.setTextColor(font_color);
+        vh.username.setTextColor(settings.getFontColor());
+        vh.screenname.setTextColor(settings.getFontColor());
+        vh.tweet.setTextColor(settings.getFontColor());
+        vh.time.setTextColor(settings.getFontColor());
         if (tweet.retweeted())
             vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         else
@@ -152,7 +140,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (image_load)
+        if (settings.getImageLoad())
             Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
         else
             vh.profile.setImageResource(0);

@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Color;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -23,6 +22,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -32,17 +32,12 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
     private WeakReference<OnItemSelected> itemClickListener;
     private List<Message> messages;
-    private int highlight;
-    private int fontColor;
-    private boolean loadImage;
+    private GlobalSettings settings;
 
-
-    public MessageAdapter(OnItemSelected l) {
+    public MessageAdapter(OnItemSelected l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         messages = new ArrayList<>();
-        fontColor = Color.WHITE;
-        highlight = Color.WHITE;
-        loadImage = true;
+        this.settings = settings;
     }
 
     @MainThread
@@ -63,15 +58,6 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         }
         if (pos != -1)
             notifyItemRemoved(pos);
-    }
-
-    public void setColor(int fontColor, int highlight) {
-        this.fontColor = fontColor;
-        this.highlight = highlight;
-    }
-
-    public void setImage(boolean loadImage) {
-        this.loadImage = loadImage;
     }
 
     @Override
@@ -98,21 +84,21 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         Message message = messages.get(index);
         TwitterUser sender = message.getSender();
         if (itemClickListener.get() != null)
-            text = Tagger.makeText(message.getText(), highlight, itemClickListener.get());
+            text = Tagger.makeText(message.getText(), settings.getHighlightColor(), itemClickListener.get());
         else
-            text = Tagger.makeText(message.getText(), highlight);
+            text = Tagger.makeText(message.getText(), settings.getHighlightColor());
         vh.message.setText(text);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
-        vh.message.setLinkTextColor(highlight);
+        vh.message.setLinkTextColor(settings.getHighlightColor());
         vh.username.setText(sender.getUsername());
         vh.screenname.setText(sender.getScreenname());
         vh.createdAt.setText(StringTools.getTimeString(message.getTime()));
         vh.receivername.setText(message.getReceiver().getScreenname());
-        vh.message.setTextColor(fontColor);
-        vh.username.setTextColor(fontColor);
-        vh.screenname.setTextColor(fontColor);
-        vh.receivername.setTextColor(fontColor);
-        vh.createdAt.setTextColor(fontColor);
+        vh.message.setTextColor(settings.getFontColor());
+        vh.username.setTextColor(settings.getFontColor());
+        vh.screenname.setTextColor(settings.getFontColor());
+        vh.receivername.setTextColor(settings.getFontColor());
+        vh.createdAt.setTextColor(settings.getFontColor());
         vh.answer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +128,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (loadImage)
+        if (settings.getImageLoad())
             Picasso.get().load(sender.getImageLink() + "_mini").into(vh.profile_img);
     }
 

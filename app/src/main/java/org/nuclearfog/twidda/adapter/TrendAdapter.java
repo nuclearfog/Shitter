@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -23,16 +23,12 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
     private List<String> trends;
-    private int font_color;
+    private GlobalSettings settings;
 
-    public TrendAdapter(OnItemClickListener l) {
+    public TrendAdapter(OnItemClickListener l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         trends = new ArrayList<>();
-        font_color = Color.WHITE;
-    }
-
-    public void setColor(int font_color) {
-        this.font_color = font_color;
+        this.settings = settings;
     }
 
     public String getData(int index) {
@@ -83,8 +79,8 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         String posStr = index + 1 + ".";
         vh.pos.setText(posStr);
         vh.trends.setText(trends.get(index));
-        vh.pos.setTextColor(font_color);
-        vh.trends.setTextColor(font_color);
+        vh.pos.setTextColor(settings.getFontColor());
+        vh.trends.setTextColor(settings.getFontColor());
     }
 
     class ItemHolder extends ViewHolder {

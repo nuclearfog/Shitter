@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -27,14 +27,12 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     private WeakReference<OnItemClickListener> itemClickListener;
     private List<TwitterUser> users;
-    private int font_color;
-    private boolean loadImage;
+    private GlobalSettings settings;
 
-    public UserAdapter(OnItemClickListener l) {
+    public UserAdapter(OnItemClickListener l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         users = new ArrayList<>();
-        font_color = Color.WHITE;
-        loadImage = true;
+        this.settings = settings;
     }
 
     public TwitterUser getData(int index) {
@@ -48,13 +46,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         notifyDataSetChanged();
     }
 
-    public void setColor(int font_color) {
-        this.font_color = font_color;
-    }
-
-    public void setImage(boolean image) {
-        loadImage = image;
-    }
 
     @Override
     public int getItemCount() {
@@ -86,11 +77,11 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         TwitterUser user = users.get(index);
         vh.username.setText(user.getUsername());
-        vh.username.setTextColor(font_color);
+        vh.username.setTextColor(settings.getFontColor());
         vh.screenname.setText(user.getScreenname());
-        vh.screenname.setTextColor(font_color);
+        vh.screenname.setTextColor(settings.getFontColor());
 
-        if (loadImage) {
+        if (settings.getImageLoad()) {
             Picasso.get().load(user.getImageLink() + "_mini").into(vh.profileImg);
         }
         if (user.isVerified()) {

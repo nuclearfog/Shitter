@@ -21,17 +21,21 @@ public class TwitterList {
     private final int memberCount;
     private final int subscriberCnt;
 
-    public TwitterList(UserList list, long homeId) {
+    public TwitterList(UserList list, long homeId, boolean isFollowing) {
         id = list.getId();
         title = list.getName();
         createdAt = list.getCreatedAt().getTime();
         description = list.getDescription();
         owner = new TwitterUser(list.getUser());
-        isFollowing = list.isFollowing();
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
         enableFollow = homeId != owner.getId();
+        this.isFollowing = isFollowing;
+    }
+
+    public TwitterList(UserList list, long homeId) {
+        this(list, homeId, list.isFollowing());
     }
 
     /**

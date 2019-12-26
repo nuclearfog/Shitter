@@ -66,20 +66,16 @@ public class UserFragment extends Fragment implements OnRefreshListener, OnItemC
             search = b.getString(KEY_FRAG_USER_SEARCH, "");
             fixLayout = b.getBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
         }
-        adapter = new UserAdapter(this);
-        adapter.setColor(settings.getFontColor());
-        adapter.setImage(settings.getImageLoad());
-
+        adapter = new UserAdapter(this, settings);
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
         list.setHasFixedSize(fixLayout);
         list.setAdapter(adapter);
 
         reload = new SwipeRefreshLayout(context);
-        reload.addView(list);
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
-
+        reload.addView(list);
         return reload;
     }
 

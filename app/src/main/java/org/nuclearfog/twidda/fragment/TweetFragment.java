@@ -71,19 +71,16 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
             search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
             fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
         }
-
         settings = GlobalSettings.getInstance(context);
-        adapter = new TweetAdapter(this);
+        adapter = new TweetAdapter(this, settings);
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
         list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
 
         reload = new SwipeRefreshLayout(context);
-        reload.addView(list);
         reload.setOnRefreshListener(this);
-
-        setColors();
+        reload.addView(list);
         return reload;
     }
 
@@ -93,6 +90,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
         super.onStart();
         if (tweetTask == null)
             load();
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
     }
 
 
@@ -136,11 +134,8 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
 
     @Override
     public void onSettingsChange() {
-        if (adapter != null && reload != null) {
-            adapter.clear();
-            setColors();
-        }
-        tweetTask = null;
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
 
@@ -220,12 +215,5 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
                 tweetTask.execute(id, 1);
                 break;
         }
-    }
-
-
-    private void setColors() {
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        adapter.setColor(settings.getHighlightColor(), settings.getFontColor());
-        adapter.setImage(settings.getImageLoad());
     }
 }

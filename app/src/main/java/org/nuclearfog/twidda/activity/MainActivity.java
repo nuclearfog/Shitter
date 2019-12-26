@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Nullable
     private FragmentAdapter adapter;
     private TabLayout tablayout;
+    private GlobalSettings settings;
     private ViewPager pager;
     private View root;
     private long homeId;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        settings = GlobalSettings.getInstance(this);
+        root.setBackgroundColor(settings.getBackgroundColor());
+        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.setupWithViewPager(pager);
         tablayout.addOnTabSelectedListener(this);
         pager.setOffscreenPageLimit(3);
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Override
     protected void onStart() {
         super.onStart();
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, LOGIN);
@@ -89,8 +93,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 mnTab.setIcon(R.drawable.mention);
             }
         }
-        root.setBackgroundColor(settings.getBackgroundColor());
-        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
     }
 
 
@@ -103,14 +105,15 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 break;
 
             case SETTING:
+                root.setBackgroundColor(settings.getBackgroundColor());
+                tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
                 if (adapter != null) {
-                    if (returnCode == DB_CLEARED) {
+                    if (returnCode == DB_CLEARED)
                         adapter.clearData();
-                    } else if (returnCode == APP_LOGOUT) {
+                    else if (returnCode == APP_LOGOUT)
                         adapter = null;
-                    } else {
+                    else
                         adapter.notifySettingsChanged();
-                    }
                 }
                 break;
         }

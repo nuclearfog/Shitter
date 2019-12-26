@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,6 +19,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
@@ -34,13 +34,13 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
     private WeakReference<ListClickListener> listener;
     private List<TwitterList> data;
     private NumberFormat formatter;
-    private int fontColor;
+    private GlobalSettings settings;
 
-    public ListAdapter(ListClickListener l) {
+    public ListAdapter(ListClickListener l, GlobalSettings settings) {
         data = new ArrayList<>();
         listener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
-        fontColor = Color.WHITE;
+        this.settings = settings;
     }
 
     @MainThread
@@ -57,10 +57,6 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             data.set(index, newItem);
             notifyItemChanged(index);
         }
-    }
-
-    public void setColor(int fontColor) {
-        this.fontColor = fontColor;
     }
 
     @Override
@@ -85,11 +81,12 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.createdAt.setText(StringTools.getTimeString(item.getCreatedAt()));
         vh.memberCount.setText(formatter.format(item.getMemberCount()));
         vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
-        vh.title.setTextColor(fontColor);
-        vh.ownername.setTextColor(fontColor);
-        vh.description.setTextColor(fontColor);
-        vh.createdAt.setTextColor(fontColor);
-        Picasso.get().load(owner.getImageLink() + "_mini").into(vh.pb_image);
+        vh.title.setTextColor(settings.getFontColor());
+        vh.ownername.setTextColor(settings.getFontColor());
+        vh.description.setTextColor(settings.getFontColor());
+        vh.createdAt.setTextColor(settings.getFontColor());
+        if (settings.getImageLoad())
+            Picasso.get().load(owner.getImageLink() + "_mini").into(vh.pb_image);
         vh.pb_image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
