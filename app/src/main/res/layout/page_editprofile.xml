@@ -4,6 +4,7 @@
     android:id="@+id/page_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -48,10 +49,10 @@
                     android:layout_weight="1"
                     android:background="@drawable/button"
                     android:maxLines="2"
-                    android:paddingLeft="@dimen/editprofile_upload_button_padding"
                     android:paddingStart="@dimen/editprofile_upload_button_padding"
-                    android:paddingRight="@dimen/button_padding"
+                    android:paddingLeft="@dimen/editprofile_upload_button_padding"
                     android:paddingEnd="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
                     app:drawableLeftCompat="@drawable/upload"
                     app:drawableStartCompat="@drawable/upload" />
 

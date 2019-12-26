@@ -51,6 +51,10 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         notifyItemRemoved(circlePos);
     }
 
+    public boolean isEmpty() {
+        return images.isEmpty();
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (loading && position == images.size())

@@ -77,9 +77,9 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     protected void onProgressUpdate(Bitmap[] btm) {
         Bitmap image = btm[0];
         if (ui.get() != null) {
-            if (imageAdapter.getItemCount() == 1) {
-                ui.get().disableProgressbar();
+            if (imageAdapter.isEmpty()) {
                 ui.get().setImage(image);
+                ui.get().disableProgressbar();
             }
             imageAdapter.addLast(btm[0]);
         }

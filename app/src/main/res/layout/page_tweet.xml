@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tweet_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -89,15 +90,15 @@
 
                     <Button
                         android:id="@+id/answer_reference_detail"
+                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/button_height"
+                        android:background="@drawable/button"
                         android:paddingLeft="@dimen/button_padding"
                         android:paddingRight="@dimen/button_padding"
-                        android:background="@drawable/button"
                         android:singleLine="true"
                         android:textSize="@dimen/tweet_textsize_api"
-                        android:visibility="gone"
-                        style="@style/Widget.AppCompat.Button.Borderless" />
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tweet_detailed"

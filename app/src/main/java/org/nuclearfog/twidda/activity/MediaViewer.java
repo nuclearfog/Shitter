@@ -53,9 +53,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     private ImageLoader imageAsync;
     private ProgressBar video_progress;
+    private ProgressBar image_progress;
     private MediaController videoController;
     private ImageAdapter adapter;
-    private ProgressBar progress;
     private VideoView videoView;
     private ZoomView zoomImage;
     private MediaType type;
@@ -81,7 +81,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         RecyclerView imageList = findViewById(R.id.image_list);
         View imageWindow = findViewById(R.id.image_window);
         View videoWindow = findViewById(R.id.video_window);
-        progress = findViewById(R.id.image_load);
+        image_progress = findViewById(R.id.image_load);
         video_progress = findViewById(R.id.video_load);
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
@@ -234,7 +234,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     public void disableProgressbar() {
-        progress.setVisibility(View.INVISIBLE);
+        image_progress.setVisibility(View.INVISIBLE);
     }
 
 
