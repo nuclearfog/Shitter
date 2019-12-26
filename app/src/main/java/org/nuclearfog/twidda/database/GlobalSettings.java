@@ -411,8 +411,9 @@ public class GlobalSettings {
     /**
      * Remove all user content from Shared Preferences
      */
-    public void logout() {
+    public void logout(Context c) {
         settings.edit().clear().apply();
-        ourInstance = null;
+        loggedIn = false;
+        ourInstance = new GlobalSettings(c);
     }
 }
