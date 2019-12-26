@@ -344,6 +344,7 @@ public class AppDatabase {
             register |= FAV_MASK;
         else
             register &= ~FAV_MASK;
+        statColumn.put("tweet", tweet.getTweet());
         statColumn.put("retweet", tweet.getRetweetCount());
         statColumn.put("favorite", tweet.getFavorCount());
         statColumn.put("retweeterID", tweet.getMyRetweetId());
