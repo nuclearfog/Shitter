@@ -90,6 +90,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Nullable
     private TwitterUser user;
     private long userId;
+    private boolean isHome;
 
     private int tabIndex = 0;
 
@@ -102,6 +103,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_PROFILE_ID)) {
             userId = param.getLong(KEY_PROFILE_ID);
+            isHome = userId == settings.getUserId();
         }
         Toolbar tool = findViewById(R.id.profile_toolbar);
         TabLayout tab = findViewById(R.id.profile_tab);
@@ -190,7 +192,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
-        if (userId == settings.getUserId()) {
+        if (isHome) {
             MenuItem dmIcon = m.findItem(R.id.profile_message);
             MenuItem setting = m.findItem(R.id.profile_settings);
             dmIcon.setVisible(true);
@@ -215,7 +217,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 followIcon.setIcon(R.drawable.follow_requested);
                 followIcon.setTitle(R.string.follow_requested);
             }
-            if (user.isLocked()) {
+            if (user.isLocked() && !isHome) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 listItem.setVisible(false);
             }
@@ -256,7 +258,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 case R.id.profile_tweet:
                     if (user != null) {
                         Intent tweet = new Intent(this, TweetPopup.class);
-                        if (userId != settings.getUserId())
+                        if (!isHome)
                             tweet.putExtra(KEY_TWEETPOPUP_PREFIX, user.getScreenname());
                         startActivity(tweet);
                     }
