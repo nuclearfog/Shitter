@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.StatusUploader;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
@@ -104,6 +105,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
         mediaPath = new LinkedList<>();
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getPopupColor());
         tweet.append(addition);
 

@@ -14,7 +14,7 @@
     <string name="font">Font</string>
     <string name="popup">Popup</string>
     <string name="highlight">Highlight</string>
-    <string name="load_factor">tweet count</string>
+    <string name="settings_load_count">List size</string>
     <string name="block">Block</string>
     <string name="follow">follow</string>
     <string name="retry">retry</string>
@@ -107,7 +107,7 @@
     <string name="tweet_favored">tweet_favored</string>
     <string name="tweet_unfavored">tweet removed from favors!</string>
     <string name="proxy_settings">Proxy settings</string>
-    <string name="enter_proxy">Proxy IP or address</string>
+    <string name="enter_proxy">Proxy IP address</string>
     <string name="proxy_port">Port</string>
     <string name="edit_proxyuser">username</string>
     <string name="proxy_password">password</string>
@@ -138,4 +138,5 @@
     <string name="edit_location_hint">Enter location</string>
     <string name="edit_hint_link">enter internetlink</string>
     <string name="edit_hint_enter_descr">enter profile description</string>
+    <string name="settins_font">Font style</string>
 </resources>

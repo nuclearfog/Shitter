@@ -16,8 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.UserAdapter;
+import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Mode;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -28,12 +28,11 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 
-public class UserFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
+public class UserFragment extends Fragment implements OnRefreshListener, UserClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_USER_MODE = "user_mode";
     public static final String KEY_FRAG_USER_SEARCH = "user_search";
     public static final String KEY_FRAG_USER_ID = "user_id";
-    public static final String KEY_FRAG_USER_FIX_LAYOUT = "user_fixed_layout";
 
     public enum UserType {
         FOLLOWS,
@@ -59,17 +58,15 @@ public class UserFragment extends Fragment implements OnRefreshListener, OnItemC
         Bundle b = getArguments();
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        boolean fixLayout = false;
         if (b != null) {
             mode = (UserType) b.getSerializable(KEY_FRAG_USER_MODE);
             id = b.getLong(KEY_FRAG_USER_ID, -1);
             search = b.getString(KEY_FRAG_USER_SEARCH, "");
-            fixLayout = b.getBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
         }
         adapter = new UserAdapter(this, settings);
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
-        list.setHasFixedSize(fixLayout);
+        list.setHasFixedSize(true);
         list.setAdapter(adapter);
 
         reload = new SwipeRefreshLayout(context);
@@ -104,9 +101,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, OnItemC
 
 
     @Override
-    public void onItemClick(int pos) {
+    public void onUserClick(TwitterUser user) {
         if (reload != null && !reload.isRefreshing()) {
-            TwitterUser user = adapter.getData(pos);
             Intent intent = new Intent(getContext(), UserProfile.class);
             intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);

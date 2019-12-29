@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.LIST_PAGE;
@@ -39,6 +40,7 @@ public class UserList extends AppCompatActivity {
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), LIST_PAGE, userId, "");
         pager.setAdapter(adapter);
 
+        FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
     }
 }

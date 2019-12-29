@@ -12,6 +12,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.MESSAGE_PAGE;
@@ -37,6 +38,7 @@ public class DirectMessage extends AppCompatActivity {
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
+        FontTool.setViewFont(root, settings.getFontFace());
     }
 
 

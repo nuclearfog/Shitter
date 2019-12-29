@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -53,11 +52,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
     protected void onPostExecute(List<TrendLocation> locations) {
         if (ui.get() != null) {
             if (locations != null && !locations.isEmpty()) {
-                ArrayAdapter<TrendLocation> adapter = ui.get().getAdapter();
-                adapter.clear();
-                adapter.addAll(locations);
-                adapter.notifyDataSetChanged();
-                ui.get().setWoeIdSelection();
+                ui.get().setLocationData(locations);
             } else if (twException != null) {
                 Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
             }

@@ -34,11 +34,13 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     private List<Message> messages;
     private GlobalSettings settings;
 
+
     public MessageAdapter(OnItemSelected l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         messages = new ArrayList<>();
         this.settings = settings;
     }
+
 
     @MainThread
     public void replaceAll(@NonNull List<Message> messageList) {
@@ -46,6 +48,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         messages.addAll(messageList);
         notifyDataSetChanged();
     }
+
 
     @MainThread
     public void remove(long id) {
@@ -60,23 +63,42 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             notifyItemRemoved(pos);
     }
 
+
     @Override
     public long getItemId(int index) {
         return messages.get(index).getId();
     }
+
 
     @Override
     public int getItemCount() {
         return messages.size();
     }
 
+
     @NonNull
     @Override
     public MessageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         LayoutInflater inf = LayoutInflater.from(parent.getContext());
         View view = inf.inflate(R.layout.item_dm, parent, false);
-        return new MessageHolder(view);
+        MessageHolder vh = new MessageHolder(view);
+        vh.message.setTypeface(settings.getFontFace());
+        vh.username.setTypeface(settings.getFontFace());
+        vh.screenname.setTypeface(settings.getFontFace());
+        vh.receivername.setTypeface(settings.getFontFace());
+        vh.createdAt.setTypeface(settings.getFontFace());
+        vh.answer.setTypeface(settings.getFontFace());
+        vh.delete.setTypeface(settings.getFontFace());
+        vh.message.setTextColor(settings.getFontColor());
+        vh.username.setTextColor(settings.getFontColor());
+        vh.screenname.setTextColor(settings.getFontColor());
+        vh.receivername.setTextColor(settings.getFontColor());
+        vh.createdAt.setTextColor(settings.getFontColor());
+        vh.message.setLinkTextColor(settings.getHighlightColor());
+        vh.message.setMovementMethod(LinkMovementMethod.getInstance());
+        return vh;
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull MessageHolder vh, final int index) {
@@ -88,17 +110,10 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         else
             text = Tagger.makeText(message.getText(), settings.getHighlightColor());
         vh.message.setText(text);
-        vh.message.setMovementMethod(LinkMovementMethod.getInstance());
-        vh.message.setLinkTextColor(settings.getHighlightColor());
         vh.username.setText(sender.getUsername());
         vh.screenname.setText(sender.getScreenname());
         vh.createdAt.setText(StringTools.getTimeString(message.getTime()));
         vh.receivername.setText(message.getReceiver().getScreenname());
-        vh.message.setTextColor(settings.getFontColor());
-        vh.username.setTextColor(settings.getFontColor());
-        vh.screenname.setTextColor(settings.getFontColor());
-        vh.receivername.setTextColor(settings.getFontColor());
-        vh.createdAt.setTextColor(settings.getFontColor());
         vh.answer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

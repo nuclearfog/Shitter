@@ -29,11 +29,13 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
     private List<Bitmap> images;
     private boolean loading;
 
+
     public ImageAdapter(OnImageClickListener l) {
         itemClickListener = new WeakReference<>(l);
         images = new LinkedList<>();
         loading = false;
     }
+
 
     @MainThread
     public void addLast(@NonNull Bitmap image) {
@@ -44,6 +46,7 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         notifyItemInserted(imagePos);
     }
 
+
     @MainThread
     public void disableLoading() {
         loading = false;
@@ -51,9 +54,11 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         notifyItemRemoved(circlePos);
     }
 
+
     public boolean isEmpty() {
         return images.isEmpty();
     }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -62,12 +67,14 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
         return PICTURE;
     }
 
+
     @Override
     public int getItemCount() {
         if (loading)
             return images.size() + 1;
         return images.size();
     }
+
 
     @NonNull
     @Override
@@ -81,6 +88,7 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
             return new ImageHolder(new ImageView(parent.getContext()));
         }
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ImageAdapter.ImageHolder vh, int index) {
@@ -100,19 +108,23 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
             imageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (itemClickListener.get() != null)
-                        return itemClickListener.get().onImageTouch(image);
+                    if (itemClickListener.get() != null) {
+                        itemClickListener.get().onImageTouch(image);
+                        return true;
+                    }
                     return false;
                 }
             });
         }
     }
 
+
     private Bitmap downscale(Bitmap image) {
         float ratio = image.getHeight() / 256.0f;
         int destWidth = (int) (image.getWidth() / ratio);
         return Bitmap.createScaledBitmap(image, destWidth, 256, false);
     }
+
 
     class ImageHolder extends ViewHolder {
         final View view;
@@ -122,6 +134,7 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
             this.view = view;
         }
     }
+
 
     public interface OnImageClickListener {
         /**
@@ -135,8 +148,7 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
          * long touch on image_add
          *
          * @param image selected image_add bitmap
-         * @return perform onImageClick ?
          */
-        boolean onImageTouch(Bitmap image);
+        void onImageTouch(Bitmap image);
     }
 }

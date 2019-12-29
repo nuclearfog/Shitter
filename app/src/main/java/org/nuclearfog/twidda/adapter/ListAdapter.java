@@ -36,6 +36,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
     private NumberFormat formatter;
     private GlobalSettings settings;
 
+
     public ListAdapter(ListClickListener l, GlobalSettings settings) {
         data = new ArrayList<>();
         listener = new WeakReference<>(l);
@@ -43,12 +44,14 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         this.settings = settings;
     }
 
+
     @MainThread
     public void setData(List<TwitterList> newData) {
         data.clear();
         data.addAll(newData);
         notifyDataSetChanged();
     }
+
 
     @MainThread
     public void updateItem(TwitterList newItem) {
@@ -59,17 +62,32 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         }
     }
 
+
     @Override
     public int getItemCount() {
         return data.size();
     }
 
+
     @NonNull
     @Override
     public ListHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        return new ListHolder(v);
+        ListHolder vh = new ListHolder(v);
+        vh.title.setTextColor(settings.getFontColor());
+        vh.ownername.setTextColor(settings.getFontColor());
+        vh.description.setTextColor(settings.getFontColor());
+        vh.createdAt.setTextColor(settings.getFontColor());
+        vh.title.setTypeface(settings.getFontFace());
+        vh.ownername.setTypeface(settings.getFontFace());
+        vh.description.setTypeface(settings.getFontFace());
+        vh.createdAt.setTypeface(settings.getFontFace());
+        vh.memberCount.setTypeface(settings.getFontFace());
+        vh.subscriberCount.setTypeface(settings.getFontFace());
+        vh.followList.setTypeface(settings.getFontFace());
+        return vh;
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ListHolder vh, final int index) {
@@ -81,10 +99,6 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.createdAt.setText(StringTools.getTimeString(item.getCreatedAt()));
         vh.memberCount.setText(formatter.format(item.getMemberCount()));
         vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
-        vh.title.setTextColor(settings.getFontColor());
-        vh.ownername.setTextColor(settings.getFontColor());
-        vh.description.setTextColor(settings.getFontColor());
-        vh.createdAt.setTextColor(settings.getFontColor());
         if (settings.getImageLoad())
             Picasso.get().load(owner.getImageLink() + "_mini").into(vh.pb_image);
         vh.pb_image.setOnClickListener(new OnClickListener() {
@@ -129,6 +143,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             vh.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
+
     class ListHolder extends ViewHolder {
         final ImageView pb_image;
         final Button followList;
@@ -147,6 +162,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             subscriberCount = v.findViewById(R.id.list_subscriber);
         }
     }
+
 
     public interface ListClickListener {
 

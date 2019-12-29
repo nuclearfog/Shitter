@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -24,10 +25,11 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 
-
 public class LoginPage extends AppCompatActivity implements OnClickListener {
 
+    private GlobalSettings settings;
     private Registration registerAsync;
+    private Button btnLink, btnVeri;
     private EditText pin;
     private View root;
     private String link;
@@ -37,11 +39,12 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         super.onCreate(b);
         setContentView(R.layout.page_login);
         Toolbar toolbar = findViewById(R.id.login_toolbar);
-        Button btnLink = findViewById(R.id.linkButton);
-        Button btnVeri = findViewById(R.id.verifier);
+        btnLink = findViewById(R.id.linkButton);
+        btnVeri = findViewById(R.id.verifier);
         root = findViewById(R.id.login_root);
         pin = findViewById(R.id.pin);
 
+        settings = GlobalSettings.getInstance(this);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -54,8 +57,11 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        btnLink.setTypeface(settings.getFontFace());
+        btnVeri.setTypeface(settings.getFontFace());
+        pin.setTypeface(settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
+        FontTool.setViewFont(root, settings.getFontFace());
     }
 
 

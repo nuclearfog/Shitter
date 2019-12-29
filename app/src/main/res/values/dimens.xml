@@ -35,7 +35,7 @@
     <dimen name="textsize_date">12sp</dimen>
     <dimen name="textsize_name">12sp</dimen>
     <dimen name="tweet_textsize_api">12sp</dimen>
-    <dimen name="textsize_checkbox">10sp</dimen>
+    <dimen name="textsize_settings_small">11sp</dimen>
     <integer name="text_tweet_lines">9</integer>
     <integer name="text_bio_lines">5</integer>
 
@@ -58,4 +58,5 @@
     <dimen name="list_padding">5dp</dimen>
     <dimen name="list_bar_padding">10dp</dimen>
     <dimen name="listitem_button_padding">5dp</dimen>
+    <dimen name="loginpage_button_padding">24dp</dimen>
 </resources>

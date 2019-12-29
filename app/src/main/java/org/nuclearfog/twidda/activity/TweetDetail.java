@@ -42,6 +42,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
 import org.nuclearfog.twidda.backend.StatusLoader.Action;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -136,6 +137,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        FontTool.setViewFont(root, settings.getFontFace());
         tweetLoc.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());

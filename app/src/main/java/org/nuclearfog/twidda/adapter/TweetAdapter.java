@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.graphics.Typeface;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -20,6 +20,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
@@ -29,20 +30,16 @@ import java.util.List;
 
 public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
-    private WeakReference<OnItemClickListener> itemClickListener;
+    private WeakReference<TweetClickListener> itemClickListener;
     private NumberFormat formatter;
     private List<Tweet> tweets;
     private GlobalSettings settings;
 
-    public TweetAdapter(OnItemClickListener l, GlobalSettings settings) {
+    public TweetAdapter(TweetClickListener l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         formatter = NumberFormat.getIntegerInstance();
         tweets = new ArrayList<>();
         this.settings = settings;
-    }
-
-    public Tweet get(int index) {
-        return tweets.get(index);
     }
 
     @MainThread
@@ -90,40 +87,49 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-        v.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    RecyclerView rv = (RecyclerView) parent;
-                    int index = rv.getChildLayoutPosition(v);
-                    itemClickListener.get().onItemClick(index);
-                }
-            }
-        });
         return new ItemHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
         Tweet tweet = tweets.get(index);
+        TwitterUser user = tweet.getUser();
+        Typeface font = settings.getFontFace();
+        int color = settings.getFontColor();
+
         if (tweet.getEmbeddedTweet() != null) {
-            String retweeter = "RT " + tweet.getUser().getScreenname();
+            String retweeter = "RT " + user.getScreenname();
             vh.retweeter.setText(retweeter);
             tweet = tweet.getEmbeddedTweet();
         } else {
             vh.retweeter.setText("");
         }
+        vh.itemView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    itemClickListener.get().onTweetClick(tweets.get(index));
+                }
+            }
+        });
+        vh.username.setTypeface(font);
+        vh.screenname.setTypeface(font);
+        vh.tweet.setTypeface(font);
+        vh.retweet.setTypeface(font);
+        vh.favorite.setTypeface(font);
+        vh.time.setTypeface(font);
+        vh.retweeter.setTypeface(font);
+        vh.username.setTextColor(color);
+        vh.screenname.setTextColor(color);
+        vh.tweet.setTextColor(color);
+        vh.time.setTextColor(color);
         Spanned text = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor());
-        vh.username.setText(tweet.getUser().getUsername());
-        vh.screenname.setText(tweet.getUser().getScreenname());
         vh.tweet.setText(text);
+        vh.username.setText(user.getUsername());
+        vh.screenname.setText(user.getScreenname());
         vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
         vh.favorite.setText(formatter.format(tweet.getFavorCount()));
         vh.time.setText(StringTools.getTimeString(tweet.getTime()));
-        vh.username.setTextColor(settings.getFontColor());
-        vh.screenname.setTextColor(settings.getFontColor());
-        vh.tweet.setTextColor(settings.getFontColor());
-        vh.time.setTextColor(settings.getFontColor());
         if (tweet.retweeted())
             vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         else
@@ -132,11 +138,11 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_enabled, 0, 0, 0);
         else
             vh.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
-        if (tweet.getUser().isVerified())
+        if (user.isVerified())
             vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
         else
             vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (tweet.getUser().isLocked())
+        if (user.isLocked())
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -162,5 +168,18 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             time = v.findViewById(R.id.time);
             profile = v.findViewById(R.id.tweetPb);
         }
+    }
+
+    /**
+     * Listener for tweet click
+     */
+    public interface TweetClickListener {
+
+        /**
+         * handle click action
+         *
+         * @param tweet clicked tweet
+         */
+        void onTweetClick(Tweet tweet);
     }
 }

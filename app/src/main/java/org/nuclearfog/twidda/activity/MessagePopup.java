@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpload;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -62,6 +63,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
+        FontTool.setViewFont(root, settings.getFontFace());
 
         receiver.append(addtion);
         send.setOnClickListener(this);

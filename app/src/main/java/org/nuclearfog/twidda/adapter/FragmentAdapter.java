@@ -20,7 +20,6 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_FIX_LA
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_FIX_LAYOUT;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_SEARCH;
@@ -88,7 +87,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 tweetSearch.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.SEARCH);
                 userSearch.putSerializable(KEY_FRAG_USER_MODE, UserType.USEARCH);
                 tweetSearch.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
-                userSearch.putBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetFragment();
                 fragments[1] = new UserFragment();
@@ -173,7 +171,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 tweetList.putSerializable(KEY_FRAG_TWEET_MODE, TweetType.LIST);
                 userList.putSerializable(KEY_FRAG_USER_MODE, UserType.LIST);
                 tweetList.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
-                userList.putBoolean(KEY_FRAG_USER_FIX_LAYOUT, true);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetFragment();
                 fragments[1] = new UserFragment();

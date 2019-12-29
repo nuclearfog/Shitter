@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.LISTCONTENT_PAGE;
@@ -48,6 +49,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             getSupportActionBar().setTitle(name);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
         adapter = new FragmentAdapter(getSupportFragmentManager(), LISTCONTENT_PAGE, id, "");
         pager.setAdapter(adapter);

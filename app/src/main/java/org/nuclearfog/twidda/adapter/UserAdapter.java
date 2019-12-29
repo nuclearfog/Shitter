@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -25,19 +24,17 @@ import java.util.List;
 
 public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
-    private WeakReference<OnItemClickListener> itemClickListener;
+    private WeakReference<UserClickListener> itemClickListener;
     private List<TwitterUser> users;
     private GlobalSettings settings;
 
-    public UserAdapter(OnItemClickListener l, GlobalSettings settings) {
+
+    public UserAdapter(UserClickListener l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         users = new ArrayList<>();
         this.settings = settings;
     }
 
-    public TwitterUser getData(int index) {
-        return users.get(index);
-    }
 
     @MainThread
     public void replaceAll(@NonNull List<TwitterUser> userList) {
@@ -52,35 +49,38 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         return users.size();
     }
 
+
     @Override
     public long getItemId(int index) {
         return users.get(index).getId();
     }
 
+
     @NonNull
     @Override
     public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-        v.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RecyclerView rv = (RecyclerView) parent;
-                int position = rv.getChildLayoutPosition(v);
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onItemClick(position);
-            }
-        });
-        return new ItemHolder(v);
+        ItemHolder vh = new ItemHolder(v);
+        vh.username.setTextColor(settings.getFontColor());
+        vh.screenname.setTextColor(settings.getFontColor());
+        vh.username.setTypeface(settings.getFontFace());
+        vh.screenname.setTypeface(settings.getFontFace());
+        return vh;
     }
 
+
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
+        vh.itemView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null)
+                    itemClickListener.get().onUserClick(users.get(index));
+            }
+        });
         TwitterUser user = users.get(index);
         vh.username.setText(user.getUsername());
-        vh.username.setTextColor(settings.getFontColor());
         vh.screenname.setText(user.getScreenname());
-        vh.screenname.setTextColor(settings.getFontColor());
-
         if (settings.getImageLoad()) {
             Picasso.get().load(user.getImageLink() + "_mini").into(vh.profileImg);
         }
@@ -96,6 +96,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         }
     }
 
+
     class ItemHolder extends ViewHolder {
         final ImageView profileImg;
         final TextView username, screenname;
@@ -106,5 +107,19 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
             screenname = v.findViewById(R.id.screenname_detail);
             profileImg = v.findViewById(R.id.user_profileimg);
         }
+    }
+
+
+    /**
+     * Listener for list click
+     */
+    public interface UserClickListener {
+
+        /**
+         * handle list item click
+         *
+         * @param user user item
+         */
+        void onUserClick(TwitterUser user);
     }
 }

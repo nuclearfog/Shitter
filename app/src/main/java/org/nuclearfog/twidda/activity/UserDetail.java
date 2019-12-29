@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 public class UserDetail extends AppCompatActivity {
@@ -45,6 +46,7 @@ public class UserDetail extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.user_toolbar);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
         setSupportActionBar(toolbar);
 

@@ -16,8 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
+import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -26,7 +26,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
 
-public class TrendFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
+public class TrendFragment extends Fragment implements OnRefreshListener, TrendClickListener, FragmentChangeObserver {
 
     private TrendLoader trendTask;
     private SwipeRefreshLayout reload;
@@ -78,13 +78,12 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
 
 
     @Override
-    public void onItemClick(int pos) {
+    public void onTrendClick(String trend) {
         if (!reload.isRefreshing()) {
-            String search = adapter.getData(pos);
             Intent intent = new Intent(getContext(), SearchPage.class);
-            if (!search.startsWith("#"))
-                search = '\"' + search + '\"';
-            intent.putExtra(KEY_SEARCH_QUERY, search);
+            if (!trend.startsWith("#"))
+                trend = '\"' + trend + '\"';
+            intent.putExtra(KEY_SEARCH_QUERY, trend);
             startActivity(intent);
         }
     }
@@ -94,6 +93,8 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
     public void onSettingsChange() {
         if (adapter != null)
             adapter.notifyDataSetChanged();
+        if (list != null)
+            list.getRecycledViewPool().clear();
         trendTask = null;
     }
 
@@ -109,7 +110,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, OnItem
     public void onDataClear() {
         if (adapter != null)
             adapter.clear();
-        trendTask = null;
+        load();
     }
 
 

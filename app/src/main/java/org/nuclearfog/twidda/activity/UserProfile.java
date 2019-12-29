@@ -38,6 +38,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -79,10 +80,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private GlobalSettings settings;
 
     private TextView tweetTabTxt, favorTabTxt, txtUser, txtScrName;
-    private TextView txtLocation, txtCreated, lnkTxt, bioTxt;
+    private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
     private Button following, follower;
     private ImageView profile;
-    private View follow_back, profile_head;
+    private View profile_head;
     private ViewPager pager;
 
     @Nullable
@@ -127,7 +128,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
+        FontTool.setViewFont(root, settings.getFontFace());
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
@@ -141,6 +142,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         favorTabTxt.setGravity(CENTER);
         tweetTabTxt.setTextSize(10);
         favorTabTxt.setTextSize(10);
+        tweetTabTxt.setTypeface(settings.getFontFace());
+        favorTabTxt.setTypeface(settings.getFontFace());
 
         adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.PROFILE_TAB, userId, "");
         pager.setOffscreenPageLimit(2);

@@ -3,8 +3,7 @@ package org.nuclearfog.twidda.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-
-import androidx.annotation.NonNull;
+import android.graphics.Typeface;
 
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 
@@ -13,10 +12,14 @@ import java.net.PasswordAuthentication;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class GlobalSettings {
+public final class GlobalSettings {
+
+    public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
+            Typeface.SANS_SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
+    public static final String[] fontnames = {"Default", "Monospace", "Sans-serif", "sans-serif-thin"};
 
     private static final String NAME = "settings";
-    private static GlobalSettings ourInstance;
+    private static final GlobalSettings ourInstance = new GlobalSettings();
 
     private SharedPreferences settings;
     private TrendLocation location;
@@ -24,6 +27,7 @@ public class GlobalSettings {
     private boolean loadImage;
     private boolean loadAnswer;
     private boolean loggedIn;
+    private int indexFont;
     private int background_color;
     private int font_color;
     private int highlight_color;
@@ -34,9 +38,7 @@ public class GlobalSettings {
     private String proxyHost, proxyPort;
     private String proxyUser, proxyPass;
 
-    private GlobalSettings(Context context) {
-        settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
-        initialize();
+    private GlobalSettings() {
     }
 
     /**
@@ -45,9 +47,11 @@ public class GlobalSettings {
      * @param context Application Context needed for Shared preferences
      * @return instance of this class
      */
-    public static GlobalSettings getInstance(@NonNull Context context) {
-        if (ourInstance == null)
-            ourInstance = new GlobalSettings(context);
+    public static GlobalSettings getInstance(Context context) {
+        if (ourInstance.settings == null) {
+            ourInstance.settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
+            ourInstance.initialize();
+        }
         return ourInstance;
     }
 
@@ -218,6 +222,36 @@ public class GlobalSettings {
         row = limit;
         Editor edit = settings.edit();
         edit.putInt("preload", limit);
+        edit.apply();
+    }
+
+    /**
+     * return font type
+     *
+     * @return font family
+     */
+    public Typeface getFontFace() {
+        return fonts[indexFont];
+    }
+
+    /**
+     * get font position
+     *
+     * @return font index
+     */
+    public int getFont() {
+        return indexFont;
+    }
+
+    /**
+     * set font type
+     *
+     * @param index index of font type in array
+     */
+    public void setFont(int index) {
+        indexFont = index;
+        Editor edit = settings.edit();
+        edit.putInt("index_font", index);
         edit.apply();
     }
 
@@ -401,6 +435,7 @@ public class GlobalSettings {
         highlight_color = settings.getInt("highlight_color", 0xffff00ff);
         font_color = settings.getInt("font_color", 0xffffffff);
         tweet_color = settings.getInt("tweet_color", 0xff19aae8);
+        indexFont = settings.getInt("index_font", 3);
         row = settings.getInt("preload", 20);
         loadImage = settings.getBoolean("image_load", true);
         loadAnswer = settings.getBoolean("answer_load", true);

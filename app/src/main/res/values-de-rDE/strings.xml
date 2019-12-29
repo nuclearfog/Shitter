@@ -2,7 +2,7 @@
 <resources>
     <string name="font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
-    <string name="load_factor">Anzahl Tweets</string>
+    <string name="settings_load_count">Listengröße</string>
     <string name="follow">folgen</string>
     <string name="retry">wiederholen</string>
     <string name="cancel">abbrechen</string>
@@ -105,7 +105,7 @@
     <string name="login_pin">PIN eingeben</string>
     <string name="following">Following</string>
     <string name="follower">Follower</string>
-    <string name="enter_proxy">Proxy IP oder Adresse</string>
+    <string name="enter_proxy">Proxy IP Adresse</string>
     <string name="edit_proxyuser">Nutzername</string>
     <string name="app_name">Shitter</string>
     <string name="tweet">Tweet</string>
@@ -137,4 +137,5 @@
     <string name="edit_hint_enter_descr">Profilebeschreibung eingeben</string>
     <string name="edit_hint_link">Link eingeben</string>
     <string name="edit_location_hint">Standortnamen eingeben</string>
+    <string name="settins_font">Schriftart</string>
 </resources>

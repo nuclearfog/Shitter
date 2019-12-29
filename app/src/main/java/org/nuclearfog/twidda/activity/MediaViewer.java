@@ -182,7 +182,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
-    public boolean onImageTouch(Bitmap image) {
+    public void onImageTouch(Bitmap image) {
         if (type == MediaType.IMAGE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
@@ -194,9 +194,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             } else {
                 storeImage(image);
             }
-            return true;
         }
-        return false;
     }
 
 

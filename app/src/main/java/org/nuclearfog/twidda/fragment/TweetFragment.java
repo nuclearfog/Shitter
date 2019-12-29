@@ -16,8 +16,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
-import org.nuclearfog.twidda.adapter.OnItemClickListener;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
+import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -29,7 +29,7 @@ import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
 
 
-public class TweetFragment extends Fragment implements OnRefreshListener, OnItemClickListener, FragmentChangeObserver {
+public class TweetFragment extends Fragment implements OnRefreshListener, TweetClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
     public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
@@ -77,7 +77,6 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
         list.setLayoutManager(new LinearLayoutManager(context));
         list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
-
         reload = new SwipeRefreshLayout(context);
         reload.setOnRefreshListener(this);
         reload.addView(list);
@@ -118,9 +117,8 @@ public class TweetFragment extends Fragment implements OnRefreshListener, OnItem
 
 
     @Override
-    public void onItemClick(int pos) {
+    public void onTweetClick(Tweet tweet) {
         if (reload != null && !reload.isRefreshing()) {
-            Tweet tweet = adapter.get(pos);
             tweetId = tweet.getId(); // Mark tweet
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();

@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -33,11 +32,16 @@ import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.FontAdapter;
+import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.backend.LocationLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import java.util.List;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
@@ -45,9 +49,8 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.DB_CLEARED;
 
-
-public class AppSettings extends AppCompatActivity implements OnClickListener,
-        OnDismissListener, OnCheckedChangeListener {
+public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener,
+        OnCheckedChangeListener {
 
     private static final int BACKGROUND = 0;
     private static final int FONTCOLOR = 1;
@@ -61,9 +64,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     private LocationLoader locationAsync;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-    private CheckBox toggleImg, toggleAns;
-    private ArrayAdapter<TrendLocation> adapter;
-    private Spinner woeId;
+    private Spinner locationSpinner, fontSpinner;
+    private LocationAdapter locationAdapter;
     private View root;
 
     private int color = 0;
@@ -76,7 +78,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         Button delButton = findViewById(R.id.delete_db);
         Button load_popup = findViewById(R.id.load_dialog);
         Button logout = findViewById(R.id.logout);
+        Toolbar toolbar = findViewById(R.id.toolbar_setting);
         View login_layout = findViewById(R.id.Login_options);
+        CheckBox toggleImg = findViewById(R.id.toggleImg);
+        CheckBox toggleAns = findViewById(R.id.toggleAns);
+        fontSpinner = findViewById(R.id.spinner_font);
+        locationSpinner = findViewById(R.id.spinner_woeid);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_popup);
@@ -85,11 +92,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         proxyPort = findViewById(R.id.edit_proxyport);
         proxyUser = findViewById(R.id.edit_proxyuser);
         proxyPass = findViewById(R.id.edit_proxypass);
-        toggleImg = findViewById(R.id.toggleImg);
-        toggleAns = findViewById(R.id.toggleAns);
-        woeId = findViewById(R.id.woeid);
         root = findViewById(R.id.settings_layout);
-        Toolbar toolbar = findViewById(R.id.toolbar_setting);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
@@ -100,25 +103,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         if (!settings.getLogin())
             login_layout.setVisibility(GONE);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item);
-        adapter.add(settings.getTrendLocation());
-        woeId.setAdapter(adapter);
+        locationAdapter = new LocationAdapter(settings);
+        locationAdapter.addTop(settings.getTrendLocation());
+        locationSpinner.setAdapter(locationAdapter);
+        FontAdapter fontAdapter = new FontAdapter();
+        fontSpinner.setAdapter(fontAdapter);
+        fontSpinner.setSelection(settings.getFont());
 
-        logout.setOnClickListener(this);
-        load_popup.setOnClickListener(this);
-        delButton.setOnClickListener(this);
-        colorButton1.setOnClickListener(this);
-        colorButton2.setOnClickListener(this);
-        colorButton3.setOnClickListener(this);
-        colorButton4.setOnClickListener(this);
-        toggleImg.setOnCheckedChangeListener(this);
-        toggleAns.setOnCheckedChangeListener(this);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
+        FontTool.setViewFont(root, settings.getFontFace());
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         root.setBackgroundColor(settings.getBackgroundColor());
@@ -135,7 +127,22 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
 
-        if (settings.getLogin() && adapter.getCount() <= 1) {
+        logout.setOnClickListener(this);
+        load_popup.setOnClickListener(this);
+        delButton.setOnClickListener(this);
+        colorButton1.setOnClickListener(this);
+        colorButton2.setOnClickListener(this);
+        colorButton3.setOnClickListener(this);
+        colorButton4.setOnClickListener(this);
+        toggleImg.setOnCheckedChangeListener(this);
+        toggleAns.setOnCheckedChangeListener(this);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (settings.getLogin() && locationAdapter.getCount() <= 1) {
             locationAsync = new LocationLoader(this);
             locationAsync.execute();
         }
@@ -145,11 +152,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     @Override
     public void onBackPressed() {
         if (validateInputs()) {
+            int locSelect = locationSpinner.getSelectedItemPosition();
+            int fontSelect = fontSpinner.getSelectedItemPosition();
+            settings.setFont(fontSelect);
+            settings.setTrendLocation(locationAdapter.getItem(locSelect));
             settings.setProxyServer(proxyAddr.getText().toString(), proxyPort.getText().toString());
             settings.setProxyLogin(proxyUser.getText().toString(), proxyPass.getText().toString());
             settings.configureProxy();
-            TrendLocation location = (TrendLocation) woeId.getSelectedItem();
-            settings.setTrendLocation(location);
             super.onBackPressed();
         }
     }
@@ -280,6 +289,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
                 settings.setFontColor(color);
                 colorButton2.setBackgroundColor(color);
                 colorButton2.setTextColor(color ^ INVERTCOLOR);
+                locationAdapter.notifyDataSetChanged();
                 break;
 
             case POPUPCOLOR:
@@ -311,14 +321,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener,
     }
 
 
-    public ArrayAdapter<TrendLocation> getAdapter() {
-        return adapter;
-    }
-
-
-    public void setWoeIdSelection() {
-        int position = adapter.getPosition(settings.getTrendLocation());
-        woeId.setSelection(position);
+    public void setLocationData(List<TrendLocation> data) {
+        locationAdapter.setData(data);
+        int position = locationAdapter.getPosition(settings.getTrendLocation());
+        locationSpinner.setSelection(position);
     }
 
 

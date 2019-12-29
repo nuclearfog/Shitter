@@ -26,6 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/button_size"
             android:background="@drawable/button"
+            android:paddingLeft="@dimen/loginpage_button_padding"
+            android:paddingRight="@dimen/loginpage_button_padding"
             android:text="@string/register_link"
             android:textSize="@dimen/textsize_button" />
 
@@ -59,6 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/button_size"
             android:background="@drawable/button"
+            android:paddingLeft="@dimen/loginpage_button_padding"
+            android:paddingRight="@dimen/loginpage_button_padding"
             android:text="@string/verifierbutton"
             android:textSize="@dimen/textsize_button" />
 

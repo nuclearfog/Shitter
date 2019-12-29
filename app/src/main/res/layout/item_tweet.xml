@@ -18,7 +18,6 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                style="@style/ProfileImageCardView"
                 android:layout_width="@dimen/profile_small"
                 android:layout_height="@dimen/profile_small"
                 android:layout_marginRight="@dimen/margin_layout"

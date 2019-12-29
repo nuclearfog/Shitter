@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ProfileEditor;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -72,6 +73,7 @@ public class ProfileSettings extends AppCompatActivity implements OnClickListene
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
         txtImg.setOnClickListener(this);
         pb_image.setOnClickListener(this);
