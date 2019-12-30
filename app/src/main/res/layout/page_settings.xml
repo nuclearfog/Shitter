@@ -129,7 +129,7 @@
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_dm"
-                    android:layout_weight="2"
+                    android:layout_weight="3"
                     android:text="@string/settings_load_count"
                     android:textSize="@dimen/textsize_settings_small" />
 
@@ -139,7 +139,7 @@
                     android:layout_height="@dimen/button_dm"
                     android:layout_marginStart="@dimen/padding_side"
                     android:layout_marginLeft="@dimen/padding_side"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:text="@string/image"
                     android:textSize="@dimen/textsize_settings_small" />
 

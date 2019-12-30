@@ -43,7 +43,7 @@ public class FontAdapter extends BaseAdapter {
             tv = (TextView) view;
         else {
             tv = new TextView(parent.getContext());
-            tv.setTextSize(COMPLEX_UNIT_DIP, 16);
+            tv.setTextSize(COMPLEX_UNIT_DIP, 20);
         }
         tv.setText(name);
         tv.setTypeface(font);

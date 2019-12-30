@@ -28,6 +28,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
     private WeakReference<TweetClickListener> itemClickListener;
@@ -85,13 +87,24 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-        return new ItemHolder(v);
+        final ItemHolder vh = new ItemHolder(v);
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION)
+                        itemClickListener.get().onTweetClick(tweets.get(position));
+                }
+            }
+        });
+        return vh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
         TwitterUser user = tweet.getUser();
         Typeface font = settings.getFontFace();
@@ -103,15 +116,8 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             tweet = tweet.getEmbeddedTweet();
         } else {
             vh.retweeter.setText("");
+            tweet = tweets.get(index);
         }
-        vh.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    itemClickListener.get().onTweetClick(tweets.get(index));
-                }
-            }
-        });
         vh.username.setTypeface(font);
         vh.screenname.setTypeface(font);
         vh.tweet.setTypeface(font);

@@ -15,8 +15,8 @@ import static android.content.Context.MODE_PRIVATE;
 public final class GlobalSettings {
 
     public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
-            Typeface.SANS_SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
-    public static final String[] fontnames = {"Default", "Monospace", "Sans-serif", "sans-serif-thin"};
+            Typeface.SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
+    public static final String[] fontnames = {"Default", "Monospace", "Serif", "sans-serif-thin"};
 
     private static final String NAME = "settings";
     private static final GlobalSettings ourInstance = new GlobalSettings();

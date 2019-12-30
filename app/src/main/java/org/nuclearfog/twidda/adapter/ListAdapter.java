@@ -28,6 +28,7 @@ import java.util.List;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
 
@@ -71,9 +72,9 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
 
     @NonNull
     @Override
-    public ListHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+    public ListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        ListHolder vh = new ListHolder(v);
+        final ListHolder vh = new ListHolder(v);
         vh.title.setTextColor(settings.getFontColor());
         vh.ownername.setTextColor(settings.getFontColor());
         vh.description.setTextColor(settings.getFontColor());
@@ -85,14 +86,58 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.memberCount.setTypeface(settings.getFontFace());
         vh.subscriberCount.setTypeface(settings.getFontFace());
         vh.followList.setTypeface(settings.getFontFace());
+        vh.pb_image.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        listener.get().onClick(data.get(position), ListClickListener.Action.PROFILE);
+                    }
+                }
+            }
+        });
+        vh.followList.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        listener.get().onClick(data.get(position), ListClickListener.Action.FOLLOW);
+                    }
+                }
+            }
+        });
+        vh.subscriberCount.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        listener.get().onClick(data.get(position), ListClickListener.Action.SUBSCRIBER);
+                    }
+                }
+            }
+        });
+        vh.memberCount.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        listener.get().onClick(data.get(position), ListClickListener.Action.MEMBER);
+                    }
+                }
+            }
+        });
         return vh;
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ListHolder vh, final int index) {
-        final TwitterList item = data.get(index);
-        final TwitterUser owner = item.getListOwner();
+    public void onBindViewHolder(@NonNull ListHolder vh, int index) {
+        TwitterList item = data.get(index);
+        TwitterUser owner = item.getListOwner();
         vh.title.setText(item.getTitle());
         vh.ownername.setText(owner.getScreenname());
         vh.description.setText(item.getDescription());
@@ -101,34 +146,6 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
         if (settings.getImageLoad())
             Picasso.get().load(owner.getImageLink() + "_mini").into(vh.pb_image);
-        vh.pb_image.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener.get() != null)
-                    listener.get().onClick(owner.getId(), item.getTitle(), ListClickListener.Action.PROFILE);
-            }
-        });
-        vh.followList.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener.get() != null)
-                    listener.get().onClick(item.getId(), item.getTitle(), ListClickListener.Action.FOLLOW);
-            }
-        });
-        vh.subscriberCount.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener.get() != null)
-                    listener.get().onClick(item.getId(), item.getTitle(), ListClickListener.Action.SUBSCRIBER);
-            }
-        });
-        vh.memberCount.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener.get() != null)
-                    listener.get().onClick(item.getId(), item.getTitle(), ListClickListener.Action.MEMBER);
-            }
-        });
         if (item.isFollowing())
             vh.followList.setText(R.string.unfollow);
         else
@@ -173,6 +190,6 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             MEMBER
         }
 
-        void onClick(long id, String name, Action action);
+        void onClick(TwitterList listItem, Action action);
     }
 }

@@ -22,6 +22,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     private WeakReference<UserClickListener> itemClickListener;
@@ -58,27 +60,30 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-        ItemHolder vh = new ItemHolder(v);
-        vh.username.setTextColor(settings.getFontColor());
-        vh.screenname.setTextColor(settings.getFontColor());
-        vh.username.setTypeface(settings.getFontFace());
-        vh.screenname.setTypeface(settings.getFontFace());
+        final ItemHolder vh = new ItemHolder(v);
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION)
+                        itemClickListener.get().onUserClick(users.get(position));
+                }
+            }
+        });
         return vh;
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
-        vh.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onUserClick(users.get(index));
-            }
-        });
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         TwitterUser user = users.get(index);
+        vh.username.setTextColor(settings.getFontColor());
+        vh.screenname.setTextColor(settings.getFontColor());
+        vh.username.setTypeface(settings.getFontFace());
+        vh.screenname.setTypeface(settings.getFontFace());
         vh.username.setText(user.getUsername());
         vh.screenname.setText(user.getScreenname());
         if (settings.getImageLoad()) {

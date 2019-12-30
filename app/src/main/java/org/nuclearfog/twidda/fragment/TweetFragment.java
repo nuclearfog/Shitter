@@ -59,6 +59,8 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private String search;
     private long id, tweetId;
 
+    private boolean notifyChange;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
         boolean fixSize = false;
@@ -89,6 +91,10 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         super.onStart();
         if (tweetTask == null)
             load();
+        if (notifyChange) {
+            adapter.notifyDataSetChanged();
+            notifyChange = false;
+        }
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
     }
 
@@ -132,8 +138,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onSettingsChange() {
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
+        notifyChange = true;
     }
 
 

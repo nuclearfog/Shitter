@@ -28,6 +28,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
     private WeakReference<OnItemSelected> itemClickListener;
@@ -78,10 +80,58 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
     @NonNull
     @Override
-    public MessageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        LayoutInflater inf = LayoutInflater.from(parent.getContext());
-        View view = inf.inflate(R.layout.item_dm, parent, false);
-        MessageHolder vh = new MessageHolder(view);
+    public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
+        final MessageHolder vh = new MessageHolder(view);
+        vh.message.setMovementMethod(LinkMovementMethod.getInstance());
+        vh.answer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION)
+                        itemClickListener.get().onClick(messages.get(position), OnItemSelected.Action.ANSWER);
+                }
+            }
+        });
+        vh.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION)
+                        itemClickListener.get().onClick(messages.get(position), OnItemSelected.Action.DELETE);
+                }
+            }
+        });
+        vh.profile_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION)
+                        itemClickListener.get().onClick(messages.get(position), OnItemSelected.Action.PROFILE);
+                }
+            }
+        });
+        return vh;
+    }
+
+
+    @Override
+    public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
+        Spanned text;
+        Message message = messages.get(index);
+        TwitterUser sender = message.getSender();
+        if (itemClickListener.get() != null)
+            text = Tagger.makeText(message.getText(), settings.getHighlightColor(), itemClickListener.get());
+        else
+            text = Tagger.makeText(message.getText(), settings.getHighlightColor());
+        vh.message.setText(text);
+        vh.username.setText(sender.getUsername());
+        vh.screenname.setText(sender.getScreenname());
+        vh.createdAt.setText(StringTools.getTimeString(message.getTime()));
+        vh.receivername.setText(message.getReceiver().getScreenname());
         vh.message.setTypeface(settings.getFontFace());
         vh.username.setTypeface(settings.getFontFace());
         vh.screenname.setTypeface(settings.getFontFace());
@@ -95,46 +145,6 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         vh.receivername.setTextColor(settings.getFontColor());
         vh.createdAt.setTextColor(settings.getFontColor());
         vh.message.setLinkTextColor(settings.getHighlightColor());
-        vh.message.setMovementMethod(LinkMovementMethod.getInstance());
-        return vh;
-    }
-
-
-    @Override
-    public void onBindViewHolder(@NonNull MessageHolder vh, final int index) {
-        Spanned text;
-        Message message = messages.get(index);
-        TwitterUser sender = message.getSender();
-        if (itemClickListener.get() != null)
-            text = Tagger.makeText(message.getText(), settings.getHighlightColor(), itemClickListener.get());
-        else
-            text = Tagger.makeText(message.getText(), settings.getHighlightColor());
-        vh.message.setText(text);
-        vh.username.setText(sender.getUsername());
-        vh.screenname.setText(sender.getScreenname());
-        vh.createdAt.setText(StringTools.getTimeString(message.getTime()));
-        vh.receivername.setText(message.getReceiver().getScreenname());
-        vh.answer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onClick(messages.get(index), OnItemSelected.Action.ANSWER);
-            }
-        });
-        vh.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onClick(messages.get(index), OnItemSelected.Action.DELETE);
-            }
-        });
-        vh.profile_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null)
-                    itemClickListener.get().onClick(messages.get(index), OnItemSelected.Action.PROFILE);
-            }
-        });
         if (sender.isVerified())
             vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
         else

@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;
+import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.FINISHED;
@@ -91,33 +92,33 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
 
     @Override
-    public void onClick(long id, String name, Action action) {
+    public void onClick(TwitterList listItem, Action action) {
         if (!reloadLayout.isRefreshing()) {
             switch (action) {
                 case PROFILE:
                     Intent profile = new Intent(getContext(), UserProfile.class);
-                    profile.putExtra(KEY_PROFILE_ID, id);
+                    profile.putExtra(KEY_PROFILE_ID, listItem.getListOwner().getId());
                     startActivity(profile);
                     break;
 
                 case FOLLOW:
                     if (listTask != null && listTask.getStatus() != RUNNING) {
                         listTask = new ListLoader(this, FOLLOW);
-                        listTask.execute(id);
+                        listTask.execute(listItem.getId());
                     }
                     break;
 
                 case SUBSCRIBER:
                     Intent following = new Intent(getContext(), UserDetail.class);
-                    following.putExtra(KEY_USERDETAIL_ID, id);
+                    following.putExtra(KEY_USERDETAIL_ID, listItem.getId());
                     following.putExtra(KEY_USERDETAIL_MODE, SUBSCRIBER);
                     startActivity(following);
                     break;
 
                 case MEMBER:
                     Intent list = new Intent(getContext(), ListDetail.class);
-                    list.putExtra(KEY_LISTDETAIL_ID, id);
-                    list.putExtra(KEY_LISTDETAIL_NAME, name);
+                    list.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
+                    list.putExtra(KEY_LISTDETAIL_NAME, listItem.getTitle());
                     startActivity(list);
                     break;
             }

@@ -19,6 +19,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     private WeakReference<TrendClickListener> itemClickListener;
@@ -61,14 +63,25 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
-        return new ItemHolder(v);
+        final ItemHolder vh = new ItemHolder(v);
+        v.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION)
+                        itemClickListener.get().onTrendClick(trends.get(position));
+                }
+            }
+        });
+        return vh;
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, final int index) {
+    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Typeface font = settings.getFontFace();
         int color = settings.getFontColor();
         String posStr = index + 1 + ".";
@@ -78,14 +91,6 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         vh.trends.setTypeface(font);
         vh.pos.setText(posStr);
         vh.trends.setText(trends.get(index));
-        vh.itemView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    itemClickListener.get().onTrendClick(trends.get(index));
-                }
-            }
-        });
     }
 
 
