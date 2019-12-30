@@ -114,9 +114,9 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             String retweeter = "RT " + user.getScreenname();
             vh.retweeter.setText(retweeter);
             tweet = tweet.getEmbeddedTweet();
+            user = tweet.getUser();
         } else {
             vh.retweeter.setText("");
-            tweet = tweets.get(index);
         }
         vh.username.setTypeface(font);
         vh.screenname.setTypeface(font);
@@ -153,7 +153,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         if (settings.getImageLoad())
-            Picasso.get().load(tweet.getUser().getImageLink() + "_mini").into(vh.profile);
+            Picasso.get().load(user.getImageLink() + "_mini").into(vh.profile);
         else
             vh.profile.setImageResource(0);
     }
