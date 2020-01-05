@@ -129,7 +129,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         vh.screenname.setTextColor(color);
         vh.tweet.setTextColor(color);
         vh.time.setTextColor(color);
-        Spanned text = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor());
+        Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
         vh.tweet.setText(text);
         vh.username.setText(user.getUsername());
         vh.screenname.setText(user.getScreenname());

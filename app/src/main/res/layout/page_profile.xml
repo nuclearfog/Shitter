@@ -143,7 +143,6 @@
                         android:id="@+id/bio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:autoLink="web"
                         android:fadeScrollbars="false"
                         android:linksClickable="true"
                         android:maxLines="@integer/text_bio_lines"

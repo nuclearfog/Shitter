@@ -43,7 +43,6 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_search);
-
         Toolbar tool = findViewById(R.id.search_toolbar);
         TabLayout tablayout = findViewById(R.id.search_tab);
         View root = findViewById(R.id.search_layout);
@@ -55,25 +54,23 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
-        settings = GlobalSettings.getInstance(this);
-
         if (param != null && param.containsKey(KEY_SEARCH_QUERY)) {
             search = param.getString(KEY_SEARCH_QUERY);
         } else if (link != null) {
             getSearchString(link);
         }
 
+        settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-
-        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
         tablayout.setupWithViewPager(pager);
         tablayout.addOnTabSelectedListener(this);
+
+        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
         pager.setAdapter(adapter);
 
         Tab twtSearch = tablayout.getTabAt(0);
         Tab usrSearch = tablayout.getTabAt(1);
-
         if (twtSearch != null && usrSearch != null) {
             twtSearch.setIcon(R.drawable.search);
             usrSearch.setIcon(R.drawable.user);

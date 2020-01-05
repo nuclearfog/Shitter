@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -361,10 +360,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onClick(String text) {
+    public void onTagClick(String text) {
         Intent intent = new Intent(this, SearchPage.class);
         intent.putExtra(KEY_SEARCH_QUERY, text);
         startActivity(intent);
+    }
+
+
+    @Override
+    public void onLinkClick(String link) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        if (intent.resolveActivity(getPackageManager()) != null)
+            startActivity(intent);
     }
 
 
@@ -395,15 +402,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
             case R.id.links:
                 if (user != null && !user.getLink().isEmpty()) {
-                    ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-                    if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                        Intent browserIntent = new Intent(ACTION_VIEW);
-                        String link = user.getLink();
-                        browserIntent.setData(Uri.parse(link));
+                    String link = user.getLink();
+                    Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+                    if (browserIntent.resolveActivity(getPackageManager()) != null)
                         startActivity(browserIntent);
-                    } else {
+                    else
                         Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
-                    }
                 }
                 break;
 
@@ -458,7 +462,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     public void setUser(final TwitterUser user) {
         this.user = user;
         NumberFormat formatter = NumberFormat.getIntegerInstance();
-        Spanned bio = Tagger.makeText(user.getBio(), settings.getHighlightColor(), this);
+        Spanned bio = Tagger.makeTextWithLinks(user.getBio(), settings.getHighlightColor(), this);
         int verify = user.isVerified() ? R.drawable.verify : 0;
         int locked = user.isLocked() ? R.drawable.lock : 0;
 

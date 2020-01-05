@@ -100,7 +100,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_layout"
             android:layout_marginBottom="@dimen/margin_layout"
-            android:autoLink="web"
             android:linksClickable="true" />
 
         <LinearLayout

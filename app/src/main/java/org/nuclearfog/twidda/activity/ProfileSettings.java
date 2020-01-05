@@ -71,7 +71,7 @@ public class ProfileSettings extends AppCompatActivity implements OnClickListene
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setTitle(R.string.page_profile_edior);
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -130,14 +129,11 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
 
     public void connect(String link) {
-        ConnectivityManager mConnect = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-            Intent browser = new Intent(ACTION_VIEW);
-            browser.setData(Uri.parse(link));
-            startActivity(browser);
-            this.link = link;
-        } else {
+        this.link = link;
+        Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+        if (loginIntent.resolveActivity(getPackageManager()) != null)
+            startActivity(loginIntent);
+        else
             Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
-        }
     }
 }

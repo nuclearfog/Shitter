@@ -124,9 +124,9 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         Message message = messages.get(index);
         TwitterUser sender = message.getSender();
         if (itemClickListener.get() != null)
-            text = Tagger.makeText(message.getText(), settings.getHighlightColor(), itemClickListener.get());
+            text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener.get());
         else
-            text = Tagger.makeText(message.getText(), settings.getHighlightColor());
+            text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor());
         vh.message.setText(text);
         vh.username.setText(sender.getUsername());
         vh.screenname.setText(sender.getScreenname());

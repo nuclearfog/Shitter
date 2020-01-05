@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,11 +82,21 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
 
     @Override
-    public void onClick(String tag) {
+    public void onTagClick(String tag) {
         if (reload != null && !reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), SearchPage.class);
             intent.putExtra(KEY_SEARCH_QUERY, tag);
             startActivity(intent);
+        }
+    }
+
+
+    @Override
+    public void onLinkClick(String link) {
+        if (reload != null && !reload.isRefreshing() && getContext() != null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            if (intent.resolveActivity(getContext().getPackageManager()) != null)
+                startActivity(intent);
         }
     }
 

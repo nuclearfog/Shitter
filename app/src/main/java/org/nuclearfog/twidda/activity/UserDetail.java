@@ -46,7 +46,6 @@ public class UserDetail extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.user_toolbar);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
         setSupportActionBar(toolbar);
 
@@ -81,5 +80,6 @@ public class UserDetail extends AppCompatActivity {
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SUBSCRIBER_PAGE, id, "");
                 pager.setAdapter(adapter);
         }
+        FontTool.setViewFont(root, settings.getFontFace());
     }
 }

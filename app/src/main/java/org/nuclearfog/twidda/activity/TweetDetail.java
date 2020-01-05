@@ -2,10 +2,8 @@ package org.nuclearfog.twidda.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -84,8 +82,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     private Button rtwButton, favButton, replyName;
     private ImageView profile_img;
 
-    @Nullable
-    private ConnectivityManager mConnect;
     private GlobalSettings settings;
     private NumberFormat format;
     private StatusLoader statusAsync;
@@ -135,7 +131,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
-        mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         FontTool.setViewFont(root, settings.getFontFace());
         tweetLoc.setMovementMethod(LinkMovementMethod.getInstance());
@@ -210,18 +205,16 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     break;
 
                 case R.id.tweet_link:
-                    if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                        String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(tweetLink));
+                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
+                    if (intent.resolveActivity(getPackageManager()) != null)
                         startActivity(intent);
-                    } else {
+                    else
                         Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
-                    }
                     break;
 
                 case R.id.link_copy:
-                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
                     ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     if (clip != null) {
                         ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
@@ -305,10 +298,24 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onClick(String text) {
+    public void onTagClick(String tag) {
         Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra(KEY_SEARCH_QUERY, text);
+        intent.putExtra(KEY_SEARCH_QUERY, tag);
         startActivity(intent);
+    }
+
+
+    @Override
+    public void onLinkClick(String link) {
+        if (link.startsWith("https://twitter.com/") && link.contains("/status/")) {
+            Intent intent = new Intent(this, TweetDetail.class);
+            intent.setData(Uri.parse(link));
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            if (intent.resolveActivity(getPackageManager()) != null)
+                startActivity(intent);
+        }
     }
 
 
@@ -355,7 +362,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         footer.setVisibility(VISIBLE);
 
         if (!tweet.getTweet().trim().isEmpty()) {
-            Spannable sTweet = Tagger.makeText(tweet.getTweet(), settings.getHighlightColor(), this);
+            Spannable sTweet = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor(), this);
             tweetText.setVisibility(VISIBLE);
             tweetText.setText(sTweet);
         }
@@ -429,7 +436,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 public void onClick(@NonNull View widget) {
                     Intent locationIntent = new Intent(Intent.ACTION_VIEW);
                     locationIntent.setData(Uri.parse("geo:" + location));
-                    startActivity(locationIntent);
+                    if (locationIntent.resolveActivity(getPackageManager()) != null)
+                        startActivity(locationIntent);
+                    else
+                        Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
                 }
                 @Override
                 public void updateDrawState(@NonNull TextPaint ds) {

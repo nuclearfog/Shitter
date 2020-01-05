@@ -1,11 +1,9 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,7 +20,6 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -58,8 +55,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private static final int POPUPCOLOR = 3;
     private static final int INVERTCOLOR = 0xffffff;
 
-    @Nullable
-    private ConnectivityManager mConnect;
     private GlobalSettings settings;
     private LocationLoader locationAsync;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
@@ -98,7 +93,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.settings);
 
-        mConnect = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         settings = GlobalSettings.getInstance(this);
         if (!settings.getLogin())
             login_layout.setVisibility(GONE);
@@ -182,14 +176,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
-            if (mConnect != null && mConnect.getActiveNetworkInfo() != null && mConnect.getActiveNetworkInfo().isConnected()) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                String link = getString(R.string.information_link);
-                intent.setData(Uri.parse(link));
+            String link = getString(R.string.information_link);
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            if (intent.resolveActivity(getPackageManager()) != null)
                 startActivity(intent);
-            } else {
+            else
                 Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
-            }
         }
         return super.onOptionsItemSelected(item);
     }

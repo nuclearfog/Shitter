@@ -139,4 +139,6 @@
     <string name="edit_hint_link">enter internetlink</string>
     <string name="edit_hint_enter_descr">enter profile description</string>
     <string name="settins_font">Font style</string>
+    <string name="page_profile_edior">Edit profile</string>
+    <string name="error_no_card_app">No card app installed!</string>
 </resources>

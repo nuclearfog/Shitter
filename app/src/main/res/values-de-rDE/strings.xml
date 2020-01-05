@@ -138,4 +138,5 @@
     <string name="edit_hint_link">Link eingeben</string>
     <string name="edit_location_hint">Standortnamen eingeben</string>
     <string name="settins_font">Schriftart</string>
+    <string name="page_profile_edior">Profil bearbeiten</string>
 </resources>
