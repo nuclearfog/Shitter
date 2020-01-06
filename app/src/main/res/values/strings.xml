@@ -141,4 +141,6 @@
     <string name="settins_font">Font style</string>
     <string name="page_profile_edior">Edit profile</string>
     <string name="error_no_card_app">No card app installed!</string>
+    <string name="error_no_media_app">No media app found!</string>
+    <string name="error_wrong_ip">wrong IP address!</string>
 </resources>

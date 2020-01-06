@@ -267,7 +267,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.profile_settings:
-                    Intent editProfile = new Intent(this, ProfileSettings.class);
+                    Intent editProfile = new Intent(this, ProfileEditor.class);
                     startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
                     break;
 
@@ -372,6 +372,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
         if (intent.resolveActivity(getPackageManager()) != null)
             startActivity(intent);
+        else
+            Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
     }
 
 

@@ -151,13 +151,19 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PERMISSION_GRANTED) {
                 Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, REQ_PERM_READ);
+                if (galleryIntent.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(galleryIntent, REQ_PERM_READ);
+                else
+                    Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
             } else {
                 requestPermissions(PERM_READ, REQ_PERM_READ);
             }
         } else {
             Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-            startActivityForResult(galleryIntent, REQ_PERM_READ);
+            if (galleryIntent.resolveActivity(getPackageManager()) != null)
+                startActivityForResult(galleryIntent, REQ_PERM_READ);
+            else
+                Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
         }
     }
 }

@@ -139,4 +139,7 @@
     <string name="edit_location_hint">Standortnamen eingeben</string>
     <string name="settins_font">Schriftart</string>
     <string name="page_profile_edior">Profil bearbeiten</string>
+    <string name="error_no_card_app">Keine Karten App gefunden!</string>
+    <string name="error_no_media_app">Keine Galerie App gefunden!</string>
+    <string name="error_wrong_ip">Falsche IP Adresse!</string>
 </resources>

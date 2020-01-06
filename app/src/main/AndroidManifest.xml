@@ -107,7 +107,7 @@
             android:theme="@style/HalfTransparency" />
 
         <activity
-            android:name=".activity.ProfileSettings"
+            android:name=".activity.ProfileEditor"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

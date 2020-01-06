@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.activity.ProfileSettings;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -21,9 +20,9 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 
-public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
+public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
-    private WeakReference<ProfileSettings> ui;
+    private WeakReference<org.nuclearfog.twidda.activity.ProfileEditor> ui;
     private WeakReference<Dialog> popup;
     private UserHolder userHolder;
     private TwitterEngine mTwitter;
@@ -36,7 +35,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
      *
      * @param context Activity context
      */
-    public ProfileEditor(ProfileSettings context) {
+    public ProfileUpdater(org.nuclearfog.twidda.activity.ProfileEditor context) {
         ui = new WeakReference<>(context);
         popup = new WeakReference<>(new Dialog(context));
         mTwitter = TwitterEngine.getInstance(context);
@@ -50,7 +49,7 @@ public class ProfileEditor extends AsyncTask<Void, Void, TwitterUser> {
      * @param context    Activity context
      * @param userHolder user data
      */
-    public ProfileEditor(ProfileSettings context, UserHolder userHolder) {
+    public ProfileUpdater(org.nuclearfog.twidda.activity.ProfileEditor context, UserHolder userHolder) {
         this(context);
         this.userHolder = userHolder;
     }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.activity.UserProfile;
@@ -27,6 +29,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
@@ -97,6 +100,8 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             if (intent.resolveActivity(getContext().getPackageManager()) != null)
                 startActivity(intent);
+            else
+                Toast.makeText(getContext(), R.string.connection_failed, LENGTH_SHORT).show();
         }
     }
 

@@ -25,7 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.ProfileEditor;
+import org.nuclearfog.twidda.backend.ProfileUpdater;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
@@ -43,14 +43,14 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE_STORAGE;
 
 
-public class ProfileSettings extends AppCompatActivity implements OnClickListener {
+public class ProfileEditor extends AppCompatActivity implements OnClickListener {
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
     private static final int REQ_PERM = 3;
     private static final int REQ_PB = 4;
 
-    private ProfileEditor editorAsync;
+    private ProfileUpdater editorAsync;
     private TwitterUser user;
     private ImageView pb_image;
     private EditText name, link, loc, bio;
@@ -84,7 +84,7 @@ public class ProfileSettings extends AppCompatActivity implements OnClickListene
     protected void onStart() {
         super.onStart();
         if (editorAsync == null) {
-            editorAsync = new ProfileEditor(this);
+            editorAsync = new ProfileUpdater(this);
             editorAsync.execute();
         }
     }
@@ -133,7 +133,7 @@ public class ProfileSettings extends AppCompatActivity implements OnClickListene
                     Toast.makeText(this, R.string.edit_empty_name, LENGTH_SHORT).show();
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, imgLink);
-                    editorAsync = new ProfileEditor(this, userHolder);
+                    editorAsync = new ProfileUpdater(this, userHolder);
                     editorAsync.execute();
                 }
             }
@@ -208,14 +208,20 @@ public class ProfileSettings extends AppCompatActivity implements OnClickListene
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PackageManager.PERMISSION_GRANTED) {
-                Intent i = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, REQ_PB);
+                Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+                if (media.resolveActivity(getPackageManager()) != null)
+                    startActivityForResult(media, REQ_PB);
+                else
+                    Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
             } else {
                 requestPermissions(PERM_READ, REQ_PERM);
             }
         } else {
-            Intent i = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-            startActivityForResult(i, REQ_PB);
+            Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+            if (media.resolveActivity(getPackageManager()) != null)
+                startActivityForResult(media, REQ_PB);
+            else
+                Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
         }
     }
 }

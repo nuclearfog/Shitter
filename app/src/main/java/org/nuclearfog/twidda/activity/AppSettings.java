@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
+import java.util.regex.Matcher;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
@@ -343,6 +345,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Editable editPass = proxyPass.getText();
 
         if (editAddr != null && !editAddr.toString().isEmpty()) {
+            Matcher ipMatch = Patterns.IP_ADDRESS.matcher(editAddr);
+            if (!ipMatch.matches()) {
+                String errMsg = getString(R.string.error_wrong_ip);
+                proxyAddr.setError(errMsg);
+                success = false;
+            }
             if (editPort == null || editPort.toString().isEmpty()) {
                 String errMsg = getString(R.string.error_empty_port);
                 proxyPort.setError(errMsg);
