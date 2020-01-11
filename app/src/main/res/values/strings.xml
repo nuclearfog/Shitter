@@ -143,4 +143,9 @@
     <string name="error_no_card_app">No card app installed!</string>
     <string name="error_no_media_app">No media app found!</string>
     <string name="error_wrong_ip">wrong IP address!</string>
+    <string name="info_list_removed">List removed!</string>
+    <string name="delete_list">delete list</string>
+    <string name="confirm_delete_list">Delete list?</string>
+    <string name="confirm_delete_message">Delete message?</string>
+    <string name="confirm_unfollow_list">Unfollow list?</string>
 </resources>

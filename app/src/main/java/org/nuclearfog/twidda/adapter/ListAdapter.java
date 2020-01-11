@@ -26,7 +26,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.View.INVISIBLE;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
@@ -61,6 +61,20 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             data.set(index, newItem);
             notifyItemChanged(index);
         }
+    }
+
+
+    @MainThread
+    public void removeItem(long id) {
+        int pos = -1;
+        for (int index = 0; index < data.size() && pos < 0; index++) {
+            if (data.get(index).getId() == id) {
+                data.remove(index);
+                pos = index;
+            }
+        }
+        if (pos != -1)
+            notifyItemRemoved(pos);
     }
 
 
@@ -108,6 +122,17 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
                 }
             }
         });
+        vh.deleteList.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener.get() != null) {
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        listener.get().onClick(data.get(position), ListClickListener.Action.DELETE);
+                    }
+                }
+            }
+        });
         vh.subscriberCount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,10 +175,13 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             vh.followList.setText(R.string.unfollow);
         else
             vh.followList.setText(R.string.follow);
-        if (item.enableFollow())
+        if (item.isListOwner()) {
             vh.followList.setVisibility(VISIBLE);
-        else
-            vh.followList.setVisibility(INVISIBLE);
+            vh.deleteList.setVisibility(GONE);
+        } else {
+            vh.followList.setVisibility(GONE);
+            vh.deleteList.setVisibility(VISIBLE);
+        }
         if (item.isPrivate())
             vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
@@ -163,7 +191,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
 
     class ListHolder extends ViewHolder {
         final ImageView pb_image;
-        final Button followList;
+        final Button followList, deleteList;
         final TextView title, ownername, description, createdAt;
         final TextView memberCount, subscriberCount;
 
@@ -171,6 +199,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             super(v);
             pb_image = v.findViewById(R.id.list_owner_profile);
             followList = v.findViewById(R.id.list_follow);
+            deleteList = v.findViewById(R.id.list_delete);
             title = v.findViewById(R.id.list_title);
             ownername = v.findViewById(R.id.list_ownername);
             description = v.findViewById(R.id.list_description);
@@ -187,7 +216,8 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             PROFILE,
             FOLLOW,
             SUBSCRIBER,
-            MEMBER
+            MEMBER,
+            DELETE
         }
 
         void onClick(TwitterList listItem, Action action);

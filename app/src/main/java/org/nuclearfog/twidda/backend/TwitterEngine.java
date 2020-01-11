@@ -803,6 +803,20 @@ public class TwitterEngine {
         }
     }
 
+    /**
+     * Delete User list
+     *
+     * @param listId ID of the list
+     * @return List information
+     * @throws EngineException if access is unavailable
+     */
+    TwitterList deleteUserList(long listId) throws EngineException {
+        try {
+            return new TwitterList(twitter.destroyUserList(listId), twitterID);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
 
     /**
      * Get subscriber of a user list

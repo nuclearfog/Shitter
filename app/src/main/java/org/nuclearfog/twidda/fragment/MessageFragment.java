@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +35,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-
 
 public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected {
 
@@ -107,7 +108,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
 
     @Override
-    public void onClick(Message message, Action action) {
+    public void onClick(final Message message, Action action) {
         if (reload != null && !reload.isRefreshing()) {
             switch (action) {
                 case ANSWER:
@@ -117,8 +118,19 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     break;
 
                 case DELETE:
-                    messageTask = new MessageLoader(this, Mode.DEL);
-                    messageTask.execute(message.getId());
+                    if (getContext() != null) {
+                        Builder confirmDialog = new Builder(getContext());
+                        confirmDialog.setMessage(R.string.confirm_delete_message);
+                        confirmDialog.setNegativeButton(R.string.no_confirm, null);
+                        confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                messageTask = new MessageLoader(MessageFragment.this, Mode.DEL);
+                                messageTask.execute(message.getId());
+                            }
+                        });
+                        confirmDialog.show();
+                    }
                     break;
 
                 case PROFILE:

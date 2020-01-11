@@ -22,6 +22,7 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
     public enum Action {
         LOAD,
         FOLLOW,
+        DELETE
     }
 
     @Nullable
@@ -46,18 +47,23 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
 
     @Override
     protected List<TwitterList> doInBackground(Long[] param) {
+        List<TwitterList> result;
         try {
             switch (action) {
                 case LOAD:
-                    return mTwitter.getUserList(param[0]);
+                    result = mTwitter.getUserList(param[0]);
+                    return result;
 
                 case FOLLOW:
-                    TwitterList list = mTwitter.followUserList(param[0]);
-                    List<TwitterList> result = new ArrayList<>(1);
-                    result.add(list);
+                    result = new ArrayList<>(1);
+                    result.add(mTwitter.followUserList(param[0]));
+                    return result;
+
+                case DELETE:
+                    result = new ArrayList<>(1);
+                    result.add(mTwitter.deleteUserList(param[0]));
                     return result;
             }
-
         } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
         }
@@ -80,6 +86,12 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
                             Toast.makeText(ui.get().getContext(), R.string.followed, LENGTH_SHORT).show();
                         else
                             Toast.makeText(ui.get().getContext(), R.string.info_unfollowed, LENGTH_SHORT).show();
+                        break;
+
+                    case DELETE:
+                        list = result.get(0);
+                        adapter.removeItem(list.getId());
+                        Toast.makeText(ui.get().getContext(), R.string.info_list_removed, LENGTH_SHORT).show();
                         break;
                 }
             }

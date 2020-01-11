@@ -142,4 +142,9 @@
     <string name="error_no_card_app">Keine Karten App gefunden!</string>
     <string name="error_no_media_app">Keine Galerie App gefunden!</string>
     <string name="error_wrong_ip">Falsche IP Adresse!</string>
+    <string name="info_list_removed">Liste gelöscht!</string>
+    <string name="delete_list">Liste löschen</string>
+    <string name="confirm_delete_list">Listelöschen?</string>
+    <string name="confirm_delete_message">Nachricht löschen?</string>
+    <string name="confirm_unfollow_list">Liste entfolgen?</string>
 </resources>

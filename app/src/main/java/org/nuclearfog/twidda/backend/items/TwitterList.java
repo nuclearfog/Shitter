@@ -17,7 +17,7 @@ public class TwitterList {
     private final TwitterUser owner;
     private final boolean isPrivate;
     private final boolean isFollowing;
-    private final boolean enableFollow;
+    private final boolean isOwner;
     private final int memberCount;
     private final int subscriberCnt;
 
@@ -30,7 +30,7 @@ public class TwitterList {
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
-        enableFollow = homeId != owner.getId();
+        isOwner = homeId != owner.getId();
         this.isFollowing = isFollowing;
     }
 
@@ -120,12 +120,12 @@ public class TwitterList {
     }
 
     /**
-     * return if current user can follow list
+     * check if list is owned by current user
      *
-     * @return true if user can follow list
+     * @return true if current user is owner
      */
-    public boolean enableFollow() {
-        return enableFollow;
+    public boolean isListOwner() {
+        return isOwner;
     }
 
 

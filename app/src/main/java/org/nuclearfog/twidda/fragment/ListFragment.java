@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.ListDetail;
 import org.nuclearfog.twidda.activity.UserDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
@@ -31,6 +34,7 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.UserType.SUBSCRIBER;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.backend.ListLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.ListLoader.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.ListLoader.Action.LOAD;
 
@@ -92,7 +96,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
 
     @Override
-    public void onClick(TwitterList listItem, Action action) {
+    public void onClick(final TwitterList listItem, Action action) {
         if (!reloadLayout.isRefreshing()) {
             switch (action) {
                 case PROFILE:
@@ -102,7 +106,21 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     break;
 
                 case FOLLOW:
-                    if (listTask != null && listTask.getStatus() != RUNNING) {
+                    if (listItem.isFollowing()) {
+                        if (getContext() != null) {
+                            Builder confirmDialog = new Builder(getContext());
+                            confirmDialog.setMessage(R.string.confirm_unfollow_list);
+                            confirmDialog.setNegativeButton(R.string.no_confirm, null);
+                            confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    listTask = new ListLoader(ListFragment.this, FOLLOW);
+                                    listTask.execute(listItem.getId());
+                                }
+                            });
+                            confirmDialog.show();
+                        }
+                    } else {
                         listTask = new ListLoader(this, FOLLOW);
                         listTask.execute(listItem.getId());
                     }
@@ -120,6 +138,22 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     list.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
                     list.putExtra(KEY_LISTDETAIL_NAME, listItem.getTitle());
                     startActivity(list);
+                    break;
+
+                case DELETE:
+                    if (getContext() != null) {
+                        Builder confirmDialog = new Builder(getContext());
+                        confirmDialog.setMessage(R.string.confirm_delete_list);
+                        confirmDialog.setNegativeButton(R.string.no_confirm, null);
+                        confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                listTask = new ListLoader(ListFragment.this, DELETE);
+                                listTask.execute(listItem.getId());
+                            }
+                        });
+                        confirmDialog.show();
+                    }
                     break;
             }
         }
