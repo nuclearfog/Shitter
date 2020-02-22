@@ -55,6 +55,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
@@ -376,6 +377,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             StringTools.FileType ext = StringTools.getFileType(links[0]);
             switch (ext) {
                 case IMAGE:
+                    videoButton.setVisibility(GONE);
                     imageButton.setVisibility(VISIBLE);
                     imageButton.setOnClickListener(new OnClickListener() {
                         @Override
@@ -389,6 +391,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     break;
 
                 case VIDEO:
+                    imageButton.setVisibility(GONE);
                     videoButton.setVisibility(VISIBLE);
                     videoButton.setOnClickListener(new OnClickListener() {
                         @Override
@@ -402,6 +405,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     break;
 
                 case STREAM:
+                    imageButton.setVisibility(GONE);
                     videoButton.setVisibility(VISIBLE);
                     videoButton.setOnClickListener(new OnClickListener() {
                         @Override

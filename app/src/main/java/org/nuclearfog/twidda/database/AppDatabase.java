@@ -350,6 +350,7 @@ public class AppDatabase {
         statColumn.put("retweeterID", tweet.getMyRetweetId());
         statColumn.put("replyname", tweet.getReplyName());
         statColumn.put("statusregister", register);
+        statColumn.put("media", getMediaLinks(tweet));
 
         TwitterUser user = tweet.getUser();
         userColumn.put("username", user.getUsername());
@@ -645,12 +646,7 @@ public class AppDatabase {
             statusRegister &= ~RTW_MASK;
         }
 
-        StringBuilder media = new StringBuilder();
-        for (String link : tweet.getMediaLinks()) {
-            media.append(link);
-            media.append(";");
-        }
-        status.put("media", media.toString());
+        status.put("media", getMediaLinks(tweet));
         status.put("statusregister", statusRegister);
         status.put("tweetID", tweet.getId());
         status.put("userID", user.getId());
@@ -792,5 +788,13 @@ public class AppDatabase {
             }
         } while (index > 0);
         return links.toArray(new String[0]);
+    }
+
+
+    private String getMediaLinks(Tweet tweet) {
+        StringBuilder media = new StringBuilder();
+        for (String link : tweet.getMediaLinks())
+            media.append(link).append(";");
+        return media.toString();
     }
 }
