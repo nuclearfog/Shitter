@@ -1,7 +1,7 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
 Alternative Twitter App for Android 
-[![](https://img.shields.io/badge/download-apk-brightgreen.svg)](https://github.com/nuclearfog/Shitter/releases/download/1.7.1/SH1TT3R.apk)
+[![](https://img.shields.io/badge/download-apk-brightgreen.svg)](https://github.com/nuclearfog/Shitter/releases/download/1.7.2/SH1TT3R.apk)
 <img src="/images/twitter4j.gif" width="138" height="30">
 
 App & 3rd party libs licensed under
@@ -10,13 +10,12 @@ App & 3rd party libs licensed under
 
 Features:
 - fast access to tweets and userprofiles
-- customizable colors & fonts
-- text highlighting
+- customizable look
 - image/video upload & preview
 - twitter trends
 - twitter search
 - Directmessage
-- Twitter profile editor
+- Profile editor
 - Proxy setup
 - tweet GPS locale
 - Twitter list
