@@ -148,4 +148,5 @@
     <string name="confirm_delete_list">Delete list?</string>
     <string name="confirm_delete_message">Delete message?</string>
     <string name="confirm_unfollow_list">Unfollow list?</string>
+    <string name="trend_range">Tweets</string>
 </resources>

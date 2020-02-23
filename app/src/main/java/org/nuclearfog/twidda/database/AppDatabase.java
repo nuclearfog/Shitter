@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.util.LinkedList;
@@ -123,15 +124,16 @@ public class AppDatabase {
      * @param trends List of Trends
      * @param woeId  Yahoo World ID
      */
-    public void storeTrends(List<String> trends, int woeId) {
+    public void storeTrends(List<TwitterTrend> trends, int woeId) {
         final String[] ARGS = new String[]{Integer.toString(woeId)};
-
         SQLiteDatabase db = getDbWrite();
         db.delete("trend", "woeid=?", ARGS);
-        for (String trend : trends) {
+        for (TwitterTrend trend : trends) {
             ContentValues trendColumn = new ContentValues();
             trendColumn.put("woeID", woeId);
-            trendColumn.put("trendname", trend);
+            trendColumn.put("vol", trend.getRange());
+            trendColumn.put("trendname", trend.getName());
+            trendColumn.put("trendpos", trend.getRank());
             db.insertWithOnConflict("trend", null, trendColumn, CONFLICT_REPLACE);
         }
         commit(db);
@@ -435,18 +437,22 @@ public class AppDatabase {
      * @param woeId Yahoo World ID
      * @return list of trends
      */
-    public List<String> getTrends(int woeId) {
+    public List<TwitterTrend> getTrends(int woeId) {
         final String[] ARGS = new String[]{Integer.toString(woeId)};
         final String QUERY = "SELECT * FROM trend WHERE woeID=? ORDER BY trendpos ASC";
 
-        List<String> trends = new LinkedList<>();
+        List<TwitterTrend> trends = new LinkedList<>();
         SQLiteDatabase db = getDbRead();
         Cursor cursor = db.rawQuery(QUERY, ARGS);
         if (cursor.moveToFirst()) {
             do {
                 int index = cursor.getColumnIndex("trendname");
                 String trendName = cursor.getString(index);
-                trends.add(trendName);
+                index = cursor.getColumnIndex("vol");
+                int vol = cursor.getInt(index);
+                index = cursor.getColumnIndex("trendpos");
+                int pos = cursor.getInt(index);
+                trends.add(new TwitterTrend(trendName, vol, pos));
             } while (cursor.moveToNext());
         }
         cursor.close();

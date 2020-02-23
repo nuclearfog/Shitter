@@ -29,7 +29,7 @@
             android:paddingLeft="@dimen/loginpage_button_padding"
             android:paddingRight="@dimen/loginpage_button_padding"
             android:text="@string/register_link"
-            android:textSize="@dimen/textsize_button" />
+            android:textSize="@dimen/textsize_button_login" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -64,7 +64,7 @@
             android:paddingLeft="@dimen/loginpage_button_padding"
             android:paddingRight="@dimen/loginpage_button_padding"
             android:text="@string/verifierbutton"
-            android:textSize="@dimen/textsize_button" />
+            android:textSize="@dimen/textsize_button_login" />
 
     </LinearLayout>
 

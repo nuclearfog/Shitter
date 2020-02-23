@@ -75,8 +75,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
-
-    private static final Pattern linkPattern = Pattern.compile("/@?[\\w_]+/status/\\d{1,20}/?.*");
+    public static final Pattern linkPattern = Pattern.compile(".*/@?[\\w_]+/status/\\d{1,20}/?.*");
 
     private View header, footer, videoButton, imageButton;
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLoc;
@@ -308,7 +307,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onLinkClick(String link) {
-        if (link.startsWith("https://twitter.com/") && link.contains("/status/")) {
+        if (linkPattern.matcher(link).matches()) {
             Intent intent = new Intent(this, TweetDetail.class);
             intent.setData(Uri.parse(link));
             startActivity(intent);
@@ -457,8 +456,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     }
 
 
-    public boolean tweetSet() {
-        return tweet != null;
+    public void finishIfEmpty() {
+        if (tweet == null) {
+            finish();
+        }
     }
 
 

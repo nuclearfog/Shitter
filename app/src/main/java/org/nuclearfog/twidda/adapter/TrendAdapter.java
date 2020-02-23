@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,30 +14,36 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     private WeakReference<TrendClickListener> itemClickListener;
-    private List<String> trends;
+    private List<TwitterTrend> trends;
     private GlobalSettings settings;
+    private NumberFormat formatter;
 
 
     public TrendAdapter(TrendClickListener l, GlobalSettings settings) {
         itemClickListener = new WeakReference<>(l);
         trends = new ArrayList<>();
+        formatter = NumberFormat.getIntegerInstance();
         this.settings = settings;
     }
 
 
     @MainThread
-    public void setData(@NonNull List<String> trendList) {
+    public void setData(@NonNull List<TwitterTrend> trendList) {
         trends.clear();
         trends.addAll(trendList);
         notifyDataSetChanged();
@@ -84,23 +91,34 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Typeface font = settings.getFontFace();
         int color = settings.getFontColor();
-        String posStr = index + 1 + ".";
+        TwitterTrend trend = trends.get(index);
         vh.pos.setTextColor(color);
-        vh.trends.setTextColor(color);
+        vh.name.setTextColor(color);
+        vh.vol.setTextColor(color);
         vh.pos.setTypeface(font);
-        vh.trends.setTypeface(font);
-        vh.pos.setText(posStr);
-        vh.trends.setText(trends.get(index));
+        vh.name.setTypeface(font);
+        vh.vol.setTypeface(font);
+        vh.pos.setText(trend.getRankStr());
+        vh.name.setText(trend.getName());
+        if (trend.hasRangeInfo()) {
+            Resources resources = vh.vol.getContext().getResources();
+            String trendVol = formatter.format(trend.getRange()) + " " + resources.getString(R.string.trend_range);
+            vh.vol.setText(trendVol);
+            vh.vol.setVisibility(VISIBLE);
+        } else {
+            vh.vol.setVisibility(GONE);
+        }
     }
 
 
     class ItemHolder extends ViewHolder {
-        final TextView trends, pos;
+        final TextView name, pos, vol;
 
         ItemHolder(View v) {
             super(v);
             pos = v.findViewById(R.id.trendpos);
-            trends = v.findViewById(R.id.trendname);
+            name = v.findViewById(R.id.trendname);
+            vol = v.findViewById(R.id.trendvol);
         }
     }
 
@@ -115,6 +133,6 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
          *
          * @param trend trend name
          */
-        void onTrendClick(String trend);
+        void onTrendClick(TwitterTrend trend);
     }
 }

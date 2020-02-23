@@ -138,8 +138,8 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                     if (twException.statusNotFound())
                         ui.get().setResult(RETURN_TWEET_CHANGED);
                     ui.get().finish();
-                } else if (!ui.get().tweetSet()) {
-                    ui.get().finish();
+                } else {
+                    ui.get().finishIfEmpty();
                 }
             }
         }

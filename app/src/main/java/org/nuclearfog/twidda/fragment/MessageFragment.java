@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.activity.SearchPage;
+import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
@@ -98,11 +99,17 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     @Override
     public void onLinkClick(String link) {
         if (reload != null && !reload.isRefreshing() && getContext() != null) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-            if (intent.resolveActivity(getContext().getPackageManager()) != null)
+            if (TweetDetail.linkPattern.matcher(link).matches()) {
+                Intent intent = new Intent(getContext(), TweetDetail.class);
+                intent.setData(Uri.parse(link));
                 startActivity(intent);
-            else
-                Toast.makeText(getContext(), R.string.connection_failed, LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                if (intent.resolveActivity(getContext().getPackageManager()) != null)
+                    startActivity(intent);
+                else
+                    Toast.makeText(getContext(), R.string.connection_failed, LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -369,11 +369,17 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onLinkClick(String link) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-        if (intent.resolveActivity(getPackageManager()) != null)
+        if (TweetDetail.linkPattern.matcher(link).matches()) {
+            Intent intent = new Intent(this, TweetDetail.class);
+            intent.setData(Uri.parse(link));
             startActivity(intent);
-        else
-            Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            if (intent.resolveActivity(getPackageManager()) != null)
+                startActivity(intent);
+            else
+                Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+        }
     }
 
 

@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.backend.items.UserProperties;
@@ -231,12 +232,13 @@ public class TwitterEngine {
      * @return Trend Resource
      * @throws EngineException if access is unavailable
      */
-    List<String> getTrends(int woeId) throws EngineException {
+    List<TwitterTrend> getTrends(int woeId) throws EngineException {
         try {
-            List<String> result = new LinkedList<>();
+            int index = 1;
+            List<TwitterTrend> result = new LinkedList<>();
             Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
             for (Trend trend : trends)
-                result.add(trend.getName());
+                result.add(new TwitterTrend(trend, index++));
             return result;
         } catch (TwitterException err) {
             throw new EngineException(err);

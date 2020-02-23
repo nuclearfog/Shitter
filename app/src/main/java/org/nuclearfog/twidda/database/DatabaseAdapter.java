@@ -16,7 +16,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class DatabaseAdapter {
 
-    private static final int DB_VERSION = 2;
+    private static final int LATEST_VERSION = 3;
     private static final String DB_NAME = "database.db";
 
     private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS user (" +
@@ -35,7 +35,7 @@ public class DatabaseAdapter {
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
     private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS trend (" +
-            "woeID INTEGER,trendpos INTEGER,trendname TEXT);";
+            "woeID INTEGER,trendpos INTEGER,vol INTEGER,trendname TEXT);";
 
     private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS message (" +
             "messageID INTEGER PRIMARY KEY,time INTEGER,senderID INTEGER,receiverID INTEGER," +
@@ -47,6 +47,7 @@ public class DatabaseAdapter {
 
     private static final String TABLE_TWEET_ADD_PLACE = "ALTER TABLE tweet ADD COLUMN place TEXT";
     private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE tweet ADD COLUMN geo TEXT";
+    private static final String TABLE_TREND_ADD_VOL = "ALTER TABLE trend ADD COLUMN vol INTEGER";
 
     private static DatabaseAdapter instance;
 
@@ -86,10 +87,14 @@ public class DatabaseAdapter {
 
 
     private void updateTable() {
-        if (db.getVersion() < DB_VERSION) {
+        if (db.getVersion() < 2) {
             db.execSQL(TABLE_TWEET_ADD_PLACE);
             db.execSQL(TABLE_TWEET_ADD_GEO);
-            db.setVersion(DB_VERSION);
+            db.setVersion(2);
+        }
+        if (db.getVersion() < 3) {
+            db.execSQL(TABLE_TREND_ADD_VOL);
+            db.setVersion(3);
         }
     }
 
@@ -105,6 +110,6 @@ public class DatabaseAdapter {
         db.execSQL(INDX_TREND);
         /// Database just created? set current version
         if (db.getVersion() == 0)
-            db.setVersion(DB_VERSION);
+            db.setVersion(LATEST_VERSION);
     }
 }

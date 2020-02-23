@@ -19,6 +19,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
+import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.FINISHED;
@@ -85,12 +86,10 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
 
     @Override
-    public void onTrendClick(String trend) {
+    public void onTrendClick(TwitterTrend trend) {
         if (!reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), SearchPage.class);
-            if (!trend.startsWith("#"))
-                trend = '\"' + trend + '\"';
-            intent.putExtra(KEY_SEARCH_QUERY, trend);
+            intent.putExtra(KEY_SEARCH_QUERY, trend.getSearchString());
             startActivity(intent);
         }
     }

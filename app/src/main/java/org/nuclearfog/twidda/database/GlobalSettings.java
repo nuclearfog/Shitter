@@ -435,7 +435,7 @@ public final class GlobalSettings {
         highlight_color = settings.getInt("highlight_color", 0xffff00ff);
         font_color = settings.getInt("font_color", 0xffffffff);
         tweet_color = settings.getInt("tweet_color", 0xff19aae8);
-        indexFont = settings.getInt("index_font", 3);
+        indexFont = settings.getInt("index_font", 0);
         row = settings.getInt("preload", 20);
         loadImage = settings.getBoolean("image_load", true);
         loadAnswer = settings.getBoolean("answer_load", true);

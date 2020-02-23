@@ -24,7 +24,8 @@
     <dimen name="text_input_width">300dp</dimen>
     <dimen name="text_input_height">200dp</dimen>
     <dimen name="textsize_login_key">24sp</dimen>
-    <dimen name="textsize_trend">20sp</dimen>
+    <dimen name="textsize_trendname">20sp</dimen>
+    <dimen name="textsize_trendvol">14sp</dimen>
     <dimen name="textsize_profileedit">18sp</dimen>
     <dimen name="textsize_count">18sp</dimen>
     <dimen name="textsize_tweet">18sp</dimen>
@@ -32,6 +33,7 @@
     <dimen name="textsize_settings">18sp</dimen>
     <dimen name="textsize_profile">12sp</dimen>
     <dimen name="textsize_button">12sp</dimen>
+    <dimen name="textsize_button_login">14sp</dimen>
     <dimen name="textsize_date">12sp</dimen>
     <dimen name="textsize_name">12sp</dimen>
     <dimen name="tweet_textsize_api">12sp</dimen>

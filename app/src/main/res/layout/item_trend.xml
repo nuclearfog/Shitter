@@ -13,21 +13,36 @@
         <TextView
             android:id="@+id/trendpos"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_layout"
             android:layout_marginRight="@dimen/margin_layout"
             android:layout_weight="1"
             android:gravity="center_vertical|end"
+            android:textAlignment="gravity"
             android:singleLine="true"
-            android:textAlignment="gravity" />
+            android:textSize="@dimen/textsize_trendname" />
 
-        <TextView
-            android:id="@+id/trendname"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <LinearLayout
             android:layout_weight="8"
-            android:singleLine="true"
-            android:textSize="@dimen/textsize_trend" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/trendname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/textsize_trendname"
+                android:singleLine="true" />
+
+            <TextView
+                android:id="@+id/trendvol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/textsize_trendvol"
+                android:singleLine="true" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
