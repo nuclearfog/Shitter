@@ -2,4 +2,5 @@
 <resources>
     <color name="halftrancparency">#40000000</color>
     <color name="darktrancparency">#80000000</color>
+    <color name="brighttrancparency">#afffffff</color>
 </resources>

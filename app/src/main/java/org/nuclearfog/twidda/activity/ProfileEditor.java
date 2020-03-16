@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -39,8 +39,8 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE;
 
 
 public class ProfileEditor extends AppCompatActivity implements OnClickListener {
@@ -100,7 +100,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
+        Builder closeDialog = new Builder(this, R.style.InfoDialog);
         closeDialog.setMessage(R.string.exit_confirm);
         closeDialog.setNegativeButton(R.string.no_confirm, null);
         closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
@@ -180,11 +180,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
                     if (!txtImg.getText().toString().isEmpty()) {
                         String[] mediaLink = new String[]{txtImg.getText().toString()};
                         image.putExtra(KEY_MEDIA_LINK, mediaLink);
-                        image.putExtra(KEY_MEDIA_TYPE, IMAGE_STORAGE);
+                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
                     } else {
                         String[] mediaLink = new String[]{user.getImageLink()};
                         image.putExtra(KEY_MEDIA_LINK, mediaLink);
-                        image.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                     }
                     startActivity(image);
                 }

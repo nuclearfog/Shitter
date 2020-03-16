@@ -34,7 +34,6 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
     private RecyclerView list;
     private TrendAdapter adapter;
     private GlobalSettings settings;
-
     private boolean notifyChange;
 
     @Override

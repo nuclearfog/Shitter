@@ -18,16 +18,14 @@ public class UserDetail extends AppCompatActivity {
     public static final String KEY_USERDETAIL_MODE = "userlist_mode";
     public static final String KEY_USERDETAIL_ID = "userlist_owner_id";
 
-    public enum UserType {
-        FRIENDS,
-        FOLLOWERS,
-        RETWEETS,
-        FAVORITS,
-        SUBSCRIBER
-    }
+    public static final int USERLIST_FRIENDS = 0;
+    public static final int USERLIST_FOLLOWER = 1;
+    public static final int USERLIST_RETWEETS = 2;
+    public static final int USERLSIT_FAVORITS = 3;
+    public static final int USERLIST_SUBSCRIBER = 4;
 
-    private UserType mode;
     private long id;
+    private int mode;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -36,7 +34,7 @@ public class UserDetail extends AppCompatActivity {
 
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_USERDETAIL_MODE) && param.containsKey(KEY_USERDETAIL_ID)) {
-            mode = (UserType) param.getSerializable(KEY_USERDETAIL_MODE);
+            mode = param.getInt(KEY_USERDETAIL_MODE);
             id = param.getLong(KEY_USERDETAIL_ID);
         }
 
@@ -50,31 +48,31 @@ public class UserDetail extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         switch (mode) {
-            case FRIENDS:
+            case USERLIST_FRIENDS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.following);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FRIENDS_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
-            case FOLLOWERS:
+            case USERLIST_FOLLOWER:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.follower);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FOLLOWER_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
-            case RETWEETS:
+            case USERLIST_RETWEETS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.retweet);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.RETWEETER_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
-            case FAVORITS:
+            case USERLSIT_FAVORITS:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.favorite);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FAVOR_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
-            case SUBSCRIBER:
+            case USERLIST_SUBSCRIBER:
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.user_list_subscr);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SUBSCRIBER_PAGE, id, "");

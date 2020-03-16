@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
@@ -30,7 +30,7 @@ import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE;
 
 
 public class MessagePopup extends AppCompatActivity implements OnClickListener {
@@ -76,7 +76,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         if (text.getText().toString().isEmpty() && mediaPath.isEmpty()) {
             super.onBackPressed();
         } else {
-            AlertDialog.Builder closeDialog = new AlertDialog.Builder(this);
+            Builder closeDialog = new Builder(this, R.style.InfoDialog);
             closeDialog.setMessage(R.string.cancel_message);
             closeDialog.setNegativeButton(R.string.no_confirm, null);
             closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
@@ -139,7 +139,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             else {
                 Intent image = new Intent(this, MediaViewer.class);
                 image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
-                image.putExtra(KEY_MEDIA_TYPE, IMAGE_STORAGE);
+                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
                 startActivity(image);
             }
         }

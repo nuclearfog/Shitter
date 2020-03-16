@@ -35,7 +35,6 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.activity.UserDetail.UserType;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.StatusLoader;
@@ -60,14 +59,16 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.ANGIF;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.VIDEO;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLSIT_FAVORITS;
 
 
 public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTouchListener,
@@ -131,7 +132,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
-
         FontTool.setViewFont(root, settings.getFontFace());
         tweetLoc.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -149,7 +149,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         rtwButton.setOnLongClickListener(this);
         favButton.setOnLongClickListener(this);
         profile_img.setOnClickListener(this);
-
     }
 
 
@@ -191,7 +190,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
-                    Builder deleteDialog = new Builder(this);
+                    Builder deleteDialog = new Builder(this, R.style.InfoDialog);
                     deleteDialog.setMessage(R.string.delete_tweet);
                     deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
                         @Override
@@ -244,14 +243,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 case R.id.tweet_retweet:
                     Intent userList = new Intent(this, UserDetail.class);
                     userList.putExtra(KEY_USERDETAIL_ID, tweetID);
-                    userList.putExtra(KEY_USERDETAIL_MODE, UserType.RETWEETS);
+                    userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
                     startActivity(userList);
                     break;
 
                 case R.id.tweet_favorit:
                     userList = new Intent(this, UserDetail.class);
                     userList.putExtra(KEY_USERDETAIL_ID, tweetID);
-                    userList.putExtra(KEY_USERDETAIL_MODE, UserType.FAVORITS);
+                    userList.putExtra(KEY_USERDETAIL_MODE, USERLSIT_FAVORITS);
                     startActivity(userList);
                     break;
 
@@ -383,7 +382,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                         public void onClick(View v) {
                             Intent media = new Intent(getApplicationContext(), MediaViewer.class);
                             media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                            media.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                            media.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                             startActivity(media);
                         }
                     });
@@ -397,7 +396,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                         public void onClick(View v) {
                             Intent media = new Intent(getApplicationContext(), MediaViewer.class);
                             media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                            media.putExtra(KEY_MEDIA_TYPE, ANGIF);
+                            media.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
                             startActivity(media);
                         }
                     });
@@ -411,7 +410,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                         public void onClick(View v) {
                             Intent media = new Intent(getApplicationContext(), MediaViewer.class);
                             media.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                            media.putExtra(KEY_MEDIA_TYPE, VIDEO);
+                            media.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                             startActivity(media);
                         }
                     });

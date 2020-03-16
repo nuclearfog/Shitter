@@ -19,6 +19,13 @@
         <item name="android:colorBackground">@color/darktrancparency</item>
     </style>
 
+    <style name="InfoDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:colorBackground">@color/brighttrancparency</item>
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
     <style name="TransactionPending" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>

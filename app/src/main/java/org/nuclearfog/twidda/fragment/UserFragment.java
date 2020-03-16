@@ -34,24 +34,21 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     public static final String KEY_FRAG_USER_SEARCH = "user_search";
     public static final String KEY_FRAG_USER_ID = "user_id";
 
-    public enum UserType {
-        FOLLOWS,
-        FRIENDS,
-        RETWEET,
-        FAVORIT,
-        USEARCH,
-        SUBSCR,
-        LIST
-    }
+    public static final int USER_FRAG_FOLLOWS = 0;
+    public static final int USER_FRAG_FRIENDS = 1;
+    public static final int USER_FRAG_RETWEET = 2;
+    public static final int USER_FRAG_FAVORIT = 3;
+    public static final int USER_FRAG_SEARCH = 4;
+    public static final int USER_FRAG_SUBSCRIBER = 5;
+    public static final int USER_FRAG_LISTS = 6;
 
     private SwipeRefreshLayout reload;
     private UserAdapter adapter;
     private UserLoader userTask;
     private RecyclerView list;
-    private UserType mode;
     private String search;
     private long id;
-
+    private int mode;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
@@ -59,7 +56,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);
         if (b != null) {
-            mode = (UserType) b.getSerializable(KEY_FRAG_USER_MODE);
+            mode = b.getInt(KEY_FRAG_USER_MODE);
             id = b.getLong(KEY_FRAG_USER_ID, -1);
             search = b.getString(KEY_FRAG_USER_SEARCH, "");
         }
@@ -149,31 +146,31 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     private void load() {
         switch (mode) {
-            case FOLLOWS:
+            case USER_FRAG_FOLLOWS:
                 userTask = new UserLoader(this, Mode.FOLLOWS);
                 userTask.execute(id);
                 break;
-            case FRIENDS:
+            case USER_FRAG_FRIENDS:
                 userTask = new UserLoader(this, Mode.FRIENDS);
                 userTask.execute(id);
                 break;
-            case RETWEET:
+            case USER_FRAG_RETWEET:
                 userTask = new UserLoader(this, Mode.RETWEET);
                 userTask.execute(id);
                 break;
-            case FAVORIT:
+            case USER_FRAG_FAVORIT:
                 userTask = new UserLoader(this, Mode.FAVORIT);
                 userTask.execute(id);
                 break;
-            case USEARCH:
+            case USER_FRAG_SEARCH:
                 userTask = new UserLoader(this, Mode.SEARCH);
                 userTask.execute(search);
                 break;
-            case SUBSCR:
+            case USER_FRAG_SUBSCRIBER:
                 userTask = new UserLoader(this, Mode.SUBSCRIBER);
                 userTask.execute(id);
                 break;
-            case LIST:
+            case USER_FRAG_LISTS:
                 userTask = new UserLoader(this, Mode.LIST);
                 userTask.execute(id);
                 break;

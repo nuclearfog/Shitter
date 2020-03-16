@@ -47,6 +47,13 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final String KEY_MEDIA_LINK = "media_link";
     public static final String KEY_MEDIA_TYPE = "media_type";
 
+    public static final int MEDIAVIEWER_IMAGE = 0;
+    public static final int MEDIAVIEWER_VIDEO = 1;
+    public static final int MEDIAVIEWER_ANGIF = 2;
+    public static final int MEDIAVIEWER_IMG_STORAGE = 3;
+    public static final int MEDIAVIEWER_VIDEO_STORAGE = 4;
+    public static final int MEDIAVIEWER_ANGIF_STORAGE = 5;
+
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
     private static final int REQCODE_SD = 6;
@@ -58,19 +65,10 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
-    private MediaType type;
     private String[] link;
+    private int type;
     private int width;
     private int lastPos = 0;
-
-    public enum MediaType {
-        IMAGE,
-        IMAGE_STORAGE,
-        VIDEO,
-        VIDEO_STORAGE,
-        ANGIF,
-        ANGIF_STORAGE
-    }
 
 
     @Override
@@ -91,40 +89,38 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_MEDIA_LINK) && param.containsKey(KEY_MEDIA_TYPE)) {
             link = param.getStringArray(KEY_MEDIA_LINK);
-            type = (MediaType) param.getSerializable(KEY_MEDIA_TYPE);
+            type = param.getInt(KEY_MEDIA_TYPE);
         }
 
-        if (type != null)
-            switch (type) {
-                case IMAGE:
-                case IMAGE_STORAGE:
-                case ANGIF_STORAGE:
-                    imageWindow.setVisibility(VISIBLE);
-                    imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                    imageList.setAdapter(adapter);
-                    Display d = getWindowManager().getDefaultDisplay();
-                    Point size = new Point();
-                    d.getSize(size);
-                    width = size.x;
-                    break;
+        switch (type) {
+            case MEDIAVIEWER_IMAGE:
+            case MEDIAVIEWER_IMG_STORAGE:
+            case MEDIAVIEWER_ANGIF_STORAGE:
+                imageWindow.setVisibility(VISIBLE);
+                imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                imageList.setAdapter(adapter);
+                Display d = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                d.getSize(size);
+                width = size.x;
+                break;
 
-                case ANGIF:
-                    videoWindow.setVisibility(VISIBLE);
-                    Uri video = Uri.parse(link[0]);
-                    videoView.setOnPreparedListener(this);
-                    videoView.setVideoURI(video);
-                    break;
+            case MEDIAVIEWER_ANGIF:
+                videoWindow.setVisibility(VISIBLE);
+                Uri video = Uri.parse(link[0]);
+                videoView.setOnPreparedListener(this);
+                videoView.setVideoURI(video);
+                break;
 
-                case VIDEO:
-                case VIDEO_STORAGE:
-                    videoWindow.setVisibility(VISIBLE);
-                    video = Uri.parse(link[0]);
-                    videoView.setMediaController(videoController);
-                    videoView.setOnPreparedListener(this);
-                    videoView.setVideoURI(video);
-                    break;
-            }
-        else finish();
+            case MEDIAVIEWER_VIDEO:
+            case MEDIAVIEWER_VIDEO_STORAGE:
+                videoWindow.setVisibility(VISIBLE);
+                video = Uri.parse(link[0]);
+                videoView.setMediaController(videoController);
+                videoView.setOnPreparedListener(this);
+                videoView.setVideoURI(video);
+                break;
+        }
     }
 
 
@@ -132,7 +128,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     protected void onStart() {
         super.onStart();
         switch (type) {
-            case IMAGE:
+            case MEDIAVIEWER_IMAGE:
                 if (imageAsync == null) {
                     imageAsync = new ImageLoader(this, ONLINE);
                     imageAsync.execute(link);
@@ -140,17 +136,17 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
                 break;
 
-            case ANGIF_STORAGE:
-            case IMAGE_STORAGE:
+            case MEDIAVIEWER_ANGIF_STORAGE:
+            case MEDIAVIEWER_IMG_STORAGE:
                 if (imageAsync == null) {
                     imageAsync = new ImageLoader(this, STORAGE);
                     imageAsync.execute(link);
                 }
                 break;
 
-            case VIDEO:
-            case ANGIF:
-            case VIDEO_STORAGE:
+            case MEDIAVIEWER_VIDEO:
+            case MEDIAVIEWER_ANGIF:
+            case MEDIAVIEWER_VIDEO_STORAGE:
                 videoView.start();
                 break;
         }
@@ -160,7 +156,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        if (type == MediaType.VIDEO || type == MediaType.VIDEO_STORAGE) {
+        if (type == MEDIAVIEWER_VIDEO || type == MEDIAVIEWER_VIDEO_STORAGE) {
             lastPos = videoView.getCurrentPosition();
             videoView.pause();
         }
@@ -183,7 +179,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     @Override
     public void onImageTouch(Bitmap image) {
-        if (type == MediaType.IMAGE) {
+        if (type == MEDIAVIEWER_IMAGE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
                 if (check == PERMISSION_GRANTED) {
@@ -201,13 +197,13 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     public void onPrepared(MediaPlayer mp) {
         switch (type) {
-            case ANGIF:
+            case MEDIAVIEWER_ANGIF:
                 mp.setLooping(true);
                 mp.start();
                 break;
 
-            case VIDEO:
-            case VIDEO_STORAGE:
+            case MEDIAVIEWER_VIDEO:
+            case MEDIAVIEWER_VIDEO_STORAGE:
                 videoController.show(0);
                 mp.seekTo(lastPos);
                 mp.start();

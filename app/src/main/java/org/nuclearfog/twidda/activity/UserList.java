@@ -19,7 +19,6 @@ public class UserList extends AppCompatActivity {
     public static final String KEY_USERLIST_ID = "userlist-owner";
     private long userId;
 
-
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);

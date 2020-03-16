@@ -193,7 +193,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_db:
-                new Builder(this)
+                new Builder(this, R.style.InfoDialog)
                         .setMessage(R.string.delete_database_popup)
                         .setNegativeButton(R.string.no_confirm, null)
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
@@ -207,7 +207,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 break;
 
             case R.id.logout:
-                new Builder(this)
+                new Builder(this, R.style.InfoDialog)
                         .setMessage(R.string.confirm_log_lout)
                         .setNegativeButton(R.string.no_confirm, null)
                         .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {

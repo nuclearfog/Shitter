@@ -32,7 +32,7 @@ import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_NAME;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.UserType.SUBSCRIBER;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRIBER;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.ListLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.ListLoader.Action.FOLLOW;
@@ -108,7 +108,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                 case FOLLOW:
                     if (listItem.isFollowing()) {
                         if (getContext() != null) {
-                            Builder confirmDialog = new Builder(getContext());
+                            Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
                             confirmDialog.setMessage(R.string.confirm_unfollow_list);
                             confirmDialog.setNegativeButton(R.string.no_confirm, null);
                             confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
@@ -129,7 +129,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                 case SUBSCRIBER:
                     Intent following = new Intent(getContext(), UserDetail.class);
                     following.putExtra(KEY_USERDETAIL_ID, listItem.getId());
-                    following.putExtra(KEY_USERDETAIL_MODE, SUBSCRIBER);
+                    following.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRIBER);
                     startActivity(following);
                     break;
 
@@ -142,7 +142,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
                 case DELETE:
                     if (getContext() != null) {
-                        Builder confirmDialog = new Builder(getContext());
+                        Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
                         confirmDialog.setMessage(R.string.confirm_delete_list);
                         confirmDialog.setNegativeButton(R.string.no_confirm, null);
                         confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {

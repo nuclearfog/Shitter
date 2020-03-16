@@ -36,18 +36,16 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     public static final String KEY_FRAG_TWEET_ID = "tweet_id";
     public static final String KEY_FRAG_TWEET_FIX_LAYOUT = "tweet_fix_layout";
 
+    public static final int TWEET_FRAG_HOME = 0;
+    public static final int TWEET_FRAG_MENT = 1;
+    public static final int TWEET_FRAG_TWEETS = 2;
+    public static final int TWEET_FRAG_FAVORS = 3;
+    public static final int TWEET_FRAG_ANSWER = 4;
+    public static final int TWEET_FRAG_SEARCH = 5;
+    public static final int TWEET_FRAG_LIST = 6;
+
     private static final int REQUEST_TWEET_CHANGED = 3;
     public static final int RETURN_TWEET_CHANGED = 4;
-
-    public enum TweetType {
-        HOME,
-        MENT,
-        USER_TWEET,
-        USER_FAVOR,
-        TWEET_ANSR,
-        SEARCH,
-        LIST
-    }
 
     private TweetLoader tweetTask;
     private GlobalSettings settings;
@@ -55,9 +53,9 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private RecyclerView list;
     private TweetAdapter adapter;
 
-    private TweetType mode;
     private String search;
     private long id, tweetId;
+    private int mode;
 
     private boolean notifyChange;
 
@@ -68,7 +66,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         Context context = inflater.getContext();
 
         if (b != null) {
-            mode = (TweetType) b.getSerializable(KEY_FRAG_TWEET_MODE);
+            mode = b.getInt(KEY_FRAG_TWEET_MODE);
             id = b.getLong(KEY_FRAG_TWEET_ID, -1);
             search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
             fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
@@ -179,27 +177,27 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     private void load() {
         switch (mode) {
-            case HOME:
+            case TWEET_FRAG_HOME:
                 tweetTask = new TweetLoader(this, Mode.TL_HOME);
                 tweetTask.execute(1);
                 break;
 
-            case MENT:
+            case TWEET_FRAG_MENT:
                 tweetTask = new TweetLoader(this, Mode.TL_MENT);
                 tweetTask.execute(1);
                 break;
 
-            case USER_TWEET:
+            case TWEET_FRAG_TWEETS:
                 tweetTask = new TweetLoader(this, Mode.USR_TWEETS);
                 tweetTask.execute(id, 1);
                 break;
 
-            case USER_FAVOR:
+            case TWEET_FRAG_FAVORS:
                 tweetTask = new TweetLoader(this, Mode.USR_FAVORS);
                 tweetTask.execute(id, 1);
                 break;
 
-            case TWEET_ANSR:
+            case TWEET_FRAG_ANSWER:
                 boolean loadAnswer = settings.getAnswerLoad();
                 if (tweetTask != null || loadAnswer)
                     tweetTask = new TweetLoader(this, Mode.TWEET_ANS);
@@ -208,12 +206,12 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
                 tweetTask.execute(id, search);
                 break;
 
-            case SEARCH:
+            case TWEET_FRAG_SEARCH:
                 tweetTask = new TweetLoader(this, Mode.TWEET_SEARCH);
                 tweetTask.execute(search);
                 break;
 
-            case LIST:
+            case TWEET_FRAG_LIST:
                 tweetTask = new TweetLoader(this, Mode.LIST);
                 tweetTask.execute(id, 1);
                 break;

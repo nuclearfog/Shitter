@@ -55,14 +55,14 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MediaType.IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.UserType.FOLLOWERS;
-import static org.nuclearfog.twidda.activity.UserDetail.UserType.FRIENDS;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
 import static org.nuclearfog.twidda.activity.UserList.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 
@@ -391,7 +391,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     if (!user.isLocked() || properties.isFriend()) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERDETAIL_ID, userId);
-                        following.putExtra(KEY_USERDETAIL_MODE, FRIENDS);
+                        following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
                         startActivity(following);
                     }
                 }
@@ -402,7 +402,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     if (!user.isLocked() || properties.isFriend()) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERDETAIL_ID, userId);
-                        follower.putExtra(KEY_USERDETAIL_MODE, FOLLOWERS);
+                        follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
                         startActivity(follower);
                     }
                 }
@@ -423,7 +423,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 if (user != null) {
                     Intent image = new Intent(this, MediaViewer.class);
                     image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
-                    image.putExtra(KEY_MEDIA_TYPE, IMAGE);
+                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                     startActivity(image);
                 }
         }

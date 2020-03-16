@@ -204,7 +204,7 @@
                         android:layout_height="@dimen/button_dm"
                         android:layout_margin="@dimen/button_margin"
                         android:layout_weight="1"
-                        android:background="@android:color/holo_red_dark"
+                        android:background="@drawable/button"
                         android:text="@string/delete_database" />
 
                     <Button
@@ -214,7 +214,7 @@
                         android:layout_height="@dimen/button_dm"
                         android:layout_margin="@dimen/button_margin"
                         android:layout_weight="1"
-                        android:background="@android:color/holo_red_dark"
+                        android:background="@drawable/button"
                         android:text="@string/logout" />
 
                 </LinearLayout>
