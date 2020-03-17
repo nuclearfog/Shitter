@@ -2,14 +2,12 @@ package org.nuclearfog.twidda.backend;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.TweetPopup;
@@ -104,16 +102,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
             } else {
                 if (twException != null)
                     Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(ui.get());
-                builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
-                        .setPositiveButton(R.string.retry, new OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if (ui.get() != null)
-                                    ui.get().findViewById(R.id.tweet_send).callOnClick();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, null).show();
+                ui.get().showErrorMsg(tweet);
             }
             popup.get().dismiss();
         }

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -75,7 +76,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private List<String> mediaPath;
     private View mediaBtn, previewBtn, locationProg, locationBtn;
     private TextView imgCount;
-    private EditText tweet;
+    private EditText tweetText;
     private String addition = "";
     private long inReplyId = 0;
     private int mode = NONE;
@@ -90,7 +91,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         locationBtn = findViewById(R.id.tweet_add_location);
         mediaBtn = findViewById(R.id.tweet_add_media);
         previewBtn = findViewById(R.id.tweet_prev_media);
-        tweet = findViewById(R.id.tweet_input);
+        tweetText = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
         locationProg = findViewById(R.id.location_progress);
         mLocation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -105,7 +106,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFont(root, settings.getFontFace());
         root.setBackgroundColor(settings.getPopupColor());
-        tweet.append(addition);
+        tweetText.append(addition);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
@@ -209,7 +210,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tweet_send:
-                String tweetStr = tweet.getText().toString();
+                String tweetStr = tweetText.getText().toString();
                 if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                     Toast.makeText(this, R.string.empty_tweet, LENGTH_SHORT).show();
                 } else if (locationProg.getVisibility() == INVISIBLE) {
@@ -289,10 +290,29 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
 
     /**
+     * Show confirmation dialog if an error occurs while sending tweet
+     *
+     * @param tweet tweet to re-send
+     */
+    public void showErrorMsg(final TweetHolder tweet) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.InfoDialog);
+        builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
+                .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        uploaderAsync = new StatusUploader(TweetPopup.this, tweet);
+                        uploaderAsync.execute();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null).show();
+    }
+
+
+    /**
      * show confirmation dialog when closing edited tweet
      */
     private void showClosingMsg() {
-        if (!addition.equals(tweet.getText().toString()) || !mediaPath.isEmpty()) {
+        if (!addition.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
             Builder closeDialog = new Builder(this, R.style.InfoDialog);
             closeDialog.setMessage(R.string.confirm_cancel_tweet);
             closeDialog.setNegativeButton(R.string.no_confirm, null);

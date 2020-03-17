@@ -149,4 +149,5 @@
     <string name="confirm_delete_message">Delete message?</string>
     <string name="confirm_unfollow_list">Unfollow list?</string>
     <string name="trend_range">Tweets</string>
+    <string name="error_connection_failed">Connection failed!</string>
 </resources>

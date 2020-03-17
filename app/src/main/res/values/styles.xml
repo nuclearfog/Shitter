@@ -11,12 +11,7 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackground">@android:color/transparent</item>
-    </style>
-
-    <style name="HalfTransparency" parent="AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackground">@color/darktrancparency</item>
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
     <style name="InfoDialog" parent="Theme.AppCompat.Dialog.Alert">

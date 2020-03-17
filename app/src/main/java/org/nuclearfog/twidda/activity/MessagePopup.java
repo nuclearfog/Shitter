@@ -17,7 +17,7 @@ import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.MessageUpload;
+import org.nuclearfog.twidda.backend.MessageUploader;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -40,7 +40,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
     private static final String[] PICK_IMAGE = {MediaStore.Images.Media.DATA};
     private static final int REQ_PERM_READ = 4;
 
-    private MessageUpload messageAsync;
+    private MessageUploader messageAsync;
     private EditText receiver, text;
     private String mediaPath = "";
 
@@ -128,7 +128,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             String message = text.getText().toString();
             if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
                 MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-                messageAsync = new MessageUpload(this, messageHolder);
+                messageAsync = new MessageUploader(this, messageHolder);
                 messageAsync.execute();
             } else {
                 Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();

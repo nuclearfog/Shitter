@@ -1041,7 +1041,7 @@ public class TwitterEngine {
                     if (error.getStatusCode() == 401)
                         messageResource = R.string.not_authorized;
                     else
-                        messageResource = R.string.error;
+                        messageResource = R.string.error_connection_failed;
                     break;
             }
         }

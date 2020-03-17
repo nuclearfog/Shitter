@@ -21,7 +21,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 /**
  * Background task to send direct messages
  */
-public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
+public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Nullable
     private TwitterEngine.EngineException twException;
@@ -36,7 +36,7 @@ public class MessageUpload extends AsyncTask<Void, Void, Boolean> {
      * @param c       Activity context
      * @param message message to send
      */
-    public MessageUpload(@NonNull MessagePopup c, MessageHolder message) {
+    public MessageUploader(@NonNull MessagePopup c, MessageHolder message) {
         ui = new WeakReference<>(c);
         popup = new WeakReference<>(new Dialog(c));
         mTwitter = TwitterEngine.getInstance(c);
