@@ -110,7 +110,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/data_load"
+                android:text="@string/data_consumption"
                 android:textSize="@dimen/textsize_settings" />
 
             <View

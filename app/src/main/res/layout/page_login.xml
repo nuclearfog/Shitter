@@ -63,7 +63,7 @@
             android:background="@drawable/button"
             android:paddingLeft="@dimen/loginpage_button_padding"
             android:paddingRight="@dimen/loginpage_button_padding"
-            android:text="@string/verifierbutton"
+            android:text="@string/login_verifier"
             android:textSize="@dimen/textsize_button_login" />
 
     </LinearLayout>

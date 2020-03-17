@@ -366,7 +366,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             tweetText.setText(sTweet);
         }
         if (tweet.getReplyId() > 1) {
-            replyName.setText(R.string.answering);
+            replyName.setText(R.string.tweet_answering);
             replyName.append(tweet.getReplyName());
             replyName.setVisibility(VISIBLE);
         }

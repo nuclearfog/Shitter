@@ -1002,7 +1002,7 @@ public class TwitterEngine {
 
                 case 34:    //
                 case 144:   // TWEET not found
-                    messageResource = R.string.not_found;
+                    messageResource = R.string.error_not_found;
                     statusNotFound = true;
                     hardFault = true;
                     break;

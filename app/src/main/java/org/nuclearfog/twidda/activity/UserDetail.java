@@ -50,25 +50,25 @@ public class UserDetail extends AppCompatActivity {
         switch (mode) {
             case USERLIST_FRIENDS:
                 if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.following);
+                    getSupportActionBar().setTitle(R.string.userlist_following);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FRIENDS_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             case USERLIST_FOLLOWER:
                 if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.follower);
+                    getSupportActionBar().setTitle(R.string.userlist_follower);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FOLLOWER_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             case USERLIST_RETWEETS:
                 if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.retweet);
+                    getSupportActionBar().setTitle(R.string.userlist_retweet);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.RETWEETER_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
             case USERLSIT_FAVORITS:
                 if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.favorite);
+                    getSupportActionBar().setTitle(R.string.userlist_favorite);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FAVOR_PAGE, id, "");
                 pager.setAdapter(adapter);
                 break;
