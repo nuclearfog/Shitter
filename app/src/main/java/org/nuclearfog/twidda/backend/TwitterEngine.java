@@ -964,7 +964,7 @@ public class TwitterEngine {
     /**
      * Internal Exception
      */
-    public class EngineException extends Exception {
+    public static class EngineException extends Exception {
 
         private static final int FILENOTFOUND = 600;
         private static final int TOKENNOTSET = 601;

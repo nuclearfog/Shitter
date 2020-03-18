@@ -62,7 +62,7 @@
     <string name="logout">log out!</string>
     <string name="pin_verification_failed">PIN verification failed!</string>
     <string name="answer">answer</string>
-    <string name="delete_dm">delete..</string>
+    <string name="delete_dm">delete</string>
     <string name="yes_confirm">Yes</string>
     <string name="no_confirm">No</string>
     <string name="confirm_unfollow">unfollow user?</string>

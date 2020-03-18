@@ -104,7 +104,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
         mediaPath = new LinkedList<>();
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFont(root, settings.getFontFace());
+        FontTool.setViewFont(settings, root);
         root.setBackgroundColor(settings.getPopupColor());
         tweetText.append(addition);
 

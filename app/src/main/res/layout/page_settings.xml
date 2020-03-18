@@ -47,19 +47,21 @@
                     android:id="@+id/color_background"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
+                    android:layout_height="@dimen/button_settings_color"
                     android:layout_margin="@dimen/button_margin"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:text="@string/background" />
 
                 <Button
                     android:id="@+id/color_font"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
+                    android:layout_height="@dimen/button_settings_color"
                     android:layout_margin="@dimen/button_margin"
                     android:layout_weight="1"
                     android:includeFontPadding="false"
+                    android:singleLine="true"
                     android:text="@string/font"
                     android:textColor="@android:color/black" />
 
@@ -75,18 +77,20 @@
                     android:id="@+id/color_popup"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
+                    android:layout_height="@dimen/button_settings_color"
                     android:layout_margin="@dimen/button_margin"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:text="@string/popup" />
 
                 <Button
                     android:id="@+id/highlight_color"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
+                    android:layout_height="@dimen/button_settings_color"
                     android:layout_margin="@dimen/button_margin"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:text="@string/highlight" />
 
             </LinearLayout>
@@ -201,20 +205,22 @@
                         android:id="@+id/delete_db"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/button_dm"
+                        android:layout_height="@dimen/button_settings_data"
                         android:layout_margin="@dimen/button_margin"
                         android:layout_weight="1"
                         android:background="@drawable/button"
+                        android:singleLine="true"
                         android:text="@string/delete_database" />
 
                     <Button
                         android:id="@+id/logout"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/button_dm"
+                        android:layout_height="@dimen/button_settings_data"
                         android:layout_margin="@dimen/button_margin"
                         android:layout_weight="1"
                         android:background="@drawable/button"
+                        android:singleLine="true"
                         android:text="@string/logout" />
 
                 </LinearLayout>

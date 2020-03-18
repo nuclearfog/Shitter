@@ -78,6 +78,6 @@ public class UserDetail extends AppCompatActivity {
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SUBSCRIBER_PAGE, id, "");
                 pager.setAdapter(adapter);
         }
-        FontTool.setViewFont(root, settings.getFontFace());
+        FontTool.setViewFont(settings, root);
     }
 }

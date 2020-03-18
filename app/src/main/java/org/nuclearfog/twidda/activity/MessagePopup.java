@@ -63,7 +63,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
-        FontTool.setViewFont(root, settings.getFontFace());
+        FontTool.setViewFont(settings, root);
 
         receiver.append(addtion);
         send.setOnClickListener(this);

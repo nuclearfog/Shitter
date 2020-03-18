@@ -127,7 +127,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FontTool.setViewFont(root, settings.getFontFace());
+        FontTool.setViewFont(settings, root);
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
@@ -143,6 +143,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         favorTabTxt.setTextSize(10);
         tweetTabTxt.setTypeface(settings.getFontFace());
         favorTabTxt.setTypeface(settings.getFontFace());
+        tweetTabTxt.setTextColor(settings.getFontColor());
+        favorTabTxt.setTextColor(settings.getFontColor());
 
         adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.PROFILE_TAB, userId, "");
         pager.setOffscreenPageLimit(2);

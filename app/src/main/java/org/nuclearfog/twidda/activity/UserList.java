@@ -39,7 +39,7 @@ public class UserList extends AppCompatActivity {
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), LIST_PAGE, userId, "");
         pager.setAdapter(adapter);
 
-        FontTool.setViewFont(root, settings.getFontFace());
+        FontTool.setViewFont(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
     }
 }

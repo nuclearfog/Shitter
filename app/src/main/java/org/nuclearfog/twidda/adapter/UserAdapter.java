@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -63,6 +64,8 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
         final ItemHolder vh = new ItemHolder(v);
+        FontTool.setViewFont(settings, v);
+
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,10 +83,6 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         TwitterUser user = users.get(index);
-        vh.username.setTextColor(settings.getFontColor());
-        vh.screenname.setTextColor(settings.getFontColor());
-        vh.username.setTypeface(settings.getFontFace());
-        vh.screenname.setTypeface(settings.getFontFace());
         vh.username.setText(user.getUsername());
         vh.screenname.setText(user.getScreenname());
         if (settings.getImageLoad()) {
@@ -102,7 +101,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     }
 
 
-    class ItemHolder extends ViewHolder {
+    static class ItemHolder extends ViewHolder {
         final ImageView profileImg;
         final TextView username, screenname;
 

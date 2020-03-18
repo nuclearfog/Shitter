@@ -61,7 +61,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
         if (trendTask == null)
             load();
         if (notifyChange) {
-            adapter.notifyDataSetChanged();
+            list.setAdapter(adapter); // re-initialize List
             notifyChange = false;
             load();
         }

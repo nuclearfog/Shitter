@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.content.res.Resources;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -73,6 +73,8 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
         final ItemHolder vh = new ItemHolder(v);
+        FontTool.setViewFont(settings, v);
+
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,15 +91,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
-        Typeface font = settings.getFontFace();
-        int color = settings.getFontColor();
         TwitterTrend trend = trends.get(index);
-        vh.pos.setTextColor(color);
-        vh.name.setTextColor(color);
-        vh.vol.setTextColor(color);
-        vh.pos.setTypeface(font);
-        vh.name.setTypeface(font);
-        vh.vol.setTypeface(font);
         vh.pos.setText(trend.getRankStr());
         vh.name.setText(trend.getName());
         if (trend.hasRangeInfo()) {
@@ -111,7 +105,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
     }
 
 
-    class ItemHolder extends ViewHolder {
+    static class ItemHolder extends ViewHolder {
         final TextView name, pos, vol;
 
         ItemHolder(View v) {

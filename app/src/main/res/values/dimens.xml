@@ -42,6 +42,8 @@
     <integer name="text_bio_lines">5</integer>
 
     <dimen name="button_dm">40dp</dimen>
+    <dimen name="button_settings_color">40dp</dimen>
+    <dimen name="button_settings_data">30dp</dimen>
     <dimen name="button_load">48dp</dimen>
     <dimen name="button_margin">5dp</dimen>
     <dimen name="button_padding">5dp</dimen>

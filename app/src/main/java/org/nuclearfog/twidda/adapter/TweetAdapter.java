@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Typeface;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -90,6 +90,8 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
         final ItemHolder vh = new ItemHolder(v);
+        FontTool.setViewFont(settings, v);
+
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,8 +109,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
         Tweet tweet = tweets.get(index);
         TwitterUser user = tweet.getUser();
-        Typeface font = settings.getFontFace();
-        int color = settings.getFontColor();
 
         if (tweet.getEmbeddedTweet() != null) {
             String retweeter = "RT " + user.getScreenname();
@@ -118,17 +118,6 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         } else {
             vh.retweeter.setText("");
         }
-        vh.username.setTypeface(font);
-        vh.screenname.setTypeface(font);
-        vh.tweet.setTypeface(font);
-        vh.retweet.setTypeface(font);
-        vh.favorite.setTypeface(font);
-        vh.time.setTypeface(font);
-        vh.retweeter.setTypeface(font);
-        vh.username.setTextColor(color);
-        vh.screenname.setTextColor(color);
-        vh.tweet.setTextColor(color);
-        vh.time.setTextColor(color);
         Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
         vh.tweet.setText(text);
         vh.username.setText(user.getUsername());
@@ -158,7 +147,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.profile.setImageResource(0);
     }
 
-    class ItemHolder extends ViewHolder {
+    static class ItemHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;
         final TextView favorite, retweeter, time;
         final ImageView profile;

@@ -90,7 +90,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         if (tweetTask == null)
             load();
         if (notifyChange) {
-            adapter.notifyDataSetChanged();
+            list.setAdapter(adapter); // re-initialize List
             notifyChange = false;
         }
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());

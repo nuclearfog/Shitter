@@ -106,7 +106,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSpinner.setAdapter(fontAdapter);
         fontSpinner.setSelection(settings.getFont());
 
-        FontTool.setViewFont(root, settings.getFontFace());
+        FontTool.setViewFont(settings, root);
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         root.setBackgroundColor(settings.getBackgroundColor());

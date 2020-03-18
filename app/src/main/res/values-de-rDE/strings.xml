@@ -55,7 +55,7 @@
     <string name="logout">ausloggen</string>
     <string name="pin_verification_failed">PIN verifizierung fehlgeschlagen!</string>
     <string name="answer">Antworten</string>
-    <string name="delete_dm">löschen..</string>
+    <string name="delete_dm">löschen</string>
     <string name="yes_confirm">Ja</string>
     <string name="no_confirm">Nein</string>
     <string name="confirm_cancel_tweet">Tweet verwerfen?</string>

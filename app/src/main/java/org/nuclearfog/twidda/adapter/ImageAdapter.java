@@ -126,7 +126,7 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
     }
 
 
-    class ImageHolder extends ViewHolder {
+    static class ImageHolder extends ViewHolder {
         final View view;
 
         ImageHolder(View view) {

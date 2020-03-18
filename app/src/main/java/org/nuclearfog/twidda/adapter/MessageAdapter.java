@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -83,6 +84,8 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
         final MessageHolder vh = new MessageHolder(view);
+        FontTool.setViewFont(settings, view);
+
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.answer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,24 +130,13 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener.get());
         else
             text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor());
+
         vh.message.setText(text);
         vh.username.setText(sender.getUsername());
         vh.screenname.setText(sender.getScreenname());
         vh.createdAt.setText(StringTools.getTimeString(message.getTime()));
         vh.receivername.setText(message.getReceiver().getScreenname());
-        vh.message.setTypeface(settings.getFontFace());
-        vh.username.setTypeface(settings.getFontFace());
-        vh.screenname.setTypeface(settings.getFontFace());
-        vh.receivername.setTypeface(settings.getFontFace());
-        vh.createdAt.setTypeface(settings.getFontFace());
-        vh.answer.setTypeface(settings.getFontFace());
-        vh.delete.setTypeface(settings.getFontFace());
-        vh.message.setTextColor(settings.getFontColor());
-        vh.username.setTextColor(settings.getFontColor());
-        vh.screenname.setTextColor(settings.getFontColor());
-        vh.receivername.setTextColor(settings.getFontColor());
-        vh.createdAt.setTextColor(settings.getFontColor());
-        vh.message.setLinkTextColor(settings.getHighlightColor());
+
         if (sender.isVerified())
             vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
         else
@@ -158,7 +150,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     }
 
 
-    class MessageHolder extends ViewHolder {
+    static class MessageHolder extends ViewHolder {
         final ImageView profile_img;
         final TextView username;
         final TextView screenname;

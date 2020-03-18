@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -89,17 +90,8 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
     public ListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         final ListHolder vh = new ListHolder(v);
-        vh.title.setTextColor(settings.getFontColor());
-        vh.ownername.setTextColor(settings.getFontColor());
-        vh.description.setTextColor(settings.getFontColor());
-        vh.createdAt.setTextColor(settings.getFontColor());
-        vh.title.setTypeface(settings.getFontFace());
-        vh.ownername.setTypeface(settings.getFontFace());
-        vh.description.setTypeface(settings.getFontFace());
-        vh.createdAt.setTypeface(settings.getFontFace());
-        vh.memberCount.setTypeface(settings.getFontFace());
-        vh.subscriberCount.setTypeface(settings.getFontFace());
-        vh.followList.setTypeface(settings.getFontFace());
+        FontTool.setViewFont(settings, v);
+
         vh.pb_image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,7 +181,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
     }
 
 
-    class ListHolder extends ViewHolder {
+    static class ListHolder extends ViewHolder {
         final ImageView pb_image;
         final Button followList, deleteList;
         final TextView title, ownername, description, createdAt;
