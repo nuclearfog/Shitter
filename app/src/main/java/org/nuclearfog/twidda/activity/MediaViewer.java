@@ -47,6 +47,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final String KEY_MEDIA_LINK = "media_link";
     public static final String KEY_MEDIA_TYPE = "media_type";
 
+    /// Media Types
     public static final int MEDIAVIEWER_IMAGE = 0;
     public static final int MEDIAVIEWER_VIDEO = 1;
     public static final int MEDIAVIEWER_ANGIF = 2;
@@ -108,6 +109,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             case MEDIAVIEWER_ANGIF:
                 videoWindow.setVisibility(VISIBLE);
                 Uri video = Uri.parse(link[0]);
+                videoView.setZOrderOnTop(true);
                 videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
                 break;
@@ -116,6 +118,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             case MEDIAVIEWER_VIDEO_STORAGE:
                 videoWindow.setVisibility(VISIBLE);
                 video = Uri.parse(link[0]);
+                videoView.setZOrderOnTop(true);
                 videoView.setMediaController(videoController);
                 videoView.setOnPreparedListener(this);
                 videoView.setVideoURI(video);
