@@ -133,15 +133,38 @@
                         android:visibility="gone"
                         app:srcCompat="@drawable/video" />
 
-                    <TextView
-                        android:id="@+id/tweet_location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:singleLine="true"
-                        android:textSize="@dimen/textsize_tweet_locale"
-                        android:visibility="gone"
-                        app:drawableLeftCompat="@drawable/userlocation"
-                        app:drawableStartCompat="@drawable/userlocation" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tweet_location_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="@dimen/padding_drawable"
+                            android:singleLine="true"
+                            android:textSize="@dimen/textsize_tweet_locale"
+                            android:visibility="gone"
+                            app:drawableLeftCompat="@drawable/userlocation"
+                            app:drawableStartCompat="@drawable/userlocation" />
+
+                        <Button
+                            android:id="@+id/tweet_location_coordinate"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/tweet_button_location"
+                            android:layout_marginLeft="@dimen/margin_layout"
+                            android:layout_marginRight="@dimen/margin_layout"
+                            android:background="@drawable/button"
+                            android:drawablePadding="@dimen/padding_drawable"
+                            android:paddingLeft="@dimen/button_padding"
+                            android:paddingRight="@dimen/button_padding"
+                            android:singleLine="true"
+                            android:textSize="@dimen/textsize_tweet_locale"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/used_api"

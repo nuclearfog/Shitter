@@ -85,7 +85,7 @@ public class Tweet {
         else
             locationName = "";
         if (geo != null)
-            locationCoordinates = geo.getLatitude() + ", " + geo.getLongitude();
+            locationCoordinates = geo.getLatitude() + "," + geo.getLongitude();
         else
             locationCoordinates = "";
         if (status.getInReplyToScreenName() != null)

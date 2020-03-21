@@ -15,7 +15,7 @@
     </style>
 
     <style name="InfoDialog" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:colorBackground">@color/brighttrancparency</item>
+        <item name="android:colorBackground">@color/bright_transparent</item>
         <item name="android:textColor">@android:color/holo_red_dark</item>
         <item name="android:textColorPrimary">@android:color/black</item>
         <item name="android:backgroundDimEnabled">true</item>
@@ -28,7 +28,7 @@
 
     <style name="CardViewStyle" parent="CardView">
         <item name="cardPreventCornerOverlap">false</item>
-        <item name="cardBackgroundColor">@color/halftrancparency</item>
+        <item name="cardBackgroundColor">@color/half_transparent</item>
         <item name="cardCornerRadius">5dp</item>
         <item name="cardUseCompatPadding">true</item>
     </style>

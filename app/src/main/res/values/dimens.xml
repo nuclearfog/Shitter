@@ -63,4 +63,5 @@
     <dimen name="list_bar_padding">10dp</dimen>
     <dimen name="listitem_button_padding">5dp</dimen>
     <dimen name="loginpage_button_padding">24dp</dimen>
+    <dimen name="tweet_button_location">16dp</dimen>
 </resources>

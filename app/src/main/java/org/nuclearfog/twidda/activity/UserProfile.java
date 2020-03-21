@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -133,8 +132,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
-        tweetTabTxt.setTextColor(Color.WHITE);
-        favorTabTxt.setTextColor(Color.WHITE);
         tweetTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.home_profile, 0, 0);
         favorTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favorite_profile, 0, 0);
         tweetTabTxt.setGravity(CENTER);

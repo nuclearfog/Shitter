@@ -61,14 +61,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/username" />
+                android:text="@string/username" />
 
             <EditText
                 android:id="@+id/edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_layout"
-                android:background="@android:color/transparent"
+                android:background="@color/half_transparent"
                 android:hint="@string/tweet"
                 android:inputType="text"
                 android:singleLine="true"
@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_layout"
-                android:background="@android:color/transparent"
+                android:background="@color/half_transparent"
                 android:ems="10"
                 android:hint="@string/edit_location_hint"
                 android:inputType="text"
@@ -102,7 +102,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_layout"
-                android:background="@android:color/transparent"
+                android:background="@color/half_transparent"
                 android:ems="10"
                 android:hint="@string/edit_hint_link"
                 android:inputType="text"
@@ -118,7 +118,7 @@
                 android:id="@+id/edit_bio"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/text_bio_height"
-                android:background="@android:color/transparent"
+                android:background="@color/half_transparent"
                 android:ems="10"
                 android:gravity="top"
                 android:hint="@string/edit_hint_enter_descr"
