@@ -84,7 +84,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
     public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
         final MessageHolder vh = new MessageHolder(view);
-        FontTool.setViewFont(settings, view);
+        FontTool.setViewFontAndColor(settings, view);
 
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.answer.setOnClickListener(new View.OnClickListener() {

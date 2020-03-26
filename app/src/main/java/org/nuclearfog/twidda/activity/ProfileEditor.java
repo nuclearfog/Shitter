@@ -73,7 +73,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.page_profile_edior);
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
         txtImg.setOnClickListener(this);
         pb_image.setOnClickListener(this);

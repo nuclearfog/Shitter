@@ -126,7 +126,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());

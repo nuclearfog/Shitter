@@ -13,7 +13,7 @@
     <string name="register_link">PIN aufrufen</string>
     <string name="profile_image">Profilbild</string>
     <string name="settings">Einstellungen</string>
-    <string name="image">Bilder Laden</string>
+    <string name="image">Bilder laden</string>
     <string name="delete_database">Datenbank Löschen</string>
     <string name="twitter_search">Suche</string>
     <string name="userlist_retweet">Tweet retweetet von</string>

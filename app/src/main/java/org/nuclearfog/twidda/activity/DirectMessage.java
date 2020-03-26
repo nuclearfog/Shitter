@@ -38,7 +38,7 @@ public class DirectMessage extends AppCompatActivity {
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
     }
 
 

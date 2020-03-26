@@ -60,7 +60,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         btnVeri.setTypeface(settings.getFontFace());
         pin.setTypeface(settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
     }
 
 

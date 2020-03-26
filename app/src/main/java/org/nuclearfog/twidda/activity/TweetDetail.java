@@ -124,7 +124,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         tweetText.setMovementMethod(LinkMovementMethod.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());

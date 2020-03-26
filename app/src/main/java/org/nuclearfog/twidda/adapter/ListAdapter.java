@@ -90,7 +90,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
     public ListHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         final ListHolder vh = new ListHolder(v);
-        FontTool.setViewFont(settings, v);
+        FontTool.setViewFontAndColor(settings, v);
 
         vh.pb_image.setOnClickListener(new OnClickListener() {
             @Override

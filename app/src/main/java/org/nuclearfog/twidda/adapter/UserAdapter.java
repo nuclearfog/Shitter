@@ -64,7 +64,7 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
     public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
         final ItemHolder vh = new ItemHolder(v);
-        FontTool.setViewFont(settings, v);
+        FontTool.setViewFontAndColor(settings, v);
 
         v.setOnClickListener(new OnClickListener() {
             @Override

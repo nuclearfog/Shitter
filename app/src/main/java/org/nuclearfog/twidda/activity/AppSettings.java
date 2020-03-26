@@ -12,6 +12,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -49,24 +51,30 @@ import static org.nuclearfog.twidda.activity.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.DB_CLEARED;
 
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener,
-        OnCheckedChangeListener {
+        OnCheckedChangeListener, OnItemSelectedListener {
 
-    private static final int BACKGROUND = 0;
-    private static final int FONTCOLOR = 1;
-    private static final int HIGHLIGHT = 2;
-    private static final int POPUPCOLOR = 3;
     private static final int INVERTCOLOR = 0xffffff;
+    private static final String[] PICKER_SELECT = {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
+
+    private enum ColorMode {
+        BACKGROUND,
+        FONTCOLOR,
+        HIGHLIGHT,
+        POPUPCOLOR
+    }
 
     private GlobalSettings settings;
     private LocationLoader locationAsync;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-    private Spinner locationSpinner, fontSpinner;
+    private NumberPicker load_picker;
+    private Dialog load_dialog_selector, color_dialog_selector;
+    private Spinner locationSpinner;
     private LocationAdapter locationAdapter;
     private View root;
 
-    private int color = 0;
-    private int mode = 0;
+    private ColorMode mode;
+    private int color;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -79,7 +87,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         View login_layout = findViewById(R.id.Login_options);
         CheckBox toggleImg = findViewById(R.id.toggleImg);
         CheckBox toggleAns = findViewById(R.id.toggleAns);
-        fontSpinner = findViewById(R.id.spinner_font);
+        Spinner fontSpinner = findViewById(R.id.spinner_font);
         locationSpinner = findViewById(R.id.spinner_woeid);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
@@ -90,6 +98,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         proxyUser = findViewById(R.id.edit_proxyuser);
         proxyPass = findViewById(R.id.edit_proxypass);
         root = findViewById(R.id.settings_layout);
+        load_picker = new NumberPicker(this);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
@@ -105,8 +114,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         FontAdapter fontAdapter = new FontAdapter();
         fontSpinner.setAdapter(fontAdapter);
         fontSpinner.setSelection(settings.getFont());
+        load_picker.setMinValue(1);
+        load_picker.setMaxValue(10);
+        load_picker.setDisplayedValues(PICKER_SELECT);
+        load_picker.setWrapSelectorWheel(false);
+        load_dialog_selector = new Dialog(this);
+        load_dialog_selector.setContentView(load_picker);
 
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         root.setBackgroundColor(settings.getBackgroundColor());
@@ -122,6 +137,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
+        load_picker.setValue((settings.getRowLimit()) / 10);
 
         logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
@@ -132,6 +148,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         colorButton4.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
         toggleAns.setOnCheckedChangeListener(this);
+        fontSpinner.setOnItemSelectedListener(this);
+        locationSpinner.setOnItemSelectedListener(this);
+        load_dialog_selector.setOnDismissListener(this);
     }
 
 
@@ -148,10 +167,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onBackPressed() {
         if (validateInputs()) {
-            int locSelect = locationSpinner.getSelectedItemPosition();
-            int fontSelect = fontSpinner.getSelectedItemPosition();
-            settings.setFont(fontSelect);
-            settings.setTrendLocation(locationAdapter.getItem(locSelect));
             settings.setProxyServer(proxyAddr.getText().toString(), proxyPort.getText().toString());
             settings.setProxyLogin(proxyUser.getText().toString(), proxyPass.getText().toString());
             settings.configureProxy();
@@ -224,46 +239,31 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 break;
 
             case R.id.color_background:
-                mode = BACKGROUND;
+                mode = ColorMode.BACKGROUND;
                 color = settings.getBackgroundColor();
                 setColor(color);
                 break;
 
             case R.id.color_font:
-                mode = FONTCOLOR;
+                mode = ColorMode.FONTCOLOR;
                 color = settings.getFontColor();
                 setColor(color);
                 break;
 
             case R.id.color_popup:
-                mode = POPUPCOLOR;
+                mode = ColorMode.POPUPCOLOR;
                 color = settings.getPopupColor();
                 setColor(color);
                 break;
 
             case R.id.highlight_color:
-                mode = HIGHLIGHT;
+                mode = ColorMode.HIGHLIGHT;
                 color = settings.getHighlightColor();
                 setColor(color);
                 break;
 
             case R.id.load_dialog:
-                Dialog load_popup = new Dialog(this);
-                final NumberPicker load = new NumberPicker(this);
-                load.setMaxValue(100);
-                load.setMinValue(10);
-                load.setValue(settings.getRowLimit());
-                load.setWrapSelectorWheel(false);
-                load_popup.setContentView(load);
-                load_popup.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if (settings.getRowLimit() != load.getValue()) {
-                            settings.setRowLimit(load.getValue());
-                        }
-                    }
-                });
-                load_popup.show();
+                load_dialog_selector.show();
                 break;
         }
     }
@@ -271,32 +271,39 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onDismiss(DialogInterface d) {
-        switch (mode) {
-            case BACKGROUND:
-                root.setBackgroundColor(color);
-                settings.setBackgroundColor(color);
-                colorButton1.setBackgroundColor(color);
-                colorButton1.setTextColor(color ^ INVERTCOLOR);
-                break;
+        if (d == color_dialog_selector) {
+            switch (mode) {
+                case BACKGROUND:
+                    root.setBackgroundColor(color);
+                    settings.setBackgroundColor(color);
+                    colorButton1.setBackgroundColor(color);
+                    colorButton1.setTextColor(color ^ INVERTCOLOR);
+                    break;
 
-            case FONTCOLOR:
-                settings.setFontColor(color);
-                colorButton2.setBackgroundColor(color);
-                colorButton2.setTextColor(color ^ INVERTCOLOR);
-                locationAdapter.notifyDataSetChanged();
-                break;
+                case FONTCOLOR:
+                    settings.setFontColor(color);
+                    FontTool.setViewFontAndColor(settings, root);
+                    colorButton2.setBackgroundColor(color);
+                    colorButton2.setTextColor(color ^ INVERTCOLOR);
+                    break;
 
-            case POPUPCOLOR:
-                settings.setPopupColor(color);
-                colorButton3.setBackgroundColor(color);
-                colorButton3.setTextColor(color ^ INVERTCOLOR);
-                break;
+                case POPUPCOLOR:
+                    settings.setPopupColor(color);
+                    colorButton3.setBackgroundColor(color);
+                    colorButton3.setTextColor(color ^ INVERTCOLOR);
+                    break;
 
-            case HIGHLIGHT:
-                settings.setHighlightColor(color);
-                colorButton4.setBackgroundColor(color);
-                colorButton4.setTextColor(color ^ INVERTCOLOR);
-                break;
+                case HIGHLIGHT:
+                    settings.setHighlightColor(color);
+                    colorButton4.setBackgroundColor(color);
+                    colorButton4.setTextColor(color ^ INVERTCOLOR);
+                    break;
+            }
+        } else if (d == load_dialog_selector) {
+            int selection = load_picker.getValue() * 10;
+            if (settings.getRowLimit() != selection) {
+                settings.setRowLimit(selection);
+            }
         }
     }
 
@@ -315,6 +322,22 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getAdapter() instanceof LocationAdapter) {
+            settings.setTrendLocation(locationAdapter.getItem(position));
+        } else if (parent.getAdapter() instanceof FontAdapter) {
+            settings.setFont(position);
+            FontTool.setViewFont(settings, root);
+        }
+    }
+
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+
     public void setLocationData(List<TrendLocation> data) {
         locationAdapter.setData(data);
         int position = locationAdapter.getPosition(settings.getTrendLocation());
@@ -323,7 +346,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
 
     private void setColor(int preColor) {
-        Dialog d = ColorPickerDialogBuilder.with(this)
+        color_dialog_selector = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)
                 .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
                 .setOnColorChangedListener(new OnColorChangedListener() {
@@ -332,8 +355,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                         color = i;
                     }
                 }).build();
-        d.setOnDismissListener(this);
-        d.show();
+        color_dialog_selector.setOnDismissListener(this);
+        color_dialog_selector.show();
     }
 
 

@@ -49,7 +49,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             getSupportActionBar().setTitle(name);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFont(settings, root);
+        FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
         adapter = new FragmentAdapter(getSupportFragmentManager(), LISTCONTENT_PAGE, id, "");
         pager.setAdapter(adapter);
