@@ -118,6 +118,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         load_picker.setMaxValue(10);
         load_picker.setDisplayedValues(PICKER_SELECT);
         load_picker.setWrapSelectorWheel(false);
+        load_picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         load_dialog_selector = new Dialog(this);
         load_dialog_selector.setContentView(load_picker);
 

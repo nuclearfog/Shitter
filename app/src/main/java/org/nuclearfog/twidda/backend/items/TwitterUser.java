@@ -33,11 +33,11 @@ public class TwitterUser {
         userID = user.getId();
         username = user.getName();
         screenname = '@' + user.getScreenName();
-        profileImg = user.getOriginalProfileImageURLHttps();
+        profileImg = "" + user.getOriginalProfileImageURLHttps();
         bio = getBio(user);
-        link = user.getURLEntity().getExpandedURL();
-        location = user.getLocation();
-        bannerImg = user.getProfileBannerURL();
+        link = "" + user.getURLEntity().getExpandedURL();
+        location = "" + user.getLocation();
+        bannerImg = "" + user.getProfileBannerURL();
         isVerified = user.isVerified();
         isLocked = user.isProtected();
         created = user.getCreatedAt().getTime();
@@ -205,7 +205,7 @@ public class TwitterUser {
      */
     private String getBio(User user) {
         URLEntity[] entities = user.getDescriptionURLEntities();
-        StringBuilder bio = new StringBuilder(user.getDescription());
+        StringBuilder bio = new StringBuilder("" + user.getDescription());
         for (int i = entities.length - 1; i >= 0; i--) {
             URLEntity entity = entities[i];
             bio.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());

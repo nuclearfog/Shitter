@@ -71,7 +71,7 @@ public class Tweet {
         replyUserId = status.getInReplyToUserId();
 
         // remove HTML tag
-        String api = status.getSource();
+        String api = "" + status.getSource();
         int start = api.indexOf('>') + 1;
         int end = api.lastIndexOf('<');
         if (start > 0 && end > 0)
@@ -341,7 +341,7 @@ public class Tweet {
     private String getText(Status status) {
         URLEntity[] urlEntities = status.getURLEntities();
         MediaEntity[] mediaEntities = status.getMediaEntities();
-        StringBuilder tweet = new StringBuilder(status.getText());
+        StringBuilder tweet = new StringBuilder("" + status.getText());
         for (int i = urlEntities.length - 1; i >= 0; i--) { // expand shorten links
             int start = urlEntities[i].getStart();
             int end = urlEntities[i].getEnd();

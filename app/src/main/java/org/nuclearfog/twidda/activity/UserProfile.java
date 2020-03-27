@@ -130,7 +130,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
-        lnkTxt.setLinkTextColor(settings.getHighlightColor());
+        lnkTxt.setTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
         tweetTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.home_profile, 0, 0);
         favorTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favorite_profile, 0, 0);
@@ -495,7 +495,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             txtLocation.setVisibility(GONE);
         }
         if (!user.getLink().isEmpty()) {
-            lnkTxt.setText(user.getLink());
+            String link = user.getLink();
+            if (link.startsWith("http://"))
+                lnkTxt.setText(link.substring(7));
+            else if (link.startsWith("https://"))
+                lnkTxt.setText(link.substring(8));
+            else
+                lnkTxt.setText(link);
             lnkTxt.setVisibility(VISIBLE);
         } else {
             lnkTxt.setVisibility(GONE);
