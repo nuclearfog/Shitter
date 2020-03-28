@@ -7,9 +7,6 @@ import android.graphics.Typeface;
 
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-
 import static android.content.Context.MODE_PRIVATE;
 
 public final class GlobalSettings {
@@ -256,15 +253,6 @@ public final class GlobalSettings {
     }
 
     /**
-     * get proxy address
-     *
-     * @return proxy address
-     */
-    public String getProxyHost() {
-        return proxyHost;
-    }
-
-    /**
      * set proxy address
      *
      * @param proxyHost address of proxy
@@ -287,6 +275,15 @@ public final class GlobalSettings {
     }
 
     /**
+     * get proxy address
+     *
+     * @return proxy address
+     */
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    /**
      * get proxy port
      *
      * @return proxy port string
@@ -302,6 +299,33 @@ public final class GlobalSettings {
      */
     public String getProxyUser() {
         return proxyUser;
+    }
+
+    /**
+     * get proxy password
+     *
+     * @return login password
+     */
+    public String getProxyPass() {
+        return proxyPass;
+    }
+
+    /**
+     * check if proxy is set
+     *
+     * @return true if proxy is set
+     */
+    public boolean isProxyServerSet() {
+        return !proxyHost.isEmpty() && !proxyPort.isEmpty();
+    }
+
+    /**
+     * check if proxy login is set
+     *
+     * @return true if login is set
+     */
+    public boolean isProxyLoginSet() {
+        return !proxyUser.isEmpty() && !proxyPass.isEmpty();
     }
 
     /**
@@ -324,15 +348,6 @@ public final class GlobalSettings {
             edit.putString("proxy_pass", proxyPass);
         }
         edit.apply();
-    }
-
-    /**
-     * get proxy password
-     *
-     * @return login password
-     */
-    public String getProxyPass() {
-        return proxyPass;
     }
 
     /**
@@ -386,40 +401,6 @@ public final class GlobalSettings {
     }
 
     /**
-     * set JAVA VM proxy
-     */
-    public void configureProxy() {
-        try {
-            if (proxyHost.trim().isEmpty()) {
-                System.clearProperty("https.proxyHost");
-            } else {
-                System.setProperty("https.proxyHost", proxyHost);
-            }
-            if (proxyPort.trim().isEmpty()) {
-                System.clearProperty("https.proxyPort");
-            } else {
-                System.setProperty("https.proxyPort", proxyPort);
-            }
-            if (proxyUser.trim().isEmpty()) {
-                System.clearProperty("https.proxyUser");
-            }
-            if (proxyPass.trim().isEmpty()) {
-                System.clearProperty("https.proxyPassword");
-            }
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    System.setProperty("https.proxyUser", proxyUser);
-                    System.setProperty("https.proxyPassword", proxyPass);
-                    return new PasswordAuthentication(proxyUser, proxyPass.toCharArray());
-                }
-            });
-        } catch (SecurityException sErr) {
-            sErr.printStackTrace();
-        }
-    }
-
-    /**
      * Remove all user content from Shared Preferences
      */
     public void logout() {
@@ -450,6 +431,5 @@ public final class GlobalSettings {
         String place = settings.getString("location", "Worldwide");
         int woeId = settings.getInt("world_id", 1);
         location = new TrendLocation(place, woeId);
-        configureProxy();
     }
 }

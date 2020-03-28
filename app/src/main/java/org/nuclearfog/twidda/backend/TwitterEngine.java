@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
 import org.nuclearfog.twidda.BuildConfig;
@@ -21,6 +22,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -43,39 +46,75 @@ import twitter4j.User;
 import twitter4j.UserList;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterEngine {
 
-    private static TwitterEngine mTwitter;
-    private final String TWITTER_CONSUMER_KEY = BuildConfig.API_KEY_1;
-    private final String TWITTER_CONSUMER_SECRET = BuildConfig.API_KEY_2;
+    private static final TwitterEngine mTwitter = new TwitterEngine();
 
     private String redirectionUrl;
     private long twitterID;
     private Twitter twitter;
     private GlobalSettings settings;
+    @Nullable
     private RequestToken reqToken;
-    private int load;
+    @Nullable
+    private AccessToken aToken;
+    private boolean isInitialized = false;
+
+
+    private TwitterEngine() {
+    }
+
+
+    private void initTwitter() {
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.setOAuthConsumerKey(BuildConfig.API_KEY_1);
+        builder.setOAuthConsumerSecret(BuildConfig.API_KEY_2);
+        if (settings.isProxyServerSet()) {
+            builder.setHttpProxyHost(settings.getProxyHost());
+            builder.setHttpProxyPort(Integer.parseInt(settings.getProxyPort()));
+        }
+        if (settings.isProxyLoginSet()) {
+            builder.setHttpProxyUser(settings.getProxyUser());
+            builder.setHttpProxyPassword(settings.getProxyPass());
+        }
+        TwitterFactory factory = new TwitterFactory(builder.build());
+        if (aToken != null)
+            twitter = factory.getInstance(aToken);
+        else
+            twitter = factory.getInstance();
+    }
 
 
     /**
-     * Singleton Constructor
+     * set Twitter4J and JavaVM Proxy
      */
-    private TwitterEngine(Context context) {
-        settings = GlobalSettings.getInstance(context);
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
-        builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
-        Configuration configuration = builder.build();
-        TwitterFactory factory = new TwitterFactory(configuration);
-        twitter = factory.getInstance();
-
-        if (settings.getLogin()) {
-            String[] keys = settings.getKeys();
-            initKeys(keys[0], keys[1]);
-            twitterID = settings.getUserId();
+    public void initProxy() {
+        initTwitter();
+        try {
+            if (settings.isProxyServerSet()) {
+                System.setProperty("https.proxyHost", settings.getProxyHost());
+                System.setProperty("https.proxyPort", settings.getProxyPort());
+            } else {
+                System.clearProperty("https.proxyHost");
+                System.clearProperty("https.proxyPort");
+            }
+            if (settings.isProxyLoginSet()) {
+                System.setProperty("https.proxyUser", settings.getProxyUser());
+                System.setProperty("https.proxyPassword", settings.getProxyPass());
+                Authenticator.setDefault(new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(settings.getProxyUser(), settings.getProxyPass().toCharArray());
+                    }
+                });
+            } else {
+                System.clearProperty("https.proxyUser");
+                System.clearProperty("https.proxyPassword");
+            }
+        } catch (SecurityException sErr) {
+            sErr.printStackTrace();
         }
     }
 
@@ -87,15 +126,25 @@ public class TwitterEngine {
      * @return TwitterEngine Instance
      */
     public static TwitterEngine getInstance(Context context) {
-        if (mTwitter == null)
-            mTwitter = new TwitterEngine(context);
-        mTwitter.setLoad();
+        if (!mTwitter.isInitialized) {
+            mTwitter.settings = GlobalSettings.getInstance(context);
+            if (mTwitter.settings.getLogin()) {
+                String[] keys = mTwitter.settings.getKeys();
+                mTwitter.aToken = new AccessToken(keys[0], keys[1]);
+                mTwitter.twitterID = mTwitter.settings.getUserId();
+            }
+            mTwitter.initTwitter();
+            mTwitter.isInitialized = true;
+        }
         return mTwitter;
     }
 
 
-    public static void destroyInstance() {
-        mTwitter = null;
+    /**
+     * logout from Twitter
+     */
+    public static void logoutTwitter() {
+        mTwitter.isInitialized = false;
     }
 
 
@@ -123,7 +172,6 @@ public class TwitterEngine {
      *
      * @param twitterPin PIN for accessing account
      * @throws EngineException if pin is false or request token is null
-     * @see #initKeys(String, String)
      */
     void initialize(String twitterPin) throws EngineException {
         try {
@@ -131,7 +179,8 @@ public class TwitterEngine {
                 AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
                 String key1 = accessToken.getToken();
                 String key2 = accessToken.getTokenSecret();
-                initKeys(key1, key2);
+                aToken = new AccessToken(key1, key2);
+                initTwitter();
                 twitterID = twitter.getId();
                 settings.setConnection(key1, key2, twitterID);
             } else {
@@ -140,29 +189,6 @@ public class TwitterEngine {
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
-    }
-
-
-    /**
-     * Initialize Twitter with Accesstoken
-     *
-     * @param key1 AccessToken
-     * @param key2 AccessToken Secret
-     */
-    private void initKeys(String key1, String key2) {
-        ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
-        builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
-        AccessToken token = new AccessToken(key1, key2);
-        twitter = new TwitterFactory(builder.build()).getInstance(token);
-    }
-
-
-    /**
-     * set amount of tweets to be loaded
-     */
-    private void setLoad() {
-        load = settings.getRowLimit();
     }
 
 
@@ -176,6 +202,7 @@ public class TwitterEngine {
      */
     List<Tweet> getHome(int page, long lastId) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             List<Status> homeTweets = twitter.getHomeTimeline(new Paging(page, load, lastId));
             return convertStatusList(homeTweets);
         } catch (TwitterException err) {
@@ -194,6 +221,7 @@ public class TwitterEngine {
      */
     List<Tweet> getMention(int page, long id) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             List<Status> mentions = twitter.getMentionsTimeline(new Paging(page, load, id));
             return convertStatusList(mentions);
         } catch (TwitterException err) {
@@ -212,6 +240,7 @@ public class TwitterEngine {
      */
     List<Tweet> searchTweets(String search, long id) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             Query q = new Query();
             q.setQuery(search + " +exclude:retweets");
             q.setCount(load);
@@ -292,6 +321,7 @@ public class TwitterEngine {
      */
     List<Tweet> getUserTweets(long userId, long sinceId, int page) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             Paging paging = new Paging(page, load, sinceId);
             return convertStatusList(twitter.getUserTimeline(userId, paging));
         } catch (TwitterException err) {
@@ -304,14 +334,14 @@ public class TwitterEngine {
      * Get User Favs
      *
      * @param userId  User ID
-     * @param sinceId minimum tweet ID
      * @param page    current page
      * @return List of User Favs
      * @throws EngineException if access is unavailable
      */
-    List<Tweet> getUserFavs(long userId, long sinceId, int page) throws EngineException {
+    List<Tweet> getUserFavs(long userId, int page) throws EngineException {
         try {
-            Paging paging = new Paging(page, load, sinceId);
+            int load = settings.getRowLimit();
+            Paging paging = new Paging(page, load);
             List<Status> favorits = twitter.getFavorites(userId, paging);
             return convertStatusList(favorits);
         } catch (TwitterException err) {
@@ -472,6 +502,7 @@ public class TwitterEngine {
      */
     List<TwitterUser> getFollowing(long userId) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             IDs userIDs = twitter.getFriendsIDs(userId, -1, load);
             long[] ids = userIDs.getIDs();
             if (ids.length == 0)
@@ -492,6 +523,7 @@ public class TwitterEngine {
      */
     List<TwitterUser> getFollower(long userId) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             IDs userIDs = twitter.getFollowersIDs(userId, -1, load);
             long[] ids = userIDs.getIDs();
             if (ids.length == 0)
@@ -558,6 +590,7 @@ public class TwitterEngine {
      */
     List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             List<Status> answers = new LinkedList<>();
             Query query = new Query("to:" + name + " since_id:" + sinceId + " +exclude:retweets");
             query.setCount(load);
@@ -656,6 +689,7 @@ public class TwitterEngine {
      */
     List<TwitterUser> getRetweeter(long tweetID) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             Tweet embeddedStat = getStatus(tweetID).getEmbeddedTweet();
             if (embeddedStat != null)
                 tweetID = embeddedStat.getId();
@@ -677,6 +711,7 @@ public class TwitterEngine {
      */
     List<Message> getMessages() throws EngineException {
         try {
+            int load = settings.getRowLimit();
             List<DirectMessage> dmList = twitter.getDirectMessages(load);
             List<Message> result = new LinkedList<>();
             for (DirectMessage dm : dmList) {
@@ -862,6 +897,7 @@ public class TwitterEngine {
      */
     List<Tweet> getListTweets(long listId, long sinceId, int page) throws EngineException {
         try {
+            int load = settings.getRowLimit();
             Paging paging = new Paging(page, load, sinceId);
             return convertStatusList(twitter.getUserListStatuses(listId, paging));
         } catch (TwitterException err) {

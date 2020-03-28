@@ -170,7 +170,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (validateInputs()) {
             settings.setProxyServer(proxyAddr.getText().toString(), proxyPort.getText().toString());
             settings.setProxyLogin(proxyUser.getText().toString(), proxyPass.getText().toString());
-            settings.configureProxy();
+            TwitterEngine.getInstance(this).initProxy();
             super.onBackPressed();
         }
     }
@@ -230,7 +230,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.logout();
-                                TwitterEngine.destroyInstance();
+                                TwitterEngine.logoutTwitter();
                                 DatabaseAdapter.deleteDatabase(getApplicationContext());
                                 setResult(APP_LOGOUT);
                                 finish();
