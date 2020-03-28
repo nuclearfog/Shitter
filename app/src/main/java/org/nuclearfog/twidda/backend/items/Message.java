@@ -26,7 +26,7 @@ public class Message {
         this.receiver = new TwitterUser(receiver);
         messageId = dm.getId();
         time = dm.getCreatedAt().getTime();
-        message = getText(dm);
+        message = "" + getText(dm);
     }
 
     /**

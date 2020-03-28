@@ -18,7 +18,7 @@ public class TwitterTrend {
      * @param rank  trend ranking
      */
     public TwitterTrend(Trend trend, int rank) {
-        this.trendName = trend.getName();
+        this.trendName = "" + trend.getName();
         this.range = trend.getTweetVolume();
         this.rank = rank;
     }

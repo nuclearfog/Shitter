@@ -419,6 +419,18 @@ public class AppDatabase {
     }
 
     /**
+     * Remove outdated favorite list to create a new one
+     *
+     * @param userId Id of the favorite list owner
+     */
+    public void removeOldFavorites(long userId) {
+        final String[] delArgs = {Long.toString(userId)};
+        SQLiteDatabase db = getDbWrite();
+        db.delete("favorit", "ownerID=?", delArgs);
+        commit(db);
+    }
+
+    /**
      * Delete Direct Message
      *
      * @param id Direct Message ID

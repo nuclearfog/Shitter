@@ -22,7 +22,7 @@ public class TrendLocation {
         String placeName = location.getName();
 
         if (country == null || country.trim().isEmpty() || country.equals(placeName))
-            this.placeName = placeName;
+            this.placeName = "" + placeName;
         else
             this.placeName = country + ", " + placeName;
         this.id = location.getWoeid();

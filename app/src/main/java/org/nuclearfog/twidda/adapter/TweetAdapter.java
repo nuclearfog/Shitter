@@ -45,6 +45,13 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
     }
 
     @MainThread
+    public void add(@NonNull List<Tweet> newTweets) {
+        tweets.clear();
+        tweets.addAll(newTweets);
+        notifyDataSetChanged();
+    }
+
+    @MainThread
     public void addFirst(@NonNull List<Tweet> newTweets) {
         if (!newTweets.isEmpty()) {
             tweets.addAll(0, newTweets);

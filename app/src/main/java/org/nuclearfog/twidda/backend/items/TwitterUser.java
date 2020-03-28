@@ -31,7 +31,7 @@ public class TwitterUser {
 
     public TwitterUser(User user) {
         userID = user.getId();
-        username = user.getName();
+        username = "" + user.getName();
         screenname = '@' + user.getScreenName();
         profileImg = "" + user.getOriginalProfileImageURLHttps();
         bio = getBio(user);

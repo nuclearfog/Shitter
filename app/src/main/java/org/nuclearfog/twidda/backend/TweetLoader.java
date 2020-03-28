@@ -95,56 +95,57 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
                     break;
 
                 case USR_TWEETS:
-                    long tweetId = (long) param[0];
+                    long id = (long) param[0];
                     page = (int) param[1];
                     if (adapter.isEmpty()) {
-                        tweets = db.getUserTweets(tweetId);
+                        tweets = db.getUserTweets(id);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserTweets(tweetId, sinceId, page);
+                            tweets = mTwitter.getUserTweets(id, sinceId, page);
                             db.storeUserTweets(tweets);
                         }
                     } else {
                         sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getUserTweets(tweetId, sinceId, page);
+                        tweets = mTwitter.getUserTweets(id, sinceId, page);
                         db.storeUserTweets(tweets);
                     }
                     break;
 
                 case USR_FAVORS:
-                    tweetId = (long) param[0];
+                    id = (long) param[0];
                     page = (int) param[1];
                     if (adapter.isEmpty()) {
-                        tweets = db.getUserFavs(tweetId);
+                        tweets = db.getUserFavs(id);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserFavs(tweetId, sinceId, page);
-                            db.storeUserFavs(tweets, tweetId);
+                            tweets = mTwitter.getUserFavs(id, 1, page);
+                            db.storeUserFavs(tweets, id);
                         }
                     } else {
-                        sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getUserFavs(tweetId, sinceId, page);
-                        db.storeUserFavs(tweets, tweetId);
+                        tweets = mTwitter.getUserFavs(id, 1, page);
+                        if (page == 1)
+                            db.removeOldFavorites(id); // remove outdated information
+                        db.storeUserFavs(tweets, id);
                     }
                     break;
 
                 case DB_ANS:
-                    tweetId = (long) param[0];
-                    tweets = db.getAnswers(tweetId);
+                    id = (long) param[0];
+                    tweets = db.getAnswers(id);
                     break;
 
                 case TWEET_ANS:
-                    tweetId = (long) param[0];
+                    id = (long) param[0];
                     String search = (String) param[1];
                     if (adapter.isEmpty()) {
-                        tweets = db.getAnswers(tweetId);
+                        tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getAnswers(search, tweetId, sinceId);
-                            if (!tweets.isEmpty() && db.containStatus(tweetId))
+                            tweets = mTwitter.getAnswers(search, id, sinceId);
+                            if (!tweets.isEmpty() && db.containStatus(id))
                                 db.storeReplies(tweets);
                         }
                     } else {
                         sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getAnswers(search, tweetId, sinceId);
-                        if (!tweets.isEmpty() && db.containStatus(tweetId))
+                        tweets = mTwitter.getAnswers(search, id, sinceId);
+                        if (!tweets.isEmpty() && db.containStatus(id))
                             db.storeReplies(tweets);
                     }
                     break;
@@ -176,8 +177,12 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
     @Override
     protected void onPostExecute(@Nullable List<Tweet> tweets) {
         if (ui.get() != null) {
-            if (tweets != null)
-                adapter.addFirst(tweets);
+            if (tweets != null) {
+                if (mode == Mode.USR_FAVORS)
+                    adapter.add(tweets); // replace all items
+                else
+                    adapter.addFirst(tweets);
+            }
             if (twException != null)
                 Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
             ui.get().setRefresh(false);

@@ -263,6 +263,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
+                    android:gravity="center_vertical"
                     android:singleLine="true"
                     android:text="@string/proxy_address_text" />
 
@@ -270,12 +271,14 @@
                     android:id="@+id/edit_proxyadress"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="@dimen/settings_edittext_margin"
                     android:layout_weight="4"
-                    android:background="@android:color/transparent"
+                    android:background="@color/half_transparent"
+                    android:digits="0123456789."
                     android:ems="10"
                     android:hint="@string/enter_proxy"
                     android:inputType="number|numberDecimal"
-                    android:digits="0123456789."
+                    android:padding="@dimen/edittext_background_padding"
                     android:singleLine="true"
                     android:textSize="14sp" />
 
@@ -283,11 +286,13 @@
                     android:id="@+id/edit_proxyport"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="@dimen/settings_edittext_margin"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
+                    android:background="@color/half_transparent"
                     android:ems="10"
                     android:hint="@string/proxy_port"
                     android:inputType="number"
+                    android:padding="@dimen/edittext_background_padding"
                     android:singleLine="true"
                     android:textSize="14sp" />
 
@@ -302,6 +307,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
+                    android:gravity="center_vertical"
                     android:singleLine="true"
                     android:text="@string/proxy_authentication" />
 
@@ -309,11 +315,13 @@
                     android:id="@+id/edit_proxyuser"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="@dimen/settings_edittext_margin"
                     android:layout_weight="3"
-                    android:background="@android:color/transparent"
+                    android:background="@color/half_transparent"
                     android:ems="10"
                     android:hint="@string/edit_proxyuser"
                     android:inputType="textPersonName"
+                    android:padding="@dimen/edittext_background_padding"
                     android:singleLine="true"
                     android:textSize="14sp" />
 
@@ -321,11 +329,13 @@
                     android:id="@+id/edit_proxypass"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_margin="@dimen/settings_edittext_margin"
                     android:layout_weight="2"
-                    android:background="@android:color/transparent"
+                    android:background="@color/half_transparent"
                     android:ems="10"
                     android:hint="@string/proxy_password"
                     android:inputType="textPassword"
+                    android:padding="@dimen/edittext_background_padding"
                     android:singleLine="true"
                     android:textSize="14sp" />
 

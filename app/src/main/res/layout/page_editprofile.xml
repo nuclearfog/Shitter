@@ -61,8 +61,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/profilesettings_edittext_padding"
-                android:paddingRight="@dimen/profilesettings_edittext_padding"
+                android:paddingLeft="@dimen/edittext_background_padding"
+                android:paddingRight="@dimen/edittext_background_padding"
                 android:text="@string/username" />
 
             <EditText
@@ -73,15 +73,15 @@
                 android:background="@color/half_transparent"
                 android:hint="@string/tweet"
                 android:inputType="text"
-                android:padding="@dimen/profilesettings_edittext_padding"
+                android:padding="@dimen/edittext_background_padding"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/profilesettings_edittext_padding"
-                android:paddingRight="@dimen/profilesettings_edittext_padding"
+                android:paddingLeft="@dimen/edittext_background_padding"
+                android:paddingRight="@dimen/edittext_background_padding"
                 android:text="@string/profile_location" />
 
             <EditText
@@ -93,15 +93,15 @@
                 android:ems="10"
                 android:hint="@string/edit_location_hint"
                 android:inputType="text"
-                android:padding="@dimen/profilesettings_edittext_padding"
+                android:padding="@dimen/edittext_background_padding"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/profilesettings_edittext_padding"
-                android:paddingRight="@dimen/profilesettings_edittext_padding"
+                android:paddingLeft="@dimen/edittext_background_padding"
+                android:paddingRight="@dimen/edittext_background_padding"
                 android:text="@string/profile_link" />
 
             <EditText
@@ -113,15 +113,15 @@
                 android:ems="10"
                 android:hint="@string/edit_hint_link"
                 android:inputType="text"
-                android:padding="@dimen/profilesettings_edittext_padding"
+                android:padding="@dimen/edittext_background_padding"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/profilesettings_edittext_padding"
-                android:paddingRight="@dimen/profilesettings_edittext_padding"
+                android:paddingLeft="@dimen/edittext_background_padding"
+                android:paddingRight="@dimen/edittext_background_padding"
                 android:text="@string/profile_bio" />
 
             <EditText
@@ -133,7 +133,7 @@
                 android:gravity="top"
                 android:hint="@string/edit_hint_enter_descr"
                 android:inputType="textMultiLine"
-                android:padding="@dimen/profilesettings_edittext_padding"
+                android:padding="@dimen/edittext_background_padding"
                 android:textSize="@dimen/textsize_profileedit" />
 
         </LinearLayout>

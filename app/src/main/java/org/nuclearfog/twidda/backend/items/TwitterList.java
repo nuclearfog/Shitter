@@ -23,9 +23,9 @@ public class TwitterList {
 
     public TwitterList(UserList list, long homeId, boolean isFollowing) {
         id = list.getId();
-        title = list.getName();
+        title = "" + list.getName();
         createdAt = list.getCreatedAt().getTime();
-        description = list.getDescription();
+        description = "" + list.getDescription();
         owner = new TwitterUser(list.getUser());
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
