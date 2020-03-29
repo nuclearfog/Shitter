@@ -316,7 +316,7 @@ public final class GlobalSettings {
      * @return true if proxy is set
      */
     public boolean isProxyServerSet() {
-        return !proxyHost.isEmpty() && !proxyPort.isEmpty();
+        return !proxyHost.isEmpty();
     }
 
     /**
@@ -325,7 +325,7 @@ public final class GlobalSettings {
      * @return true if login is set
      */
     public boolean isProxyLoginSet() {
-        return !proxyUser.isEmpty() && !proxyPass.isEmpty();
+        return !proxyUser.isEmpty();
     }
 
     /**

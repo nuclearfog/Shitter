@@ -52,64 +52,65 @@ public class TwitterEngine {
 
     private static final TwitterEngine mTwitter = new TwitterEngine();
 
-    private String redirectionUrl;
-    private long twitterID;
     private Twitter twitter;
+    private long twitterID;
+    private boolean isInitialized = false;
     private GlobalSettings settings;
     @Nullable
     private RequestToken reqToken;
     @Nullable
     private AccessToken aToken;
-    private boolean isInitialized = false;
 
 
     private TwitterEngine() {
     }
 
 
+    /**
+     * Initialize Twitter4J instance
+     */
     private void initTwitter() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(BuildConfig.API_KEY_1);
         builder.setOAuthConsumerSecret(BuildConfig.API_KEY_2);
+        // Twitter4J has its own proxy settings
         if (settings.isProxyServerSet()) {
             builder.setHttpProxyHost(settings.getProxyHost());
             builder.setHttpProxyPort(Integer.parseInt(settings.getProxyPort()));
-        }
-        if (settings.isProxyLoginSet()) {
-            builder.setHttpProxyUser(settings.getProxyUser());
-            builder.setHttpProxyPassword(settings.getProxyPass());
+            if (settings.isProxyLoginSet()) {
+                builder.setHttpProxyUser(settings.getProxyUser());
+                builder.setHttpProxyPassword(settings.getProxyPass());
+            }
         }
         TwitterFactory factory = new TwitterFactory(builder.build());
         if (aToken != null)
             twitter = factory.getInstance(aToken);
         else
             twitter = factory.getInstance();
+        initJVMProxy();
     }
 
-
     /**
-     * set Twitter4J and JavaVM Proxy
+     * Initialize App proxy
      */
-    public void initProxy() {
-        initTwitter();
+    private void initJVMProxy() {
         try {
             if (settings.isProxyServerSet()) {
                 System.setProperty("https.proxyHost", settings.getProxyHost());
                 System.setProperty("https.proxyPort", settings.getProxyPort());
+                if (settings.isProxyLoginSet()) {
+                    System.setProperty("https.proxyUser", settings.getProxyUser());
+                    System.setProperty("https.proxyPassword", settings.getProxyPass());
+                    Authenticator.setDefault(new Authenticator() {
+                        @Override
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(settings.getProxyUser(), settings.getProxyPass().toCharArray());
+                        }
+                    });
+                }
             } else {
                 System.clearProperty("https.proxyHost");
                 System.clearProperty("https.proxyPort");
-            }
-            if (settings.isProxyLoginSet()) {
-                System.setProperty("https.proxyUser", settings.getProxyUser());
-                System.setProperty("https.proxyPassword", settings.getProxyPass());
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(settings.getProxyUser(), settings.getProxyPass().toCharArray());
-                    }
-                });
-            } else {
                 System.clearProperty("https.proxyUser");
                 System.clearProperty("https.proxyPassword");
             }
@@ -120,7 +121,7 @@ public class TwitterEngine {
 
 
     /**
-     * Singleton, package-private
+     * get singleton instance
      *
      * @param context Main Thread Context
      * @return TwitterEngine Instance
@@ -141,10 +142,12 @@ public class TwitterEngine {
 
 
     /**
-     * logout from Twitter
+     * reset Twitter state
      */
-    public static void logoutTwitter() {
+    public static void resetTwitter() {
         mTwitter.isInitialized = false;
+        mTwitter.reqToken = null;   // Destroy connections
+        mTwitter.aToken = null;     //
     }
 
 
@@ -156,14 +159,12 @@ public class TwitterEngine {
      */
     String request() throws EngineException {
         try {
-            if (reqToken == null) {
+            if (reqToken == null)
                 reqToken = twitter.getOAuthRequestToken();
-                redirectionUrl = reqToken.getAuthenticationURL();
-            }
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
-        return redirectionUrl;
+        return reqToken.getAuthenticationURL();
     }
 
 

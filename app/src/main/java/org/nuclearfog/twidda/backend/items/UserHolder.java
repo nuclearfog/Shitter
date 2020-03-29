@@ -59,11 +59,20 @@ public class UserHolder {
     }
 
     /**
-     * ge local image path
+     * get local image path
      * @return image path
      */
     public String getImageLink() {
         return imageLink;
+    }
+
+    /**
+     * check if profile image path is included
+     *
+     * @return true if image path is included
+     */
+    public boolean hasProfileImage() {
+        return imageLink.isEmpty();
     }
 
     @NonNull

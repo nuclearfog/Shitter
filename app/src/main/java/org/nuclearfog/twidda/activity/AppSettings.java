@@ -170,7 +170,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (validateInputs()) {
             settings.setProxyServer(proxyAddr.getText().toString(), proxyPort.getText().toString());
             settings.setProxyLogin(proxyUser.getText().toString(), proxyPass.getText().toString());
-            TwitterEngine.getInstance(this).initProxy();
+            TwitterEngine.resetTwitter();
             super.onBackPressed();
         }
     }
@@ -230,7 +230,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.logout();
-                                TwitterEngine.logoutTwitter();
+                                TwitterEngine.resetTwitter();
                                 DatabaseAdapter.deleteDatabase(getApplicationContext());
                                 setResult(APP_LOGOUT);
                                 finish();
@@ -368,21 +368,21 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Editable editUser = proxyUser.getText();
         Editable editPass = proxyPass.getText();
 
-        if (editAddr != null && !editAddr.toString().isEmpty()) {
+        if (editAddr != null && editAddr.length() > 0) {
             Matcher ipMatch = Patterns.IP_ADDRESS.matcher(editAddr);
             if (!ipMatch.matches()) {
                 String errMsg = getString(R.string.error_wrong_ip);
                 proxyAddr.setError(errMsg);
                 success = false;
             }
-            if (editPort == null || editPort.toString().isEmpty()) {
+            if (editPort == null || editPort.length() == 0) {
                 String errMsg = getString(R.string.error_empty_port);
                 proxyPort.setError(errMsg);
                 success = false;
             }
         }
-        if (editUser != null && !editUser.toString().isEmpty()) {
-            if (editPass != null && editPass.toString().isEmpty()) {
+        if (editUser != null && editUser.length() > 0) {
+            if (editPass != null && editPass.length() == 0) {
                 String errMsg = getString(R.string.error_empty_pass);
                 proxyPass.setError(errMsg);
                 success = false;
