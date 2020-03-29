@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="@dimen/edittext_background_padding"
                 android:paddingRight="@dimen/edittext_background_padding"
-                android:text="@string/username" />
+                android:text="@string/enter_username" />
 
             <EditText
                 android:id="@+id/edit_name"
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_layout"
                 android:background="@color/half_transparent"
-                android:hint="@string/tweet"
+                android:hint="@string/username"
                 android:inputType="text"
                 android:padding="@dimen/edittext_background_padding"
                 android:singleLine="true"

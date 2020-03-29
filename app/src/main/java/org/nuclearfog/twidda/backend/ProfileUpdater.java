@@ -102,14 +102,14 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
     protected void onPostExecute(@Nullable TwitterUser user) {
         if (ui.get() != null && popup.get() != null) {
             popup.get().dismiss();
-            if (user != null) {
+            if (twException != null) {
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
+                ui.get().finish();
+            } else if (user != null) {
                 ui.get().setUser(user);
             } else if (userHolder != null) {
                 Toast.makeText(ui.get(), R.string.profile_updated, Toast.LENGTH_SHORT).show();
                 ui.get().setResult(RETURN_PROFILE_CHANGED);
-                ui.get().finish();
-            } else {
-                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
                 ui.get().finish();
             }
         }

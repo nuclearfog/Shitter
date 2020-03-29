@@ -72,7 +72,7 @@ public class UserHolder {
      * @return true if image path is included
      */
     public boolean hasProfileImage() {
-        return imageLink.isEmpty();
+        return !imageLink.isEmpty();
     }
 
     @NonNull

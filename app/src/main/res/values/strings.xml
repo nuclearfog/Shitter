@@ -150,4 +150,5 @@
     <string name="confirm_unfollow_list">Unfollow list?</string>
     <string name="trend_range">Tweets</string>
     <string name="error_connection_failed">Connection failed!</string>
+    <string name="enter_username">Enter username</string>
 </resources>
