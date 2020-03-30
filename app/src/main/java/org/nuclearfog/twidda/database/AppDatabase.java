@@ -146,12 +146,8 @@ public class AppDatabase {
      */
     public void storeFavorite(Tweet tweet) {
         SQLiteDatabase db = getDbWrite();
-        long tweetID = tweet.getId();
-
-        if (!containsFavor(homeId, tweetID, db)) {
-            storeStatus(tweet, 0, db);
-            storeFavorite(tweet, homeId, db);
-        }
+        storeStatus(tweet, 0, db);
+        storeFavorite(tweet, homeId, db);
         commit(db);
     }
 
@@ -688,12 +684,10 @@ public class AppDatabase {
 
 
     private void storeFavorite(Tweet tweet, long ownerId, SQLiteDatabase db) {
-        if (!containsFavor(ownerId, tweet.getId(), db)) {
-            ContentValues favTable = new ContentValues();
-            favTable.put("tweetID", tweet.getId());
-            favTable.put("ownerID", ownerId);
-            db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
-        }
+        ContentValues favTable = new ContentValues();
+        favTable.put("tweetID", tweet.getId());
+        favTable.put("ownerID", ownerId);
+        db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
     }
 
 
@@ -750,25 +744,6 @@ public class AppDatabase {
     private boolean containStatus(long id, SQLiteDatabase db) {
         final String[] ARGS = new String[]{Long.toString(id)};
         final String QUERY = "SELECT tweetID FROM tweet WHERE tweetID=? LIMIT 1;";
-
-        Cursor c = db.rawQuery(QUERY, ARGS);
-        boolean result = c.moveToFirst();
-        c.close();
-        return result;
-    }
-
-
-    /**
-     * check if Tweet already exists in favorite table
-     *
-     * @param userId  user ID of the owner
-     * @param tweetId tweet ID
-     * @param db      database for read
-     * @return true if tweet found
-     */
-    private boolean containsFavor(long userId, long tweetId, SQLiteDatabase db) {
-        final String[] ARGS = new String[]{Long.toString(userId), Long.toString(tweetId)};
-        final String QUERY = "SELECT tweetID FROM favorit WHERE ownerID=? AND tweetID=? LIMIT 1;";
 
         Cursor c = db.rawQuery(QUERY, ARGS);
         boolean result = c.moveToFirst();

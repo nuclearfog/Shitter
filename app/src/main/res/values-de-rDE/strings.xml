@@ -130,7 +130,6 @@
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
     <string name="profile_lists">Listen</string>
     <string name="item_list_pb_desc">Profile Listenbesitzer</string>
-    <string name="list_created">"erstellt am: "</string>
     <string name="list_appbar">Listen</string>
     <string name="user_list_subscr">Listenbeobachter</string>
     <string name="info_unfollowed">entfolgt!</string>
