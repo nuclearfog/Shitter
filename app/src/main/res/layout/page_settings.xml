@@ -43,15 +43,24 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/color_background"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <LinearLayout
+                    android:id="@+id/color_background_edge"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_settings_color"
                     android:layout_margin="@dimen/button_margin"
                     android:layout_weight="1"
-                    android:singleLine="true"
-                    android:text="@string/background" />
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/color_background"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:layout_margin="@dimen/button_edge"
+                        android:singleLine="true"
+                        android:text="@string/background" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/color_font"

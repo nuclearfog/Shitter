@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.ProfileEditor;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.database.AppDatabase;
@@ -22,7 +23,7 @@ import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
-    private WeakReference<org.nuclearfog.twidda.activity.ProfileEditor> ui;
+    private WeakReference<ProfileEditor> ui;
     private WeakReference<Dialog> popup;
     private UserHolder userHolder;
     private TwitterEngine mTwitter;
@@ -35,7 +36,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
      *
      * @param context Activity context
      */
-    public ProfileUpdater(org.nuclearfog.twidda.activity.ProfileEditor context) {
+    public ProfileUpdater(ProfileEditor context) {
         ui = new WeakReference<>(context);
         popup = new WeakReference<>(new Dialog(context));
         mTwitter = TwitterEngine.getInstance(context);
@@ -49,7 +50,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
      * @param context    Activity context
      * @param userHolder user data
      */
-    public ProfileUpdater(org.nuclearfog.twidda.activity.ProfileEditor context, UserHolder userHolder) {
+    public ProfileUpdater(ProfileEditor context, UserHolder userHolder) {
         this(context);
         this.userHolder = userHolder;
     }
@@ -104,7 +105,6 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
             popup.get().dismiss();
             if (twException != null) {
                 Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-                ui.get().finish();
             } else if (user != null) {
                 ui.get().setUser(user);
             } else if (userHolder != null) {

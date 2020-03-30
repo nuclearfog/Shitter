@@ -66,4 +66,5 @@
     <dimen name="tweet_button_location">16dp</dimen>
     <dimen name="edittext_background_padding">5dp</dimen>
     <dimen name="settings_edittext_margin">1dp</dimen>
+    <dimen name="button_edge">1dp</dimen>
 </resources>

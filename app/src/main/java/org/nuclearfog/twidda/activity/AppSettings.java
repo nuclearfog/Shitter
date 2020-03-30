@@ -71,7 +71,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private Dialog load_dialog_selector, color_dialog_selector;
     private Spinner locationSpinner;
     private LocationAdapter locationAdapter;
-    private View root;
+    private View root, colorButton1_edge;
 
     private ColorMode mode;
     private int color;
@@ -89,6 +89,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         CheckBox toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         locationSpinner = findViewById(R.id.spinner_woeid);
+        colorButton1_edge = findViewById(R.id.color_background_edge);
         colorButton1 = findViewById(R.id.color_background);
         colorButton2 = findViewById(R.id.color_font);
         colorButton3 = findViewById(R.id.color_popup);
@@ -126,6 +127,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         root.setBackgroundColor(settings.getBackgroundColor());
+        colorButton1_edge.setBackgroundColor(settings.getBackgroundColor() ^ INVERTCOLOR);
         colorButton1.setBackgroundColor(settings.getBackgroundColor());
         colorButton2.setBackgroundColor(settings.getFontColor());
         colorButton3.setBackgroundColor(settings.getPopupColor());
@@ -278,6 +280,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                     root.setBackgroundColor(color);
                     settings.setBackgroundColor(color);
                     colorButton1.setBackgroundColor(color);
+                    colorButton1_edge.setBackgroundColor(color ^ INVERTCOLOR);
                     colorButton1.setTextColor(color ^ INVERTCOLOR);
                     break;
 
