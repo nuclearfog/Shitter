@@ -121,8 +121,6 @@ public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
                         }
                     } else {
                         tweets = mTwitter.getUserFavs(id, page);
-                        if (page == 1)
-                            db.removeOldFavorites(id); // remove outdated information
                         db.storeUserFavs(tweets, id);
                     }
                     break;

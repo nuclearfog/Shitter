@@ -99,6 +99,7 @@ public class AppDatabase {
      */
     public void storeUserFavs(List<Tweet> fav, long ownerId) {
         SQLiteDatabase db = getDbWrite();
+        removeOldFavorites(db, ownerId);
         for (Tweet tweet : fav) {
             storeStatus(tweet, 0, db);
             storeFavorite(tweet, ownerId, db);
@@ -415,18 +416,6 @@ public class AppDatabase {
     }
 
     /**
-     * Remove outdated favorite list to create a new one
-     *
-     * @param userId Id of the favorite list owner
-     */
-    public void removeOldFavorites(long userId) {
-        final String[] delArgs = {Long.toString(userId)};
-        SQLiteDatabase db = getDbWrite();
-        db.delete("favorit", "ownerID=?", delArgs);
-        commit(db);
-    }
-
-    /**
      * Delete Direct Message
      *
      * @param id Direct Message ID
@@ -687,7 +676,13 @@ public class AppDatabase {
         ContentValues favTable = new ContentValues();
         favTable.put("tweetID", tweet.getId());
         favTable.put("ownerID", ownerId);
-        db.insertWithOnConflict("favorit", null, favTable, CONFLICT_IGNORE);
+        db.insertWithOnConflict("favorit", null, favTable, CONFLICT_REPLACE);
+    }
+
+
+    private void removeOldFavorites(SQLiteDatabase db, long userId) {
+        final String[] delArgs = {Long.toString(userId)};
+        db.delete("favorit", "ownerID=?", delArgs);
     }
 
 
