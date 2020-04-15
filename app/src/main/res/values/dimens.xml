@@ -44,7 +44,7 @@
     <dimen name="button_dm">40dp</dimen>
     <dimen name="button_settings_color">40dp</dimen>
     <dimen name="button_settings">30dp</dimen>
-    <dimen name="button_load">48dp</dimen>
+    <dimen name="button_load">36dp</dimen>
     <dimen name="button_margin">5dp</dimen>
     <dimen name="button_padding">5dp</dimen>
     <dimen name="button_height">20dp</dimen>

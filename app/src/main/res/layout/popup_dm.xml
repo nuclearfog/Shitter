@@ -37,7 +37,7 @@
                 android:layout_marginStart="@dimen/margin_dm_icon"
                 android:layout_marginLeft="@dimen/margin_dm_icon"
                 android:background="@drawable/button"
-                android:contentDescription="@string/add_image"
+                android:contentDescription="@string/tweet_add_image"
                 app:srcCompat="@drawable/image_add" />
 
             <ImageButton
@@ -58,7 +58,7 @@
             android:layout_height="@dimen/text_input_height"
             android:background="@android:color/transparent"
             android:gravity="start"
-            android:hint="@string/dmessage"
+            android:hint="@string/dm_message"
             android:inputType="textMultiLine" />
 
     </LinearLayout>

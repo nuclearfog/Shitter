@@ -108,7 +108,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                 if (intent.resolveActivity(getContext().getPackageManager()) != null)
                     startActivity(intent);
                 else
-                    Toast.makeText(getContext(), R.string.connection_failed, LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.error_connection, LENGTH_SHORT).show();
             }
         }
     }
@@ -128,8 +128,8 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     if (getContext() != null) {
                         Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
                         confirmDialog.setMessage(R.string.confirm_delete_message);
-                        confirmDialog.setNegativeButton(R.string.no_confirm, null);
-                        confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                        confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 messageTask = new MessageLoader(MessageFragment.this, Mode.DEL);

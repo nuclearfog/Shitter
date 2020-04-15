@@ -83,7 +83,7 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
                         TwitterList list = result.get(0);
                         adapter.updateItem(list);
                         if (list.isFollowing())
-                            Toast.makeText(ui.get().getContext(), R.string.followed, LENGTH_SHORT).show();
+                            Toast.makeText(ui.get().getContext(), R.string.info_followed, LENGTH_SHORT).show();
                         else
                             Toast.makeText(ui.get().getContext(), R.string.info_unfollowed, LENGTH_SHORT).show();
                         break;

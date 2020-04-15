@@ -169,7 +169,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             }
         }
         if (search.isEmpty() || !settings.getLogin()) {
-            Toast.makeText(this, R.string.failed_open_link, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

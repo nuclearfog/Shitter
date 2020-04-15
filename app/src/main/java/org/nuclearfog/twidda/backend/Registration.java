@@ -63,7 +63,7 @@ public class Registration extends AsyncTask<String, Void, String> {
             } else if (twException != null) {
                 Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
             } else {
-                Toast.makeText(ui.get(), R.string.pin_verification_failed, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ui.get(), R.string.error_pin_verification, Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -10,16 +10,16 @@
     <item
         android:id="@+id/profile_follow"
         android:icon="@drawable/follow"
-        android:title="@string/follow"
+        android:title="@string/user_follow"
         android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile_block"
-        android:title="@string/block"
+        android:title="@string/user_block"
         android:visible="false" />
     <item
         android:id="@+id/profile_mute"
-        android:title="@string/mute"
+        android:title="@string/user_mute"
         android:visible="false" />
     <item
         android:id="@+id/profile_message"

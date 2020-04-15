@@ -115,7 +115,7 @@
                 android:layout_marginEnd="@dimen/padding_side"
                 android:layout_marginRight="@dimen/padding_side"
                 android:background="@drawable/button"
-                android:text="@string/answer"
+                android:text="@string/dm_answer"
                 android:textSize="@dimen/textsize_button" />
 
             <Button

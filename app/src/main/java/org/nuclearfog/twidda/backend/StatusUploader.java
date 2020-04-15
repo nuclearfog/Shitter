@@ -68,7 +68,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (ui.get() != null && getStatus() == RUNNING) {
-                        Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ui.get(), android.R.string.cancel, Toast.LENGTH_SHORT).show();
                         cancel(true);
                     }
                 }
@@ -97,7 +97,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null && popup.get() != null) {
             if (success) {
-                Toast.makeText(ui.get(), R.string.tweet_sent, LENGTH_LONG).show();
+                Toast.makeText(ui.get(), R.string.info_tweet_sent, LENGTH_LONG).show();
                 ui.get().finish();
             } else {
                 if (twException != null)

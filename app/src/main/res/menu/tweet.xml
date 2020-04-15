@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/tweet_link"
-        android:title="@string/get_tweetlink" />
+        android:title="@string/tweet_open_browser" />
 
     <item
         android:id="@+id/link_copy"

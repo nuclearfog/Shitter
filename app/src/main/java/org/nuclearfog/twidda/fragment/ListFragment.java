@@ -110,8 +110,8 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                         if (getContext() != null) {
                             Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
                             confirmDialog.setMessage(R.string.confirm_unfollow_list);
-                            confirmDialog.setNegativeButton(R.string.no_confirm, null);
-                            confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                            confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                            confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     listTask = new ListLoader(ListFragment.this, FOLLOW);
@@ -144,8 +144,8 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     if (getContext() != null) {
                         Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
                         confirmDialog.setMessage(R.string.confirm_delete_list);
-                        confirmDialog.setNegativeButton(R.string.no_confirm, null);
-                        confirmDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                        confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 listTask = new ListLoader(ListFragment.this, DELETE);

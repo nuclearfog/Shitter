@@ -185,15 +185,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
                     Builder deleteDialog = new Builder(this, R.style.InfoDialog);
-                    deleteDialog.setMessage(R.string.delete_tweet);
-                    deleteDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                    deleteDialog.setMessage(R.string.confirm_delete_tweet);
+                    deleteDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             statusAsync = new StatusLoader(TweetDetail.this, Action.DELETE);
                             statusAsync.execute(tweetID);
                         }
                     });
-                    deleteDialog.setNegativeButton(R.string.no_confirm, null);
+                    deleteDialog.setNegativeButton(R.string.confirm_no, null);
                     deleteDialog.show();
                     break;
 
@@ -203,7 +203,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     if (intent.resolveActivity(getPackageManager()) != null)
                         startActivity(intent);
                     else
-                        Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
                     break;
 
                 case R.id.link_copy:
@@ -212,7 +212,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     if (clip != null) {
                         ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
                         clip.setPrimaryClip(linkClip);
-                        Toast.makeText(this, R.string.copied_to_clipboard, LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.info_clipboard, LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, R.string.error_cant_copy_clipboard, LENGTH_SHORT).show();
                     }
@@ -310,13 +310,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 case R.id.tweet_retweet:
                     statusAsync = new StatusLoader(this, Action.RETWEET);
                     statusAsync.execute(tweetID);
-                    Toast.makeText(this, R.string.loading, LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                     return true;
 
                 case R.id.tweet_favorit:
                     statusAsync = new StatusLoader(this, Action.FAVORITE);
                     statusAsync.execute(tweetID);
-                    Toast.makeText(this, R.string.loading, LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                     return true;
             }
         }
@@ -380,7 +380,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
         favButton.setText(buttonNumber.format(tweet.getFavorCount()));
         rtwButton.setText(buttonNumber.format(tweet.getRetweetCount()));
-        tweet_api.setText(R.string.sent_from);
+        tweet_api.setText(R.string.tweet_sent_from);
         tweet_api.append(tweet.getSource());
 
         if (header.getVisibility() != VISIBLE) {
@@ -445,7 +445,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 path = path.substring(0, end);
             tweetID = Long.parseLong(path);
         } else {
-            Toast.makeText(this, R.string.failed_open_link, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

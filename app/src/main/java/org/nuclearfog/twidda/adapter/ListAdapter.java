@@ -164,9 +164,9 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         if (settings.getImageLoad())
             Picasso.get().load(owner.getImageLink() + "_mini").into(vh.pb_image);
         if (item.isFollowing())
-            vh.followList.setText(R.string.unfollow);
+            vh.followList.setText(R.string.user_unfollow);
         else
-            vh.followList.setText(R.string.follow);
+            vh.followList.setText(R.string.user_follow);
         if (item.isListOwner()) {
             vh.followList.setVisibility(VISIBLE);
             vh.deleteList.setVisibility(GONE);

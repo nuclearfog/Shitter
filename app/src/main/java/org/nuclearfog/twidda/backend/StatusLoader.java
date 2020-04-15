@@ -113,20 +113,20 @@ public class StatusLoader extends AsyncTask<Long, Tweet, Tweet> {
                 switch (action) {
                     case RETWEET:
                         if (tweet.retweeted())
-                            Toast.makeText(ui.get(), R.string.tweet_retweeted, LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_tweet_retweeted, LENGTH_SHORT).show();
                         else
-                            Toast.makeText(ui.get(), R.string.tweet_unretweeted, LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
                         break;
 
                     case FAVORITE:
                         if (tweet.favored())
-                            Toast.makeText(ui.get(), R.string.tweet_favored, LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_tweet_favored, LENGTH_SHORT).show();
                         else
-                            Toast.makeText(ui.get(), R.string.tweet_unfavored, LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_tweet_unfavored, LENGTH_SHORT).show();
                         break;
 
                     case DELETE:
-                        Toast.makeText(ui.get(), R.string.tweet_removed, LENGTH_SHORT).show();
+                        Toast.makeText(ui.get(), R.string.info_tweet_removed, LENGTH_SHORT).show();
                         ui.get().setResult(RETURN_TWEET_CHANGED);
                         ui.get().finish();
                         break;

@@ -1028,13 +1028,13 @@ public class TwitterEngine {
                 case 17:
                 case 50:    // USER not found
                 case 63:    // USER suspended
-                    messageResource = R.string.user_not_found;
+                    messageResource = R.string.error_user_not_found;
                     statusNotFound = true;
                     hardFault = true;
                     break;
 
                 case 32:
-                    messageResource = R.string.request_token_error;
+                    messageResource = R.string.error_request_token;
                     break;
 
                 case 34:    //
@@ -1045,29 +1045,29 @@ public class TwitterEngine {
                     break;
 
                 case 150:
-                    messageResource = R.string.cant_send_dm;
+                    messageResource = R.string.error_send_dm;
                     break;
 
                 case 136:
                 case 179:
-                    messageResource = R.string.not_authorized;
+                    messageResource = R.string.info_not_authorized;
                     hardFault = true;
                     break;
 
                 case 186:
-                    messageResource = R.string.status_too_long;
+                    messageResource = R.string.error_status_too_long;
                     break;
 
                 case 187:
-                    messageResource = R.string.duplicate_status;
+                    messageResource = R.string.error_duplicate_status;
                     break;
 
                 case 349:
-                    messageResource = R.string.error_cant_send_to_user;
+                    messageResource = R.string.error_dm_send;
                     break;
 
                 case 354:
-                    messageResource = R.string.directmessage_too_long;
+                    messageResource = R.string.error_dm_length;
                     break;
 
                 case 89:
@@ -1076,7 +1076,7 @@ public class TwitterEngine {
 
                 default:
                     if (error.getStatusCode() == 401)
-                        messageResource = R.string.not_authorized;
+                        messageResource = R.string.info_not_authorized;
                     else
                         messageResource = R.string.error_connection_failed;
                     break;
@@ -1099,7 +1099,7 @@ public class TwitterEngine {
                     break;
 
                 default:
-                    messageResource = R.string.error;
+                    messageResource = R.string.info_error;
                     break;
             }
         }

@@ -212,7 +212,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             case R.id.tweet_send:
                 String tweetStr = tweetText.getText().toString();
                 if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
-                    Toast.makeText(this, R.string.empty_tweet, LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
                 } else if (locationProg.getVisibility() == INVISIBLE) {
                     TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
                     if (!mediaPath.isEmpty())
@@ -296,15 +296,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      */
     public void showErrorMsg(final TweetHolder tweet) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.InfoDialog);
-        builder.setTitle(R.string.error).setMessage(R.string.error_sending_tweet)
-                .setPositiveButton(R.string.retry, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet)
+                .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         uploaderAsync = new StatusUploader(TweetPopup.this, tweet);
                         uploaderAsync.execute();
                     }
                 })
-                .setNegativeButton(R.string.cancel, null).show();
+                .setNegativeButton(android.R.string.cancel, null).show();
     }
 
 
@@ -315,8 +315,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         if (!addition.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
             Builder closeDialog = new Builder(this, R.style.InfoDialog);
             closeDialog.setMessage(R.string.confirm_cancel_tweet);
-            closeDialog.setNegativeButton(R.string.no_confirm, null);
-            closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+            closeDialog.setNegativeButton(R.string.confirm_no, null);
+            closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();

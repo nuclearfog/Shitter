@@ -120,7 +120,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
                         registerAsync = new Registration(this);
                         registerAsync.execute(twitterPin);
                     } else {
-                        Toast.makeText(this, R.string.enter_pin, LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
                     }
                 }
                 break;
@@ -134,6 +134,6 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         if (loginIntent.resolveActivity(getPackageManager()) != null)
             startActivity(loginIntent);
         else
-            Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
     }
 }

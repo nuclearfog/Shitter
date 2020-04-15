@@ -101,9 +101,9 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
     @Override
     public void onBackPressed() {
         Builder closeDialog = new Builder(this, R.style.InfoDialog);
-        closeDialog.setMessage(R.string.exit_confirm);
-        closeDialog.setNegativeButton(R.string.no_confirm, null);
-        closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+        closeDialog.setMessage(R.string.confirm_discard);
+        closeDialog.setNegativeButton(R.string.confirm_no, null);
+        closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finish();
@@ -130,7 +130,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
                 String userBio = bio.getText().toString();
                 String imgLink = txtImg.getText().toString();
                 if (username.trim().isEmpty()) {
-                    Toast.makeText(this, R.string.edit_empty_name, LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.error_empty_name, LENGTH_SHORT).show();
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, imgLink);
                     editorAsync = new ProfileUpdater(this, userHolder);

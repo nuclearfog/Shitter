@@ -125,21 +125,21 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
                 switch (action) {
                     case ACTION_FOLLOW:
                         if (properties.isFriend())
-                            Toast.makeText(ui.get(), R.string.followed, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_followed, Toast.LENGTH_SHORT).show();
                         break;
 
                     case ACTION_BLOCK:
                         if (properties.isBlocked())
-                            Toast.makeText(ui.get(), R.string.blocked, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(ui.get(), R.string.unblocked, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
                         break;
 
                     case ACTION_MUTE:
                         if (properties.isMuted())
-                            Toast.makeText(ui.get(), R.string.muted, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(ui.get(), R.string.unmuted, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ui.get(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
                         break;
                 }
             }

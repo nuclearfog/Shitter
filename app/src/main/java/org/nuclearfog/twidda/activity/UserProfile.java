@@ -136,6 +136,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         favorTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favorite_profile, 0, 0);
         tweetTabTxt.setGravity(CENTER);
         favorTabTxt.setGravity(CENTER);
+        tweetTabTxt.setSingleLine();
+        favorTabTxt.setSingleLine();
         tweetTabTxt.setTextSize(10);
         favorTabTxt.setTextSize(10);
         tweetTabTxt.setTypeface(settings.getFontFace());
@@ -228,16 +230,16 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 followIcon.setIcon(R.drawable.follow_enabled);
-                followIcon.setTitle(R.string.unfollow);
+                followIcon.setTitle(R.string.user_unfollow);
                 listItem.setVisible(true);
             }
             if (properties.isBlocked()) {
                 MenuItem blockIcon = m.findItem(R.id.profile_block);
-                blockIcon.setTitle(R.string.unblock);
+                blockIcon.setTitle(R.string.user_unblock);
             }
             if (properties.isMuted()) {
                 MenuItem muteIcon = m.findItem(R.id.profile_mute);
-                muteIcon.setTitle(R.string.unmute);
+                muteIcon.setTitle(R.string.user_unmute);
             }
             if (properties.canDm()) {
                 MenuItem dmIcon = m.findItem(R.id.profile_message);
@@ -277,8 +279,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                             profileAsync.execute(userId);
                         } else {
                             new Builder(this).setMessage(R.string.confirm_unfollow)
-                                    .setNegativeButton(R.string.no_confirm, null)
-                                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                    .setNegativeButton(R.string.confirm_no, null)
+                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             profileAsync.execute(userId);
@@ -295,8 +297,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                             profileAsync.execute(userId);
                         } else {
                             new Builder(this).setMessage(R.string.confirm_mute)
-                                    .setNegativeButton(R.string.no_confirm, null)
-                                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                    .setNegativeButton(R.string.confirm_no, null)
+                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             profileAsync.execute(userId);
@@ -313,8 +315,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                             profileAsync.execute(userId);
                         } else {
                             new Builder(this).setMessage(R.string.confirm_block)
-                                    .setNegativeButton(R.string.no_confirm, null)
-                                    .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                                    .setNegativeButton(R.string.confirm_no, null)
+                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             profileAsync.execute(userId);
@@ -377,7 +379,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             if (intent.resolveActivity(getPackageManager()) != null)
                 startActivity(intent);
             else
-                Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
         }
     }
 
@@ -414,7 +416,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     if (browserIntent.resolveActivity(getPackageManager()) != null)
                         startActivity(browserIntent);
                     else
-                        Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
                 }
                 break;
 

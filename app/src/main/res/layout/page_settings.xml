@@ -71,7 +71,7 @@
                     android:layout_weight="1"
                     android:includeFontPadding="false"
                     android:singleLine="true"
-                    android:text="@string/font" />
+                    android:text="@string/settings_font" />
 
             </LinearLayout>
 
@@ -170,7 +170,7 @@
                     android:layout_height="@dimen/button_dm"
                     android:layout_weight="4"
                     android:singleLine="true"
-                    android:text="@string/image"
+                    android:text="@string/settings_image"
                     android:textSize="@dimen/textsize_settings_small" />
 
                 <CheckBox
@@ -245,7 +245,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/button"
                         android:singleLine="true"
-                        android:text="@string/logout" />
+                        android:text="@string/settings_logout" />
 
                 </LinearLayout>
             </LinearLayout>

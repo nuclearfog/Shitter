@@ -118,7 +118,7 @@
                 android:background="@drawable/button"
                 android:drawablePadding="@dimen/padding_drawable"
                 android:singleLine="true"
-                android:text="@string/follow"
+                android:text="@string/user_follow"
                 android:textSize="12sp" />
 
             <Button

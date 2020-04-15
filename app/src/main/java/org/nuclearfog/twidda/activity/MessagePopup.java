@@ -77,9 +77,9 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
             super.onBackPressed();
         } else {
             Builder closeDialog = new Builder(this, R.style.InfoDialog);
-            closeDialog.setMessage(R.string.cancel_message);
-            closeDialog.setNegativeButton(R.string.no_confirm, null);
-            closeDialog.setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+            closeDialog.setMessage(R.string.confirm_cancel_message);
+            closeDialog.setNegativeButton(R.string.confirm_no, null);
+            closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();

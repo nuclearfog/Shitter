@@ -248,9 +248,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         String name = "shitter_" + formatter.format(new Date());
         try {
             MediaStore.Images.Media.insertImage(getContentResolver(), image, name, "");
-            Toast.makeText(this, R.string.image_saved, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.info_image_saved, Toast.LENGTH_LONG).show();
         } catch (Exception err) {
-            Toast.makeText(this, R.string.image_store_failure, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_image_save, Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -201,7 +201,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             if (intent.resolveActivity(getPackageManager()) != null)
                 startActivity(intent);
             else
-                Toast.makeText(this, R.string.connection_failed, LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -212,9 +212,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         switch (v.getId()) {
             case R.id.delete_db:
                 new Builder(this, R.style.InfoDialog)
-                        .setMessage(R.string.delete_database_popup)
-                        .setNegativeButton(R.string.no_confirm, null)
-                        .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                        .setMessage(R.string.confirm_delete_database)
+                        .setNegativeButton(R.string.confirm_no, null)
+                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 DatabaseAdapter.deleteDatabase(getApplicationContext());
@@ -227,8 +227,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             case R.id.logout:
                 new Builder(this, R.style.InfoDialog)
                         .setMessage(R.string.confirm_log_lout)
-                        .setNegativeButton(R.string.no_confirm, null)
-                        .setPositiveButton(R.string.yes_confirm, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.confirm_no, null)
+                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 settings.logout();

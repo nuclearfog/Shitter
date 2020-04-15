@@ -64,7 +64,7 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (getStatus() == Status.RUNNING) {
-                        Toast.makeText(ui.get(), R.string.abort, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ui.get(), android.R.string.cancel, Toast.LENGTH_SHORT).show();
                         cancel(true);
                     }
                 }
@@ -93,7 +93,7 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null && popup.get() != null) {
             if (success) {
-                Toast.makeText(ui.get(), R.string.dmsend, Toast.LENGTH_SHORT).show();
+                Toast.makeText(ui.get(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
                 ui.get().finish();
             } else {
                 if (twException != null)
