@@ -146,4 +146,5 @@
     <string name="trend_range">Tweets</string>
     <string name="error_connection_failed">Verbindung fehlgeschlagen!</string>
     <string name="enter_username">Nutzernamen eingeben</string>
+    <string name="profile_banner">Profilbanner</string>
 </resources>

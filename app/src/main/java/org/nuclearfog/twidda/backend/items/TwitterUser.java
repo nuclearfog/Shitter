@@ -33,11 +33,20 @@ public class TwitterUser {
         userID = user.getId();
         username = "" + user.getName();
         screenname = '@' + user.getScreenName();
-        profileImg = "" + user.getOriginalProfileImageURLHttps();
-        bio = getBio(user);
         link = "" + user.getURLEntity().getExpandedURL();
         location = "" + user.getLocation();
-        bannerImg = "" + user.getProfileBannerURL();
+        bio = getBio(user);
+
+        String profileLink = user.getOriginalProfileImageURLHttps();
+        String bannerLink = user.getProfileBannerURL();
+        if (profileLink != null)
+            profileImg = user.getOriginalProfileImageURLHttps();
+        else
+            profileImg = "";
+        if (bannerLink != null && bannerLink.length() > 4)
+            bannerImg = bannerLink.substring(0, bannerLink.length() - 4);
+        else
+            bannerImg = "";
         isVerified = user.isVerified();
         isLocked = user.isProtected();
         created = user.getCreatedAt().getTime();
@@ -196,6 +205,24 @@ public class TwitterUser {
      */
     public int getFavorCount() {
         return favorCount;
+    }
+
+    /**
+     * check if User has Profile image
+     *
+     * @return true if user has a profile image set
+     */
+    public boolean hasProfileImage() {
+        return !profileImg.isEmpty();
+    }
+
+    /**
+     * check if user has a banner image
+     *
+     * @return true if user has a banner image set
+     */
+    public boolean hasBannerImg() {
+        return !bannerImg.isEmpty();
     }
 
     /**

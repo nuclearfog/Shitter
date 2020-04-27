@@ -31,156 +31,181 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingLeft="@dimen/padding_side"
-                    android:paddingRight="@dimen/padding_side"
                     android:visibility="invisible">
 
-                    <LinearLayout
+                    <FrameLayout
+                        android:id="@+id/profile_layer"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/margin_layout"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="@dimen/profile_image"
-                            android:layout_height="@dimen/profile_image">
-
-                            <ImageView
-                                android:id="@+id/profile_img"
-                                android:layout_width="@dimen/profile_image"
-                                android:layout_height="@dimen/profile_image"
-                                android:contentDescription="@string/profile_image" />
-
-                        </androidx.cardview.widget.CardView>
+                        <ImageView
+                            android:id="@+id/profile_banner"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:contentDescription="@string/profile_banner"
+                            android:paddingLeft="@dimen/profile_banner_padding"
+                            android:paddingRight="@dimen/profile_banner_padding"
+                            android:scaleType="centerCrop" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="@dimen/margin_layout"
-                            android:layout_marginLeft="@dimen/margin_layout"
-                            android:orientation="vertical">
+                            android:gravity="bottom"
+                            android:orientation="horizontal"
+                            android:paddingLeft="@dimen/padding_side"
+                            android:paddingRight="@dimen/padding_side">
 
-                            <TextView
-                                android:id="@+id/profile_username"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:drawablePadding="@dimen/padding_drawable"
-                                android:singleLine="true" />
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="@dimen/profile_image"
+                                android:layout_height="@dimen/profile_image">
+
+                                <ImageView
+                                    android:id="@+id/profile_img"
+                                    android:layout_width="@dimen/profile_image"
+                                    android:layout_height="@dimen/profile_image"
+                                    android:contentDescription="@string/profile_image" />
+
+                            </androidx.cardview.widget.CardView>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:layout_marginStart="@dimen/margin_layout"
+                                android:layout_marginLeft="@dimen/margin_layout"
+                                android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/profile_screenname"
-                                    android:layout_width="0dp"
+                                    android:id="@+id/profile_username"
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="2"
                                     android:drawablePadding="@dimen/padding_drawable"
                                     android:singleLine="true" />
 
-                                <TextView
-                                    android:id="@+id/follow_back"
-                                    android:layout_width="0dp"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/text_padding"
-                                    android:layout_marginLeft="@dimen/text_padding"
-                                    android:layout_weight="1"
-                                    android:drawablePadding="@dimen/padding_drawable"
-                                    android:singleLine="true"
-                                    android:text="@string/follows_you"
-                                    android:visibility="invisible"
-                                    app:drawableLeftCompat="@drawable/followback"
-                                    app:drawableStartCompat="@drawable/followback" />
+                                    android:orientation="horizontal">
 
-                            </LinearLayout>
+                                    <TextView
+                                        android:id="@+id/profile_screenname"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginEnd="@dimen/text_padding"
+                                        android:layout_marginRight="@dimen/text_padding"
+                                        android:layout_weight="2"
+                                        android:drawablePadding="@dimen/padding_drawable"
+                                        android:singleLine="true" />
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/margin_layout"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
+                                    <TextView
+                                        android:id="@+id/follow_back"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:drawablePadding="@dimen/padding_drawable"
+                                        android:singleLine="true"
+                                        android:text="@string/follows_you"
+                                        android:visibility="invisible"
+                                        app:drawableLeftCompat="@drawable/followback"
+                                        app:drawableStartCompat="@drawable/followback" />
 
-                                <Button
-                                    android:id="@+id/following"
-                                    style="@style/Widget.AppCompat.Button.Borderless"
-                                    android:layout_width="0dp"
-                                    android:layout_height="@dimen/button_height"
-                                    android:layout_marginLeft="@dimen/button_margin"
-                                    android:layout_marginRight="@dimen/button_margin"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/button"
-                                    android:paddingLeft="@dimen/button_padding"
-                                    android:paddingRight="@dimen/button_padding"
-                                    android:singleLine="true"
-                                    app:drawableLeftCompat="@drawable/following"
-                                    app:drawableStartCompat="@drawable/following" />
+                                </LinearLayout>
 
-                                <Button
-                                    android:id="@+id/follower"
-                                    style="@style/Widget.AppCompat.Button.Borderless"
-                                    android:layout_width="0dp"
-                                    android:layout_height="@dimen/button_height"
-                                    android:layout_marginLeft="@dimen/button_margin"
-                                    android:layout_marginRight="@dimen/button_margin"
-                                    android:layout_weight="1"
-                                    android:background="@drawable/button"
-                                    android:paddingLeft="@dimen/button_padding"
-                                    android:paddingRight="@dimen/button_padding"
-                                    android:singleLine="true"
-                                    app:drawableLeftCompat="@drawable/follower"
-                                    app:drawableStartCompat="@drawable/follower" />
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/margin_layout"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <Button
+                                        android:id="@+id/following"
+                                        style="@style/Widget.AppCompat.Button.Borderless"
+                                        android:layout_width="0dp"
+                                        android:layout_height="@dimen/button_height"
+                                        android:layout_marginLeft="@dimen/button_margin"
+                                        android:layout_marginRight="@dimen/button_margin"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/button"
+                                        android:paddingLeft="@dimen/button_padding"
+                                        android:paddingRight="@dimen/button_padding"
+                                        android:singleLine="true"
+                                        app:drawableLeftCompat="@drawable/following"
+                                        app:drawableStartCompat="@drawable/following" />
+
+                                    <Button
+                                        android:id="@+id/follower"
+                                        style="@style/Widget.AppCompat.Button.Borderless"
+                                        android:layout_width="0dp"
+                                        android:layout_height="@dimen/button_height"
+                                        android:layout_marginLeft="@dimen/button_margin"
+                                        android:layout_marginRight="@dimen/button_margin"
+                                        android:layout_weight="1"
+                                        android:background="@drawable/button"
+                                        android:paddingLeft="@dimen/button_padding"
+                                        android:paddingRight="@dimen/button_padding"
+                                        android:singleLine="true"
+                                        app:drawableLeftCompat="@drawable/follower"
+                                        app:drawableStartCompat="@drawable/follower" />
+
+                                </LinearLayout>
 
                             </LinearLayout>
 
                         </LinearLayout>
+                    </FrameLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingLeft="@dimen/padding_side"
+                        android:paddingRight="@dimen/padding_side">
+
+                        <TextView
+                            android:id="@+id/bio"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/profile_tv_margin"
+                            android:fadeScrollbars="false"
+                            android:linksClickable="true"
+                            android:maxLines="@integer/text_bio_lines"
+                            android:scrollbars="vertical" />
+
+                        <TextView
+                            android:id="@+id/location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/profile_tv_margin"
+                            android:drawablePadding="@dimen/padding_drawable"
+                            android:singleLine="true"
+                            android:textSize="@dimen/textsize_profile"
+                            app:drawableLeftCompat="@drawable/userlocation"
+                            app:drawableStartCompat="@drawable/userlocation" />
+
+                        <TextView
+                            android:id="@+id/links"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/profile_tv_margin"
+                            android:drawablePadding="@dimen/padding_drawable"
+                            android:linksClickable="true"
+                            android:singleLine="true"
+                            android:textSize="@dimen/textsize_profile"
+                            app:drawableLeftCompat="@drawable/link"
+                            app:drawableStartCompat="@drawable/link" />
+
+                        <TextView
+                            android:id="@+id/profile_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/profile_tv_margin"
+                            android:drawablePadding="@dimen/padding_drawable"
+                            android:singleLine="true"
+                            android:textSize="@dimen/textsize_profile"
+                            app:drawableLeftCompat="@drawable/calendar"
+                            app:drawableStartCompat="@drawable/calendar" />
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/bio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fadeScrollbars="false"
-                        android:linksClickable="true"
-                        android:maxLines="@integer/text_bio_lines"
-                        android:scrollbars="vertical" />
-
-                    <TextView
-                        android:id="@+id/location"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_layout"
-                        android:drawablePadding="@dimen/padding_drawable"
-                        android:singleLine="true"
-                        android:textSize="@dimen/textsize_profile"
-                        app:drawableLeftCompat="@drawable/userlocation"
-                        app:drawableStartCompat="@drawable/userlocation" />
-
-                    <TextView
-                        android:id="@+id/links"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_layout"
-                        android:drawablePadding="@dimen/padding_drawable"
-                        android:linksClickable="true"
-                        android:singleLine="true"
-                        android:textSize="@dimen/textsize_profile"
-                        app:drawableLeftCompat="@drawable/link"
-                        app:drawableStartCompat="@drawable/link" />
-
-                    <TextView
-                        android:id="@+id/profile_date"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/margin_layout"
-                        android:drawablePadding="@dimen/padding_drawable"
-                        android:singleLine="true"
-                        android:textSize="@dimen/textsize_profile"
-                        app:drawableLeftCompat="@drawable/calendar"
-                        app:drawableStartCompat="@drawable/calendar" />
 
                 </LinearLayout>
 

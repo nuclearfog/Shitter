@@ -51,6 +51,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
@@ -80,8 +81,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private TextView tweetTabTxt, favorTabTxt, txtUser, txtScrName;
     private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
     private Button following, follower;
-    private ImageView profile;
-    private View profile_head;
+    private ImageView profile, banner;
+    private View profile_head, profile_layer;
     private ViewPager pager;
 
     @Nullable
@@ -112,10 +113,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         follower = findViewById(R.id.follower);
         lnkTxt = findViewById(R.id.links);
         profile = findViewById(R.id.profile_img);
+        banner = findViewById(R.id.profile_banner);
         txtUser = findViewById(R.id.profile_username);
         txtScrName = findViewById(R.id.profile_screenname);
         txtLocation = findViewById(R.id.location);
         profile_head = findViewById(R.id.profile_header);
+        profile_layer = findViewById(R.id.profile_layer);
         txtCreated = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
@@ -159,6 +162,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
         profile.setOnClickListener(this);
+        banner.setOnClickListener(this);
         lnkTxt.setOnClickListener(this);
         bioTxt.setOnTouchListener(this);
     }
@@ -427,6 +431,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                     startActivity(image);
                 }
+
+            case R.id.profile_banner:
+                if (user != null) {
+                    Intent image = new Intent(this, MediaViewer.class);
+                    image.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + "/1500x500"});
+                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                    startActivity(image);
+                }
+                break;
         }
     }
 
@@ -509,8 +522,19 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             lnkTxt.setVisibility(GONE);
         }
         if (settings.getImageLoad()) {
-            String link = user.getImageLink() + "_bigger";
-            Picasso.get().load(link).into(profile);
+            if (user.hasBannerImg()) {
+                String bannerLink = user.getBannerLink() + "/600x200";
+                Picasso.get().load(bannerLink).into(banner);
+                profile_layer.getLayoutParams().height = (int) getResources().getDimension(R.dimen.profile_banner_height);
+                profile_layer.requestLayout();
+            } else {
+                profile_layer.getLayoutParams().height = WRAP_CONTENT;
+                profile_layer.requestLayout();
+            }
+            if (user.hasProfileImage()) {
+                String imgLink = user.getImageLink() + "_bigger";
+                Picasso.get().load(imgLink).into(profile);
+            }
         }
     }
 
