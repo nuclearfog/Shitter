@@ -406,7 +406,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                 videoButton.setVisibility(VISIBLE);
         }
         if (settings.getImageLoad()) {
-            Picasso.get().load(author.getImageLink() + "_bigger").into(profile_img);
+            String pbLink = author.getImageLink();
+            if (!author.hasDefaultProfileImage())
+                pbLink += "_bigger";
+            Picasso.get().load(pbLink).into(profile_img);
         }
         String placeName = tweet.getLocationName();
         if (placeName != null && !placeName.isEmpty()) {

@@ -22,15 +22,17 @@ public class TwitterList {
     private final int subscriberCnt;
 
     public TwitterList(UserList list, long homeId, boolean isFollowing) {
+        String description = list.getDescription();
+        String title = list.getName();
         id = list.getId();
-        title = "" + list.getName();
         createdAt = list.getCreatedAt().getTime();
-        description = "" + list.getDescription();
         owner = new TwitterUser(list.getUser());
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
         isOwner = homeId != owner.getId();
+        this.title = title != null ? title : "";
+        this.description = description != null ? description : "";
         this.isFollowing = isFollowing;
     }
 

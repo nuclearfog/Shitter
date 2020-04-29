@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/page_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,119 +20,135 @@
             android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/padding_editprofile"
-            android:paddingRight="@dimen/padding_editprofile">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/profile_banner_height"
                 android:layout_marginBottom="@dimen/margin_layout"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="@dimen/padding_side">
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/edit_add_banner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/button_margin"
+                    android:layout_marginRight="@dimen/button_margin"
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:paddingLeft="@dimen/button_padding"
+                    android:paddingRight="@dimen/button_padding"
+                    android:text="@string/editprofile_add_banner"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:id="@+id/edit_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/profile_banner"
+                    android:paddingLeft="@dimen/profile_banner_padding"
+                    android:paddingRight="@dimen/profile_banner_padding"
+                    android:scaleType="centerCrop" />
 
                 <ImageView
                     android:id="@+id/edit_pb"
                     android:layout_width="@dimen/profile_image"
                     android:layout_height="@dimen/profile_image"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/padding_side"
+                    android:layout_marginLeft="@dimen/padding_side"
+                    android:adjustViewBounds="true"
                     android:contentDescription="@string/image_preview" />
 
-                <Button
-                    android:id="@+id/edit_upload"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/margin_upload_btn"
-                    android:layout_marginLeft="@dimen/margin_upload_btn"
-                    android:layout_weight="1"
-                    android:background="@drawable/button"
-                    android:maxLines="2"
-                    android:paddingStart="@dimen/editprofile_upload_button_padding"
-                    android:paddingLeft="@dimen/editprofile_upload_button_padding"
-                    android:paddingEnd="@dimen/button_padding"
-                    android:paddingRight="@dimen/button_padding"
-                    app:drawableLeftCompat="@drawable/upload"
-                    app:drawableStartCompat="@drawable/upload" />
-
-            </LinearLayout>
+            </FrameLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/edittext_background_padding"
-                android:paddingRight="@dimen/edittext_background_padding"
-                android:text="@string/enter_username" />
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
+                android:text="@string/username" />
 
             <EditText
                 android:id="@+id/edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_layout"
-                android:background="@color/half_transparent"
-                android:hint="@string/username"
-                android:inputType="text"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
                 android:padding="@dimen/edittext_background_padding"
+                android:background="@color/half_transparent"
+                android:hint="@string/enter_username"
+                android:inputType="text"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/edittext_background_padding"
-                android:paddingRight="@dimen/edittext_background_padding"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
                 android:text="@string/profile_location" />
 
             <EditText
                 android:id="@+id/edit_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_layout"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
                 android:background="@color/half_transparent"
                 android:ems="10"
                 android:hint="@string/edit_location_hint"
                 android:inputType="text"
-                android:padding="@dimen/edittext_background_padding"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/edittext_background_padding"
-                android:paddingRight="@dimen/edittext_background_padding"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
                 android:text="@string/profile_link" />
 
             <EditText
                 android:id="@+id/edit_link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_layout"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
                 android:background="@color/half_transparent"
                 android:ems="10"
                 android:hint="@string/edit_hint_link"
                 android:inputType="text"
-                android:padding="@dimen/edittext_background_padding"
                 android:singleLine="true"
                 android:textSize="@dimen/textsize_profileedit" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/edittext_background_padding"
-                android:paddingRight="@dimen/edittext_background_padding"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
                 android:text="@string/profile_bio" />
 
             <EditText
                 android:id="@+id/edit_bio"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/text_bio_height"
+                android:layout_marginLeft="@dimen/padding_editprofile"
+                android:layout_marginRight="@dimen/padding_editprofile"
+                android:padding="@dimen/edittext_background_padding"
                 android:background="@color/half_transparent"
                 android:ems="10"
                 android:gravity="top"
                 android:hint="@string/edit_hint_enter_descr"
                 android:inputType="textMultiLine"
-                android:padding="@dimen/edittext_background_padding"
                 android:textSize="@dimen/textsize_profileedit" />
 
         </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,11 +37,8 @@ import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.view.View.INVISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE;
 
 
 public class ProfileEditor extends AppCompatActivity implements OnClickListener {
@@ -48,13 +46,14 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
     private static final int REQ_PERM = 3;
-    private static final int REQ_PB = 4;
+    private static final int REQ_PROFILE_IMG = 4;
+    private static final int REQ_PROFILE_BANNER = 5;
 
     private ProfileUpdater editorAsync;
-    private TwitterUser user;
-    private ImageView pb_image;
+    private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
-    private Button txtImg;
+    private Button add_banner_btn;
+    private String profileLink, bannerLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +61,9 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
         setContentView(R.layout.page_editprofile);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
         View root = findViewById(R.id.page_edit);
-        pb_image = findViewById(R.id.edit_pb);
-        txtImg = findViewById(R.id.edit_upload);
+        profile_image = findViewById(R.id.edit_pb);
+        profile_banner = findViewById(R.id.edit_banner);
+        add_banner_btn = findViewById(R.id.edit_add_banner);
         name = findViewById(R.id.edit_name);
         link = findViewById(R.id.edit_link);
         loc = findViewById(R.id.edit_location);
@@ -75,8 +75,9 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
-        txtImg.setOnClickListener(this);
-        pb_image.setOnClickListener(this);
+        profile_image.setOnClickListener(this);
+        profile_banner.setOnClickListener(this);
+        add_banner_btn.setOnClickListener(this);
     }
 
 
@@ -128,11 +129,10 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
                 String userLink = link.getText().toString();
                 String userLoc = loc.getText().toString();
                 String userBio = bio.getText().toString();
-                String imgLink = txtImg.getText().toString();
                 if (username.trim().isEmpty()) {
                     Toast.makeText(this, R.string.error_empty_name, LENGTH_SHORT).show();
                 } else {
-                    UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, imgLink);
+                    UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
                     editorAsync = new ProfileUpdater(this, userHolder);
                     editorAsync.execute();
                 }
@@ -145,14 +145,20 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
-        if (reqCode == REQ_PB && returnCode == RESULT_OK) {
+        if (returnCode == RESULT_OK && (reqCode == REQ_PROFILE_IMG || reqCode == REQ_PROFILE_BANNER)) {
             if (intent != null && intent.getData() != null) {
                 Cursor c = getContentResolver().query(intent.getData(), MEDIA_MODE, null, null, null);
                 if (c != null && c.moveToFirst()) {
                     int index = c.getColumnIndex(MEDIA_MODE[0]);
                     String mediaPath = c.getString(index);
-                    pb_image.setImageBitmap(BitmapFactory.decodeFile(mediaPath));
-                    txtImg.setText(mediaPath);
+                    Bitmap image = BitmapFactory.decodeFile(mediaPath);
+                    if (reqCode == REQ_PROFILE_IMG) {
+                        profile_image.setImageBitmap(image);
+                        profileLink = mediaPath;
+                    } else {
+                        profile_banner.setImageBitmap(image);
+                        bannerLink = mediaPath;
+                    }
                     c.close();
                 }
             }
@@ -163,54 +169,50 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQ_PERM && grantResults[0] == PERMISSION_GRANTED)
-            getMedia();
+            getMedia(requestCode);
     }
 
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.edit_upload:
-                getMedia();
+            case R.id.edit_pb:
+                getMedia(REQ_PROFILE_IMG);
                 break;
 
-            case R.id.edit_pb:
-                if (user != null) {
-                    Intent image = new Intent(getApplicationContext(), MediaViewer.class);
-                    if (!txtImg.getText().toString().isEmpty()) {
-                        String[] mediaLink = new String[]{txtImg.getText().toString()};
-                        image.putExtra(KEY_MEDIA_LINK, mediaLink);
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
-                    } else {
-                        String[] mediaLink = new String[]{user.getImageLink()};
-                        image.putExtra(KEY_MEDIA_LINK, mediaLink);
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                    }
-                    startActivity(image);
-                }
+            case R.id.edit_add_banner:
+            case R.id.edit_banner:
+                getMedia(REQ_PROFILE_BANNER);
                 break;
         }
     }
 
 
     public void setUser(TwitterUser user) {
-        String pbLink = user.getImageLink() + "_bigger";
-        Picasso.get().load(pbLink).into(pb_image);
+        String pbLink = user.getImageLink();
+        String bnLink = user.getBannerLink() + "/600x200";
+
+        if (!user.hasDefaultProfileImage())
+            pbLink += "_bigger";
+        Picasso.get().load(pbLink).into(profile_image);
+        if (user.hasBannerImg()) {
+            Picasso.get().load(bnLink).into(profile_banner);
+            add_banner_btn.setVisibility(INVISIBLE);
+        }
         name.setText(user.getUsername());
         link.setText(user.getLink());
         loc.setText(user.getLocation());
         bio.setText(user.getBio());
-        this.user = user;
     }
 
 
-    private void getMedia() {
+    private void getMedia(int request) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
             if (check == PackageManager.PERMISSION_GRANTED) {
                 Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
                 if (media.resolveActivity(getPackageManager()) != null)
-                    startActivityForResult(media, REQ_PB);
+                    startActivityForResult(media, request);
                 else
                     Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
             } else {
@@ -219,7 +221,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
         } else {
             Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
             if (media.resolveActivity(getPackageManager()) != null)
-                startActivityForResult(media, REQ_PB);
+                startActivityForResult(media, request);
             else
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
         }

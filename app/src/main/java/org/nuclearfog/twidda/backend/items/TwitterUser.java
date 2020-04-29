@@ -15,6 +15,7 @@ public class TwitterUser {
     private final boolean isVerified;
     private final boolean isLocked;
     private final boolean isFollowReqSent;
+    private final boolean hasDefaultImage;
 
     private final int following;
     private final int follower;
@@ -69,11 +70,12 @@ public class TwitterUser {
         tweetCount = user.getStatusesCount();
         favorCount = user.getFavouritesCount();
         isFollowReqSent = user.isFollowRequestSent();
+        hasDefaultImage = user.isDefaultProfileImage();
     }
 
     public TwitterUser(long userID, String username, String screenname, String profileImg, String bio, String location,
-                       boolean isVerified, boolean isLocked, boolean isFollowReqSent, String link, String bannerImg,
-                       long created, int following, int follower, int tweetCount, int favorCount) {
+                       boolean isVerified, boolean isLocked, boolean isFollowReqSent, boolean hasDefaultImage, String link,
+                       String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
 
         this.userID = userID;
         this.username = username != null ? username : "";
@@ -91,6 +93,7 @@ public class TwitterUser {
         this.tweetCount = tweetCount;
         this.favorCount = favorCount;
         this.isFollowReqSent = isFollowReqSent;
+        this.hasDefaultImage = hasDefaultImage;
     }
 
     /**
@@ -226,8 +229,8 @@ public class TwitterUser {
      *
      * @return true if user has a profile image set
      */
-    public boolean hasProfileImage() {
-        return !profileImg.isEmpty();
+    public boolean hasDefaultProfileImage() {
+        return hasDefaultImage;
     }
 
     /**

@@ -148,4 +148,5 @@
     <string name="error_connection_failed">Connection failed!</string>
     <string name="enter_username">Enter username</string>
     <string name="profile_banner">Profile banner image</string>
+    <string name="editprofile_add_banner">add banner</string>
 </resources>

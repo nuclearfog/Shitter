@@ -86,7 +86,10 @@ public class UserAdapter extends Adapter<UserAdapter.ItemHolder> {
         vh.username.setText(user.getUsername());
         vh.screenname.setText(user.getScreenname());
         if (settings.getImageLoad()) {
-            Picasso.get().load(user.getImageLink() + "_mini").into(vh.profileImg);
+            String pbLink = user.getImageLink();
+            if (!user.hasDefaultProfileImage())
+                pbLink += "_mini";
+            Picasso.get().load(pbLink).into(vh.profileImg);
         }
         if (user.isVerified()) {
             vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);

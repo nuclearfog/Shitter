@@ -31,6 +31,7 @@ public class AppDatabase {
     private static final int LCK_MASK = 1 << 1;     //  USER LOCKED MASK
     private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
     private static final int EXCL_USR = 1 << 3;     //  EXCLUDE USERS TWEETS
+    private static final int DEF_IMG = 1 << 4;     //  DEFAULT PROFILE IMAGE
 
     private final int limit;       //  DATABASE ENTRY limit
     private final long homeId;
@@ -586,8 +587,9 @@ public class AppDatabase {
         boolean isVerified = (userRegister & VER_MASK) > 0;
         boolean isLocked = (userRegister & LCK_MASK) > 0;
         boolean isReq = (userRegister & FRQ_MASK) > 0;
+        boolean defaultImg = (userRegister & DEF_IMG) > 0;
         return new TwitterUser(userId, username, screenname, profileImg, bio, location, isVerified,
-                isLocked, isReq, link, banner, createdAt, following, follower, tCount, fCount);
+                isLocked, isReq, defaultImg, link, banner, createdAt, following, follower, tCount, fCount);
     }
 
 
@@ -606,6 +608,10 @@ public class AppDatabase {
             userRegister |= FRQ_MASK;
         else
             userRegister &= ~FRQ_MASK;
+        if (user.hasDefaultProfileImage())
+            userRegister |= DEF_IMG;
+        else
+            userRegister &= ~DEF_IMG;
 
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());

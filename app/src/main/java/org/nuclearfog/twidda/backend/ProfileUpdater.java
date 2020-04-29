@@ -85,8 +85,6 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
             if (userHolder == null) {
                 return mTwitter.getCurrentUser();
             } else {
-                if (userHolder.hasProfileImage())
-                    mTwitter.updateProfileImage(userHolder.getImageLink());
                 TwitterUser user = mTwitter.updateProfile(userHolder);
                 db.storeUser(user);
             }

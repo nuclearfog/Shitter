@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
  */
 public class UserHolder {
 
-    private final String name, link, location, bio, imageLink;
+    private final String name, link, location, bio, profileImage, profileBanner;
 
     /**
      * create user information holder
@@ -16,14 +16,17 @@ public class UserHolder {
      * @param link      profile link
      * @param location  profile location string
      * @param bio       description string
-     * @param imageLink local profile image path
+     * @param profileImage local profile image path
+     * @param profileBanner local profile image path
      */
-    public UserHolder(String name, String link, String location, String bio, String imageLink) {
+    public UserHolder(String name, String link, String location, String bio, String profileImage, String profileBanner) {
         this.name = name;
+        this.bio = bio;
         this.link = link;
         this.location = location;
-        this.imageLink = imageLink;
-        this.bio = bio;
+        this.profileImage = profileImage;
+        this.profileBanner = profileBanner;
+
     }
 
     /**
@@ -62,17 +65,34 @@ public class UserHolder {
      * get local image path
      * @return image path
      */
-    public String getImageLink() {
-        return imageLink;
+    public String getProfileImage() {
+        return profileImage;
     }
 
     /**
      * check if profile image path is included
-     *
      * @return true if image path is included
      */
     public boolean hasProfileImage() {
-        return !imageLink.isEmpty();
+        return profileImage != null && !profileImage.isEmpty();
+    }
+
+    /**
+     * getprofile banner path
+     *
+     * @return image path
+     */
+    public String getProfileBanner() {
+        return profileBanner;
+    }
+
+    /**
+     * check if profile banner path is included
+     *
+     * @return true if path is included
+     */
+    public boolean hasProfileBanner() {
+        return profileBanner != null && !profileBanner.isEmpty();
     }
 
     @NonNull

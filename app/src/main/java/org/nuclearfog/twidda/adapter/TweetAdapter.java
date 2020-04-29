@@ -148,8 +148,12 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (settings.getImageLoad())
-            Picasso.get().load(user.getImageLink() + "_mini").into(vh.profile);
+        if (settings.getImageLoad()) {
+            String pbLink = user.getImageLink();
+            if (!user.hasDefaultProfileImage())
+                pbLink += "_mini";
+            Picasso.get().load(pbLink).into(vh.profile);
+        }
         else
             vh.profile.setImageResource(0);
     }

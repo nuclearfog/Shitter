@@ -531,15 +531,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 String bannerLink = user.getBannerLink() + "/600x200";
                 Picasso.get().load(bannerLink).into(banner);
                 profile_layer.getLayoutParams().height = (int) getResources().getDimension(R.dimen.profile_banner_height);
-                profile_layer.requestLayout();
-            } else {
+            } else
                 profile_layer.getLayoutParams().height = WRAP_CONTENT;
-                profile_layer.requestLayout();
-            }
-            if (user.hasProfileImage()) {
-                String imgLink = user.getImageLink() + "_bigger";
-                Picasso.get().load(imgLink).into(profile);
-            }
+            profile_layer.requestLayout();
+            String imgLink = user.getImageLink();
+            if (!user.hasDefaultProfileImage())
+                imgLink += "_bigger";
+            Picasso.get().load(imgLink).into(profile);
         }
     }
 

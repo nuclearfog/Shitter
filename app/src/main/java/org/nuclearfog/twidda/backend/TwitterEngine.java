@@ -771,28 +771,21 @@ public class TwitterEngine {
      */
     TwitterUser updateProfile(UserHolder userHolder) throws EngineException {
         try {
+            if (userHolder.hasProfileImage()) {
+                File profileImage = new File(userHolder.getProfileImage());
+                twitter.updateProfileImage(profileImage);
+                twitter.removeProfileBanner();
+            }
+            if (userHolder.hasProfileBanner()) {
+                File profileBanner = new File(userHolder.getProfileBanner());
+                twitter.updateProfileBanner(profileBanner);
+            }
             String username = userHolder.getName();
             String user_link = userHolder.getLink();
             String user_loc = userHolder.getLocation();
             String user_bio = userHolder.getBio();
             User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
             return new TwitterUser(user);
-        } catch (TwitterException err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * Update user profile image_add
-     *
-     * @param path image path
-     * @throws EngineException if access is unavailable
-     */
-    void updateProfileImage(String path) throws EngineException {
-        try {
-            File image = new File(path);
-            twitter.updateProfileImage(image);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }

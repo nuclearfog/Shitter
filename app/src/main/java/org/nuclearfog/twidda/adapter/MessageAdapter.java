@@ -145,8 +145,12 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (settings.getImageLoad())
-            Picasso.get().load(sender.getImageLink() + "_mini").into(vh.profile_img);
+        if (settings.getImageLoad()) {
+            String pbLink = sender.getImageLink();
+            if (!sender.hasDefaultProfileImage())
+                pbLink += "_mini";
+            Picasso.get().load(pbLink).into(vh.profile_img);
+        }
     }
 
 

@@ -42,10 +42,10 @@
                             android:id="@+id/profile_banner"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:adjustViewBounds="true"
                             android:contentDescription="@string/profile_banner"
                             android:paddingLeft="@dimen/profile_banner_padding"
                             android:paddingRight="@dimen/profile_banner_padding"
+                            android:adjustViewBounds="true"
                             android:scaleType="centerCrop" />
 
                         <LinearLayout
@@ -92,8 +92,6 @@
                                         android:id="@+id/profile_screenname"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginEnd="@dimen/text_padding"
-                                        android:layout_marginRight="@dimen/text_padding"
                                         android:drawablePadding="@dimen/padding_drawable"
                                         android:padding="@dimen/profile_tv_padding"
                                         android:singleLine="true" />

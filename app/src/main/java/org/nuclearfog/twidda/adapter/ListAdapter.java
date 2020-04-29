@@ -161,8 +161,12 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.createdAt.setText(StringTools.getTimeString(item.getCreatedAt()));
         vh.memberCount.setText(formatter.format(item.getMemberCount()));
         vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
-        if (settings.getImageLoad())
-            Picasso.get().load(owner.getImageLink() + "_mini").into(vh.pb_image);
+        if (settings.getImageLoad()) {
+            String pbLink = owner.getImageLink();
+            if (!owner.hasDefaultProfileImage())
+                pbLink += "_mini";
+            Picasso.get().load(pbLink).into(vh.pb_image);
+        }
         if (item.isFollowing())
             vh.followList.setText(R.string.user_unfollow);
         else

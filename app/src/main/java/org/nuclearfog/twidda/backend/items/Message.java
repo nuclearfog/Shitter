@@ -26,7 +26,7 @@ public class Message {
         this.receiver = new TwitterUser(receiver);
         messageId = dm.getId();
         time = dm.getCreatedAt().getTime();
-        message = "" + getText(dm);
+        message = getText(dm);
     }
 
     /**
@@ -97,14 +97,18 @@ public class Message {
      * @return Tweet string with resolved URL entities
      */
     private String getText(DirectMessage message) {
-        URLEntity[] entities = message.getURLEntities();
-        StringBuilder text = new StringBuilder(message.getText());
-
-        for (int i = entities.length - 1; i >= 0; i--) {
-            URLEntity entity = entities[i];
-            text.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
+        String text = message.getText();
+        if (text != null && !text.isEmpty()) {
+            URLEntity[] entities = message.getURLEntities();
+            StringBuilder messageBuilder = new StringBuilder(message.getText());
+            for (int i = entities.length - 1; i >= 0; i--) {
+                URLEntity entity = entities[i];
+                messageBuilder.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
+            }
+            return messageBuilder.toString();
+        } else {
+            return "";
         }
-        return text.toString();
     }
 
     @NonNull
