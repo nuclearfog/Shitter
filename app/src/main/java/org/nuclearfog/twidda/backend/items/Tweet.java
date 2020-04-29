@@ -121,23 +121,24 @@ public class Tweet {
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] medias, String source, long replyID,
                  Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, String place, String geo) {
+
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
         this.favoriteCount = favoriteCount;
-        this.tweet = tweet;
         this.time = time;
         this.replyID = replyID;
         this.embedded = embedded;
-        this.replyName = replyName;
         this.medias = medias;
-        this.source = source;
         this.retweeted = retweeted;
         this.favored = favored;
         this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
-        this.locationName = place;
-        this.locationCoordinates = geo;
+        this.tweet = tweet != null ? tweet : "";
+        this.source = source != null ? source : "";
+        this.replyName = replyName != null ? replyName : "";
+        this.locationName = place != null ? place : "";
+        this.locationCoordinates = geo != null ? geo : "";
     }
 
     /**

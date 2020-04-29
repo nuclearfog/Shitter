@@ -77,9 +77,10 @@
 
                                 <TextView
                                     android:id="@+id/profile_username"
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:drawablePadding="@dimen/padding_drawable"
+                                    android:padding="@dimen/profile_tv_padding"
                                     android:singleLine="true" />
 
                                 <LinearLayout
@@ -89,20 +90,20 @@
 
                                     <TextView
                                         android:id="@+id/profile_screenname"
-                                        android:layout_width="0dp"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginEnd="@dimen/text_padding"
                                         android:layout_marginRight="@dimen/text_padding"
-                                        android:layout_weight="2"
                                         android:drawablePadding="@dimen/padding_drawable"
+                                        android:padding="@dimen/profile_tv_padding"
                                         android:singleLine="true" />
 
                                     <TextView
                                         android:id="@+id/follow_back"
-                                        android:layout_width="0dp"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1"
                                         android:drawablePadding="@dimen/padding_drawable"
+                                        android:padding="@dimen/profile_tv_padding"
                                         android:singleLine="true"
                                         android:text="@string/follows_you"
                                         android:visibility="invisible"

@@ -67,7 +67,8 @@
     <dimen name="edittext_background_padding">5dp</dimen>
     <dimen name="settings_edittext_margin">1dp</dimen>
     <dimen name="button_edge">1dp</dimen>
-    <dimen name="profile_banner_height">155dp</dimen>
+    <dimen name="profile_banner_height">140dp</dimen>
     <dimen name="profile_tv_margin">2dp</dimen>
-    <dimen name="profile_banner_padding">40dp</dimen>
+    <dimen name="profile_banner_padding">5dp</dimen>
+    <dimen name="profile_tv_padding">2dp</dimen>
 </resources>

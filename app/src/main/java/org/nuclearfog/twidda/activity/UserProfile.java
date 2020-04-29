@@ -71,8 +71,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnTouchListener, OnTagClickListener, OnTabSelectedListener {
 
     public static final String KEY_PROFILE_ID = "profile_uid";
-    private static final int REQUEST_PROFILE_CHANGED = 1;
     public static final int RETURN_PROFILE_CHANGED = 2;
+    private static final int REQUEST_PROFILE_CHANGED = 1;
+    private static final int TRANSPARENCY = 0xafffffff;
 
     private ProfileLoader profileAsync;
     private FragmentAdapter adapter;
@@ -130,6 +131,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FontTool.setViewFontAndColor(settings, root);
+        txtUser.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
+        txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
+        follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         bioTxt.setMovementMethod(LinkMovementMethod.getInstance());
         tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
@@ -431,6 +435,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                     startActivity(image);
                 }
+                break;
 
             case R.id.profile_banner:
                 if (user != null) {

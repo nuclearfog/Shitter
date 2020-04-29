@@ -30,23 +30,37 @@ public class TwitterUser {
     private final String bannerImg;
 
     public TwitterUser(User user) {
-        userID = user.getId();
-        username = "" + user.getName();
-        screenname = '@' + user.getScreenName();
-        link = "" + user.getURLEntity().getExpandedURL();
-        location = "" + user.getLocation();
-        bio = getBio(user);
-
-        String profileLink = user.getOriginalProfileImageURLHttps();
+        String username = user.getName();
+        String screenname = user.getScreenName();
+        String link = user.getURLEntity().getExpandedURL();
+        String location = user.getLocation();
+        String profileImg = user.getOriginalProfileImageURLHttps();
         String bannerLink = user.getProfileBannerURL();
-        if (profileLink != null)
-            profileImg = user.getOriginalProfileImageURLHttps();
-        else
-            profileImg = "";
+        String bio = user.getDescription();
+
+        this.username = username != null ? username : "";
+        this.screenname = screenname != null ? '@' + user.getScreenName() : "";
+        this.link = link != null ? link : "";
+        this.location = location != null ? location : "";
+        this.profileImg = profileImg != null ? profileImg : "";
+
+        if (bio != null && !bio.isEmpty()) {
+            URLEntity[] entities = user.getDescriptionURLEntities();
+            StringBuilder bioBuilder = new StringBuilder(user.getDescription());
+            for (int i = entities.length - 1; i >= 0; i--) {
+                URLEntity entity = entities[i];
+                bioBuilder.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
+            }
+            this.bio = bioBuilder.toString();
+        } else {
+            this.bio = "";
+        }
         if (bannerLink != null && bannerLink.length() > 4)
             bannerImg = bannerLink.substring(0, bannerLink.length() - 4);
         else
             bannerImg = "";
+
+        userID = user.getId();
         isVerified = user.isVerified();
         isLocked = user.isProtected();
         created = user.getCreatedAt().getTime();
@@ -62,13 +76,13 @@ public class TwitterUser {
                        long created, int following, int follower, int tweetCount, int favorCount) {
 
         this.userID = userID;
-        this.username = username;
-        this.screenname = screenname;
-        this.profileImg = profileImg;
-        this.bio = bio;
-        this.link = link;
-        this.location = location;
-        this.bannerImg = bannerImg;
+        this.username = username != null ? username : "";
+        this.screenname = screenname != null ? screenname : "";
+        this.profileImg = profileImg != null ? profileImg : "";
+        this.bio = bio != null ? bio : "";
+        this.link = link != null ? link : "";
+        this.location = location != null ? location : "";
+        this.bannerImg = bannerImg != null ? bannerImg : "";
         this.isVerified = isVerified;
         this.isLocked = isLocked;
         this.created = created;
@@ -223,21 +237,6 @@ public class TwitterUser {
      */
     public boolean hasBannerImg() {
         return !bannerImg.isEmpty();
-    }
-
-    /**
-     * Resolve shortened links from user description
-     * @param user Twitter user
-     * @return Description String
-     */
-    private String getBio(User user) {
-        URLEntity[] entities = user.getDescriptionURLEntities();
-        StringBuilder bio = new StringBuilder("" + user.getDescription());
-        for (int i = entities.length - 1; i >= 0; i--) {
-            URLEntity entity = entities[i];
-            bio.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
-        }
-        return bio.toString();
     }
 
     @NonNull
