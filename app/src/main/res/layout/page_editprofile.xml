@@ -35,12 +35,10 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/button_margin"
                     android:layout_marginRight="@dimen/button_margin"
-                    android:layout_weight="1"
                     android:background="@drawable/button"
                     android:paddingLeft="@dimen/button_padding"
                     android:paddingRight="@dimen/button_padding"
-                    android:text="@string/editprofile_add_banner"
-                    android:visibility="invisible" />
+                    android:text="@string/editprofile_add_banner" />
 
                 <ImageView
                     android:id="@+id/edit_banner"

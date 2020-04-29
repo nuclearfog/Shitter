@@ -774,7 +774,6 @@ public class TwitterEngine {
             if (userHolder.hasProfileImage()) {
                 File profileImage = new File(userHolder.getProfileImage());
                 twitter.updateProfileImage(profileImage);
-                twitter.removeProfileBanner();
             }
             if (userHolder.hasProfileBanner()) {
                 File profileBanner = new File(userHolder.getProfileBanner());

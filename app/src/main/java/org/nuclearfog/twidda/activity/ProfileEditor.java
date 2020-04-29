@@ -157,6 +157,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
                         profileLink = mediaPath;
                     } else {
                         profile_banner.setImageBitmap(image);
+                        add_banner_btn.setVisibility(INVISIBLE);
                         bannerLink = mediaPath;
                     }
                     c.close();

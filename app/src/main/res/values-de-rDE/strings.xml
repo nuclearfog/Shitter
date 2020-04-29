@@ -147,4 +147,5 @@
     <string name="error_connection_failed">Verbindung fehlgeschlagen!</string>
     <string name="enter_username">Nutzernamen eingeben</string>
     <string name="profile_banner">Profilbanner</string>
+    <string name="editprofile_add_banner">Profilbanner hinzufügen</string>
 </resources>
