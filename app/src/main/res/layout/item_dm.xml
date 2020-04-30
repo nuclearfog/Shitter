@@ -112,8 +112,8 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dm_item_button_height"
-                android:layout_marginEnd="@dimen/padding_side"
-                android:layout_marginRight="@dimen/padding_side"
+                android:layout_marginEnd="@dimen/margin_side"
+                android:layout_marginRight="@dimen/margin_side"
                 android:background="@drawable/button"
                 android:text="@string/dm_answer"
                 android:textSize="@dimen/textsize_button" />

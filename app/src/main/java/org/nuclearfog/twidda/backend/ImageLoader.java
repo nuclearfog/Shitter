@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MediaViewer;
-import org.nuclearfog.twidda.adapter.ImageAdapter;
 
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -26,7 +25,6 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     }
 
     private WeakReference<MediaViewer> ui;
-    private ImageAdapter imageAdapter;
     private Action action;
 
 
@@ -38,7 +36,6 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
      */
     public ImageLoader(@NonNull MediaViewer context, Action action) {
         ui = new WeakReference<>(context);
-        imageAdapter = context.getAdapter();
         this.action = action;
     }
 
@@ -75,14 +72,8 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
     @Override
     protected void onProgressUpdate(Bitmap[] btm) {
-        Bitmap image = btm[0];
-        if (ui.get() != null) {
-            if (imageAdapter.isEmpty()) {
-                ui.get().setImage(image);
-                ui.get().disableProgressbar();
-            }
-            imageAdapter.addLast(btm[0]);
-        }
+        if (ui.get() != null)
+            ui.get().setImage(btm[0]);
     }
 
 
@@ -90,7 +81,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null) {
             if (success) {
-                imageAdapter.disableLoading();
+                ui.get().setImage(null);
             } else {
                 Toast.makeText(ui.get(), R.string.error_image_download, Toast.LENGTH_SHORT).show();
                 ui.get().finish();

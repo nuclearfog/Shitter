@@ -63,7 +63,6 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLSIT_FAVORITS;
 
 
 public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTouchListener,
@@ -136,7 +135,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
-        favButton.setOnClickListener(this);
         rtwButton.setOnLongClickListener(this);
         favButton.setOnLongClickListener(this);
         profile_img.setOnClickListener(this);
@@ -238,13 +236,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     Intent userList = new Intent(this, UserDetail.class);
                     userList.putExtra(KEY_USERDETAIL_ID, tweetID);
                     userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
-                    startActivity(userList);
-                    break;
-
-                case R.id.tweet_favorit:
-                    userList = new Intent(this, UserDetail.class);
-                    userList.putExtra(KEY_USERDETAIL_ID, tweetID);
-                    userList.putExtra(KEY_USERDETAIL_MODE, USERLSIT_FAVORITS);
                     startActivity(userList);
                     break;
 

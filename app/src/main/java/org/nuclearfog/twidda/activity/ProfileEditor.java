@@ -130,7 +130,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
                 String userLoc = loc.getText().toString();
                 String userBio = bio.getText().toString();
                 if (username.trim().isEmpty()) {
-                    Toast.makeText(this, R.string.error_empty_name, LENGTH_SHORT).show();
+                    String errMsg = getString(R.string.error_empty_name);
+                    name.setError(errMsg);
+                } else if (!userLink.isEmpty() && userLink.contains(" ")) {
+                    String errMsg = getString(R.string.error_invalid_link);
+                    link.setError(errMsg);
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
                     editorAsync = new ProfileUpdater(this, userHolder);
@@ -208,18 +212,15 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
 
 
     private void getMedia(int request) {
+        boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
-            if (check == PackageManager.PERMISSION_GRANTED) {
-                Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-                if (media.resolveActivity(getPackageManager()) != null)
-                    startActivityForResult(media, request);
-                else
-                    Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
-            } else {
+            if (check == PackageManager.PERMISSION_DENIED) {
                 requestPermissions(PERM_READ, REQ_PERM);
+                accessGranted = false;
             }
-        } else {
+        }
+        if (accessGranted) {
             Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
             if (media.resolveActivity(getPackageManager()) != null)
                 startActivityForResult(media, request);

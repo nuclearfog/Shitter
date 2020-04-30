@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
+import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -147,18 +148,15 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
 
     private void getMedia() {
+        boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
-            if (check == PERMISSION_GRANTED) {
-                Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-                if (galleryIntent.resolveActivity(getPackageManager()) != null)
-                    startActivityForResult(galleryIntent, REQ_PERM_READ);
-                else
-                    Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
-            } else {
+            if (check == PERMISSION_DENIED) {
                 requestPermissions(PERM_READ, REQ_PERM_READ);
+                accessGranted = false;
             }
-        } else {
+        }
+        if (accessGranted) {
             Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
             if (galleryIntent.resolveActivity(getPackageManager()) != null)
                 startActivityForResult(galleryIntent, REQ_PERM_READ);

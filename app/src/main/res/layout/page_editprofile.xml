@@ -55,8 +55,8 @@
                     android:layout_width="@dimen/profile_image"
                     android:layout_height="@dimen/profile_image"
                     android:layout_gravity="bottom"
-                    android:layout_marginStart="@dimen/padding_side"
-                    android:layout_marginLeft="@dimen/padding_side"
+                    android:layout_marginStart="@dimen/margin_side"
+                    android:layout_marginLeft="@dimen/margin_side"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/image_preview" />
 

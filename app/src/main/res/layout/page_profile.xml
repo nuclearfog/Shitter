@@ -152,59 +152,68 @@
                             </LinearLayout>
 
                         </LinearLayout>
+
                     </FrameLayout>
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/bio"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:paddingLeft="@dimen/padding_side"
-                        android:paddingRight="@dimen/padding_side">
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_side"
+                        android:layout_marginStart="@dimen/margin_side"
+                        android:layout_marginRight="@dimen/margin_side"
+                        android:layout_marginEnd="@dimen/margin_side"
+                        android:layout_marginTop="@dimen/profile_tv_margin"
+                        android:fadeScrollbars="false"
+                        android:linksClickable="true"
+                        android:maxLines="@integer/text_bio_lines"
+                        android:scrollbars="vertical" />
 
-                        <TextView
-                            android:id="@+id/bio"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/profile_tv_margin"
-                            android:fadeScrollbars="false"
-                            android:linksClickable="true"
-                            android:maxLines="@integer/text_bio_lines"
-                            android:scrollbars="vertical" />
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_side"
+                        android:layout_marginStart="@dimen/margin_side"
+                        android:layout_marginRight="@dimen/margin_side"
+                        android:layout_marginEnd="@dimen/margin_side"
+                        android:layout_marginTop="@dimen/profile_tv_margin"
+                        android:drawablePadding="@dimen/padding_drawable"
+                        android:singleLine="true"
+                        android:textSize="@dimen/textsize_profile"
+                        app:drawableLeftCompat="@drawable/userlocation"
+                        app:drawableStartCompat="@drawable/userlocation" />
 
-                        <TextView
-                            android:id="@+id/location"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/profile_tv_margin"
-                            android:drawablePadding="@dimen/padding_drawable"
-                            android:singleLine="true"
-                            android:textSize="@dimen/textsize_profile"
-                            app:drawableLeftCompat="@drawable/userlocation"
-                            app:drawableStartCompat="@drawable/userlocation" />
+                    <TextView
+                        android:id="@+id/links"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_side"
+                        android:layout_marginStart="@dimen/margin_side"
+                        android:layout_marginRight="@dimen/margin_side"
+                        android:layout_marginEnd="@dimen/margin_side"
+                        android:layout_marginTop="@dimen/profile_tv_margin"
+                        android:drawablePadding="@dimen/padding_drawable"
+                        android:linksClickable="true"
+                        android:singleLine="true"
+                        android:textSize="@dimen/textsize_profile"
+                        app:drawableLeftCompat="@drawable/link"
+                        app:drawableStartCompat="@drawable/link" />
 
-                        <TextView
-                            android:id="@+id/links"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/profile_tv_margin"
-                            android:drawablePadding="@dimen/padding_drawable"
-                            android:linksClickable="true"
-                            android:singleLine="true"
-                            android:textSize="@dimen/textsize_profile"
-                            app:drawableLeftCompat="@drawable/link"
-                            app:drawableStartCompat="@drawable/link" />
-
-                        <TextView
-                            android:id="@+id/profile_date"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/profile_tv_margin"
-                            android:drawablePadding="@dimen/padding_drawable"
-                            android:singleLine="true"
-                            android:textSize="@dimen/textsize_profile"
-                            app:drawableLeftCompat="@drawable/calendar"
-                            app:drawableStartCompat="@drawable/calendar" />
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/profile_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_side"
+                        android:layout_marginStart="@dimen/margin_side"
+                        android:layout_marginRight="@dimen/margin_side"
+                        android:layout_marginEnd="@dimen/margin_side"
+                        android:layout_marginTop="@dimen/profile_tv_margin"
+                        android:drawablePadding="@dimen/padding_drawable"
+                        android:singleLine="true"
+                        android:textSize="@dimen/textsize_profile"
+                        app:drawableLeftCompat="@drawable/calendar"
+                        app:drawableStartCompat="@drawable/calendar" />
 
                 </LinearLayout>
 

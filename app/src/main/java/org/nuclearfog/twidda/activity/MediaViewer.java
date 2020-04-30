@@ -17,7 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -176,21 +176,22 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     @Override
     public void onImageClick(Bitmap image) {
-        setImage(image);
+        changeImage(image);
     }
 
 
     @Override
     public void onImageTouch(Bitmap image) {
+        boolean accessGranted = true;
         if (type == MEDIAVIEWER_IMAGE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
-                if (check == PERMISSION_GRANTED) {
-                    storeImage(image);
-                } else {
+                if (check == PERMISSION_DENIED) {
                     requestPermissions(REQ_WRITE_SD, REQCODE_SD);
+                    accessGranted = false;
                 }
-            } else {
+            }
+            if (accessGranted) {
                 storeImage(image);
             }
         }
@@ -225,17 +226,20 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public ImageAdapter getAdapter() {
-        return adapter;
+    public void setImage(@Nullable Bitmap image) {
+        if (image != null) {
+            if (adapter.isEmpty()) {
+                changeImage(image);
+                image_progress.setVisibility(View.INVISIBLE);
+            }
+            adapter.addLast(image);
+        } else {
+            adapter.disableLoading();
+        }
     }
 
 
-    public void disableProgressbar() {
-        image_progress.setVisibility(View.INVISIBLE);
-    }
-
-
-    public void setImage(@NonNull Bitmap image) {
+    private void changeImage(Bitmap image) {
         float ratio = image.getWidth() / (float) width;
         int destHeight = (int) (image.getHeight() / ratio);
         image = Bitmap.createScaledBitmap(image, width, destHeight, false);

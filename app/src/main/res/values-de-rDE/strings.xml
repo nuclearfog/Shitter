@@ -148,4 +148,5 @@
     <string name="enter_username">Nutzernamen eingeben</string>
     <string name="profile_banner">Profilbanner</string>
     <string name="editprofile_add_banner">Profilbanner hinzufügen</string>
+    <string name="error_invalid_link">Ungültiger Link!</string>
 </resources>
