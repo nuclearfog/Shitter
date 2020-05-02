@@ -99,13 +99,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
-
-        settings = GlobalSettings.getInstance(this);
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_PROFILE_ID)) {
-            userId = param.getLong(KEY_PROFILE_ID);
-            isHome = userId == settings.getUserId();
-        }
         Toolbar tool = findViewById(R.id.profile_toolbar);
         TabLayout tab = findViewById(R.id.profile_tab);
         ViewGroup root = findViewById(R.id.user_view);
@@ -125,6 +118,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         pager = findViewById(R.id.profile_pager);
         tweetTabTxt = new TextView(this);
         favorTabTxt = new TextView(this);
+
+        settings = GlobalSettings.getInstance(this);
+        Bundle param = getIntent().getExtras();
+        if (param != null && param.containsKey(KEY_PROFILE_ID)) {
+            userId = param.getLong(KEY_PROFILE_ID);
+            isHome = userId == settings.getUserId();
+        }
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)

@@ -35,7 +35,6 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     private FragmentAdapter adapter;
     private ViewPager pager;
-    private GlobalSettings settings;
     private String search = "";
     private int tabIndex = 0;
 
@@ -60,7 +59,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
             getSearchString(link);
         }
 
-        settings = GlobalSettings.getInstance(this);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.setupWithViewPager(pager);
@@ -150,6 +149,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     private void getSearchString(@NonNull Uri link) {
         String path = link.getPath();
         String query = link.getQuery();
+        GlobalSettings settings = GlobalSettings.getInstance(this);
 
         if (path != null) {
             if (path.startsWith("/hashtag/")) {

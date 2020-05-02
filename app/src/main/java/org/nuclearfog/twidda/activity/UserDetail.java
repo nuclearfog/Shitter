@@ -31,6 +31,9 @@ public class UserDetail extends AppCompatActivity {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_userlist);
+        View root = findViewById(R.id.user_view);
+        ViewPager pager = findViewById(R.id.user_pager);
+        Toolbar toolbar = findViewById(R.id.user_toolbar);
 
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_USERDETAIL_MODE) && param.containsKey(KEY_USERDETAIL_ID)) {
@@ -38,17 +41,13 @@ public class UserDetail extends AppCompatActivity {
             id = param.getLong(KEY_USERDETAIL_ID);
         }
 
-        FragmentAdapter adapter;
-        View root = findViewById(R.id.user_view);
-        ViewPager pager = findViewById(R.id.user_pager);
-        Toolbar toolbar = findViewById(R.id.user_toolbar);
-
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         setSupportActionBar(toolbar);
 
         switch (mode) {
             case USERLIST_FRIENDS:
+                FragmentAdapter adapter;
                 if (getSupportActionBar() != null)
                     getSupportActionBar().setTitle(R.string.userlist_following);
                 adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FRIENDS_PAGE, id, "");

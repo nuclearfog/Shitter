@@ -72,13 +72,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_TWEET_NAME = "username";
     public static final Pattern linkPattern = Pattern.compile(".*/@?[\\w_]+/status/\\d{1,20}/?.*");
 
+    private StatusLoader statusAsync;
+    private GlobalSettings settings;
+
     private View header, footer, videoButton, imageButton;
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img;
-
-    private GlobalSettings settings;
-    private StatusLoader statusAsync;
 
     @Nullable
     private Tweet tweet;
@@ -89,16 +89,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
-
-        Bundle param = getIntent().getExtras();
-        Uri link = getIntent().getData();
-        settings = GlobalSettings.getInstance(this);
-        if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
-            tweetID = param.getLong(KEY_TWEET_ID);
-            username = param.getString(KEY_TWEET_NAME);
-        } else if (link != null) {
-            getTweet(link);
-        }
         ViewPager pager = findViewById(R.id.tweet_pager);
         Toolbar tool = findViewById(R.id.tweet_toolbar);
         View root = findViewById(R.id.tweet_layout);
@@ -118,6 +108,16 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
         imageButton = findViewById(R.id.image_attach);
         videoButton = findViewById(R.id.video_attach);
+
+        Bundle param = getIntent().getExtras();
+        Uri link = getIntent().getData();
+        settings = GlobalSettings.getInstance(this);
+        if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
+            tweetID = param.getLong(KEY_TWEET_ID);
+            username = param.getString(KEY_TWEET_NAME);
+        } else if (link != null) {
+            getTweet(link);
+        }
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)

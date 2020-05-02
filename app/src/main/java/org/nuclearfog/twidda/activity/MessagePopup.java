@@ -50,23 +50,22 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_dm);
-        String addtion = "";
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_DM_PREFIX)) {
-            addtion = param.getString(KEY_DM_PREFIX);
-        }
-
         View root = findViewById(R.id.dm_popup);
         View send = findViewById(R.id.dm_send);
         View media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
         text = findViewById(R.id.dm_text);
 
+        Bundle param = getIntent().getExtras();
+        if (param != null && param.containsKey(KEY_DM_PREFIX)) {
+            String addtion = param.getString(KEY_DM_PREFIX);
+            receiver.append(addtion);
+        }
+
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
         FontTool.setViewFontAndColor(settings, root);
 
-        receiver.append(addtion);
         send.setOnClickListener(this);
         media.setOnClickListener(this);
     }

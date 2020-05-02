@@ -75,7 +75,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-
         setContentView(R.layout.page_media);
         RecyclerView imageList = findViewById(R.id.image_list);
         View imageWindow = findViewById(R.id.image_window);
