@@ -4,9 +4,7 @@
     style="@style/PopupCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    app:cardPreventCornerOverlap="true"
-    app:cardUseCompatPadding="true">
+    android:layout_gravity="center">
 
     <LinearLayout
         android:id="@+id/tweet_popup"

@@ -27,14 +27,15 @@
     </style>
 
     <style name="CardViewStyle" parent="CardView">
-        <item name="cardPreventCornerOverlap">false</item>
         <item name="cardBackgroundColor">@color/half_transparent</item>
-        <item name="cardCornerRadius">5dp</item>
+        <item name="cardPreventCornerOverlap">false</item>
         <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">5dp</item>
     </style>
 
     <style name="PopupCardView" parent="CardView">
         <item name="cardPreventCornerOverlap">false</item>
+        <item name="cardUseCompatPadding">true</item>
         <item name="cardCornerRadius">10dp</item>
     </style>
 </resources>
