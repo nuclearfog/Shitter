@@ -19,7 +19,8 @@ import java.lang.ref.WeakReference;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * Background task to send direct messages
+ * Background task to send a direct messages to a user
+ * @see MessagePopup
  */
 public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
 

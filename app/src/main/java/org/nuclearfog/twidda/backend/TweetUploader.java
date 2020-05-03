@@ -22,8 +22,9 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task for uploading tweet
+ * @see TweetPopup
  */
-public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
+public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Nullable
     private TwitterEngine.EngineException twException;
@@ -38,7 +39,7 @@ public class StatusUploader extends AsyncTask<Void, Void, Boolean> {
      * @param context Activity context
      * @param tweet   tweet information
      */
-    public StatusUploader(@NonNull TweetPopup context, TweetHolder tweet) {
+    public TweetUploader(@NonNull TweetPopup context, TweetHolder tweet) {
         ui = new WeakReference<>(context);
         popup = new WeakReference<>(new Dialog(context));
         mTwitter = TwitterEngine.getInstance(context);

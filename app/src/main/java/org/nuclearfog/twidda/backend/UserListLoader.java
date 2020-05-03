@@ -17,9 +17,10 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * User list loader task
+ * download a list of user such as follower, following or searched users
+ * @see UserFragment
  */
-public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
+public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     public enum Mode {
         FOLLOWS,
@@ -33,13 +34,13 @@ public class UserLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     @Nullable
     private TwitterEngine.EngineException twException;
-    private Mode mode;
     private WeakReference<UserFragment> ui;
     private TwitterEngine mTwitter;
     private UserAdapter adapter;
+    private Mode mode;
 
 
-    public UserLoader(UserFragment fragment, Mode mode) {
+    public UserListLoader(UserFragment fragment, Mode mode) {
         ui = new WeakReference<>(fragment);
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
         adapter = fragment.getAdapter();

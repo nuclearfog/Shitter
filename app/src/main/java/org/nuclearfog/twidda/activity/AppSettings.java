@@ -34,7 +34,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
-import org.nuclearfog.twidda.backend.LocationLoader;
+import org.nuclearfog.twidda.backend.LocationListLoader;
 import org.nuclearfog.twidda.backend.TwitterEngine;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
@@ -64,7 +64,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     }
 
     private GlobalSettings settings;
-    private LocationLoader locationAsync;
+    private LocationListLoader locationAsync;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private NumberPicker load_picker;
@@ -161,7 +161,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     protected void onStart() {
         super.onStart();
         if (settings.getLogin() && locationAdapter.getCount() <= 1) {
-            locationAsync = new LocationLoader(this);
+            locationAsync = new LocationListLoader(this);
             locationAsync.execute();
         }
     }

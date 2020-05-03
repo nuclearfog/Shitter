@@ -16,6 +16,7 @@ import java.net.URL;
 
 /**
  * Background task to load images from twitter and storage
+ * @see MediaViewer
  */
 public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 

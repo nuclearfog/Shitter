@@ -17,7 +17,8 @@ import java.lang.ref.WeakReference;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * Twitter profile page loader
+ * task for loading user profile information and take actions
+ * @see UserProfile
  */
 public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> {
 

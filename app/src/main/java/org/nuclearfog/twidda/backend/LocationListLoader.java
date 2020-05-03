@@ -14,9 +14,10 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * Background task to load location information used by twitter
+ * Background task to load location information used by twitter such as location names and world ID's
+ * @see AppSettings
  */
-public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
+public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
 
     @Nullable
     private TwitterEngine.EngineException twException;
@@ -24,12 +25,7 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
     private TwitterEngine mTwitter;
 
 
-    /**
-     * load location data from twitter
-     *
-     * @param context Activity context
-     */
-    public LocationLoader(AppSettings context) {
+    public LocationListLoader(AppSettings context) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
     }

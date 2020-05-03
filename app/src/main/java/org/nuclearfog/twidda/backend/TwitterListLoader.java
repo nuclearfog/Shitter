@@ -17,7 +17,12 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
+/**
+ * Background task for downloading twitter lists created by a user
+ *
+ * @see ListFragment
+ */
+public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
 
     public enum Action {
         LOAD,
@@ -32,7 +37,7 @@ public class ListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
     private ListAdapter adapter;
     private Action action;
 
-    public ListLoader(ListFragment frag, Action action) {
+    public TwitterListLoader(ListFragment frag, Action action) {
         ui = new WeakReference<>(frag);
         mTwitter = TwitterEngine.getInstance(frag.getContext());
         adapter = frag.getAdapter();

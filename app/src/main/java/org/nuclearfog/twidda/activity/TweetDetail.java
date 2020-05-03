@@ -34,8 +34,8 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
-import org.nuclearfog.twidda.backend.StatusLoader;
-import org.nuclearfog.twidda.backend.StatusLoader.Action;
+import org.nuclearfog.twidda.backend.TweetLoader;
+import org.nuclearfog.twidda.backend.TweetLoader.Action;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -72,7 +72,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_TWEET_NAME = "username";
     public static final Pattern linkPattern = Pattern.compile(".*/@?[\\w_]+/status/\\d{1,20}/?.*");
 
-    private StatusLoader statusAsync;
+    private TweetLoader statusAsync;
     private GlobalSettings settings;
 
     private View header, footer, videoButton, imageButton;
@@ -148,7 +148,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
     protected void onStart() {
         super.onStart();
         if (statusAsync == null) {
-            statusAsync = new StatusLoader(this, Action.LOAD);
+            statusAsync = new TweetLoader(this, Action.LOAD);
             statusAsync.execute(tweetID);
         }
     }
@@ -187,7 +187,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
                     deleteDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            statusAsync = new StatusLoader(TweetDetail.this, Action.DELETE);
+                            statusAsync = new TweetLoader(TweetDetail.this, Action.DELETE);
                             statusAsync.execute(tweetID);
                         }
                     });
@@ -299,13 +299,13 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_retweet:
-                    statusAsync = new StatusLoader(this, Action.RETWEET);
+                    statusAsync = new TweetLoader(this, Action.RETWEET);
                     statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                     return true;
 
                 case R.id.tweet_favorit:
-                    statusAsync = new StatusLoader(this, Action.FAVORITE);
+                    statusAsync = new TweetLoader(this, Action.FAVORITE);
                     statusAsync.execute(tweetID);
                     Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                     return true;

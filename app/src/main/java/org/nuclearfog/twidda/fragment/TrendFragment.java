@@ -18,7 +18,7 @@ import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
-import org.nuclearfog.twidda.backend.TrendLoader;
+import org.nuclearfog.twidda.backend.TrendListLoader;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -29,7 +29,7 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
 public class TrendFragment extends Fragment implements OnRefreshListener, TrendClickListener, FragmentChangeObserver {
 
-    private TrendLoader trendTask;
+    private TrendListLoader trendTask;
     private SwipeRefreshLayout reload;
     private RecyclerView list;
     private TrendAdapter adapter;
@@ -136,7 +136,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
 
     private void load() {
-        trendTask = new TrendLoader(this);
+        trendTask = new TrendListLoader(this);
         trendTask.execute(settings.getTrendLocation().getWoeId());
     }
 }

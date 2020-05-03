@@ -16,7 +16,12 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
+/**
+ * task to download a direct message list from twitter and handle message actions
+ *
+ * @see MessageFragment
+ */
+public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
     public enum Mode {
         DB,
@@ -34,7 +39,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     private long id;
 
 
-    public MessageLoader(MessageFragment fragment, Mode mode) {
+    public MessageListLoader(MessageFragment fragment, Mode mode) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
@@ -107,15 +112,5 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     protected void onCancelled() {
         if (ui.get() != null)
             ui.get().setRefresh(false);
-    }
-
-
-    @Override
-    protected void onCancelled(@Nullable List<Message> messages) {
-        if (ui.get() != null) {
-            if (messages != null)
-                adapter.replaceAll(messages);
-            ui.get().setRefresh(false);
-        }
     }
 }

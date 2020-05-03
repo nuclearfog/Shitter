@@ -18,8 +18,8 @@ import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
-import org.nuclearfog.twidda.backend.TweetLoader;
-import org.nuclearfog.twidda.backend.TweetLoader.Mode;
+import org.nuclearfog.twidda.backend.TweetListLoader;
+import org.nuclearfog.twidda.backend.TweetListLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -47,7 +47,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private static final int REQUEST_TWEET_CHANGED = 3;
     public static final int RETURN_TWEET_CHANGED = 4;
 
-    private TweetLoader tweetTask;
+    private TweetListLoader tweetTask;
     private GlobalSettings settings;
     private SwipeRefreshLayout reload;
     private RecyclerView list;
@@ -178,41 +178,41 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private void load() {
         switch (mode) {
             case TWEET_FRAG_HOME:
-                tweetTask = new TweetLoader(this, Mode.TL_HOME);
+                tweetTask = new TweetListLoader(this, Mode.TL_HOME);
                 tweetTask.execute(1);
                 break;
 
             case TWEET_FRAG_MENT:
-                tweetTask = new TweetLoader(this, Mode.TL_MENT);
+                tweetTask = new TweetListLoader(this, Mode.TL_MENT);
                 tweetTask.execute(1);
                 break;
 
             case TWEET_FRAG_TWEETS:
-                tweetTask = new TweetLoader(this, Mode.USR_TWEETS);
+                tweetTask = new TweetListLoader(this, Mode.USR_TWEETS);
                 tweetTask.execute(id, 1);
                 break;
 
             case TWEET_FRAG_FAVORS:
-                tweetTask = new TweetLoader(this, Mode.USR_FAVORS);
+                tweetTask = new TweetListLoader(this, Mode.USR_FAVORS);
                 tweetTask.execute(id, 1);
                 break;
 
             case TWEET_FRAG_ANSWER:
                 boolean loadAnswer = settings.getAnswerLoad();
                 if (tweetTask != null || loadAnswer)
-                    tweetTask = new TweetLoader(this, Mode.TWEET_ANS);
+                    tweetTask = new TweetListLoader(this, Mode.TWEET_ANS);
                 else
-                    tweetTask = new TweetLoader(this, Mode.DB_ANS);
+                    tweetTask = new TweetListLoader(this, Mode.DB_ANS);
                 tweetTask.execute(id, search);
                 break;
 
             case TWEET_FRAG_SEARCH:
-                tweetTask = new TweetLoader(this, Mode.TWEET_SEARCH);
+                tweetTask = new TweetListLoader(this, Mode.TWEET_SEARCH);
                 tweetTask.execute(search);
                 break;
 
             case TWEET_FRAG_LIST:
-                tweetTask = new TweetLoader(this, Mode.LIST);
+                tweetTask = new TweetListLoader(this, Mode.LIST);
                 tweetTask.execute(id, 1);
                 break;
         }

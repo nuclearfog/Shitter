@@ -3,205 +3,149 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.adapter.TweetAdapter;
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.TweetFragment;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
 
 /**
- * Timeline loader Task
+ * Background task to download tweet informations and to take actions
+ * @see TweetDetail
  */
-public class TweetLoader extends AsyncTask<Object, Void, List<Tweet>> {
+public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
 
-    public enum Mode {
-        TL_HOME,
-        TL_MENT,
-        USR_TWEETS,
-        USR_FAVORS,
-        TWEET_ANS,
-        DB_ANS,
-        TWEET_SEARCH,
-        LIST
+    public enum Action {
+        LOAD,
+        RETWEET,
+        FAVORITE,
+        DELETE
     }
 
     @Nullable
     private TwitterEngine.EngineException twException;
-    private Mode mode;
-    private WeakReference<TweetFragment> ui;
-    private TweetAdapter adapter;
     private TwitterEngine mTwitter;
+    private WeakReference<TweetDetail> ui;
     private AppDatabase db;
+    private final Action action;
 
 
-    public TweetLoader(TweetFragment fragment, Mode mode) {
-        ui = new WeakReference<>(fragment);
-        db = new AppDatabase(fragment.getContext());
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        adapter = fragment.getAdapter();
-        this.mode = mode;
+    public TweetLoader(@NonNull TweetDetail context, Action action) {
+        mTwitter = TwitterEngine.getInstance(context);
+        db = new AppDatabase(context);
+        ui = new WeakReference<>(context);
+        this.action = action;
     }
 
 
     @Override
-    protected void onPreExecute() {
-        if (ui.get() != null) {
-            ui.get().setRefresh(true);
-        }
-    }
-
-
-    @Override
-    protected List<Tweet> doInBackground(Object[] param) {
-        List<Tweet> tweets = null;
-        long sinceId = 1;
+    protected Tweet doInBackground(Long[] data) {
+        Tweet tweet = null;
+        long tweetId = data[0];
+        boolean updateStatus = false;
         try {
-            switch (mode) {
-                case TL_HOME:
-                    int page = (int) param[0];
-                    if (adapter.isEmpty()) {
-                        tweets = db.getHomeTimeline();
-                        if (tweets.isEmpty()) {
-                            tweets = mTwitter.getHome(page, sinceId);
-                            db.storeHomeTimeline(tweets);
-                        }
-                    } else {
-                        sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getHome(page, sinceId);
-                        db.storeHomeTimeline(tweets);
+            switch (action) {
+                case LOAD:
+                    tweet = db.getStatus(tweetId);
+                    if (tweet != null) {
+                        publishProgress(tweet);
+                        updateStatus = true;
                     }
+                    tweet = mTwitter.getStatus(tweetId);
+                    publishProgress(tweet);
+                    if (updateStatus)
+                        db.updateStatus(tweet);
                     break;
 
-                case TL_MENT:
-                    page = (int) param[0];
-                    if (adapter.isEmpty()) {
-                        tweets = db.getMentions();
-                        if (tweets.isEmpty()) {
-                            tweets = mTwitter.getMention(page, sinceId);
-                            db.storeMentions(tweets);
-                        }
-                    } else {
-                        sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getMention(page, sinceId);
-                        db.storeMentions(tweets);
-                    }
+                case DELETE:
+                    tweet = mTwitter.deleteTweet(tweetId);
+                    db.removeStatus(tweetId);
                     break;
 
-                case USR_TWEETS:
-                    long id = (long) param[0];
-                    page = (int) param[1];
-                    if (adapter.isEmpty()) {
-                        tweets = db.getUserTweets(id);
-                        if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserTweets(id, sinceId, page);
-                            db.storeUserTweets(tweets);
-                        }
-                    } else {
-                        sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getUserTweets(id, sinceId, page);
-                        db.storeUserTweets(tweets);
-                    }
+                case RETWEET:
+                    tweet = mTwitter.retweet(tweetId);
+                    publishProgress(tweet);
+
+                    if (!tweet.retweeted())
+                        db.removeRetweet(tweetId);
+                    db.updateStatus(tweet);
                     break;
 
-                case USR_FAVORS:
-                    id = (long) param[0];
-                    page = (int) param[1];
-                    if (adapter.isEmpty()) {
-                        tweets = db.getUserFavs(id);
-                        if (tweets.isEmpty()) {
-                            tweets = mTwitter.getUserFavs(id, page);
-                            db.storeUserFavs(tweets, id);
-                        }
-                    } else {
-                        tweets = mTwitter.getUserFavs(id, page);
-                        db.storeUserFavs(tweets, id);
-                    }
-                    break;
+                case FAVORITE:
+                    tweet = mTwitter.favorite(tweetId);
+                    publishProgress(tweet);
 
-                case DB_ANS:
-                    id = (long) param[0];
-                    tweets = db.getAnswers(id);
-                    break;
-
-                case TWEET_ANS:
-                    id = (long) param[0];
-                    String search = (String) param[1];
-                    if (adapter.isEmpty()) {
-                        tweets = db.getAnswers(id);
-                        if (tweets.isEmpty()) {
-                            tweets = mTwitter.getAnswers(search, id, sinceId);
-                            if (!tweets.isEmpty() && db.containStatus(id))
-                                db.storeReplies(tweets);
-                        }
-                    } else {
-                        sinceId = adapter.getItemId(0);
-                        tweets = mTwitter.getAnswers(search, id, sinceId);
-                        if (!tweets.isEmpty() && db.containStatus(id))
-                            db.storeReplies(tweets);
-                    }
-                    break;
-
-                case TWEET_SEARCH:
-                    search = (String) param[0];
-                    if (!adapter.isEmpty())
-                        sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.searchTweets(search, sinceId);
-                    break;
-
-                case LIST:
-                    long listId = (long) param[0];
-                    page = (int) param[1];
-                    if (!adapter.isEmpty())
-                        sinceId = adapter.getItemId(0);
-                    tweets = mTwitter.getListTweets(listId, sinceId, page);
+                    if (tweet.favored())
+                        db.storeFavorite(tweet);
+                    else
+                        db.removeFavorite(tweetId);
                     break;
             }
         } catch (TwitterEngine.EngineException twException) {
             this.twException = twException;
+            if (twException.statusNotFound()) {
+                db.removeStatus(tweetId);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        return tweets;
+        return tweet;
     }
 
 
     @Override
-    protected void onPostExecute(@Nullable List<Tweet> tweets) {
+    protected void onProgressUpdate(Tweet[] tweets) {
+        Tweet tweet = tweets[0];
+        if (ui.get() != null && tweet != null) {
+            ui.get().setTweet(tweet);
+        }
+    }
+
+
+    @Override
+    protected void onPostExecute(@Nullable Tweet tweet) {
         if (ui.get() != null) {
-            if (tweets != null) {
-                if (mode == Mode.USR_FAVORS)
-                    adapter.add(tweets); // replace all items
-                else
-                    adapter.addFirst(tweets);
+            if (tweet != null) {
+                switch (action) {
+                    case RETWEET:
+                        if (tweet.retweeted())
+                            Toast.makeText(ui.get(), R.string.info_tweet_retweeted, LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(ui.get(), R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
+                        break;
+
+                    case FAVORITE:
+                        if (tweet.favored())
+                            Toast.makeText(ui.get(), R.string.info_tweet_favored, LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(ui.get(), R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+                        break;
+
+                    case DELETE:
+                        Toast.makeText(ui.get(), R.string.info_tweet_removed, LENGTH_SHORT).show();
+                        ui.get().setResult(RETURN_TWEET_CHANGED);
+                        ui.get().finish();
+                        break;
+                }
             }
-            if (twException != null)
-                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
-            ui.get().setRefresh(false);
-        }
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (ui.get() != null) {
-            ui.get().setRefresh(false);
-        }
-    }
-
-
-    @Override
-    protected void onCancelled(@Nullable List<Tweet> tweets) {
-        if (ui.get() != null) {
-            if (tweets != null)
-                adapter.addFirst(tweets);
-            ui.get().setRefresh(false);
+            if (twException != null) {
+                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
+                if (twException.isHardFault()) {
+                    if (twException.statusNotFound())
+                        ui.get().setResult(RETURN_TWEET_CHANGED);
+                    ui.get().finish();
+                } else {
+                    ui.get().finishIfEmpty();
+                }
+            }
         }
     }
 }

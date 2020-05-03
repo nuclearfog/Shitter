@@ -17,7 +17,12 @@ import java.util.List;
 import static android.widget.Toast.LENGTH_SHORT;
 
 
-public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
+/**
+ * Background task to load a list of location specific trends
+ *
+ * @see TrendFragment
+ */
+public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
 
     @Nullable
     private TwitterEngine.EngineException twException;
@@ -27,7 +32,7 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
     private TrendAdapter adapter;
 
 
-    public TrendLoader(@NonNull TrendFragment fragment) {
+    public TrendListLoader(@NonNull TrendFragment fragment) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
@@ -83,15 +88,5 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
     protected void onCancelled() {
         if (ui.get() != null)
             ui.get().setRefresh(false);
-    }
-
-
-    @Override
-    protected void onCancelled(@Nullable List<TwitterTrend> trends) {
-        if (ui.get() != null) {
-            if (trends != null)
-                adapter.setData(trends);
-            ui.get().setRefresh(false);
-        }
     }
 }

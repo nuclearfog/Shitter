@@ -21,6 +21,11 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 
+/**
+ * Task for editing profile information and updating images
+ *
+ * @see ProfileEditor
+ */
 public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
     private WeakReference<ProfileEditor> ui;
@@ -31,11 +36,6 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
     private AppDatabase db;
 
 
-    /**
-     * Read User settings from server
-     *
-     * @param context Activity context
-     */
     public ProfileUpdater(ProfileEditor context) {
         ui = new WeakReference<>(context);
         popup = new WeakReference<>(new Dialog(context));
@@ -44,12 +44,6 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
     }
 
 
-    /**
-     * Write User settings to server
-     *
-     * @param context    Activity context
-     * @param userHolder user data
-     */
     public ProfileUpdater(ProfileEditor context, UserHolder userHolder) {
         this(context);
         this.userHolder = userHolder;

@@ -23,7 +23,7 @@ import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.StatusUploader;
+import org.nuclearfog.twidda.backend.TweetUploader;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
@@ -71,7 +71,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     @Nullable
     private LocationManager mLocation;
-    private StatusUploader uploaderAsync;
+    private TweetUploader uploaderAsync;
     private Location location;
     private List<String> mediaPath;
     private View mediaBtn, previewBtn, locationProg, locationBtn;
@@ -219,7 +219,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                         tweet.addMedia(mediaPath.toArray(new String[0]));
                     if (location != null)
                         tweet.addLocation(location);
-                    uploaderAsync = new StatusUploader(this, tweet);
+                    uploaderAsync = new TweetUploader(this, tweet);
                     uploaderAsync.execute();
                 }
                 break;
@@ -300,7 +300,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                 .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        uploaderAsync = new StatusUploader(TweetPopup.this, tweet);
+                        uploaderAsync = new TweetUploader(TweetPopup.this, tweet);
                         uploaderAsync.execute();
                     }
                 })

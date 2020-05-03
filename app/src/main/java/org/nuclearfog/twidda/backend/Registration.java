@@ -14,7 +14,8 @@ import java.lang.ref.WeakReference;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
- * Background task for app login
+ * Background task to connect to twitter and initialize keys
+ * @see LoginPage
  */
 public class Registration extends AsyncTask<String, Void, String> {
 

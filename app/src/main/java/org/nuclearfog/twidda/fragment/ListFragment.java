@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.activity.UserDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
-import org.nuclearfog.twidda.backend.ListLoader;
+import org.nuclearfog.twidda.backend.TwitterListLoader;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -34,9 +34,9 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRIBER;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.ListLoader.Action.DELETE;
-import static org.nuclearfog.twidda.backend.ListLoader.Action.FOLLOW;
-import static org.nuclearfog.twidda.backend.ListLoader.Action.LOAD;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.DELETE;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
 
 public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener {
 
@@ -44,7 +44,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
     private SwipeRefreshLayout reloadLayout;
     private ListAdapter adapter;
-    private ListLoader listTask;
+    private TwitterListLoader listTask;
 
     private long userId;
 
@@ -114,14 +114,14 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                             confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    listTask = new ListLoader(ListFragment.this, FOLLOW);
+                                    listTask = new TwitterListLoader(ListFragment.this, FOLLOW);
                                     listTask.execute(listItem.getId());
                                 }
                             });
                             confirmDialog.show();
                         }
                     } else {
-                        listTask = new ListLoader(this, FOLLOW);
+                        listTask = new TwitterListLoader(this, FOLLOW);
                         listTask.execute(listItem.getId());
                     }
                     break;
@@ -148,7 +148,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                         confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                listTask = new ListLoader(ListFragment.this, DELETE);
+                                listTask = new TwitterListLoader(ListFragment.this, DELETE);
                                 listTask.execute(listItem.getId());
                             }
                         });
@@ -181,7 +181,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
 
     private void load() {
-        listTask = new ListLoader(this, LOAD);
+        listTask = new TwitterListLoader(this, LOAD);
         listTask.execute(userId);
     }
 }

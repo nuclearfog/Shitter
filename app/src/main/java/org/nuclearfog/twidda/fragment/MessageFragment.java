@@ -25,8 +25,8 @@ import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
-import org.nuclearfog.twidda.backend.MessageLoader;
-import org.nuclearfog.twidda.backend.MessageLoader.Mode;
+import org.nuclearfog.twidda.backend.MessageListLoader;
+import org.nuclearfog.twidda.backend.MessageListLoader.Mode;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -39,7 +39,7 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected {
 
-    private MessageLoader messageTask;
+    private MessageListLoader messageTask;
     private SwipeRefreshLayout reload;
     private MessageAdapter adapter;
 
@@ -132,7 +132,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                         confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                messageTask = new MessageLoader(MessageFragment.this, Mode.DEL);
+                                messageTask = new MessageListLoader(MessageFragment.this, Mode.DEL);
                                 messageTask.execute(message.getId());
                             }
                         });
@@ -171,7 +171,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
 
     private void load(Mode m) {
-        messageTask = new MessageLoader(this, m);
+        messageTask = new MessageListLoader(this, m);
         messageTask.execute();
     }
 }

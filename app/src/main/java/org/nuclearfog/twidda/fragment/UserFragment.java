@@ -18,8 +18,8 @@ import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
-import org.nuclearfog.twidda.backend.UserLoader;
-import org.nuclearfog.twidda.backend.UserLoader.Mode;
+import org.nuclearfog.twidda.backend.UserListLoader;
+import org.nuclearfog.twidda.backend.UserListLoader.Mode;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -44,7 +44,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     private SwipeRefreshLayout reload;
     private UserAdapter adapter;
-    private UserLoader userTask;
+    private UserListLoader userTask;
     private RecyclerView list;
     private String search;
     private long id;
@@ -147,31 +147,31 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     private void load() {
         switch (mode) {
             case USER_FRAG_FOLLOWS:
-                userTask = new UserLoader(this, Mode.FOLLOWS);
+                userTask = new UserListLoader(this, Mode.FOLLOWS);
                 userTask.execute(id);
                 break;
             case USER_FRAG_FRIENDS:
-                userTask = new UserLoader(this, Mode.FRIENDS);
+                userTask = new UserListLoader(this, Mode.FRIENDS);
                 userTask.execute(id);
                 break;
             case USER_FRAG_RETWEET:
-                userTask = new UserLoader(this, Mode.RETWEET);
+                userTask = new UserListLoader(this, Mode.RETWEET);
                 userTask.execute(id);
                 break;
             case USER_FRAG_FAVORIT:
-                userTask = new UserLoader(this, Mode.FAVORIT);
+                userTask = new UserListLoader(this, Mode.FAVORIT);
                 userTask.execute(id);
                 break;
             case USER_FRAG_SEARCH:
-                userTask = new UserLoader(this, Mode.SEARCH);
+                userTask = new UserListLoader(this, Mode.SEARCH);
                 userTask.execute(search);
                 break;
             case USER_FRAG_SUBSCRIBER:
-                userTask = new UserLoader(this, Mode.SUBSCRIBER);
+                userTask = new UserListLoader(this, Mode.SUBSCRIBER);
                 userTask.execute(id);
                 break;
             case USER_FRAG_LISTS:
-                userTask = new UserLoader(this, Mode.LIST);
+                userTask = new UserListLoader(this, Mode.LIST);
                 userTask.execute(id);
                 break;
 
