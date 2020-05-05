@@ -126,7 +126,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
                 case DELETE:
                     if (getContext() != null) {
-                        Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
+                        Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
                         confirmDialog.setMessage(R.string.confirm_delete_message);
                         confirmDialog.setNegativeButton(R.string.confirm_no, null);
                         confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {

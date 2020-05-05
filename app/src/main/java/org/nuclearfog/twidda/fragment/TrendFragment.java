@@ -96,6 +96,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     @Override
     public void onSettingsChange() {
+        adapter.clear();
         notifyChange = true;
     }
 

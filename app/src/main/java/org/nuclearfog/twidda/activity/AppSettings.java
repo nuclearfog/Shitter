@@ -3,8 +3,6 @@ package org.nuclearfog.twidda.activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Patterns;
@@ -21,7 +19,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +29,7 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
@@ -46,7 +45,6 @@ import java.util.regex.Matcher;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.DB_CLEARED;
 
@@ -196,12 +194,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
-            String link = getString(R.string.information_link);
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-            if (intent.resolveActivity(getPackageManager()) != null)
-                startActivity(intent);
-            else
-                Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
+            Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
+            dialog.setContentView(R.layout.popup_app_info);
+            dialog.setTitle(R.string.settings_about);
+            String versionName = " V" + BuildConfig.VERSION_NAME;
+            TextView appInfo = dialog.findViewById(R.id.settings_app_info);
+            appInfo.setLinkTextColor(settings.getHighlightColor());
+            appInfo.append(versionName);
+            dialog.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -211,7 +211,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_db:
-                new Builder(this, R.style.InfoDialog)
+                new Builder(this, R.style.ConfirmDialog)
                         .setMessage(R.string.confirm_delete_database)
                         .setNegativeButton(R.string.confirm_no, null)
                         .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
@@ -225,7 +225,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 break;
 
             case R.id.logout:
-                new Builder(this, R.style.InfoDialog)
+                new Builder(this, R.style.ConfirmDialog)
                         .setMessage(R.string.confirm_log_lout)
                         .setNegativeButton(R.string.confirm_no, null)
                         .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {

@@ -101,7 +101,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
 
     @Override
     public void onBackPressed() {
-        Builder closeDialog = new Builder(this, R.style.InfoDialog);
+        Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
         closeDialog.setMessage(R.string.confirm_discard);
         closeDialog.setNegativeButton(R.string.confirm_no, null);
         closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {

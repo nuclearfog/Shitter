@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
-import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -31,6 +30,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
+import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
@@ -125,7 +125,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
 
         FontTool.setViewFontAndColor(settings, root);
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
-        tweetText.setMovementMethod(LinkMovementMethod.getInstance());
+        tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
         pager.setOffscreenPageLimit(1);
@@ -182,7 +182,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
-                    Builder deleteDialog = new Builder(this, R.style.InfoDialog);
+                    Builder deleteDialog = new Builder(this, R.style.ConfirmDialog);
                     deleteDialog.setMessage(R.string.confirm_delete_tweet);
                     deleteDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override

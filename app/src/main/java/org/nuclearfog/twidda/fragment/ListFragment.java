@@ -108,7 +108,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                 case FOLLOW:
                     if (listItem.isFollowing()) {
                         if (getContext() != null) {
-                            Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
+                            Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
                             confirmDialog.setMessage(R.string.confirm_unfollow_list);
                             confirmDialog.setNegativeButton(R.string.confirm_no, null);
                             confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
@@ -142,7 +142,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
                 case DELETE:
                     if (getContext() != null) {
-                        Builder confirmDialog = new Builder(getContext(), R.style.InfoDialog);
+                        Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
                         confirmDialog.setMessage(R.string.confirm_delete_list);
                         confirmDialog.setNegativeButton(R.string.confirm_no, null);
                         confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {

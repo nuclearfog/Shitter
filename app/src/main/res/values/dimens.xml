@@ -72,4 +72,5 @@
     <dimen name="profile_tv_margin">2dp</dimen>
     <dimen name="profile_banner_padding">5dp</dimen>
     <dimen name="profile_tv_padding">2dp</dimen>
+    <dimen name="settings_appinfo_text_padding">5dp</dimen>
 </resources>

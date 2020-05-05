@@ -115,7 +115,7 @@
     <string name="error_open_link">Failed to open link!</string>
     <string name="error_image_download">Image could not be loaded!</string>
     <string name="error_dm_send">Cannot send directmessage to this user!</string>
-    <string name="information_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
+    <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
     <string name="error_location">could not fetch location!</string>
     <string name="info_not_implemented">This function is not implemented yet!</string>
@@ -150,4 +150,8 @@
     <string name="profile_banner">Profile banner image</string>
     <string name="editprofile_add_banner">add banner</string>
     <string name="error_invalid_link">invalid link!</string>
+    <string name="settings_about">About</string>
+    <string name="settings_3rd_party_license">App and 3rd party libraries license</string>
+    <string name="settings_info_license_link" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
+    <string name="settings_info_github">Github page:</string>
 </resources>

@@ -295,7 +295,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      * @param tweet tweet to re-send
      */
     public void showErrorMsg(final TweetHolder tweet) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.InfoDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
         builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet)
                 .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
                     @Override
@@ -313,7 +313,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      */
     private void showClosingMsg() {
         if (!addition.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
-            Builder closeDialog = new Builder(this, R.style.InfoDialog);
+            Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
             closeDialog.setMessage(R.string.confirm_cancel_tweet);
             closeDialog.setNegativeButton(R.string.confirm_no, null);
             closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {

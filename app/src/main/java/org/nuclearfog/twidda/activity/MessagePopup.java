@@ -76,7 +76,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         if (text.getText().toString().isEmpty() && mediaPath.isEmpty()) {
             super.onBackPressed();
         } else {
-            Builder closeDialog = new Builder(this, R.style.InfoDialog);
+            Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
             closeDialog.setMessage(R.string.confirm_cancel_message);
             closeDialog.setNegativeButton(R.string.confirm_no, null);
             closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
