@@ -161,7 +161,7 @@
                     android:layout_weight="3"
                     android:background="@drawable/button"
                     android:singleLine="true"
-                    android:text="@string/settings_load_count"
+                    android:text="@string/settings_list_size"
                     android:textSize="@dimen/textsize_settings_small" />
 
                 <CheckBox

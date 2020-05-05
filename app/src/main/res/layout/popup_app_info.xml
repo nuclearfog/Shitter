@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/settings_appinfo_text_padding"
-        android:text="@string/app_name" />
+        android:text="@string/app_name"
+        android:textSize="@dimen/settings_info_appname_font" />
 
     <TextView
         android:layout_width="match_parent"

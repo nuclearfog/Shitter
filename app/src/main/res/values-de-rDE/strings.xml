@@ -2,7 +2,7 @@
 <resources>
     <string name="settings_font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
-    <string name="settings_load_count">Listengröße</string>
+    <string name="settings_list_size">Listengröße</string>
     <string name="user_follow">folgen</string>
     <string name="confirm_retry">wiederholen</string>
     <string name="color_settings">Farbeinstellungen</string>
@@ -149,7 +149,6 @@
     <string name="profile_banner">Profilbanner</string>
     <string name="editprofile_add_banner">Profilbanner hinzufügen</string>
     <string name="error_invalid_link">Ungültiger Link!</string>
-    <string name="settings_about">Über</string>
-    <string name="settings_3rd_party_license">"App und drittabbieter Bibliotheken lizenz "</string>
-    <string name="settings_info_github">"Github Seite: "</string>
+    <string name="settings_3rd_party_license">App und Drittabbieter Lizenz:</string>
+    <string name="settings_info_github">Github Seite:</string>
 </resources>

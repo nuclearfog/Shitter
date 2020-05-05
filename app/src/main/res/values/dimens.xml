@@ -12,14 +12,12 @@
     <dimen name="margin_tweet_icon">16dp</dimen>
     <dimen name="margin_layout">5dp</dimen>
     <dimen name="margin_layout_tweet">2dp</dimen>
-    <dimen name="margin_upload_btn">20dp</dimen>
     <dimen name="margin_side">10dp</dimen>
 
     <dimen name="padding_editprofile">20dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
     <dimen name="padding_side">10dp</dimen>
 
-    <dimen name="text_padding">5dp</dimen>
     <dimen name="text_bio_height">150dp</dimen>
     <dimen name="text_settings">5dp</dimen>
     <dimen name="text_input_width">300dp</dimen>
@@ -56,7 +54,6 @@
     <dimen name="preview_margin">10dp</dimen>
     <dimen name="dm_item_button_height">20dp</dimen>
     <dimen name="tweet_media_button_margin">5dp</dimen>
-    <dimen name="editprofile_upload_button_padding">12dp</dimen>
     <dimen name="tweet_location_progress_size">30dp</dimen>
     <dimen name="list_button_height">20dp</dimen>
     <dimen name="listitem_margin">4dp</dimen>
@@ -73,4 +70,5 @@
     <dimen name="profile_banner_padding">5dp</dimen>
     <dimen name="profile_tv_padding">2dp</dimen>
     <dimen name="settings_appinfo_text_padding">5dp</dimen>
+    <dimen name="settings_info_appname_font">18sp</dimen>
 </resources>

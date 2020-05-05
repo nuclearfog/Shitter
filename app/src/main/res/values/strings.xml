@@ -14,7 +14,7 @@
     <string name="settings_font">Font</string>
     <string name="popup">Popup</string>
     <string name="highlight">Highlight</string>
-    <string name="settings_load_count">List size</string>
+    <string name="settings_list_size">List size</string>
     <string name="user_block">Block</string>
     <string name="user_follow">follow</string>
     <string name="confirm_retry">retry</string>
@@ -150,8 +150,7 @@
     <string name="profile_banner">Profile banner image</string>
     <string name="editprofile_add_banner">add banner</string>
     <string name="error_invalid_link">invalid link!</string>
-    <string name="settings_about">About</string>
-    <string name="settings_3rd_party_license">App and 3rd party libraries license</string>
+    <string name="settings_3rd_party_license">App and 3rd party license:</string>
     <string name="settings_info_license_link" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
-    <string name="settings_info_github">Github page:</string>
+    <string name="settings_info_github">App on GitHub:</string>
 </resources>
