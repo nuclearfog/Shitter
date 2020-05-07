@@ -392,7 +392,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         switch (v.getId()) {
             case R.id.following:
                 if (user != null && properties != null) {
-                    if (!user.isLocked() || properties.isFriend()) {
+                    if (!user.isLocked() || properties.isFriend() || isHome) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERDETAIL_ID, userId);
                         following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
@@ -403,7 +403,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
             case R.id.follower:
                 if (user != null && properties != null) {
-                    if (!user.isLocked() || properties.isFriend()) {
+                    if (!user.isLocked() || properties.isFriend() || isHome) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERDETAIL_ID, userId);
                         follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
