@@ -9,11 +9,9 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,8 +46,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
@@ -65,7 +61,7 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
 
 
-public class TweetDetail extends AppCompatActivity implements OnClickListener, OnTouchListener,
+public class TweetDetail extends AppCompatActivity implements OnClickListener,
         OnLongClickListener, OnTagClickListener {
 
     public static final String KEY_TWEET_ID = "tweetID";
@@ -131,7 +127,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
-        tweetText.setOnTouchListener(this);
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
@@ -334,21 +329,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener, O
             if (intent.resolveActivity(getPackageManager()) != null)
                 startActivity(intent);
         }
-    }
-
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case ACTION_DOWN:
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                break;
-
-            case ACTION_UP:
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-                break;
-        }
-        return v.performClick();
     }
 
 

@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.text.Spanned;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,8 +45,6 @@ import java.text.SimpleDateFormat;
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.Gravity.CENTER;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -68,7 +64,7 @@ import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 
 
 public class UserProfile extends AppCompatActivity implements OnClickListener,
-        OnTouchListener, OnTagClickListener, OnTabSelectedListener {
+        OnTagClickListener, OnTabSelectedListener {
 
     public static final String KEY_PROFILE_ID = "profile_uid";
     public static final int RETURN_PROFILE_CHANGED = 2;
@@ -168,7 +164,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         profile.setOnClickListener(this);
         banner.setOnClickListener(this);
         lnkTxt.setOnClickListener(this);
-        bioTxt.setOnTouchListener(this);
     }
 
 
@@ -446,21 +441,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 }
                 break;
         }
-    }
-
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        switch (event.getAction()) {
-            case ACTION_DOWN:
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                break;
-
-            case ACTION_UP:
-                v.getParent().requestDisallowInterceptTouchEvent(false);
-                break;
-        }
-        return v.performClick();
     }
 
 

@@ -8,8 +8,8 @@ android {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 13
-        versionName '1.7.5'
+        versionCode 14
+        versionName '1.7.6'
         vectorDrawables.useSupportLibrary true
     }
 
@@ -45,5 +45,5 @@ dependencies {
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'com.github.nuclearfog:ZoomView:1.0.2'
     implementation 'com.github.nuclearfog:Tagger:2.2'
-    implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.0'
+    implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.1'
 }
