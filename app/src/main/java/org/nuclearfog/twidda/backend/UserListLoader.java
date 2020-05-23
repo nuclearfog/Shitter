@@ -1,20 +1,17 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.UserAdapter;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.fragment.UserFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * download a list of user such as follower, following or searched users
@@ -33,17 +30,15 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     }
 
     @Nullable
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private WeakReference<UserFragment> ui;
     private TwitterEngine mTwitter;
-    private UserAdapter adapter;
     private Mode mode;
 
 
     public UserListLoader(UserFragment fragment, Mode mode) {
         ui = new WeakReference<>(fragment);
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        adapter = fragment.getAdapter();
         this.mode = mode;
     }
 
@@ -81,7 +76,7 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
                     return mTwitter.getListMember((long) param[0]);
 
             }
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -93,30 +88,12 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     @Override
     protected void onPostExecute(@Nullable List<TwitterUser> users) {
         if (ui.get() != null) {
+            ui.get().setRefresh(false);
             if (users != null) {
-                adapter.replaceAll(users);
-                if (mode == Mode.FAVORIT)
-                    Toast.makeText(ui.get().getContext(), R.string.info_not_implemented, Toast.LENGTH_SHORT).show();
-            } else if (twException != null)
-                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
-            ui.get().setRefresh(false);
-        }
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (ui.get() != null)
-            ui.get().setRefresh(false);
-    }
-
-
-    @Override
-    protected void onCancelled(@Nullable List<TwitterUser> users) {
-        if (ui.get() != null) {
-            if (users != null)
-                adapter.replaceAll(users);
-            ui.get().setRefresh(false);
+                ui.get().setData(users);
+            } else if (twException != null) {
+                ui.get().onError(twException);
+            }
         }
     }
 }

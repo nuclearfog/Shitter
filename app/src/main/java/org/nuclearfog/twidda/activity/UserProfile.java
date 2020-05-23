@@ -34,6 +34,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserProperties;
@@ -452,12 +453,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onTabUnselected(Tab tab) {
-        adapter.scrollToTop(tab.getPosition());
+        if (adapter != null)
+            adapter.scrollToTop(tab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(Tab tab) {
+        if (adapter != null)
+            adapter.scrollToTop(tab.getPosition());
     }
 
 
@@ -523,14 +527,63 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         }
     }
 
-
     /**
      * Set User Relationship
-     *
      * @param properties relationship to the current user
      */
     public void setConnection(UserProperties properties) {
         this.properties = properties;
         invalidateOptionsMenu();
+    }
+
+    /**
+     * print messages after user action
+     *
+     * @param properties connection to an user
+     * @param action     Action on the user profile
+     */
+    public void onAction(UserProperties properties, ProfileLoader.Action action) {
+        switch (action) {
+            case ACTION_FOLLOW:
+                if (properties.isFriend())
+                    Toast.makeText(this, R.string.info_followed, Toast.LENGTH_SHORT).show();
+                break;
+
+            case ACTION_BLOCK:
+                if (properties.isBlocked())
+                    Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
+                break;
+
+            case ACTION_MUTE:
+                if (properties.isMuted())
+                    Toast.makeText(this, R.string.info_user_muted, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    /**
+     * called if an error occurs
+     *
+     * @param err Engine Exception
+     */
+    public void onError(EngineException err) {
+        if (err.isErrorDefined()) {
+            if (err.isRateLimitExceeded()) {
+                String errorMsg = getString(R.string.error_limit_exceeded);
+                errorMsg += err.getRetryAfter();
+                Toast.makeText(this, errorMsg, LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, err.getMessageResource(), LENGTH_SHORT).show();
+                if (err.isHardFault()) {
+                    finish();
+                }
+            }
+        } else {
+            Toast.makeText(this, err.getMessage(), LENGTH_SHORT).show();
+        }
     }
 }

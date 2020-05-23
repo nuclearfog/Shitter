@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,16 +15,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendListLoader;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import java.util.List;
+
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
 
@@ -115,12 +121,48 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
         load();
     }
 
+    /**
+     * set trend data to list
+     *
+     * @param data Trend data
+     */
+    public void setData(List<TwitterTrend> data) {
+        adapter.setData(data);
+    }
 
-    public TrendAdapter getAdapter() {
-        return adapter;
+    /**
+     * check if list is empty
+     *
+     * @return true if list is empty
+     */
+    public boolean isEmpty() {
+        return adapter == null || adapter.isEmpty();
     }
 
 
+    /**
+     * called from {@link TrendListLoader} if an error occurs
+     *
+     * @param err Twitter exception
+     */
+    public void onError(EngineException err) {
+        if (err.isErrorDefined()) {
+            if (err.isRateLimitExceeded()) {
+                String errorMsg = getString(R.string.error_limit_exceeded);
+                errorMsg += err.getRetryAfter();
+                Toast.makeText(getContext(), errorMsg, LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), err.getMessageResource(), LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), err.getMessage(), LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * called from {@link TrendListLoader} to enable or disable RefreshLayout
+     * @param enable true to enable RefreshLayout with delay
+     */
     public void setRefresh(boolean enable) {
         if (enable) {
             reload.postDelayed(new Runnable() {

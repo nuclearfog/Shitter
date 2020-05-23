@@ -1,17 +1,14 @@
 package org.nuclearfog.twidda.backend;
 
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.LoginPage;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 
 import java.lang.ref.WeakReference;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task to connect to twitter and initialize keys
@@ -20,7 +17,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class Registration extends AsyncTask<String, Void, String> {
 
     @Nullable
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private WeakReference<LoginPage> ui;
     private TwitterEngine mTwitter;
 
@@ -42,7 +39,7 @@ public class Registration extends AsyncTask<String, Void, String> {
                 return mTwitter.request();
             mTwitter.initialize(param[0]);
             return "";
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -58,13 +55,10 @@ public class Registration extends AsyncTask<String, Void, String> {
                 if (!redirectionURL.isEmpty()) {
                     ui.get().connect(redirectionURL);
                 } else {
-                    ui.get().setResult(Activity.RESULT_OK);
-                    ui.get().finish();
+                    ui.get().onSuccess();
                 }
             } else if (twException != null) {
-                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(ui.get(), R.string.error_pin_verification, Toast.LENGTH_SHORT).show();
+                ui.get().onError(twException);
             }
         }
     }

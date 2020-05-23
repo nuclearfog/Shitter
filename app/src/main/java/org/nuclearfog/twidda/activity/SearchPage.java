@@ -132,12 +132,15 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabUnselected(Tab tab) {
-        adapter.scrollToTop(tab.getPosition());
+        if (adapter != null)
+            adapter.scrollToTop(tab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(Tab tab) {
+        if (adapter != null)
+            adapter.scrollToTop(tab.getPosition());
     }
 
 

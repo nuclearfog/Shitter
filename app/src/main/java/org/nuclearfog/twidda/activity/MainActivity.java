@@ -226,5 +226,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public void onTabReselected(Tab tab) {
+        if (adapter != null)
+            adapter.scrollToTop(tab.getPosition());
     }
 }

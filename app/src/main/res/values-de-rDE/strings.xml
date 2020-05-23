@@ -22,7 +22,7 @@
     <string name="error_connection">Keine Internetverbindung!</string>
     <string name="error_enter_pin">PIN eingeben!</string>
     <string name="confirm_delete_database">Datenbank löschen?</string>
-    <string name="error_limit_exceeded">Anfragelimit erreicht!</string>
+    <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrt nach: "</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="info_tweet_sent">Tweet gesendet</string>
     <string name="info_error">Fehler!</string>

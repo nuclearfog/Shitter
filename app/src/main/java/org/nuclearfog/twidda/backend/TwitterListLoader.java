@@ -1,20 +1,17 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.ListAdapter;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.fragment.ListFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 
 /**
@@ -31,23 +28,22 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
     }
 
     @Nullable
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private WeakReference<ListFragment> ui;
     private TwitterEngine mTwitter;
-    private ListAdapter adapter;
     private Action action;
 
     public TwitterListLoader(ListFragment frag, Action action) {
-        ui = new WeakReference<>(frag);
         mTwitter = TwitterEngine.getInstance(frag.getContext());
-        adapter = frag.getAdapter();
+        ui = new WeakReference<>(frag);
         this.action = action;
     }
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null)
+        if (ui.get() != null) {
             ui.get().setRefresh(true);
+        }
     }
 
     @Override
@@ -69,7 +65,7 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
                     result.add(mTwitter.deleteUserList(param[0]));
                     return result;
             }
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
         }
         return null;
@@ -78,37 +74,26 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
     @Override
     protected void onPostExecute(@Nullable List<TwitterList> result) {
         if (ui.get() != null) {
+            ui.get().setRefresh(false);
             if (result != null) {
                 switch (action) {
                     case LOAD:
-                        adapter.setData(result);
+                        ui.get().setData(result);
                         break;
 
                     case FOLLOW:
                         TwitterList list = result.get(0);
-                        adapter.updateItem(list);
-                        if (list.isFollowing())
-                            Toast.makeText(ui.get().getContext(), R.string.info_followed, LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(ui.get().getContext(), R.string.info_unfollowed, LENGTH_SHORT).show();
+                        ui.get().updateItem(list);
                         break;
 
                     case DELETE:
                         list = result.get(0);
-                        adapter.removeItem(list.getId());
-                        Toast.makeText(ui.get().getContext(), R.string.info_list_removed, LENGTH_SHORT).show();
+                        ui.get().removeItem(list.getId());
                         break;
                 }
+            } else if (twException != null) {
+                ui.get().onError(twException);
             }
-            if (twException != null)
-                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
-            ui.get().setRefresh(false);
         }
-    }
-
-    @Override
-    protected void onCancelled() {
-        if (ui.get() != null)
-            ui.get().setRefresh(false);
     }
 }

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUploader;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
@@ -288,15 +289,27 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         locationBtn.setVisibility(VISIBLE);
     }
 
+    /**
+     * called after sending tweet
+     */
+    public void onSuccess() {
+        Toast.makeText(this, R.string.info_tweet_sent, LENGTH_LONG).show();
+        finish();
+    }
 
     /**
      * Show confirmation dialog if an error occurs while sending tweet
-     *
      * @param tweet tweet to re-send
      */
-    public void showErrorMsg(final TweetHolder tweet) {
+    public void onError(final TweetHolder tweet, @Nullable EngineException error) {
+        int errorRes;
+        if (error != null && error.isErrorDefined()) {
+            errorRes = error.getMessageResource();
+        } else {
+            errorRes = R.string.error_sending_tweet;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
-        builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet)
+        builder.setTitle(R.string.info_error).setMessage(errorRes)
                 .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

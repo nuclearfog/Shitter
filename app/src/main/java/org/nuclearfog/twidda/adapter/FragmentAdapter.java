@@ -234,10 +234,19 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     public interface FragmentChangeObserver {
 
+        /**
+         * called if settings changed to refresh fragments
+         */
         void onSettingsChange();
 
+        /**
+         * called when the current tab changes
+         */
         void onTabChange();
 
+        /**
+         * called to clear the lists
+         */
         void onDataClear();
     }
 }

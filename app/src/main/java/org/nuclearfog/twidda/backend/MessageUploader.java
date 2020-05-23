@@ -12,11 +12,11 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MessagePopup;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
 
 import java.lang.ref.WeakReference;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task to send a direct messages to a user
@@ -25,7 +25,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Nullable
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private WeakReference<MessagePopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
@@ -34,13 +34,13 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
     /**
      * send direct message
      *
-     * @param c       Activity context
+     * @param context Activity context
      * @param message message to send
      */
-    public MessageUploader(@NonNull MessagePopup c, MessageHolder message) {
-        ui = new WeakReference<>(c);
-        popup = new WeakReference<>(new Dialog(c));
-        mTwitter = TwitterEngine.getInstance(c);
+    public MessageUploader(@NonNull MessagePopup context, MessageHolder message) {
+        ui = new WeakReference<>(context);
+        popup = new WeakReference<>(new Dialog(context));
+        mTwitter = TwitterEngine.getInstance(context);
         this.message = message;
     }
 
@@ -81,7 +81,7 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
         try {
             mTwitter.sendMessage(message);
             return true;
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -93,14 +93,12 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null && popup.get() != null) {
-            if (success) {
-                Toast.makeText(ui.get(), R.string.info_dm_send, Toast.LENGTH_SHORT).show();
-                ui.get().finish();
-            } else {
-                if (twException != null)
-                    Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-            }
             popup.get().dismiss();
+            if (success) {
+                ui.get().onSuccess();
+            } else if (twException != null) {
+                ui.get().onError(twException);
+            }
         }
     }
 

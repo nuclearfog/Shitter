@@ -27,6 +27,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ProfileUpdater;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
@@ -39,6 +40,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 
 public class ProfileEditor extends AppCompatActivity implements OnClickListener {
@@ -54,6 +56,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
     private EditText name, link, loc, bio;
     private Button add_banner_btn;
     private String profileLink, bannerLink;
+    private boolean userSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +211,32 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
         link.setText(user.getLink());
         loc.setText(user.getLocation());
         bio.setText(user.getBio());
+        userSet = true;
+    }
+
+    /**
+     * called after user profile was updated successfully
+     */
+    public void setSuccess() {
+        Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
+        setResult(RETURN_PROFILE_CHANGED);
+        finish();
+    }
+
+    /**
+     * called after an error occurs
+     *
+     * @param err Engine Exception
+     */
+    public void setError(EngineException err) {
+        if (err.isErrorDefined()) {
+            Toast.makeText(this, err.getMessageResource(), LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, err.getMessage(), LENGTH_SHORT).show();
+        }
+        if (!userSet) {
+            finish();
+        }
     }
 
 

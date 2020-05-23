@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,11 +12,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -87,7 +90,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.login_setting) {
             Intent settings = new Intent(this, AppSettings.class);
             startActivity(settings);
@@ -135,5 +138,20 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
             startActivity(loginIntent);
         else
             Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
+    }
+
+
+    public void onSuccess() {
+        setResult(Activity.RESULT_OK);
+        finish();
+    }
+
+    public void onError(@NonNull EngineException error) {
+        if (error.isErrorDefined()) {
+            Toast.makeText(this, error.getMessageResource(), LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, error.getMessage(), LENGTH_SHORT).show();
+        }
+
     }
 }

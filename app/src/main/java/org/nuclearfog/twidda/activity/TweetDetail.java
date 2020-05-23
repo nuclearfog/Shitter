@@ -34,6 +34,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Action;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -59,6 +60,7 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
 
 public class TweetDetail extends AppCompatActivity implements OnClickListener,
@@ -394,8 +396,58 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         }
     }
 
+    /**
+     * called after a tweet action
+     *
+     * @param tweet  tweet information
+     * @param action action type
+     */
+    public void onAction(Tweet tweet, Action action) {
+        switch (action) {
+            case RETWEET:
+                if (tweet.retweeted())
+                    Toast.makeText(this, R.string.info_tweet_retweeted, LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
+                break;
 
-    public void finishIfEmpty() {
+            case FAVORITE:
+                if (tweet.favored())
+                    Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+                break;
+
+            case DELETE:
+                Toast.makeText(this, R.string.info_tweet_removed, LENGTH_SHORT).show();
+                setResult(RETURN_TWEET_CHANGED);
+                finish();
+                break;
+        }
+    }
+
+    /**
+     * called when an error occurs
+     *
+     * @param error Engine Exception
+     */
+    public void onError(@NonNull EngineException error) {
+        if (error.isErrorDefined()) {
+            if (error.isRateLimitExceeded()) {
+                String errorMsg = getString(R.string.error_limit_exceeded);
+                errorMsg += error.getRetryAfter();
+                Toast.makeText(this, errorMsg, LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, error.getMessageResource(), LENGTH_SHORT).show();
+            }
+            if (error.isHardFault()) {
+                if (error.statusNotFound())
+                    setResult(RETURN_TWEET_CHANGED);
+                finish();
+            }
+        } else {
+            Toast.makeText(this, error.getMessage(), LENGTH_SHORT).show();
+        }
         if (tweet == null) {
             finish();
         }

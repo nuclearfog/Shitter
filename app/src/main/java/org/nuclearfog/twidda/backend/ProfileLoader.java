@@ -1,20 +1,18 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserProperties;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * task for loading user profile information and take actions
@@ -32,7 +30,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
     private final Action action;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private AppDatabase db;
 
 
@@ -100,7 +98,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
                     publishProgress(user);
                     return mTwitter.getConnection(userId);
             }
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -123,31 +121,9 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
         if (ui.get() != null) {
             if (properties != null) {
                 ui.get().setConnection(properties);
-                switch (action) {
-                    case ACTION_FOLLOW:
-                        if (properties.isFriend())
-                            Toast.makeText(ui.get(), R.string.info_followed, Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case ACTION_BLOCK:
-                        if (properties.isBlocked())
-                            Toast.makeText(ui.get(), R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(ui.get(), R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case ACTION_MUTE:
-                        if (properties.isMuted())
-                            Toast.makeText(ui.get(), R.string.info_user_muted, Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(ui.get(), R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-            if (twException != null) {
-                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-                if (twException.isHardFault())
-                    ui.get().finish();
+                ui.get().onAction(properties, action);
+            } else if (twException != null) {
+                ui.get().onError(twException);
             }
         }
     }

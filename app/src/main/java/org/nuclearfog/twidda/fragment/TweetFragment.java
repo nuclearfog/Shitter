@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,17 +15,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.TweetListLoader;
 import org.nuclearfog.twidda.backend.TweetListLoader.Mode;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import java.util.List;
+
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
 
@@ -154,12 +160,39 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         tweetTask = null;
     }
 
-
-    public TweetAdapter getAdapter() {
-        return adapter;
+    /**
+     * get Id of the first Tweet
+     *
+     * @return ID of the first tweet or zero if list is empty
+     */
+    public long getTopId() {
+        if (adapter != null && !adapter.isEmpty())
+            return adapter.getItemId(0);
+        return 0;
     }
 
+    /**
+     * replace all tweets of the list
+     *
+     * @param tweets list of new tweets
+     */
+    public void add(List<Tweet> tweets) {
+        adapter.add(tweets);
+    }
 
+    /**
+     * attach new tweets to the top of the list
+     *
+     * @param tweets list of new tweets
+     */
+    public void addTop(List<Tweet> tweets) {
+        adapter.addFirst(tweets);
+    }
+
+    /**
+     * called from {@link TweetListLoader} to enable or disable RefreshLayout
+     * @param enable true to enable RefreshLayout with delay
+     */
     public void setRefresh(boolean enable) {
         if (enable) {
             reload.postDelayed(new Runnable() {
@@ -171,6 +204,25 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
             }, 500);
         } else {
             reload.setRefreshing(false);
+        }
+    }
+
+    /**
+     * called from {@link TweetListLoader} if an error occurs
+     *
+     * @param err Twitter exception
+     */
+    public void onError(EngineException err) {
+        if (err.isErrorDefined()) {
+            if (err.isRateLimitExceeded()) {
+                String errorMsg = getString(R.string.error_limit_exceeded);
+                errorMsg += err.getRetryAfter();
+                Toast.makeText(getContext(), errorMsg, LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), err.getMessageResource(), LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), err.getMessage(), LENGTH_SHORT).show();
         }
     }
 

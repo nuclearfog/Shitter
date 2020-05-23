@@ -27,8 +27,12 @@ import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageListLoader;
 import org.nuclearfog.twidda.backend.MessageListLoader.Mode;
+import org.nuclearfog.twidda.backend.TrendListLoader;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
@@ -149,12 +153,28 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         }
     }
 
-
-    public MessageAdapter getAdapter() {
-        return adapter;
+    /**
+     * set data to list
+     *
+     * @param data list of direct messages
+     */
+    public void setData(List<Message> data) {
+        adapter.replaceAll(data);
     }
 
+    /**
+     * remove item from list
+     *
+     * @param id ID of the item
+     */
+    public void removeItem(long id) {
+        adapter.remove(id);
+    }
 
+    /**
+     * called from {@link TrendListLoader} to enable or disable RefreshLayout
+     * @param enable true to enable RefreshLayout with delay
+     */
     public void setRefresh(boolean enable) {
         if (enable) {
             reload.postDelayed(new Runnable() {
@@ -166,6 +186,25 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
             }, 500);
         } else {
             reload.setRefreshing(false);
+        }
+    }
+
+    /**
+     * called from {@link MessageListLoader} if an error occurs
+     *
+     * @param err Twitter exception
+     */
+    public void onError(EngineException err) {
+        if (err.isErrorDefined()) {
+            if (err.isRateLimitExceeded()) {
+                String errorMsg = getString(R.string.error_limit_exceeded);
+                errorMsg += err.getRetryAfter();
+                Toast.makeText(getContext(), errorMsg, LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), err.getMessageResource(), LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getContext(), err.getMessage(), LENGTH_SHORT).show();
         }
     }
 

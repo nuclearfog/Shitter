@@ -1,11 +1,11 @@
 package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.adapter.MessageAdapter;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.MessageFragment;
@@ -13,12 +13,9 @@ import org.nuclearfog.twidda.fragment.MessageFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static android.widget.Toast.LENGTH_SHORT;
-
 
 /**
  * task to download a direct message list from twitter and handle message actions
- *
  * @see MessageFragment
  */
 public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
@@ -30,12 +27,11 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
     }
 
     @Nullable
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private Mode mode;
     private WeakReference<MessageFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
-    private MessageAdapter adapter;
     private long id;
 
 
@@ -43,15 +39,15 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        adapter = fragment.getAdapter();
         this.mode = mode;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null)
+        if (ui.get() != null) {
             ui.get().setRefresh(true);
+        }
     }
 
 
@@ -81,7 +77,7 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
                     db.deleteDm(messageId);
                     break;
             }
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
             if (twException.statusNotFound())
                 db.deleteDm(messageId);
@@ -95,22 +91,17 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
     @Override
     protected void onPostExecute(@Nullable List<Message> messages) {
         if (ui.get() != null) {
-            if (messages != null)
-                adapter.replaceAll(messages);
-            else if (twException != null) {
-                Toast.makeText(ui.get().getContext(), twException.getMessageResource(), LENGTH_SHORT).show();
-                if (twException.statusNotFound())
-                    adapter.remove(id);
-            } else if (mode == Mode.DEL)
-                adapter.remove(id);
+            if (messages != null) {
+                ui.get().setData(messages);
+            } else if (twException != null) {
+                ui.get().onError(twException);
+                if (twException.statusNotFound()) {
+                    ui.get().removeItem(id);
+                }
+            } else if (mode == Mode.DEL) {
+                ui.get().removeItem(id);
+            }
             ui.get().setRefresh(false);
         }
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (ui.get() != null)
-            ui.get().setRefresh(false);
     }
 }

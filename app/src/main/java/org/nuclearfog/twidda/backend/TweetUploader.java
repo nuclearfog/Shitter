@@ -11,14 +11,14 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.TweetPopup;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TweetHolder;
 
 import java.lang.ref.WeakReference;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.Window.FEATURE_NO_TITLE;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Background task for uploading tweet
@@ -27,7 +27,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Nullable
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private WeakReference<TweetPopup> ui;
     private WeakReference<Dialog> popup;
     private TwitterEngine mTwitter;
@@ -83,7 +83,7 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void[] v) {
         try {
             mTwitter.uploadStatus(tweet);
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
             return false;
         } catch (Exception exception) {
@@ -97,23 +97,12 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null && popup.get() != null) {
+            popup.get().dismiss();
             if (success) {
-                Toast.makeText(ui.get(), R.string.info_tweet_sent, LENGTH_LONG).show();
-                ui.get().finish();
+                ui.get().onSuccess();
             } else {
-                if (twException != null)
-                    Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-                ui.get().showErrorMsg(tweet);
+                ui.get().onError(tweet, twException);
             }
-            popup.get().dismiss();
-        }
-    }
-
-
-    @Override
-    protected void onCancelled() {
-        if (popup.get() != null) {
-            popup.get().dismiss();
         }
     }
 }

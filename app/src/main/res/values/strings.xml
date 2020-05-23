@@ -30,7 +30,7 @@
     <string name="error_connection">connection failed</string>
     <string name="error_enter_pin">Enter PIN!</string>
     <string name="confirm_delete_database">delete database?</string>
-    <string name="error_limit_exceeded">"Rate limit exceeded!"</string>
+    <string name="error_limit_exceeded">"Rate limit exceeded! Retry after: "</string>
     <string name="error_sending_tweet">error while sending</string>
     <string name="info_tweet_sent">tweet sent</string>
     <string name="info_error">Error!</string>

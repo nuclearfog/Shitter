@@ -5,20 +5,17 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.view.Window;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.ProfileEditor;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
-
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 
 /**
@@ -32,7 +29,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
     private WeakReference<Dialog> popup;
     private UserHolder userHolder;
     private TwitterEngine mTwitter;
-    private TwitterEngine.EngineException twException;
+    private EngineException twException;
     private AppDatabase db;
 
 
@@ -82,7 +79,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
                 TwitterUser user = mTwitter.updateProfile(userHolder);
                 db.storeUser(user);
             }
-        } catch (TwitterEngine.EngineException twException) {
+        } catch (EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -96,15 +93,11 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
         if (ui.get() != null && popup.get() != null) {
             popup.get().dismiss();
             if (twException != null) {
-                Toast.makeText(ui.get(), twException.getMessageResource(), LENGTH_SHORT).show();
-                if (userHolder == null)
-                    ui.get().finish();
+                ui.get().setError(twException);
             } else if (user != null) {
                 ui.get().setUser(user);
             } else if (userHolder != null) {
-                Toast.makeText(ui.get(), R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
-                ui.get().setResult(RETURN_PROFILE_CHANGED);
-                ui.get().finish();
+                ui.get().setSuccess();
             }
         }
     }
