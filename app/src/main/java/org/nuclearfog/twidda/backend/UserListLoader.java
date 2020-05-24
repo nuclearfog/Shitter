@@ -33,13 +33,13 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     private EngineException twException;
     private WeakReference<UserFragment> ui;
     private TwitterEngine mTwitter;
-    private Mode mode;
+    private final Mode action;
 
 
-    public UserListLoader(UserFragment fragment, Mode mode) {
+    public UserListLoader(UserFragment fragment, Mode action) {
         ui = new WeakReference<>(fragment);
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        this.mode = mode;
+        this.action = action;
     }
 
 
@@ -53,7 +53,7 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
     @Override
     protected List<TwitterUser> doInBackground(Object[] param) {
         try {
-            switch (mode) {
+            switch (action) {
                 case FOLLOWS:
                     return mTwitter.getFollower((long) param[0]);
 

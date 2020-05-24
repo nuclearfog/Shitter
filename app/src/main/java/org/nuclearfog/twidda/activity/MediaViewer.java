@@ -17,7 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -225,16 +225,23 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public void setImage(@Nullable Bitmap image) {
-        if (image != null) {
-            if (adapter.isEmpty()) {
-                changeImage(image);
-                image_progress.setVisibility(View.INVISIBLE);
-            }
-            adapter.addLast(image);
-        } else {
-            adapter.disableLoading();
+    public void onSuccess() {
+        adapter.disableLoading();
+    }
+
+
+    public void onError() {
+        Toast.makeText(this, R.string.error_image_download, Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+
+    public void setImage(@NonNull Bitmap image) {
+        if (adapter.isEmpty()) {
+            changeImage(image);
+            image_progress.setVisibility(View.INVISIBLE);
         }
+        adapter.addLast(image);
     }
 
 

@@ -31,7 +31,7 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
     private EngineException twException;
     private WeakReference<ListFragment> ui;
     private TwitterEngine mTwitter;
-    private Action action;
+    private final Action action;
 
     public TwitterListLoader(ListFragment frag, Action action) {
         mTwitter = TwitterEngine.getInstance(frag.getContext());

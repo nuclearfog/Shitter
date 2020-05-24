@@ -27,11 +27,12 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
         ACTION_MUTE
     }
 
-    private final Action action;
+    @Nullable
+    private EngineException twException;
     private WeakReference<UserProfile> ui;
     private TwitterEngine mTwitter;
-    private EngineException twException;
     private AppDatabase db;
+    private final Action action;
 
 
     public ProfileLoader(@NonNull UserProfile context, Action action) {

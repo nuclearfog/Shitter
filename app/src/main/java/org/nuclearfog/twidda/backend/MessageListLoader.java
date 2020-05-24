@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
-    public enum Mode {
+    public enum Action {
         DB,
         LOAD,
         DEL
@@ -28,18 +28,18 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
     @Nullable
     private EngineException twException;
-    private Mode mode;
     private WeakReference<MessageFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
+    private Action action;
     private long id;
 
 
-    public MessageListLoader(MessageFragment fragment, Mode mode) {
+    public MessageListLoader(MessageFragment fragment, Action action) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        this.mode = mode;
+        this.action = action;
     }
 
 
@@ -55,7 +55,7 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
     protected List<Message> doInBackground(Long[] param) {
         long messageId = 0;
         try {
-            switch (mode) {
+            switch (action) {
                 case DB:
                     List<Message> messages = db.getMessages();
                     if (messages.isEmpty()) {
@@ -98,7 +98,7 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
                 if (twException.statusNotFound()) {
                     ui.get().removeItem(id);
                 }
-            } else if (mode == Mode.DEL) {
+            } else if (action == Action.DEL) {
                 ui.get().removeItem(id);
             }
             ui.get().setRefresh(false);

@@ -1,6 +1,8 @@
 package org.nuclearfog.twidda.activity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -39,11 +41,12 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
+import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
 
-public class ProfileEditor extends AppCompatActivity implements OnClickListener {
+public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener {
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
@@ -55,6 +58,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
     private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
     private Button add_banner_btn;
+    private Dialog loadingCircle;
     private String profileLink, bannerLink;
     private boolean userSet = false;
 
@@ -71,16 +75,27 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
         link = findViewById(R.id.edit_link);
         loc = findViewById(R.id.edit_location);
         bio = findViewById(R.id.edit_bio);
+        loadingCircle = new Dialog(this, R.style.LoadingDialog);
+        View load = View.inflate(this, R.layout.item_load, null);
+        View cancelButton = load.findViewById(R.id.kill_button);
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.page_profile_edior);
+
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
+
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setCanceledOnTouchOutside(false);
+        loadingCircle.setContentView(load);
+
         profile_image.setOnClickListener(this);
         profile_banner.setOnClickListener(this);
         add_banner_btn.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -192,6 +207,30 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener 
             case R.id.edit_banner:
                 getMedia(REQ_PROFILE_BANNER);
                 break;
+
+            case R.id.kill_button:
+                loadingCircle.dismiss();
+                break;
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (editorAsync != null && editorAsync.getStatus() == RUNNING) {
+            editorAsync.cancel(true);
+        }
+    }
+
+    /**
+     * enable or disable loading dialog
+     *
+     * @param enable true to enable dialog
+     */
+    public void setLoading(boolean enable) {
+        if (enable) {
+            loadingCircle.show();
+        } else {
+            loadingCircle.dismiss();
         }
     }
 

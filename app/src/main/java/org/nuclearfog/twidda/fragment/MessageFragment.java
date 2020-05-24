@@ -26,7 +26,6 @@ import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageListLoader;
-import org.nuclearfog.twidda.backend.MessageListLoader.Mode;
 import org.nuclearfog.twidda.backend.TrendListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
@@ -71,7 +70,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     public void onStart() {
         super.onStart();
         if (messageTask == null)
-            load(Mode.DB);
+            load(MessageListLoader.Action.DB);
     }
 
 
@@ -86,7 +85,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     @Override
     public void onRefresh() {
         if (messageTask != null && messageTask.getStatus() != RUNNING)
-            load(Mode.LOAD);
+            load(MessageListLoader.Action.LOAD);
     }
 
 
@@ -136,7 +135,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                         confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                messageTask = new MessageListLoader(MessageFragment.this, Mode.DEL);
+                                messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
                                 messageTask.execute(message.getId());
                             }
                         });
@@ -209,7 +208,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     }
 
 
-    private void load(Mode m) {
+    private void load(MessageListLoader.Action m) {
         messageTask = new MessageListLoader(this, m);
         messageTask.execute();
     }

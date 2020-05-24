@@ -13,6 +13,8 @@ import org.nuclearfog.twidda.fragment.TweetFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static org.nuclearfog.twidda.fragment.TweetFragment.LIST_EMPTY;
+
 
 /**
  * Background task to download a list of tweets from different sources
@@ -21,7 +23,7 @@ import java.util.List;
  */
 public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
-    public enum Mode {
+    public enum Action {
         TL_HOME,
         TL_MENT,
         USR_TWEETS,
@@ -37,16 +39,16 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
     private WeakReference<TweetFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
-    private Mode mode;
+    private Action action;
     private long sinceId;
 
 
-    public TweetListLoader(TweetFragment fragment, Mode mode) {
+    public TweetListLoader(TweetFragment fragment, Action action) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
         sinceId = fragment.getTopId();
-        this.mode = mode;
+        this.action = action;
     }
 
 
@@ -62,10 +64,10 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
     protected List<Tweet> doInBackground(Object[] param) {
         List<Tweet> tweets = null;
         try {
-            switch (mode) {
+            switch (action) {
                 case TL_HOME:
                     int page = (int) param[0];
-                    if (sinceId == 0) {
+                    if (sinceId == LIST_EMPTY) {
                         tweets = db.getHomeTimeline();
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getHome(page, sinceId);
@@ -79,7 +81,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
                 case TL_MENT:
                     page = (int) param[0];
-                    if (sinceId == 0) {
+                    if (sinceId == LIST_EMPTY) {
                         tweets = db.getMentions();
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getMention(page, sinceId);
@@ -94,7 +96,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                 case USR_TWEETS:
                     long id = (long) param[0];
                     page = (int) param[1];
-                    if (sinceId == 0) {
+                    if (sinceId == LIST_EMPTY) {
                         tweets = db.getUserTweets(id);
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getUserTweets(id, sinceId, page);
@@ -109,7 +111,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                 case USR_FAVORS:
                     id = (long) param[0];
                     page = (int) param[1];
-                    if (sinceId == 0) {
+                    if (sinceId == LIST_EMPTY) {
                         tweets = db.getUserFavs(id);
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getUserFavs(id, page);
@@ -129,7 +131,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                 case TWEET_ANS:
                     id = (long) param[0];
                     String search = (String) param[1];
-                    if (sinceId == 0) {
+                    if (sinceId == LIST_EMPTY) {
                         tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getAnswers(search, id, sinceId);
@@ -168,7 +170,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
         if (ui.get() != null) {
             ui.get().setRefresh(false);
             if (tweets != null) {
-                if (mode == Mode.USR_FAVORS)
+                if (action == Action.USR_FAVORS)
                     ui.get().add(tweets);
                 else
                     ui.get().addTop(tweets);

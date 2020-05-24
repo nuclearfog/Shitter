@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
@@ -42,6 +44,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
@@ -51,7 +54,7 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO_STORAGE;
 
 
-public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener {
+public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener, OnDismissListener {
 
     public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
     public static final String KEY_TWEETPOPUP_PREFIX = "tweet_prefix";
@@ -76,6 +79,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private Location location;
     private List<String> mediaPath;
     private View mediaBtn, previewBtn, locationProg, locationBtn;
+    private Dialog loadingCircle;
     private TextView imgCount;
     private EditText tweetText;
     private String addition = "";
@@ -95,7 +99,13 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         tweetText = findViewById(R.id.tweet_input);
         imgCount = findViewById(R.id.imgcount);
         locationProg = findViewById(R.id.location_progress);
+        loadingCircle = new Dialog(this, R.style.LoadingDialog);
+        View load = View.inflate(this, R.layout.item_load, null);
+        View cancelButton = load.findViewById(R.id.kill_button);
+
         mLocation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        mediaPath = new LinkedList<>();
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
@@ -103,8 +113,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             addition = param.getString(KEY_TWEETPOPUP_PREFIX, "") + " ";
         }
 
-        mediaPath = new LinkedList<>();
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setCanceledOnTouchOutside(false);
+        loadingCircle.setContentView(load);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getPopupColor());
         tweetText.append(addition);
@@ -114,6 +125,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         mediaBtn.setOnClickListener(this);
         previewBtn.setOnClickListener(this);
         locationBtn.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -258,6 +271,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             case R.id.tweet_add_location:
                 getLocation();
                 break;
+
+            case R.id.kill_button:
+                loadingCircle.dismiss();
+                break;
         }
     }
 
@@ -287,6 +304,26 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         locationProg.setVisibility(INVISIBLE);
         locationBtn.setVisibility(VISIBLE);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING) {
+            uploaderAsync.cancel(true);
+        }
+    }
+
+    /**
+     * enable or disable loading dialog
+     *
+     * @param enable true to enable dialog
+     */
+    public void setLoading(boolean enable) {
+        if (enable) {
+            loadingCircle.show();
+        } else {
+            loadingCircle.dismiss();
+        }
     }
 
     /**

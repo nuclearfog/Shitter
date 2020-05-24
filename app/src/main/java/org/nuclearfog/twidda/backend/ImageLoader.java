@@ -3,11 +3,9 @@ package org.nuclearfog.twidda.backend;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MediaViewer;
 
 import java.io.InputStream;
@@ -26,7 +24,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     }
 
     private WeakReference<MediaViewer> ui;
-    private Action action;
+    private final Action action;
 
 
     /**
@@ -82,10 +80,9 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (ui.get() != null) {
             if (success) {
-                ui.get().setImage(null);
+                ui.get().onSuccess();
             } else {
-                Toast.makeText(ui.get(), R.string.error_image_download, Toast.LENGTH_SHORT).show();
-                ui.get().finish();
+                ui.get().onError();
             }
         }
     }

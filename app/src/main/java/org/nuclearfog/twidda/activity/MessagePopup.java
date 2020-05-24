@@ -1,7 +1,9 @@
 package org.nuclearfog.twidda.activity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -29,13 +31,14 @@ import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE;
 
 
-public class MessagePopup extends AppCompatActivity implements OnClickListener {
+public class MessagePopup extends AppCompatActivity implements OnClickListener, OnDismissListener {
 
     public static final String KEY_DM_PREFIX = "dm_prefix";
     private static final String[] PERM_READ = {Manifest.permission.READ_EXTERNAL_STORAGE};
@@ -44,6 +47,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
     private MessageUploader messageAsync;
     private EditText receiver, text;
+    private Dialog loadingCircle;
     private String mediaPath = "";
 
 
@@ -56,6 +60,9 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         View media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
         text = findViewById(R.id.dm_text);
+        loadingCircle = new Dialog(this, R.style.LoadingDialog);
+        View load = View.inflate(this, R.layout.item_load, null);
+        View cancelButton = load.findViewById(R.id.kill_button);
 
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_DM_PREFIX)) {
@@ -67,8 +74,14 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
         root.setBackgroundColor(settings.getPopupColor());
         FontTool.setViewFontAndColor(settings, root);
 
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setCanceledOnTouchOutside(false);
+        loadingCircle.setContentView(load);
+
         send.setOnClickListener(this);
         media.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -124,25 +137,53 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.dm_send) {
-            String username = receiver.getText().toString();
-            String message = text.getText().toString();
-            if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
-                MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-                messageAsync = new MessageUploader(this, messageHolder);
-                messageAsync.execute();
-            } else {
-                Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
-            }
-        } else if (v.getId() == R.id.dm_media) {
-            if (mediaPath.trim().isEmpty())
-                getMedia();
-            else {
-                Intent image = new Intent(this, MediaViewer.class);
-                image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
-                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
-                startActivity(image);
-            }
+        switch (v.getId()) {
+            case R.id.dm_send:
+                String username = receiver.getText().toString();
+                String message = text.getText().toString();
+                if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
+                    MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
+                    messageAsync = new MessageUploader(this, messageHolder);
+                    messageAsync.execute();
+                } else {
+                    Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.dm_media:
+                if (mediaPath.trim().isEmpty())
+                    getMedia();
+                else {
+                    Intent image = new Intent(this, MediaViewer.class);
+                    image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
+                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
+                    startActivity(image);
+                }
+                break;
+
+            case R.id.kill_button:
+                loadingCircle.dismiss();
+                break;
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
+            messageAsync.cancel(true);
+        }
+    }
+
+    /**
+     * enable or disable loading dialog
+     *
+     * @param enable true to enable dialog
+     */
+    public void setLoading(boolean enable) {
+        if (enable) {
+            loadingCircle.show();
+        } else {
+            loadingCircle.dismiss();
         }
     }
 
@@ -156,7 +197,6 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener {
 
     /**
      * called when an error occurs
-     *
      * @param error Engine Exception
      */
     public void onError(EngineException error) {
