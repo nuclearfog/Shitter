@@ -35,6 +35,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -198,7 +199,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     if (intent.resolveActivity(getPackageManager()) != null)
                         startActivity(intent);
                     else
-                        Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
                     break;
 
                 case R.id.link_copy:
@@ -431,24 +432,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
      *
      * @param error Engine Exception
      */
-    public void onError(@NonNull EngineException error) {
-        if (error.isErrorDefined()) {
-            if (error.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += error.getRetryAfter();
-                Toast.makeText(this, errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, error.getMessageResource(), LENGTH_SHORT).show();
-            }
-            if (error.isHardFault()) {
-                if (error.statusNotFound())
-                    setResult(RETURN_TWEET_CHANGED);
-                finish();
-            }
-        } else {
-            Toast.makeText(this, error.getMessage(), LENGTH_SHORT).show();
-        }
-        if (tweet == null) {
+    public void onError(EngineException error) {
+        boolean hardFailure = ErrorHandler.handleFailure(this, error);
+        if (tweet == null || hardFailure) {
             finish();
         }
     }

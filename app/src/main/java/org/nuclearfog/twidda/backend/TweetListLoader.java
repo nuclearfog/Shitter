@@ -39,7 +39,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
     private WeakReference<TweetFragment> ui;
     private TwitterEngine mTwitter;
     private AppDatabase db;
-    private Action action;
+    private final Action action;
     private long sinceId;
 
 

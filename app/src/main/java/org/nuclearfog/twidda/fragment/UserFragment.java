@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.UserAdapter;
@@ -23,6 +21,7 @@ import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserListLoader;
 import org.nuclearfog.twidda.backend.UserListLoader.Mode;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -30,7 +29,6 @@ import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 
@@ -162,17 +160,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      * @param error Engine exception
      */
     public void onError(EngineException error) {
-        if (error.isErrorDefined()) {
-            if (error.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += error.getRetryAfter();
-                Toast.makeText(getContext(), errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), error.getMessageResource(), LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getContext(), error.getMessage(), LENGTH_SHORT).show();
-        }
+        if (getContext() != null)
+            ErrorHandler.handleFailure(getContext(), error);
     }
 
 

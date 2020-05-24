@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -197,20 +198,11 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
     /**
      * called when an error occurs
+     *
      * @param error Engine Exception
      */
     public void onError(EngineException error) {
-        if (error.isErrorDefined()) {
-            if (error.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += error.getRetryAfter();
-                Toast.makeText(this, errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, error.getMessageResource(), LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, error.getMessage(), LENGTH_SHORT).show();
-        }
+        ErrorHandler.handleFailure(this, error);
     }
 
 

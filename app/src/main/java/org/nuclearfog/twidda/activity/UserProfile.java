@@ -35,6 +35,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserProperties;
@@ -383,7 +384,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             if (intent.resolveActivity(getPackageManager()) != null)
                 startActivity(intent);
             else
-                Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
         }
     }
 
@@ -420,7 +421,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     if (browserIntent.resolveActivity(getPackageManager()) != null)
                         startActivity(browserIntent);
                     else
-                        Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
                 }
                 break;
 
@@ -571,19 +572,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      * @param err Engine Exception
      */
     public void onError(EngineException err) {
-        if (err.isErrorDefined()) {
-            if (err.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += err.getRetryAfter();
-                Toast.makeText(this, errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, err.getMessageResource(), LENGTH_SHORT).show();
-                if (err.isHardFault()) {
-                    finish();
-                }
-            }
-        } else {
-            Toast.makeText(this, err.getMessage(), LENGTH_SHORT).show();
+        ErrorHandler.handleFailure(this, err);
+        if (user == null) {
+            finish();
         }
     }
 }

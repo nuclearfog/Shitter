@@ -27,7 +27,6 @@
     <string name="delete_database">delete database</string>
     <string name="twitter_search">search</string>
     <string name="confirm_delete_tweet">delete tweet?</string>
-    <string name="error_connection">connection failed</string>
     <string name="error_enter_pin">Enter PIN!</string>
     <string name="confirm_delete_database">delete database?</string>
     <string name="error_limit_exceeded">"Rate limit exceeded! Retry after: "</string>
@@ -78,9 +77,9 @@
     <string name="video_preview_button">video preview button</string>
     <string name="close_dm">close direct message</string>
     <string name="error_user_not_found">user not found!</string>
-    <string name="error_send_dm">cannot send dm to user!</string>
-    <string name="error_accesstoken">Invalid or expired token!</string>
-    <string name="error_status_too_long">Tweet needs to be shorter!</string>
+    <string name="error_send_dm_to_user">cannot send dm to user!</string>
+    <string name="error_accesstoken">Invalid access! Please re-login!</string>
+    <string name="error_status_length">Tweet needs to be shorter!</string>
     <string name="error_duplicate_status">Duplicate Status!</string>
     <string name="error_dm_length">direct message text is over the limit!</string>
     <string name="follow_requested">follow requested</string>
@@ -96,7 +95,7 @@
     <string name="error_request_token">request token expired! please update app.</string>
     <string name="follows_you">follows you</string>
     <string name="error_image_save">image save failed!</string>
-    <string name="info_not_authorized">Not authorized!</string>
+    <string name="error_not_authorized">Not authorized!</string>
     <string name="error_file_format">file format not supported!</string>
     <string name="load_answer">answer load</string>
     <string name="info_tweet_retweeted">tweet retweeted!</string>
@@ -114,7 +113,7 @@
     <string name="error_empty_pass">Proxy password should not be empty!</string>
     <string name="error_open_link">Failed to open link!</string>
     <string name="error_image_download">Image could not be loaded!</string>
-    <string name="error_dm_send">Cannot send directmessage to this user!</string>
+    <string name="error_dm_send">Cannot send direct message to this user!</string>
     <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
     <string name="error_location">could not fetch location!</string>
@@ -153,4 +152,5 @@
     <string name="settings_3rd_party_license">App and 3rd party license:</string>
     <string name="settings_info_license_link" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
     <string name="settings_info_github">App on GitHub:</string>
+    <string name="error_rate_limit">Too many requests! Please wait 15 minutes.</string>
 </resources>

@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +36,7 @@ import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.backend.LocationListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
@@ -47,7 +47,6 @@ import java.util.regex.Matcher;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MainActivity.APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.DB_CLEARED;
 
@@ -350,18 +349,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         locationSpinner.setSelection(position);
     }
 
+
     public void onError(EngineException err) {
-        if (err.isErrorDefined()) {
-            if (err.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += err.getRetryAfter();
-                Toast.makeText(this, errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, err.getMessageResource(), LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, err.getMessage(), LENGTH_SHORT).show();
-        }
+        ErrorHandler.handleFailure(this, err);
     }
 
 

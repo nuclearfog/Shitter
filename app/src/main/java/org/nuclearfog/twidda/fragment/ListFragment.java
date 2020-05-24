@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog.Builder;
@@ -25,6 +24,7 @@ import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.TwitterListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -32,7 +32,6 @@ import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_NAME;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
@@ -212,20 +211,11 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     /**
      * called from {@link TwitterListLoader} if an error occurs
      *
-     * @param err Twitter exception
+     * @param error Twitter exception
      */
-    public void onError(EngineException err) {
-        if (err.isErrorDefined()) {
-            if (err.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += err.getRetryAfter();
-                Toast.makeText(getContext(), errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), err.getMessageResource(), LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getContext(), err.getMessage(), LENGTH_SHORT).show();
-        }
+    public void onError(EngineException error) {
+        if (getContext() != null)
+            ErrorHandler.handleFailure(getContext(), error);
     }
 
 

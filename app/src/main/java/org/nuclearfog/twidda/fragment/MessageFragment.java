@@ -28,6 +28,7 @@ import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageListLoader;
 import org.nuclearfog.twidda.backend.TrendListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -111,7 +112,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                 if (intent.resolveActivity(getContext().getPackageManager()) != null)
                     startActivity(intent);
                 else
-                    Toast.makeText(getContext(), R.string.error_connection, LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
             }
         }
     }
@@ -191,20 +192,11 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     /**
      * called from {@link MessageListLoader} if an error occurs
      *
-     * @param err Twitter exception
+     * @param error Twitter exception
      */
-    public void onError(EngineException err) {
-        if (err.isErrorDefined()) {
-            if (err.isRateLimitExceeded()) {
-                String errorMsg = getString(R.string.error_limit_exceeded);
-                errorMsg += err.getRetryAfter();
-                Toast.makeText(getContext(), errorMsg, LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), err.getMessageResource(), LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(getContext(), err.getMessage(), LENGTH_SHORT).show();
-        }
+    public void onError(EngineException error) {
+        if (getContext() != null)
+            ErrorHandler.handleFailure(getContext(), error);
     }
 
 

@@ -19,10 +19,9 @@
     <string name="userlist_favorite">Tweet favorisiert von</string>
     <string name="background">Hintergrund</string>
     <string name="confirm_delete_tweet">Tweet löschen?</string>
-    <string name="error_connection">Keine Internetverbindung!</string>
     <string name="error_enter_pin">PIN eingeben!</string>
     <string name="confirm_delete_database">Datenbank löschen?</string>
-    <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrt nach: "</string>
+    <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach: "</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="info_tweet_sent">Tweet gesendet</string>
     <string name="info_error">Fehler!</string>
@@ -70,9 +69,9 @@
     <string name="image_preview_button">Bildvorschau Button</string>
     <string name="close_dm">Direktnachricht schließen</string>
     <string name="error_user_not_found">Nutzer nicht gefunden!</string>
-    <string name="error_send_dm">Nachricht kann nicht an den User gesendet werden!</string>
-    <string name="error_accesstoken">ungültiger Zugangsschlüssel!</string>
-    <string name="error_status_too_long">Status ist zu lang!</string>
+    <string name="error_send_dm_to_user">Nachricht kann nicht an den User gesendet werden!</string>
+    <string name="error_accesstoken">Ungültiger Zugang! Bitte neu einloggen!</string>
+    <string name="error_status_length">Status ist zu lang!</string>
     <string name="error_duplicate_status">Tweet wurde schon versendet!</string>
     <string name="error_dm_length">Direktnachricht länge überschritten!</string>
     <string name="follow_requested">warten auf Bestätigung</string>
@@ -88,7 +87,7 @@
     <string name="error_request_token">Request Token abgelaufen, bitte App aktualisieren!</string>
     <string name="follows_you">folgt dir</string>
     <string name="error_image_save">Fehler beim Speichern!</string>
-    <string name="info_not_authorized">Keine Berechtigung!</string>
+    <string name="error_not_authorized">Keine Berechtigung!</string>
     <string name="error_file_format">Dateiformat nicht unterstützt!</string>
     <string name="load_answer">Antworten laden</string>
     <string name="info_tweet_retweeted">Tweet retweeted!</string>
@@ -151,4 +150,5 @@
     <string name="error_invalid_link">Ungültiger Link!</string>
     <string name="settings_3rd_party_license">App und Drittanbieter Lizenz:</string>
     <string name="settings_info_github">Github Seite:</string>
+    <string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
 </resources>

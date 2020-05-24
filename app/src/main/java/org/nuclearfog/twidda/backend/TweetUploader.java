@@ -66,7 +66,7 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
             ui.get().setLoading(false);
             if (success) {
                 ui.get().onSuccess();
-            } else {
+            } else if (twException != null) {
                 ui.get().onError(tweet, twException);
             }
         }

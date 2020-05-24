@@ -13,6 +13,8 @@ import org.nuclearfog.twidda.fragment.MessageFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
+
 
 /**
  * task to download a direct message list from twitter and handle message actions
@@ -79,7 +81,7 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
             }
         } catch (EngineException twException) {
             this.twException = twException;
-            if (twException.statusNotFound())
+            if (twException.getErrorType() == RESOURCE_NOT_FOUND)
                 db.deleteDm(messageId);
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -95,7 +97,7 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
                 ui.get().setData(messages);
             } else if (twException != null) {
                 ui.get().onError(twException);
-                if (twException.statusNotFound()) {
+                if (twException.getErrorType() == RESOURCE_NOT_FOUND) {
                     ui.get().removeItem(id);
                 }
             } else if (action == Action.DEL) {

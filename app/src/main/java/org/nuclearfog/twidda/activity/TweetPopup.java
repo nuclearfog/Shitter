@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
@@ -338,15 +339,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      * Show confirmation dialog if an error occurs while sending tweet
      * @param tweet tweet to re-send
      */
-    public void onError(final TweetHolder tweet, @Nullable EngineException error) {
-        int errorRes;
-        if (error != null && error.isErrorDefined()) {
-            errorRes = error.getMessageResource();
-        } else {
-            errorRes = R.string.error_sending_tweet;
-        }
+    public void onError(final TweetHolder tweet, EngineException error) {
+        ErrorHandler.handleFailure(this, error);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
-        builder.setTitle(R.string.info_error).setMessage(errorRes)
+        builder.setTitle(R.string.info_error)
                 .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -137,7 +138,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         if (loginIntent.resolveActivity(getPackageManager()) != null)
             startActivity(loginIntent);
         else
-            Toast.makeText(this, R.string.error_connection, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
     }
 
 
@@ -146,12 +147,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         finish();
     }
 
-    public void onError(@NonNull EngineException error) {
-        if (error.isErrorDefined()) {
-            Toast.makeText(this, error.getMessageResource(), LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, error.getMessage(), LENGTH_SHORT).show();
-        }
-
+    public void onError(EngineException error) {
+        ErrorHandler.handleFailure(this, error);
     }
 }

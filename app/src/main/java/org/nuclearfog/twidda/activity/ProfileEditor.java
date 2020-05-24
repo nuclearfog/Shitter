@@ -30,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ProfileUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserHolder;
@@ -59,8 +60,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private EditText name, link, loc, bio;
     private Button add_banner_btn;
     private Dialog loadingCircle;
+    private TwitterUser user;
     private String profileLink, bannerLink;
-    private boolean userSet = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,16 +120,26 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onBackPressed() {
-        Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
-        closeDialog.setMessage(R.string.confirm_discard);
-        closeDialog.setNegativeButton(R.string.confirm_no, null);
-        closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        closeDialog.show();
+        String username = name.getText().toString();
+        String userLink = link.getText().toString();
+        String userLoc = loc.getText().toString();
+        String userBio = bio.getText().toString();
+        if (username.equals(user.getUsername()) && userLink.equals(user.getLink())
+                && userLoc.equals(user.getLocation()) && userBio.equals(user.getBio())
+                && profileLink == null && bannerLink == null) {
+            finish();
+        } else {
+            Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
+            closeDialog.setMessage(R.string.confirm_discard);
+            closeDialog.setNegativeButton(R.string.confirm_no, null);
+            closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            closeDialog.show();
+        }
     }
 
 
@@ -250,7 +261,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         link.setText(user.getLink());
         loc.setText(user.getLocation());
         bio.setText(user.getBio());
-        userSet = true;
+        this.user = user;
     }
 
     /**
@@ -268,12 +279,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      * @param err Engine Exception
      */
     public void setError(EngineException err) {
-        if (err.isErrorDefined()) {
-            Toast.makeText(this, err.getMessageResource(), LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, err.getMessage(), LENGTH_SHORT).show();
-        }
-        if (!userSet) {
+        ErrorHandler.handleFailure(this, err);
+        if (user == null) {
             finish();
         }
     }
