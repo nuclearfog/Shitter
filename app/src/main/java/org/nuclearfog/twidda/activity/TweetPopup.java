@@ -342,7 +342,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     public void onError(final TweetHolder tweet, EngineException error) {
         ErrorHandler.handleFailure(this, error);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
-        builder.setTitle(R.string.info_error)
+        builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet)
                 .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

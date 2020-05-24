@@ -49,7 +49,6 @@
     <string name="confirm_cancel_message">Nachricht verwerfen?</string>
     <string name="error_empty_tweet">Tweet leer!</string>
     <string name="settings_logout">ausloggen</string>
-    <string name="error_pin_verification">PIN verifizierung fehlgeschlagen!</string>
     <string name="dm_answer">Antworten</string>
     <string name="delete_dm">löschen</string>
     <string name="confirm_yes">Ja</string>
@@ -116,19 +115,16 @@
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">User stummschalten?</string>
     <string name="error_location">Standort konnte nicht ermittelt werden!</string>
-    <string name="info_not_implemented">Diese Funktion wurde noch nicht hinzugefügt!</string>
     <string name="error_cant_copy_clipboard">Link konnte nicht kopiert werden!</string>
     <string name="info_gps_attached">GPS Position hinzugefügt</string>
     <string name="info_get_location">starte GPS lokalisierung…</string>
     <string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
     <string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
-    <string name="error_media_not_found">Datei wurde nicht gefunden!</string>
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
     <string name="profile_lists">Listen</string>
     <string name="item_list_pb_desc">Profile Listenbesitzer</string>
     <string name="list_appbar">Listen</string>
     <string name="user_list_subscr">Listenbeobachter</string>
-    <string name="info_unfollowed">entfolgt!</string>
     <string name="edit_hint_enter_descr">Profilebeschreibung eingeben</string>
     <string name="edit_hint_link">Link eingeben</string>
     <string name="edit_location_hint">Standortnamen eingeben</string>
@@ -137,7 +133,6 @@
     <string name="error_no_card_app">Keine Karten App gefunden!</string>
     <string name="error_no_media_app">Keine Galerie App gefunden!</string>
     <string name="error_wrong_ip">Falsche IP Adresse!</string>
-    <string name="info_list_removed">Liste gelöscht!</string>
     <string name="delete_list">Liste löschen</string>
     <string name="confirm_delete_list">Liste löschen?</string>
     <string name="confirm_delete_message">Nachricht löschen?</string>

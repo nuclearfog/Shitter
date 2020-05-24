@@ -56,7 +56,6 @@
     <string name="confirm_cancel_message">cancel message?</string>
     <string name="error_empty_tweet">empty tweet!</string>
     <string name="settings_logout">log out!</string>
-    <string name="error_pin_verification">PIN verification failed!</string>
     <string name="dm_answer">answer</string>
     <string name="delete_dm">delete</string>
     <string name="confirm_yes">Yes</string>
@@ -117,19 +116,16 @@
     <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
     <string name="error_location">could not fetch location!</string>
-    <string name="info_not_implemented">This function is not implemented yet!</string>
     <string name="error_cant_copy_clipboard">can\'t copy link to clipboard!</string>
     <string name="info_gps_attached">GPS position added</string>
     <string name="info_get_location">starting location…</string>
     <string name="error_gps">could not fetch GPS data!</string>
     <string name="info_get_link">Get Twitter PIN from browser first. Please press the first button!</string>
-    <string name="error_media_not_found">Media not found!</string>
     <string name="error_token_not_set">Please get link first!</string>
     <string name="item_list_pb_desc">owner profile</string>
     <string name="profile_lists">Lists</string>
     <string name="list_appbar">Lists</string>
     <string name="user_list_subscr">List subscriber</string>
-    <string name="info_unfollowed">unfollowed!</string>
     <string name="edit_location_hint">Enter location</string>
     <string name="edit_hint_link">enter internetlink</string>
     <string name="edit_hint_enter_descr">enter profile description</string>
@@ -138,7 +134,6 @@
     <string name="error_no_card_app">No card app installed!</string>
     <string name="error_no_media_app">No media app found!</string>
     <string name="error_wrong_ip">wrong IP address!</string>
-    <string name="info_list_removed">List removed!</string>
     <string name="delete_list">delete list</string>
     <string name="confirm_delete_list">Delete list?</string>
     <string name="confirm_delete_message">Delete message?</string>
