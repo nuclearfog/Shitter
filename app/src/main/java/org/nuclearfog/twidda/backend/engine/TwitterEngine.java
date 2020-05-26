@@ -548,10 +548,10 @@ public class TwitterEngine {
             if (tweet.hasLocation())
                 mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
             if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
-                long[] ids = uploadImages(tweet.getMediaLinks());
+                long[] ids = uploadImages(tweet.getMediaPaths());
                 mStatus.setMediaIds(ids);
             } else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
-                long id = uploadVideo(tweet.getMediaLink());
+                long id = uploadVideo(tweet.getMediaPath());
                 mStatus.setMediaIds(id);
             }
             twitter.updateStatus(mStatus);

@@ -14,7 +14,6 @@ import org.nuclearfog.twidda.fragment.TweetFragment;
 import org.nuclearfog.twidda.fragment.UserFragment;
 
 import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_FIX_LAYOUT;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
@@ -61,8 +60,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle ment_tl = new Bundle();
         home_tl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_HOME);
         ment_tl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_MENT);
-        home_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
-        ment_tl.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
         fragments = new Fragment[3];
         fragments[0] = new TweetFragment();
         fragments[1] = new TrendFragment();
@@ -80,8 +77,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 Bundle usr_favor = new Bundle();
                 usr_tweet.putLong(KEY_FRAG_TWEET_ID, id);
                 usr_favor.putLong(KEY_FRAG_TWEET_ID, id);
-                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
-                usr_tweet.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
                 usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
                 usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
                 fragments = new Fragment[2];
@@ -98,7 +93,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 userSearch.putString(KEY_FRAG_USER_SEARCH, search);
                 tweetSearch.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_SEARCH);
                 userSearch.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
-                tweetSearch.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetFragment();
                 fragments[1] = new UserFragment();
@@ -110,7 +104,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 Bundle param = new Bundle();
                 param.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_ANSWER);
                 param.putString(KEY_FRAG_TWEET_SEARCH, search);
-                param.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
                 param.putLong(KEY_FRAG_TWEET_ID, id);
                 fragments = new Fragment[1];
                 fragments[0] = new TweetFragment();
@@ -182,7 +175,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
                 userList.putLong(KEY_FRAG_USER_ID, id);
                 tweetList.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
                 userList.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LISTS);
-                tweetList.putBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, true);
                 fragments = new Fragment[2];
                 fragments[0] = new TweetFragment();
                 fragments[1] = new UserFragment();

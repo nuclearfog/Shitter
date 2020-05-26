@@ -31,7 +31,6 @@ import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
-
 public class UserFragment extends Fragment implements OnRefreshListener, UserClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_USER_MODE = "user_mode";

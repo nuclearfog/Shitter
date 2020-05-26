@@ -30,7 +30,6 @@ import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
-
 public class TrendFragment extends Fragment implements OnRefreshListener, TrendClickListener, FragmentChangeObserver {
 
     private TrendListLoader trendTask;
@@ -38,7 +37,8 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
     private RecyclerView list;
     private TrendAdapter adapter;
     private GlobalSettings settings;
-    private boolean notifyChange;
+
+    private boolean notifyChange = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {

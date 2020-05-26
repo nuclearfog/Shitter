@@ -38,7 +38,6 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
     public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
     public static final String KEY_FRAG_TWEET_ID = "tweet_id";
-    public static final String KEY_FRAG_TWEET_FIX_LAYOUT = "tweet_fix_layout";
 
     public static final int TWEET_FRAG_HOME = 0;
     public static final int TWEET_FRAG_MENT = 1;
@@ -62,11 +61,10 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private long id, tweetId;
     private int mode;
 
-    private boolean notifyChange;
+    private boolean notifyChange = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
-        boolean fixSize = false;
         Bundle b = getArguments();
         Context context = inflater.getContext();
 
@@ -74,13 +72,11 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
             mode = b.getInt(KEY_FRAG_TWEET_MODE);
             id = b.getLong(KEY_FRAG_TWEET_ID, -1);
             search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
-            fixSize = b.getBoolean(KEY_FRAG_TWEET_FIX_LAYOUT, false);
         }
         settings = GlobalSettings.getInstance(context);
         adapter = new TweetAdapter(this, settings);
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
-        list.setHasFixedSize(fixSize);
         list.setAdapter(adapter);
         reload = new SwipeRefreshLayout(context);
         reload.setOnRefreshListener(this);

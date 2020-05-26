@@ -358,7 +358,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private void setColor(int preColor) {
         color_dialog_selector = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)
-                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(20)
+                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(15)
                 .setOnColorChangedListener(new OnColorChangedListener() {
                     @Override
                     public void onColorChanged(int i) {
