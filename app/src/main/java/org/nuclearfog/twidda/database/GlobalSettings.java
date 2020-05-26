@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.backend.items.TrendLocation;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public final class GlobalSettings {
+public class GlobalSettings {
 
     public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
             Typeface.SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};

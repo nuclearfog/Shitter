@@ -20,18 +20,22 @@ import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 public class AppDatabase {
 
-    private static final int FAV_MASK = 1;          //  FAVORITE MASK
-    private static final int RTW_MASK = 1 << 1;     //  RETWEET MASK
-    private static final int HOM_MASK = 1 << 2;     //  HOME TWEET MASK
-    private static final int MEN_MASK = 1 << 3;     //  MENTION MASK
-    private static final int UTW_MASK = 1 << 4;     //  USER TWEETS
-    private static final int RPL_MASK = 1 << 5;     //  TWEET ANSWERS
+    private static final int FAV_MASK = 1;          //  tweet is favored by user
+    private static final int RTW_MASK = 1 << 1;     //  tweet is retweeted by user
+    private static final int HOM_MASK = 1 << 2;     //  tweet is from home timeline
+    private static final int MEN_MASK = 1 << 3;     //  tweet is from mention timeline
+    private static final int UTW_MASK = 1 << 4;     //  tweet is from an users timeline
+    private static final int RPL_MASK = 1 << 5;     //  tweet is from a reply timeline
 
-    private static final int VER_MASK = 1;          //  USER VERIFIED MASK
-    private static final int LCK_MASK = 1 << 1;     //  USER LOCKED MASK
-    private static final int FRQ_MASK = 1 << 2;     //  USER REQUEST FOLLOW
-    private static final int EXCL_USR = 1 << 3;     //  EXCLUDE USERS TWEETS
-    private static final int DEF_IMG = 1 << 4;     //  DEFAULT PROFILE IMAGE
+    private static final int MEDIA_IMAGE_MASK = 1 << 6; // tweet contains images
+    private static final int MEDIA_VIDEO_MASK = 1 << 7; // tweet contains a video
+    private static final int MEDIA_ANGIF_MASK = 1 << 8; // tweet contains an animation
+
+    private static final int VER_MASK = 1;          //  user is verified
+    private static final int LCK_MASK = 1 << 1;     //  user is private
+    private static final int FRQ_MASK = 1 << 2;     //  a follow request is pending
+    private static final int EXCL_USR = 1 << 3;     //  user excluded from mention timeline
+    private static final int DEF_IMG = 1 << 4;      //  user has a default profile image
 
     private final int limit;       //  DATABASE ENTRY limit
     private final long homeId;
@@ -166,18 +170,6 @@ public class AppDatabase {
     }
 
     /**
-     * get user information
-     *
-     * @param userId ID of user
-     * @return user information or null if not found
-     */
-    @Nullable
-    public TwitterUser getUser(long userId) {
-        SQLiteDatabase db = getDbRead();
-        return getUser(userId, db);
-    }
-
-    /**
      * load home timeline
      *
      * @return tweet list
@@ -273,6 +265,18 @@ public class AppDatabase {
         }
         cursor.close();
         return tweetList;
+    }
+
+    /**
+     * get user information
+     *
+     * @param userId ID of user
+     * @return user information or null if not found
+     */
+    @Nullable
+    public TwitterUser getUser(long userId) {
+        SQLiteDatabase db = getDbRead();
+        return getUser(userId, db);
     }
 
     /**
@@ -421,7 +425,7 @@ public class AppDatabase {
      *
      * @param id Direct Message ID
      */
-    public void deleteDm(long id) {
+    public void deleteMessage(long id) {
         final String[] messageId = {Long.toString(id)};
 
         SQLiteDatabase db = getDbWrite();
@@ -543,15 +547,22 @@ public class AppDatabase {
         String geo = cursor.getString(cursor.getColumnIndex("geo"));
         long replyUserId = cursor.getLong(cursor.getColumnIndex("replyUserID"));
         int statusregister = cursor.getInt(cursor.getColumnIndex("statusregister"));
-        boolean favorited = (statusregister & FAV_MASK) > 0;
-        boolean retweeted = (statusregister & RTW_MASK) > 0;
+        boolean favorited = (statusregister & FAV_MASK) != 0;
+        boolean retweeted = (statusregister & RTW_MASK) != 0;
         String[] medias = parseMedia(medialinks);
+        Tweet.MediaType mediaType = Tweet.MediaType.NONE;
+        if ((statusregister & MEDIA_IMAGE_MASK) != 0)
+            mediaType = Tweet.MediaType.IMAGE;
+        else if ((statusregister & MEDIA_VIDEO_MASK) != 0)
+            mediaType = Tweet.MediaType.VIDEO;
+        else if ((statusregister & MEDIA_ANGIF_MASK) != 0)
+            mediaType = Tweet.MediaType.GIF;
         TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
         if (retweetId > 1)
             embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId, retweet, favorit, user, tweettext, time, replyname, replyUserId, medias,
-                source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited, place, geo);
+                mediaType, source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited, place, geo);
     }
 
 
@@ -653,6 +664,19 @@ public class AppDatabase {
             statusRegister |= RTW_MASK;
         } else {
             statusRegister &= ~RTW_MASK;
+        }
+        switch (tweet.getMediaType()) {
+            case IMAGE:
+                statusRegister |= MEDIA_IMAGE_MASK;
+                break;
+
+            case VIDEO:
+                statusRegister |= MEDIA_VIDEO_MASK;
+                break;
+
+            case GIF:
+                statusRegister |= MEDIA_ANGIF_MASK;
+                break;
         }
 
         status.put("media", getMediaLinks(tweet));

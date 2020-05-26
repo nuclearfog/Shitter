@@ -17,14 +17,15 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.FontTool;
-import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.view.View.GONE;
@@ -158,7 +159,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.title.setText(item.getTitle());
         vh.ownername.setText(owner.getScreenname());
         vh.description.setText(item.getDescription());
-        vh.createdAt.setText(StringTools.getTimeString(item.getCreatedAt()));
+        vh.createdAt.setText(getTimeString(item.getCreatedAt()));
         vh.memberCount.setText(formatter.format(item.getMemberCount()));
         vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
         if (settings.getImageLoad()) {
@@ -182,6 +183,29 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
         else
             vh.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    }
+
+
+    private String getTimeString(long time) {
+        long diff = new Date().getTime() - time;
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        long weeks = days / 7;
+        if (weeks > 4) {
+            Date tweetDate = new Date(time);
+            return SimpleDateFormat.getDateInstance().format(tweetDate);
+        }
+        if (weeks > 0)
+            return weeks + " w";
+        if (days > 0)
+            return days + " d";
+        if (hours > 0)
+            return hours + " h";
+        if (minutes > 0)
+            return minutes + " m";
+        return seconds + " s";
     }
 
 

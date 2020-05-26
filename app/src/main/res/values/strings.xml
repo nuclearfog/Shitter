@@ -73,7 +73,6 @@
     <string name="info_clipboard">Link copied to clipboard!</string>
     <string name="profile_link">link</string>
     <string name="image_preview_button">image preview button</string>
-    <string name="video_preview_button">video preview button</string>
     <string name="close_dm">close direct message</string>
     <string name="error_user_not_found">user not found!</string>
     <string name="error_send_dm_to_user">cannot send dm to user!</string>
@@ -148,4 +147,6 @@
     <string name="settings_info_license_link" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
     <string name="settings_info_github">App on GitHub:</string>
     <string name="error_rate_limit">Too many requests! Please wait 15 minutes.</string>
+    <string name="info_cant_add_video">Can\'t add video!</string>
+    <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>
 </resources>

@@ -11,6 +11,13 @@ import twitter4j.URLEntity;
 
 public class Tweet {
 
+    public enum MediaType {
+        IMAGE,
+        VIDEO,
+        GIF,
+        NONE
+    }
+
     private static final String PHOTO = "photo";
     private static final String VIDEO = "video";
     private static final String ANGIF = "animated_gif";
@@ -37,6 +44,8 @@ public class Tweet {
 
     private final String locationName;
     private final String locationCoordinates;
+
+    private final MediaType mediaType;
 
 
     /**
@@ -66,7 +75,6 @@ public class Tweet {
         tweet = getText(status);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
-        medias = getMediaLinks(status);
         myRetweetId = status.getCurrentUserRetweetId();
         replyUserId = status.getInReplyToUserId();
 
@@ -74,7 +82,7 @@ public class Tweet {
         String api = "" + status.getSource();
         int start = api.indexOf('>') + 1;
         int end = api.lastIndexOf('<');
-        if (start > 0 && end > 0)
+        if (start > 0 && end > start)
             api = api.substring(start, end);
         source = api;
 
@@ -96,6 +104,37 @@ public class Tweet {
             embedded = new Tweet(status.getRetweetedStatus());
         else
             embedded = null;
+
+        MediaEntity[] mediaEntities = status.getMediaEntities();
+        medias = new String[mediaEntities.length];
+        if (medias.length == 0) {
+            mediaType = MediaType.NONE;
+        } else {
+            switch (mediaEntities[0].getType()) {
+                case PHOTO:
+                    mediaType = MediaType.IMAGE;
+                    for (int i = 0; i < mediaEntities.length; i++)
+                        medias[i] = mediaEntities[i].getMediaURLHttps();
+                    break;
+
+                case VIDEO:
+                    mediaType = MediaType.VIDEO;
+                    for (MediaEntity.Variant type : mediaEntities[0].getVideoVariants()) {
+                        if (type.getContentType().equals(MEDIA_VIDEO))
+                            medias[0] = type.getUrl();
+                    }
+                    break;
+
+                case ANGIF:
+                    mediaType = MediaType.GIF;
+                    medias[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
+                    break;
+
+                default:
+                    mediaType = MediaType.NONE;
+                    break;
+            }
+        }
     }
 
     /**
@@ -119,7 +158,7 @@ public class Tweet {
      * @param place location full place name
      */
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
-                 String replyName, long replyUserId, String[] medias, String source, long replyID,
+                 String replyName, long replyUserId, String[] medias, MediaType mediaType, String source, long replyID,
                  Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, String place, String geo) {
 
         this.tweetID = tweetID;
@@ -130,6 +169,7 @@ public class Tweet {
         this.replyID = replyID;
         this.embedded = embedded;
         this.medias = medias;
+        this.mediaType = mediaType;
         this.retweeted = retweeted;
         this.favored = favored;
         this.myRetweetId = myRetweetId;
@@ -260,12 +300,12 @@ public class Tweet {
     }
 
     /**
-     * check if tweet contains media
+     * check tweet media type
      *
-     * @return true if tweet contains media
+     * @return media type or NONE if there isnt any media
      */
-    public boolean hasMedia() {
-        return medias != null && medias.length > 0;
+    public MediaType getMediaType() {
+        return mediaType;
     }
 
     /**
@@ -302,35 +342,6 @@ public class Tweet {
      */
     public String getLocationCoordinates() {
         return locationCoordinates;
-    }
-
-    /**
-     * @param status Twitter4J status
-     * @return Array of Medialinks
-     */
-    private String[] getMediaLinks(Status status) {
-        MediaEntity[] mediaEntities = status.getMediaEntities();
-        String[] medias = new String[mediaEntities.length];
-        for (int i = 0; i < medias.length; i++) {
-            MediaEntity mediaEntity = mediaEntities[i];
-            switch (mediaEntity.getType()) {
-                case PHOTO:
-                    medias[i] = mediaEntity.getMediaURLHttps();
-                    break;
-
-                case VIDEO:
-                    for (MediaEntity.Variant type : mediaEntity.getVideoVariants()) {
-                        if (type.getContentType().equals(MEDIA_VIDEO))
-                            medias[i] = type.getUrl();
-                    }
-                    break;
-
-                case ANGIF:
-                    medias[i] = mediaEntity.getVideoVariants()[0].getUrl();
-                    break;
-            }
-        }
-        return medias;
     }
 
     /**

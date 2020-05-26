@@ -15,10 +15,10 @@
         android:textSize="@dimen/settings_info_appname_font" />
 
     <ImageView
-        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/twitter4j_badge" />
+        app:srcCompat="@drawable/twitter4j_badge"
+        android:contentDescription="@string/badge_twitter4j" />
 
     <TextView
         android:layout_width="match_parent"

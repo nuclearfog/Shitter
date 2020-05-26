@@ -26,7 +26,7 @@ public class EngineException extends Exception {
         ERROR_NOT_DEFINED
     }
 
-    private final ErrorType messageResource;
+    private final ErrorType errorType;
     private int retryAfter;
 
 
@@ -40,61 +40,61 @@ public class EngineException extends Exception {
             case 88:
             case 420:   //
             case 429:   // Rate limit exceeded!
-                messageResource = ErrorType.RATE_LIMIT_EX;
+                errorType = ErrorType.RATE_LIMIT_EX;
                 retryAfter = error.getRetryAfter();
                 break;
 
             case 17:
             case 50:    // USER not found
             case 63:    // USER suspended
-                messageResource = ErrorType.USER_NOT_FOUND;
+                errorType = ErrorType.USER_NOT_FOUND;
                 break;
 
             case 32:
-                messageResource = ErrorType.REQ_TOKEN_EXPIRED;
+                errorType = ErrorType.REQ_TOKEN_EXPIRED;
                 break;
 
             case 34:    //
             case 144:   // TWEET not found
-                messageResource = ErrorType.RESOURCE_NOT_FOUND;
+                errorType = ErrorType.RESOURCE_NOT_FOUND;
                 break;
 
             case 150:
-                messageResource = ErrorType.CANT_SEND_DM;
+                errorType = ErrorType.CANT_SEND_DM;
                 break;
 
             case 136:
             case 179:
-                messageResource = ErrorType.NOT_AUTHORIZED;
+                errorType = ErrorType.NOT_AUTHORIZED;
                 break;
 
             case 186:
-                messageResource = ErrorType.TWEET_TOO_LONG;
+                errorType = ErrorType.TWEET_TOO_LONG;
                 break;
 
             case 187:
-                messageResource = ErrorType.DUPLICATE_TWEET;
+                errorType = ErrorType.DUPLICATE_TWEET;
                 break;
 
             case 349:
-                messageResource = ErrorType.NO_DM_TO_USER;
+                errorType = ErrorType.NO_DM_TO_USER;
                 break;
 
             case 354:
-                messageResource = ErrorType.DM_TOO_LONG;
+                errorType = ErrorType.DM_TOO_LONG;
                 break;
 
             case 89:
-                messageResource = ErrorType.TOKEN_EXPIRED;
+                errorType = ErrorType.TOKEN_EXPIRED;
                 break;
 
             default:
                 if (error.getStatusCode() == 401) {
-                    messageResource = ErrorType.NOT_AUTHORIZED;
+                    errorType = ErrorType.NOT_AUTHORIZED;
                 } else if (error.isCausedByNetworkIssue()) {
-                    messageResource = ErrorType.NO_CONNECTION;
+                    errorType = ErrorType.NO_CONNECTION;
                 } else {
-                    messageResource = ErrorType.ERROR_NOT_DEFINED;
+                    errorType = ErrorType.ERROR_NOT_DEFINED;
                 }
                 break;
         }
@@ -107,15 +107,15 @@ public class EngineException extends Exception {
     EngineException(int errorCode) {
         switch (errorCode) {
             case FILENOTFOUND:
-                messageResource = ErrorType.NO_MEDIA_FOUND;
+                errorType = ErrorType.NO_MEDIA_FOUND;
                 break;
 
             case TOKENNOTSET:
-                messageResource = ErrorType.NO_LINK_DEFINED;
+                errorType = ErrorType.NO_LINK_DEFINED;
                 break;
 
             default:
-                messageResource = ErrorType.ERROR_NOT_DEFINED;
+                errorType = ErrorType.ERROR_NOT_DEFINED;
                 break;
         }
     }
@@ -125,7 +125,7 @@ public class EngineException extends Exception {
      * @return type of error {@link ErrorType}
      */
     public ErrorType getErrorType() {
-        return messageResource;
+        return errorType;
     }
 
 

@@ -109,7 +109,6 @@
     <string name="proxy_authentication">Proxy Login</string>
     <string name="error_empty_port">Proxy port muss gesetzt werden!</string>
     <string name="error_empty_pass">Proxy Passort darf nicht leer sein!</string>
-    <string name="video_preview_button">Videovorschau Button</string>
     <string name="error_open_link">Fehler beim Öffnen des links!</string>
     <string name="error_image_download">Bild konnte nicht geladen werden!</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
@@ -146,4 +145,5 @@
     <string name="settings_3rd_party_license">App und Drittanbieter Lizenz:</string>
     <string name="settings_info_github">Github Seite:</string>
     <string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
+    <string name="info_cant_add_video">Video konnte nicht hinzugefügt werden!</string>
 </resources>

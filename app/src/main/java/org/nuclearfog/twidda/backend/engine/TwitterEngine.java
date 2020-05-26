@@ -547,11 +547,11 @@ public class TwitterEngine {
                 mStatus.setInReplyToStatusId(tweet.getReplyId());
             if (tweet.hasLocation())
                 mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
-            if (tweet.hasImages()) {
-                long[] ids = uploadImages(tweet.getImageLink());
+            if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
+                long[] ids = uploadImages(tweet.getMediaLinks());
                 mStatus.setMediaIds(ids);
-            } else if (tweet.hasVideo()) {
-                long id = uploadVideo(tweet.getVideoLink());
+            } else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
+                long id = uploadVideo(tweet.getMediaLink());
                 mStatus.setMediaIds(id);
             }
             twitter.updateStatus(mStatus);

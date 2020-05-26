@@ -2,22 +2,18 @@
 <resources>
     <dimen name="toolbar_height">45dp</dimen>
     <dimen name="divider">2dp</dimen>
-
     <dimen name="profile_image">80dp</dimen>
-    <dimen name="profile_middle">40dp</dimen>
-    <dimen name="profile_small">36dp</dimen>
-    <dimen name="tweet_profile">56dp</dimen>
-
+    <dimen name="profile_middle">40sp</dimen>
+    <dimen name="profile_small">36sp</dimen>
+    <dimen name="tweet_profile">56sp</dimen>
     <dimen name="margin_dm_icon">5dp</dimen>
     <dimen name="margin_tweet_icon">16dp</dimen>
     <dimen name="margin_layout">5dp</dimen>
     <dimen name="margin_layout_tweet">2dp</dimen>
     <dimen name="margin_side">10dp</dimen>
-
     <dimen name="padding_editprofile">20dp</dimen>
     <dimen name="padding_drawable">5dp</dimen>
     <dimen name="padding_side">10dp</dimen>
-
     <dimen name="text_bio_height">150dp</dimen>
     <dimen name="text_settings">5dp</dimen>
     <dimen name="text_input_width">300dp</dimen>
@@ -39,23 +35,22 @@
     <dimen name="textsize_settings_small">11sp</dimen>
     <integer name="text_tweet_lines">9</integer>
     <integer name="text_bio_lines">3</integer>
-
     <dimen name="button_dm">40dp</dimen>
-    <dimen name="button_settings_color">40dp</dimen>
-    <dimen name="button_settings">30dp</dimen>
-    <dimen name="button_load">36dp</dimen>
+    <dimen name="button_settings_color">40sp</dimen>
+    <dimen name="button_settings_height">30sp</dimen>
+    <dimen name="button_load">36sp</dimen>
     <dimen name="button_margin">5dp</dimen>
     <dimen name="button_padding">5dp</dimen>
-    <dimen name="button_height">20dp</dimen>
+    <dimen name="button_height">20sp</dimen>
     <dimen name="button_size">40dp</dimen>
     <dimen name="button_tweet_size">40dp</dimen>
     <dimen name="button_media_height">36dp</dimen>
     <dimen name="button_media_width">64dp</dimen>
     <dimen name="preview_margin">10dp</dimen>
-    <dimen name="dm_item_button_height">20dp</dimen>
+    <dimen name="dm_item_button_height">20sp</dimen>
     <dimen name="tweet_media_button_margin">5dp</dimen>
     <dimen name="tweet_location_progress_size">30dp</dimen>
-    <dimen name="list_button_height">20dp</dimen>
+    <dimen name="list_button_height">20sp</dimen>
     <dimen name="listitem_margin">4dp</dimen>
     <dimen name="list_padding">5dp</dimen>
     <dimen name="list_bar_padding">10dp</dimen>

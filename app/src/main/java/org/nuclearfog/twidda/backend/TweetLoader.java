@@ -114,7 +114,8 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
         if (ui.get() != null) {
             if (tweet != null) {
                 ui.get().onAction(tweet, action);
-            } else if (twException != null) {
+            }
+            if (twException != null) {
                 ui.get().onError(twException);
             }
         }

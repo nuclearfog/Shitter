@@ -37,7 +37,6 @@ import org.nuclearfog.twidda.backend.TweetLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
-import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -48,6 +47,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
@@ -61,6 +61,8 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.NOT_AUTHORIZED;
+import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
 
@@ -74,10 +76,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private TweetLoader statusAsync;
     private GlobalSettings settings;
 
-    private View header, footer, videoButton, imageButton;
+    private View header, footer;
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
-    private ImageView profile_img;
+    private ImageView profile_img, mediaButton;
 
     @Nullable
     private Tweet tweet;
@@ -105,8 +107,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         tweet_api = findViewById(R.id.used_api);
         tweetLocName = findViewById(R.id.tweet_location_name);
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
-        imageButton = findViewById(R.id.image_attach);
-        videoButton = findViewById(R.id.video_attach);
+        mediaButton = findViewById(R.id.tweet_media_attach);
 
         Bundle param = getIntent().getExtras();
         Uri link = getIntent().getData();
@@ -137,8 +138,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         favButton.setOnLongClickListener(this);
         profile_img.setOnClickListener(this);
         tweetLocGPS.setOnClickListener(this);
-        videoButton.setOnClickListener(this);
-        imageButton.setOnClickListener(this);
+        mediaButton.setOnClickListener(this);
     }
 
 
@@ -265,25 +265,23 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                         break;
                     }
 
-                case R.id.image_attach:
+                case R.id.tweet_media_attach:
                     if (tweet != null) {
-                        Intent mediaIntent = new Intent(getApplicationContext(), MediaViewer.class);
+                        Intent mediaIntent = new Intent(this, MediaViewer.class);
                         mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                        startActivity(mediaIntent);
-                    }
-                    break;
+                        switch (tweet.getMediaType()) {
+                            case IMAGE:
+                                mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                                break;
 
-                case R.id.video_attach:
-                    if (tweet != null) {
-                        String[] links = tweet.getMediaLinks();
-                        StringTools.FileType ext = StringTools.getFileType(links[0]);
-                        Intent mediaIntent = new Intent(getApplicationContext(), MediaViewer.class);
-                        if (ext == StringTools.FileType.VIDEO)
-                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
-                        else
-                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-                        mediaIntent.putExtra(KEY_MEDIA_LINK, links);
+                            case VIDEO:
+                                mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
+                                break;
+
+                            case GIF:
+                                mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
+                                break;
+                        }
                         startActivity(mediaIntent);
                     }
                     break;
@@ -371,13 +369,25 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             replyName.append(tweet.getReplyName());
             replyName.setVisibility(VISIBLE);
         }
-        if (tweet.hasMedia()) {
-            String[] links = tweet.getMediaLinks();
-            StringTools.FileType ext = StringTools.getFileType(links[0]);
-            if (ext == StringTools.FileType.IMAGE)
-                imageButton.setVisibility(VISIBLE);
-            else
-                videoButton.setVisibility(VISIBLE);
+        switch (tweet.getMediaType()) {
+            case IMAGE:
+                mediaButton.setVisibility(VISIBLE);
+                mediaButton.setImageResource(R.drawable.image);
+                break;
+
+            case VIDEO:
+                mediaButton.setVisibility(VISIBLE);
+                mediaButton.setImageResource(R.drawable.video);
+                break;
+
+            case GIF:
+                mediaButton.setVisibility(VISIBLE);
+                mediaButton.setImageResource(R.drawable.images);
+                break;
+
+            default:
+                mediaButton.setVisibility(GONE);
+                break;
         }
         if (settings.getImageLoad()) {
             String pbLink = author.getImageLink();
@@ -433,8 +443,12 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
      * @param error Engine Exception
      */
     public void onError(EngineException error) {
-        boolean hardFailure = ErrorHandler.handleFailure(this, error);
-        if (tweet == null || hardFailure) {
+        ErrorHandler.handleFailure(this, error);
+        EngineException.ErrorType errorType = error.getErrorType();
+        if (errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED) {
+            setResult(RETURN_TWEET_CHANGED);
+            finish();
+        } else if (tweet == null) {
             finish();
         }
     }

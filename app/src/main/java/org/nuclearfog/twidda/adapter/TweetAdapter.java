@@ -18,14 +18,15 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.helper.FontTool;
-import org.nuclearfog.twidda.backend.helper.StringTools;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
@@ -131,7 +132,7 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         vh.screenname.setText(user.getScreenname());
         vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
         vh.favorite.setText(formatter.format(tweet.getFavorCount()));
-        vh.time.setText(StringTools.getTimeString(tweet.getTime()));
+        vh.time.setText(getTimeString(tweet.getTime()));
         if (tweet.retweeted())
             vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
         else
@@ -156,6 +157,28 @@ public class TweetAdapter extends Adapter<TweetAdapter.ItemHolder> {
         }
         else
             vh.profile.setImageResource(0);
+    }
+
+    private String getTimeString(long time) {
+        long diff = new Date().getTime() - time;
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        long weeks = days / 7;
+        if (weeks > 4) {
+            Date tweetDate = new Date(time);
+            return SimpleDateFormat.getDateInstance().format(tweetDate);
+        }
+        if (weeks > 0)
+            return weeks + " w";
+        if (days > 0)
+            return days + " d";
+        if (hours > 0)
+            return hours + " h";
+        if (minutes > 0)
+            return minutes + " m";
+        return seconds + " s";
     }
 
     static class ItemHolder extends ViewHolder {

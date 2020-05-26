@@ -4,18 +4,21 @@ import android.location.Location;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.helper.StringTools;
-import org.nuclearfog.twidda.backend.helper.StringTools.FileType;
 
 public class TweetHolder {
 
+    public enum MediaType {
+        IMAGE,
+        VIDEO,
+        NONE
+    }
+
     private final String text;
     private final long replyId;
-    private String[] imageLink;
-    private String videoLink;
+    private String[] mediaLinks;
     private double longitude, latitude;
-    private boolean hasImage = false;
-    private boolean hasVideo = false;
+
+    private MediaType mType = MediaType.NONE;
     private boolean hasLocation = false;
 
 
@@ -25,23 +28,9 @@ public class TweetHolder {
     }
 
 
-    public void addMedia(String[] mediaLinks) {
-        FileType type = StringTools.getFileType(mediaLinks[0]);
-
-        switch (type) {
-            case VIDEO:
-                imageLink = new String[0];
-                videoLink = mediaLinks[0];
-                hasVideo = true;
-                break;
-
-            case ANGIF:
-            case IMAGE:
-                videoLink = "";
-                imageLink = mediaLinks;
-                hasImage = true;
-                break;
-        }
+    public void addMedia(String[] mediaLinks, MediaType mType) {
+        this.mediaLinks = mediaLinks;
+        this.mType = mType;
     }
 
     public void addLocation(Location location) {
@@ -58,12 +47,16 @@ public class TweetHolder {
         return replyId;
     }
 
-    public String getVideoLink() {
-        return videoLink;
+    public MediaType getMediaType() {
+        return mType;
     }
 
-    public String[] getImageLink() {
-        return imageLink;
+    public String[] getMediaLinks() {
+        return mediaLinks;
+    }
+
+    public String getMediaLink() {
+        return mediaLinks[0];
     }
 
     public double getLongitude() {
@@ -72,14 +65,6 @@ public class TweetHolder {
 
     public double getLatitude() {
         return latitude;
-    }
-
-    public boolean hasImages() {
-        return hasImage;
-    }
-
-    public boolean hasVideo() {
-        return hasVideo;
     }
 
     public boolean hasLocation() {
@@ -93,8 +78,6 @@ public class TweetHolder {
     @NonNull
     @Override
     public String toString() {
-        return "to=" + replyId + ", location added=" + hasLocation + ", image added=" + hasImage + ", video added=" + hasVideo
-                + "\n" + text;
-
+        return "to=" + replyId + "\nTweet=" + text;
     }
 }

@@ -76,13 +76,13 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
                     messageId = param[0];
                     id = messageId;
                     mTwitter.deleteMessage(messageId);
-                    db.deleteDm(messageId);
+                    db.deleteMessage(messageId);
                     break;
             }
         } catch (EngineException twException) {
             this.twException = twException;
             if (twException.getErrorType() == RESOURCE_NOT_FOUND)
-                db.deleteDm(messageId);
+                db.deleteMessage(messageId);
         } catch (Exception exception) {
             exception.printStackTrace();
         }

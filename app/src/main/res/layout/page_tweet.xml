@@ -112,26 +112,14 @@
                         android:visibility="gone" />
 
                     <ImageButton
-                        android:id="@+id/image_attach"
+                        android:id="@+id/tweet_media_attach"
                         android:layout_width="@dimen/button_media_width"
                         android:layout_height="@dimen/button_media_height"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/tweet_media_button_margin"
                         android:background="@drawable/button"
                         android:contentDescription="@string/image_preview_button"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/image" />
-
-                    <ImageButton
-                        android:id="@+id/video_attach"
-                        android:layout_width="@dimen/button_media_width"
-                        android:layout_height="@dimen/button_media_height"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/tweet_media_button_margin"
-                        android:background="@drawable/button"
-                        android:contentDescription="@string/video_preview_button"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/video" />
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

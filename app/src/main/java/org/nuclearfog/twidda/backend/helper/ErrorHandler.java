@@ -19,9 +19,8 @@ public abstract class ErrorHandler {
      *
      * @param context current activity context
      * @param error   Error exception throwed by TwitterEngine
-     * @return true if its a hard failure
      */
-    public static boolean handleFailure(@NonNull Context context, @NonNull EngineException error) {
+    public static void handleFailure(@NonNull Context context, @NonNull EngineException error) {
         switch (error.getErrorType()) {
             case RATE_LIMIT_EX:
                 int timeToWait = error.getTimeToWait();
@@ -38,7 +37,7 @@ public abstract class ErrorHandler {
 
             case USER_NOT_FOUND:
                 Toast.makeText(context, R.string.error_user_not_found, Toast.LENGTH_SHORT).show();
-                return true;
+                break;
 
             case REQ_TOKEN_EXPIRED:
                 Toast.makeText(context, R.string.error_request_token, Toast.LENGTH_SHORT).show();
@@ -46,7 +45,7 @@ public abstract class ErrorHandler {
 
             case RESOURCE_NOT_FOUND:
                 Toast.makeText(context, R.string.error_not_found, Toast.LENGTH_SHORT).show();
-                return true;
+                break;
 
             case CANT_SEND_DM:
                 Toast.makeText(context, R.string.error_send_dm_to_user, Toast.LENGTH_SHORT).show();
@@ -54,7 +53,7 @@ public abstract class ErrorHandler {
 
             case NOT_AUTHORIZED:
                 Toast.makeText(context, R.string.error_not_authorized, Toast.LENGTH_SHORT).show();
-                return true;
+                break;
 
             case TWEET_TOO_LONG:
                 Toast.makeText(context, R.string.error_status_length, Toast.LENGTH_SHORT).show();
@@ -93,6 +92,5 @@ public abstract class ErrorHandler {
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                 break;
         }
-        return false;
     }
 }
