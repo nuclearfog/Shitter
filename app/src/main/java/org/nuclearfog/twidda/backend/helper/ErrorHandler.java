@@ -76,7 +76,7 @@ public abstract class ErrorHandler {
                 break;
 
             case NO_MEDIA_FOUND:
-                Toast.makeText(context, R.string.error_no_media_app, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
                 break;
 
             case NO_LINK_DEFINED:

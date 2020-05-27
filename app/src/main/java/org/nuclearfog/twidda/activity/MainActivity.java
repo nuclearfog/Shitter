@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private ViewPager pager;
     private View root;
     private long homeId;
+
     private int tabIndex = 0;
 
     static {

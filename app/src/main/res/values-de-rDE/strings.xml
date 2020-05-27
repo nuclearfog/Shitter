@@ -146,4 +146,5 @@
     <string name="settings_info_github">Github Seite:</string>
     <string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
     <string name="info_cant_add_video">Video konnte nicht hinzugefügt werden!</string>
+    <string name="error_file_not_found">Datei nicht gefunden!</string>
 </resources>

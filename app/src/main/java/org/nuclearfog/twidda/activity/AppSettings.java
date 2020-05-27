@@ -62,7 +62,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         BACKGROUND,
         FONTCOLOR,
         HIGHLIGHT,
-        POPUPCOLOR
+        POPUPCOLOR,
+        NONE
     }
 
     private GlobalSettings settings;
@@ -75,8 +76,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private LocationAdapter locationAdapter;
     private View root, colorButton1_edge;
 
-    private ColorMode mode;
-    private int color;
+    private ColorMode mode = ColorMode.NONE;
+    private int color = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {

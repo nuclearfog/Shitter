@@ -26,7 +26,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     private FragmentAdapter adapter;
     private ViewPager pager;
-    private int tabIndex;
+
+    private int tabIndex = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {

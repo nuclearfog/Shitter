@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.backend.items;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Direct message holder class
@@ -9,7 +10,7 @@ public class MessageHolder {
 
     private final String username;
     private final String message;
-    private final String mediaPath;
+    private final String[] mediaPath;
 
     /**
      * Direct message constructor
@@ -18,13 +19,13 @@ public class MessageHolder {
      * @param message   message text
      * @param mediaPath local media path
      */
-    public MessageHolder(String username, String message, String mediaPath) {
+    public MessageHolder(String username, String message, @Nullable String mediaPath) {
         if (username.startsWith("@"))
             this.username = username;
         else
             this.username = '@' + username;
         this.message = message;
-        this.mediaPath = mediaPath;
+        this.mediaPath = new String[]{mediaPath};
     }
 
     /**
@@ -47,7 +48,7 @@ public class MessageHolder {
      * get local path of media
      * @return media path
      */
-    public String getMediaPath() {
+    public String[] getMediaPath() {
         return mediaPath;
     }
 
@@ -56,7 +57,7 @@ public class MessageHolder {
      * @return if media is set
      */
     public boolean hasMedia() {
-        return mediaPath != null && !mediaPath.isEmpty();
+        return mediaPath[0] != null;
     }
 
     @NonNull

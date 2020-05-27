@@ -48,14 +48,13 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void[] v) {
         try {
             mTwitter.uploadStatus(tweet);
+            return true;
         } catch (EngineException twException) {
             this.twException = twException;
-            return false;
         } catch (Exception exception) {
             exception.printStackTrace();
-            return false;
         }
-        return true;
+        return false;
     }
 
 

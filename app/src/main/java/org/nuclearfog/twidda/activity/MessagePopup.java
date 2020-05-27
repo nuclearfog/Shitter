@@ -48,9 +48,10 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     private static final int REQ_PERM_READ = 4;
 
     private MessageUploader messageAsync;
-    private EditText receiver, text;
+    private EditText receiver, message;
     private Dialog loadingCircle;
-    private String mediaPath = "";
+    private @Nullable
+    String mediaPath;
 
 
     @Override
@@ -61,15 +62,15 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         View send = findViewById(R.id.dm_send);
         View media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
-        text = findViewById(R.id.dm_text);
+        message = findViewById(R.id.dm_text);
         loadingCircle = new Dialog(this, R.style.LoadingDialog);
         View load = View.inflate(this, R.layout.item_load, null);
         View cancelButton = load.findViewById(R.id.kill_button);
 
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_DM_PREFIX)) {
-            String addtion = param.getString(KEY_DM_PREFIX);
-            receiver.append(addtion);
+            String prefix = param.getString(KEY_DM_PREFIX);
+            receiver.append(prefix);
         }
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
@@ -89,7 +90,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
     @Override
     public void onBackPressed() {
-        if (text.getText().toString().isEmpty() && mediaPath.isEmpty()) {
+        if (receiver.getText().length() == 0 && message.getText().length() == 0 && mediaPath == null) {
             super.onBackPressed();
         } else {
             Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
@@ -142,8 +143,8 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         switch (v.getId()) {
             case R.id.dm_send:
                 String username = receiver.getText().toString();
-                String message = text.getText().toString();
-                if (!username.trim().isEmpty() && (!message.trim().isEmpty() || !mediaPath.isEmpty())) {
+                String message = this.message.getText().toString();
+                if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
                     MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
                     messageAsync = new MessageUploader(this, messageHolder);
                     messageAsync.execute();
@@ -153,7 +154,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
                 break;
 
             case R.id.dm_media:
-                if (mediaPath.trim().isEmpty())
+                if (mediaPath == null)
                     getMedia();
                 else {
                     Intent image = new Intent(this, MediaViewer.class);

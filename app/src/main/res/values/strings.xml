@@ -149,4 +149,5 @@
     <string name="error_rate_limit">Too many requests! Please wait 15 minutes.</string>
     <string name="info_cant_add_video">Can\'t add video!</string>
     <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>
+    <string name="error_file_not_found">File not found!</string>
 </resources>

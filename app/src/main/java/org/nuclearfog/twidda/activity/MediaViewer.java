@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
@@ -10,7 +9,6 @@ import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Display;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -68,7 +66,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private ZoomView zoomImage;
     private String[] link;
     private int type;
-    private int width;
+
     private int lastPos = 0;
 
 
@@ -99,10 +97,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                 imageWindow.setVisibility(VISIBLE);
                 imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
                 imageList.setAdapter(adapter);
-                Display d = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                d.getSize(size);
-                width = size.x;
                 break;
 
             case MEDIAVIEWER_ANGIF:
@@ -246,9 +240,12 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     private void changeImage(Bitmap image) {
-        float ratio = image.getWidth() / (float) width;
-        int destHeight = (int) (image.getHeight() / ratio);
-        image = Bitmap.createScaledBitmap(image, width, destHeight, false);
+        int width = zoomImage.getMeasuredWidth();
+        if (width > 0 && image.getWidth() > width) {
+            float ratio = image.getWidth() / (float) width;
+            int destHeight = (int) (image.getHeight() / ratio);
+            image = Bitmap.createScaledBitmap(image, width, destHeight, false);
+        }
         zoomImage.reset();
         zoomImage.setImageBitmap(image);
     }

@@ -62,7 +62,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         NONE,
         GIF,
         IMAGE,
-        VIDEO,
+        VIDEO
     }
 
     private static final String[] PERM_STORAGE = {READ_EXTERNAL_STORAGE};
@@ -83,10 +83,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private Dialog loadingCircle;
     private TextView imgCount;
     private EditText tweetText;
-    private String addition = "";
-    private long inReplyId = 0;
 
     private MediaType selectedFormat = MediaType.NONE;
+    private long inReplyId = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -112,7 +111,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         Bundle param = getIntent().getExtras();
         if (param != null) {
             inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, 0);
-            addition = param.getString(KEY_TWEETPOPUP_PREFIX, "") + " ";
+            if (param.containsKey(KEY_TWEETPOPUP_PREFIX)) {
+                String addition = param.getString(KEY_TWEETPOPUP_PREFIX) + " ";
+                tweetText.append(addition);
+            }
         }
 
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
@@ -120,7 +122,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         loadingCircle.setContentView(load);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getPopupColor());
-        tweetText.append(addition);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
@@ -363,7 +364,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      * show confirmation dialog when closing edited tweet
      */
     private void showClosingMsg() {
-        if (!addition.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
+        if (tweetText.getText().length() > 0 || !mediaPath.isEmpty()) {
             Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
             closeDialog.setMessage(R.string.confirm_cancel_tweet);
             closeDialog.setNegativeButton(R.string.confirm_no, null);

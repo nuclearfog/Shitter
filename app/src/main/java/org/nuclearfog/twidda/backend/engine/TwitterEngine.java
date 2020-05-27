@@ -733,9 +733,8 @@ public class TwitterEngine {
         try {
             long id = twitter.showUser(messageHolder.getUsername()).getId();
             if (messageHolder.hasMedia()) {
-                UploadedMedia media = twitter.uploadMedia(new File(messageHolder.getMediaPath()));
-                long mediaId = media.getMediaId();
-                twitter.sendDirectMessage(id, messageHolder.getMessage(), mediaId);
+                long[] mediaId = uploadImages(messageHolder.getMediaPath());
+                twitter.sendDirectMessage(id, messageHolder.getMessage(), mediaId[0]);
             } else {
                 twitter.sendDirectMessage(id, messageHolder.getMessage());
             }
