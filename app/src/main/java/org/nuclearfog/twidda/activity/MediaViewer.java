@@ -17,7 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,7 +73,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_media);
         RecyclerView imageList = findViewById(R.id.image_list);
@@ -236,7 +236,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public void setImage(@NonNull Bitmap image) {
+    public void setImage(Bitmap image) {
         if (adapter.isEmpty()) {
             changeImage(image);
             image_progress.setVisibility(View.INVISIBLE);

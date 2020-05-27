@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -64,7 +65,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private boolean notifyChange = false;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Bundle b = getArguments();
         Context context = inflater.getContext();
 

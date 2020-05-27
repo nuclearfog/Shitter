@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -53,7 +54,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_dm);
         View root = findViewById(R.id.dm_popup);
@@ -114,7 +115,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+    protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
         if (reqCode == REQ_PERM_READ && returnCode == RESULT_OK) {
             if (intent != null && intent.getData() != null) {

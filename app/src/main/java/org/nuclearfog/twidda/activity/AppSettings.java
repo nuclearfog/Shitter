@@ -21,6 +21,8 @@ import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -77,7 +79,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private int color;
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_settings);
         Button delButton = findViewById(R.id.delete_db);
@@ -194,7 +196,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
             Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
             dialog.setContentView(R.layout.popup_app_info);
@@ -342,14 +344,21 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-
+    /**
+     * set location information from twitter
+     *
+     * @param data locaion data
+     */
     public void setLocationData(List<TrendLocation> data) {
         locationAdapter.setData(data);
         int position = locationAdapter.getPosition(settings.getTrendLocation());
         locationSpinner.setSelection(position);
     }
 
-
+    /**
+     * called when an error occurs
+     * @param err exception from twitter
+     */
     public void onError(EngineException err) {
         ErrorHandler.handleFailure(this, err);
     }

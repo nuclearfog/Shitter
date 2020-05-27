@@ -58,7 +58,8 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                 case STORAGE:
                     for (String link : links) {
                         Bitmap image = BitmapFactory.decodeFile(link);
-                        publishProgress(image);
+                        if (image != null)
+                            publishProgress(image);
                     }
                     return true;
             }

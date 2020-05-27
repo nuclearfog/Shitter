@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
@@ -30,7 +29,7 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
     private boolean isEmpty;
 
 
-    public TrendListLoader(@NonNull TrendFragment fragment) {
+    public TrendListLoader(TrendFragment fragment) {
         ui = new WeakReference<>(fragment);
         db = new AppDatabase(fragment.getContext());
         mTwitter = TwitterEngine.getInstance(fragment.getContext());
@@ -71,7 +70,7 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
 
 
     @Override
-    protected void onPostExecute(@Nullable List<TwitterTrend> trends) {
+    protected void onPostExecute(List<TwitterTrend> trends) {
         if (ui.get() != null) {
             ui.get().setRefresh(false);
             if (trends != null) {

@@ -38,7 +38,6 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -76,10 +75,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private TweetLoader statusAsync;
     private GlobalSettings settings;
 
-    private View header, footer;
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
+    private View header, footer;
 
     @Nullable
     private Tweet tweet;
@@ -333,22 +332,26 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     }
 
 
+    /**
+     * load tweet into UI
+     *
+     * @param tweet Tweet information
+     */
     public void setTweet(Tweet tweet) {
         this.tweet = tweet;
         invalidateOptionsMenu();
 
-        TwitterUser author = tweet.getUser();
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
         int rtwDraw = tweet.retweeted() ? R.drawable.retweet_enabled : R.drawable.retweet;
         int favDraw = tweet.favored() ? R.drawable.favorite_enabled : R.drawable.favorite;
-        int verDraw = author.isVerified() ? R.drawable.verify : 0;
-        int locDraw = author.isLocked() ? R.drawable.lock : 0;
+        int verDraw = tweet.getUser().isVerified() ? R.drawable.verify : 0;
+        int locDraw = tweet.getUser().isLocked() ? R.drawable.lock : 0;
         rtwButton.setCompoundDrawablesWithIntrinsicBounds(rtwDraw, 0, 0, 0);
         favButton.setCompoundDrawablesWithIntrinsicBounds(favDraw, 0, 0, 0);
         usrName.setCompoundDrawablesWithIntrinsicBounds(verDraw, 0, 0, 0);
         scrName.setCompoundDrawablesWithIntrinsicBounds(locDraw, 0, 0, 0);
-        usrName.setText(author.getUsername());
-        scrName.setText(author.getScreenname());
+        usrName.setText(tweet.getUser().getUsername());
+        scrName.setText(tweet.getUser().getScreenname());
         tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
         favButton.setText(buttonNumber.format(tweet.getFavorCount()));
         rtwButton.setText(buttonNumber.format(tweet.getRetweetCount()));
@@ -390,8 +393,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                 break;
         }
         if (settings.getImageLoad()) {
-            String pbLink = author.getImageLink();
-            if (!author.hasDefaultProfileImage())
+            String pbLink = tweet.getUser().getImageLink();
+            if (!tweet.getUser().hasDefaultProfileImage())
                 pbLink += "_bigger";
             Picasso.get().load(pbLink).into(profile_img);
         }

@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activity.TweetDetail;
@@ -37,7 +36,7 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
     private final Action action;
 
 
-    public TweetLoader(@NonNull TweetDetail context, Action action) {
+    public TweetLoader(TweetDetail context, Action action) {
         mTwitter = TwitterEngine.getInstance(context);
         db = new AppDatabase(context);
         ui = new WeakReference<>(context);
@@ -110,7 +109,7 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
 
 
     @Override
-    protected void onPostExecute(@Nullable Tweet tweet) {
+    protected void onPostExecute(Tweet tweet) {
         if (ui.get() != null) {
             if (tweet != null) {
                 ui.get().onAction(tweet, action);

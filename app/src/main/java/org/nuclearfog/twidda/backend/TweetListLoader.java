@@ -166,7 +166,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
 
     @Override
-    protected void onPostExecute(@Nullable List<Tweet> tweets) {
+    protected void onPostExecute(List<Tweet> tweets) {
         if (ui.get() != null) {
             ui.get().setRefresh(false);
             if (tweets != null) {

@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.activity;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -28,7 +29,7 @@ public class UserDetail extends AppCompatActivity {
     private int mode;
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_userlist);
         View root = findViewById(R.id.user_view);

@@ -72,7 +72,7 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
     }
 
     @Override
-    protected void onPostExecute(@Nullable List<TwitterList> result) {
+    protected void onPostExecute(List<TwitterList> result) {
         if (ui.get() != null) {
             ui.get().setRefresh(false);
             if (result != null) {

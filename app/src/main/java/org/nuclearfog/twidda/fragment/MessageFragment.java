@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,7 +49,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     private MessageAdapter adapter;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);
 

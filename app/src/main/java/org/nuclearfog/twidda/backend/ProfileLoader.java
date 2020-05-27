@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activity.UserProfile;
@@ -35,7 +34,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
     private final Action action;
 
 
-    public ProfileLoader(@NonNull UserProfile context, Action action) {
+    public ProfileLoader(UserProfile context, Action action) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         db = new AppDatabase(context);
@@ -118,7 +117,7 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
 
 
     @Override
-    protected void onPostExecute(@Nullable UserProperties properties) {
+    protected void onPostExecute(UserProperties properties) {
         if (ui.get() != null) {
             if (properties != null) {
                 ui.get().setConnection(properties);

@@ -94,7 +94,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private int tabIndex = 0;
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
         Toolbar tool = findViewById(R.id.profile_toolbar);
@@ -188,7 +188,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onActivityResult(int reqCode, int returnCode, Intent i) {
+    public void onActivityResult(int reqCode, int returnCode, @Nullable Intent i) {
         if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED) {
             profileAsync = null;
             adapter.clearData();
@@ -471,7 +471,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      *
      * @param user User data
      */
-    public void setUser(final TwitterUser user) {
+    public void setUser(TwitterUser user) {
         this.user = user;
         NumberFormat formatter = NumberFormat.getIntegerInstance();
         Spanned bio = Tagger.makeTextWithLinks(user.getBio(), settings.getHighlightColor(), this);

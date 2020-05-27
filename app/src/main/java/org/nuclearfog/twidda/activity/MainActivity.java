@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_main);
         Toolbar toolbar = findViewById(R.id.profile_toolbar);
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+    protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         switch (reqCode) {
             case LOGIN:
                 if (returnCode == RESULT_CANCELED)
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_profile:
                 Intent user = new Intent(this, UserProfile.class);

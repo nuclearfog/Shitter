@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -64,7 +65,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private String profileLink, bannerLink;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_editprofile);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
@@ -151,7 +152,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
             if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
                 String username = name.getText().toString();
@@ -176,7 +177,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+    protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
         if (returnCode == RESULT_OK && (reqCode == REQ_PROFILE_IMG || reqCode == REQ_PROFILE_BANNER)) {
             if (intent != null && intent.getData() != null) {

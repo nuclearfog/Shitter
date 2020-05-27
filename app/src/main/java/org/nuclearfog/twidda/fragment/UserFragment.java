@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,7 +55,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     private int mode;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup parent, Bundle param) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Bundle b = getArguments();
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);

@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activity.TweetPopup;
@@ -30,7 +29,7 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
      * @param context Activity context
      * @param tweet   tweet information
      */
-    public TweetUploader(@NonNull TweetPopup context, TweetHolder tweet) {
+    public TweetUploader(TweetPopup context, TweetHolder tweet) {
         ui = new WeakReference<>(context);
         mTwitter = TwitterEngine.getInstance(context);
         this.tweet = tweet;

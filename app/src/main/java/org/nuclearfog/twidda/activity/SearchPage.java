@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -39,7 +40,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     private int tabIndex = 0;
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_search);
         Toolbar tool = findViewById(R.id.search_toolbar);
@@ -112,7 +113,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetPopup.class);
             if (search.startsWith("#"))

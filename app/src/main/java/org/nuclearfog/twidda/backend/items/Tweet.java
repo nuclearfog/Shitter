@@ -302,7 +302,7 @@ public class Tweet {
     /**
      * check tweet media type
      *
-     * @return media type or NONE if there isnt any media
+     * @return media type or NONE if there isn't any media
      */
     public MediaType getMediaType() {
         return mediaType;

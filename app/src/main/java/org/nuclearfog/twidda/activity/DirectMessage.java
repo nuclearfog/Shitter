@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -21,7 +23,7 @@ import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.MESSAGE_
 public class DirectMessage extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_dm);
         Toolbar tool = findViewById(R.id.dm_toolbar);
@@ -50,7 +52,7 @@ public class DirectMessage extends AppCompatActivity {
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.message) {
             Intent sendDm = new Intent(this, MessagePopup.class);
             startActivity(sendDm);

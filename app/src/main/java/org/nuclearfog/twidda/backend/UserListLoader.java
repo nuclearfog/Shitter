@@ -86,7 +86,7 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
 
     @Override
-    protected void onPostExecute(@Nullable List<TwitterUser> users) {
+    protected void onPostExecute(List<TwitterUser> users) {
         if (ui.get() != null) {
             ui.get().setRefresh(false);
             if (users != null) {

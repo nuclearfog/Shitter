@@ -89,7 +89,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private MediaType selectedFormat = MediaType.NONE;
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_tweet);
         View root = findViewById(R.id.tweet_popup);
@@ -149,7 +149,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, Intent intent) {
+    protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
         if (reqCode == REQ_PICK_MEDIA && returnCode == RESULT_OK) {
             if (intent != null && intent.getData() != null) {
