@@ -13,7 +13,7 @@
     <string name="profile_image">Profilbild</string>
     <string name="settings">Einstellungen</string>
     <string name="settings_image">Bilder laden</string>
-    <string name="delete_database">Datenbank Löschen</string>
+    <string name="settings_clear_data">App Daten löschen</string>
     <string name="twitter_search">Suche</string>
     <string name="userlist_retweet">Tweet retweetet von</string>
     <string name="userlist_favorite">Tweet favorisiert von</string>
@@ -48,7 +48,7 @@
     <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
     <string name="confirm_cancel_message">Nachricht verwerfen?</string>
     <string name="error_empty_tweet">Tweet leer!</string>
-    <string name="settings_logout">ausloggen</string>
+    <string name="settings_logout">Ausloggen</string>
     <string name="dm_answer">Antworten</string>
     <string name="delete_dm">löschen</string>
     <string name="confirm_yes">Ja</string>

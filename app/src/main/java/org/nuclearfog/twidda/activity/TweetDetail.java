@@ -86,7 +86,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private long tweetID;
 
     @Override
-    protected void onCreate(Bundle b) {
+    protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
         ViewPager pager = findViewById(R.id.tweet_pager);

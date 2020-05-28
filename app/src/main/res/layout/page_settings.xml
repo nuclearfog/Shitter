@@ -234,7 +234,7 @@
                         android:layout_weight="1"
                         android:background="@drawable/button"
                         android:singleLine="true"
-                        android:text="@string/delete_database" />
+                        android:text="@string/settings_clear_data" />
 
                     <Button
                         android:id="@+id/logout"

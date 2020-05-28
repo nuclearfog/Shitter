@@ -24,7 +24,7 @@
     <string name="profile">profile</string>
     <string name="register_link">get PIN</string>
     <string name="settings_image">load images</string>
-    <string name="delete_database">delete database</string>
+    <string name="settings_clear_data">Clear app data</string>
     <string name="twitter_search">search</string>
     <string name="confirm_delete_tweet">delete tweet?</string>
     <string name="error_enter_pin">Enter PIN!</string>
@@ -55,7 +55,7 @@
     <string name="error_dm">enter username or message!</string>
     <string name="confirm_cancel_message">cancel message?</string>
     <string name="error_empty_tweet">empty tweet!</string>
-    <string name="settings_logout">log out!</string>
+    <string name="settings_logout">log out</string>
     <string name="dm_answer">answer</string>
     <string name="delete_dm">delete</string>
     <string name="confirm_yes">Yes</string>

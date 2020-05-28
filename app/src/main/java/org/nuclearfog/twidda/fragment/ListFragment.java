@@ -37,7 +37,7 @@ import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_NAME;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRIBER;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRBR;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
@@ -134,7 +134,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                 case SUBSCRIBER:
                     Intent following = new Intent(getContext(), UserDetail.class);
                     following.putExtra(KEY_USERDETAIL_ID, listItem.getId());
-                    following.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRIBER);
+                    following.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRBR);
                     startActivity(following);
                     break;
 

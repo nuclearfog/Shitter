@@ -50,8 +50,8 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     private MessageUploader messageAsync;
     private EditText receiver, message;
     private Dialog loadingCircle;
-    private @Nullable
-    String mediaPath;
+    @Nullable
+    private String mediaPath;
 
 
     @Override
