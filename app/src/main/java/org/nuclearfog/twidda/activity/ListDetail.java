@@ -26,6 +26,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private ViewPager pager;
+    private Toolbar toolbar;
 
     private int tabIndex = 0;
 
@@ -34,7 +35,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         super.onCreate(b);
         setContentView(R.layout.page_listdetail);
         View root = findViewById(R.id.listdetail_root);
-        Toolbar toolbar = findViewById(R.id.listdetail_toolbar);
+        toolbar = findViewById(R.id.listdetail_toolbar);
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
 
@@ -45,7 +46,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-        setSupportActionBar(toolbar);
         tablayout.addOnTabSelectedListener(this);
     }
 
@@ -68,9 +68,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                 tlTab.setIcon(R.drawable.list);
                 trTab.setIcon(R.drawable.user);
             }
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(name);
-            }
+            toolbar.setTitle(name);
+            setSupportActionBar(toolbar);
         }
     }
 

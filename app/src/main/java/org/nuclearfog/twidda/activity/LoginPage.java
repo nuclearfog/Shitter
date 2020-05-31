@@ -31,7 +31,6 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 public class LoginPage extends AppCompatActivity implements OnClickListener {
 
-    private GlobalSettings settings;
     private Registration registerAsync;
     private Button btnLink, btnVeri;
     private EditText pin;
@@ -48,10 +47,8 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         root = findViewById(R.id.login_root);
         pin = findViewById(R.id.pin);
 
-        settings = GlobalSettings.getInstance(this);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         btnLink.setOnClickListener(this);
         btnVeri.setOnClickListener(this);
@@ -61,6 +58,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     @Override
     protected void onStart() {
         super.onStart();
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         btnLink.setTypeface(settings.getFontFace());
         btnVeri.setTypeface(settings.getFontFace());
         pin.setTypeface(settings.getFontFace());

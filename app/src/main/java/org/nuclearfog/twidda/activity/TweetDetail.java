@@ -108,9 +108,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
         mediaButton = findViewById(R.id.tweet_media_attach);
 
+        tool.setTitle("");
         setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);

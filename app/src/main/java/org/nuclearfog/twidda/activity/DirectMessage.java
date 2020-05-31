@@ -28,9 +28,8 @@ public class DirectMessage extends AppCompatActivity {
         View root = findViewById(R.id.dm_layout);
         ViewPager pager = findViewById(R.id.dm_pager);
 
+        tool.setTitle(R.string.directmessage);
         setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.directmessage);
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         adapter.setupMessagePage();

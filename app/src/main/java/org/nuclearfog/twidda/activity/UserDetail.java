@@ -24,21 +24,22 @@ public class UserDetail extends AppCompatActivity {
     public static final int USERLIST_RETWEETS = 3;
     public static final int USERLIST_SUBSCRBR = 5;
 
+    private GlobalSettings settings;
     private FragmentAdapter adapter;
+    private Toolbar toolbar;
     private ViewPager pager;
+    private View root;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_userlist);
-        View root = findViewById(R.id.user_view);
-        Toolbar toolbar = findViewById(R.id.user_toolbar);
+        root = findViewById(R.id.user_view);
+        toolbar = findViewById(R.id.user_toolbar);
         pager = findViewById(R.id.user_pager);
-        setSupportActionBar(toolbar);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
-        FontTool.setViewFontAndColor(settings, root);
     }
 
 
@@ -49,32 +50,31 @@ public class UserDetail extends AppCompatActivity {
         if (adapter == null && param != null && param.containsKey(KEY_USERDETAIL_MODE) && param.containsKey(KEY_USERDETAIL_ID)) {
             adapter = new FragmentAdapter(getSupportFragmentManager());
             long id = param.getLong(KEY_USERDETAIL_ID);
-            int titleStr = 0;
 
             switch (param.getInt(KEY_USERDETAIL_MODE)) {
                 case USERLIST_FRIENDS:
-                    titleStr = R.string.userlist_following;
+                    toolbar.setTitle(R.string.userlist_following);
                     adapter.setupFriendsPage(id);
                     break;
 
                 case USERLIST_FOLLOWER:
-                    titleStr = R.string.userlist_follower;
+                    toolbar.setTitle(R.string.userlist_follower);
                     adapter.setupFollowerPage(id);
                     break;
 
                 case USERLIST_RETWEETS:
-                    titleStr = R.string.userlist_retweet;
+                    toolbar.setTitle(R.string.userlist_retweet);
                     adapter.setupRetweeterPage(id);
                     break;
 
                 case USERLIST_SUBSCRBR:
-                    titleStr = R.string.user_list_subscr;
+                    toolbar.setTitle(R.string.user_list_subscr);
                     adapter.setupSubscriberPage(id);
                     break;
             }
             pager.setAdapter(adapter);
-            if (getSupportActionBar() != null)
-                getSupportActionBar().setTitle(titleStr);
+            setSupportActionBar(toolbar);
+            FontTool.setViewFontAndColor(settings, root);
         }
     }
 }

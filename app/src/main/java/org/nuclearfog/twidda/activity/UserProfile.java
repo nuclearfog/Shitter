@@ -56,11 +56,11 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
+import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
-import static org.nuclearfog.twidda.activity.UserList.KEY_USERLIST_ID;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 
 
@@ -114,9 +114,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tweetTabTxt = new TextView(this);
         favorTabTxt = new TextView(this);
 
+        tool.setTitle("");
         setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
@@ -339,7 +338,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.profile_lists:
-                    Intent listPage = new Intent(this, UserList.class);
+                    Intent listPage = new Intent(this, TwitterList.class);
                     listPage.putExtra(KEY_USERLIST_ID, userId);
                     startActivity(listPage);
                     break;

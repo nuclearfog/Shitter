@@ -81,9 +81,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         View load = View.inflate(this, R.layout.item_load, null);
         View cancelButton = load.findViewById(R.id.kill_button);
 
+        toolbar.setTitle(R.string.page_profile_edior);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.page_profile_edior);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);

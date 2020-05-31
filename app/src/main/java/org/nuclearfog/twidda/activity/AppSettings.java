@@ -104,9 +104,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         root = findViewById(R.id.settings_layout);
         load_picker = new NumberPicker(this);
 
+        toolbar.setTitle(R.string.settings);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.settings);
 
         settings = GlobalSettings.getInstance(this);
         if (!settings.getLogin())

@@ -14,7 +14,7 @@ import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 
-public class UserList extends AppCompatActivity {
+public class TwitterList extends AppCompatActivity {
 
     public static final String KEY_USERLIST_ID = "userlist-owner";
     private FragmentAdapter adapter;
@@ -28,9 +28,8 @@ public class UserList extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.list_toolbar);
         pager = findViewById(R.id.list_pager);
 
+        toolbar.setTitle(R.string.list_appbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(R.string.list_appbar);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);

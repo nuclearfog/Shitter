@@ -46,9 +46,8 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         tabLayout = findViewById(R.id.search_tab);
         pager = findViewById(R.id.search_pager);
 
+        tool.setTitle("");
         setSupportActionBar(tool);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());

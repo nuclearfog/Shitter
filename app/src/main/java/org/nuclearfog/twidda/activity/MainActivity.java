@@ -59,16 +59,15 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         tablayout = findViewById(R.id.home_tab);
         root = findViewById(R.id.main_layout);
 
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.setupWithViewPager(pager);
-        tablayout.addOnTabSelectedListener(this);
         pager.setOffscreenPageLimit(3);
+
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        tablayout.addOnTabSelectedListener(this);
     }
 
 
