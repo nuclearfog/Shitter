@@ -3,7 +3,6 @@
     package="org.nuclearfog.twidda">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -28,14 +27,12 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:scheme="https"
-                    android:host="*twitter.com"
-                    android:pathPattern="\\/home" />
+                    android:host="*twitter.com" />
             </intent-filter>
 
         </activity>
@@ -43,23 +40,7 @@
         <activity
             android:name=".activity.SearchPage"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="*twitter.com"
-                    android:pathPattern="\\/search" />
-                <data
-                    android:scheme="https"
-                    android:host="*twitter.com"
-                    android:pathPattern="\\/hashtag\\/..*" />
-            </intent-filter>
-
-        </activity>
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".activity.UserProfile"
@@ -84,19 +65,7 @@
         <activity
             android:name=".activity.TweetDetail"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme">
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="https"
-                    android:host="*twitter.com"
-                    android:pathPattern="\\/..*\\/status\\/..*" />
-            </intent-filter>
-
-        </activity>
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".activity.UserDetail"
@@ -134,5 +103,4 @@
             android:theme="@style/AppTheme" />
 
     </application>
-
 </manifest>
