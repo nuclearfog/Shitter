@@ -17,8 +17,6 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.MESSAGE_PAGE;
-
 
 public class DirectMessage extends AppCompatActivity {
 
@@ -34,7 +32,8 @@ public class DirectMessage extends AppCompatActivity {
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(R.string.directmessage);
 
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), MESSAGE_PAGE, 0, "");
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        adapter.setupMessagePage();
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 

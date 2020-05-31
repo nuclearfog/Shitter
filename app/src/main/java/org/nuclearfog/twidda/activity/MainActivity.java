@@ -80,13 +80,13 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             startActivityForResult(loginIntent, LOGIN);
         } else if (adapter == null) {
             adapter = new FragmentAdapter(getSupportFragmentManager());
+            adapter.setupForHomePage();
             pager.setAdapter(adapter);
             homeId = settings.getUserId();
 
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
             Tab mnTab = tablayout.getTabAt(2);
-
             if (tlTab != null && trTab != null && mnTab != null) {
                 tlTab.setIcon(R.drawable.home);
                 trTab.setIcon(R.drawable.hash);

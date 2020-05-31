@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -19,69 +18,63 @@ public class UserDetail extends AppCompatActivity {
     public static final String KEY_USERDETAIL_MODE = "userlist_mode";
     public static final String KEY_USERDETAIL_ID = "userlist_owner_id";
 
-    public static final int NONE = 0;
+
     public static final int USERLIST_FRIENDS = 1;
     public static final int USERLIST_FOLLOWER = 2;
     public static final int USERLIST_RETWEETS = 3;
-    public static final int USERLIST_FAVORITS = 4;
     public static final int USERLIST_SUBSCRBR = 5;
+
+    private FragmentAdapter adapter;
+    private ViewPager pager;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_userlist);
         View root = findViewById(R.id.user_view);
-        ViewPager pager = findViewById(R.id.user_pager);
         Toolbar toolbar = findViewById(R.id.user_toolbar);
+        pager = findViewById(R.id.user_pager);
         setSupportActionBar(toolbar);
-
-        long id = 0;
-        int mode = NONE;
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            mode = param.getInt(KEY_USERDETAIL_MODE);
-            id = param.getLong(KEY_USERDETAIL_ID);
-        }
-
-        switch (mode) {
-            case USERLIST_FRIENDS:
-                FragmentAdapter adapter;
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.userlist_following);
-                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FRIENDS_PAGE, id, "");
-                pager.setAdapter(adapter);
-                break;
-
-            case USERLIST_FOLLOWER:
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.userlist_follower);
-                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FOLLOWER_PAGE, id, "");
-                pager.setAdapter(adapter);
-                break;
-
-            case USERLIST_RETWEETS:
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.userlist_retweet);
-                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.RETWEETER_PAGE, id, "");
-                pager.setAdapter(adapter);
-                break;
-
-            case USERLIST_FAVORITS:
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.userlist_favorite);
-                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.FAVOR_PAGE, id, "");
-                pager.setAdapter(adapter);
-                break;
-
-            case USERLIST_SUBSCRBR:
-                if (getSupportActionBar() != null)
-                    getSupportActionBar().setTitle(R.string.user_list_subscr);
-                adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SUBSCRIBER_PAGE, id, "");
-                pager.setAdapter(adapter);
-        }
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         FontTool.setViewFontAndColor(settings, root);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Bundle param = getIntent().getExtras();
+        if (adapter == null && param != null && param.containsKey(KEY_USERDETAIL_MODE) && param.containsKey(KEY_USERDETAIL_ID)) {
+            adapter = new FragmentAdapter(getSupportFragmentManager());
+            long id = param.getLong(KEY_USERDETAIL_ID);
+            int titleStr = 0;
+
+            switch (param.getInt(KEY_USERDETAIL_MODE)) {
+                case USERLIST_FRIENDS:
+                    titleStr = R.string.userlist_following;
+                    adapter.setupFriendsPage(id);
+                    break;
+
+                case USERLIST_FOLLOWER:
+                    titleStr = R.string.userlist_follower;
+                    adapter.setupFollowerPage(id);
+                    break;
+
+                case USERLIST_RETWEETS:
+                    titleStr = R.string.userlist_retweet;
+                    adapter.setupRetweeterPage(id);
+                    break;
+
+                case USERLIST_SUBSCRBR:
+                    titleStr = R.string.user_list_subscr;
+                    adapter.setupSubscriberPage(id);
+                    break;
+            }
+            pager.setAdapter(adapter);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setTitle(titleStr);
+        }
     }
 }

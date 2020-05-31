@@ -18,17 +18,17 @@ public class Registration extends AsyncTask<String, Void, String> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<LoginPage> ui;
+    private WeakReference<LoginPage> callback;
     private TwitterEngine mTwitter;
 
     /**
      * Login to twitter with PIN
      *
-     * @param context  Activity Context
+     * @param callback  Activity Context
      */
-    public Registration(LoginPage context) {
-        ui = new WeakReference<>(context);
-        mTwitter = TwitterEngine.getInstance(context);
+    public Registration(LoginPage callback) {
+        this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
     }
 
 
@@ -50,15 +50,15 @@ public class Registration extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String redirectionURL) {
-        if (ui.get() != null) {
+        if (callback.get() != null) {
             if (redirectionURL != null) {
                 if (!redirectionURL.isEmpty()) {
-                    ui.get().connect(redirectionURL);
+                    callback.get().connect(redirectionURL);
                 } else {
-                    ui.get().onSuccess();
+                    callback.get().onSuccess();
                 }
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

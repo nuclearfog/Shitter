@@ -20,27 +20,27 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<MessagePopup> ui;
+    private WeakReference<MessagePopup> callback;
     private TwitterEngine mTwitter;
     private MessageHolder message;
 
     /**
      * send direct message
      *
-     * @param context Activity context
+     * @param callback Activity context
      * @param message message to send
      */
-    public MessageUploader(@NonNull MessagePopup context, MessageHolder message) {
-        mTwitter = TwitterEngine.getInstance(context);
-        ui = new WeakReference<>(context);
+    public MessageUploader(@NonNull MessagePopup callback, MessageHolder message) {
+        mTwitter = TwitterEngine.getInstance(callback);
+        this.callback = new WeakReference<>(callback);
         this.message = message;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null) {
-            ui.get().setLoading(true);
+        if (callback.get() != null) {
+            callback.get().setLoading(true);
         }
     }
 
@@ -61,12 +61,12 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() != null) {
-            ui.get().setLoading(false);
+        if (callback.get() != null) {
+            callback.get().setLoading(false);
             if (success) {
-                ui.get().onSuccess();
+                callback.get().onSuccess();
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

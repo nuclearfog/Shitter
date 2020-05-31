@@ -31,15 +31,15 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
     @Nullable
     private EngineException twException;
     private TwitterEngine mTwitter;
-    private WeakReference<TweetDetail> ui;
+    private WeakReference<TweetDetail> callback;
     private AppDatabase db;
     private final Action action;
 
 
-    public TweetLoader(TweetDetail context, Action action) {
-        mTwitter = TwitterEngine.getInstance(context);
-        db = new AppDatabase(context);
-        ui = new WeakReference<>(context);
+    public TweetLoader(TweetDetail callback, Action action) {
+        mTwitter = TwitterEngine.getInstance(callback);
+        db = new AppDatabase(callback);
+        this.callback = new WeakReference<>(callback);
         this.action = action;
     }
 
@@ -102,20 +102,20 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
     @Override
     protected void onProgressUpdate(Tweet[] tweets) {
         Tweet tweet = tweets[0];
-        if (ui.get() != null && tweet != null) {
-            ui.get().setTweet(tweet);
+        if (callback.get() != null && tweet != null) {
+            callback.get().setTweet(tweet);
         }
     }
 
 
     @Override
     protected void onPostExecute(Tweet tweet) {
-        if (ui.get() != null) {
+        if (callback.get() != null) {
             if (tweet != null) {
-                ui.get().onAction(tweet, action);
+                callback.get().onAction(tweet, action);
             }
             if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

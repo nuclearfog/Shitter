@@ -28,16 +28,16 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
 
     @Nullable
     private EngineException twException;
-    private WeakReference<UserProfile> ui;
+    private WeakReference<UserProfile> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private final Action action;
 
 
-    public ProfileLoader(UserProfile context, Action action) {
-        ui = new WeakReference<>(context);
-        mTwitter = TwitterEngine.getInstance(context);
-        db = new AppDatabase(context);
+    public ProfileLoader(UserProfile callback, Action action) {
+        this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
+        db = new AppDatabase(callback);
         this.action = action;
     }
 
@@ -110,20 +110,20 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
     @Override
     protected void onProgressUpdate(TwitterUser[] users) {
         final TwitterUser user = users[0];
-        if (ui.get() != null && user != null) {
-            ui.get().setUser(user);
+        if (callback.get() != null && user != null) {
+            callback.get().setUser(user);
         }
     }
 
 
     @Override
     protected void onPostExecute(UserProperties properties) {
-        if (ui.get() != null) {
+        if (callback.get() != null) {
             if (properties != null) {
-                ui.get().setConnection(properties);
-                ui.get().onAction(properties, action);
+                callback.get().setConnection(properties);
+                callback.get().onAction(properties, action);
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

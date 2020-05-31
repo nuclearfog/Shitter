@@ -36,8 +36,6 @@ import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
-import static org.nuclearfog.twidda.backend.ImageLoader.Action.ONLINE;
-import static org.nuclearfog.twidda.backend.ImageLoader.Action.STORAGE;
 
 
 public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener {
@@ -49,9 +47,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final int MEDIAVIEWER_IMAGE = 0;
     public static final int MEDIAVIEWER_VIDEO = 1;
     public static final int MEDIAVIEWER_ANGIF = 2;
-    public static final int MEDIAVIEWER_IMG_STORAGE = 3;
-    public static final int MEDIAVIEWER_VIDEO_STORAGE = 4;
-    public static final int MEDIAVIEWER_ANGIF_STORAGE = 5;
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
@@ -61,90 +56,66 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private ProgressBar video_progress;
     private ProgressBar image_progress;
     private MediaController videoController;
+    private View imageWindow, videoWindow;
+    private RecyclerView imageList;
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
-    private String[] link;
     private int type;
 
-    private int lastPos = 0;
+    private int videoPos = 0;
 
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_media);
-        RecyclerView imageList = findViewById(R.id.image_list);
-        View imageWindow = findViewById(R.id.image_window);
-        View videoWindow = findViewById(R.id.video_window);
+        imageList = findViewById(R.id.image_list);
+        imageWindow = findViewById(R.id.image_window);
+        videoWindow = findViewById(R.id.video_window);
         image_progress = findViewById(R.id.image_load);
         video_progress = findViewById(R.id.video_load);
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         videoController = new MediaController(this);
         adapter = new ImageAdapter(this);
-
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_MEDIA_LINK) && param.containsKey(KEY_MEDIA_TYPE)) {
-            link = param.getStringArray(KEY_MEDIA_LINK);
-            type = param.getInt(KEY_MEDIA_TYPE);
-        }
-
-        switch (type) {
-            case MEDIAVIEWER_IMAGE:
-            case MEDIAVIEWER_IMG_STORAGE:
-            case MEDIAVIEWER_ANGIF_STORAGE:
-                imageWindow.setVisibility(VISIBLE);
-                imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                imageList.setAdapter(adapter);
-                break;
-
-            case MEDIAVIEWER_ANGIF:
-                videoWindow.setVisibility(VISIBLE);
-                Uri video = Uri.parse(link[0]);
-                videoView.setZOrderOnTop(true);
-                videoView.setOnPreparedListener(this);
-                videoView.setVideoURI(video);
-                break;
-
-            case MEDIAVIEWER_VIDEO:
-            case MEDIAVIEWER_VIDEO_STORAGE:
-                videoWindow.setVisibility(VISIBLE);
-                video = Uri.parse(link[0]);
-                videoView.setZOrderOnTop(true);
-                videoView.setMediaController(videoController);
-                videoView.setOnPreparedListener(this);
-                videoView.setVideoURI(video);
-                break;
-        }
+        videoView.setZOrderOnTop(true);
+        videoView.setOnPreparedListener(this);
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        switch (type) {
-            case MEDIAVIEWER_IMAGE:
-                if (imageAsync == null) {
-                    imageAsync = new ImageLoader(this, ONLINE);
-                    imageAsync.execute(link);
+        if (imageWindow.getVisibility() != VISIBLE && videoWindow.getVisibility() != VISIBLE) {
+            Bundle param = getIntent().getExtras();
+            if (param != null && param.containsKey(KEY_MEDIA_LINK) && param.containsKey(KEY_MEDIA_TYPE)) {
+                String[] link = param.getStringArray(KEY_MEDIA_LINK);
+                type = param.getInt(KEY_MEDIA_TYPE);
+
+                if (link != null && link.length > 0) {
+                    switch (type) {
+                        case MEDIAVIEWER_IMAGE:
+                            imageWindow.setVisibility(VISIBLE);
+                            imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                            imageList.setAdapter(adapter);
+                            if (imageAsync == null) {
+                                imageAsync = new ImageLoader(this);
+                                imageAsync.execute(link);
+                            }
+                            break;
+
+                        case MEDIAVIEWER_VIDEO:
+                            videoView.setMediaController(videoController);
+                        case MEDIAVIEWER_ANGIF:
+                            videoWindow.setVisibility(VISIBLE);
+                            Uri video = Uri.parse(link[0]);
+                            videoView.setVideoURI(video);
+                            videoView.start();
+                            break;
+                    }
                 }
-
-                break;
-
-            case MEDIAVIEWER_ANGIF_STORAGE:
-            case MEDIAVIEWER_IMG_STORAGE:
-                if (imageAsync == null) {
-                    imageAsync = new ImageLoader(this, STORAGE);
-                    imageAsync.execute(link);
-                }
-                break;
-
-            case MEDIAVIEWER_VIDEO:
-            case MEDIAVIEWER_ANGIF:
-            case MEDIAVIEWER_VIDEO_STORAGE:
-                videoView.start();
-                break;
+            }
         }
     }
 
@@ -152,8 +123,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     protected void onStop() {
         super.onStop();
-        if (type == MEDIAVIEWER_VIDEO || type == MEDIAVIEWER_VIDEO_STORAGE) {
-            lastPos = videoView.getCurrentPosition();
+        if (type == MEDIAVIEWER_VIDEO) {
+            videoPos = videoView.getCurrentPosition();
             videoView.pause();
         }
     }
@@ -176,36 +147,30 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     public void onImageTouch(Bitmap image) {
         boolean accessGranted = true;
-        if (type == MEDIAVIEWER_IMAGE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
-                if (check == PERMISSION_DENIED) {
-                    requestPermissions(REQ_WRITE_SD, REQCODE_SD);
-                    accessGranted = false;
-                }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
+            if (check == PERMISSION_DENIED) {
+                requestPermissions(REQ_WRITE_SD, REQCODE_SD);
+                accessGranted = false;
             }
-            if (accessGranted) {
-                storeImage(image);
-            }
+        }
+        if (accessGranted) {
+            storeImage(image);
         }
     }
 
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        switch (type) {
-            case MEDIAVIEWER_ANGIF:
-                mp.setLooping(true);
-                mp.start();
-                break;
-
-            case MEDIAVIEWER_VIDEO:
-            case MEDIAVIEWER_VIDEO_STORAGE:
-                videoController.show(0);
-                mp.seekTo(lastPos);
-                mp.start();
-                break;
+        if (type == MEDIAVIEWER_ANGIF) {
+            mp.setLooping(true);
+            mp.start();
+        } else {
+            videoController.show(0);
+            mp.seekTo(videoPos);
+            mp.start();
         }
+
         mp.setOnInfoListener(new OnInfoListener() {
             @Override
             public boolean onInfo(MediaPlayer mp, int what, int extra) {

@@ -37,7 +37,7 @@ import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 
 
 public class MessagePopup extends AppCompatActivity implements OnClickListener, OnDismissListener {
@@ -159,7 +159,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
                 else {
                     Intent image = new Intent(this, MediaViewer.class);
                     image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
-                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
+                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                     startActivity(image);
                 }
                 break;

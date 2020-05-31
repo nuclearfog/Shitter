@@ -20,13 +20,13 @@ public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation
 
     @Nullable
     private EngineException twException;
-    private WeakReference<AppSettings> ui;
+    private WeakReference<AppSettings> callback;
     private TwitterEngine mTwitter;
 
 
-    public LocationListLoader(AppSettings context) {
-        ui = new WeakReference<>(context);
-        mTwitter = TwitterEngine.getInstance(context);
+    public LocationListLoader(AppSettings callback) {
+        this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
     }
 
 
@@ -45,11 +45,11 @@ public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation
 
     @Override
     protected void onPostExecute(List<TrendLocation> locations) {
-        if (ui.get() != null) {
+        if (callback.get() != null) {
             if (locations != null && !locations.isEmpty()) {
-                ui.get().setLocationData(locations);
+                callback.get().setLocationData(locations);
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

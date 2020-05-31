@@ -31,22 +31,22 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<UserFragment> ui;
+    private WeakReference<UserFragment> callback;
     private TwitterEngine mTwitter;
     private final Mode action;
 
 
-    public UserListLoader(UserFragment fragment, Mode action) {
-        ui = new WeakReference<>(fragment);
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
+    public UserListLoader(UserFragment callback, Mode action) {
+        this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null)
-            ui.get().setRefresh(true);
+        if (callback.get() != null)
+            callback.get().setRefresh(true);
     }
 
 
@@ -87,12 +87,12 @@ public class UserListLoader extends AsyncTask<Object, Void, List<TwitterUser>> {
 
     @Override
     protected void onPostExecute(List<TwitterUser> users) {
-        if (ui.get() != null) {
-            ui.get().setRefresh(false);
+        if (callback.get() != null) {
+            callback.get().setRefresh(false);
             if (users != null) {
-                ui.get().setData(users);
+                callback.get().setData(users);
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

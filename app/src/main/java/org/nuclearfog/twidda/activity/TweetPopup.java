@@ -48,9 +48,8 @@ import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF_STORAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_STORAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO_STORAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 
 
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener, OnDismissListener {
@@ -260,18 +259,14 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                 image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
 
                 switch (selectedFormat) {
-                    case IMAGE:
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_STORAGE);
-                        startActivity(image);
-                        break;
-
                     case VIDEO:
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO_STORAGE);
+                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                         startActivity(image);
                         break;
 
                     case GIF:
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF_STORAGE);
+                    case IMAGE:
+                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                         startActivity(image);
                         break;
                 }

@@ -17,7 +17,6 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType.LISTCONTENT_PAGE;
 
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener {
 
@@ -25,6 +24,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public static final String KEY_LISTDETAIL_NAME = "list-name";
 
     private FragmentAdapter adapter;
+    private TabLayout tablayout;
     private ViewPager pager;
 
     private int tabIndex = 0;
@@ -35,37 +35,42 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         setContentView(R.layout.page_listdetail);
         View root = findViewById(R.id.listdetail_root);
         Toolbar toolbar = findViewById(R.id.listdetail_toolbar);
-        TabLayout tablayout = findViewById(R.id.listdetail_tab);
+        tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
-
-        long id = 0;
-        String name = "";
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            id = param.getLong(KEY_LISTDETAIL_ID);
-            name = param.getString(KEY_LISTDETAIL_NAME);
-        }
-
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(name);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
-        adapter = new FragmentAdapter(getSupportFragmentManager(), LISTCONTENT_PAGE, id, "");
-        pager.setAdapter(adapter);
+
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
+        setSupportActionBar(toolbar);
         tablayout.addOnTabSelectedListener(this);
+    }
 
-        Tab tlTab = tablayout.getTabAt(0);
-        Tab trTab = tablayout.getTabAt(1);
 
-        if (tlTab != null && trTab != null) {
-            tlTab.setIcon(R.drawable.list);
-            trTab.setIcon(R.drawable.user);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Bundle param = getIntent().getExtras();
+
+        if (adapter == null && param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
+            long id = param.getLong(KEY_LISTDETAIL_ID);
+            String name = param.getString(KEY_LISTDETAIL_NAME, "");
+            adapter = new FragmentAdapter(getSupportFragmentManager());
+            adapter.setupListContentPage(id);
+            pager.setAdapter(adapter);
+
+            Tab tlTab = tablayout.getTabAt(0);
+            Tab trTab = tablayout.getTabAt(1);
+            if (tlTab != null && trTab != null) {
+                tlTab.setIcon(R.drawable.list);
+                trTab.setIcon(R.drawable.user);
+            }
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(name);
+            }
         }
     }
 

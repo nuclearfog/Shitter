@@ -36,8 +36,7 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     private Button btnLink, btnVeri;
     private EditText pin;
     private View root;
-    private @Nullable
-    String link;
+    private String link;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {

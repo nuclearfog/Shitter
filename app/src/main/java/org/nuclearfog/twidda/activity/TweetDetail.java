@@ -31,7 +31,6 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
@@ -42,7 +41,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -72,6 +70,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public static final String KEY_TWEET_NAME = "username";
     public static final Pattern linkPattern = Pattern.compile(".*/@?[\\w_]+/status/\\d{1,20}/?.*");
 
+    @Nullable
     private TweetLoader statusAsync;
     private GlobalSettings settings;
 
@@ -79,6 +78,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
     private View header, footer;
+    private ViewPager pager;
 
     @Nullable
     private Tweet tweet;
@@ -89,10 +89,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
-        ViewPager pager = findViewById(R.id.tweet_pager);
         Toolbar tool = findViewById(R.id.tweet_toolbar);
         View root = findViewById(R.id.tweet_layout);
         Button ansButton = findViewById(R.id.tweet_answer);
+        pager = findViewById(R.id.tweet_pager);
         header = findViewById(R.id.tweet_head);
         footer = findViewById(R.id.tweet_foot);
         rtwButton = findViewById(R.id.tweet_retweet);
@@ -108,27 +108,16 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
         mediaButton = findViewById(R.id.tweet_media_attach);
 
-        Bundle param = getIntent().getExtras();
-        Uri link = getIntent().getData();
-        settings = GlobalSettings.getInstance(this);
-        if (param != null && param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
-            tweetID = param.getLong(KEY_TWEET_ID);
-            username = param.getString(KEY_TWEET_NAME);
-        } else if (link != null) {
-            getTweet(link);
-        }
-
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.TWEET_PAGE, tweetID, username);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
         pager.setOffscreenPageLimit(1);
-        pager.setAdapter(adapter);
 
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
@@ -144,9 +133,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onStart() {
         super.onStart();
-        if (statusAsync == null) {
-            statusAsync = new TweetLoader(this, Action.LOAD);
-            statusAsync.execute(tweetID);
+        Bundle param = getIntent().getExtras();
+        if (statusAsync == null && param != null) {
+            if (param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
+                tweetID = param.getLong(KEY_TWEET_ID);
+                username = param.getString(KEY_TWEET_NAME);
+                FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+                adapter.setupTweetPage(tweetID, username);
+                pager.setAdapter(adapter);
+                statusAsync = new TweetLoader(this, Action.LOAD);
+                statusAsync.execute(tweetID);
+            }
         }
     }
 
@@ -452,31 +449,6 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             setResult(RETURN_TWEET_CHANGED);
             finish();
         } else if (tweet == null) {
-            finish();
-        }
-    }
-
-
-    private void getTweet(@NonNull Uri link) {
-        String path = link.getPath() == null ? "" : link.getPath();
-        Matcher linkMatch = linkPattern.matcher(path);
-
-        if (linkMatch.matches() && settings.getLogin()) {
-            if (path.startsWith("/@"))
-                path = path.substring(1);
-            else
-                path = '@' + path.substring(1);
-            int end = path.indexOf('/');
-            username = path.substring(0, end);
-            path = path.substring(end + 8);
-            end = path.indexOf('/');
-            if (end > 0)
-                path = path.substring(0, end);
-            tweetID = Long.parseLong(path);
-        } else {
-            Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
             finish();
         }
     }

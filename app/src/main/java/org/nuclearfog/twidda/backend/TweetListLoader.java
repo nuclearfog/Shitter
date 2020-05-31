@@ -36,26 +36,26 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<TweetFragment> ui;
+    private WeakReference<TweetFragment> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private final Action action;
     private long sinceId;
 
 
-    public TweetListLoader(TweetFragment fragment, Action action) {
-        ui = new WeakReference<>(fragment);
-        db = new AppDatabase(fragment.getContext());
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        sinceId = fragment.getTopId();
+    public TweetListLoader(TweetFragment callback, Action action) {
+        this.callback = new WeakReference<>(callback);
+        db = new AppDatabase(callback.getContext());
+        mTwitter = TwitterEngine.getInstance(callback.getContext());
+        sinceId = callback.getTopId();
         this.action = action;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null) {
-            ui.get().setRefresh(true);
+        if (callback.get() != null) {
+            callback.get().setRefresh(true);
         }
     }
 
@@ -167,15 +167,15 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
     @Override
     protected void onPostExecute(List<Tweet> tweets) {
-        if (ui.get() != null) {
-            ui.get().setRefresh(false);
+        if (callback.get() != null) {
+            callback.get().setRefresh(false);
             if (tweets != null) {
                 if (action == Action.USR_FAVORS)
-                    ui.get().add(tweets);
+                    callback.get().add(tweets);
                 else
-                    ui.get().addTop(tweets);
+                    callback.get().addTop(tweets);
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

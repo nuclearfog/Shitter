@@ -22,29 +22,29 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<ProfileEditor> ui;
+    private WeakReference<ProfileEditor> callback;
     private UserHolder userHolder;
     private TwitterEngine mTwitter;
     private AppDatabase db;
 
 
-    public ProfileUpdater(ProfileEditor context) {
-        ui = new WeakReference<>(context);
-        mTwitter = TwitterEngine.getInstance(context);
-        db = new AppDatabase(ui.get());
+    public ProfileUpdater(ProfileEditor callback) {
+        this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
+        db = new AppDatabase(callback);
     }
 
 
-    public ProfileUpdater(ProfileEditor context, UserHolder userHolder) {
-        this(context);
+    public ProfileUpdater(ProfileEditor callback, UserHolder userHolder) {
+        this(callback);
         this.userHolder = userHolder;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null) {
-            ui.get().setLoading(true);
+        if (callback.get() != null) {
+            callback.get().setLoading(true);
         }
     }
 
@@ -69,14 +69,14 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
     @Override
     protected void onPostExecute(@Nullable TwitterUser user) {
-        if (ui.get() != null) {
-            ui.get().setLoading(false);
+        if (callback.get() != null) {
+            callback.get().setLoading(false);
             if (twException != null) {
-                ui.get().setError(twException);
+                callback.get().setError(twException);
             } else if (user != null) {
-                ui.get().setUser(user);
+                callback.get().setUser(user);
             } else if (userHolder != null) {
-                ui.get().setSuccess();
+                callback.get().setSuccess();
             }
         }
     }

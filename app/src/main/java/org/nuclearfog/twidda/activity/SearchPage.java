@@ -1,12 +1,10 @@
 package org.nuclearfog.twidda.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,10 +19,8 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 
 /**
@@ -35,7 +31,9 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     public static final String KEY_SEARCH_QUERY = "search_query";
 
     private FragmentAdapter adapter;
+    private TabLayout tabLayout;
     private ViewPager pager;
+
     private String search = "";
     private int tabIndex = 0;
 
@@ -43,37 +41,39 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_search);
-        Toolbar tool = findViewById(R.id.search_toolbar);
-        TabLayout tablayout = findViewById(R.id.search_tab);
         View root = findViewById(R.id.search_layout);
+        Toolbar tool = findViewById(R.id.search_toolbar);
+        tabLayout = findViewById(R.id.search_tab);
         pager = findViewById(R.id.search_pager);
 
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Bundle param = getIntent().getExtras();
-        Uri link = getIntent().getData();
-        if (param != null && param.containsKey(KEY_SEARCH_QUERY)) {
-            search = param.getString(KEY_SEARCH_QUERY);
-        } else if (link != null) {
-            getSearchString(link);
-        }
-
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
-        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-        tablayout.setupWithViewPager(pager);
-        tablayout.addOnTabSelectedListener(this);
+        tabLayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
+        tabLayout.setupWithViewPager(pager);
+        tabLayout.addOnTabSelectedListener(this);
+    }
 
-        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.SEARCH_TAB, 0, search);
-        pager.setAdapter(adapter);
 
-        Tab twtSearch = tablayout.getTabAt(0);
-        Tab usrSearch = tablayout.getTabAt(1);
-        if (twtSearch != null && usrSearch != null) {
-            twtSearch.setIcon(R.drawable.search);
-            usrSearch.setIcon(R.drawable.user);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Bundle param = getIntent().getExtras();
+        if (adapter == null && param != null && param.containsKey(KEY_SEARCH_QUERY)) {
+            search = param.getString(KEY_SEARCH_QUERY);
+            adapter = new FragmentAdapter(getSupportFragmentManager());
+            adapter.setupSearchPage(search);
+            pager.setAdapter(adapter);
+
+            Tab twtSearch = tabLayout.getTabAt(0);
+            Tab usrSearch = tabLayout.getTabAt(1);
+            if (twtSearch != null && usrSearch != null) {
+                twtSearch.setIcon(R.drawable.search);
+                usrSearch.setIcon(R.drawable.user);
+            }
         }
     }
 
@@ -142,41 +142,5 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     public void onTabReselected(Tab tab) {
         if (adapter != null)
             adapter.scrollToTop(tab.getPosition());
-    }
-
-
-    /**
-     * get search string from twitter link
-     *
-     * @param link twitter link
-     */
-    private void getSearchString(@NonNull Uri link) {
-        String path = link.getPath();
-        String query = link.getQuery();
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-
-        if (path != null) {
-            if (path.startsWith("/hashtag/")) {
-                int end = path.indexOf('&');
-                if (end > 9)
-                    search = '#' + path.substring(9, end);
-                else
-                    search = '#' + path.substring(9);
-            } else if (path.startsWith("/search")) {
-                if (query != null && query.length() > 2) {
-                    int end = query.indexOf('&');
-                    if (end > 2)
-                        search = query.substring(2, end).replace('+', ' ');
-                    else
-                        search = query.substring(2).replace('+', ' ');
-                }
-            }
-        }
-        if (search.isEmpty() || !settings.getLogin()) {
-            Toast.makeText(this, R.string.error_open_link, LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 }

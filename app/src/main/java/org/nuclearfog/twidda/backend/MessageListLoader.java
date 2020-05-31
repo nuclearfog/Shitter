@@ -30,25 +30,25 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<MessageFragment> ui;
+    private WeakReference<MessageFragment> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private Action action;
     private long id;
 
 
-    public MessageListLoader(MessageFragment fragment, Action action) {
-        ui = new WeakReference<>(fragment);
-        db = new AppDatabase(fragment.getContext());
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
+    public MessageListLoader(MessageFragment callback, Action action) {
+        this.callback = new WeakReference<>(callback);
+        db = new AppDatabase(callback.getContext());
+        mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null) {
-            ui.get().setRefresh(true);
+        if (callback.get() != null) {
+            callback.get().setRefresh(true);
         }
     }
 
@@ -92,18 +92,18 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
     @Override
     protected void onPostExecute(@Nullable List<Message> messages) {
-        if (ui.get() != null) {
+        if (callback.get() != null) {
             if (messages != null) {
-                ui.get().setData(messages);
+                callback.get().setData(messages);
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
                 if (twException.getErrorType() == RESOURCE_NOT_FOUND) {
-                    ui.get().removeItem(id);
+                    callback.get().removeItem(id);
                 }
             } else if (action == Action.DEL) {
-                ui.get().removeItem(id);
+                callback.get().removeItem(id);
             }
-            ui.get().setRefresh(false);
+            callback.get().setRefresh(false);
         }
     }
 }

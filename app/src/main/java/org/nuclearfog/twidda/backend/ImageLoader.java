@@ -18,51 +18,35 @@ import java.net.URL;
  */
 public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
-    public enum Action {
-        ONLINE,
-        STORAGE
-    }
-
-    private WeakReference<MediaViewer> ui;
-    private final Action action;
+    private WeakReference<MediaViewer> callback;
 
 
     /**
      * initialize image loader
      *
-     * @param context Activity context
-     * @param action  information from image location
+     * @param callback Activity context
      */
-    public ImageLoader(@NonNull MediaViewer context, Action action) {
-        ui = new WeakReference<>(context);
-        this.action = action;
+    public ImageLoader(@NonNull MediaViewer callback) {
+        this.callback = new WeakReference<>(callback);
     }
 
 
     @Override
     protected Boolean doInBackground(String[] links) {
         try {
-            switch (action) {
-                case ONLINE:
-                    for (String link : links) {
-                        URL url = new URL(link);
-                        InputStream stream = url.openStream();
-                        Bitmap image = BitmapFactory.decodeStream(stream);
-                        if (image != null)
-                            publishProgress(image);
-                        else
-                            return false;
-                    }
-                    return true;
-
-                case STORAGE:
-                    for (String link : links) {
-                        Bitmap image = BitmapFactory.decodeFile(link);
-                        if (image != null)
-                            publishProgress(image);
-                    }
-                    return true;
+            for (String link : links) {
+                Bitmap image;
+                if (link.startsWith("https://")) {
+                    URL url = new URL(link);
+                    InputStream stream = url.openStream();
+                    image = BitmapFactory.decodeStream(stream);
+                } else {
+                    image = BitmapFactory.decodeFile(link);
+                }
+                if (image != null)
+                    publishProgress(image);
             }
+            return true;
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -72,18 +56,18 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
     @Override
     protected void onProgressUpdate(Bitmap[] btm) {
-        if (ui.get() != null)
-            ui.get().setImage(btm[0]);
+        if (callback.get() != null)
+            callback.get().setImage(btm[0]);
     }
 
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (ui.get() != null) {
+        if (callback.get() != null) {
             if (success) {
-                ui.get().onSuccess();
+                callback.get().onSuccess();
             } else {
-                ui.get().onError();
+                callback.get().onError();
             }
         }
     }

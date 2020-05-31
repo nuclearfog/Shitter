@@ -29,20 +29,20 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
 
     @Nullable
     private EngineException twException;
-    private WeakReference<ListFragment> ui;
+    private WeakReference<ListFragment> callback;
     private TwitterEngine mTwitter;
     private final Action action;
 
-    public TwitterListLoader(ListFragment frag, Action action) {
-        mTwitter = TwitterEngine.getInstance(frag.getContext());
-        ui = new WeakReference<>(frag);
+    public TwitterListLoader(ListFragment callback, Action action) {
+        mTwitter = TwitterEngine.getInstance(callback.getContext());
+        this.callback = new WeakReference<>(callback);
         this.action = action;
     }
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null) {
-            ui.get().setRefresh(true);
+        if (callback.get() != null) {
+            callback.get().setRefresh(true);
         }
     }
 
@@ -73,26 +73,26 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
 
     @Override
     protected void onPostExecute(List<TwitterList> result) {
-        if (ui.get() != null) {
-            ui.get().setRefresh(false);
+        if (callback.get() != null) {
+            callback.get().setRefresh(false);
             if (result != null) {
                 switch (action) {
                     case LOAD:
-                        ui.get().setData(result);
+                        callback.get().setData(result);
                         break;
 
                     case FOLLOW:
                         TwitterList list = result.get(0);
-                        ui.get().updateItem(list);
+                        callback.get().updateItem(list);
                         break;
 
                     case DELETE:
                         list = result.get(0);
-                        ui.get().removeItem(list.getId());
+                        callback.get().removeItem(list.getId());
                         break;
                 }
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }

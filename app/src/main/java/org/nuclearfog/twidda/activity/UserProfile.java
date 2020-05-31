@@ -32,7 +32,6 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.AdapterType;
 import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
@@ -73,7 +72,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private static final int REQUEST_PROFILE_CHANGED = 1;
     private static final int TRANSPARENCY = 0xafffffff;
 
-    private ProfileLoader profileAsync;
     private FragmentAdapter adapter;
     private GlobalSettings settings;
 
@@ -83,13 +81,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ImageView profile, banner;
     private View profile_head, profile_layer;
     private ViewPager pager;
+    private TabLayout tab;
 
-    @Nullable
+    private ProfileLoader profileAsync;
     private UserProperties properties;
-    @Nullable
     private TwitterUser user;
-    private long userId;
 
+    private long userId;
     private int tabIndex = 0;
 
     @Override
@@ -97,8 +95,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         super.onCreate(b);
         setContentView(R.layout.page_profile);
         Toolbar tool = findViewById(R.id.profile_toolbar);
-        TabLayout tab = findViewById(R.id.profile_tab);
         ViewGroup root = findViewById(R.id.user_view);
+        tab = findViewById(R.id.profile_tab);
         bioTxt = findViewById(R.id.bio);
         following = findViewById(R.id.following);
         follower = findViewById(R.id.follower);
@@ -116,16 +114,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tweetTabTxt = new TextView(this);
         favorTabTxt = new TextView(this);
 
-        settings = GlobalSettings.getInstance(this);
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            userId = param.getLong(KEY_PROFILE_ID);
-        }
-
         setSupportActionBar(tool);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
         txtUser.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
@@ -135,6 +128,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
+
         tweetTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.home_profile, 0, 0);
         favorTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favorite_profile, 0, 0);
         tweetTabTxt.setGravity(CENTER);
@@ -148,16 +142,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tweetTabTxt.setTextColor(settings.getFontColor());
         favorTabTxt.setTextColor(settings.getFontColor());
 
-        adapter = new FragmentAdapter(getSupportFragmentManager(), AdapterType.PROFILE_TAB, userId, "");
         pager.setOffscreenPageLimit(2);
-        pager.setAdapter(adapter);
         tab.setupWithViewPager(pager);
-        Tab tweetTab = tab.getTabAt(0);
-        Tab favorTab = tab.getTabAt(1);
-        if (tweetTab != null && favorTab != null) {
-            tweetTab.setCustomView(tweetTabTxt);
-            favorTab.setCustomView(favorTabTxt);
-        }
+
         tab.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
@@ -170,7 +157,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onStart() {
         super.onStart();
-        if (profileAsync == null) {
+        Bundle param = getIntent().getExtras();
+        if (profileAsync == null && param != null && param.containsKey(KEY_PROFILE_ID)) {
+            userId = param.getLong(KEY_PROFILE_ID);
+            adapter = new FragmentAdapter(getSupportFragmentManager());
+            adapter.setupProfilePage(userId);
+            pager.setAdapter(adapter);
+            Tab tweetTab = tab.getTabAt(0);
+            Tab favorTab = tab.getTabAt(1);
+            if (tweetTab != null && favorTab != null) {
+                tweetTab.setCustomView(tweetTabTxt);
+                favorTab.setCustomView(favorTabTxt);
+            }
             profileAsync = new ProfileLoader(this, LDR_PROFILE);
             profileAsync.execute(userId);
         }
@@ -187,10 +185,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent i) {
-        if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED) {
+        if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED)
             profileAsync = null;
-            adapter.clearData();
-        }
         super.onActivityResult(reqCode, returnCode, i);
     }
 

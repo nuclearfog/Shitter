@@ -23,24 +23,24 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
 
     @Nullable
     private EngineException twException;
-    private WeakReference<TrendFragment> ui;
+    private WeakReference<TrendFragment> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private boolean isEmpty;
 
 
-    public TrendListLoader(TrendFragment fragment) {
-        ui = new WeakReference<>(fragment);
-        db = new AppDatabase(fragment.getContext());
-        mTwitter = TwitterEngine.getInstance(fragment.getContext());
-        isEmpty = fragment.isEmpty();
+    public TrendListLoader(TrendFragment callback) {
+        this.callback = new WeakReference<>(callback);
+        db = new AppDatabase(callback.getContext());
+        mTwitter = TwitterEngine.getInstance(callback.getContext());
+        isEmpty = callback.isEmpty();
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (ui.get() != null)
-            ui.get().setRefresh(true);
+        if (callback.get() != null)
+            callback.get().setRefresh(true);
     }
 
 
@@ -71,12 +71,12 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
 
     @Override
     protected void onPostExecute(List<TwitterTrend> trends) {
-        if (ui.get() != null) {
-            ui.get().setRefresh(false);
+        if (callback.get() != null) {
+            callback.get().setRefresh(false);
             if (trends != null) {
-                ui.get().setData(trends);
+                callback.get().setData(trends);
             } else if (twException != null) {
-                ui.get().onError(twException);
+                callback.get().onError(twException);
             }
         }
     }
