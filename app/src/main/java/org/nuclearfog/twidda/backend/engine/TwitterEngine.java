@@ -366,6 +366,22 @@ public class TwitterEngine {
 
 
     /**
+     * Get User Context
+     *
+     * @param username screen name of the user
+     * @return User Object
+     * @throws EngineException if Access is unavailable
+     */
+    public TwitterUser getUser(String username) throws EngineException {
+        try {
+            return new TwitterUser(twitter.showUser(username));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
      * Get current user
      *
      * @return curent user

@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,8 +21,12 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.LinkContentLoader;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.view.Window.FEATURE_NO_TITLE;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
@@ -39,11 +44,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private GlobalSettings settings;
+    private Dialog loadingCircle;
     private ViewPager pager;
     private View root;
     private long homeId;
 
-    private int tabIndex = 0;
 
     static {
         // Enable vector drawable support
@@ -58,12 +63,17 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         pager = findViewById(R.id.home_pager);
         tablayout = findViewById(R.id.home_tab);
         root = findViewById(R.id.main_layout);
+        loadingCircle = new Dialog(this, R.style.LoadingDialog);
+        View load = View.inflate(this, R.layout.item_load, null);
 
         settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.setupWithViewPager(pager);
         pager.setOffscreenPageLimit(3);
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setContentView(load);
+        loadingCircle.setCanceledOnTouchOutside(false);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -90,6 +100,10 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 tlTab.setIcon(R.drawable.home);
                 trTab.setIcon(R.drawable.hash);
                 mnTab.setIcon(R.drawable.mention);
+            }
+            if (getIntent().getData() != null) {
+                LinkContentLoader linkLoader = new LinkContentLoader(this);
+                linkLoader.execute(getIntent().getData());
             }
         }
     }
@@ -150,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         MenuItem search = m.findItem(R.id.action_search);
         MenuItem setting = m.findItem(R.id.action_settings);
 
-        switch (tabIndex) {
+        switch (tablayout.getSelectedTabPosition()) {
             case 0:
                 profile.setVisible(true);
                 search.setVisible(false);
@@ -203,17 +217,16 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public void onBackPressed() {
-        if (tabIndex == 0) {
-            super.onBackPressed();
-        } else {
+        if (tablayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
         }
     }
 
 
     @Override
     public void onTabSelected(Tab tab) {
-        tabIndex = tab.getPosition();
         invalidateOptionsMenu();
     }
 
@@ -229,5 +242,18 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     public void onTabReselected(Tab tab) {
         if (adapter != null)
             adapter.scrollToTop(tab.getPosition());
+    }
+
+
+    public void setLoading(boolean enable) {
+        if (enable)
+            loadingCircle.show();
+        else
+            loadingCircle.dismiss();
+    }
+
+
+    public void onError(EngineException error) {
+        ErrorHandler.handleFailure(this, error);
     }
 }

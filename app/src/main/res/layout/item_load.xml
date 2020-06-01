@@ -17,6 +17,7 @@
         android:layout_width="@dimen/button_load"
         android:layout_height="@dimen/button_load"
         android:layout_gravity="center"
+        android:visibility="invisible"
         android:background="@android:color/transparent"
         android:contentDescription="@android:string/cancel"
         app:srcCompat="@drawable/cross" />

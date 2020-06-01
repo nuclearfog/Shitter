@@ -35,7 +35,6 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     private ViewPager pager;
 
     private String search = "";
-    private int tabIndex = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -79,10 +78,10 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onBackPressed() {
-        if (tabIndex == 0) {
-            super.onBackPressed();
-        } else {
+        if (tabLayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -125,7 +124,6 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabSelected(Tab tab) {
-        tabIndex = tab.getPosition();
         invalidateOptionsMenu();
     }
 

@@ -28,8 +28,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private ViewPager pager;
     private Toolbar toolbar;
 
-    private int tabIndex = 0;
-
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
@@ -76,17 +74,16 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onBackPressed() {
-        if (tabIndex == 0) {
-            super.onBackPressed();
-        } else {
+        if (tablayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
         }
     }
 
 
     @Override
     public void onTabSelected(Tab tab) {
-        tabIndex = tab.getPosition();
     }
 
 

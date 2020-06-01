@@ -81,14 +81,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ImageView profile, banner;
     private View profile_head, profile_layer;
     private ViewPager pager;
-    private TabLayout tab;
+    private TabLayout tabLayout;
 
     private ProfileLoader profileAsync;
     private UserProperties properties;
     private TwitterUser user;
 
     private long userId;
-    private int tabIndex = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -96,7 +95,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.page_profile);
         Toolbar tool = findViewById(R.id.profile_toolbar);
         ViewGroup root = findViewById(R.id.user_view);
-        tab = findViewById(R.id.profile_tab);
+        tabLayout = findViewById(R.id.profile_tab);
         bioTxt = findViewById(R.id.bio);
         following = findViewById(R.id.following);
         follower = findViewById(R.id.follower);
@@ -123,7 +122,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         bioTxt.setMovementMethod(LinkAndScrollMovement.getInstance());
-        tab.setSelectedTabIndicatorColor(settings.getHighlightColor());
+        tabLayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
@@ -142,9 +141,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         favorTabTxt.setTextColor(settings.getFontColor());
 
         pager.setOffscreenPageLimit(2);
-        tab.setupWithViewPager(pager);
+        tabLayout.setupWithViewPager(pager);
 
-        tab.addOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
         profile.setOnClickListener(this);
@@ -162,8 +161,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.setupProfilePage(userId);
             pager.setAdapter(adapter);
-            Tab tweetTab = tab.getTabAt(0);
-            Tab favorTab = tab.getTabAt(1);
+            Tab tweetTab = tabLayout.getTabAt(0);
+            Tab favorTab = tabLayout.getTabAt(1);
             if (tweetTab != null && favorTab != null) {
                 tweetTab.setCustomView(tweetTabTxt);
                 favorTab.setCustomView(favorTabTxt);
@@ -350,10 +349,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onBackPressed() {
-        if (tabIndex == 0) {
-            super.onBackPressed();
-        } else {
+        if (tabLayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -441,7 +440,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onTabSelected(Tab tab) {
-        tabIndex = tab.getPosition();
     }
 
 

@@ -32,9 +32,10 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class LoginPage extends AppCompatActivity implements OnClickListener {
 
     private Registration registerAsync;
-    private Button btnLink, btnVeri;
-    private EditText pin;
+    private Button linkButton, loginButton;
+    private EditText pinInput;
     private View root;
+    @Nullable
     private String link;
 
     @Override
@@ -42,16 +43,16 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         super.onCreate(b);
         setContentView(R.layout.page_login);
         Toolbar toolbar = findViewById(R.id.login_toolbar);
-        btnLink = findViewById(R.id.linkButton);
-        btnVeri = findViewById(R.id.verifier);
+        linkButton = findViewById(R.id.linkButton);
+        loginButton = findViewById(R.id.verifier);
         root = findViewById(R.id.login_root);
-        pin = findViewById(R.id.pin);
+        pinInput = findViewById(R.id.pin);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        btnLink.setOnClickListener(this);
-        btnVeri.setOnClickListener(this);
+        linkButton.setOnClickListener(this);
+        loginButton.setOnClickListener(this);
     }
 
 
@@ -59,9 +60,9 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     protected void onStart() {
         super.onStart();
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        btnLink.setTypeface(settings.getFontFace());
-        btnVeri.setTypeface(settings.getFontFace());
-        pin.setTypeface(settings.getFontFace());
+        linkButton.setTypeface(settings.getFontFace());
+        loginButton.setTypeface(settings.getFontFace());
+        pinInput.setTypeface(settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
         FontTool.setViewFontAndColor(settings, root);
     }
@@ -117,8 +118,8 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
             case R.id.verifier:
                 if (link == null) {
                     Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-                } else if (pin.getText() != null) {
-                    String twitterPin = pin.getText().toString();
+                } else if (pinInput.getText() != null) {
+                    String twitterPin = pinInput.getText().toString();
                     if (!twitterPin.trim().isEmpty()) {
                         registerAsync = new Registration(this);
                         registerAsync.execute(twitterPin);

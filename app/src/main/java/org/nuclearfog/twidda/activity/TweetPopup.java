@@ -121,6 +121,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         loadingCircle.setContentView(load);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getPopupColor());
+        cancelButton.setVisibility(VISIBLE);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
