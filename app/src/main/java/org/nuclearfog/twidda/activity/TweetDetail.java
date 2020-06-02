@@ -69,11 +69,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
-    public static final Pattern linkPattern = Pattern.compile(".*/@?[\\w_]+/status/\\d{1,20}/?.*");
-
-    @Nullable
-    private TweetLoader statusAsync;
-    private GlobalSettings settings;
+    public static final Pattern linkPattern = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
@@ -81,10 +77,11 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private View header, footer;
     private ViewPager pager;
 
+    private GlobalSettings settings;
+    @Nullable
+    private TweetLoader statusAsync;
     @Nullable
     private Tweet tweet;
-    private String username;
-    private long tweetID;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -136,8 +133,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         if (statusAsync == null && param != null) {
             if (param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
-                tweetID = param.getLong(KEY_TWEET_ID);
-                username = param.getString(KEY_TWEET_NAME);
+                long tweetID = param.getLong(KEY_TWEET_ID);
+                String username = param.getString(KEY_TWEET_NAME);
                 FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
                 adapter.setupTweetPage(tweetID, username);
                 pager.setAdapter(adapter);
@@ -173,7 +170,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
+        if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
                     Builder deleteDialog = new Builder(this, R.style.ConfirmDialog);
@@ -182,7 +179,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             statusAsync = new TweetLoader(TweetDetail.this, Action.DELETE);
-                            statusAsync.execute(tweetID);
+                            statusAsync.execute(tweet.getId());
                         }
                     });
                     deleteDialog.setNegativeButton(R.string.confirm_no, null);
@@ -190,7 +187,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.tweet_link:
-                    String tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    String username = tweet.getUser().getScreenname().substring(1);
+                    String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
                     if (intent.resolveActivity(getPackageManager()) != null)
                         startActivity(intent);
@@ -199,7 +197,8 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.link_copy:
-                    tweetLink = "https://twitter.com/" + username.substring(1) + "/status/" + tweetID;
+                    username = tweet.getUser().getScreenname().substring(1);
+                    tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
                     ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                     if (clip != null) {
                         ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
@@ -217,18 +216,18 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
+        if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_answer:
                     Intent tweetPopup = new Intent(this, TweetPopup.class);
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetID);
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_PREFIX, username);
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweet.getId());
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_PREFIX, tweet.getUser().getScreenname());
                     startActivity(tweetPopup);
                     break;
 
                 case R.id.tweet_retweet:
                     Intent userList = new Intent(this, UserDetail.class);
-                    userList.putExtra(KEY_USERDETAIL_ID, tweetID);
+                    userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
                     userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
                     startActivity(userList);
                     break;
@@ -288,17 +287,17 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onLongClick(View v) {
-        if (statusAsync != null && statusAsync.getStatus() != RUNNING) {
+        if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_retweet:
                     statusAsync = new TweetLoader(this, Action.RETWEET);
-                    statusAsync.execute(tweetID);
+                    statusAsync.execute(tweet.getId());
                     Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                     return true;
 
                 case R.id.tweet_favorit:
                     statusAsync = new TweetLoader(this, Action.FAVORITE);
-                    statusAsync.execute(tweetID);
+                    statusAsync.execute(tweet.getId());
                     Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                     return true;
             }
@@ -316,15 +315,19 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onLinkClick(String link) {
-        if (linkPattern.matcher(link).matches()) {
+    public void onLinkClick(String tag) {
+        if (linkPattern.matcher(tag).matches()) {
+            String name = tag.substring(20, tag.indexOf('/', 20));
+            long id = Long.parseLong(tag.substring(tag.lastIndexOf('/') + 1));
             Intent intent = new Intent(this, TweetDetail.class);
-            intent.setData(Uri.parse(link));
+            intent.putExtra(KEY_TWEET_ID, id);
+            intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-            if (intent.resolveActivity(getPackageManager()) != null)
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tag));
+            if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
+            }
         }
     }
 
@@ -432,7 +435,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             case DELETE:
                 Toast.makeText(this, R.string.info_tweet_removed, LENGTH_SHORT).show();
                 Intent returnData = new Intent();
-                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetID);
+                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getId());
                 setResult(RETURN_TWEET_CHANGED, returnData);
                 finish();
                 break;
@@ -447,12 +450,14 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
         EngineException.ErrorType errorType = error.getErrorType();
-        if (errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED) {
-            Intent returnData = new Intent();
-            returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetID);
-            setResult(RETURN_TWEET_CHANGED, returnData);
-            finish();
-        } else if (tweet == null) {
+        if (tweet != null) {
+            if (errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED) {
+                Intent returnData = new Intent();
+                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getId());
+                setResult(RETURN_TWEET_CHANGED, returnData);
+                finish();
+            }
+        } else {
             finish();
         }
     }

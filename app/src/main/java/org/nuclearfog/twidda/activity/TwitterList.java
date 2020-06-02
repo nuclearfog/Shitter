@@ -17,6 +17,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 public class TwitterList extends AppCompatActivity {
 
     public static final String KEY_USERLIST_ID = "userlist-owner";
+
     private FragmentAdapter adapter;
     private ViewPager pager;
 

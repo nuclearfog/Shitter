@@ -87,7 +87,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private UserProperties properties;
     private TwitterUser user;
 
-    private long userId;
+    private boolean isHome;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -157,7 +157,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         super.onStart();
         Bundle param = getIntent().getExtras();
         if (profileAsync == null && param != null && param.containsKey(KEY_PROFILE_ID)) {
-            userId = param.getLong(KEY_PROFILE_ID);
+            long userId = param.getLong(KEY_PROFILE_ID);
+            isHome = userId == settings.getUserId();
             adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.setupProfilePage(userId);
             pager.setAdapter(adapter);
@@ -192,7 +193,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
-        if (userId == settings.getUserId()) {
+        if (isHome) {
             MenuItem dmIcon = m.findItem(R.id.profile_message);
             MenuItem setting = m.findItem(R.id.profile_settings);
             dmIcon.setVisible(true);
@@ -217,7 +218,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 followIcon.setIcon(R.drawable.follow_requested);
                 followIcon.setTitle(R.string.follow_requested);
             }
-            if (user.isLocked() && userId != settings.getUserId()) {
+            if (user.isLocked() && !isHome) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 listItem.setVisible(false);
             }
@@ -253,78 +254,70 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (profileAsync != null && profileAsync.getStatus() != RUNNING) {
-            switch (item.getItemId()) {
-                case R.id.profile_tweet:
-                    if (user != null) {
+        if (profileAsync != null && user != null && profileAsync.getStatus() != RUNNING) {
+            if (user != null && properties != null) {
+                switch (item.getItemId()) {
+                    case R.id.profile_tweet:
                         Intent tweet = new Intent(this, TweetPopup.class);
-                        if (userId != settings.getUserId())
+                        if (user.getId() != settings.getUserId())
                             tweet.putExtra(KEY_TWEETPOPUP_PREFIX, user.getScreenname());
                         startActivity(tweet);
-                    }
-                    break;
+                        break;
 
-                case R.id.profile_settings:
-                    Intent editProfile = new Intent(this, ProfileEditor.class);
-                    startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
-                    break;
+                    case R.id.profile_settings:
+                        Intent editProfile = new Intent(this, ProfileEditor.class);
+                        startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
+                        break;
 
-                case R.id.profile_follow:
-                    if (properties != null) {
+                    case R.id.profile_follow:
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_FOLLOW);
                         if (!properties.isFriend()) {
-                            profileAsync.execute(userId);
+                            profileAsync.execute(user.getId());
                         } else {
                             new Builder(this).setMessage(R.string.confirm_unfollow)
                                     .setNegativeButton(R.string.confirm_no, null)
                                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            profileAsync.execute(userId);
+                                            profileAsync.execute(user.getId());
                                         }
                                     }).show();
                         }
-                    }
-                    break;
+                        break;
 
-                case R.id.profile_mute:
-                    if (properties != null) {
+                    case R.id.profile_mute:
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_MUTE);
                         if (properties.isMuted()) {
-                            profileAsync.execute(userId);
+                            profileAsync.execute(user.getId());
                         } else {
                             new Builder(this).setMessage(R.string.confirm_mute)
                                     .setNegativeButton(R.string.confirm_no, null)
                                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            profileAsync.execute(userId);
+                                            profileAsync.execute(user.getId());
                                         }
                                     }).show();
                         }
-                    }
-                    break;
+                        break;
 
-                case R.id.profile_block:
-                    if (properties != null) {
+                    case R.id.profile_block:
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_BLOCK);
                         if (properties.isBlocked()) {
-                            profileAsync.execute(userId);
+                            profileAsync.execute(user.getId());
                         } else {
                             new Builder(this).setMessage(R.string.confirm_block)
                                     .setNegativeButton(R.string.confirm_no, null)
                                     .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            profileAsync.execute(userId);
+                                            profileAsync.execute(user.getId());
                                         }
                                     }).show();
                         }
-                    }
-                    break;
+                        break;
 
-                case R.id.profile_message:
-                    if (properties != null) {
+                    case R.id.profile_message:
                         Intent dmPage;
                         if (properties.isHome()) {
                             dmPage = new Intent(this, DirectMessage.class);
@@ -333,14 +326,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                             dmPage.putExtra(KEY_DM_PREFIX, properties.getTargetScreenname());
                         }
                         startActivity(dmPage);
-                    }
-                    break;
+                        break;
 
-                case R.id.profile_lists:
-                    Intent listPage = new Intent(this, TwitterList.class);
-                    listPage.putExtra(KEY_USERLIST_ID, userId);
-                    startActivity(listPage);
-                    break;
+                    case R.id.profile_lists:
+                        Intent listPage = new Intent(this, TwitterList.class);
+                        listPage.putExtra(KEY_USERLIST_ID, user.getId());
+                        startActivity(listPage);
+                        break;
+                }
             }
         }
         return super.onOptionsItemSelected(item);
@@ -383,57 +376,51 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.following:
-                if (user != null && properties != null) {
-                    if (!user.isLocked() || properties.isFriend() || userId == settings.getUserId()) {
+        if (user != null && properties != null) {
+            switch (v.getId()) {
+                case R.id.following:
+                    if (!user.isLocked() || properties.isFriend() || isHome) {
                         Intent following = new Intent(this, UserDetail.class);
-                        following.putExtra(KEY_USERDETAIL_ID, userId);
+                        following.putExtra(KEY_USERDETAIL_ID, user.getId());
                         following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
                         startActivity(following);
                     }
-                }
-                break;
+                    break;
 
-            case R.id.follower:
-                if (user != null && properties != null) {
-                    if (!user.isLocked() || properties.isFriend() || userId == settings.getUserId()) {
+                case R.id.follower:
+                    if (!user.isLocked() || properties.isFriend() || isHome) {
                         Intent follower = new Intent(this, UserDetail.class);
-                        follower.putExtra(KEY_USERDETAIL_ID, userId);
+                        follower.putExtra(KEY_USERDETAIL_ID, user.getId());
                         follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
                         startActivity(follower);
                     }
-                }
-                break;
+                    break;
 
-            case R.id.links:
-                if (user != null && !user.getLink().isEmpty()) {
-                    String link = user.getLink();
-                    Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-                    if (browserIntent.resolveActivity(getPackageManager()) != null)
-                        startActivity(browserIntent);
-                    else
-                        Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-                }
-                break;
+                case R.id.links:
+                    if (!user.getLink().isEmpty()) {
+                        String link = user.getLink();
+                        Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+                        if (browserIntent.resolveActivity(getPackageManager()) != null)
+                            startActivity(browserIntent);
+                        else
+                            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+                    }
+                    break;
 
-            case R.id.profile_img:
-                if (user != null) {
-                    Intent image = new Intent(this, MediaViewer.class);
-                    image.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
-                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                    startActivity(image);
-                }
-                break;
+                case R.id.profile_img:
+                    Intent mediaImage = new Intent(this, MediaViewer.class);
+                    mediaImage.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
+                    mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                    startActivity(mediaImage);
+                    break;
 
-            case R.id.profile_banner:
-                if (user != null) {
-                    Intent image = new Intent(this, MediaViewer.class);
-                    image.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + "/1500x500"});
-                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                    startActivity(image);
-                }
-                break;
+                case R.id.profile_banner:
+                    Intent mediaBanner = new Intent(this, MediaViewer.class);
+                    mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + "/1500x500"});
+                    mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                    startActivity(mediaBanner);
+                    break;
+            }
         }
     }
 
