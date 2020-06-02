@@ -60,6 +60,7 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.NOT_AUTHORIZED;
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
+import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
 
@@ -430,7 +431,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
             case DELETE:
                 Toast.makeText(this, R.string.info_tweet_removed, LENGTH_SHORT).show();
-                setResult(RETURN_TWEET_CHANGED);
+                Intent returnData = new Intent();
+                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetID);
+                setResult(RETURN_TWEET_CHANGED, returnData);
                 finish();
                 break;
         }
@@ -445,7 +448,9 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         ErrorHandler.handleFailure(this, error);
         EngineException.ErrorType errorType = error.getErrorType();
         if (errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED) {
-            setResult(RETURN_TWEET_CHANGED);
+            Intent returnData = new Intent();
+            returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetID);
+            setResult(RETURN_TWEET_CHANGED, returnData);
             finish();
         } else if (tweet == null) {
             finish();

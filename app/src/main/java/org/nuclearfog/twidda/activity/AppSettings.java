@@ -49,8 +49,8 @@ import java.util.regex.Matcher;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
-import static org.nuclearfog.twidda.activity.MainActivity.APP_LOGOUT;
-import static org.nuclearfog.twidda.activity.MainActivity.DB_CLEARED;
+import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
+import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
 
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener,
         OnCheckedChangeListener, OnItemSelectedListener {
@@ -221,7 +221,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 DatabaseAdapter.deleteDatabase(getApplicationContext());
-                                setResult(DB_CLEARED);
+                                setResult(RETURN_DB_CLEARED);
                             }
                         })
                         .show();
@@ -237,7 +237,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                                 settings.logout();
                                 TwitterEngine.resetTwitter();
                                 DatabaseAdapter.deleteDatabase(getApplicationContext());
-                                setResult(APP_LOGOUT);
+                                setResult(RETURN_APP_LOGOUT);
                                 finish();
                             }
                         })

@@ -35,10 +35,10 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
  */
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener {
 
-    public static final int DB_CLEARED = 3;
-    public static final int APP_LOGOUT = 4;
-    private static final int LOGIN = 1;
-    private static final int SETTING = 2;
+    public static final int RETURN_DB_CLEARED = 1;
+    public static final int RETURN_APP_LOGOUT = 2;
+    private static final int REQUEST_APP_LOGIN = 1;
+    private static final int REQUEST_APP_SETTINGS = 2;
 
     @Nullable
     private FragmentAdapter adapter;
@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private Dialog loadingCircle;
     private ViewPager pager;
     private View root;
-    private long homeId;
 
 
     static {
@@ -86,12 +85,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         super.onStart();
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
-            startActivityForResult(loginIntent, LOGIN);
+            startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
         } else if (adapter == null) {
             adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.setupForHomePage();
             pager.setAdapter(adapter);
-            homeId = settings.getUserId();
 
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
@@ -112,18 +110,18 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Override
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         switch (reqCode) {
-            case LOGIN:
+            case REQUEST_APP_LOGIN:
                 if (returnCode == RESULT_CANCELED)
                     finish();
                 break;
 
-            case SETTING:
+            case REQUEST_APP_SETTINGS:
                 root.setBackgroundColor(settings.getBackgroundColor());
                 tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
                 if (adapter != null) {
-                    if (returnCode == DB_CLEARED)
+                    if (returnCode == RETURN_DB_CLEARED)
                         adapter.clearData();
-                    else if (returnCode == APP_LOGOUT)
+                    else if (returnCode == RETURN_APP_LOGOUT)
                         adapter = null;
                     else
                         adapter.notifySettingsChanged();
@@ -197,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         switch (item.getItemId()) {
             case R.id.action_profile:
                 Intent user = new Intent(this, UserProfile.class);
-                user.putExtra(KEY_PROFILE_ID, homeId);
+                user.putExtra(KEY_PROFILE_ID, settings.getUserId());
                 startActivity(user);
                 break;
 
@@ -208,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
             case R.id.action_settings:
                 Intent settings = new Intent(this, AppSettings.class);
-                startActivityForResult(settings, SETTING);
+                startActivityForResult(settings, REQUEST_APP_SETTINGS);
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -39,8 +39,6 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
     private TrendAdapter adapter;
     private GlobalSettings settings;
 
-    private boolean notifyChange = false;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Context context = inflater.getContext();
@@ -65,11 +63,6 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
         super.onStart();
         if (trendTask == null)
             load();
-        if (notifyChange) {
-            list.setAdapter(adapter); // re-initialize List
-            notifyChange = false;
-            load();
-        }
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
     }
 
@@ -101,8 +94,9 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     @Override
     public void onSettingsChange() {
+        list.setAdapter(adapter); // re-initialize List
         adapter.clear();
-        notifyChange = true;
+        load();
     }
 
 

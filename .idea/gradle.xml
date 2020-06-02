@@ -4,11 +4,10 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="delegatedBuild" value="false" />
         <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="/opt/Gradle/gradle-6.0.1" />
+        <option name="gradleHome" value="/opt/Gradle/gradle-6.4.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />

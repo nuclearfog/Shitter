@@ -39,6 +39,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
     public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
     public static final String KEY_FRAG_TWEET_ID = "tweet_id";
+    public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 
     public static final int TWEET_FRAG_HOME = 0;
     public static final int TWEET_FRAG_MENT = 1;
@@ -59,10 +60,9 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private TweetAdapter adapter;
 
     private String search;
-    private long id, tweetId;
+    private long id;
     private int mode;
 
-    private boolean notifyChange = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
@@ -91,10 +91,6 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         super.onStart();
         if (tweetTask == null)
             load();
-        if (notifyChange) {
-            list.setAdapter(adapter); // re-initialize List
-            notifyChange = false;
-        }
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
     }
 
@@ -108,10 +104,11 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
 
     @Override
-    public void onActivityResult(int reqCode, int returnCode, Intent i) {
-        if (reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED)
-            adapter.remove(tweetId);
-        super.onActivityResult(reqCode, returnCode, i);
+    public void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
+        if (intent != null && reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED) {
+            adapter.remove(intent.getLongExtra(INTENT_TWEET_REMOVED_ID, 0));
+        }
+        super.onActivityResult(reqCode, returnCode, intent);
     }
 
 
@@ -125,7 +122,6 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     @Override
     public void onTweetClick(Tweet tweet) {
         if (reload != null && !reload.isRefreshing()) {
-            tweetId = tweet.getId(); // Mark tweet
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
@@ -138,7 +134,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onSettingsChange() {
-        notifyChange = true;
+        list.setAdapter(adapter); // re-initialize List
     }
 
 

@@ -32,7 +32,6 @@ import twitter4j.Location;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
-import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Trend;
@@ -814,7 +813,7 @@ public class TwitterEngine {
     public List<TwitterList> getUserList(long userId) throws EngineException {
         try {
             List<TwitterList> result = new LinkedList<>();
-            ResponseList<UserList> lists = twitter.getUserLists(userId);
+            List<UserList> lists = twitter.getUserLists(userId);
             for (UserList list : lists)
                 result.add(new TwitterList(list, twitterID));
             return result;

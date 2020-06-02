@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -111,9 +112,9 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
 
     class DataHolder {
         final Bundle data;
-        final Class activity;
+        final Class<? extends Activity> activity;
 
-        DataHolder(Bundle data, Class activity) {
+        DataHolder(Bundle data, Class<? extends Activity> activity) {
             this.data = data;
             this.activity = activity;
         }
