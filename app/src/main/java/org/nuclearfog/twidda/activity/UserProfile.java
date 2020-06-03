@@ -67,7 +67,8 @@ import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnTagClickListener, OnTabSelectedListener {
 
-    public static final String KEY_PROFILE_ID = "profile_uid";
+    public static final String KEY_PROFILE_ID = "profile_id";
+    // public static final String KEY_PROFILE_NAME = "profile_name"; // TODO
     public static final int RETURN_PROFILE_CHANGED = 2;
     private static final int REQUEST_PROFILE_CHANGED = 1;
     private static final int TRANSPARENCY = 0xafffffff;
@@ -86,8 +87,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private ProfileLoader profileAsync;
     private UserProperties properties;
     private TwitterUser user;
-
-    private boolean isHome;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -140,6 +139,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tweetTabTxt.setTextColor(settings.getFontColor());
         favorTabTxt.setTextColor(settings.getFontColor());
 
+        adapter = new FragmentAdapter(getSupportFragmentManager());
+        pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(pager);
 
@@ -158,10 +159,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         if (profileAsync == null && param != null && param.containsKey(KEY_PROFILE_ID)) {
             long userId = param.getLong(KEY_PROFILE_ID);
-            isHome = userId == settings.getUserId();
-            adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.setupProfilePage(userId);
-            pager.setAdapter(adapter);
             Tab tweetTab = tabLayout.getTabAt(0);
             Tab favorTab = tabLayout.getTabAt(1);
             if (tweetTab != null && favorTab != null) {
@@ -193,19 +191,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
-        if (isHome) {
-            MenuItem dmIcon = m.findItem(R.id.profile_message);
-            MenuItem setting = m.findItem(R.id.profile_settings);
-            dmIcon.setVisible(true);
-            setting.setVisible(true);
-        } else {
-            MenuItem followIcon = m.findItem(R.id.profile_follow);
-            MenuItem blockIcon = m.findItem(R.id.profile_block);
-            MenuItem muteIcon = m.findItem(R.id.profile_mute);
-            followIcon.setVisible(true);
-            blockIcon.setVisible(true);
-            muteIcon.setVisible(true);
-        }
         return super.onCreateOptionsMenu(m);
     }
 
@@ -213,12 +198,25 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
         if (user != null) {
+            if (user.getId() == settings.getUserId()) {
+                MenuItem dmIcon = m.findItem(R.id.profile_message);
+                MenuItem setting = m.findItem(R.id.profile_settings);
+                dmIcon.setVisible(true);
+                setting.setVisible(true);
+            } else {
+                MenuItem followIcon = m.findItem(R.id.profile_follow);
+                MenuItem blockIcon = m.findItem(R.id.profile_block);
+                MenuItem muteIcon = m.findItem(R.id.profile_mute);
+                followIcon.setVisible(true);
+                blockIcon.setVisible(true);
+                muteIcon.setVisible(true);
+            }
             if (user.followRequested()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 followIcon.setIcon(R.drawable.follow_requested);
                 followIcon.setTitle(R.string.follow_requested);
             }
-            if (user.isLocked() && !isHome) {
+            if (user.isLocked() && user.getId() != settings.getUserId()) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 listItem.setVisible(false);
             }
@@ -379,7 +377,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if (user != null && properties != null) {
             switch (v.getId()) {
                 case R.id.following:
-                    if (!user.isLocked() || properties.isFriend() || isHome) {
+                    if (!user.isLocked() || properties.isFriend() || user.getId() == settings.getUserId()) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERDETAIL_ID, user.getId());
                         following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
@@ -388,7 +386,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.follower:
-                    if (!user.isLocked() || properties.isFriend() || isHome) {
+                    if (!user.isLocked() || properties.isFriend() || user.getId() == settings.getUserId()) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERDETAIL_ID, user.getId());
                         follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
@@ -432,15 +430,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onTabUnselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 
 

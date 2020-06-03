@@ -15,9 +15,10 @@ import java.lang.ref.WeakReference;
 
 /**
  * task for loading user profile information and take actions
+ *
  * @see UserProfile
  */
-public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> {
+public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserProperties> {
 
     public enum Action {
         LDR_PROFILE,
@@ -43,17 +44,27 @@ public class ProfileLoader extends AsyncTask<Long, TwitterUser, UserProperties> 
 
 
     @Override
-    protected UserProperties doInBackground(Long[] args) {
+    protected UserProperties doInBackground(Object[] args) {
         UserProperties connection;
         TwitterUser user;
-        long userId = args[0];
+        long userId = 0;
+        String username = "";
+        if (args[0] instanceof Long) {
+            userId = (long) args[0];
+        } else if (args[0] instanceof String) {
+            username = (String) args[0];
+        }
         try {
             switch (action) {
                 case LDR_PROFILE:
-                    user = db.getUser(userId);
-                    if (user != null)
-                        publishProgress(user);
-                    user = mTwitter.getUser(userId);
+                    if (userId > 0) {
+                        user = db.getUser(userId);
+                        if (user != null)
+                            publishProgress(user);
+                        user = mTwitter.getUser(userId);
+                    } else {
+                        user = mTwitter.getUser(username);
+                    }
                     publishProgress(user);
                     db.storeUser(user);
 

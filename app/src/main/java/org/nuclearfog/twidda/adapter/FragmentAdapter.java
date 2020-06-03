@@ -73,6 +73,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[2] = new TweetFragment();
         fragments[0].setArguments(home_tl);
         fragments[2].setArguments(ment_tl);
+        notifyDataSetChanged();
     }
 
 
@@ -88,6 +89,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[1] = new TweetFragment();
         fragments[0].setArguments(usr_tweet);
         fragments[1].setArguments(usr_favor);
+        notifyDataSetChanged();
     }
 
 
@@ -103,6 +105,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[1] = new UserFragment();
         fragments[0].setArguments(tweetSearch);
         fragments[1].setArguments(userSearch);
+        notifyDataSetChanged();
     }
 
 
@@ -114,6 +117,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new Fragment[1];
         fragments[0] = new TweetFragment();
         fragments[0].setArguments(param);
+        notifyDataSetChanged();
     }
 
 
@@ -124,6 +128,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new Fragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
+        notifyDataSetChanged();
     }
 
 
@@ -134,12 +139,14 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new Fragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
+        notifyDataSetChanged();
     }
 
 
     public void setupMessagePage() {
         fragments = new Fragment[1];
         fragments[0] = new MessageFragment();
+        notifyDataSetChanged();
     }
 
 
@@ -150,6 +157,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new Fragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
+        notifyDataSetChanged();
     }
 
 
@@ -159,6 +167,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new Fragment[1];
         fragments[0] = new ListFragment();
         fragments[0].setArguments(param);
+        notifyDataSetChanged();
     }
 
 
@@ -169,6 +178,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments = new Fragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
+        notifyDataSetChanged();
     }
 
 
@@ -184,6 +194,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[1] = new UserFragment();
         fragments[0].setArguments(tweetParam);
         fragments[1].setArguments(userParam);
+        notifyDataSetChanged();
     }
 
     /**

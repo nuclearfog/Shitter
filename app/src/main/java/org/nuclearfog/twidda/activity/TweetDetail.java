@@ -75,7 +75,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
     private View header, footer;
-    private ViewPager pager;
+    private FragmentAdapter adapter;
 
     private GlobalSettings settings;
     @Nullable
@@ -90,7 +90,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         Toolbar tool = findViewById(R.id.tweet_toolbar);
         View root = findViewById(R.id.tweet_layout);
         Button ansButton = findViewById(R.id.tweet_answer);
-        pager = findViewById(R.id.tweet_pager);
+        ViewPager pager = findViewById(R.id.tweet_pager);
         header = findViewById(R.id.tweet_head);
         footer = findViewById(R.id.tweet_foot);
         rtwButton = findViewById(R.id.tweet_retweet);
@@ -109,12 +109,15 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         tool.setTitle("");
         setSupportActionBar(tool);
 
+        adapter = new FragmentAdapter(getSupportFragmentManager());
+        pager.setOffscreenPageLimit(1);
+        pager.setAdapter(adapter);
+
         settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
-        pager.setOffscreenPageLimit(1);
 
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
@@ -135,9 +138,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             if (param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
                 long tweetID = param.getLong(KEY_TWEET_ID);
                 String username = param.getString(KEY_TWEET_NAME);
-                FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
                 adapter.setupTweetPage(tweetID, username);
-                pager.setAdapter(adapter);
                 statusAsync = new TweetLoader(this, Action.LOAD);
                 statusAsync.execute(tweetID);
             }

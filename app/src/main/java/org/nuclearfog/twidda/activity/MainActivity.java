@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
@@ -33,14 +34,13 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 /**
  * Main Activity
  */
-public class MainActivity extends AppCompatActivity implements OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
     public static final int RETURN_DB_CLEARED = 1;
     public static final int RETURN_APP_LOGOUT = 2;
     private static final int REQUEST_APP_LOGIN = 1;
     private static final int REQUEST_APP_SETTINGS = 2;
 
-    @Nullable
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private GlobalSettings settings;
@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setContentView(load);
         loadingCircle.setCanceledOnTouchOutside(false);
+        adapter = new FragmentAdapter(getSupportFragmentManager());
+        pager.setAdapter(adapter);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -86,11 +88,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
-        } else if (adapter == null) {
-            adapter = new FragmentAdapter(getSupportFragmentManager());
+        } else {
             adapter.setupForHomePage();
-            pager.setAdapter(adapter);
-
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
             Tab mnTab = tablayout.getTabAt(2);
@@ -137,20 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         getMenuInflater().inflate(R.menu.home, m);
         MenuItem search = m.findItem(R.id.action_search);
         SearchView searchQuery = (SearchView) search.getActionView();
-        searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Intent search = new Intent(MainActivity.this, SearchPage.class);
-                search.putExtra(KEY_SEARCH_QUERY, s);
-                startActivity(search);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });
+        searchQuery.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(m);
     }
 
@@ -224,6 +210,21 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
     @Override
+    public boolean onQueryTextSubmit(String s) {
+        Intent search = new Intent(this, SearchPage.class);
+        search.putExtra(KEY_SEARCH_QUERY, s);
+        startActivity(search);
+        return false;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        return false;
+    }
+
+
+    @Override
     public void onTabSelected(Tab tab) {
         invalidateOptionsMenu();
     }
@@ -231,15 +232,13 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public void onTabUnselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 
 

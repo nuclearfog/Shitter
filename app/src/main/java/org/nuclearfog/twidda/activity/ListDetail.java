@@ -26,14 +26,13 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private ViewPager pager;
-    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_listdetail);
         View root = findViewById(R.id.listdetail_root);
-        toolbar = findViewById(R.id.listdetail_toolbar);
+        Toolbar toolbar = findViewById(R.id.listdetail_toolbar);
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
 
@@ -41,25 +40,18 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
 
+        adapter = new FragmentAdapter(getSupportFragmentManager());
+        pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
         tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.addOnTabSelectedListener(this);
-    }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         Bundle param = getIntent().getExtras();
-
-        if (adapter == null && param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
+        if (param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
             long id = param.getLong(KEY_LISTDETAIL_ID);
             String name = param.getString(KEY_LISTDETAIL_NAME, "");
-            adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.setupListContentPage(id);
-            pager.setAdapter(adapter);
-
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
             if (tlTab != null && trTab != null) {
@@ -89,8 +81,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabUnselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 
 

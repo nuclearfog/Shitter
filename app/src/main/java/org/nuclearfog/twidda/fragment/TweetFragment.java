@@ -212,7 +212,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     private void load() {
         switch (mode) {
             case TWEET_FRAG_HOME:
-                tweetTask = new TweetListLoader(this, TweetListLoader.Action.TL_HOME);
+                tweetTask = new TweetListLoader(this, Action.TL_HOME);
                 tweetTask.execute(1);
                 break;
 
@@ -222,7 +222,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
                 break;
 
             case TWEET_FRAG_TWEETS:
-                tweetTask = new TweetListLoader(this, TweetListLoader.Action.USR_TWEETS);
+                tweetTask = new TweetListLoader(this, Action.USR_TWEETS);
                 tweetTask.execute(id, 1);
                 break;
 
@@ -246,7 +246,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
                 break;
 
             case TWEET_FRAG_LIST:
-                tweetTask = new TweetListLoader(this, TweetListLoader.Action.LIST);
+                tweetTask = new TweetListLoader(this, Action.LIST);
                 tweetTask.execute(id, 1);
                 break;
         }

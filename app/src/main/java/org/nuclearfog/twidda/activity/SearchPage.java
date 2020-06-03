@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
@@ -26,7 +27,7 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 /**
  * Twitter search Activity
  */
-public class SearchPage extends AppCompatActivity implements OnTabSelectedListener {
+public class SearchPage extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
     public static final String KEY_SEARCH_QUERY = "search_query";
 
@@ -50,22 +51,17 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getBackgroundColor());
+
+        adapter = new FragmentAdapter(getSupportFragmentManager());
         tabLayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tabLayout.setupWithViewPager(pager);
         tabLayout.addOnTabSelectedListener(this);
-    }
+        pager.setAdapter(adapter);
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         Bundle param = getIntent().getExtras();
-        if (adapter == null && param != null && param.containsKey(KEY_SEARCH_QUERY)) {
+        if (param != null && param.containsKey(KEY_SEARCH_QUERY)) {
             search = param.getString(KEY_SEARCH_QUERY);
-            adapter = new FragmentAdapter(getSupportFragmentManager());
             adapter.setupSearchPage(search);
-            pager.setAdapter(adapter);
-
             Tab twtSearch = tabLayout.getTabAt(0);
             Tab usrSearch = tabLayout.getTabAt(1);
             if (twtSearch != null && usrSearch != null) {
@@ -89,23 +85,10 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
-        MenuItem mSearch = m.findItem(R.id.new_search);
-        SearchView searchQuery = (SearchView) mSearch.getActionView();
-        searchQuery.setQueryHint(search);
-        searchQuery.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                Intent intent = new Intent(SearchPage.this, SearchPage.class);
-                intent.putExtra(KEY_SEARCH_QUERY, s);
-                startActivity(intent);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                return false;
-            }
-        });
+        MenuItem searchItem = m.findItem(R.id.new_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint(search);
+        searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(m);
     }
 
@@ -123,6 +106,21 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
+    public boolean onQueryTextSubmit(String s) {
+        Intent intent = new Intent(this, SearchPage.class);
+        intent.putExtra(KEY_SEARCH_QUERY, s);
+        startActivity(intent);
+        return true;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        return false;
+    }
+
+
+    @Override
     public void onTabSelected(Tab tab) {
         invalidateOptionsMenu();
     }
@@ -130,14 +128,12 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabUnselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 
 
     @Override
     public void onTabReselected(Tab tab) {
-        if (adapter != null)
-            adapter.scrollToTop(tab.getPosition());
+        adapter.scrollToTop(tab.getPosition());
     }
 }
