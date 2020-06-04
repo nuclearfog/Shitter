@@ -114,7 +114,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
 
     @Override
-    public void onSettingsChange() {
+    public void onReset() {
     }
 
     /**

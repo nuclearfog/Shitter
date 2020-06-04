@@ -164,12 +164,11 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public void onPrepared(MediaPlayer mp) {
         if (type == MEDIAVIEWER_ANGIF) {
             mp.setLooping(true);
-            mp.start();
         } else {
             videoController.show(0);
             mp.seekTo(videoPos);
-            mp.start();
         }
+        mp.start();
 
         mp.setOnInfoListener(new OnInfoListener() {
             @Override

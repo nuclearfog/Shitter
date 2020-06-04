@@ -63,10 +63,14 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
     @Override
     protected List<Tweet> doInBackground(Object[] param) {
         List<Tweet> tweets = null;
+        String search;
+        int page;
+        long id;
+
         try {
             switch (action) {
                 case TL_HOME:
-                    int page = (int) param[0];
+                    page = (int) param[0];
                     if (sinceId == LIST_EMPTY) {
                         tweets = db.getHomeTimeline();
                         if (tweets.isEmpty()) {
@@ -94,32 +98,43 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                     break;
 
                 case USR_TWEETS:
-                    long id = (long) param[0];
                     page = (int) param[1];
-                    if (sinceId == LIST_EMPTY) {
-                        tweets = db.getUserTweets(id);
-                        if (tweets.isEmpty()) {
+                    if (param[0] instanceof Long) {
+                        id = (long) param[0];
+                        if (sinceId == LIST_EMPTY) {
+                            tweets = db.getUserTweets(id);
+                            if (tweets.isEmpty()) {
+                                tweets = mTwitter.getUserTweets(id, sinceId, page);
+                                db.storeUserTweets(tweets);
+                            }
+                        } else {
                             tweets = mTwitter.getUserTweets(id, sinceId, page);
                             db.storeUserTweets(tweets);
                         }
-                    } else {
-                        tweets = mTwitter.getUserTweets(id, sinceId, page);
+                    } else if (param[0] instanceof String) {
+                        search = (String) param[0];
+                        tweets = mTwitter.getUserTweets(search, sinceId, page);
                         db.storeUserTweets(tweets);
                     }
                     break;
 
                 case USR_FAVORS:
-                    id = (long) param[0];
                     page = (int) param[1];
-                    if (sinceId == LIST_EMPTY) {
-                        tweets = db.getUserFavs(id);
-                        if (tweets.isEmpty()) {
+                    if (param[0] instanceof Long) {
+                        id = (long) param[0];
+                        if (sinceId == LIST_EMPTY) {
+                            tweets = db.getUserFavs(id);
+                            if (tweets.isEmpty()) {
+                                tweets = mTwitter.getUserFavs(id, page);
+                                db.storeUserFavs(tweets, id);
+                            }
+                        } else {
                             tweets = mTwitter.getUserFavs(id, page);
                             db.storeUserFavs(tweets, id);
                         }
-                    } else {
-                        tweets = mTwitter.getUserFavs(id, page);
-                        db.storeUserFavs(tweets, id);
+                    } else if (param[0] instanceof String) {
+                        search = (String) param[0];
+                        tweets = mTwitter.getUserFavs(search, page);
                     }
                     break;
 
@@ -130,7 +145,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
                 case TWEET_ANS:
                     id = (long) param[0];
-                    String search = (String) param[1];
+                    search = (String) param[1];
                     if (sinceId == LIST_EMPTY) {
                         tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {

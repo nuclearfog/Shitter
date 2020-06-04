@@ -127,7 +127,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
 
     @Override
-    public void onSettingsChange() {
+    public void onReset() {
         if (getView() != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
@@ -222,12 +222,18 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
                 case TWEET_FRAG_TWEETS:
                     tweetTask = new TweetListLoader(this, Action.USR_TWEETS);
-                    tweetTask.execute(id, 1);
+                    if (param.containsKey(KEY_FRAG_TWEET_ID))
+                        tweetTask.execute(id, 1);
+                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH))
+                        tweetTask.execute(search, 1);
                     break;
 
                 case TWEET_FRAG_FAVORS:
                     tweetTask = new TweetListLoader(this, Action.USR_FAVORS);
-                    tweetTask.execute(id, 1);
+                    if (param.containsKey(KEY_FRAG_TWEET_ID))
+                        tweetTask.execute(id, 1);
+                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH))
+                        tweetTask.execute(search, 1);
                     break;
 
                 case TWEET_FRAG_ANSWER:

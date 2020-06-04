@@ -59,8 +59,9 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserProperties
                 case LDR_PROFILE:
                     if (userId > 0) {
                         user = db.getUser(userId);
-                        if (user != null)
+                        if (user != null) {
                             publishProgress(user);
+                        }
                         user = mTwitter.getUser(userId);
                     } else {
                         user = mTwitter.getUser(username);
@@ -68,20 +69,27 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserProperties
                     publishProgress(user);
                     db.storeUser(user);
 
-                    connection = mTwitter.getConnection(userId);
-                    if (!connection.isHome())
-                        if (connection.isBlocked() || connection.isMuted())
+                    if (userId > 0) {
+                        connection = mTwitter.getConnection(userId);
+                    } else {
+                        connection = mTwitter.getConnection(username);
+                    }
+                    if (!connection.isHome()) {
+                        if (connection.isBlocked() || connection.isMuted()) {
                             db.muteUser(userId, true);
-                        else
+                        } else {
                             db.muteUser(userId, false);
+                        }
+                    }
                     return connection;
 
                 case ACTION_FOLLOW:
                     connection = mTwitter.getConnection(userId);
-                    if (!connection.isFriend())
+                    if (!connection.isFriend()) {
                         user = mTwitter.followUser(userId);
-                    else
+                    } else {
                         user = mTwitter.unfollowUser(userId);
+                    }
                     publishProgress(user);
                     return mTwitter.getConnection(userId);
 

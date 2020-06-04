@@ -6,22 +6,17 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.activity.MainActivity;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.activity.TweetDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
 
 import java.lang.ref.WeakReference;
 
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_NAME;
 
 /**
  * This class handles deep links and starts activities to show the content
@@ -33,14 +28,10 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
     private static final String TWEET_PATH = "[\\w]+/status/\\d+";
     private static final String USER_PATH = "[\\w]+/?(\\bwith_replies\\b|\\bmedia\\b|\\blikes\\b)?";
 
-    @Nullable
-    private EngineException err;
     private WeakReference<MainActivity> callback;
-    private TwitterEngine mTwitter;
 
     public LinkContentLoader(MainActivity callback) {
         this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
     }
 
     @Override
@@ -65,12 +56,10 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
                     data.putString(KEY_TWEET_NAME, name);
                     return new DataHolder(data, TweetDetail.class);
                 } else if (path.matches(USER_PATH) && link.getQuery() == null) {
-                    String name = '@' + path;
-                    int end = name.indexOf("/");
+                    int end = path.indexOf("/");
                     if (end > 0)
-                        name = name.substring(0, end);
-                    TwitterUser user = mTwitter.getUser(name);
-                    data.putLong(KEY_PROFILE_ID, user.getId());
+                        path = path.substring(0, end);
+                    data.putString(KEY_PROFILE_NAME, path);
                     return new DataHolder(data, UserProfile.class);
                 } else if (path.startsWith("search")) {
                     String search = link.getQueryParameter("q");
@@ -87,8 +76,6 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
                     }
                 }
             }
-        } catch (EngineException err) {
-            this.err = err;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -104,8 +91,6 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
                 Intent intent = new Intent(callback.get(), result.activity);
                 intent.putExtras(result.data);
                 callback.get().startActivity(intent);
-            } else if (err != null) {
-                callback.get().onError(err);
             }
         }
     }

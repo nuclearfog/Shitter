@@ -68,7 +68,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnTagClickListener, OnTabSelectedListener {
 
     public static final String KEY_PROFILE_ID = "profile_id";
-    // public static final String KEY_PROFILE_NAME = "profile_name"; // TODO
+    public static final String KEY_PROFILE_NAME = "profile_name";
     public static final int RETURN_PROFILE_CHANGED = 2;
     private static final int REQUEST_PROFILE_CHANGED = 1;
     private static final int TRANSPARENCY = 0xafffffff;
@@ -157,17 +157,23 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         Bundle param = getIntent().getExtras();
-        if (profileAsync == null && param != null && param.containsKey(KEY_PROFILE_ID)) {
-            long userId = param.getLong(KEY_PROFILE_ID);
-            adapter.setupProfilePage(userId);
+        if (profileAsync == null && param != null) {
+            profileAsync = new ProfileLoader(this, LDR_PROFILE);
+            if (param.containsKey(KEY_PROFILE_ID)) {
+                long userId = param.getLong(KEY_PROFILE_ID);
+                adapter.setupProfilePage(userId);
+                profileAsync.execute(userId);
+            } else {
+                String username = param.getString(KEY_PROFILE_NAME);
+                adapter.setupProfilePage(username);
+                profileAsync.execute(username);
+            }
             Tab tweetTab = tabLayout.getTabAt(0);
             Tab favorTab = tabLayout.getTabAt(1);
             if (tweetTab != null && favorTab != null) {
                 tweetTab.setCustomView(tweetTabTxt);
                 favorTab.setCustomView(favorTabTxt);
             }
-            profileAsync = new ProfileLoader(this, LDR_PROFILE);
-            profileAsync.execute(userId);
         }
     }
 

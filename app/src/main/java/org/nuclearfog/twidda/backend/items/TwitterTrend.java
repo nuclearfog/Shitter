@@ -89,10 +89,8 @@ public class TwitterTrend {
     public String getSearchString() {
         if (trendName.startsWith("#"))
             return trendName;
-        else {
-            if (!trendName.startsWith("\"") && !trendName.endsWith("\""))
-                return "\"" + trendName + "\"";
-            return trendName;
-        }
+        if (!trendName.startsWith("\"") && !trendName.endsWith("\""))
+            return "\"" + trendName + "\"";
+        return trendName;
     }
 }

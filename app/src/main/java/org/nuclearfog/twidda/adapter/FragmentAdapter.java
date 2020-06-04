@@ -98,6 +98,22 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     }
 
 
+    public void setupProfilePage(String username) {
+        Bundle usr_tweet = new Bundle();
+        Bundle usr_favor = new Bundle();
+        usr_tweet.putString(KEY_FRAG_TWEET_SEARCH, username);
+        usr_favor.putString(KEY_FRAG_TWEET_SEARCH, username);
+        usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
+        usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
+        fragments = new Fragment[2];
+        fragments[0] = new TweetFragment();
+        fragments[1] = new TweetFragment();
+        fragments[0].setArguments(usr_tweet);
+        fragments[1].setArguments(usr_favor);
+        notifyDataSetChanged();
+    }
+
+
     public void setupSearchPage(String search) {
         Bundle tweetSearch = new Bundle();
         Bundle userSearch = new Bundle();
@@ -208,7 +224,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public void notifySettingsChanged() {
         for (Fragment fragment : fragments) {
             if (fragment instanceof FragmentChangeObserver)
-                ((FragmentChangeObserver) fragment).onSettingsChange();
+                ((FragmentChangeObserver) fragment).onReset();
         }
     }
 
@@ -217,8 +233,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * @param index tab position of page
      */
     public void scrollToTop(int index) {
-        if (fragments[index] instanceof FragmentChangeObserver)
+        if (fragments[index] instanceof FragmentChangeObserver) {
             ((FragmentChangeObserver) fragments[index]).onTabChange();
+        }
     }
 
 
@@ -227,7 +244,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         /**
          * called if settings changed to refresh fragments
          */
-        void onSettingsChange();
+        void onReset();
 
         /**
          * called when the current tab changes

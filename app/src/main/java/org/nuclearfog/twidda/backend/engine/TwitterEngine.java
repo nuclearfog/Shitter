@@ -329,6 +329,26 @@ public class TwitterEngine {
 
 
     /**
+     * Get User Tweets
+     *
+     * @param username screen name of the user
+     * @param sinceId  minimum tweet ID
+     * @param page     current page
+     * @return List of User Tweets
+     * @throws EngineException if access is unavailable
+     */
+    public List<Tweet> getUserTweets(String username, long sinceId, int page) throws EngineException {
+        try {
+            int load = settings.getRowLimit();
+            Paging paging = new Paging(page, load, sinceId);
+            return convertStatusList(twitter.getUserTimeline(username, paging));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
      * Get User Favs
      *
      * @param userId  User ID
@@ -341,6 +361,26 @@ public class TwitterEngine {
             int load = settings.getRowLimit();
             Paging paging = new Paging(page, load);
             List<Status> favorits = twitter.getFavorites(userId, paging);
+            return convertStatusList(favorits);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
+     * Get User Favs
+     *
+     * @param username screen name of the user
+     * @param page     current page
+     * @return List of User Favs
+     * @throws EngineException if access is unavailable
+     */
+    public List<Tweet> getUserFavs(String username, int page) throws EngineException {
+        try {
+            int load = settings.getRowLimit();
+            Paging paging = new Paging(page, load);
+            List<Status> favorits = twitter.getFavorites(username, paging);
             return convertStatusList(favorits);
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -405,6 +445,22 @@ public class TwitterEngine {
     public UserProperties getConnection(long userId) throws EngineException {
         try {
             return new UserProperties(twitter.showFriendship(twitterID, userId));
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
+     * Efficient Access of Connection Information
+     *
+     * @param username screen name of the user
+     * @return User Properties
+     * @throws EngineException if Connection is unavailable
+     */
+    public UserProperties getConnection(String username) throws EngineException {
+        try {
+            return new UserProperties(twitter.showFriendship(twitter.getScreenName(), username));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }

@@ -95,7 +95,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
 
     @Override
-    public void onSettingsChange() {
+    public void onReset() {
         if (getView() != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list

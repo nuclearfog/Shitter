@@ -23,8 +23,6 @@ import com.google.android.material.tabs.TabLayout.Tab;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.LinkContentLoader;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.view.Window.FEATURE_NO_TITLE;
@@ -240,10 +238,5 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             loadingCircle.show();
         else
             loadingCircle.dismiss();
-    }
-
-
-    public void onError(EngineException error) {
-        ErrorHandler.handleFailure(this, error);
     }
 }
