@@ -51,8 +51,8 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Context context = inflater.getContext();
-        GlobalSettings settings = GlobalSettings.getInstance(context);
 
+        GlobalSettings settings = GlobalSettings.getInstance(context);
         adapter = new MessageAdapter(this, settings);
 
         RecyclerView list = new RecyclerView(context);
@@ -71,8 +71,9 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     @Override
     public void onStart() {
         super.onStart();
-        if (messageTask == null)
+        if (messageTask == null) {
             load(MessageListLoader.Action.DB);
+        }
     }
 
 
@@ -86,14 +87,15 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onRefresh() {
-        if (messageTask != null && messageTask.getStatus() != RUNNING)
+        if (messageTask != null && messageTask.getStatus() != RUNNING) {
             load(MessageListLoader.Action.LOAD);
+        }
     }
 
 
     @Override
     public void onTagClick(String tag) {
-        if (reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && !reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), SearchPage.class);
             intent.putExtra(KEY_SEARCH_QUERY, tag);
             startActivity(intent);
@@ -103,17 +105,18 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onLinkClick(String link) {
-        if (reload != null && !reload.isRefreshing() && getContext() != null) {
+        if (getContext() != null && reload != null && !reload.isRefreshing()) {
             if (TweetDetail.linkPattern.matcher(link).matches()) {
                 Intent intent = new Intent(getContext(), TweetDetail.class);
                 intent.setData(Uri.parse(link));
                 startActivity(intent);
             } else {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-                if (intent.resolveActivity(getContext().getPackageManager()) != null)
+                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
                     startActivity(intent);
-                else
+                } else {
                     Toast.makeText(getContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -121,7 +124,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onClick(final Message message, Action action) {
-        if (reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && reload != null && !reload.isRefreshing()) {
             switch (action) {
                 case ANSWER:
                     Intent sendDm = new Intent(getContext(), MessagePopup.class);
@@ -130,19 +133,17 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     break;
 
                 case DELETE:
-                    if (getContext() != null) {
-                        Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                        confirmDialog.setMessage(R.string.confirm_delete_message);
-                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                        confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
-                                messageTask.execute(message.getId());
-                            }
-                        });
-                        confirmDialog.show();
-                    }
+                    Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
+                    confirmDialog.setMessage(R.string.confirm_delete_message);
+                    confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                    confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
+                            messageTask.execute(message.getId());
+                        }
+                    });
+                    confirmDialog.show();
                     break;
 
                 case PROFILE:
@@ -196,8 +197,9 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null)
+        if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
+        }
     }
 
 

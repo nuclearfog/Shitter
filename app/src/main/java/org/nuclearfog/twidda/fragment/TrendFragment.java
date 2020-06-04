@@ -34,10 +34,11 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 public class TrendFragment extends Fragment implements OnRefreshListener, TrendClickListener, FragmentChangeObserver {
 
     private TrendListLoader trendTask;
+    private GlobalSettings settings;
+
     private SwipeRefreshLayout reload;
     private RecyclerView list;
     private TrendAdapter adapter;
-    private GlobalSettings settings;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
@@ -52,6 +53,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
         list.setAdapter(adapter);
 
         reload = new SwipeRefreshLayout(context);
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
         reload.addView(list);
         return reload;
@@ -61,9 +63,9 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
     @Override
     public void onStart() {
         super.onStart();
-        if (trendTask == null)
+        if (trendTask == null) {
             load();
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        }
     }
 
 
@@ -94,24 +96,20 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     @Override
     public void onSettingsChange() {
-        list.setAdapter(adapter); // re-initialize List
-        adapter.clear();
-        load();
+        if (getView() != null) {
+            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+            list.setAdapter(adapter); // force redrawing list
+            adapter.clear();
+            load();
+        }
     }
 
 
     @Override
     public void onTabChange() {
-        if (list != null)
+        if (getView() != null) {
             list.smoothScrollToPosition(0);
-    }
-
-
-    @Override
-    public void onDataClear() {
-        if (adapter != null)
-            adapter.clear();
-        load();
+        }
     }
 
     /**
@@ -139,8 +137,9 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null)
+        if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
+        }
     }
 
     /**

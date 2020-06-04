@@ -32,7 +32,7 @@ import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FRIENDS;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_LISTS;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_RETWEET;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SEARCH;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCRIBER;
+import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCR;
 
 public class FragmentAdapter extends FragmentStatePagerAdapter {
 
@@ -59,6 +59,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     @Override
     public int getCount() {
         return fragments.length;
+    }
+
+
+    public boolean isEmpty() {
+        return fragments.length == 0;
     }
 
 
@@ -174,7 +179,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public void setupSubscriberPage(long listId) {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, listId);
-        param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCRIBER);
+        param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCR);
         fragments = new Fragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
@@ -216,16 +221,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
             ((FragmentChangeObserver) fragments[index]).onTabChange();
     }
 
-    /**
-     * called to clear all fragments
-     */
-    public void clearData() {
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof FragmentChangeObserver)
-                ((FragmentChangeObserver) fragment).onDataClear();
-        }
-    }
-
 
     public interface FragmentChangeObserver {
 
@@ -238,10 +233,5 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
          * called when the current tab changes
          */
         void onTabChange();
-
-        /**
-         * called to clear the lists
-         */
-        void onDataClear();
     }
 }

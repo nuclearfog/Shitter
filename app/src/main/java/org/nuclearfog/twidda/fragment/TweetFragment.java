@@ -41,13 +41,13 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     public static final String KEY_FRAG_TWEET_ID = "tweet_id";
     public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 
-    public static final int TWEET_FRAG_HOME = 0;
-    public static final int TWEET_FRAG_MENT = 1;
-    public static final int TWEET_FRAG_TWEETS = 2;
-    public static final int TWEET_FRAG_FAVORS = 3;
-    public static final int TWEET_FRAG_ANSWER = 4;
-    public static final int TWEET_FRAG_SEARCH = 5;
-    public static final int TWEET_FRAG_LIST = 6;
+    public static final int TWEET_FRAG_HOME = 1;
+    public static final int TWEET_FRAG_MENT = 2;
+    public static final int TWEET_FRAG_TWEETS = 3;
+    public static final int TWEET_FRAG_FAVORS = 4;
+    public static final int TWEET_FRAG_ANSWER = 5;
+    public static final int TWEET_FRAG_SEARCH = 6;
+    public static final int TWEET_FRAG_LIST = 7;
     public static final int LIST_EMPTY = 1;
 
     private static final int REQUEST_TWEET_CHANGED = 3;
@@ -55,31 +55,23 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     private TweetListLoader tweetTask;
     private GlobalSettings settings;
+
     private SwipeRefreshLayout reload;
     private RecyclerView list;
     private TweetAdapter adapter;
 
-    private String search;
-    private long id;
-    private int mode;
-
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
-        Bundle b = getArguments();
         Context context = inflater.getContext();
 
-        if (b != null) {
-            mode = b.getInt(KEY_FRAG_TWEET_MODE);
-            id = b.getLong(KEY_FRAG_TWEET_ID, -1);
-            search = b.getString(KEY_FRAG_TWEET_SEARCH, "");
-        }
         settings = GlobalSettings.getInstance(context);
         adapter = new TweetAdapter(this, settings);
+
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
         list.setAdapter(adapter);
         reload = new SwipeRefreshLayout(context);
+        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
         reload.addView(list);
         return reload;
@@ -89,16 +81,17 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     @Override
     public void onStart() {
         super.onStart();
-        if (tweetTask == null)
+        if (tweetTask == null) {
             load();
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+        }
     }
 
 
     @Override
     public void onDestroy() {
-        if (tweetTask != null && tweetTask.getStatus() == RUNNING)
+        if (tweetTask != null && tweetTask.getStatus() == RUNNING) {
             tweetTask.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -114,14 +107,15 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onRefresh() {
-        if (tweetTask != null && tweetTask.getStatus() != RUNNING)
+        if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
             load();
+        }
     }
 
 
     @Override
     public void onTweetClick(Tweet tweet) {
-        if (reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && !reload.isRefreshing()) {
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
@@ -134,22 +128,20 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onSettingsChange() {
-        list.setAdapter(adapter); // re-initialize List
+        if (getView() != null) {
+            reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
+            list.setAdapter(adapter); // force redrawing list
+            adapter.clear();
+            load();
+        }
     }
 
 
     @Override
     public void onTabChange() {
-        if (list != null)
+        if (getView() != null) {
             list.smoothScrollToPosition(0);
-    }
-
-
-    @Override
-    public void onDataClear() {
-        if (adapter != null)
-            adapter.clear();
-        tweetTask = null;
+        }
     }
 
     /**
@@ -157,7 +149,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
      * @return ID of the first tweet or {@link #LIST_EMPTY} if list is empty
      */
     public long getTopId() {
-        if (adapter != null && !adapter.isEmpty())
+        if (!adapter.isEmpty())
             return adapter.getItemId(0);
         return LIST_EMPTY;
     }
@@ -204,51 +196,58 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null)
+        if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
+        }
     }
 
 
     private void load() {
-        switch (mode) {
-            case TWEET_FRAG_HOME:
-                tweetTask = new TweetListLoader(this, Action.TL_HOME);
-                tweetTask.execute(1);
-                break;
+        Bundle param = getArguments();
+        if (param != null) {
+            int mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
+            long id = param.getLong(KEY_FRAG_TWEET_ID, 1);
+            String search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
 
-            case TWEET_FRAG_MENT:
-                tweetTask = new TweetListLoader(this, Action.TL_MENT);
-                tweetTask.execute(1);
-                break;
+            switch (mode) {
+                case TWEET_FRAG_HOME:
+                    tweetTask = new TweetListLoader(this, Action.TL_HOME);
+                    tweetTask.execute(1);
+                    break;
 
-            case TWEET_FRAG_TWEETS:
-                tweetTask = new TweetListLoader(this, Action.USR_TWEETS);
-                tweetTask.execute(id, 1);
-                break;
+                case TWEET_FRAG_MENT:
+                    tweetTask = new TweetListLoader(this, Action.TL_MENT);
+                    tweetTask.execute(1);
+                    break;
 
-            case TWEET_FRAG_FAVORS:
-                tweetTask = new TweetListLoader(this, Action.USR_FAVORS);
-                tweetTask.execute(id, 1);
-                break;
+                case TWEET_FRAG_TWEETS:
+                    tweetTask = new TweetListLoader(this, Action.USR_TWEETS);
+                    tweetTask.execute(id, 1);
+                    break;
 
-            case TWEET_FRAG_ANSWER:
-                boolean loadAnswer = settings.getAnswerLoad();
-                if (tweetTask != null || loadAnswer)
-                    tweetTask = new TweetListLoader(this, Action.TWEET_ANS);
-                else
-                    tweetTask = new TweetListLoader(this, Action.DB_ANS);
-                tweetTask.execute(id, search);
-                break;
+                case TWEET_FRAG_FAVORS:
+                    tweetTask = new TweetListLoader(this, Action.USR_FAVORS);
+                    tweetTask.execute(id, 1);
+                    break;
 
-            case TWEET_FRAG_SEARCH:
-                tweetTask = new TweetListLoader(this, Action.TWEET_SEARCH);
-                tweetTask.execute(search);
-                break;
+                case TWEET_FRAG_ANSWER:
+                    if (tweetTask != null || settings.getAnswerLoad())
+                        tweetTask = new TweetListLoader(this, Action.TWEET_ANS);
+                    else
+                        tweetTask = new TweetListLoader(this, Action.DB_ANS);
+                    tweetTask.execute(id, search);
+                    break;
 
-            case TWEET_FRAG_LIST:
-                tweetTask = new TweetListLoader(this, Action.LIST);
-                tweetTask.execute(id, 1);
-                break;
+                case TWEET_FRAG_SEARCH:
+                    tweetTask = new TweetListLoader(this, Action.TWEET_SEARCH);
+                    tweetTask.execute(search);
+                    break;
+
+                case TWEET_FRAG_LIST:
+                    tweetTask = new TweetListLoader(this, Action.LIST);
+                    tweetTask.execute(id, 1);
+                    break;
+            }
         }
     }
 }

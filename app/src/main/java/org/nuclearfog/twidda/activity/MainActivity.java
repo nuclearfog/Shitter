@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         if (!settings.getLogin()) {
             Intent loginIntent = new Intent(this, LoginPage.class);
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
-        } else {
+        } else if (adapter.isEmpty()) {
             adapter.setupForHomePage();
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
@@ -117,14 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             case REQUEST_APP_SETTINGS:
                 root.setBackgroundColor(settings.getBackgroundColor());
                 tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-                if (adapter != null) {
-                    if (returnCode == RETURN_DB_CLEARED)
-                        adapter.clearData();
-                    else if (returnCode == RETURN_APP_LOGOUT)
-                        adapter = null;
-                    else
-                        adapter.notifySettingsChanged();
-                }
+                adapter.notifySettingsChanged();
                 break;
         }
         super.onActivityResult(reqCode, returnCode, intent);

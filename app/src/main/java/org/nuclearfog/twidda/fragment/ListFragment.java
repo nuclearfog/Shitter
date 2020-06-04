@@ -47,21 +47,16 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
     public static final String KEY_FRAG_LIST = "list_owner";
 
-    private SwipeRefreshLayout reloadLayout;
-    private ListAdapter adapter;
     private TwitterListLoader listTask;
 
-    private long userId;
+    private SwipeRefreshLayout reloadLayout;
+    private ListAdapter adapter;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
-        Bundle b = getArguments();
-        if (b != null)
-            userId = b.getLong(KEY_FRAG_LIST);
-
         Context context = inflater.getContext();
-        GlobalSettings settings = GlobalSettings.getInstance(context);
 
+        GlobalSettings settings = GlobalSettings.getInstance(context);
         adapter = new ListAdapter(this, settings);
 
         RecyclerView listView = new RecyclerView(inflater.getContext());
@@ -80,8 +75,9 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     @Override
     public void onStart() {
         super.onStart();
-        if (listTask == null)
+        if (listTask == null) {
             load();
+        }
     }
 
 
@@ -95,14 +91,15 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
     @Override
     public void onRefresh() {
-        if (listTask != null && listTask.getStatus() != RUNNING)
+        if (listTask != null && listTask.getStatus() != RUNNING) {
             load();
+        }
     }
 
 
     @Override
     public void onClick(final TwitterList listItem, Action action) {
-        if (!reloadLayout.isRefreshing()) {
+        if (getContext() != null && !reloadLayout.isRefreshing()) {
             switch (action) {
                 case PROFILE:
                     Intent profile = new Intent(getContext(), UserProfile.class);
@@ -112,19 +109,17 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
                 case FOLLOW:
                     if (listItem.isFollowing()) {
-                        if (getContext() != null) {
-                            Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                            confirmDialog.setMessage(R.string.confirm_unfollow_list);
-                            confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                            confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    listTask = new TwitterListLoader(ListFragment.this, FOLLOW);
-                                    listTask.execute(listItem.getId());
-                                }
-                            });
-                            confirmDialog.show();
-                        }
+                        Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
+                        confirmDialog.setMessage(R.string.confirm_unfollow_list);
+                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                        confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                listTask = new TwitterListLoader(ListFragment.this, FOLLOW);
+                                listTask.execute(listItem.getId());
+                            }
+                        });
+                        confirmDialog.show();
                     } else {
                         listTask = new TwitterListLoader(this, FOLLOW);
                         listTask.execute(listItem.getId());
@@ -146,19 +141,17 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     break;
 
                 case DELETE:
-                    if (getContext() != null) {
-                        Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                        confirmDialog.setMessage(R.string.confirm_delete_list);
-                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                        confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                listTask = new TwitterListLoader(ListFragment.this, DELETE);
-                                listTask.execute(listItem.getId());
-                            }
-                        });
-                        confirmDialog.show();
-                    }
+                    Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
+                    confirmDialog.setMessage(R.string.confirm_delete_list);
+                    confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                    confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            listTask = new TwitterListLoader(ListFragment.this, DELETE);
+                            listTask.execute(listItem.getId());
+                        }
+                    });
+                    confirmDialog.show();
                     break;
             }
         }
@@ -215,13 +208,18 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null)
+        if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
+        }
     }
 
 
     private void load() {
-        listTask = new TwitterListLoader(this, LOAD);
-        listTask.execute(userId);
+        Bundle param = getArguments();
+        if (param != null) {
+            long userId = param.getLong(KEY_FRAG_LIST);
+            listTask = new TwitterListLoader(this, LOAD);
+            listTask.execute(userId);
+        }
     }
 }

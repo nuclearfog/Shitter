@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -44,7 +46,7 @@ public class GlobalSettings {
      * @param context Application Context needed for Shared preferences
      * @return instance of this class
      */
-    public static GlobalSettings getInstance(Context context) {
+    public static GlobalSettings getInstance(@NonNull Context context) {
         if (ourInstance.settings == null) {
             ourInstance.settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
             ourInstance.initialize();

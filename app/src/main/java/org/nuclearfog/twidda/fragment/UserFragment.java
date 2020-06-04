@@ -38,32 +38,24 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     public static final String KEY_FRAG_USER_SEARCH = "user_search";
     public static final String KEY_FRAG_USER_ID = "user_id";
 
-    public static final int USER_FRAG_FOLLOWS = 0;
-    public static final int USER_FRAG_FRIENDS = 1;
-    public static final int USER_FRAG_RETWEET = 2;
-    public static final int USER_FRAG_FAVORIT = 3;
-    public static final int USER_FRAG_SEARCH = 4;
-    public static final int USER_FRAG_SUBSCRIBER = 5;
-    public static final int USER_FRAG_LISTS = 6;
+    public static final int USER_FRAG_FOLLOWS = 1;
+    public static final int USER_FRAG_FRIENDS = 2;
+    public static final int USER_FRAG_RETWEET = 3;
+    public static final int USER_FRAG_FAVORIT = 4;
+    public static final int USER_FRAG_SEARCH = 5;
+    public static final int USER_FRAG_SUBSCR = 6;
+    public static final int USER_FRAG_LISTS = 7;
 
     private SwipeRefreshLayout reload;
     private UserAdapter adapter;
     private UserListLoader userTask;
     private RecyclerView list;
-    private String search;
-    private long id;
-    private int mode;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
-        Bundle b = getArguments();
         Context context = inflater.getContext();
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        if (b != null) {
-            mode = b.getInt(KEY_FRAG_USER_MODE);
-            id = b.getLong(KEY_FRAG_USER_ID, -1);
-            search = b.getString(KEY_FRAG_USER_SEARCH, "");
-        }
+
         adapter = new UserAdapter(this, settings);
         list = new RecyclerView(context);
         list.setLayoutManager(new LinearLayoutManager(context));
@@ -81,8 +73,9 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     @Override
     public void onStart() {
         super.onStart();
-        if (userTask == null)
+        if (userTask == null) {
             load();
+        }
     }
 
 
@@ -96,14 +89,15 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onRefresh() {
-        if (userTask != null && userTask.getStatus() != RUNNING)
+        if (userTask != null && userTask.getStatus() != RUNNING) {
             load();
+        }
     }
 
 
     @Override
     public void onUserClick(TwitterUser user) {
-        if (reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && reload != null && !reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), UserProfile.class);
             intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);
@@ -113,18 +107,14 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onTabChange() {
-        if (list != null)
+        if (getView() != null) {
             list.smoothScrollToPosition(0);
+        }
     }
 
 
     @Override
     public void onSettingsChange() {
-    }
-
-
-    @Override
-    public void onDataClear() {
     }
 
     /**
@@ -160,42 +150,55 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      * @param error Engine exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null)
+        if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
+        }
     }
 
 
     private void load() {
-        switch (mode) {
-            case USER_FRAG_FOLLOWS:
-                userTask = new UserListLoader(this, Mode.FOLLOWS);
-                userTask.execute(id);
-                break;
-            case USER_FRAG_FRIENDS:
-                userTask = new UserListLoader(this, Mode.FRIENDS);
-                userTask.execute(id);
-                break;
-            case USER_FRAG_RETWEET:
-                userTask = new UserListLoader(this, Mode.RETWEET);
-                userTask.execute(id);
-                break;
-            case USER_FRAG_FAVORIT:
-                userTask = new UserListLoader(this, Mode.FAVORIT);
-                userTask.execute(id);
-                break;
-            case USER_FRAG_SEARCH:
-                userTask = new UserListLoader(this, Mode.SEARCH);
-                userTask.execute(search);
-                break;
-            case USER_FRAG_SUBSCRIBER:
-                userTask = new UserListLoader(this, Mode.SUBSCRIBER);
-                userTask.execute(id);
-                break;
-            case USER_FRAG_LISTS:
-                userTask = new UserListLoader(this, Mode.LIST);
-                userTask.execute(id);
-                break;
+        Bundle param = getArguments();
+        if (param != null) {
+            int mode = param.getInt(KEY_FRAG_USER_MODE, 0);
+            long id = param.getLong(KEY_FRAG_USER_ID, 1);
+            String search = param.getString(KEY_FRAG_USER_SEARCH, "");
 
+            switch (mode) {
+                case USER_FRAG_FOLLOWS:
+                    userTask = new UserListLoader(this, Mode.FOLLOWS);
+                    userTask.execute(id);
+                    break;
+
+                case USER_FRAG_FRIENDS:
+                    userTask = new UserListLoader(this, Mode.FRIENDS);
+                    userTask.execute(id);
+                    break;
+
+                case USER_FRAG_RETWEET:
+                    userTask = new UserListLoader(this, Mode.RETWEET);
+                    userTask.execute(id);
+                    break;
+
+                case USER_FRAG_FAVORIT:
+                    userTask = new UserListLoader(this, Mode.FAVORIT);
+                    userTask.execute(id);
+                    break;
+
+                case USER_FRAG_SEARCH:
+                    userTask = new UserListLoader(this, Mode.SEARCH);
+                    userTask.execute(search);
+                    break;
+
+                case USER_FRAG_SUBSCR:
+                    userTask = new UserListLoader(this, Mode.SUBSCRIBER);
+                    userTask.execute(id);
+                    break;
+
+                case USER_FRAG_LISTS:
+                    userTask = new UserListLoader(this, Mode.LIST);
+                    userTask.execute(id);
+                    break;
+            }
         }
     }
 }
