@@ -49,19 +49,7 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
             String path = link.getPath();
             if (path != null && path.length() > 1) {
                 path = path.substring(1);
-                if (path.matches(TWEET_PATH)) {
-                    String name = '@' + path.substring(path.indexOf("/"));
-                    long id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
-                    data.putLong(KEY_TWEET_ID, id);
-                    data.putString(KEY_TWEET_NAME, name);
-                    return new DataHolder(data, TweetDetail.class);
-                } else if (path.matches(USER_PATH) && link.getQuery() == null) {
-                    int end = path.indexOf("/");
-                    if (end > 0)
-                        path = path.substring(0, end);
-                    data.putString(KEY_PROFILE_NAME, path);
-                    return new DataHolder(data, UserProfile.class);
-                } else if (path.startsWith("search")) {
+                if (path.startsWith("search")) {
                     String search = link.getQueryParameter("q");
                     if (search != null) {
                         data.putString(KEY_SEARCH_QUERY, search);
@@ -74,6 +62,18 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
                         data.putString(KEY_SEARCH_QUERY, search);
                         return new DataHolder(data, SearchPage.class);
                     }
+                } else if (path.matches(USER_PATH)) {
+                    int end = path.indexOf("/");
+                    if (end > 0)
+                        path = path.substring(0, end);
+                    data.putString(KEY_PROFILE_NAME, path);
+                    return new DataHolder(data, UserProfile.class);
+                } else if (path.matches(TWEET_PATH)) {
+                    String name = '@' + path.substring(path.indexOf("/"));
+                    long id = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
+                    data.putLong(KEY_TWEET_ID, id);
+                    data.putString(KEY_TWEET_NAME, name);
+                    return new DataHolder(data, TweetDetail.class);
                 }
             }
         } catch (Exception e) {

@@ -43,7 +43,8 @@
         <item name="cardBackgroundColor">@color/half_transparent</item>
         <item name="cardPreventCornerOverlap">false</item>
         <item name="cardUseCompatPadding">true</item>
-        <item name="cardCornerRadius">5dp</item>
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">2dp</item>
     </style>
 
     <style name="PopupCardView" parent="CardView">
