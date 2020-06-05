@@ -57,13 +57,13 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserProperties
         try {
             switch (action) {
                 case LDR_PROFILE:
-                    if (userId > 0) {
+                    if (userId > 0) { // search user by ID
                         user = db.getUser(userId);
                         if (user != null) {
                             publishProgress(user);
                         }
                         user = mTwitter.getUser(userId);
-                    } else {
+                    } else {    // Search user by name
                         user = mTwitter.getUser(username);
                     }
                     publishProgress(user);

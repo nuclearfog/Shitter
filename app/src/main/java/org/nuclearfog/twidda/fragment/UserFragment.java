@@ -97,7 +97,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onUserClick(TwitterUser user) {
-        if (getContext() != null && reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && !reload.isRefreshing()) {
             Intent intent = new Intent(getContext(), UserProfile.class);
             intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);
@@ -107,7 +107,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onTabChange() {
-        if (getView() != null) {
+        if (list != null) {
             list.smoothScrollToPosition(0);
         }
     }

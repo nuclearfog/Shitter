@@ -105,7 +105,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onLinkClick(String link) {
-        if (getContext() != null && reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && !reload.isRefreshing()) {
             if (TweetDetail.linkPattern.matcher(link).matches()) {
                 Intent intent = new Intent(getContext(), TweetDetail.class);
                 intent.setData(Uri.parse(link));
@@ -124,7 +124,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onClick(final Message message, Action action) {
-        if (getContext() != null && reload != null && !reload.isRefreshing()) {
+        if (getContext() != null && !reload.isRefreshing()) {
             switch (action) {
                 case ANSWER:
                     Intent sendDm = new Intent(getContext(), MessagePopup.class);

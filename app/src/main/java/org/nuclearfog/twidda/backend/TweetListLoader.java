@@ -99,7 +99,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
                 case USR_TWEETS:
                     page = (int) param[1];
-                    if (param[0] instanceof Long) {
+                    if (param[0] instanceof Long) { // search by user ID
                         id = (long) param[0];
                         if (sinceId == LIST_EMPTY) {
                             tweets = db.getUserTweets(id);
@@ -111,16 +111,15 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                             tweets = mTwitter.getUserTweets(id, sinceId, page);
                             db.storeUserTweets(tweets);
                         }
-                    } else if (param[0] instanceof String) {
+                    } else if (param[0] instanceof String) { // search by username
                         search = (String) param[0];
                         tweets = mTwitter.getUserTweets(search, sinceId, page);
-                        db.storeUserTweets(tweets);
                     }
                     break;
 
                 case USR_FAVORS:
                     page = (int) param[1];
-                    if (param[0] instanceof Long) {
+                    if (param[0] instanceof Long) { // search by user ID
                         id = (long) param[0];
                         if (sinceId == LIST_EMPTY) {
                             tweets = db.getUserFavs(id);
@@ -132,7 +131,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                             tweets = mTwitter.getUserFavs(id, page);
                             db.storeUserFavs(tweets, id);
                         }
-                    } else if (param[0] instanceof String) {
+                    } else if (param[0] instanceof String) { // search by username
                         search = (String) param[0];
                         tweets = mTwitter.getUserFavs(search, page);
                     }

@@ -128,7 +128,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onReset() {
-        if (getView() != null) {
+        if (reload != null && list != null && adapter != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
             adapter.clear();
@@ -139,7 +139,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onTabChange() {
-        if (getView() != null) {
+        if (list != null) {
             list.smoothScrollToPosition(0);
         }
     }
@@ -222,17 +222,17 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
                 case TWEET_FRAG_TWEETS:
                     tweetTask = new TweetListLoader(this, Action.USR_TWEETS);
-                    if (param.containsKey(KEY_FRAG_TWEET_ID))
+                    if (param.containsKey(KEY_FRAG_TWEET_ID)) // Search with User ID
                         tweetTask.execute(id, 1);
-                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH))
+                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH)) // With user screen name
                         tweetTask.execute(search, 1);
                     break;
 
                 case TWEET_FRAG_FAVORS:
                     tweetTask = new TweetListLoader(this, Action.USR_FAVORS);
-                    if (param.containsKey(KEY_FRAG_TWEET_ID))
+                    if (param.containsKey(KEY_FRAG_TWEET_ID)) // Search with User ID
                         tweetTask.execute(id, 1);
-                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH))
+                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH)) // With user screen name
                         tweetTask.execute(search, 1);
                     break;
 

@@ -164,7 +164,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 adapter.setupProfilePage(userId);
                 profileAsync.execute(userId);
             } else {
-                String username = param.getString(KEY_PROFILE_NAME);
+                String username = param.getString(KEY_PROFILE_NAME, "");
                 adapter.setupProfilePage(username);
                 profileAsync.execute(username);
             }

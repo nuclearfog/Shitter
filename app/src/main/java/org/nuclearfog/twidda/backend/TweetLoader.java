@@ -12,8 +12,6 @@ import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
 
-import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
-
 
 /**
  * Background task to download tweet informations and to take actions
@@ -89,7 +87,7 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
             }
         } catch (EngineException twException) {
             this.twException = twException;
-            if (twException.getErrorType() == RESOURCE_NOT_FOUND) {
+            if (twException.resourceNotFound()) {
                 db.removeStatus(tweetId);
             }
         } catch (Exception exception) {

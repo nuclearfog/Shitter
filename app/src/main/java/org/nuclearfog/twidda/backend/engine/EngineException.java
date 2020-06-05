@@ -2,6 +2,9 @@ package org.nuclearfog.twidda.backend.engine;
 
 import twitter4j.TwitterException;
 
+import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.NOT_AUTHORIZED;
+import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
+
 
 public class EngineException extends Exception {
 
@@ -122,15 +125,26 @@ public class EngineException extends Exception {
 
     /**
      * get type of error defined by twitter API
+     *
      * @return type of error {@link ErrorType}
      */
     public ErrorType getErrorType() {
         return errorType;
     }
 
+    /**
+     * check if a resource was not found or current user is not authorized
+     *
+     * @return true if resource not found or access denied
+     */
+    public boolean resourceNotFound() {
+        return errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED;
+    }
+
 
     /**
      * return time to wait after unlock access in seconds
+     *
      * @return time in seconds
      */
     public int getTimeToWait() {

@@ -79,8 +79,9 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     @Override
     public void onRefresh() {
-        if (trendTask != null && trendTask.getStatus() != RUNNING)
+        if (trendTask != null && trendTask.getStatus() != RUNNING) {
             load();
+        }
     }
 
 
@@ -96,7 +97,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     @Override
     public void onReset() {
-        if (getView() != null) {
+        if (reload != null && list != null && adapter != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
             adapter.clear();
@@ -107,7 +108,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     @Override
     public void onTabChange() {
-        if (getView() != null) {
+        if (list != null) {
             list.smoothScrollToPosition(0);
         }
     }
@@ -127,7 +128,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
      * @return true if list is empty
      */
     public boolean isEmpty() {
-        return adapter == null || adapter.isEmpty();
+        return adapter.isEmpty();
     }
 
 

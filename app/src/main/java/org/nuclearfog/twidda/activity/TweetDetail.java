@@ -58,8 +58,6 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.NOT_AUTHORIZED;
-import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
@@ -450,15 +448,16 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
      */
     public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
-        EngineException.ErrorType errorType = error.getErrorType();
-        if (tweet != null) {
-            if (errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED) {
+        if (error.resourceNotFound()) {
+            Bundle param = getIntent().getExtras();
+            if (param != null) {
                 Intent returnData = new Intent();
-                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweet.getId());
+                long tweetID = param.getLong(KEY_TWEET_ID);
+                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetID);
                 setResult(RETURN_TWEET_CHANGED, returnData);
-                finish();
             }
-        } else {
+            finish();
+        } else if (tweet == null) {
             finish();
         }
     }
