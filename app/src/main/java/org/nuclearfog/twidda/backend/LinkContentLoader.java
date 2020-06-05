@@ -49,7 +49,7 @@ public class LinkContentLoader extends AsyncTask<Uri, Void, LinkContentLoader.Da
             String path = link.getPath();
             if (path != null && path.length() > 1) {
                 path = path.substring(1);
-                if (path.startsWith("search")) {
+                if (path.startsWith("search") && link.isHierarchical()) {
                     String search = link.getQueryParameter("q");
                     if (search != null) {
                         data.putString(KEY_SEARCH_QUERY, search);
