@@ -79,8 +79,6 @@
                                 android:id="@+id/timedetail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/margin_layout_tweet"
-                                android:layout_marginBottom="@dimen/margin_layout_tweet"
                                 android:singleLine="true"
                                 android:textSize="@dimen/textsize_date" />
 
@@ -104,6 +102,8 @@
                         android:id="@+id/tweet_detailed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_layout_tweet"
+                        android:layout_marginBottom="@dimen/margin_layout_tweet"
                         android:fadeScrollbars="false"
                         android:linksClickable="true"
                         android:maxLines="@integer/text_tweet_lines"
@@ -123,7 +123,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView

@@ -44,9 +44,10 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final String KEY_MEDIA_TYPE = "media_type";
 
     /// Media Types
-    public static final int MEDIAVIEWER_IMAGE = 0;
-    public static final int MEDIAVIEWER_VIDEO = 1;
-    public static final int MEDIAVIEWER_ANGIF = 2;
+    private static final int MEDIAVIEWER_NONE = 0;
+    public static final int MEDIAVIEWER_IMAGE = 1;
+    public static final int MEDIAVIEWER_VIDEO = 2;
+    public static final int MEDIAVIEWER_ANGIF = 3;
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
@@ -89,9 +90,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         super.onStart();
         if (imageWindow.getVisibility() != VISIBLE && videoWindow.getVisibility() != VISIBLE) {
             Bundle param = getIntent().getExtras();
-            if (param != null && param.containsKey(KEY_MEDIA_LINK) && param.containsKey(KEY_MEDIA_TYPE)) {
+            if (param != null && type == MEDIAVIEWER_NONE) {
                 String[] link = param.getStringArray(KEY_MEDIA_LINK);
-                type = param.getInt(KEY_MEDIA_TYPE);
+                type = param.getInt(KEY_MEDIA_TYPE, MEDIAVIEWER_NONE);
 
                 if (link != null && link.length > 0) {
                     switch (type) {

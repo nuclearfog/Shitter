@@ -43,8 +43,9 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                 } else {
                     image = BitmapFactory.decodeFile(link);
                 }
-                if (image != null)
+                if (image != null) {
                     publishProgress(image);
+                }
             }
             return true;
         } catch (Exception exception) {
