@@ -10,7 +10,6 @@ import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.fragment.ListFragment;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,7 +18,7 @@ import java.util.List;
  *
  * @see ListFragment
  */
-public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> {
+public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<TwitterList>> {
 
     public enum Action {
         LOAD,
@@ -33,11 +32,13 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
     private TwitterEngine mTwitter;
     private final Action action;
 
+
     public TwitterListLoader(ListFragment callback, Action action) {
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.callback = new WeakReference<>(callback);
         this.action = action;
     }
+
 
     @Override
     protected void onPreExecute() {
@@ -46,51 +47,60 @@ public class TwitterListLoader extends AsyncTask<Long, Void, List<TwitterList>> 
         }
     }
 
+
     @Override
-    protected List<TwitterList> doInBackground(Long[] param) {
-        List<TwitterList> result;
+    protected List<TwitterList> doInBackground(Object[] param) {
         try {
             switch (action) {
                 case LOAD:
-                    result = mTwitter.getUserList(param[0]);
-                    return result;
+                    if (param[0] instanceof Long) {
+                        long ownerId = (long) param[0];
+                        return mTwitter.getUserList(ownerId);
+                    } else {
+                        String ownerName = (String) param[0];
+                        return mTwitter.getUserList(ownerName);
+                    }
 
                 case FOLLOW:
-                    result = new ArrayList<>(1);
-                    result.add(mTwitter.followUserList(param[0]));
-                    return result;
+                    long listId = (long) param[0];
+                    TwitterList result = mTwitter.followUserList(listId);
+                    publishProgress(result);
+                    break;
 
                 case DELETE:
-                    result = new ArrayList<>(1);
-                    result.add(mTwitter.deleteUserList(param[0]));
-                    return result;
+                    listId = (long) param[0];
+                    TwitterList deletedList = mTwitter.deleteUserList(listId);
+                    publishProgress(deletedList);
+                    break;
             }
         } catch (EngineException twException) {
             this.twException = twException;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
+
+
+    @Override
+    protected void onProgressUpdate(TwitterList[] lists) {
+        TwitterList list = lists[0];
+        if (callback.get() != null) {
+            if (action == Action.FOLLOW) {
+                callback.get().updateItem(list);
+            } else if (action == Action.DELETE) {
+                callback.get().removeItem(list.getId());
+            }
+        }
+    }
+
 
     @Override
     protected void onPostExecute(List<TwitterList> result) {
         if (callback.get() != null) {
             callback.get().setRefresh(false);
             if (result != null) {
-                switch (action) {
-                    case LOAD:
-                        callback.get().setData(result);
-                        break;
-
-                    case FOLLOW:
-                        TwitterList list = result.get(0);
-                        callback.get().updateItem(list);
-                        break;
-
-                    case DELETE:
-                        list = result.get(0);
-                        callback.get().removeItem(list.getId());
-                        break;
-                }
+                callback.get().setData(result);
             } else if (twException != null) {
                 callback.get().onError(twException);
             }

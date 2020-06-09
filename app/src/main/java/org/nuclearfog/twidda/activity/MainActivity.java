@@ -239,4 +239,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         else
             loadingCircle.dismiss();
     }
+
+
+    public void setTab(int page) {
+        pager.setCurrentItem(page);
+    }
 }

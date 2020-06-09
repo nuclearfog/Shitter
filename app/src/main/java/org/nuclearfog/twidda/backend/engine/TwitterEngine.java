@@ -880,6 +880,26 @@ public class TwitterEngine {
 
 
     /**
+     * get user list
+     *
+     * @param username id of the list owner
+     * @return list information
+     * @throws EngineException if access is unavailable
+     */
+    public List<TwitterList> getUserList(String username) throws EngineException {
+        try {
+            List<TwitterList> result = new LinkedList<>();
+            List<UserList> lists = twitter.getUserLists(username);
+            for (UserList list : lists)
+                result.add(new TwitterList(list, twitterID));
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+
+    /**
      * Follow action for twitter list
      *
      * @param listId ID of the list

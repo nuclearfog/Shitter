@@ -16,7 +16,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 public class TwitterList extends AppCompatActivity {
 
-    public static final String KEY_USERLIST_ID = "userlist-owner";
+    public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
+    public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
 
     @Override
@@ -37,9 +38,14 @@ public class TwitterList extends AppCompatActivity {
         root.setBackgroundColor(settings.getBackgroundColor());
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_USERLIST_ID)) {
-            long listId = param.getLong(KEY_USERLIST_ID);
-            adapter.setupListPage(listId);
+        if (param != null) {
+            if (param.containsKey(KEY_USERLIST_OWNER_ID)) {
+                long ownerId = param.getLong(KEY_USERLIST_OWNER_ID);
+                adapter.setupListPage(ownerId);
+            } else if (param.containsKey(KEY_USERLIST_OWNER_NAME)) {
+                String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);
+                adapter.setupListPage(ownerName);
+            }
         }
     }
 }

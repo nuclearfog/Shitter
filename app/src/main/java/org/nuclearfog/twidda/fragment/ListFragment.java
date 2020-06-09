@@ -45,7 +45,8 @@ import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
 
 public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener {
 
-    public static final String KEY_FRAG_LIST = "list_owner";
+    public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";
+    public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
 
     private TwitterListLoader listTask;
 
@@ -217,9 +218,14 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     private void load() {
         Bundle param = getArguments();
         if (param != null) {
-            long userId = param.getLong(KEY_FRAG_LIST);
             listTask = new TwitterListLoader(this, LOAD);
-            listTask.execute(userId);
+            if (param.containsKey(KEY_FRAG_LIST_OWNER_ID)) {
+                long ownerId = param.getLong(KEY_FRAG_LIST_OWNER_ID);
+                listTask.execute(ownerId);
+            } else if (param.containsKey(KEY_FRAG_LIST_OWNER_NAME)) {
+                String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME);
+                listTask.execute(ownerName);
+            }
         }
     }
 }

@@ -16,9 +16,10 @@ import java.util.List;
 
 /**
  * task to download a direct message list from twitter and handle message actions
+ *
  * @see MessageFragment
  */
-public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
+public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
 
     public enum Action {
         DB,
@@ -32,7 +33,6 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private Action action;
-    private long id;
 
 
     public MessageListLoader(MessageFragment callback, Action action) {
@@ -72,15 +72,17 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
                 case DEL:
                     messageId = param[0];
-                    id = messageId;
                     mTwitter.deleteMessage(messageId);
                     db.deleteMessage(messageId);
+                    publishProgress(messageId);
                     break;
             }
         } catch (EngineException twException) {
             this.twException = twException;
-            if (twException.resourceNotFound())
+            if (twException.resourceNotFound()) {
                 db.deleteMessage(messageId);
+                publishProgress(messageId);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -89,19 +91,23 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
 
     @Override
+    protected void onProgressUpdate(Long[] ids) {
+        long messageId = ids[0];
+        if (callback.get() != null) {
+            callback.get().removeItem(messageId);
+        }
+    }
+
+
+    @Override
     protected void onPostExecute(@Nullable List<Message> messages) {
         if (callback.get() != null) {
+            callback.get().setRefresh(false);
             if (messages != null) {
                 callback.get().setData(messages);
             } else if (twException != null) {
                 callback.get().onError(twException);
-                if (twException.resourceNotFound()) {
-                    callback.get().removeItem(id);
-                }
-            } else if (action == Action.DEL) {
-                callback.get().removeItem(id);
             }
-            callback.get().setRefresh(false);
         }
     }
 }

@@ -13,7 +13,8 @@ import org.nuclearfog.twidda.fragment.TrendFragment;
 import org.nuclearfog.twidda.fragment.TweetFragment;
 import org.nuclearfog.twidda.fragment.UserFragment;
 
-import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST;
+import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_OWNER_ID;
+import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_OWNER_NAME;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
@@ -184,7 +185,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     public void setupListPage(long listId) {
         Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_LIST, listId);
+        param.putLong(KEY_FRAG_LIST_OWNER_ID, listId);
+        fragments = new Fragment[1];
+        fragments[0] = new ListFragment();
+        fragments[0].setArguments(param);
+        notifyDataSetChanged();
+    }
+
+
+    public void setupListPage(String ownerName) {
+        Bundle param = new Bundle();
+        param.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
         fragments = new Fragment[1];
         fragments[0] = new ListFragment();
         fragments[0].setArguments(param);

@@ -56,7 +56,7 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
-import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_ID;
+import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
@@ -334,7 +334,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_lists:
                         Intent listPage = new Intent(this, TwitterList.class);
-                        listPage.putExtra(KEY_USERLIST_ID, user.getId());
+                        listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
                         startActivity(listPage);
                         break;
                 }
