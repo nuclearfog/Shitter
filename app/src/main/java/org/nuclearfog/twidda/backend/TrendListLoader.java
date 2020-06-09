@@ -75,7 +75,8 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
             callback.get().setRefresh(false);
             if (trends != null) {
                 callback.get().setData(trends);
-            } else if (twException != null) {
+            }
+            if (twException != null) {
                 callback.get().onError(twException);
             }
         }

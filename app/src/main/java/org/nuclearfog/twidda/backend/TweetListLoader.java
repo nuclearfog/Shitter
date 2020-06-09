@@ -188,7 +188,8 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
                     callback.get().add(tweets);
                 else
                     callback.get().addTop(tweets);
-            } else if (twException != null) {
+            }
+            if (twException != null) {
                 callback.get().onError(twException);
             }
         }

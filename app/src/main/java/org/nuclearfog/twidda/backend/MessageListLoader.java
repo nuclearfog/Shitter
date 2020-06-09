@@ -105,7 +105,8 @@ public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
             callback.get().setRefresh(false);
             if (messages != null) {
                 callback.get().setData(messages);
-            } else if (twException != null) {
+            }
+            if (twException != null) {
                 callback.get().onError(twException);
             }
         }
