@@ -205,7 +205,7 @@ public class TwitterEngine {
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
-                paging.setMaxId(maxId);
+                paging.setMaxId(maxId - 1);
             List<Status> homeTweets = twitter.getHomeTimeline(paging);
             return convertStatusList(homeTweets);
         } catch (TwitterException err) {
@@ -229,7 +229,7 @@ public class TwitterEngine {
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
-                paging.setMaxId(maxId);
+                paging.setMaxId(maxId - 1);
             List<Status> mentions = twitter.getMentionsTimeline(paging);
             return convertStatusList(mentions);
         } catch (TwitterException err) {
@@ -336,7 +336,7 @@ public class TwitterEngine {
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
-                paging.setMaxId(maxId);
+                paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserTimeline(userId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -360,7 +360,7 @@ public class TwitterEngine {
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
-                paging.setMaxId(maxId);
+                paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserTimeline(username, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -384,7 +384,7 @@ public class TwitterEngine {
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
-                paging.setMaxId(maxId);
+                paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getFavorites(userId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -408,9 +408,9 @@ public class TwitterEngine {
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
-                paging.setMaxId(maxId);
-            List<Status> favorits = twitter.getFavorites(username, paging);
-            return convertStatusList(favorits);
+                paging.setMaxId(maxId - 1);
+            List<Status> tweets = twitter.getFavorites(username, paging);
+            return convertStatusList(tweets);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
