@@ -66,4 +66,5 @@
     <dimen name="profile_tv_padding">2dp</dimen>
     <dimen name="settings_appinfo_text_padding">5dp</dimen>
     <dimen name="settings_info_appname_font">18sp</dimen>
+    <dimen name="item_placeholder_margin">8dp</dimen>
 </resources>

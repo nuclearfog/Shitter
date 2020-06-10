@@ -193,15 +193,20 @@ public class TwitterEngine {
     /**
      * Get Home Timeline
      *
-     * @param page   current page
-     * @param lastId Tweet ID of the earliest Tweet
+     * @param sinceId id of the earliest tweet
+     * @param maxId   ID of the oldest tweet
      * @return List of Tweets
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getHome(int page, long lastId) throws EngineException {
+    public List<Tweet> getHome(long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            List<Status> homeTweets = twitter.getHomeTimeline(new Paging(page, load, lastId));
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
+            List<Status> homeTweets = twitter.getHomeTimeline(paging);
             return convertStatusList(homeTweets);
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -212,15 +217,20 @@ public class TwitterEngine {
     /**
      * Get Mention Tweets
      *
-     * @param page current page
-     * @param id   ID of the earliest Tweet
+     * @param sinceId id of the earliest tweet
+     * @param maxId   ID of the oldest tweet
      * @return List of Mention Tweets
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getMention(int page, long id) throws EngineException {
+    public List<Tweet> getMention(long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            List<Status> mentions = twitter.getMentionsTimeline(new Paging(page, load, id));
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
+            List<Status> mentions = twitter.getMentionsTimeline(paging);
             return convertStatusList(mentions);
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -231,18 +241,20 @@ public class TwitterEngine {
     /**
      * Get Tweet search result
      *
-     * @param search Search String
-     * @param id     Since ID
+     * @param search  Search String
+     * @param sinceId id of the earliest tweet
+     * @param maxId   ID of the oldest tweet
      * @return List of Tweets
-     * @throws EngineException if acces is unavailable
+     * @throws EngineException if access is unavailable
      */
-    public List<Tweet> searchTweets(String search, long id) throws EngineException {
+    public List<Tweet> searchTweets(String search, long sinceId, long maxId) throws EngineException {
         try {
             int load = settings.getRowLimit();
             Query q = new Query();
             q.setQuery(search + " +exclude:retweets");
             q.setCount(load);
-            q.setSinceId(id);
+            q.setSinceId(sinceId);
+            q.setMaxId(maxId);
             QueryResult result = twitter.search(q);
             List<Status> results = result.getTweets();
             return convertStatusList(results);
@@ -312,15 +324,19 @@ public class TwitterEngine {
      * Get User Tweets
      *
      * @param userId  User ID
-     * @param sinceId minimum tweet ID
-     * @param page    current page
+     * @param sinceId id of the earliest tweet
+     * @param maxId   ID of the oldest tweet
      * @return List of User Tweets
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getUserTweets(long userId, long sinceId, int page) throws EngineException {
+    public List<Tweet> getUserTweets(long userId, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            Paging paging = new Paging(page, load, sinceId);
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
             return convertStatusList(twitter.getUserTimeline(userId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -332,15 +348,19 @@ public class TwitterEngine {
      * Get User Tweets
      *
      * @param username screen name of the user
-     * @param sinceId  minimum tweet ID
-     * @param page     current page
+     * @param sinceId  id of the earliest tweet
+     * @param maxId    ID of the oldest tweet
      * @return List of User Tweets
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getUserTweets(String username, long sinceId, int page) throws EngineException {
+    public List<Tweet> getUserTweets(String username, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            Paging paging = new Paging(page, load, sinceId);
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
             return convertStatusList(twitter.getUserTimeline(username, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -352,16 +372,20 @@ public class TwitterEngine {
      * Get User Favs
      *
      * @param userId  User ID
-     * @param page    current page
+     * @param sinceId id of the earliest tweet
+     * @param maxId   ID of the oldest tweet
      * @return List of User Favs
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getUserFavs(long userId, int page) throws EngineException {
+    public List<Tweet> getUserFavs(long userId, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            Paging paging = new Paging(page, load);
-            List<Status> favorits = twitter.getFavorites(userId, paging);
-            return convertStatusList(favorits);
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
+            return convertStatusList(twitter.getFavorites(userId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -372,14 +396,19 @@ public class TwitterEngine {
      * Get User Favs
      *
      * @param username screen name of the user
-     * @param page     current page
+     * @param sinceId  id of the earliest tweet
+     * @param maxId    ID of the oldest tweet
      * @return List of User Favs
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getUserFavs(String username, int page) throws EngineException {
+    public List<Tweet> getUserFavs(String username, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            Paging paging = new Paging(page, load);
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
             List<Status> favorits = twitter.getFavorites(username, paging);
             return convertStatusList(favorits);
         } catch (TwitterException err) {
@@ -654,16 +683,20 @@ public class TwitterEngine {
      *
      * @param name    screen name of receiver
      * @param tweetId tweet ID
-     * @param sinceId last tweet
+     * @param sinceId ID of the last tweet reply
+     * @param maxId   ID of the earliest tweet reply
      * @return List of Answers
      * @throws EngineException if Access is unavailable
      */
-    public List<Tweet> getAnswers(String name, long tweetId, long sinceId) throws EngineException {
+    public List<Tweet> getAnswers(String name, long tweetId, long sinceId, long maxId) throws EngineException {
         try {
             int load = settings.getRowLimit();
             List<Status> answers = new LinkedList<>();
-            Query query = new Query("to:" + name + " since_id:" + sinceId + " +exclude:retweets");
+            Query query = new Query("to:" + name + " +exclude:retweets");
             query.setCount(load);
+            query.setMaxId(maxId);
+            query.setSinceId(sinceId);
+            query.setResultType(Query.RECENT);
             QueryResult result = twitter.search(query);
             List<Status> stats = result.getTweets();
             for (Status reply : stats) {
@@ -971,15 +1004,19 @@ public class TwitterEngine {
      * get tweets of a lists
      *
      * @param listId  ID of the list
-     * @param sinceId Id of the recent tweet
-     * @param page    tweet page
+     * @param sinceId id of the earliest tweet
+     * @param maxId   ID of the oldest tweet
      * @return list of tweets
      * @throws EngineException if access is unavailable
      */
-    public List<Tweet> getListTweets(long listId, long sinceId, int page) throws EngineException {
+    public List<Tweet> getListTweets(long listId, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
-            Paging paging = new Paging(page, load, sinceId);
+            Paging paging = new Paging();
+            paging.setCount(settings.getRowLimit());
+            if (sinceId > 0)
+                paging.setSinceId(sinceId);
+            if (maxId > 0)
+                paging.setMaxId(maxId);
             return convertStatusList(twitter.getUserListStatuses(listId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);

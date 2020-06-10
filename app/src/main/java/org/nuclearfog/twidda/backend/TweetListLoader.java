@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.fragment.TweetFragment;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static org.nuclearfog.twidda.fragment.TweetFragment.LIST_EMPTY;
+import static org.nuclearfog.twidda.fragment.TweetFragment.CLEAR_LIST;
 
 
 /**
@@ -21,7 +21,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.LIST_EMPTY;
  *
  * @see TweetFragment
  */
-public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
+public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
     public enum Action {
         TL_HOME,
@@ -31,7 +31,8 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
         TWEET_ANS,
         DB_ANS,
         TWEET_SEARCH,
-        LIST
+        LIST,
+        NONE
     }
 
     @Nullable
@@ -39,16 +40,21 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
     private WeakReference<TweetFragment> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
-    private final Action action;
-    private long sinceId;
+
+    private Action action;
+    private String search;
+    private long id;
+    private int pos;
 
 
-    public TweetListLoader(TweetFragment callback, Action action) {
+    public TweetListLoader(TweetFragment callback, Action action, long id, String search, int pos) {
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());
-        sinceId = callback.getTopId();
         this.action = action;
+        this.search = search;
+        this.id = id;
+        this.pos = pos;
     }
 
 
@@ -61,113 +67,108 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
 
 
     @Override
-    protected List<Tweet> doInBackground(Object[] param) {
+    protected List<Tweet> doInBackground(Long[] param) {
         List<Tweet> tweets = null;
-        String search;
-        int page;
-        long id;
-
+        long sinceId = param[0];
+        long maxId = param[1];
         try {
             switch (action) {
                 case TL_HOME:
-                    page = (int) param[0];
-                    if (sinceId == LIST_EMPTY) {
+                    if (sinceId == 0 && maxId == 0) {   // add tweets to the list
                         tweets = db.getHomeTimeline();
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getHome(page, sinceId);
+                            tweets = mTwitter.getHome(sinceId, maxId);
                             db.storeHomeTimeline(tweets);
                         }
-                    } else {
-                        tweets = mTwitter.getHome(page, sinceId);
+                    } else if (sinceId > 0) {           // add new tweets to the top
+                        tweets = mTwitter.getHome(sinceId, maxId);
                         db.storeHomeTimeline(tweets);
+                    } else if (maxId > 0) {             // add old tweets to the bottom
+                        tweets = mTwitter.getHome(sinceId, maxId);
                     }
                     break;
 
                 case TL_MENT:
-                    page = (int) param[0];
-                    if (sinceId == LIST_EMPTY) {
+                    if (sinceId == 0 && maxId == 0) {
                         tweets = db.getMentions();
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getMention(page, sinceId);
+                            tweets = mTwitter.getMention(sinceId, maxId);
                             db.storeMentions(tweets);
                         }
-                    } else {
-                        tweets = mTwitter.getMention(page, sinceId);
+                    } else if (sinceId > 0) {
+                        tweets = mTwitter.getMention(sinceId, maxId);
                         db.storeMentions(tweets);
+                    } else if (maxId > 0) {
+                        tweets = mTwitter.getMention(sinceId, maxId);
                     }
                     break;
 
                 case USR_TWEETS:
-                    page = (int) param[1];
-                    if (param[0] instanceof Long) { // search by user ID
-                        id = (long) param[0];
-                        if (sinceId == LIST_EMPTY) {
+                    if (search != null) {
+                        tweets = mTwitter.getUserTweets(search, sinceId, maxId);
+                    } else {
+                        if (sinceId == 0 && maxId == 0) {
                             tweets = db.getUserTweets(id);
                             if (tweets.isEmpty()) {
-                                tweets = mTwitter.getUserTweets(id, sinceId, page);
+                                tweets = mTwitter.getUserTweets(id, 0, maxId);
                                 db.storeUserTweets(tweets);
                             }
-                        } else {
-                            tweets = mTwitter.getUserTweets(id, sinceId, page);
+                        } else if (sinceId > 0) {
+                            tweets = mTwitter.getUserTweets(id, sinceId, maxId);
                             db.storeUserTweets(tweets);
+                        } else if (maxId > 0) {
+                            tweets = mTwitter.getUserTweets(id, sinceId, maxId);
                         }
-                    } else if (param[0] instanceof String) { // search by username
-                        search = (String) param[0];
-                        tweets = mTwitter.getUserTweets(search, sinceId, page);
                     }
                     break;
 
                 case USR_FAVORS:
-                    page = (int) param[1];
-                    if (param[0] instanceof Long) { // search by user ID
-                        id = (long) param[0];
-                        if (sinceId == LIST_EMPTY) {
+                    if (search != null) {
+                        tweets = mTwitter.getUserFavs(search, sinceId, maxId);
+                    } else {
+                        if (sinceId == 0 && maxId == 0) {
                             tweets = db.getUserFavs(id);
                             if (tweets.isEmpty()) {
-                                tweets = mTwitter.getUserFavs(id, page);
+                                tweets = mTwitter.getUserFavs(id, 0, maxId);
                                 db.storeUserFavs(tweets, id);
                             }
-                        } else {
-                            tweets = mTwitter.getUserFavs(id, page);
+                        } else if (sinceId > 0) {
+                            tweets = mTwitter.getUserFavs(id, 0, maxId);
                             db.storeUserFavs(tweets, id);
+                            pos = CLEAR_LIST; // set flag to clear previous data
+                        } else if (maxId > 0) {
+                            tweets = mTwitter.getUserFavs(id, sinceId, maxId);
                         }
-                    } else if (param[0] instanceof String) { // search by username
-                        search = (String) param[0];
-                        tweets = mTwitter.getUserFavs(search, page);
                     }
                     break;
 
                 case DB_ANS:
-                    id = (long) param[0];
                     tweets = db.getAnswers(id);
                     break;
 
                 case TWEET_ANS:
-                    id = (long) param[0];
-                    search = (String) param[1];
-                    if (sinceId == LIST_EMPTY) {
+                    if (sinceId == 0 && maxId == 0) {
                         tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {
-                            tweets = mTwitter.getAnswers(search, id, sinceId);
+                            tweets = mTwitter.getAnswers(search, id, sinceId, maxId);
                             if (!tweets.isEmpty() && db.containStatus(id))
                                 db.storeReplies(tweets);
                         }
-                    } else {
-                        tweets = mTwitter.getAnswers(search, id, sinceId);
+                    } else if (sinceId > 0) {
+                        tweets = mTwitter.getAnswers(search, id, sinceId, maxId);
                         if (!tweets.isEmpty() && db.containStatus(id))
                             db.storeReplies(tweets);
+                    } else if (maxId > 0) {
+                        tweets = mTwitter.getAnswers(search, id, sinceId, maxId);
                     }
                     break;
 
                 case TWEET_SEARCH:
-                    search = (String) param[0];
-                    tweets = mTwitter.searchTweets(search, sinceId);
+                    tweets = mTwitter.searchTweets(search, sinceId, maxId);
                     break;
 
                 case LIST:
-                    id = (long) param[0];
-                    page = (int) param[1];
-                    tweets = mTwitter.getListTweets(id, sinceId, page);
+                    tweets = mTwitter.getListTweets(id, sinceId, maxId);
                     break;
             }
         } catch (EngineException twException) {
@@ -184,10 +185,7 @@ public class TweetListLoader extends AsyncTask<Object, Void, List<Tweet>> {
         if (callback.get() != null) {
             callback.get().setRefresh(false);
             if (tweets != null) {
-                if (action == Action.USR_FAVORS)
-                    callback.get().add(tweets);
-                else
-                    callback.get().addTop(tweets);
+                callback.get().setData(tweets, pos);
             }
             if (twException != null) {
                 callback.get().onError(twException);

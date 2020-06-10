@@ -48,10 +48,10 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     public static final int TWEET_FRAG_ANSWER = 5;
     public static final int TWEET_FRAG_SEARCH = 6;
     public static final int TWEET_FRAG_LIST = 7;
-    public static final int LIST_EMPTY = 1;
 
-    private static final int REQUEST_TWEET_CHANGED = 3;
-    public static final int RETURN_TWEET_CHANGED = 4;
+    public static final int CLEAR_LIST = -1;
+    public static final int RETURN_TWEET_CHANGED = 1;
+    private static final int REQUEST_TWEET_CHANGED = 2;
 
     private TweetListLoader tweetTask;
     private GlobalSettings settings;
@@ -82,7 +82,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     public void onStart() {
         super.onStart();
         if (tweetTask == null) {
-            load();
+            load(0, 0, CLEAR_LIST);
         }
     }
 
@@ -108,7 +108,10 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     @Override
     public void onRefresh() {
         if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
-            load();
+            long sinceId = 0;
+            if (!adapter.isEmpty())
+                sinceId = adapter.getItemId(0);
+            load(sinceId, 0, 0);
         }
     }
 
@@ -127,12 +130,18 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
 
     @Override
+    public void onHolderClick(long sinceId, long maxId, int pos) {
+        load(sinceId, maxId, pos);
+    }
+
+
+    @Override
     public void onReset() {
         if (reload != null && list != null && adapter != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
             adapter.clear();
-            load();
+            load(0, 0, 0);
         }
     }
 
@@ -145,31 +154,15 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     }
 
     /**
-     * get Id of the first Tweet
-     * @return ID of the first tweet or {@link #LIST_EMPTY} if list is empty
-     */
-    public long getTopId() {
-        if (!adapter.isEmpty())
-            return adapter.getItemId(0);
-        return LIST_EMPTY;
-    }
-
-    /**
-     * replace all tweets of the list
+     * Set Tweet data to list
      *
-     * @param tweets list of new tweets
+     * @param tweets List of tweets
+     * @param pos    position where tweets should be added
      */
-    public void add(List<Tweet> tweets) {
-        adapter.add(tweets);
-    }
-
-    /**
-     * attach new tweets to the top of the list
-     *
-     * @param tweets list of new tweets
-     */
-    public void addTop(List<Tweet> tweets) {
-        adapter.addFirst(tweets);
+    public void setData(List<Tweet> tweets, int pos) {
+        if (pos == CLEAR_LIST)
+            adapter.clear();
+        adapter.insert(tweets, pos);
     }
 
     /**
@@ -202,58 +195,48 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     }
 
 
-    private void load() {
+    private void load(long sinceId, long maxId, int pos) {
         Bundle param = getArguments();
         if (param != null) {
             int mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
             long id = param.getLong(KEY_FRAG_TWEET_ID, 1);
-            String search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
+            String search = param.getString(KEY_FRAG_TWEET_SEARCH);
+            Action action = Action.NONE;
 
             switch (mode) {
                 case TWEET_FRAG_HOME:
-                    tweetTask = new TweetListLoader(this, Action.TL_HOME);
-                    tweetTask.execute(1);
+                    action = Action.TL_HOME;
                     break;
 
                 case TWEET_FRAG_MENT:
-                    tweetTask = new TweetListLoader(this, Action.TL_MENT);
-                    tweetTask.execute(1);
+                    action = Action.TL_MENT;
                     break;
 
                 case TWEET_FRAG_TWEETS:
-                    tweetTask = new TweetListLoader(this, Action.USR_TWEETS);
-                    if (param.containsKey(KEY_FRAG_TWEET_ID)) // Search with User ID
-                        tweetTask.execute(id, 1);
-                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH)) // With user screen name
-                        tweetTask.execute(search, 1);
+                    action = Action.USR_TWEETS;
                     break;
 
                 case TWEET_FRAG_FAVORS:
-                    tweetTask = new TweetListLoader(this, Action.USR_FAVORS);
-                    if (param.containsKey(KEY_FRAG_TWEET_ID)) // Search with User ID
-                        tweetTask.execute(id, 1);
-                    else if (param.containsKey(KEY_FRAG_TWEET_SEARCH)) // With user screen name
-                        tweetTask.execute(search, 1);
+                    action = Action.USR_FAVORS;
                     break;
 
                 case TWEET_FRAG_ANSWER:
                     if (tweetTask != null || settings.getAnswerLoad())
-                        tweetTask = new TweetListLoader(this, Action.TWEET_ANS);
+                        action = Action.TWEET_ANS;
                     else
-                        tweetTask = new TweetListLoader(this, Action.DB_ANS);
-                    tweetTask.execute(id, search);
+                        action = Action.DB_ANS;
                     break;
 
                 case TWEET_FRAG_SEARCH:
-                    tweetTask = new TweetListLoader(this, Action.TWEET_SEARCH);
-                    tweetTask.execute(search);
+                    action = Action.TWEET_SEARCH;
                     break;
 
                 case TWEET_FRAG_LIST:
-                    tweetTask = new TweetListLoader(this, Action.LIST);
-                    tweetTask.execute(id, 1);
+                    action = Action.LIST;
                     break;
             }
+            tweetTask = new TweetListLoader(this, action, id, search, pos);
+            tweetTask.execute(sinceId, maxId);
         }
     }
 }
