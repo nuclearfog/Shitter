@@ -55,6 +55,9 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetDetail.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
@@ -363,17 +366,27 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onLinkClick(String link) {
-        if (TweetDetail.linkPattern.matcher(link).matches()) {
+    public void onLinkClick(String tag) {
+        String shortLink = tag;
+        int cut = shortLink.indexOf('?');
+        if (cut > 0) {
+            shortLink = shortLink.substring(0, cut);
+        }
+        if (LINK_PATTERN.matcher(shortLink).matches()) {
+            String name = shortLink.substring(20, shortLink.indexOf('/', 20));
+            long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
             Intent intent = new Intent(this, TweetDetail.class);
-            intent.setData(Uri.parse(link));
+            intent.putExtra(KEY_TWEET_ID, id);
+            intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
-            if (intent.resolveActivity(getPackageManager()) != null)
+            Uri link = Uri.parse(tag);
+            Intent intent = new Intent(Intent.ACTION_VIEW, link);
+            if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
-            else
+            } else {
                 Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+            }
         }
     }
 

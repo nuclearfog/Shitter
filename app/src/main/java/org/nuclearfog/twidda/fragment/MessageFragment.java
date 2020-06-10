@@ -40,6 +40,9 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetDetail.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected {
@@ -104,14 +107,23 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
 
     @Override
-    public void onLinkClick(String link) {
-        if (getContext() != null && !reload.isRefreshing()) {
-            if (TweetDetail.linkPattern.matcher(link).matches()) {
+    public void onLinkClick(String tag) {
+        if (getContext() != null) {
+            String shortLink = tag;
+            int cut = shortLink.indexOf('?');
+            if (cut > 0) {
+                shortLink = shortLink.substring(0, cut);
+            }
+            if (LINK_PATTERN.matcher(shortLink).matches()) {
+                String name = shortLink.substring(20, shortLink.indexOf('/', 20));
+                long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
                 Intent intent = new Intent(getContext(), TweetDetail.class);
-                intent.setData(Uri.parse(link));
+                intent.putExtra(KEY_TWEET_ID, id);
+                intent.putExtra(KEY_TWEET_NAME, name);
                 startActivity(intent);
             } else {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                Uri link = Uri.parse(tag);
+                Intent intent = new Intent(Intent.ACTION_VIEW, link);
                 if (intent.resolveActivity(getContext().getPackageManager()) != null) {
                     startActivity(intent);
                 } else {

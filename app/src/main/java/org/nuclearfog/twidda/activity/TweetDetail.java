@@ -67,7 +67,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     public static final String KEY_TWEET_ID = "tweetID";
     public static final String KEY_TWEET_NAME = "username";
-    public static final Pattern linkPattern = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
+    public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
@@ -315,17 +315,25 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onLinkClick(String tag) {
-        if (linkPattern.matcher(tag).matches()) {
-            String name = tag.substring(20, tag.indexOf('/', 20));
-            long id = Long.parseLong(tag.substring(tag.lastIndexOf('/') + 1));
+        String shortLink = tag;
+        int cut = shortLink.indexOf('?');
+        if (cut > 0) {
+            shortLink = shortLink.substring(0, cut);
+        }
+        if (LINK_PATTERN.matcher(shortLink).matches()) {
+            String name = shortLink.substring(20, shortLink.indexOf('/', 20));
+            long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
             Intent intent = new Intent(this, TweetDetail.class);
             intent.putExtra(KEY_TWEET_ID, id);
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tag));
+            Uri link = Uri.parse(tag);
+            Intent intent = new Intent(Intent.ACTION_VIEW, link);
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
+            } else {
+                Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
             }
         }
     }
