@@ -5,16 +5,17 @@ import android.content.Context;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.holder.MessageHolder;
+import org.nuclearfog.twidda.backend.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.holder.UserHolder;
+import org.nuclearfog.twidda.backend.holder.UserListHolder;
 import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.MessageHolder;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TweetHolder;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserHolder;
-import org.nuclearfog.twidda.backend.items.UserProperties;
+import org.nuclearfog.twidda.backend.items.UserConnection;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ import twitter4j.DirectMessage;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
 import twitter4j.Location;
+import twitter4j.PagableResponseList;
 import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -204,7 +207,7 @@ public class TwitterEngine {
             paging.setCount(settings.getRowLimit());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
-            if (maxId > 0)
+            if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             List<Status> homeTweets = twitter.getHomeTimeline(paging);
             return convertStatusList(homeTweets);
@@ -228,7 +231,7 @@ public class TwitterEngine {
             paging.setCount(settings.getRowLimit());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
-            if (maxId > 0)
+            if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             List<Status> mentions = twitter.getMentionsTimeline(paging);
             return convertStatusList(mentions);
@@ -253,8 +256,10 @@ public class TwitterEngine {
             Query q = new Query();
             q.setQuery(search + " +exclude:retweets");
             q.setCount(load);
-            q.setSinceId(sinceId);
-            q.setMaxId(maxId);
+            if (sinceId > 0)
+                q.setSinceId(sinceId);
+            if (maxId > 1)
+                q.setMaxId(maxId - 1);
             QueryResult result = twitter.search(q);
             List<Status> results = result.getTweets();
             return convertStatusList(results);
@@ -311,9 +316,18 @@ public class TwitterEngine {
      * @return List of Users
      * @throws EngineException if access is unavailable
      */
-    public List<TwitterUser> searchUsers(String search) throws EngineException {
+    public UserListHolder searchUsers(String search, long cursor) throws EngineException {
         try {
-            return convertUserList(twitter.searchUsers(search, -1));
+            int currentPage = 1;
+            if (cursor > 0)
+                currentPage = (int) cursor;
+            long prevPage = currentPage - 1;
+            long nextPage = currentPage + 1;
+
+            List<TwitterUser> users = convertUserList(twitter.searchUsers(search, currentPage));
+            if (users.size() < 20)
+                nextPage = 0;
+            return new UserListHolder(users, prevPage, nextPage);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -335,7 +349,7 @@ public class TwitterEngine {
             paging.setCount(settings.getRowLimit());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
-            if (maxId > 0)
+            if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserTimeline(userId, paging));
         } catch (TwitterException err) {
@@ -383,7 +397,7 @@ public class TwitterEngine {
             paging.setCount(settings.getRowLimit());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
-            if (maxId > 0)
+            if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getFavorites(userId, paging));
         } catch (TwitterException err) {
@@ -471,9 +485,9 @@ public class TwitterEngine {
      * @return User Properties
      * @throws EngineException if Connection is unavailable
      */
-    public UserProperties getConnection(long userId) throws EngineException {
+    public UserConnection getConnection(long userId) throws EngineException {
         try {
-            return new UserProperties(twitter.showFriendship(twitterID, userId));
+            return new UserConnection(twitter.showFriendship(twitterID, userId));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -487,9 +501,9 @@ public class TwitterEngine {
      * @return User Properties
      * @throws EngineException if Connection is unavailable
      */
-    public UserProperties getConnection(String username) throws EngineException {
+    public UserConnection getConnection(String username) throws EngineException {
         try {
-            return new UserProperties(twitter.showFriendship(twitter.getScreenName(), username));
+            return new UserConnection(twitter.showFriendship(twitter.getScreenName(), username));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -596,17 +610,23 @@ public class TwitterEngine {
      * get Following User List
      *
      * @param userId User ID
-     * @return List of Following User
+     * @return List of Following User with cursors
      * @throws EngineException if Access is unavailable
      */
-    public List<TwitterUser> getFollowing(long userId) throws EngineException {
+    public UserListHolder getFollowing(long userId, long cursor) throws EngineException {
         try {
             int load = settings.getRowLimit();
-            IDs userIDs = twitter.getFriendsIDs(userId, -1, load);
+            IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
             long[] ids = userIDs.getIDs();
-            if (ids.length == 0)
-                return new LinkedList<>();
-            return convertUserList(twitter.lookupUsers(ids));
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = userIDs.getNextCursor();
+            List<TwitterUser> users;
+            if (ids.length > 0) {
+                users = convertUserList(twitter.lookupUsers(ids));
+            } else {
+                users = new ArrayList<>(0);
+            }
+            return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -617,17 +637,23 @@ public class TwitterEngine {
      * get Follower
      *
      * @param userId User ID
-     * @return List of Follower
+     * @return List of Follower with cursors attached
      * @throws EngineException if Access is unavailable
      */
-    public List<TwitterUser> getFollower(long userId) throws EngineException {
+    public UserListHolder getFollower(long userId, long cursor) throws EngineException {
         try {
             int load = settings.getRowLimit();
-            IDs userIDs = twitter.getFollowersIDs(userId, -1, load);
+            IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
             long[] ids = userIDs.getIDs();
-            if (ids.length == 0)
-                return new LinkedList<>();
-            return convertUserList(twitter.lookupUsers(userIDs.getIDs()));
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = userIDs.getNextCursor();
+            List<TwitterUser> users;
+            if (ids.length > 0) {
+                users = convertUserList(twitter.lookupUsers(ids));
+            } else {
+                users = new ArrayList<>(0);
+            }
+            return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -694,8 +720,10 @@ public class TwitterEngine {
             List<Status> answers = new LinkedList<>();
             Query query = new Query("to:" + name + " +exclude:retweets");
             query.setCount(load);
-            query.setMaxId(maxId);
-            query.setSinceId(sinceId);
+            if (sinceId > 0)
+                query.setSinceId(sinceId);
+            if (maxId > 1)
+                query.setMaxId(maxId - 1);
             query.setResultType(Query.RECENT);
             QueryResult result = twitter.search(query);
             List<Status> stats = result.getTweets();
@@ -787,19 +815,24 @@ public class TwitterEngine {
      * Get User who retweeted a Tweet
      *
      * @param tweetID Tweet ID
+     *
      * @return List of users or empty list if no match
      * @throws EngineException if Access is unavailable
      */
-    public List<TwitterUser> getRetweeter(long tweetID) throws EngineException {
+    public UserListHolder getRetweeter(long tweetID, long cursor) throws EngineException {
         try {
             int load = settings.getRowLimit();
-            Tweet embeddedStat = getStatus(tweetID).getEmbeddedTweet();
-            if (embeddedStat != null)
-                tweetID = embeddedStat.getId();
-            long[] userIds = twitter.getRetweeterIds(tweetID, load, -1).getIDs();
-            if (userIds.length == 0)
-                return new LinkedList<>();
-            return convertUserList(twitter.lookupUsers(userIds));
+            IDs userIDs = twitter.getRetweeterIds(tweetID, load, cursor);
+            long[] ids = userIDs.getIDs();
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = userIDs.getNextCursor();
+            List<TwitterUser> users;
+            if (ids.length > 0) {
+                users = convertUserList(twitter.lookupUsers(ids));
+            } else {
+                users = new ArrayList<>(0);
+            }
+            return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -976,9 +1009,13 @@ public class TwitterEngine {
      * @return list of users following the list
      * @throws EngineException if access is unavailable
      */
-    public List<TwitterUser> getListFollower(long listId) throws EngineException {
+    public UserListHolder getListFollower(long listId, long cursor) throws EngineException {
         try {
-            return convertUserList(twitter.getUserListSubscribers(listId, -1));
+            PagableResponseList<User> result = twitter.getUserListSubscribers(listId, cursor);
+            List<TwitterUser> users = convertUserList(result);
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = result.getNextCursor();
+            return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -991,9 +1028,13 @@ public class TwitterEngine {
      * @return list of users
      * @throws EngineException if access is unavailable
      */
-    public List<TwitterUser> getListMember(long listId) throws EngineException {
+    public UserListHolder getListMember(long listId, long cursor) throws EngineException {
         try {
-            return convertUserList(twitter.getUserListMembers(listId, -1));
+            PagableResponseList<User> result = twitter.getUserListMembers(listId, cursor);
+            List<TwitterUser> users = convertUserList(result);
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = result.getNextCursor();
+            return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -1015,8 +1056,8 @@ public class TwitterEngine {
             paging.setCount(settings.getRowLimit());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
-            if (maxId > 0)
-                paging.setMaxId(maxId);
+            if (maxId > 1)
+                paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserListStatuses(listId, paging));
         } catch (TwitterException err) {
             throw new EngineException(err);

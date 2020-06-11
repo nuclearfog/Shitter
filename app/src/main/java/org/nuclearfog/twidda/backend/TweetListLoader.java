@@ -74,16 +74,16 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
         try {
             switch (action) {
                 case TL_HOME:
-                    if (sinceId == 0 && maxId == 0) {   // add tweets to the list
+                    if (sinceId == 0 && maxId == 0) {
                         tweets = db.getHomeTimeline();
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getHome(sinceId, maxId);
                             db.storeHomeTimeline(tweets);
                         }
-                    } else if (sinceId > 0) {           // add new tweets to the top
+                    } else if (sinceId > 0) {
                         tweets = mTwitter.getHome(sinceId, maxId);
                         db.storeHomeTimeline(tweets);
-                    } else if (maxId > 0) {             // add old tweets to the bottom
+                    } else if (maxId > 1) {
                         tweets = mTwitter.getHome(sinceId, maxId);
                     }
                     break;
@@ -98,7 +98,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     } else if (sinceId > 0) {
                         tweets = mTwitter.getMention(sinceId, maxId);
                         db.storeMentions(tweets);
-                    } else if (maxId > 0) {
+                    } else if (maxId > 1) {
                         tweets = mTwitter.getMention(sinceId, maxId);
                     }
                     break;
@@ -116,7 +116,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                         } else if (sinceId > 0) {
                             tweets = mTwitter.getUserTweets(id, sinceId, maxId);
                             db.storeUserTweets(tweets);
-                        } else if (maxId > 0) {
+                        } else if (maxId > 1) {
                             tweets = mTwitter.getUserTweets(id, sinceId, maxId);
                         }
                     }
@@ -136,7 +136,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                             tweets = mTwitter.getUserFavs(id, 0, maxId);
                             db.storeUserFavs(tweets, id);
                             pos = CLEAR_LIST; // set flag to clear previous data
-                        } else if (maxId > 0) {
+                        } else if (maxId > 1) {
                             tweets = mTwitter.getUserFavs(id, sinceId, maxId);
                         }
                     }
@@ -151,14 +151,16 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                         tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {
                             tweets = mTwitter.getAnswers(search, id, sinceId, maxId);
-                            if (!tweets.isEmpty() && db.containStatus(id))
+                            if (!tweets.isEmpty() && db.containStatus(id)) {
                                 db.storeReplies(tweets);
+                            }
                         }
                     } else if (sinceId > 0) {
                         tweets = mTwitter.getAnswers(search, id, sinceId, maxId);
-                        if (!tweets.isEmpty() && db.containStatus(id))
+                        if (!tweets.isEmpty() && db.containStatus(id)) {
                             db.storeReplies(tweets);
-                    } else if (maxId > 0) {
+                        }
+                    } else if (maxId > 1) {
                         tweets = mTwitter.getAnswers(search, id, sinceId, maxId);
                     }
                     break;

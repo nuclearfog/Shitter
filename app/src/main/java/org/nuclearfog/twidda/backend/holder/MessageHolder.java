@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.items;
+package org.nuclearfog.twidda.backend.holder;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

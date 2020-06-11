@@ -20,17 +20,17 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserListLoader;
-import org.nuclearfog.twidda.backend.UserListLoader.Mode;
+import org.nuclearfog.twidda.backend.UserListLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
+import org.nuclearfog.twidda.backend.holder.UserListHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.backend.UserListLoader.NO_CURSOR;
 
 public class UserFragment extends Fragment implements OnRefreshListener, UserClickListener, FragmentChangeObserver {
 
@@ -74,7 +74,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     public void onStart() {
         super.onStart();
         if (userTask == null) {
-            load();
+            load(NO_CURSOR);
         }
     }
 
@@ -90,7 +90,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     @Override
     public void onRefresh() {
         if (userTask != null && userTask.getStatus() != RUNNING) {
-            load();
+            load(NO_CURSOR);
         }
     }
 
@@ -102,6 +102,11 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
             intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onFooterClick(long cursor) {
+        load(cursor);
     }
 
 
@@ -122,8 +127,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      *
      * @param data list of twitter users
      */
-    public void setData(List<TwitterUser> data) {
-        adapter.replaceAll(data);
+    public void setData(UserListHolder data) {
+        adapter.setData(data);
     }
 
     /**
@@ -156,49 +161,44 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     }
 
 
-    private void load() {
+    private void load(long cursor) {
         Bundle param = getArguments();
         if (param != null) {
             int mode = param.getInt(KEY_FRAG_USER_MODE, 0);
             long id = param.getLong(KEY_FRAG_USER_ID, 1);
             String search = param.getString(KEY_FRAG_USER_SEARCH, "");
-
+            Action action = Action.NONE;
             switch (mode) {
                 case USER_FRAG_FOLLOWS:
-                    userTask = new UserListLoader(this, Mode.FOLLOWS);
-                    userTask.execute(id);
+                    action = Action.FOLLOWS;
                     break;
 
                 case USER_FRAG_FRIENDS:
-                    userTask = new UserListLoader(this, Mode.FRIENDS);
-                    userTask.execute(id);
+                    action = Action.FRIENDS;
                     break;
 
                 case USER_FRAG_RETWEET:
-                    userTask = new UserListLoader(this, Mode.RETWEET);
-                    userTask.execute(id);
+                    action = Action.RETWEET;
                     break;
 
                 case USER_FRAG_FAVORIT:
-                    userTask = new UserListLoader(this, Mode.FAVORIT);
-                    userTask.execute(id);
+                    action = Action.FAVORIT;
                     break;
 
                 case USER_FRAG_SEARCH:
-                    userTask = new UserListLoader(this, Mode.SEARCH);
-                    userTask.execute(search);
+                    action = Action.SEARCH;
                     break;
 
                 case USER_FRAG_SUBSCR:
-                    userTask = new UserListLoader(this, Mode.SUBSCRIBER);
-                    userTask.execute(id);
+                    action = Action.SUBSCRIBER;
                     break;
 
                 case USER_FRAG_LISTS:
-                    userTask = new UserListLoader(this, Mode.LIST);
-                    userTask.execute(id);
+                    action = Action.LIST;
                     break;
             }
+            userTask = new UserListLoader(this, action, id, search);
+            userTask.execute(cursor);
         }
     }
 }

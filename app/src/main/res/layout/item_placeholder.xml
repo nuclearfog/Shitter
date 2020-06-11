@@ -10,6 +10,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/item_placeholder_margin"
         android:background="@drawable/button"
-        android:text="@string/item_load_more_tweets" />
+        android:text="@string/item_load_more" />
 
 </androidx.cardview.widget.CardView>

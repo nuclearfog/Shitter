@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.MessageHolder;
+import org.nuclearfog.twidda.backend.holder.MessageHolder;
 
 import java.lang.ref.WeakReference;
 

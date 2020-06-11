@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.TweetPopup;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.TweetHolder;
+import org.nuclearfog.twidda.backend.holder.TweetHolder;
 
 import java.lang.ref.WeakReference;
 

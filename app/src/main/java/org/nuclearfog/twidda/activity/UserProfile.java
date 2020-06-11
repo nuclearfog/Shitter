@@ -37,7 +37,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserProperties;
+import org.nuclearfog.twidda.backend.items.UserConnection;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -88,7 +88,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private TabLayout tabLayout;
 
     private ProfileLoader profileAsync;
-    private UserProperties properties;
+    private UserConnection properties;
     private TwitterUser user;
 
     @Override
@@ -523,9 +523,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     /**
      * Set User Relationship
+     *
      * @param properties relationship to the current user
      */
-    public void setConnection(UserProperties properties) {
+    public void setConnection(UserConnection properties) {
         this.properties = properties;
         invalidateOptionsMenu();
     }
@@ -536,7 +537,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      * @param properties connection to an user
      * @param action     Action on the user profile
      */
-    public void onAction(UserProperties properties, ProfileLoader.Action action) {
+    public void onAction(UserConnection properties, ProfileLoader.Action action) {
         switch (action) {
             case ACTION_FOLLOW:
                 if (properties.isFriend())

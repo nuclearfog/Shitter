@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.backend.TweetUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
-import org.nuclearfog.twidda.backend.items.TweetHolder;
+import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
