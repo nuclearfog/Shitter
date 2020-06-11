@@ -58,22 +58,36 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     @MainThread
     public void insert(@NonNull List<Tweet> data, int index) {
-        int dataSize = data.size();
         if (!tweets.isEmpty() && index >= 0 && index < tweets.size()) {
-            if (dataSize > MIN_COUNT) {
+            if (data.size() > MIN_COUNT) {
                 if (tweets.get(index) != null) {
                     tweets.add(index, null);
-                    dataSize++;
+                    tweets.addAll(index, data);
+                    notifyItemRangeInserted(index, data.size() + 1);
+                } else {
+                    tweets.addAll(index, data);
+                    notifyItemRangeInserted(index, data.size());
                 }
-                tweets.addAll(index, data);
-                notifyItemRangeInserted(index, dataSize);
-            } else if (tweets.get(index) == null) {
-                tweets.remove(index);
-                notifyItemRemoved(index);
+            } else {
+                if (tweets.get(index) == null) {
+                    tweets.remove(index);
+                    if (data.isEmpty()) {
+                        notifyItemRemoved(index);
+                    } else if (data.size() == 1) {
+                        tweets.add(index, data.get(0));
+                        notifyItemChanged(index);
+                    } else {
+                        tweets.addAll(index, data);
+                        notifyItemRangeInserted(index, data.size() - 1);
+                    }
+                } else {
+                    tweets.addAll(index, data);
+                    notifyItemRangeInserted(index, data.size());
+                }
             }
         } else {
             tweets.addAll(data);
-            if (dataSize > 0) {
+            if (data.size() > MIN_COUNT) {
                 tweets.add(null);
             }
             notifyDataSetChanged();
