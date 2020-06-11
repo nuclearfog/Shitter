@@ -28,6 +28,11 @@ import java.util.List;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+/**
+ * Adapter class for user list
+ *
+ * @see org.nuclearfog.twidda.fragment.UserFragment
+ */
 public class UserAdapter extends Adapter<ViewHolder> {
 
     private static final int ITEM_USER = 0;
@@ -57,12 +62,11 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 users.add(null);
             notifyDataSetChanged();
         } else {
-            int insertAt = users.size() - 1;
-            int end = insertAt + data.getSize();
-            users.addAll(insertAt, data.getUsers());
+            int end = users.size() - 1;
             if (!data.hasNext())
-                users.remove(end);
-            notifyItemRangeChanged(insertAt, end);
+                users.remove(end--);
+            users.addAll(end, data.getUsers());
+            notifyItemRangeChanged(end, data.getSize());
         }
         nextCursor = data.getNext();
     }

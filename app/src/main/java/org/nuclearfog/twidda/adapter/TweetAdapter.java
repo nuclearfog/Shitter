@@ -33,10 +33,16 @@ import java.util.List;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+/**
+ * Adapter class for tweet list
+ *
+ * @see org.nuclearfog.twidda.fragment.TweetFragment
+ */
 public class TweetAdapter extends Adapter<ViewHolder> {
 
     private static final int VIEW_TWEET = 0;
     private static final int VIEW_GAP = 1;
+    private static final int MIN_COUNT = 2;
 
     private WeakReference<TweetClickListener> itemClickListener;
     private NumberFormat formatter;
@@ -52,24 +58,24 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     @MainThread
     public void insert(@NonNull List<Tweet> data, int index) {
-        int maxSize = settings.getRowLimit();
         int dataSize = data.size();
-        if (!tweets.isEmpty() && index < tweets.size()) {
-            if (dataSize == maxSize) {
+        if (!tweets.isEmpty() && index >= 0 && index < tweets.size()) {
+            if (dataSize > MIN_COUNT) {
                 if (tweets.get(index) != null) {
                     tweets.add(index, null);
                     dataSize++;
                 }
+                tweets.addAll(index, data);
+                notifyItemRangeInserted(index, dataSize);
             } else if (tweets.get(index) == null) {
                 tweets.remove(index);
-                dataSize--;
+                notifyItemRemoved(index);
             }
-            tweets.addAll(index, data);
-            notifyItemRangeInserted(index, dataSize);
         } else {
             tweets.addAll(data);
-            if (dataSize == maxSize)
+            if (dataSize > 0) {
                 tweets.add(null);
+            }
             notifyDataSetChanged();
         }
     }
