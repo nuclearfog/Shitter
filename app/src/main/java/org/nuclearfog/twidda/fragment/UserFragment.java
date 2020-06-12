@@ -106,7 +106,9 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onFooterClick(long cursor) {
-        load(cursor);
+        if (userTask != null && userTask.getStatus() != RUNNING) {
+            load(cursor);
+        }
     }
 
 

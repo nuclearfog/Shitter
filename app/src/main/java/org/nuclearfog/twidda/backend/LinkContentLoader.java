@@ -81,11 +81,13 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                         dataHolder = new DataHolder(data, SearchPage.class);
                     }
                 } else if (USER_PATH.matcher(path).matches()) {
-                    int end = path.indexOf('/');
-                    if (end > 0)
-                        path = path.substring(0, end);
-                    data.putString(KEY_PROFILE_NAME, path);
-                    dataHolder = new DataHolder(data, UserProfile.class);
+                    if (!path.equals("explore")) {
+                        int end = path.indexOf('/');
+                        if (end > 0)
+                            path = path.substring(0, end);
+                        data.putString(KEY_PROFILE_NAME, path);
+                        dataHolder = new DataHolder(data, UserProfile.class);
+                    }
                 } else if (TWEET_PATH.matcher(path).matches()) {
                     String username = '@' + path.substring(0, path.indexOf('/'));
                     long tweetId = Long.parseLong(path.substring(path.lastIndexOf('/') + 1));

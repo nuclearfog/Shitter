@@ -131,7 +131,9 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     @Override
     public void onHolderClick(long sinceId, long maxId, int pos) {
-        load(sinceId, maxId, pos);
+        if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
+            load(sinceId, maxId, pos);
+        }
     }
 
 
