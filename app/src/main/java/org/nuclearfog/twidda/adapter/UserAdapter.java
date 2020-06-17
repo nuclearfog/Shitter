@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -21,7 +22,6 @@ import org.nuclearfog.twidda.backend.holder.UserListHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +38,17 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_USER = 0;
     private static final int ITEM_GAP = 1;
 
-    private WeakReference<UserClickListener> itemClickListener;
-    private List<TwitterUser> users;
+    private UserClickListener itemClickListener;
     private GlobalSettings settings;
 
+    private List<TwitterUser> users;
     private long nextCursor;
 
 
-    public UserAdapter(UserClickListener l, GlobalSettings settings) {
-        itemClickListener = new WeakReference<>(l);
-        users = new ArrayList<>();
+    public UserAdapter(UserClickListener itemClickListener, GlobalSettings settings) {
+        this.itemClickListener = itemClickListener;
         this.settings = settings;
+        users = new ArrayList<>();
     }
 
 
@@ -99,33 +99,28 @@ public class UserAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_USER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-            final ItemHolder vh = new ItemHolder(v);
             FontTool.setViewFontAndColor(settings, v);
-
+            final ItemHolder vh = new ItemHolder(v);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (itemClickListener.get() != null) {
-                        int position = vh.getLayoutPosition();
-                        TwitterUser user = users.get(position);
-                        if (position != NO_POSITION && user != null) {
-                            itemClickListener.get().onUserClick(user);
-                        }
+                    int position = vh.getLayoutPosition();
+                    TwitterUser user = users.get(position);
+                    if (position != NO_POSITION && user != null) {
+                        itemClickListener.onUserClick(user);
                     }
                 }
             });
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final UserAdapter.PlaceHolder vh = new UserAdapter.PlaceHolder(v);
+            final PlaceHolder vh = new PlaceHolder(v);
             vh.loadBtn.setTypeface(settings.getFontFace());
             vh.loadBtn.setTextColor(settings.getFontColor());
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (itemClickListener.get() != null) {
-                        itemClickListener.get().onFooterClick(nextCursor);
-                    }
+                    itemClickListener.onFooterClick(nextCursor);
                 }
             });
             return vh;
@@ -140,23 +135,23 @@ public class UserAdapter extends Adapter<ViewHolder> {
             ItemHolder vh = (ItemHolder) holder;
             vh.username.setText(user.getUsername());
             vh.screenname.setText(user.getScreenname());
+
+            setIcon(vh.username, user.isVerified() ? R.drawable.verify : 0);
+            setIcon(vh.screenname, user.isLocked() ? R.drawable.lock : 0);
+
             if (settings.getImageLoad()) {
                 String pbLink = user.getImageLink();
-                if (!user.hasDefaultProfileImage())
+                if (!user.hasDefaultProfileImage()) {
                     pbLink += "_mini";
+                }
                 Picasso.get().load(pbLink).into(vh.profileImg);
             }
-            if (user.isVerified()) {
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-            } else {
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }
-            if (user.isLocked()) {
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-            } else {
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }
         }
+    }
+
+
+    private void setIcon(TextView tv, @DrawableRes int icon) {
+        tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
     }
 
 

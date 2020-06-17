@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,13 +24,14 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
     private static final int PICTURE = 0;
     private static final int LOADING = 1;
 
-    private WeakReference<OnImageClickListener> itemClickListener;
+    private OnImageClickListener itemClickListener;
+
     private List<Bitmap> images;
     private boolean loading;
 
 
-    public ImageAdapter(OnImageClickListener l) {
-        itemClickListener = new WeakReference<>(l);
+    public ImageAdapter(OnImageClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
         images = new LinkedList<>();
         loading = false;
     }
@@ -101,18 +101,14 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (itemClickListener.get() != null)
-                        itemClickListener.get().onImageClick(image);
+                    itemClickListener.onImageClick(image);
                 }
             });
             imageView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (itemClickListener.get() != null) {
-                        itemClickListener.get().onImageTouch(image);
-                        return true;
-                    }
-                    return false;
+                    itemClickListener.onImageTouch(image);
+                    return true;
                 }
             });
         }

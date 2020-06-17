@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -24,25 +25,24 @@ import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
 
 public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
-    private WeakReference<OnItemSelected> itemClickListener;
-    private List<Message> messages;
+    private OnItemSelected itemClickListener;
     private GlobalSettings settings;
 
+    private List<Message> messages;
 
-    public MessageAdapter(OnItemSelected l, GlobalSettings settings) {
-        itemClickListener = new WeakReference<>(l);
-        messages = new ArrayList<>();
+
+    public MessageAdapter(OnItemSelected itemClickListener, GlobalSettings settings) {
+        this.itemClickListener = itemClickListener;
         this.settings = settings;
+        messages = new ArrayList<>();
     }
 
 
@@ -63,8 +63,9 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
                 pos = index;
             }
         }
-        if (pos != -1)
+        if (pos != -1) {
             notifyItemRemoved(pos);
+        }
     }
 
 
@@ -91,30 +92,27 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         vh.answer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION)
-                        itemClickListener.get().onClick(messages.get(position), OnItemSelected.Action.ANSWER);
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    itemClickListener.onClick(messages.get(position), OnItemSelected.Action.ANSWER);
                 }
             }
         });
         vh.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION)
-                        itemClickListener.get().onClick(messages.get(position), OnItemSelected.Action.DELETE);
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    itemClickListener.onClick(messages.get(position), OnItemSelected.Action.DELETE);
                 }
             }
         });
         vh.profile_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION)
-                        itemClickListener.get().onClick(messages.get(position), OnItemSelected.Action.PROFILE);
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    itemClickListener.onClick(messages.get(position), OnItemSelected.Action.PROFILE);
                 }
             }
         });
@@ -127,10 +125,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         Spanned text;
         Message message = messages.get(index);
         TwitterUser sender = message.getSender();
-        if (itemClickListener.get() != null)
-            text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener.get());
-        else
-            text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor());
+        text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
 
         vh.message.setText(text);
         vh.username.setText(sender.getUsername());
@@ -138,43 +133,21 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         vh.createdAt.setText(getTimeString(message.getTime()));
         vh.receivername.setText(message.getReceiver().getScreenname());
 
-        if (sender.isVerified())
-            vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-        else
-            vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        if (sender.isLocked())
-            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-        else
-            vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        setIcon(vh.username, sender.isVerified() ? R.drawable.verify : 0);
+        setIcon(vh.screenname, sender.isLocked() ? R.drawable.lock : 0);
+
         if (settings.getImageLoad()) {
             String pbLink = sender.getImageLink();
-            if (!sender.hasDefaultProfileImage())
+            if (!sender.hasDefaultProfileImage()) {
                 pbLink += "_mini";
+            }
             Picasso.get().load(pbLink).into(vh.profile_img);
         }
     }
 
 
-    private String getTimeString(long time) {
-        long diff = new Date().getTime() - time;
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-        long weeks = days / 7;
-        if (weeks > 4) {
-            Date tweetDate = new Date(time);
-            return SimpleDateFormat.getDateInstance().format(tweetDate);
-        }
-        if (weeks > 0)
-            return weeks + " w";
-        if (days > 0)
-            return days + " d";
-        if (hours > 0)
-            return hours + " h";
-        if (minutes > 0)
-            return minutes + " m";
-        return seconds + " s";
+    private void setIcon(TextView tv, @DrawableRes int icon) {
+        tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
     }
 
 

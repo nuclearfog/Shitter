@@ -142,8 +142,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         if (reload != null && list != null && adapter != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
-            adapter.clear();
-            load(0, 0, 0);
+            load(0, 0, CLEAR_LIST);
         }
     }
 

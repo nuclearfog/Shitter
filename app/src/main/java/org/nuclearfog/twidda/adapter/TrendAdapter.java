@@ -17,7 +17,6 @@ import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,17 +27,18 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
-    private WeakReference<TrendClickListener> itemClickListener;
-    private List<TwitterTrend> trends;
+    private TrendClickListener itemClickListener;
     private GlobalSettings settings;
     private NumberFormat formatter;
 
+    private List<TwitterTrend> trends;
 
-    public TrendAdapter(TrendClickListener l, GlobalSettings settings) {
-        itemClickListener = new WeakReference<>(l);
-        trends = new ArrayList<>();
-        formatter = NumberFormat.getIntegerInstance();
+
+    public TrendAdapter(TrendClickListener itemClickListener, GlobalSettings settings) {
+        this.itemClickListener = itemClickListener;
         this.settings = settings;
+        formatter = NumberFormat.getIntegerInstance();
+        trends = new ArrayList<>();
     }
 
 
@@ -78,10 +78,9 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemClickListener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION)
-                        itemClickListener.get().onTrendClick(trends.get(position));
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    itemClickListener.onTrendClick(trends.get(position));
                 }
             }
         });

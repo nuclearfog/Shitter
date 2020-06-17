@@ -21,13 +21,13 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
  */
 public class LocationAdapter extends BaseAdapter {
 
-    private List<TrendLocation> data;
     private GlobalSettings settings;
+    private List<TrendLocation> data;
 
 
     public LocationAdapter(GlobalSettings settings) {
-        data = new ArrayList<>();
         this.settings = settings;
+        data = new ArrayList<>();
     }
 
 
@@ -47,10 +47,9 @@ public class LocationAdapter extends BaseAdapter {
 
 
     public int getPosition(TrendLocation item) {
-        int pos = 0;
-        for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).equals(item))
-                pos = index;
+        int pos = data.indexOf(item);
+        if (pos == -1) {
+            return 0;
         }
         return pos;
     }
@@ -77,9 +76,9 @@ public class LocationAdapter extends BaseAdapter {
     @Override
     public View getView(final int pos, View view, ViewGroup parent) {
         TextView tv;
-        if (view instanceof TextView)
+        if (view instanceof TextView) {
             tv = (TextView) view;
-        else {
+        } else {
             tv = new TextView(parent.getContext());
             tv.setTextSize(COMPLEX_UNIT_DIP, 16);
         }

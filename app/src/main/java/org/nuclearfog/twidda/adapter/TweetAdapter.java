@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -23,15 +24,13 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
 
 /**
  * Adapter class for tweet list
@@ -44,13 +43,15 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private static final int VIEW_GAP = 1;
     private static final int MIN_COUNT = 2;
 
-    private WeakReference<TweetClickListener> itemClickListener;
+    private TweetClickListener itemClickListener;
     private NumberFormat formatter;
-    private List<Tweet> tweets;
     private GlobalSettings settings;
 
-    public TweetAdapter(TweetClickListener l, GlobalSettings settings) {
-        itemClickListener = new WeakReference<>(l);
+    private List<Tweet> tweets;
+
+
+    public TweetAdapter(TweetClickListener itemClickListener, GlobalSettings settings) {
+        this.itemClickListener = itemClickListener;
         formatter = NumberFormat.getIntegerInstance();
         tweets = new ArrayList<>();
         this.settings = settings;
@@ -94,15 +95,18 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         }
     }
 
+
     @MainThread
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
     }
 
+
     @MainThread
     public void remove(long id) {
         int index = -1;
+
         for (int pos = 0; pos < tweets.size() && index < 0; pos++) {
             Tweet tweet = tweets.get(pos);
             if (tweet != null && tweet.getId() == id) {
@@ -115,9 +119,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         }
     }
 
+
     public boolean isEmpty() {
         return tweets.isEmpty();
     }
+
 
     @Override
     public long getItemId(int index) {
@@ -127,10 +133,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         return NO_ID;
     }
 
+
     @Override
     public int getItemCount() {
         return tweets.size();
     }
+
 
     @Override
     public int getItemViewType(int index) {
@@ -138,6 +146,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             return VIEW_GAP;
         return VIEW_TWEET;
     }
+
 
     @NonNull
     @Override
@@ -149,11 +158,10 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (itemClickListener.get() != null) {
-                        int position = vh.getLayoutPosition();
-                        if (position != NO_POSITION && tweets.get(position) != null) {
-                            itemClickListener.get().onTweetClick(tweets.get(position));
-                        }
+                    int position = vh.getLayoutPosition();
+                    Tweet tweet = tweets.get(position);
+                    if (position != NO_POSITION && tweet != null) {
+                        itemClickListener.onTweetClick(tweet);
                     }
                 }
             });
@@ -166,27 +174,26 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (itemClickListener.get() != null) {
-                        int position = vh.getLayoutPosition();
-                        if (position != NO_POSITION) {
-                            long sinceId = 0;
-                            long maxId = 0;
-                            if (position == 0)
-                                sinceId = tweets.get(position + 1).getId();
-                            else if (position == tweets.size() - 1)
-                                maxId = tweets.get(position - 1).getId();
-                            else {
-                                sinceId = tweets.get(position + 1).getId();
-                                maxId = tweets.get(position - 1).getId();
-                            }
-                            itemClickListener.get().onHolderClick(sinceId, maxId, position);
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        long sinceId = 0;
+                        long maxId = 0;
+                        if (position == 0) {
+                            sinceId = tweets.get(position + 1).getId();
+                        } else if (position == tweets.size() - 1) {
+                            maxId = tweets.get(position - 1).getId();
+                        } else {
+                            sinceId = tweets.get(position + 1).getId();
+                            maxId = tweets.get(position - 1).getId();
                         }
+                        itemClickListener.onHolderClick(sinceId, maxId, position);
                     }
                 }
             });
             return vh;
         }
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
@@ -209,22 +216,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
             vh.favorite.setText(formatter.format(tweet.getFavorCount()));
             vh.time.setText(getTimeString(tweet.getTime()));
-            if (tweet.retweeted())
-                vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet_enabled, 0, 0, 0);
-            else
-                vh.retweet.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-            if (tweet.favored())
-                vh.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite_enabled, 0, 0, 0);
-            else
-                vh.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
-            if (user.isVerified())
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-            else
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            if (user.isLocked())
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-            else
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+
+            setIcon(vh.retweet, tweet.retweeted() ? R.drawable.retweet_enabled : R.drawable.retweet);
+            setIcon(vh.favorite, tweet.favored() ? R.drawable.favorite_enabled : R.drawable.favorite);
+            setIcon(vh.username, user.isVerified() ? R.drawable.verify : 0);
+            setIcon(vh.screenname, user.isLocked() ? R.drawable.lock : 0);
+
             if (settings.getImageLoad()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
@@ -236,27 +233,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    private String getTimeString(long time) {
-        long diff = new Date().getTime() - time;
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-        long weeks = days / 7;
-        if (weeks > 4) {
-            Date tweetDate = new Date(time);
-            return SimpleDateFormat.getDateInstance().format(tweetDate);
-        }
-        if (weeks > 0)
-            return weeks + " w";
-        if (days > 0)
-            return days + " d";
-        if (hours > 0)
-            return hours + " h";
-        if (minutes > 0)
-            return minutes + " m";
-        return seconds + " s";
+
+    private void setIcon(TextView tv, @DrawableRes int drawable) {
+        tv.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
     }
+
 
     class TweetHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;
@@ -275,6 +256,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             profile = v.findViewById(R.id.tweetPb);
         }
     }
+
 
     class PlaceHolder extends ViewHolder {
 

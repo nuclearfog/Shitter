@@ -21,30 +21,29 @@ import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
 
 public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
 
-    private WeakReference<ListClickListener> listener;
-    private List<TwitterList> data;
+    private ListClickListener listener;
     private NumberFormat formatter;
     private GlobalSettings settings;
 
+    private List<TwitterList> data;
 
-    public ListAdapter(ListClickListener l, GlobalSettings settings) {
-        data = new ArrayList<>();
-        listener = new WeakReference<>(l);
-        formatter = NumberFormat.getIntegerInstance();
+
+    public ListAdapter(ListClickListener listener, GlobalSettings settings) {
+        this.listener = listener;
         this.settings = settings;
+        formatter = NumberFormat.getIntegerInstance();
+        data = new ArrayList<>();
     }
 
 
@@ -75,8 +74,9 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
                 pos = index;
             }
         }
-        if (pos != -1)
+        if (pos != -1) {
             notifyItemRemoved(pos);
+        }
     }
 
 
@@ -96,55 +96,45 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.pb_image.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        listener.get().onClick(data.get(position), ListClickListener.Action.PROFILE);
-                    }
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    listener.onClick(data.get(position), ListClickListener.Action.PROFILE);
                 }
             }
         });
         vh.followList.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        listener.get().onClick(data.get(position), ListClickListener.Action.FOLLOW);
-                    }
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    listener.onClick(data.get(position), ListClickListener.Action.FOLLOW);
                 }
             }
         });
         vh.deleteList.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        listener.get().onClick(data.get(position), ListClickListener.Action.DELETE);
-                    }
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    listener.onClick(data.get(position), ListClickListener.Action.DELETE);
                 }
             }
         });
         vh.subscriberCount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        listener.get().onClick(data.get(position), ListClickListener.Action.SUBSCRIBER);
-                    }
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    listener.onClick(data.get(position), ListClickListener.Action.SUBSCRIBER);
                 }
             }
         });
         vh.memberCount.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (listener.get() != null) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        listener.get().onClick(data.get(position), ListClickListener.Action.MEMBER);
-                    }
+                int position = vh.getLayoutPosition();
+                if (position != NO_POSITION) {
+                    listener.onClick(data.get(position), ListClickListener.Action.MEMBER);
                 }
             }
         });
@@ -164,14 +154,16 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
         if (settings.getImageLoad()) {
             String pbLink = owner.getImageLink();
-            if (!owner.hasDefaultProfileImage())
+            if (!owner.hasDefaultProfileImage()) {
                 pbLink += "_mini";
+            }
             Picasso.get().load(pbLink).into(vh.pb_image);
         }
-        if (item.isFollowing())
+        if (item.isFollowing()) {
             vh.followList.setText(R.string.user_unfollow);
-        else
+        } else {
             vh.followList.setText(R.string.user_follow);
+        }
         if (item.isListOwner()) {
             vh.followList.setVisibility(VISIBLE);
             vh.deleteList.setVisibility(GONE);
@@ -179,33 +171,11 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             vh.followList.setVisibility(GONE);
             vh.deleteList.setVisibility(VISIBLE);
         }
-        if (item.isPrivate())
+        if (item.isPrivate()) {
             vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-        else
+        } else {
             vh.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-    }
-
-
-    private String getTimeString(long time) {
-        long diff = new Date().getTime() - time;
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-        long weeks = days / 7;
-        if (weeks > 4) {
-            Date tweetDate = new Date(time);
-            return SimpleDateFormat.getDateInstance().format(tweetDate);
         }
-        if (weeks > 0)
-            return weeks + " w";
-        if (days > 0)
-            return days + " d";
-        if (hours > 0)
-            return hours + " h";
-        if (minutes > 0)
-            return minutes + " m";
-        return seconds + " s";
     }
 
 

@@ -234,8 +234,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      */
     public void notifySettingsChanged() {
         for (Fragment fragment : fragments) {
-            if (fragment instanceof FragmentChangeObserver)
+            if (fragment instanceof FragmentChangeObserver) {
                 ((FragmentChangeObserver) fragment).onReset();
+            }
         }
     }
 

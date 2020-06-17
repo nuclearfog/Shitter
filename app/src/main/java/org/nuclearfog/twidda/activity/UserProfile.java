@@ -191,8 +191,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent i) {
-        if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED)
+        if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED) {
+            adapter.notifySettingsChanged();
             profileAsync = null;
+        }
         super.onActivityResult(reqCode, returnCode, i);
     }
 
