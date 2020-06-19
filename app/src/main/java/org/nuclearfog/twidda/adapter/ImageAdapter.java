@@ -12,21 +12,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import org.nuclearfog.twidda.backend.holder.ImageHolder;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import static android.widget.ListPopupWindow.MATCH_PARENT;
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 
-public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
+public class ImageAdapter extends Adapter<ViewHolder> {
 
     private static final int PICTURE = 0;
     private static final int LOADING = 1;
 
     private OnImageClickListener itemClickListener;
 
-    private List<Bitmap> images;
+    private List<ImageHolder> images;
     private boolean loading;
 
 
@@ -38,11 +41,11 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
 
 
     @MainThread
-    public void addLast(@NonNull Bitmap image) {
+    public void addLast(@NonNull ImageHolder imageItem) {
         int imagePos = images.size();
         if (imagePos == 0)
             loading = true;
-        images.add(image);
+        images.add(imageItem);
         notifyItemInserted(imagePos);
     }
 
@@ -78,56 +81,73 @@ public class ImageAdapter extends Adapter<ImageAdapter.ImageHolder> {
 
     @NonNull
     @Override
-    public ImageAdapter.ImageHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        if (viewType == LOADING) {
+    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        if (viewType == PICTURE) {
+            ImageView preview = new ImageView(parent.getContext());
+            preview.setBackgroundColor(0xffffffff);
+            preview.setPadding(1, 1, 1, 1);
+            final ImageItem item = new ImageItem(preview);
+            preview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = item.getAdapterPosition();
+                    if (pos != NO_POSITION) {
+                        Bitmap img = images.get(pos).getMiddleSize();
+                        itemClickListener.onImageClick(img);
+                    }
+                }
+            });
+            preview.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int pos = item.getAdapterPosition();
+                    if (pos != NO_POSITION) {
+                        Bitmap img = images.get(pos).getOriginalImage();
+                        itemClickListener.onImageTouch(img);
+                    }
+                    return true;
+                }
+            });
+            return item;
+        } else {
             ProgressBar circle = new ProgressBar(parent.getContext());
             LayoutParams param = new LayoutParams(WRAP_CONTENT, MATCH_PARENT);
             circle.setLayoutParams(param);
-            return new ImageHolder(circle);
-        } else {
-            return new ImageHolder(new ImageView(parent.getContext()));
+            return new LoadItem(circle);
         }
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull ImageAdapter.ImageHolder vh, int index) {
-        if (vh.view instanceof ImageView) {
-            final Bitmap image = images.get(index);
-            ImageView imageView = (ImageView) vh.view;
-            imageView.setImageBitmap(downscale(image));
-            imageView.setBackgroundColor(0xffffffff);
-            imageView.setPadding(1, 1, 1, 1);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onImageClick(image);
-                }
-            });
-            imageView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    itemClickListener.onImageTouch(image);
-                    return true;
-                }
-            });
+    public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
+        if (vh instanceof ImageItem) {
+            ImageItem item = (ImageItem) vh;
+            Bitmap image = images.get(index).getSmallSize();
+            item.preview.setImageBitmap(image);
         }
     }
 
+    /**
+     * Holder for image
+     */
+    class ImageItem extends ViewHolder {
+        final ImageView preview;
 
-    private Bitmap downscale(Bitmap image) {
-        float ratio = image.getHeight() / 256.0f;
-        int destWidth = (int) (image.getWidth() / ratio);
-        return Bitmap.createScaledBitmap(image, destWidth, 256, false);
+        ImageItem(ImageView preview) {
+            super(preview);
+            this.preview = preview;
+        }
     }
 
+    /**
+     * Holder for progress circle
+     */
+    class LoadItem extends ViewHolder {
+        final ProgressBar circle;
 
-    static class ImageHolder extends ViewHolder {
-        final View view;
-
-        ImageHolder(View view) {
-            super(view);
-            this.view = view;
+        LoadItem(ProgressBar circle) {
+            super(circle);
+            this.circle = circle;
         }
     }
 

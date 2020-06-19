@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.MediaViewer;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.holder.ImageHolder;
 
 import java.lang.ref.WeakReference;
 
@@ -18,12 +20,15 @@ import java.lang.ref.WeakReference;
  *
  * @see MediaViewer
  */
-public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
+public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
+
+    private static final float PREV_HEIGHT_RATIO = 5.0f;
 
     @Nullable
     private EngineException err;
-    private WeakReference<MediaViewer> callback;
     private TwitterEngine mTwitter;
+    private WeakReference<MediaViewer> callback;
+    private float previewHeight, zoomPreview;
 
 
     /**
@@ -34,6 +39,10 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
     public ImageLoader(@NonNull MediaViewer callback) {
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
+        Point displaySize = new Point();
+        callback.getWindowManager().getDefaultDisplay().getSize(displaySize);
+        zoomPreview = displaySize.x;
+        previewHeight = displaySize.y / PREV_HEIGHT_RATIO;
     }
 
 
@@ -48,7 +57,8 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                     image = BitmapFactory.decodeFile(link);
                 }
                 if (image != null) {
-                    publishProgress(image);
+                    ImageHolder images = new ImageHolder(image, previewHeight, zoomPreview);
+                    publishProgress(images);
                 }
             }
             return true;
@@ -62,9 +72,10 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
 
     @Override
-    protected void onProgressUpdate(Bitmap[] btm) {
-        if (callback.get() != null)
-            callback.get().setImage(btm[0]);
+    protected void onProgressUpdate(ImageHolder[] images) {
+        if (callback.get() != null) {
+            callback.get().setImage(images[0]);
+        }
     }
 
 

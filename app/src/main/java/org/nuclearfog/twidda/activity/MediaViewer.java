@@ -26,6 +26,7 @@ import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
+import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.text.SimpleDateFormat;
@@ -143,7 +144,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     @Override
     public void onImageClick(Bitmap image) {
-        changeImage(image);
+        zoomImage.reset();
+        zoomImage.setImageBitmap(image);
     }
 
 
@@ -201,24 +203,13 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public void setImage(Bitmap image) {
+    public void setImage(ImageHolder image) {
         if (adapter.isEmpty()) {
-            changeImage(image);
+            zoomImage.reset();
+            zoomImage.setImageBitmap(image.getMiddleSize());
             image_progress.setVisibility(View.INVISIBLE);
         }
         adapter.addLast(image);
-    }
-
-
-    private void changeImage(Bitmap image) {
-        int width = zoomImage.getMeasuredWidth();
-        if (width > 0 && image.getWidth() > width) {
-            float ratio = image.getWidth() / (float) width;
-            int destHeight = (int) (image.getHeight() / ratio);
-            image = Bitmap.createScaledBitmap(image, width, destHeight, false);
-        }
-        zoomImage.reset();
-        zoomImage.setImageBitmap(image);
     }
 
 
