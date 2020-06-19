@@ -147,4 +147,6 @@
     <string name="error_file_not_found">Datei nicht gefunden!</string>
     <string name="item_load_more">Mehr laden</string>
     <string name="error_image_loading">Bild konnte nicht geladen werden!</string>
+    <string name="item_image_prev">Bildvorschau</string>
+    <string name="item_image_save">Bild speichern</string>
 </resources>

@@ -150,4 +150,6 @@
     <string name="error_file_not_found">File not found!</string>
     <string name="item_load_more">Load more</string>
     <string name="error_image_loading">Could not load image!</string>
+    <string name="item_image_prev">image preview</string>
+    <string name="item_image_save">save image</string>
 </resources>

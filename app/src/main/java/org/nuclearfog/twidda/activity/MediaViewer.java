@@ -48,9 +48,10 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     /// Media Types
     private static final int MEDIAVIEWER_NONE = 0;
-    public static final int MEDIAVIEWER_IMAGE = 1;
-    public static final int MEDIAVIEWER_VIDEO = 2;
-    public static final int MEDIAVIEWER_ANGIF = 3;
+    public static final int MEDIAVIEWER_IMG_S = 1;
+    public static final int MEDIAVIEWER_IMAGE = 2;
+    public static final int MEDIAVIEWER_VIDEO = 3;
+    public static final int MEDIAVIEWER_ANGIF = 4;
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
@@ -99,6 +100,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
                 if (link != null && link.length > 0) {
                     switch (type) {
+                        case MEDIAVIEWER_IMG_S:
+                            adapter.disableSaveButton();
                         case MEDIAVIEWER_IMAGE:
                             imageWindow.setVisibility(VISIBLE);
                             imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
@@ -150,7 +153,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
-    public void onImageTouch(Bitmap image) {
+    public void onSaveClick(Bitmap image) {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);

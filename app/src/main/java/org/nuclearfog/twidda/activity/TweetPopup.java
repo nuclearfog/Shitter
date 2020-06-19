@@ -48,7 +48,7 @@ import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 
 
@@ -267,7 +267,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
                     case GIF:
                     case IMAGE:
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
                         startActivity(image);
                         break;
                 }

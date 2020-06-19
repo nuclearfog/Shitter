@@ -1,8 +1,11 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.graphics.Bitmap;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
@@ -12,11 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import static android.view.View.VISIBLE;
 import static android.widget.ListPopupWindow.MATCH_PARENT;
 import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
@@ -30,13 +35,13 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private OnImageClickListener itemClickListener;
 
     private List<ImageHolder> images;
-    private boolean loading;
+    private boolean loading = false;
+    private boolean saveImg = true;
 
 
     public ImageAdapter(OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         images = new LinkedList<>();
-        loading = false;
     }
 
 
@@ -55,6 +60,11 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         loading = false;
         int circlePos = images.size();
         notifyItemRemoved(circlePos);
+    }
+
+
+    public void disableSaveButton() {
+        saveImg = false;
     }
 
 
@@ -83,11 +93,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         if (viewType == PICTURE) {
-            ImageView preview = new ImageView(parent.getContext());
-            preview.setBackgroundColor(0xffffffff);
-            preview.setPadding(1, 1, 1, 1);
-            final ImageItem item = new ImageItem(preview);
-            preview.setOnClickListener(new View.OnClickListener() {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
+            final ImageItem item = new ImageItem(view);
+            item.preview.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int pos = item.getAdapterPosition();
@@ -97,17 +105,19 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                     }
                 }
             });
-            preview.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    int pos = item.getAdapterPosition();
-                    if (pos != NO_POSITION) {
-                        Bitmap img = images.get(pos).getOriginalImage();
-                        itemClickListener.onImageTouch(img);
+            if (saveImg) {
+                item.saveButton.setVisibility(VISIBLE);
+                item.saveButton.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int pos = item.getAdapterPosition();
+                        if (pos != NO_POSITION) {
+                            Bitmap img = images.get(pos).getOriginalImage();
+                            itemClickListener.onSaveClick(img);
+                        }
                     }
-                    return true;
-                }
-            });
+                });
+            }
             return item;
         } else {
             ProgressBar circle = new ProgressBar(parent.getContext());
@@ -132,10 +142,12 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      */
     class ImageItem extends ViewHolder {
         final ImageView preview;
+        final ImageButton saveButton;
 
-        ImageItem(ImageView preview) {
-            super(preview);
-            this.preview = preview;
+        ImageItem(View view) {
+            super(view);
+            preview = view.findViewById(R.id.item_image_preview);
+            saveButton = view.findViewById(R.id.item_image_save);
         }
     }
 
@@ -165,6 +177,6 @@ public class ImageAdapter extends Adapter<ViewHolder> {
          *
          * @param image selected image_add bitmap
          */
-        void onImageTouch(Bitmap image);
+        void onSaveClick(Bitmap image);
     }
 }

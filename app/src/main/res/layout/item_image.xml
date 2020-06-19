@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/item_image_margin"
+    style="@style/CardViewStyle">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/item_image_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/image_preview" />
+
+        <ImageButton
+            android:id="@+id/item_image_save"
+            android:layout_width="@dimen/item_image_button"
+            android:layout_height="@dimen/item_image_button"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/item_image_button_margin"
+            android:background="@drawable/button"
+            android:contentDescription="@string/item_image_save"
+            android:visibility="gone"
+            app:srcCompat="@drawable/save_img" />
+
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>

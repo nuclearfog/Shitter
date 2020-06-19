@@ -1048,6 +1048,7 @@ public class TwitterEngine {
      * @return bitmap image
      * @throws EngineException if image loading failed
      */
+    @Nullable
     public Bitmap getImage(String link) throws EngineException {
         try {
             Proxy proxy;

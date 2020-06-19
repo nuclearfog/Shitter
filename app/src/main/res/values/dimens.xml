@@ -67,4 +67,7 @@
     <dimen name="settings_appinfo_text_padding">5dp</dimen>
     <dimen name="settings_info_appname_font">18sp</dimen>
     <dimen name="item_placeholder_margin">8dp</dimen>
+    <dimen name="item_image_button_margin">5dp</dimen>
+    <dimen name="item_image_button">30dp</dimen>
+    <dimen name="item_image_margin">2dp</dimen>
 </resources>
