@@ -8,9 +8,6 @@ import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RES
 
 public class EngineException extends Exception {
 
-    static final int FILENOTFOUND = 600;
-    static final int TOKENNOTSET = 601;
-
     public enum ErrorType {
         RATE_LIMIT_EX,
         USER_NOT_FOUND,
@@ -26,15 +23,23 @@ public class EngineException extends Exception {
         NO_MEDIA_FOUND,
         NO_LINK_DEFINED,
         NO_CONNECTION,
+        IMAGE_NOT_LOADED,
         ERROR_NOT_DEFINED
     }
 
-    private final ErrorType errorType;
+    enum InternalErrorType {
+        FILENOTFOUND,
+        TOKENNOTSET,
+        BITMAP_FAILURE
+    }
+
+    private ErrorType errorType;
     private int retryAfter;
 
 
     /**
      * Constructor for Twitter4J errors
+     *
      * @param error Twitter4J Exception
      */
     EngineException(TwitterException error) {
@@ -105,9 +110,10 @@ public class EngineException extends Exception {
 
     /**
      * Constructor for non Twitter4J errors
+     *
      * @param errorCode custom error code
      */
-    EngineException(int errorCode) {
+    EngineException(InternalErrorType errorCode) {
         switch (errorCode) {
             case FILENOTFOUND:
                 errorType = ErrorType.NO_MEDIA_FOUND;
@@ -116,6 +122,9 @@ public class EngineException extends Exception {
             case TOKENNOTSET:
                 errorType = ErrorType.NO_LINK_DEFINED;
                 break;
+
+            case BITMAP_FAILURE:
+                errorType = ErrorType.IMAGE_NOT_LOADED;
 
             default:
                 errorType = ErrorType.ERROR_NOT_DEFINED;

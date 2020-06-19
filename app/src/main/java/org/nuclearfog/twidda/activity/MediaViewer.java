@@ -24,6 +24,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.zoomview.ZoomView;
 
 import java.text.SimpleDateFormat;
@@ -189,8 +191,12 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
 
-    public void onError() {
-        Toast.makeText(this, R.string.error_image_download, Toast.LENGTH_SHORT).show();
+    public void onError(@Nullable EngineException err) {
+        if (err != null) {
+            ErrorHandler.handleFailure(getApplicationContext(), err);
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.error_image_download, Toast.LENGTH_SHORT).show();
+        }
         finish();
     }
 

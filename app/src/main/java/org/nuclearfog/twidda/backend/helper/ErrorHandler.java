@@ -87,6 +87,10 @@ public abstract class ErrorHandler {
                 Toast.makeText(context, R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
                 break;
 
+            case IMAGE_NOT_LOADED:
+                Toast.makeText(context, R.string.error_image_loading, Toast.LENGTH_SHORT).show();
+                break;
+
             case ERROR_NOT_DEFINED:
                 if (error.getMessage() != null)
                     Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();

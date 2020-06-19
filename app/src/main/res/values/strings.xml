@@ -149,4 +149,5 @@
     <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>
     <string name="error_file_not_found">File not found!</string>
     <string name="item_load_more">Load more</string>
+    <string name="error_image_loading">Could not load image!</string>
 </resources>

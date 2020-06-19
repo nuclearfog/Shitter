@@ -1,6 +1,8 @@
 package org.nuclearfog.twidda.backend.engine;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import androidx.annotation.Nullable;
 
@@ -21,8 +23,11 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,39 +88,10 @@ public class TwitterEngine {
             }
         }
         TwitterFactory factory = new TwitterFactory(builder.build());
-        if (aToken != null)
+        if (aToken != null) {
             twitter = factory.getInstance(aToken);
-        else
+        } else {
             twitter = factory.getInstance();
-        initJVMProxy();
-    }
-
-    /**
-     * Initialize App proxy
-     */
-    private void initJVMProxy() {
-        try {
-            if (settings.isProxyServerSet()) {
-                System.setProperty("https.proxyHost", settings.getProxyHost());
-                System.setProperty("https.proxyPort", settings.getProxyPort());
-                if (settings.isProxyLoginSet()) {
-                    System.setProperty("https.proxyUser", settings.getProxyUser());
-                    System.setProperty("https.proxyPassword", settings.getProxyPass());
-                    Authenticator.setDefault(new Authenticator() {
-                        @Override
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(settings.getProxyUser(), settings.getProxyPass().toCharArray());
-                        }
-                    });
-                }
-            } else {
-                System.clearProperty("https.proxyHost");
-                System.clearProperty("https.proxyPort");
-                System.clearProperty("https.proxyUser");
-                System.clearProperty("https.proxyPassword");
-            }
-        } catch (SecurityException sErr) {
-            sErr.printStackTrace();
         }
     }
 
@@ -185,7 +161,7 @@ public class TwitterEngine {
                 twitterID = twitter.getId();
                 settings.setConnection(key1, key2, twitterID);
             } else {
-                throw new EngineException(EngineException.TOKENNOTSET);
+                throw new EngineException(EngineException.InternalErrorType.TOKENNOTSET);
             }
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -1066,6 +1042,33 @@ public class TwitterEngine {
 
 
     /**
+     * download image from Twitter
+     *
+     * @param link link of the image
+     * @return bitmap image
+     * @throws EngineException if image loading failed
+     */
+    public Bitmap getImage(String link) throws EngineException {
+        try {
+            Proxy proxy;
+            URL url = new URL(link);
+            if (settings.isProxyServerSet()) {
+                String proxyAddress = settings.getProxyHost();
+                int proxyPort = Integer.parseInt(settings.getProxyPort());
+                InetSocketAddress socket = new InetSocketAddress(proxyAddress, proxyPort);
+                proxy = new Proxy(Proxy.Type.HTTP, socket);
+            } else {
+                proxy = Proxy.NO_PROXY;
+            }
+            InputStream stream = url.openConnection(proxy).getInputStream();
+            return BitmapFactory.decodeStream(stream);
+        } catch (IOException err) {
+            throw new EngineException(EngineException.InternalErrorType.BITMAP_FAILURE);
+        }
+    }
+
+
+    /**
      * convert #twitter4j.User to TwitterUser List
      *
      * @param users Twitter4J user List
@@ -1131,7 +1134,7 @@ public class TwitterEngine {
         } catch (TwitterException err) {
             throw new EngineException(err);
         } catch (FileNotFoundException err) {
-            throw new EngineException(EngineException.FILENOTFOUND);
+            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
         }
     }
 
@@ -1151,7 +1154,7 @@ public class TwitterEngine {
         } catch (TwitterException err) {
             throw new EngineException(err);
         } catch (FileNotFoundException err) {
-            throw new EngineException(EngineException.FILENOTFOUND);
+            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
         }
     }
 }

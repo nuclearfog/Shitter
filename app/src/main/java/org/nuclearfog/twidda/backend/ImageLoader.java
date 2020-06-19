@@ -5,20 +5,25 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activity.MediaViewer;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.URL;
 
 /**
  * Background task to load images from twitter and storage
+ *
  * @see MediaViewer
  */
 public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
 
+    @Nullable
+    private EngineException err;
     private WeakReference<MediaViewer> callback;
+    private TwitterEngine mTwitter;
 
 
     /**
@@ -28,6 +33,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
      */
     public ImageLoader(@NonNull MediaViewer callback) {
         this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
     }
 
 
@@ -37,9 +43,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
             for (String link : links) {
                 Bitmap image;
                 if (link.startsWith("https://")) {
-                    URL url = new URL(link);
-                    InputStream stream = url.openStream();
-                    image = BitmapFactory.decodeStream(stream);
+                    image = mTwitter.getImage(link);
                 } else {
                     image = BitmapFactory.decodeFile(link);
                 }
@@ -48,6 +52,8 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
                 }
             }
             return true;
+        } catch (EngineException err) {
+            this.err = err;
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -68,7 +74,7 @@ public class ImageLoader extends AsyncTask<String, Bitmap, Boolean> {
             if (success) {
                 callback.get().onSuccess();
             } else {
-                callback.get().onError();
+                callback.get().onError(err);
             }
         }
     }
