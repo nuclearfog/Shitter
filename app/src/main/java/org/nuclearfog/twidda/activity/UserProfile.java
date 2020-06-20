@@ -58,7 +58,7 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetDetail.LINK_PATTERN;
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
@@ -267,9 +267,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             if (user != null && properties != null) {
                 switch (item.getItemId()) {
                     case R.id.profile_tweet:
+                        String tweetPrefix = user.getScreenname() + " ";
                         Intent tweet = new Intent(this, TweetPopup.class);
                         if (user.getId() != settings.getUserId())
-                            tweet.putExtra(KEY_TWEETPOPUP_PREFIX, user.getScreenname());
+                            tweet.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
                         startActivity(tweet);
                         break;
 

@@ -53,8 +53,8 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_PREFIX;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
@@ -218,9 +218,10 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
             switch (v.getId()) {
                 case R.id.tweet_answer:
+                    String tweetPrefix = tweet.getUser().getScreenname() + " ";
                     Intent tweetPopup = new Intent(this, TweetPopup.class);
                     tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweet.getId());
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_PREFIX, tweet.getUser().getScreenname());
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
                     startActivity(tweetPopup);
                     break;
 

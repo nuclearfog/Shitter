@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.activity.DirectMessage;
 import org.nuclearfog.twidda.activity.MainActivity;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.activity.TweetDetail;
+import org.nuclearfog.twidda.activity.TweetPopup;
 import org.nuclearfog.twidda.activity.TwitterList;
 import org.nuclearfog.twidda.activity.UserProfile;
 
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_NAME;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_NAME;
 
@@ -57,15 +59,15 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
             String path = link.getPath();
             if (path != null && path.length() > 1) {
                 path = path.substring(1);
-                if (path.startsWith("home")) {
+                if (path.equals("home")) {
                     publishProgress(0);
-                } else if (path.startsWith("i/trends")) {
+                } else if (path.equals("i/trends") || path.equals("trends") || path.equals("explore")) {
                     publishProgress(1);
-                } else if (path.startsWith("notifications")) {
+                } else if (path.equals("notifications")) {
                     publishProgress(2);
-                } else if (path.startsWith("messages")) {
+                } else if (path.equals("messages")) {
                     dataHolder = new DataHolder(null, DirectMessage.class);
-                } else if (path.startsWith("search")) {
+                } else if (path.equals("search")) {
                     if (link.isHierarchical()) {
                         String search = link.getQueryParameter("q");
                         if (search != null) {
@@ -73,21 +75,24 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                             dataHolder = new DataHolder(data, SearchPage.class);
                         }
                     }
-                } else if (path.startsWith("hashtag")) {
-                    int cut = path.indexOf('/');
-                    if (cut > 0) {
-                        String search = '#' + path.substring(cut + 1);
-                        data.putString(KEY_SEARCH_QUERY, search);
-                        dataHolder = new DataHolder(data, SearchPage.class);
+                } else if (path.equals("intent/tweet")) {
+                    if (link.isHierarchical()) {
+                        String tweet = link.getQueryParameter("text");
+                        if (tweet != null) {
+                            data.putString(KEY_TWEETPOPUP_TEXT, tweet);
+                            dataHolder = new DataHolder(data, TweetPopup.class);
+                        }
                     }
+                } else if (path.startsWith("hashtag/")) {
+                    String search = '#' + path.substring(8);
+                    data.putString(KEY_SEARCH_QUERY, search);
+                    dataHolder = new DataHolder(data, SearchPage.class);
                 } else if (USER_PATH.matcher(path).matches()) {
-                    if (!path.equals("explore")) {
-                        int end = path.indexOf('/');
-                        if (end > 0)
-                            path = path.substring(0, end);
-                        data.putString(KEY_PROFILE_NAME, path);
-                        dataHolder = new DataHolder(data, UserProfile.class);
-                    }
+                    int end = path.indexOf('/');
+                    if (end > 0)
+                        path = path.substring(0, end);
+                    data.putString(KEY_PROFILE_NAME, path);
+                    dataHolder = new DataHolder(data, UserProfile.class);
                 } else if (TWEET_PATH.matcher(path).matches()) {
                     String username = '@' + path.substring(0, path.indexOf('/'));
                     long tweetId = Long.parseLong(path.substring(path.lastIndexOf('/') + 1));

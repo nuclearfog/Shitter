@@ -55,7 +55,7 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener, OnDismissListener {
 
     public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
-    public static final String KEY_TWEETPOPUP_PREFIX = "tweet_prefix";
+    public static final String KEY_TWEETPOPUP_TEXT = "tweet_text";
 
     private enum MediaType {
         NONE,
@@ -110,8 +110,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         Bundle param = getIntent().getExtras();
         if (param != null) {
             inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, 0);
-            if (param.containsKey(KEY_TWEETPOPUP_PREFIX)) {
-                String addition = param.getString(KEY_TWEETPOPUP_PREFIX) + " ";
+            if (param.containsKey(KEY_TWEETPOPUP_TEXT)) {
+                String addition = param.getString(KEY_TWEETPOPUP_TEXT);
                 tweetText.append(addition);
             }
         }
