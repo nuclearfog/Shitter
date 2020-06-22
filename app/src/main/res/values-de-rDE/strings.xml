@@ -108,7 +108,6 @@
     <string name="proxy_authentication">Proxy Login</string>
     <string name="error_empty_port">Proxy port muss gesetzt werden!</string>
     <string name="error_empty_pass">Proxy Passort darf nicht leer sein!</string>
-    <string name="error_image_download">Bild konnte nicht geladen werden!</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">User stummschalten?</string>
     <string name="error_location">Standort konnte nicht ermittelt werden!</string>
@@ -147,6 +146,5 @@
     <string name="error_file_not_found">Datei nicht gefunden!</string>
     <string name="item_load_more">Mehr laden</string>
     <string name="error_image_loading">Bild konnte nicht geladen werden!</string>
-    <string name="item_image_prev">Bildvorschau</string>
     <string name="item_image_save">Bild speichern</string>
 </resources>

@@ -7,8 +7,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
-import android.widget.ProgressBar;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -22,8 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
-import static android.widget.ListPopupWindow.MATCH_PARENT;
-import static android.widget.ListPopupWindow.WRAP_CONTENT;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 
@@ -92,8 +88,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == PICTURE) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
+            View view = inflater.inflate(R.layout.item_image, parent, false);
             final ImageItem item = new ImageItem(view);
             item.preview.setOnClickListener(new OnClickListener() {
                 @Override
@@ -120,10 +117,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             }
             return item;
         } else {
-            ProgressBar circle = new ProgressBar(parent.getContext());
-            LayoutParams param = new LayoutParams(WRAP_CONTENT, MATCH_PARENT);
-            circle.setLayoutParams(param);
-            return new LoadItem(circle);
+            View view = inflater.inflate(R.layout.item_image_load, parent, false);
+            return new LoadItem(view);
         }
     }
 
@@ -155,11 +150,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      * Holder for progress circle
      */
     class LoadItem extends ViewHolder {
-        final ProgressBar circle;
 
-        LoadItem(ProgressBar circle) {
-            super(circle);
-            this.circle = circle;
+        LoadItem(View v) {
+            super(v);
         }
     }
 

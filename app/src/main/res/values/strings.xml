@@ -108,7 +108,6 @@
     <string name="proxy_authentication">Proxy login</string>
     <string name="error_empty_port">Port must be set!</string>
     <string name="error_empty_pass">Proxy password should not be empty!</string>
-    <string name="error_image_download">Image could not be loaded!</string>
     <string name="error_dm_send">Cannot send direct message to this user!</string>
     <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
@@ -150,6 +149,5 @@
     <string name="error_file_not_found">File not found!</string>
     <string name="item_load_more">Load more</string>
     <string name="error_image_loading">Could not load image!</string>
-    <string name="item_image_prev">image preview</string>
     <string name="item_image_save">save image</string>
 </resources>

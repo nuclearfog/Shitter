@@ -70,4 +70,5 @@
     <dimen name="item_image_button_margin">5dp</dimen>
     <dimen name="item_image_button">30dp</dimen>
     <dimen name="item_image_margin">2dp</dimen>
+    <dimen name="item_image_progress_size">48dp</dimen>
 </resources>
