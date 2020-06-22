@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
     private MessageUploader messageAsync;
     private EditText receiver, message;
+    private ImageButton media;
     private Dialog loadingCircle;
     @Nullable
     private String mediaPath;
@@ -61,7 +63,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         setContentView(R.layout.popup_dm);
         View root = findViewById(R.id.dm_popup);
         View send = findViewById(R.id.dm_send);
-        View media = findViewById(R.id.dm_media);
+        media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
         loadingCircle = new Dialog(this, R.style.LoadingDialog);
@@ -126,6 +128,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
                 if (c != null && c.moveToFirst()) {
                     int index = c.getColumnIndex(PICK_IMAGE[0]);
                     mediaPath = c.getString(index);
+                    media.setImageResource(R.drawable.image);
                     c.close();
                 }
             }

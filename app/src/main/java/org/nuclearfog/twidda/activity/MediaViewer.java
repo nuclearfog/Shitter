@@ -199,8 +199,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public void onError(@Nullable EngineException err) {
         if (err != null) {
             ErrorHandler.handleFailure(getApplicationContext(), err);
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.error_image_download, Toast.LENGTH_SHORT).show();
         }
         finish();
     }

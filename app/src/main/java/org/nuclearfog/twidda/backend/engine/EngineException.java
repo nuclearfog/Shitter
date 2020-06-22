@@ -125,6 +125,7 @@ public class EngineException extends Exception {
 
             case BITMAP_FAILURE:
                 errorType = ErrorType.IMAGE_NOT_LOADED;
+                break;
 
             default:
                 errorType = ErrorType.ERROR_NOT_DEFINED;
