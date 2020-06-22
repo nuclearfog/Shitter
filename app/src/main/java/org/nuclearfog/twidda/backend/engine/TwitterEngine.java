@@ -25,8 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -93,6 +92,7 @@ public class TwitterEngine {
         } else {
             twitter = factory.getInstance();
         }
+        ProxySelector.setDefault(new ProxySetup(settings));
     }
 
 
@@ -1051,17 +1051,8 @@ public class TwitterEngine {
     @Nullable
     public Bitmap getImage(String link) throws EngineException {
         try {
-            Proxy proxy;
             URL url = new URL(link);
-            if (settings.isProxyServerSet()) {
-                String proxyAddress = settings.getProxyHost();
-                int proxyPort = Integer.parseInt(settings.getProxyPort());
-                InetSocketAddress socket = new InetSocketAddress(proxyAddress, proxyPort);
-                proxy = new Proxy(Proxy.Type.HTTP, socket);
-            } else {
-                proxy = Proxy.NO_PROXY;
-            }
-            InputStream stream = url.openConnection(proxy).getInputStream();
+            InputStream stream = url.openConnection().getInputStream();
             return BitmapFactory.decodeStream(stream);
         } catch (IOException err) {
             throw new EngineException(EngineException.InternalErrorType.BITMAP_FAILURE);
