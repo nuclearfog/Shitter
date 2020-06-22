@@ -157,7 +157,7 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             if (!owner.hasDefaultProfileImage()) {
                 pbLink += "_mini";
             }
-            Picasso.get().load(pbLink).into(vh.pb_image);
+            Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
         }
         if (item.isFollowing()) {
             vh.followList.setText(R.string.user_unfollow);

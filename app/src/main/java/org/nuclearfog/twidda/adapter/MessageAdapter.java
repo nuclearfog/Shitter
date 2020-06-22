@@ -141,7 +141,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             if (!sender.hasDefaultProfileImage()) {
                 pbLink += "_mini";
             }
-            Picasso.get().load(pbLink).into(vh.profile_img);
+            Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.profile_img);
         }
     }
 

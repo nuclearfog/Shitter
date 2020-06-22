@@ -404,7 +404,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
             String pbLink = tweet.getUser().getImageLink();
             if (!tweet.getUser().hasDefaultProfileImage())
                 pbLink += "_bigger";
-            Picasso.get().load(pbLink).into(profile_img);
+            Picasso.get().load(pbLink).error(R.drawable.no_image).into(profile_img);
         }
         String placeName = tweet.getLocationName();
         if (placeName != null && !placeName.isEmpty()) {

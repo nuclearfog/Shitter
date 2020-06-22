@@ -82,7 +82,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private TextView tweetTabTxt, favorTabTxt, txtUser, txtScrName;
     private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
     private Button following, follower;
-    private ImageView profile, banner;
+    private ImageView profileImage, bannerImage;
     private View profile_head, profile_layer;
     private ViewPager pager;
     private TabLayout tabLayout;
@@ -102,8 +102,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         following = findViewById(R.id.following);
         follower = findViewById(R.id.follower);
         lnkTxt = findViewById(R.id.links);
-        profile = findViewById(R.id.profile_img);
-        banner = findViewById(R.id.profile_banner);
+        profileImage = findViewById(R.id.profile_img);
+        bannerImage = findViewById(R.id.profile_banner);
         txtUser = findViewById(R.id.profile_username);
         txtScrName = findViewById(R.id.profile_screenname);
         txtLocation = findViewById(R.id.location);
@@ -150,8 +150,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         tabLayout.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);
-        profile.setOnClickListener(this);
-        banner.setOnClickListener(this);
+        profileImage.setOnClickListener(this);
+        bannerImage.setOnClickListener(this);
         lnkTxt.setOnClickListener(this);
     }
 
@@ -511,16 +511,16 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             if (user.hasBannerImg()) {
                 profile_layer.getLayoutParams().height = (int) getResources().getDimension(R.dimen.profile_banner_height);
                 String bannerLink = user.getBannerLink() + "/600x200";
-                Picasso.get().load(bannerLink).into(banner);
+                Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage);
             } else {
-                banner.setImageResource(0);
+                bannerImage.setImageResource(0);
                 profile_layer.getLayoutParams().height = WRAP_CONTENT;
             }
             profile_layer.requestLayout();
             String imgLink = user.getImageLink();
             if (!user.hasDefaultProfileImage())
                 imgLink += "_bigger";
-            Picasso.get().load(imgLink).into(profile);
+            Picasso.get().load(imgLink).error(R.drawable.no_image).into(profileImage);
         }
     }
 
