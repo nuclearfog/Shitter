@@ -295,6 +295,17 @@ public class GlobalSettings {
     }
 
     /**
+     * get proxy port
+     *
+     * @return proxy port integer
+     */
+    public int getProxyPortNumber() {
+        if (proxyPort.isEmpty())
+            return 0;
+        return Integer.parseInt(proxyPort);
+    }
+
+    /**
      * get proxy user login
      *
      * @return username

@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.ProxySelector;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -92,7 +91,7 @@ public class TwitterEngine {
         } else {
             twitter = factory.getInstance();
         }
-        ProxySelector.setDefault(new ProxySetup(settings));
+        ProxySetup.setConnection(settings);
     }
 
 
