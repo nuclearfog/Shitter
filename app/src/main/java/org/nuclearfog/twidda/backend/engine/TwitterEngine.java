@@ -76,15 +76,6 @@ public class TwitterEngine {
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(BuildConfig.API_KEY_1);
         builder.setOAuthConsumerSecret(BuildConfig.API_KEY_2);
-        // Twitter4J has its own proxy settings
-        if (settings.isProxyServerSet()) {
-            builder.setHttpProxyHost(settings.getProxyHost());
-            builder.setHttpProxyPort(Integer.parseInt(settings.getProxyPort()));
-            if (settings.isProxyLoginSet()) {
-                builder.setHttpProxyUser(settings.getProxyUser());
-                builder.setHttpProxyPassword(settings.getProxyPass());
-            }
-        }
         TwitterFactory factory = new TwitterFactory(builder.build());
         if (aToken != null) {
             twitter = factory.getInstance(aToken);
