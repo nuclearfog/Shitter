@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activity;
 
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
@@ -35,13 +36,17 @@ import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
+import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 
-public class MediaViewer extends AppCompatActivity implements OnImageClickListener, OnPreparedListener {
+public class MediaViewer extends AppCompatActivity implements OnImageClickListener,
+        OnPreparedListener, OnInfoListener, OnErrorListener {
 
     public static final String KEY_MEDIA_LINK = "media_link";
     public static final String KEY_MEDIA_TYPE = "media_type";
@@ -86,6 +91,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         adapter = new ImageAdapter(this);
         videoView.setZOrderOnTop(true);
         videoView.setOnPreparedListener(this);
+        videoView.setOnErrorListener(this);
     }
 
 
@@ -176,18 +182,35 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             videoController.show(0);
             mp.seekTo(videoPos);
         }
+        mp.setOnInfoListener(this);
         mp.start();
+    }
 
-        mp.setOnInfoListener(new OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mp, int what, int extra) {
-                if (what == MEDIA_INFO_VIDEO_RENDERING_START) {
-                    video_progress.setVisibility(INVISIBLE);
-                    return true;
-                }
-                return false;
-            }
-        });
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        switch (what) {
+            case MEDIA_INFO_BUFFERING_END:
+            case MEDIA_INFO_VIDEO_RENDERING_START:
+                video_progress.setVisibility(INVISIBLE);
+                return true;
+
+            case MEDIA_INFO_BUFFERING_START:
+                video_progress.setVisibility(VISIBLE);
+                return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        if (what == MEDIA_ERROR_UNKNOWN) {
+            Toast.makeText(this, R.string.error_cant_load_video, Toast.LENGTH_SHORT).show();
+            finish();
+            return true;
+        }
+        return false;
     }
 
 
