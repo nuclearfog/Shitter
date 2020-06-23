@@ -79,7 +79,7 @@ public class TwitterEngine {
         // Twitter4J has its own proxy settings
         if (settings.isProxyServerSet()) {
             builder.setHttpProxyHost(settings.getProxyHost());
-            builder.setHttpProxyPort(Integer.parseInt(settings.getProxyPort()));
+            builder.setHttpProxyPort(settings.getProxyPortNumber());
             if (settings.isProxyLoginSet()) {
                 builder.setHttpProxyUser(settings.getProxyUser());
                 builder.setHttpProxyPassword(settings.getProxyPass());

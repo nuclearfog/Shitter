@@ -397,6 +397,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 String errMsg = getString(R.string.error_empty_port);
                 proxyPort.setError(errMsg);
                 success = false;
+            } else if (editPort.length() > 5) {
+                String errMsg = getString(R.string.error_invalid_port);
+                proxyPort.setError(errMsg);
+                success = false;
+            } else {
+                int port = Integer.parseInt(editPort.toString());
+                if (port < 0 || port > 65535) {
+                    String errMsg = getString(R.string.error_invalid_port);
+                    proxyPort.setError(errMsg);
+                    success = false;
+                }
             }
         }
         if (editUser != null && editUser.length() > 0) {

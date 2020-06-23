@@ -65,8 +65,10 @@ abstract class ProxySetup {
             int proxyPort = settings.getProxyPortNumber();
             InetSocketAddress socket = new InetSocketAddress(proxyHost, proxyPort);
             Proxy httpsProxy = new Proxy(Proxy.Type.HTTP, socket);
-            proxyList = new ArrayList<>(1);
+            Proxy socksProxy = new Proxy(Proxy.Type.SOCKS, socket);
+            proxyList = new ArrayList<>(2);
             proxyList.add(httpsProxy);
+            proxyList.add(socksProxy);
         }
 
         @Override
@@ -76,6 +78,7 @@ abstract class ProxySetup {
 
         @Override
         public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+            // ignore to force using proxy and avoid data leak
         }
     }
 

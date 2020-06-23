@@ -300,7 +300,7 @@ public class GlobalSettings {
      * @return proxy port integer
      */
     public int getProxyPortNumber() {
-        if (proxyPort.isEmpty())
+        if (proxyPort.isEmpty() || proxyPort.length() > 5)
             return 0;
         return Integer.parseInt(proxyPort);
     }
