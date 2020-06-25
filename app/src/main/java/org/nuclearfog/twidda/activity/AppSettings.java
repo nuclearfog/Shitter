@@ -345,7 +345,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 break;
 
             case R.id.settings_enable_proxy:
-                setProxySetupVisibility(checked, false);
+                setProxySetupVisibility(checked, checked & enableAuth.isChecked());
                 break;
 
             case R.id.settings_enable_auth:

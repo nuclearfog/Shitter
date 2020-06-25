@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.items.TrendLocation;
@@ -16,6 +17,7 @@ public class GlobalSettings {
     public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
             Typeface.SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
     public static final String[] fontnames = {"Default", "Monospace", "Serif", "sans-serif-thin"};
+
     private static final String BACKGROUND_COLOR = "background_color";
     private static final String HIGHLIGHT_COLOR = "highlight_color";
     private static final String FONT_COLOR = "font_color";
@@ -37,6 +39,19 @@ public class GlobalSettings {
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
     private static final String NAME = "settings";
+
+    // Default App settings
+    @IntRange(from = 0, to = 3)
+    private static final int DEFAULT_FONT_INDEX = 0;
+    @IntRange(from = 0, to = 100)
+    private static final int DEFAULT_LIST_SIZE = 20;
+    private static final int DEFAULT_BACKGROUND_COLOR = 0xff0f114a;
+    private static final int DEFAULT_HIGHLIGHT_COLOR = 0xffff00ff;
+    private static final int DEFAULT_FONT_COLOR = 0xffffffff;
+    private static final int DEFAULT_POPUP_COLOR = 0xff19aae8;
+    private static final int DEFAULT_LOCATION_WOEID = 1;
+    private static final String DEFAULT_LOCATION_NAME = "Worldwide";
+    private static final boolean DEFAULT_DATA_USAGE = true;
 
     private static final GlobalSettings ourInstance = new GlobalSettings();
 
@@ -490,26 +505,26 @@ public class GlobalSettings {
      * Init setting values
      */
     private void initialize() {
-        background_color = settings.getInt(BACKGROUND_COLOR, 0xff0f114a);
-        highlight_color = settings.getInt(HIGHLIGHT_COLOR, 0xffff00ff);
-        font_color = settings.getInt(FONT_COLOR, 0xffffffff);
-        popup_color = settings.getInt(POPUP_COLOR, 0xff19aae8);
-        indexFont = settings.getInt(INDEX_FONT, 0);
-        listSize = settings.getInt(LIST_SIZE, 20);
-        loadImage = settings.getBoolean(IMAGE_LOAD, true);
-        loadAnswer = settings.getBoolean(ANSWER_LOAD, true);
+        background_color = settings.getInt(BACKGROUND_COLOR, DEFAULT_BACKGROUND_COLOR);
+        highlight_color = settings.getInt(HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR);
+        font_color = settings.getInt(FONT_COLOR, DEFAULT_FONT_COLOR);
+        popup_color = settings.getInt(POPUP_COLOR, DEFAULT_POPUP_COLOR);
+        indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
+        listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
+        loadImage = settings.getBoolean(IMAGE_LOAD, DEFAULT_DATA_USAGE);
+        loadAnswer = settings.getBoolean(ANSWER_LOAD, DEFAULT_DATA_USAGE);
         loggedIn = settings.getBoolean(LOGGED_IN, false);
         key1 = settings.getString(AUTH_KEY1, "");
         key2 = settings.getString(AUTH_KEY2, "");
-        userId = settings.getLong(USER_ID, -1L);
+        userId = settings.getLong(USER_ID, 0);
         isProxyEnabled = settings.getBoolean(PROXY_SET, false);
         isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
         proxyHost = settings.getString(PROXY_ADDR, "");
         proxyPort = settings.getString(PROXY_PORT, "");
         proxyUser = settings.getString(PROXY_USER, "");
         proxyPass = settings.getString(PROXY_PASS, "");
-        String place = settings.getString(TREND_LOC, "Worldwide");
-        int woeId = settings.getInt(TREND_ID, 1);
+        String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
+        int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_WOEID);
         location = new TrendLocation(place, woeId);
     }
 }
