@@ -46,7 +46,7 @@ public class AppDatabase {
         dataHelper = DatabaseAdapter.getInstance(context);
         GlobalSettings settings = GlobalSettings.getInstance(context);
         homeId = settings.getUserId();
-        limit = settings.getRowLimit();
+        limit = settings.getListSize();
     }
 
     /**

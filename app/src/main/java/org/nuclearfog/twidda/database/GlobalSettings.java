@@ -16,8 +16,28 @@ public class GlobalSettings {
     public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
             Typeface.SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
     public static final String[] fontnames = {"Default", "Monospace", "Serif", "sans-serif-thin"};
-
+    private static final String BACKGROUND_COLOR = "background_color";
+    private static final String HIGHLIGHT_COLOR = "highlight_color";
+    private static final String FONT_COLOR = "font_color";
+    private static final String POPUP_COLOR = "tweet_color";
+    private static final String INDEX_FONT = "index_font";
+    private static final String LIST_SIZE = "preload";
+    private static final String IMAGE_LOAD = "image_load";
+    private static final String ANSWER_LOAD = "answer_load";
+    private static final String LOGGED_IN = "login";
+    private static final String AUTH_KEY1 = "key1";
+    private static final String AUTH_KEY2 = "key2";
+    private static final String USER_ID = "userID";
+    private static final String PROXY_SET = "proxy_enabled";
+    private static final String AUTH_SET = "proxy_auth_set";
+    private static final String PROXY_ADDR = "proxy_addr";
+    private static final String PROXY_PORT = "proxy_port";
+    private static final String PROXY_USER = "proxy_user";
+    private static final String PROXY_PASS = "proxy_pass";
+    private static final String TREND_LOC = "location";
+    private static final String TREND_ID = "world_id";
     private static final String NAME = "settings";
+
     private static final GlobalSettings ourInstance = new GlobalSettings();
 
     private SharedPreferences settings;
@@ -26,12 +46,14 @@ public class GlobalSettings {
     private boolean loadImage;
     private boolean loadAnswer;
     private boolean loggedIn;
+    private boolean isProxyEnabled;
+    private boolean isProxyAuthSet;
     private int indexFont;
     private int background_color;
     private int font_color;
     private int highlight_color;
-    private int tweet_color;
-    private int row;
+    private int popup_color;
+    private int listSize;
     private long userId;
 
     private String proxyHost, proxyPort;
@@ -70,8 +92,9 @@ public class GlobalSettings {
      */
     public void setBackgroundColor(int color) {
         background_color = color;
+
         Editor edit = settings.edit();
-        edit.putInt("background_color", color);
+        edit.putInt(BACKGROUND_COLOR, color);
         edit.apply();
     }
 
@@ -91,8 +114,9 @@ public class GlobalSettings {
      */
     public void setFontColor(int color) {
         font_color = color;
+
         Editor edit = settings.edit();
-        edit.putInt("font_color", color);
+        edit.putInt(FONT_COLOR, color);
         edit.apply();
     }
 
@@ -112,8 +136,9 @@ public class GlobalSettings {
      */
     public void setHighlightColor(int color) {
         highlight_color = color;
+
         Editor edit = settings.edit();
-        edit.putInt("highlight_color", color);
+        edit.putInt(HIGHLIGHT_COLOR, color);
         edit.apply();
     }
 
@@ -123,7 +148,7 @@ public class GlobalSettings {
      * @return color value
      */
     public int getPopupColor() {
-        return tweet_color;
+        return popup_color;
     }
 
     /**
@@ -132,9 +157,10 @@ public class GlobalSettings {
      * @param color color value
      */
     public void setPopupColor(int color) {
-        tweet_color = color;
+        popup_color = color;
+
         Editor edit = settings.edit();
-        edit.putInt("tweet_color", color);
+        edit.putInt(POPUP_COLOR, color);
         edit.apply();
     }
 
@@ -154,8 +180,9 @@ public class GlobalSettings {
      */
     public void setImageLoad(boolean image) {
         loadImage = image;
+
         Editor edit = settings.edit();
-        edit.putBoolean("image_load", image);
+        edit.putBoolean(IMAGE_LOAD, image);
         edit.apply();
     }
 
@@ -175,8 +202,9 @@ public class GlobalSettings {
      */
     public void setAnswerLoad(boolean loadAnswer) {
         this.loadAnswer = loadAnswer;
+
         Editor edit = settings.edit();
-        edit.putBoolean("answer_load", loadAnswer);
+        edit.putBoolean(ANSWER_LOAD, loadAnswer);
         edit.apply();
     }
 
@@ -196,9 +224,10 @@ public class GlobalSettings {
      */
     public void setTrendLocation(TrendLocation location) {
         this.location = location;
+
         Editor edit = settings.edit();
-        edit.putInt("world_id", location.getWoeId());
-        edit.putString("location", location.getName());
+        edit.putInt(TREND_ID, location.getWoeId());
+        edit.putString(TREND_LOC, location.getName());
         edit.apply();
     }
 
@@ -208,19 +237,20 @@ public class GlobalSettings {
      *
      * @return max numbers of tweets/users should be loaded
      */
-    public int getRowLimit() {
-        return row;
+    public int getListSize() {
+        return listSize;
     }
 
     /**
      * set limit of tweets/users
      *
-     * @param limit max numbers of tweets/users
+     * @param listSize max numbers of tweets/users
      */
-    public void setRowLimit(int limit) {
-        row = limit;
+    public void setListSize(int listSize) {
+        this.listSize = listSize;
+
         Editor edit = settings.edit();
-        edit.putInt("preload", limit);
+        edit.putInt(LIST_SIZE, listSize);
         edit.apply();
     }
 
@@ -245,12 +275,13 @@ public class GlobalSettings {
     /**
      * set font type
      *
-     * @param index index of font type in array
+     * @param indexFont index of font type in array
      */
-    public void setFont(int index) {
-        indexFont = index;
+    public void setFont(int indexFont) {
+        this.indexFont = indexFont;
+
         Editor edit = settings.edit();
-        edit.putInt("index_font", index);
+        edit.putInt(INDEX_FONT, indexFont);
         edit.apply();
     }
 
@@ -260,19 +291,64 @@ public class GlobalSettings {
      * @param proxyHost address of proxy
      * @param proxyPort port of proxy
      */
-    public void setProxyServer(String proxyHost, String proxyPort) {
+    public void setProxyServer(String proxyHost, String proxyPort, String proxyUser, String proxyPass) {
+        this.proxyHost = proxyHost;
+        this.proxyPort = proxyPort;
+        this.proxyUser = proxyUser;
+        this.proxyPass = proxyPass;
+
         Editor edit = settings.edit();
-        if (proxyHost.trim().isEmpty()) {
-            this.proxyHost = "";
-            this.proxyPort = "";
-            edit.putString("proxy_addr", "");
-            edit.putString("proxy_port", "");
-        } else {
-            this.proxyHost = proxyHost;
-            this.proxyPort = proxyPort;
-            edit.putString("proxy_addr", proxyHost);
-            edit.putString("proxy_port", proxyPort);
-        }
+        edit.putString(PROXY_ADDR, proxyHost);
+        edit.putString(PROXY_PORT, proxyPort);
+        edit.putString(PROXY_USER, proxyUser);
+        edit.putString(PROXY_PASS, proxyPass);
+        edit.apply();
+    }
+
+    /**
+     * Remove Proxy settings
+     */
+    public void clearProxyServer() {
+        isProxyEnabled = false;
+        isProxyAuthSet = false;
+        this.proxyHost = "";
+        this.proxyPort = "";
+        this.proxyUser = "";
+        this.proxyPass = "";
+
+        Editor edit = settings.edit();
+        edit.putBoolean(PROXY_SET, false);
+        edit.putBoolean(AUTH_SET, false);
+        edit.putString(PROXY_ADDR, "");
+        edit.putString(PROXY_PORT, "");
+        edit.putString(PROXY_USER, "");
+        edit.putString(PROXY_PASS, "");
+        edit.apply();
+    }
+
+    /**
+     * set proxy server connection enabled
+     *
+     * @param enable true if proxy connection is set
+     */
+    public void setProxyEnabled(boolean enable) {
+        isProxyEnabled = enable;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(PROXY_SET, enable);
+        edit.apply();
+    }
+
+    /**
+     * set proxy authentication enabled
+     *
+     * @param enable true if proxy auth is enabled
+     */
+    public void setProxyAuthSet(boolean enable) {
+        isProxyAuthSet = enable;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(AUTH_SET, enable);
         edit.apply();
     }
 
@@ -282,7 +358,9 @@ public class GlobalSettings {
      * @return proxy address
      */
     public String getProxyHost() {
-        return proxyHost;
+        if (isProxyEnabled)
+            return proxyHost;
+        return "";
     }
 
     /**
@@ -291,7 +369,9 @@ public class GlobalSettings {
      * @return proxy port string
      */
     public String getProxyPort() {
-        return proxyPort;
+        if (isProxyEnabled)
+            return proxyPort;
+        return "";
     }
 
     /**
@@ -311,7 +391,10 @@ public class GlobalSettings {
      * @return username
      */
     public String getProxyUser() {
-        return proxyUser;
+        if (isProxyAuthSet) {
+            return proxyUser;
+        }
+        return "";
     }
 
     /**
@@ -320,47 +403,28 @@ public class GlobalSettings {
      * @return login password
      */
     public String getProxyPass() {
-        return proxyPass;
+        if (isProxyAuthSet) {
+            return proxyPass;
+        }
+        return "";
     }
 
     /**
-     * check if proxy is set
+     * check if proxy connection is set
      *
      * @return true if proxy is set
      */
-    public boolean isProxyServerSet() {
-        return !proxyHost.isEmpty();
+    public boolean isProxyEnabled() {
+        return isProxyEnabled;
     }
 
     /**
-     * check if proxy login is set
+     * check kif proxy authentication is set
      *
-     * @return true if login is set
+     * @return true if user auth is set
      */
-    public boolean isProxyLoginSet() {
-        return !proxyUser.isEmpty();
-    }
-
-    /**
-     * set proxy user login
-     *
-     * @param proxyUser proxy username
-     * @param proxyPass proxy password
-     */
-    public void setProxyLogin(String proxyUser, String proxyPass) {
-        Editor edit = settings.edit();
-        if (proxyUser.trim().isEmpty() || proxyHost.trim().isEmpty()) {
-            this.proxyUser = "";
-            this.proxyPass = "";
-            edit.putString("proxy_user", "");
-            edit.putString("proxy_pass", "");
-        } else {
-            this.proxyUser = proxyUser;
-            this.proxyPass = proxyPass;
-            edit.putString("proxy_user", proxyUser);
-            edit.putString("proxy_pass", proxyPass);
-        }
-        edit.apply();
+    public boolean isProxyAuthSet() {
+        return isProxyAuthSet;
     }
 
     /**
@@ -405,11 +469,12 @@ public class GlobalSettings {
         this.key1 = key1;
         this.key2 = key2;
         this.userId = userId;
+
         Editor e = settings.edit();
-        e.putBoolean("login", true);
-        e.putLong("userID", userId);
-        e.putString("key1", key1);
-        e.putString("key2", key2);
+        e.putBoolean(LOGGED_IN, true);
+        e.putLong(USER_ID, userId);
+        e.putString(AUTH_KEY1, key1);
+        e.putString(AUTH_KEY2, key2);
         e.apply();
     }
 
@@ -425,24 +490,26 @@ public class GlobalSettings {
      * Init setting values
      */
     private void initialize() {
-        background_color = settings.getInt("background_color", 0xff0f114a);
-        highlight_color = settings.getInt("highlight_color", 0xffff00ff);
-        font_color = settings.getInt("font_color", 0xffffffff);
-        tweet_color = settings.getInt("tweet_color", 0xff19aae8);
-        indexFont = settings.getInt("index_font", 0);
-        row = settings.getInt("preload", 20);
-        loadImage = settings.getBoolean("image_load", true);
-        loadAnswer = settings.getBoolean("answer_load", true);
-        loggedIn = settings.getBoolean("login", false);
-        key1 = settings.getString("key1", "");
-        key2 = settings.getString("key2", "");
-        userId = settings.getLong("userID", -1L);
-        proxyHost = settings.getString("proxy_addr", "");
-        proxyPort = settings.getString("proxy_port", "");
-        proxyUser = settings.getString("proxy_user", "");
-        proxyPass = settings.getString("proxy_pass", "");
-        String place = settings.getString("location", "Worldwide");
-        int woeId = settings.getInt("world_id", 1);
+        background_color = settings.getInt(BACKGROUND_COLOR, 0xff0f114a);
+        highlight_color = settings.getInt(HIGHLIGHT_COLOR, 0xffff00ff);
+        font_color = settings.getInt(FONT_COLOR, 0xffffffff);
+        popup_color = settings.getInt(POPUP_COLOR, 0xff19aae8);
+        indexFont = settings.getInt(INDEX_FONT, 0);
+        listSize = settings.getInt(LIST_SIZE, 20);
+        loadImage = settings.getBoolean(IMAGE_LOAD, true);
+        loadAnswer = settings.getBoolean(ANSWER_LOAD, true);
+        loggedIn = settings.getBoolean(LOGGED_IN, false);
+        key1 = settings.getString(AUTH_KEY1, "");
+        key2 = settings.getString(AUTH_KEY2, "");
+        userId = settings.getLong(USER_ID, -1L);
+        isProxyEnabled = settings.getBoolean(PROXY_SET, false);
+        isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
+        proxyHost = settings.getString(PROXY_ADDR, "");
+        proxyPort = settings.getString(PROXY_PORT, "");
+        proxyUser = settings.getString(PROXY_USER, "");
+        proxyPass = settings.getString(PROXY_PASS, "");
+        String place = settings.getString(TREND_LOC, "Worldwide");
+        int woeId = settings.getInt(TREND_ID, 1);
         location = new TrendLocation(place, woeId);
     }
 }

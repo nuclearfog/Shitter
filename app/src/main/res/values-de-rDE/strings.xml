@@ -104,10 +104,6 @@
     <string name="app_name">Shitter</string>
     <string name="tweet">Tweet</string>
     <string name="proxy_password">Passwort</string>
-    <string name="proxy_address_text">HTTPS Proxy</string>
-    <string name="proxy_authentication">Proxy Login</string>
-    <string name="error_empty_port">Proxy port muss gesetzt werden!</string>
-    <string name="error_empty_pass">Proxy Passort darf nicht leer sein!</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">User stummschalten?</string>
     <string name="error_location">Standort konnte nicht ermittelt werden!</string>
@@ -128,7 +124,6 @@
     <string name="page_profile_edior">Profil bearbeiten</string>
     <string name="error_no_card_app">Keine Karten App gefunden!</string>
     <string name="error_no_media_app">Keine Galerie App gefunden!</string>
-    <string name="error_wrong_ip">Falsche IP Adresse!</string>
     <string name="delete_list">Liste löschen</string>
     <string name="confirm_delete_list">Liste löschen?</string>
     <string name="confirm_delete_message">Nachricht löschen?</string>
@@ -148,5 +143,8 @@
     <string name="error_image_loading">Bild konnte nicht geladen werden!</string>
     <string name="item_image_save">Bild speichern</string>
     <string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
-    <string name="error_invalid_port">Ungültiger Port!</string>
+    <string name="settings_enable_proxy">Proxy aktivieren</string>
+    <string name="settings_enable_proxy_auth">Aktiviere Proxy Authentifizierung</string>
+    <string name="info_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
+    <string name="confirm_discard_proxy_changes">Einstellungen Verwerfen</string>
 </resources>

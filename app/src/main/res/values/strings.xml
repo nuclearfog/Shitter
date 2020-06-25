@@ -104,10 +104,6 @@
     <string name="proxy_port">Port</string>
     <string name="edit_proxyuser">username</string>
     <string name="proxy_password">password</string>
-    <string name="proxy_address_text">HTTPS Proxy</string>
-    <string name="proxy_authentication">Proxy login</string>
-    <string name="error_empty_port">Port must be set!</string>
-    <string name="error_empty_pass">Proxy password should not be empty!</string>
     <string name="error_dm_send">Cannot send direct message to this user!</string>
     <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
@@ -129,7 +125,6 @@
     <string name="page_profile_edior">Edit profile</string>
     <string name="error_no_card_app">No card app installed!</string>
     <string name="error_no_media_app">No media app found!</string>
-    <string name="error_wrong_ip">wrong IP address!</string>
     <string name="delete_list">delete list</string>
     <string name="confirm_delete_list">Delete list?</string>
     <string name="confirm_delete_message">Delete message?</string>
@@ -151,5 +146,8 @@
     <string name="error_image_loading">Could not load image!</string>
     <string name="item_image_save">save image</string>
     <string name="error_cant_load_video">Could not play video!</string>
-    <string name="error_invalid_port">Invalid port!</string>
+    <string name="settings_enable_proxy">enable proxy</string>
+    <string name="settings_enable_proxy_auth">enable proxy authentication</string>
+    <string name="info_wrong_proxy_settings">Wrong Proxy settings!</string>
+    <string name="confirm_discard_proxy_changes">Discard changes</string>
 </resources>

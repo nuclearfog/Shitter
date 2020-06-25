@@ -77,10 +77,10 @@ public class TwitterEngine {
         builder.setOAuthConsumerKey(BuildConfig.API_KEY_1);
         builder.setOAuthConsumerSecret(BuildConfig.API_KEY_2);
         // Twitter4J has its own proxy settings
-        if (settings.isProxyServerSet()) {
+        if (settings.isProxyEnabled()) {
             builder.setHttpProxyHost(settings.getProxyHost());
             builder.setHttpProxyPort(settings.getProxyPortNumber());
-            if (settings.isProxyLoginSet()) {
+            if (settings.isProxyAuthSet()) {
                 builder.setHttpProxyUser(settings.getProxyUser());
                 builder.setHttpProxyPassword(settings.getProxyPass());
             }
@@ -179,7 +179,7 @@ public class TwitterEngine {
     public List<Tweet> getHome(long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 1)
@@ -203,7 +203,7 @@ public class TwitterEngine {
     public List<Tweet> getMention(long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 1)
@@ -227,7 +227,7 @@ public class TwitterEngine {
      */
     public List<Tweet> searchTweets(String search, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
+            int load = settings.getListSize();
             Query q = new Query();
             q.setQuery(search + " +exclude:retweets");
             q.setCount(load);
@@ -321,7 +321,7 @@ public class TwitterEngine {
     public List<Tweet> getUserTweets(long userId, long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 1)
@@ -345,7 +345,7 @@ public class TwitterEngine {
     public List<Tweet> getUserTweets(String username, long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
@@ -369,7 +369,7 @@ public class TwitterEngine {
     public List<Tweet> getUserFavs(long userId, long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 1)
@@ -393,7 +393,7 @@ public class TwitterEngine {
     public List<Tweet> getUserFavs(String username, long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 0)
@@ -590,7 +590,7 @@ public class TwitterEngine {
      */
     public UserListHolder getFollowing(long userId, long cursor) throws EngineException {
         try {
-            int load = settings.getRowLimit();
+            int load = settings.getListSize();
             IDs userIDs = twitter.getFriendsIDs(userId, cursor, load);
             long[] ids = userIDs.getIDs();
             long prevCursor = cursor > 0 ? cursor : 0;
@@ -617,7 +617,7 @@ public class TwitterEngine {
      */
     public UserListHolder getFollower(long userId, long cursor) throws EngineException {
         try {
-            int load = settings.getRowLimit();
+            int load = settings.getListSize();
             IDs userIDs = twitter.getFollowersIDs(userId, cursor, load);
             long[] ids = userIDs.getIDs();
             long prevCursor = cursor > 0 ? cursor : 0;
@@ -691,7 +691,7 @@ public class TwitterEngine {
      */
     public List<Tweet> getAnswers(String name, long tweetId, long sinceId, long maxId) throws EngineException {
         try {
-            int load = settings.getRowLimit();
+            int load = settings.getListSize();
             List<Status> answers = new LinkedList<>();
             Query query = new Query("to:" + name + " +exclude:retweets");
             query.setCount(load);
@@ -796,7 +796,7 @@ public class TwitterEngine {
      */
     public UserListHolder getRetweeter(long tweetID, long cursor) throws EngineException {
         try {
-            int load = settings.getRowLimit();
+            int load = settings.getListSize();
             IDs userIDs = twitter.getRetweeterIds(tweetID, load, cursor);
             long[] ids = userIDs.getIDs();
             long prevCursor = cursor > 0 ? cursor : 0;
@@ -822,7 +822,7 @@ public class TwitterEngine {
      */
     public List<Message> getMessages() throws EngineException {
         try {
-            int load = settings.getRowLimit();
+            int load = settings.getListSize();
             List<DirectMessage> dmList = twitter.getDirectMessages(load);
             List<Message> result = new LinkedList<>();
             for (DirectMessage dm : dmList) {
@@ -1028,7 +1028,7 @@ public class TwitterEngine {
     public List<Tweet> getListTweets(long listId, long sinceId, long maxId) throws EngineException {
         try {
             Paging paging = new Paging();
-            paging.setCount(settings.getRowLimit());
+            paging.setCount(settings.getListSize());
             if (sinceId > 0)
                 paging.setSinceId(sinceId);
             if (maxId > 1)

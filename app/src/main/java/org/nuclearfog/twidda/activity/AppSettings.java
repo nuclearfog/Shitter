@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -49,6 +49,7 @@ import java.util.regex.Matcher;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
 
@@ -72,6 +73,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private NumberPicker load_picker;
     private Dialog load_dialog_selector, color_dialog_selector;
+    private CheckBox enableProxy, enableAuth;
     private Spinner locationSpinner;
     private LocationAdapter locationAdapter;
     private View root, colorButton1_edge;
@@ -91,6 +93,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         CheckBox toggleImg = findViewById(R.id.toggleImg);
         CheckBox toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
+        enableProxy = findViewById(R.id.settings_enable_proxy);
+        enableAuth = findViewById(R.id.settings_enable_auth);
         locationSpinner = findViewById(R.id.spinner_woeid);
         colorButton1_edge = findViewById(R.id.color_background_edge);
         colorButton1 = findViewById(R.id.color_background);
@@ -142,7 +146,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
-        load_picker.setValue((settings.getRowLimit()) / 10);
+        load_picker.setValue((settings.getListSize()) / 10);
+        enableProxy.setChecked(settings.isProxyEnabled());
+        enableAuth.setChecked(settings.isProxyAuthSet());
+        setProxySetupVisibility(settings.isProxyEnabled(), settings.isProxyAuthSet());
 
         logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
@@ -153,6 +160,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         colorButton4.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
         toggleAns.setOnCheckedChangeListener(this);
+        enableProxy.setOnCheckedChangeListener(this);
+        enableAuth.setOnCheckedChangeListener(this);
         fontSpinner.setOnItemSelectedListener(this);
         locationSpinner.setOnItemSelectedListener(this);
         load_dialog_selector.setOnDismissListener(this);
@@ -162,7 +171,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     protected void onStart() {
         super.onStart();
-        if (settings.getLogin() && locationAdapter.getCount() <= 1) {
+        if (settings.getLogin() && locationAsync == null) {
             locationAsync = new LocationListLoader(this);
             locationAsync.execute();
         }
@@ -171,11 +180,20 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onBackPressed() {
-        if (validateInputs()) {
-            settings.setProxyServer(proxyAddr.getText().toString(), proxyPort.getText().toString());
-            settings.setProxyLogin(proxyUser.getText().toString(), proxyPass.getText().toString());
+        if (saveProxySettings()) {
             TwitterEngine.resetTwitter();
             super.onBackPressed();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
+            builder.setTitle(R.string.info_error).setMessage(R.string.info_wrong_proxy_settings);
+            builder.setPositiveButton(R.string.confirm_discard_proxy_changes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // exit without saving proxy settings
+                    AppSettings.super.onBackPressed();
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, null).show();
         }
     }
 
@@ -308,8 +326,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         } else if (d == load_dialog_selector) {
             int selection = load_picker.getValue() * 10;
-            if (settings.getRowLimit() != selection) {
-                settings.setRowLimit(selection);
+            if (settings.getListSize() != selection) {
+                settings.setListSize(selection);
             }
         }
     }
@@ -324,6 +342,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
             case R.id.toggleAns:
                 settings.setAnswerLoad(checked);
+                break;
+
+            case R.id.settings_enable_proxy:
+                setProxySetupVisibility(checked, false);
+                break;
+
+            case R.id.settings_enable_auth:
+                setProxySetupVisibility(true, checked);
                 break;
         }
     }
@@ -357,13 +383,18 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     /**
      * called when an error occurs
+     *
      * @param err exception from twitter
      */
     public void onError(EngineException err) {
         ErrorHandler.handleFailure(this, err);
     }
 
-
+    /**
+     * show color picker dialog with preselected color
+     *
+     * @param preColor preselected color
+     */
     private void setColor(int preColor) {
         color_dialog_selector = ColorPickerDialogBuilder.with(this)
                 .showAlphaSlider(false).initialColor(preColor)
@@ -378,45 +409,58 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         color_dialog_selector.show();
     }
 
+    /**
+     * set visibility of proxy layouts
+     *
+     * @param proxySetup visibility of proxy setup
+     * @param proxyLogin visibility of proxy login
+     */
+    private void setProxySetupVisibility(boolean proxySetup, boolean proxyLogin) {
+        int setupVisibility = proxySetup ? VISIBLE : GONE;
+        int authVisibility = proxyLogin ? VISIBLE : GONE;
+        proxyAddr.setVisibility(setupVisibility);
+        proxyPort.setVisibility(setupVisibility);
+        enableAuth.setVisibility(setupVisibility);
+        proxyUser.setVisibility(authVisibility);
+        proxyPass.setVisibility(authVisibility);
+    }
 
-    private boolean validateInputs() {
-        boolean success = true;
-        Editable editAddr = proxyAddr.getText();
-        Editable editPort = proxyPort.getText();
-        Editable editUser = proxyUser.getText();
-        Editable editPass = proxyPass.getText();
-
-        if (editAddr != null && editAddr.length() > 0) {
-            Matcher ipMatch = Patterns.IP_ADDRESS.matcher(editAddr);
-            if (!ipMatch.matches()) {
-                String errMsg = getString(R.string.error_wrong_ip);
-                proxyAddr.setError(errMsg);
-                success = false;
+    /**
+     * check proxy settings and save them if they are correct
+     *
+     * @return true if settings are saved successfully
+     */
+    private boolean saveProxySettings() {
+        boolean checkPassed = true;
+        if (enableProxy.isChecked()) {
+            checkPassed = proxyAddr.length() > 0 && proxyPort.length() > 0;
+            if (checkPassed) {
+                Matcher ipMatch = Patterns.IP_ADDRESS.matcher(proxyAddr.getText());
+                checkPassed = ipMatch.matches();
             }
-            if (editPort == null || editPort.length() == 0) {
-                String errMsg = getString(R.string.error_empty_port);
-                proxyPort.setError(errMsg);
-                success = false;
-            } else if (editPort.length() > 5) {
-                String errMsg = getString(R.string.error_invalid_port);
-                proxyPort.setError(errMsg);
-                success = false;
-            } else {
-                int port = Integer.parseInt(editPort.toString());
-                if (port < 0 || port > 65535) {
-                    String errMsg = getString(R.string.error_invalid_port);
-                    proxyPort.setError(errMsg);
-                    success = false;
+            if (checkPassed) {
+                int port = 0;
+                String portStr = proxyPort.getText().toString();
+                if (!portStr.isEmpty()) {
+                    port = Integer.parseInt(portStr);
                 }
+                checkPassed = port > 0 && port < 65536;
             }
-        }
-        if (editUser != null && editUser.length() > 0) {
-            if (editPass != null && editPass.length() == 0) {
-                String errMsg = getString(R.string.error_empty_pass);
-                proxyPass.setError(errMsg);
-                success = false;
+            if (enableAuth.isChecked() && checkPassed) {
+                checkPassed = proxyUser.length() > 0 && proxyPass.length() > 0;
             }
+            if (checkPassed) {
+                String proxyAddrStr = proxyAddr.getText().toString();
+                String proxyPortStr = proxyPort.getText().toString();
+                String proxyUserStr = proxyUser.getText().toString();
+                String proxyPassStr = proxyPass.getText().toString();
+                settings.setProxyServer(proxyAddrStr, proxyPortStr, proxyUserStr, proxyPassStr);
+                settings.setProxyEnabled(true);
+                settings.setProxyAuthSet(enableAuth.isChecked());
+            }
+        } else {
+            settings.clearProxyServer();
         }
-        return success;
+        return checkPassed;
     }
 }

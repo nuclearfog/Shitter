@@ -13,8 +13,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.net.Authenticator.RequestorType.PROXY;
-
 /**
  * Creates a https proxy connection for all connections
  */
@@ -24,9 +22,9 @@ abstract class ProxySetup {
         ProxyConnection proxyConnection;
         ProxyAuthenticator proxyLogin;
 
-        if (settings.isProxyServerSet()) {
+        if (settings.isProxyEnabled()) {
             proxyConnection = new ProxyConnection(settings);
-            if (settings.isProxyLoginSet()) {
+            if (settings.isProxyAuthSet()) {
                 proxyLogin = new ProxyAuthenticator(settings);
             } else {
                 proxyLogin = new ProxyAuthenticator();
@@ -65,10 +63,8 @@ abstract class ProxySetup {
             int proxyPort = settings.getProxyPortNumber();
             InetSocketAddress socket = new InetSocketAddress(proxyHost, proxyPort);
             Proxy httpsProxy = new Proxy(Proxy.Type.HTTP, socket);
-            Proxy socksProxy = new Proxy(Proxy.Type.SOCKS, socket);
-            proxyList = new ArrayList<>(2);
+            proxyList = new ArrayList<>(1);
             proxyList.add(httpsProxy);
-            proxyList.add(socksProxy);
         }
 
         @Override
@@ -114,11 +110,6 @@ abstract class ProxySetup {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
             return proxyPass;
-        }
-
-        @Override
-        protected RequestorType getRequestorType() {
-            return PROXY;
         }
     }
 }
