@@ -22,19 +22,23 @@ abstract class ProxySetup {
         ProxyConnection proxyConnection;
         ProxyAuthenticator proxyLogin;
 
+
         if (settings.isProxyEnabled()) {
             proxyConnection = new ProxyConnection(settings);
-            if (settings.isProxyAuthSet()) {
-                proxyLogin = new ProxyAuthenticator(settings);
-            } else {
-                proxyLogin = new ProxyAuthenticator();
-            }
         } else {
             proxyConnection = new ProxyConnection();
+        }
+        if (settings.isProxyAuthSet()) {
+            proxyLogin = new ProxyAuthenticator(settings);
+        } else {
             proxyLogin = new ProxyAuthenticator();
         }
-        ProxySelector.setDefault(proxyConnection);
-        Authenticator.setDefault(proxyLogin);
+        try {
+            ProxySelector.setDefault(proxyConnection);
+            Authenticator.setDefault(proxyLogin);
+        } catch (SecurityException sErr) {
+            sErr.printStackTrace();
+        }
     }
 
 

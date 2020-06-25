@@ -380,9 +380,9 @@ public class GlobalSettings {
      * @return proxy port integer
      */
     public int getProxyPortNumber() {
-        if (proxyPort.isEmpty() || proxyPort.length() > 5)
-            return 0;
-        return Integer.parseInt(proxyPort);
+        if (isProxyEnabled && !proxyPort.isEmpty() && proxyPort.length() < 6)
+            return Integer.parseInt(proxyPort);
+        return 0;
     }
 
     /**
