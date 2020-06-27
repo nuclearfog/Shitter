@@ -55,17 +55,23 @@ public class UserAdapter extends Adapter<ViewHolder> {
     @MainThread
     public void setData(@NonNull UserListHolder data) {
         if (users.isEmpty() || !data.hasPrevious()) {
-            if (!users.isEmpty())
+            if (!users.isEmpty()) {
+                // replace previous data
                 users.clear();
+            }
             users.addAll(data.getUsers());
-            if (data.hasNext())
+            if (data.hasNext()) {
+                // add footer
                 users.add(null);
+            }
             notifyDataSetChanged();
         } else {
-            int end = users.size() - 1;
-            if (!data.hasNext())
-                users.remove(end--);
-            users.addAll(end, data.getUsers());
+            int end = users.size();
+            if (!data.hasNext()) {
+                // remove footer
+                users.remove(--end);
+            }
+            users.addAll(data.getUsers());
             notifyItemRangeChanged(end, data.getSize());
         }
         nextCursor = data.getNext();
