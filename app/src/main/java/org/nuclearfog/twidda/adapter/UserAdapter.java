@@ -66,13 +66,14 @@ public class UserAdapter extends Adapter<ViewHolder> {
             }
             notifyDataSetChanged();
         } else {
-            int end = users.size();
+            int end = users.size() - 1;
             if (!data.hasNext()) {
                 // remove footer
-                users.remove(--end);
+                users.remove(end);
+                notifyItemRemoved(end);
             }
-            users.addAll(data.getUsers());
-            notifyItemRangeChanged(end, data.getSize());
+            users.addAll(end, data.getUsers());
+            notifyItemRangeInserted(end, data.getSize());
         }
         nextCursor = data.getNext();
     }
