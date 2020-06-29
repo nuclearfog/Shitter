@@ -57,52 +57,53 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         this.settings = settings;
     }
 
+    /**
+     * Insert data at specific index of the list
+     *
+     * @param data  Tweet data
+     * @param index position to insert
+     */
     @MainThread
-    public void insert(@NonNull List<Tweet> data, int index) {
-        if (!tweets.isEmpty() && index >= 0 && index < tweets.size()) {
+    public void insertAt(@NonNull List<Tweet> data, int index) {
+        if (!tweets.isEmpty()) {
             if (data.size() > MIN_COUNT) {
                 if (tweets.get(index) != null) {
+                    // Add placeholder
                     tweets.add(index, null);
-                    tweets.addAll(index, data);
-                    notifyItemRangeInserted(index, data.size() + 1);
-                } else {
-                    tweets.addAll(index, data);
-                    notifyItemRangeInserted(index, data.size());
+                    notifyItemInserted(index);
                 }
             } else {
                 if (tweets.get(index) == null) {
+                    // remove placeholder
                     tweets.remove(index);
-                    if (data.isEmpty()) {
-                        notifyItemRemoved(index);
-                    } else if (data.size() == 1) {
-                        tweets.add(index, data.get(0));
-                        notifyItemChanged(index);
-                    } else {
-                        tweets.addAll(index, data);
-                        notifyItemRangeInserted(index, data.size() - 1);
-                    }
-                } else {
-                    tweets.addAll(index, data);
-                    notifyItemRangeInserted(index, data.size());
+                    notifyItemRemoved(index);
                 }
             }
-        } else {
-            tweets.addAll(data);
-            if (data.size() > MIN_COUNT) {
-                tweets.add(null);
-            }
-            notifyDataSetChanged();
+            tweets.addAll(index, data);
+            notifyItemRangeInserted(index, data.size());
         }
     }
 
-
+    /**
+     * Replace all items in the list
+     *
+     * @param data tweet data
+     */
     @MainThread
-    public void clear() {
-        tweets.clear();
+    public void replaceAll(@NonNull List<Tweet> data) {
+        tweets.addAll(data);
+        if (data.size() > MIN_COUNT) {
+            tweets.add(null);
+        }
         notifyDataSetChanged();
     }
 
-
+    /**
+     * t
+     * Remove specific tweet from list
+     *
+     * @param id ID of the tweet
+     */
     @MainThread
     public void remove(long id) {
         int index = -1;
@@ -119,7 +120,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         }
     }
 
-
+    /**
+     * check if list is empty
+     *
+     * @return true if list is empty
+     */
     public boolean isEmpty() {
         return tweets.isEmpty();
     }
@@ -259,7 +264,6 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
 
     class PlaceHolder extends ViewHolder {
-
         final Button loadBtn;
 
         PlaceHolder(@NonNull View v) {
@@ -280,6 +284,13 @@ public class TweetAdapter extends Adapter<ViewHolder> {
          */
         void onTweetClick(Tweet tweet);
 
+        /**
+         * called on placeholder click
+         *
+         * @param sinceId the tweet ID of the tweet below the holder
+         * @param maxId   the tweet ID of the tweet over the holder
+         * @param pos     position of the holder
+         */
         void onHolderClick(long sinceId, long maxId, int pos);
     }
 }

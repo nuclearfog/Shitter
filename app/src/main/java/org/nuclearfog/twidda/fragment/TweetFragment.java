@@ -161,9 +161,11 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
      * @param pos    position where tweets should be added
      */
     public void setData(List<Tweet> tweets, int pos) {
-        if (pos == CLEAR_LIST)
-            adapter.clear();
-        adapter.insert(tweets, pos);
+        if (pos == CLEAR_LIST) {
+            adapter.replaceAll(tweets);
+        } else {
+            adapter.insertAt(tweets, pos);
+        }
     }
 
     /**
