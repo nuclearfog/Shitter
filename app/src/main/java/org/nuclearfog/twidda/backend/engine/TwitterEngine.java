@@ -26,7 +26,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -599,7 +598,7 @@ public class TwitterEngine {
             if (ids.length > 0) {
                 users = convertUserList(twitter.lookupUsers(ids));
             } else {
-                users = new ArrayList<>(0);
+                users = new LinkedList<>();
             }
             return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
@@ -626,7 +625,7 @@ public class TwitterEngine {
             if (ids.length > 0) {
                 users = convertUserList(twitter.lookupUsers(ids));
             } else {
-                users = new ArrayList<>(0);
+                users = new LinkedList<>();
             }
             return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {
@@ -800,12 +799,12 @@ public class TwitterEngine {
             IDs userIDs = twitter.getRetweeterIds(tweetID, load, cursor);
             long[] ids = userIDs.getIDs();
             long prevCursor = cursor > 0 ? cursor : 0;
-            long nextCursor = userIDs.getNextCursor();
+            long nextCursor = userIDs.getNextCursor(); // todo fix next cursor always zero
             List<TwitterUser> users;
             if (ids.length > 0) {
                 users = convertUserList(twitter.lookupUsers(ids));
             } else {
-                users = new ArrayList<>(0);
+                users = new LinkedList<>();
             }
             return new UserListHolder(users, prevCursor, nextCursor);
         } catch (TwitterException err) {

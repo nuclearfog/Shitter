@@ -79,8 +79,10 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                     notifyItemRemoved(index);
                 }
             }
-            tweets.addAll(index, data);
-            notifyItemRangeInserted(index, data.size());
+            if (!data.isEmpty()) {
+                tweets.addAll(index, data);
+                notifyItemRangeInserted(index, data.size());
+            }
         }
     }
 
@@ -91,6 +93,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void replaceAll(@NonNull List<Tweet> data) {
+        tweets.clear();
         tweets.addAll(data);
         if (data.size() > MIN_COUNT) {
             tweets.add(null);
@@ -106,17 +109,13 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void remove(long id) {
-        int index = -1;
-
-        for (int pos = 0; pos < tweets.size() && index < 0; pos++) {
+        for (int pos = 0; pos < tweets.size(); pos++) {
             Tweet tweet = tweets.get(pos);
             if (tweet != null && tweet.getId() == id) {
                 tweets.remove(pos);
-                index = pos;
+                notifyItemRemoved(pos);
+                break;
             }
-        }
-        if (index != -1) {
-            notifyItemRemoved(index);
         }
     }
 

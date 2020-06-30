@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 public class FontAdapter extends BaseAdapter {
 
@@ -43,7 +43,7 @@ public class FontAdapter extends BaseAdapter {
             tv = (TextView) view;
         else {
             tv = new TextView(parent.getContext());
-            tv.setTextSize(COMPLEX_UNIT_DIP, 20);
+            tv.setTextSize(COMPLEX_UNIT_SP, 20);
         }
         tv.setText(name);
         tv.setTypeface(font);
