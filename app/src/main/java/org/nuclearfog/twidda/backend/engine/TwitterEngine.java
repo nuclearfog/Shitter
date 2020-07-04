@@ -696,6 +696,8 @@ public class TwitterEngine {
             query.setCount(load);
             if (sinceId > 0)
                 query.setSinceId(sinceId);
+            else
+                query.setSinceId(tweetId);
             if (maxId > 1)
                 query.setMaxId(maxId - 1);
             query.setResultType(Query.RECENT);

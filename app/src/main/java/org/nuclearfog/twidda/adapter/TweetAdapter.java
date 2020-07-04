@@ -65,24 +65,22 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void insertAt(@NonNull List<Tweet> data, int index) {
-        if (!tweets.isEmpty()) {
-            if (data.size() > MIN_COUNT) {
-                if (tweets.get(index) != null) {
-                    // Add placeholder
-                    tweets.add(index, null);
-                    notifyItemInserted(index);
-                }
-            } else {
-                if (tweets.get(index) == null) {
-                    // remove placeholder
-                    tweets.remove(index);
-                    notifyItemRemoved(index);
-                }
+        if (data.size() > MIN_COUNT) {
+            if (tweets.isEmpty() || tweets.get(index) != null) {
+                // Add placeholder
+                tweets.add(index, null);
+                notifyItemInserted(index);
             }
-            if (!data.isEmpty()) {
-                tweets.addAll(index, data);
-                notifyItemRangeInserted(index, data.size());
+        } else {
+            if (!tweets.isEmpty() && tweets.get(index) == null) {
+                // remove placeholder
+                tweets.remove(index);
+                notifyItemRemoved(index);
             }
+        }
+        if (!data.isEmpty()) {
+            tweets.addAll(index, data);
+            notifyItemRangeInserted(index, data.size());
         }
     }
 
