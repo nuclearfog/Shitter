@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_layout"
+        android:layout_margin="@dimen/dmitem_margin_layout"
         android:orientation="vertical">
 
         <LinearLayout
@@ -18,15 +18,15 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="@dimen/profile_middle"
-                android:layout_height="@dimen/profile_middle"
-                android:layout_marginRight="@dimen/margin_layout"
-                android:layout_marginEnd="@dimen/margin_layout">
+                android:layout_width="@dimen/dmitem_profile"
+                android:layout_height="@dimen/dmitem_profile"
+                android:layout_marginRight="@dimen/dmitem_margin_layout"
+                android:layout_marginEnd="@dimen/dmitem_margin_layout">
 
                 <ImageView
                     android:id="@+id/dm_profileImg"
-                    android:layout_width="@dimen/profile_middle"
-                    android:layout_height="@dimen/profile_middle"
+                    android:layout_width="@dimen/dmitem_profile"
+                    android:layout_height="@dimen/dmitem_profile"
                     android:contentDescription="@string/profile_image" />
 
             </androidx.cardview.widget.CardView>
@@ -34,14 +34,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/margin_layout"
-                android:layout_marginLeft="@dimen/margin_layout"
+                android:layout_marginStart="@dimen/dmitem_margin_layout"
+                android:layout_marginLeft="@dimen/dmitem_margin_layout"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_layout"
+                    android:layout_marginBottom="@dimen/dmitem_margin_layout"
                     android:orientation="horizontal">
 
                     <TextView
@@ -49,9 +49,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:drawablePadding="@dimen/padding_drawable"
+                        android:drawablePadding="@dimen/dmitem_padding_drawable"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_name" />
+                        android:textSize="@dimen/dmitem_textsize_name" />
 
                     <TextView
                         android:id="@+id/dm_time"
@@ -61,7 +61,7 @@
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAlignment="gravity"
-                        android:textSize="@dimen/textsize_date" />
+                        android:textSize="@dimen/dmitem_textsize_date" />
 
                 </LinearLayout>
 
@@ -74,17 +74,17 @@
                         android:id="@+id/dm_screenname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/margin_layout"
-                        android:layout_marginEnd="@dimen/margin_layout"
+                        android:layout_marginRight="@dimen/dmitem_margin_layout"
+                        android:layout_marginEnd="@dimen/dmitem_margin_layout"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_name" />
+                        android:textSize="@dimen/dmitem_textsize_name" />
 
                     <TextView
                         android:id="@+id/dm_receiver"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/padding_drawable"
-                        android:textSize="@dimen/textsize_name"
+                        android:drawablePadding="@dimen/dmitem_padding_drawable"
+                        android:textSize="@dimen/dmitem_textsize_name"
                         android:singleLine="true"
                         app:drawableLeftCompat="@drawable/rightarrow" />
 
@@ -98,8 +98,8 @@
             android:id="@+id/dm_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_layout"
-            android:layout_marginBottom="@dimen/margin_layout"
+            android:layout_marginTop="@dimen/dmitem_margin_layout"
+            android:layout_marginBottom="@dimen/dmitem_margin_layout"
             android:linksClickable="true" />
 
         <LinearLayout
@@ -111,21 +111,21 @@
                 android:id="@+id/dm_answer"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dm_item_button_height"
-                android:layout_marginEnd="@dimen/margin_side"
-                android:layout_marginRight="@dimen/margin_side"
+                android:layout_height="@dimen/dmitem_button_height"
+                android:layout_marginEnd="@dimen/dmitem_margin_layout"
+                android:layout_marginRight="@dimen/dmitem_margin_layout"
                 android:background="@drawable/button"
                 android:text="@string/dm_answer"
-                android:textSize="@dimen/textsize_button" />
+                android:textSize="@dimen/dmitem_textsize_button" />
 
             <Button
                 android:id="@+id/dm_delete"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dm_item_button_height"
+                android:layout_height="@dimen/dmitem_button_height"
                 android:background="@drawable/button"
                 android:text="@string/delete_dm"
-                android:textSize="@dimen/textsize_button" />
+                android:textSize="@dimen/dmitem_textsize_button" />
 
         </LinearLayout>
 

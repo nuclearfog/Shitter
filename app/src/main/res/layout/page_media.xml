@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:scrollbars="horizontal"
-            android:layout_margin="@dimen/preview_margin" />
+            android:layout_margin="@dimen/mediapage_preview_margin" />
 
     </FrameLayout>
 

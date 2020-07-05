@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/margin_layout">
+        android:padding="@dimen/tweetpopup_margin_layout">
 
         <EditText
             android:id="@+id/tweet_input"
-            android:layout_width="@dimen/text_input_width"
-            android:layout_height="@dimen/text_input_height"
+            android:layout_width="@dimen/tweetpopup_text_width"
+            android:layout_height="@dimen/tweetpopup_text_height"
             android:background="@android:color/transparent"
             android:gravity="top"
             android:hint="@string/tweet"
@@ -25,7 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/margin_layout"
+            android:layout_margin="@dimen/tweetpopup_margin_layout"
             android:gravity="end|center_vertical"
             android:orientation="horizontal">
 
@@ -34,14 +34,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/holo_red_dark"
-                android:textSize="@dimen/textsize_count" />
+                android:textSize="@dimen/tweetpopup_textsize_count" />
 
             <ImageButton
                 android:id="@+id/tweet_prev_media"
-                android:layout_width="@dimen/button_tweet_size"
-                android:layout_height="@dimen/button_tweet_size"
-                android:layout_marginStart="@dimen/margin_tweet_icon"
-                android:layout_marginLeft="@dimen/margin_tweet_icon"
+                android:layout_width="@dimen/tweetpopup_button_size"
+                android:layout_height="@dimen/tweetpopup_button_size"
+                android:layout_marginStart="@dimen/tweetpopup_button_margin"
+                android:layout_marginLeft="@dimen/tweetpopup_button_margin"
                 android:background="@drawable/button"
                 android:contentDescription="@string/image_preview"
                 android:visibility="invisible"
@@ -49,10 +49,10 @@
 
             <ImageButton
                 android:id="@+id/tweet_add_media"
-                android:layout_width="@dimen/button_tweet_size"
-                android:layout_height="@dimen/button_tweet_size"
-                android:layout_marginStart="@dimen/margin_tweet_icon"
-                android:layout_marginLeft="@dimen/margin_tweet_icon"
+                android:layout_width="@dimen/tweetpopup_button_size"
+                android:layout_height="@dimen/tweetpopup_button_size"
+                android:layout_marginStart="@dimen/tweetpopup_button_margin"
+                android:layout_marginLeft="@dimen/tweetpopup_button_margin"
                 android:background="@drawable/button"
                 android:contentDescription="@string/tweet_add_image"
                 app:srcCompat="@drawable/image_add" />
@@ -60,21 +60,21 @@
             <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_tweet_icon"
-                android:layout_marginLeft="@dimen/margin_tweet_icon">
+                android:layout_marginStart="@dimen/tweetpopup_button_margin"
+                android:layout_marginLeft="@dimen/tweetpopup_button_margin">
 
                 <ProgressBar
                     android:id="@+id/location_progress"
                     style="?android:attr/progressBarStyle"
-                    android:layout_width="@dimen/tweet_location_progress_size"
-                    android:layout_height="@dimen/tweet_location_progress_size"
+                    android:layout_width="@dimen/tweetpopup_location_progress_size"
+                    android:layout_height="@dimen/tweetpopup_location_progress_size"
                     android:layout_gravity="center"
                     android:visibility="invisible" />
 
                 <ImageButton
                     android:id="@+id/tweet_add_location"
-                    android:layout_width="@dimen/button_tweet_size"
-                    android:layout_height="@dimen/button_tweet_size"
+                    android:layout_width="@dimen/tweetpopup_button_size"
+                    android:layout_height="@dimen/tweetpopup_button_size"
                     android:background="@drawable/button"
                     android:contentDescription="@string/send_tweet"
                     app:srcCompat="@drawable/location" />
@@ -82,20 +82,20 @@
 
             <ImageButton
                 android:id="@+id/tweet_send"
-                android:layout_width="@dimen/button_tweet_size"
-                android:layout_height="@dimen/button_tweet_size"
-                android:layout_marginStart="@dimen/margin_tweet_icon"
-                android:layout_marginLeft="@dimen/margin_tweet_icon"
+                android:layout_width="@dimen/tweetpopup_button_size"
+                android:layout_height="@dimen/tweetpopup_button_size"
+                android:layout_marginStart="@dimen/tweetpopup_button_margin"
+                android:layout_marginLeft="@dimen/tweetpopup_button_margin"
                 android:background="@drawable/button"
                 android:contentDescription="@string/send_tweet"
                 app:srcCompat="@drawable/tweet" />
 
             <ImageButton
                 android:id="@+id/close"
-                android:layout_width="@dimen/button_tweet_size"
-                android:layout_height="@dimen/button_tweet_size"
-                android:layout_marginStart="@dimen/margin_tweet_icon"
-                android:layout_marginLeft="@dimen/margin_tweet_icon"
+                android:layout_width="@dimen/tweetpopup_button_size"
+                android:layout_height="@dimen/tweetpopup_button_size"
+                android:layout_marginStart="@dimen/tweetpopup_button_margin"
+                android:layout_marginLeft="@dimen/tweetpopup_button_margin"
                 android:background="@drawable/button"
                 android:contentDescription="@string/tweet_close"
                 app:srcCompat="@drawable/cross" />

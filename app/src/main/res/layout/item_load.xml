@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/kill_button"
-        android:layout_width="@dimen/button_load"
-        android:layout_height="@dimen/button_load"
+        android:layout_width="@dimen/loaditem_button_size"
+        android:layout_height="@dimen/loaditem_button_size"
         android:layout_gravity="center"
         android:visibility="invisible"
         android:background="@android:color/transparent"

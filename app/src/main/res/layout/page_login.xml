@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/login_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height" />
+        android:layout_height="@dimen/loginpage_toolbar_height" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,12 +24,12 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/button_size"
+            android:layout_marginBottom="@dimen/loginpage_button_margin"
             android:background="@drawable/button"
             android:paddingLeft="@dimen/loginpage_button_padding"
             android:paddingRight="@dimen/loginpage_button_padding"
             android:text="@string/register_link"
-            android:textSize="@dimen/textsize_button_login" />
+            android:textSize="@dimen/loginpage_textsize_button" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -42,11 +42,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:drawablePadding="@dimen/padding_drawable"
+                android:drawablePadding="@dimen/loginpage_padding_drawable"
                 android:hint="@string/login_pin"
                 android:inputType="numberPassword"
                 android:singleLine="true"
-                android:textSize="@dimen/textsize_login_key"
+                android:textSize="@dimen/loginpage_textsize_login_key"
                 app:drawableEndCompat="@drawable/copy"
                 app:drawableLeftCompat="@drawable/key"
                 app:drawableRightCompat="@drawable/copy"
@@ -59,12 +59,12 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_size"
+            android:layout_margin="@dimen/loginpage_button_size"
             android:background="@drawable/button"
             android:paddingLeft="@dimen/loginpage_button_padding"
             android:paddingRight="@dimen/loginpage_button_padding"
             android:text="@string/login_verifier"
-            android:textSize="@dimen/textsize_button_login" />
+            android:textSize="@dimen/loginpage_textsize_button" />
 
     </LinearLayout>
 

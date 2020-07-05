@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/margin_layout">
+        android:padding="@dimen/dmpopup_padding_layout">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_layout"
+            android:layout_marginBottom="@dimen/dmpopup_margin_layout"
             android:gravity="end|center_vertical"
             android:orientation="horizontal">
 
@@ -32,20 +32,20 @@
 
             <ImageButton
                 android:id="@+id/dm_media"
-                android:layout_width="@dimen/button_dm"
-                android:layout_height="@dimen/button_dm"
-                android:layout_marginStart="@dimen/margin_dm_icon"
-                android:layout_marginLeft="@dimen/margin_dm_icon"
+                android:layout_width="@dimen/dmpopup_button_size"
+                android:layout_height="@dimen/dmpopup_button_size"
+                android:layout_marginStart="@dimen/dmpopup_button_margin"
+                android:layout_marginLeft="@dimen/dmpopup_button_margin"
                 android:background="@drawable/button"
                 android:contentDescription="@string/tweet_add_image"
                 app:srcCompat="@drawable/image_add" />
 
             <ImageButton
                 android:id="@+id/dm_send"
-                android:layout_width="@dimen/button_dm"
-                android:layout_height="@dimen/button_dm"
-                android:layout_marginStart="@dimen/button_margin"
-                android:layout_marginLeft="@dimen/button_margin"
+                android:layout_width="@dimen/dmpopup_button_size"
+                android:layout_height="@dimen/dmpopup_button_size"
+                android:layout_marginStart="@dimen/dmpopup_button_margin"
+                android:layout_marginLeft="@dimen/dmpopup_button_margin"
                 android:background="@drawable/button"
                 android:contentDescription="@string/close_dm"
                 app:srcCompat="@drawable/right" />
@@ -54,8 +54,8 @@
 
         <EditText
             android:id="@+id/dm_text"
-            android:layout_width="@dimen/text_input_width"
-            android:layout_height="@dimen/text_input_height"
+            android:layout_width="@dimen/dmpopup_text_width"
+            android:layout_height="@dimen/dmpopup_text_height"
             android:background="@android:color/transparent"
             android:gravity="start"
             android:hint="@string/dm_message"

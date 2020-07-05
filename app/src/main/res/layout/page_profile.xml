@@ -24,7 +24,7 @@
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/profile_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/toolbar_height" />
+                    android:layout_height="@dimen/profile_toolbar_height" />
 
                 <LinearLayout
                     android:id="@+id/profile_header"
@@ -53,8 +53,8 @@
                             android:layout_height="match_parent"
                             android:gravity="bottom"
                             android:orientation="horizontal"
-                            android:paddingLeft="@dimen/padding_side"
-                            android:paddingRight="@dimen/padding_side">
+                            android:paddingLeft="@dimen/profile_layout_padding"
+                            android:paddingRight="@dimen/profile_layout_padding">
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="@dimen/profile_image"
@@ -71,15 +71,15 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/margin_layout"
-                                android:layout_marginLeft="@dimen/margin_layout"
+                                android:layout_marginStart="@dimen/profile_layout_margin"
+                                android:layout_marginLeft="@dimen/profile_layout_margin"
                                 android:orientation="vertical">
 
                                 <TextView
                                     android:id="@+id/profile_username"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:drawablePadding="@dimen/padding_drawable"
+                                    android:drawablePadding="@dimen/profile_padding_drawable"
                                     android:padding="@dimen/profile_tv_padding"
                                     android:singleLine="true" />
 
@@ -92,7 +92,7 @@
                                         android:id="@+id/profile_screenname"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:drawablePadding="@dimen/padding_drawable"
+                                        android:drawablePadding="@dimen/profile_padding_drawable"
                                         android:padding="@dimen/profile_tv_padding"
                                         android:singleLine="true" />
 
@@ -100,7 +100,7 @@
                                         android:id="@+id/follow_back"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:drawablePadding="@dimen/padding_drawable"
+                                        android:drawablePadding="@dimen/profile_padding_drawable"
                                         android:padding="@dimen/profile_tv_padding"
                                         android:singleLine="true"
                                         android:text="@string/follows_you"
@@ -113,7 +113,7 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/margin_layout"
+                                    android:layout_marginTop="@dimen/profile_layout_margin"
                                     android:gravity="center_vertical"
                                     android:orientation="horizontal">
 
@@ -121,13 +121,13 @@
                                         android:id="@+id/following"
                                         style="@style/Widget.AppCompat.Button.Borderless"
                                         android:layout_width="0dp"
-                                        android:layout_height="@dimen/button_height"
-                                        android:layout_marginLeft="@dimen/button_margin"
-                                        android:layout_marginRight="@dimen/button_margin"
+                                        android:layout_height="@dimen/profile_button_height"
+                                        android:layout_marginLeft="@dimen/profile_button_margin"
+                                        android:layout_marginRight="@dimen/profile_button_margin"
                                         android:layout_weight="1"
                                         android:background="@drawable/button"
-                                        android:paddingLeft="@dimen/button_padding"
-                                        android:paddingRight="@dimen/button_padding"
+                                        android:paddingLeft="@dimen/profile_button_padding"
+                                        android:paddingRight="@dimen/profile_button_padding"
                                         android:singleLine="true"
                                         app:drawableLeftCompat="@drawable/following"
                                         app:drawableStartCompat="@drawable/following" />
@@ -136,13 +136,13 @@
                                         android:id="@+id/follower"
                                         style="@style/Widget.AppCompat.Button.Borderless"
                                         android:layout_width="0dp"
-                                        android:layout_height="@dimen/button_height"
-                                        android:layout_marginLeft="@dimen/button_margin"
-                                        android:layout_marginRight="@dimen/button_margin"
+                                        android:layout_height="@dimen/profile_button_height"
+                                        android:layout_marginLeft="@dimen/profile_button_margin"
+                                        android:layout_marginRight="@dimen/profile_button_margin"
                                         android:layout_weight="1"
                                         android:background="@drawable/button"
-                                        android:paddingLeft="@dimen/button_padding"
-                                        android:paddingRight="@dimen/button_padding"
+                                        android:paddingLeft="@dimen/profile_button_padding"
+                                        android:paddingRight="@dimen/profile_button_padding"
                                         android:singleLine="true"
                                         app:drawableLeftCompat="@drawable/follower"
                                         app:drawableStartCompat="@drawable/follower" />
@@ -159,28 +159,20 @@
                         android:id="@+id/bio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_side"
-                        android:layout_marginStart="@dimen/margin_side"
-                        android:layout_marginRight="@dimen/margin_side"
-                        android:layout_marginEnd="@dimen/margin_side"
-                        android:layout_marginTop="@dimen/profile_tv_margin"
+                        android:layout_margin="@dimen/profile_tv_margin"
                         android:fadeScrollbars="false"
                         android:linksClickable="true"
-                        android:maxLines="@integer/text_bio_lines"
+                        android:maxLines="@integer/profile_text_bio_lines"
                         android:scrollbars="vertical" />
 
                     <TextView
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_side"
-                        android:layout_marginStart="@dimen/margin_side"
-                        android:layout_marginRight="@dimen/margin_side"
-                        android:layout_marginEnd="@dimen/margin_side"
-                        android:layout_marginTop="@dimen/profile_tv_margin"
-                        android:drawablePadding="@dimen/padding_drawable"
+                        android:layout_margin="@dimen/profile_tv_margin"
+                        android:drawablePadding="@dimen/profile_padding_drawable"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_profile"
+                        android:textSize="@dimen/profile_textsize"
                         app:drawableLeftCompat="@drawable/userlocation"
                         app:drawableStartCompat="@drawable/userlocation" />
 
@@ -188,15 +180,11 @@
                         android:id="@+id/links"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_side"
-                        android:layout_marginStart="@dimen/margin_side"
-                        android:layout_marginRight="@dimen/margin_side"
-                        android:layout_marginEnd="@dimen/margin_side"
-                        android:layout_marginTop="@dimen/profile_tv_margin"
-                        android:drawablePadding="@dimen/padding_drawable"
+                        android:layout_margin="@dimen/profile_tv_margin"
+                        android:drawablePadding="@dimen/profile_padding_drawable"
                         android:linksClickable="true"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_profile"
+                        android:textSize="@dimen/profile_textsize"
                         app:drawableLeftCompat="@drawable/link"
                         app:drawableStartCompat="@drawable/link" />
 
@@ -204,14 +192,10 @@
                         android:id="@+id/profile_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_side"
-                        android:layout_marginStart="@dimen/margin_side"
-                        android:layout_marginRight="@dimen/margin_side"
-                        android:layout_marginEnd="@dimen/margin_side"
-                        android:layout_marginTop="@dimen/profile_tv_margin"
-                        android:drawablePadding="@dimen/padding_drawable"
+                        android:layout_margin="@dimen/profile_tv_margin"
+                        android:drawablePadding="@dimen/profile_padding_drawable"
                         android:singleLine="true"
-                        android:textSize="@dimen/textsize_profile"
+                        android:textSize="@dimen/profile_textsize"
                         app:drawableLeftCompat="@drawable/calendar"
                         app:drawableStartCompat="@drawable/calendar" />
 

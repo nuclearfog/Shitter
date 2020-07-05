@@ -9,10 +9,11 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/list_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height" />
+        android:layout_height="@dimen/listpage_toolbar_height" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/list_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </LinearLayout>

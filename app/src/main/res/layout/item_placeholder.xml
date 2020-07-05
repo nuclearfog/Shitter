@@ -8,7 +8,7 @@
         android:id="@+id/item_placeholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/item_placeholder_margin"
+        android:layout_margin="@dimen/placeholderitem_margin"
         android:background="@drawable/button"
         android:text="@string/item_load_more" />
 

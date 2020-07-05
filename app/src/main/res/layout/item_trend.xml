@@ -8,23 +8,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:padding="@dimen/margin_layout">
+        android:padding="@dimen/trenditem_layout_padding">
 
         <TextView
             android:id="@+id/trendpos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_layout"
-            android:layout_marginRight="@dimen/margin_layout"
             android:layout_weight="1"
             android:gravity="center_vertical|end"
             android:textAlignment="gravity"
             android:singleLine="true"
-            android:textSize="@dimen/textsize_trendname" />
+            android:textSize="@dimen/trenditem_textsize_trendindex" />
 
         <LinearLayout
             android:layout_weight="7"
             android:layout_width="0dp"
+            android:layout_marginStart="@dimen/trenditem_margin_layout"
+            android:layout_marginLeft="@dimen/trenditem_margin_layout"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
@@ -32,14 +32,14 @@
                 android:id="@+id/trendname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/textsize_trendname"
+                android:textSize="@dimen/trenditem_textsize_trendname"
                 android:singleLine="true" />
 
             <TextView
                 android:id="@+id/trendvol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/textsize_trendvol"
+                android:textSize="@dimen/trenditem_textsize_trendvol"
                 android:singleLine="true" />
 
         </LinearLayout>

@@ -10,7 +10,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_setting"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height" />
+        android:layout_height="@dimen/settings_toolbar_height" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,19 +22,19 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/padding_side"
-            android:paddingRight="@dimen/padding_side">
+            android:paddingLeft="@dimen/settings_layout_padding"
+            android:paddingRight="@dimen/settings_layout_padding">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_settings"
+                android:layout_marginTop="@dimen/settings_text_margin"
                 android:text="@string/color_settings"
-                android:textSize="@dimen/textsize_settings" />
+                android:textSize="@dimen/settings_textsize" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/divider"
+                android:layout_height="@dimen/settings_divider"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -46,8 +46,8 @@
                 <LinearLayout
                     android:id="@+id/color_background_edge"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_settings_color"
-                    android:layout_margin="@dimen/button_margin"
+                    android:layout_height="@dimen/settings_button_color_height"
+                    android:layout_margin="@dimen/settings_button_margin"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -57,7 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
 
-                        android:layout_margin="@dimen/button_edge"
+                        android:layout_margin="@dimen/settings_button_color_edge_thickness"
                         android:singleLine="true"
                         android:text="@string/background" />
                 </LinearLayout>
@@ -66,8 +66,8 @@
                     android:id="@+id/color_font"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_settings_color"
-                    android:layout_margin="@dimen/button_margin"
+                    android:layout_height="@dimen/settings_button_color_height"
+                    android:layout_margin="@dimen/settings_button_margin"
                     android:layout_weight="1"
                     android:includeFontPadding="false"
                     android:singleLine="true"
@@ -85,8 +85,8 @@
                     android:id="@+id/color_popup"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_settings_color"
-                    android:layout_margin="@dimen/button_margin"
+                    android:layout_height="@dimen/settings_button_color_height"
+                    android:layout_margin="@dimen/settings_button_margin"
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/popup" />
@@ -95,8 +95,8 @@
                     android:id="@+id/highlight_color"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_settings_color"
-                    android:layout_margin="@dimen/button_margin"
+                    android:layout_height="@dimen/settings_button_color_height"
+                    android:layout_margin="@dimen/settings_button_margin"
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/highlight" />
@@ -107,11 +107,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/settins_font"
-                android:textSize="@dimen/textsize_settings" />
+                android:textSize="@dimen/settings_textsize" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/divider"
+                android:layout_height="@dimen/settings_divider"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -136,11 +136,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/data_consumption"
-                android:textSize="@dimen/textsize_settings" />
+                android:textSize="@dimen/settings_textsize" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/divider"
+                android:layout_height="@dimen/settings_divider"
                 android:background="?android:attr/listDivider" />
 
             <LinearLayout
@@ -153,34 +153,34 @@
                     android:id="@+id/load_dialog"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_settings_height"
-                    android:layout_marginStart="@dimen/button_margin"
-                    android:layout_marginLeft="@dimen/button_margin"
-                    android:layout_marginEnd="@dimen/button_margin"
-                    android:layout_marginRight="@dimen/button_margin"
+                    android:layout_height="@dimen/settings_button_height"
+                    android:layout_marginStart="@dimen/settings_button_margin"
+                    android:layout_marginLeft="@dimen/settings_button_margin"
+                    android:layout_marginEnd="@dimen/settings_button_margin"
+                    android:layout_marginRight="@dimen/settings_button_margin"
                     android:layout_weight="3"
                     android:background="@drawable/button"
                     android:singleLine="true"
                     android:text="@string/settings_list_size"
-                    android:textSize="@dimen/textsize_settings_small" />
+                    android:textSize="@dimen/settings_textsize_small" />
 
                 <CheckBox
                     android:id="@+id/toggleImg"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
+                    android:layout_height="@dimen/settings_checkbox_height"
                     android:layout_weight="4"
                     android:singleLine="true"
                     android:text="@string/settings_image"
-                    android:textSize="@dimen/textsize_settings_small" />
+                    android:textSize="@dimen/settings_textsize_small" />
 
                 <CheckBox
                     android:id="@+id/toggleAns"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/button_dm"
+                    android:layout_height="@dimen/settings_checkbox_height"
                     android:layout_weight="5"
                     android:singleLine="true"
                     android:text="@string/load_answer"
-                    android:textSize="@dimen/textsize_settings_small" />
+                    android:textSize="@dimen/settings_textsize_small" />
 
             </LinearLayout>
 
@@ -193,13 +193,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/text_settings"
+                    android:layout_marginTop="@dimen/settings_text_margin"
                     android:text="@string/trend_setting"
-                    android:textSize="@dimen/textsize_settings" />
+                    android:textSize="@dimen/settings_textsize" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/divider"
+                    android:layout_height="@dimen/settings_divider"
                     android:background="?android:attr/listDivider" />
 
                 <Spinner
@@ -210,13 +210,13 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/text_settings"
+                    android:layout_marginTop="@dimen/settings_text_margin"
                     android:text="@string/user_data"
-                    android:textSize="@dimen/textsize_settings" />
+                    android:textSize="@dimen/settings_textsize" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/divider"
+                    android:layout_height="@dimen/settings_divider"
                     android:background="?android:attr/listDivider" />
 
                 <LinearLayout
@@ -229,8 +229,8 @@
                         android:id="@+id/delete_db"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/button_settings_height"
-                        android:layout_margin="@dimen/button_margin"
+                        android:layout_height="@dimen/settings_button_height"
+                        android:layout_margin="@dimen/settings_button_margin"
                         android:layout_weight="1"
                         android:background="@drawable/button"
                         android:singleLine="true"
@@ -240,27 +240,27 @@
                         android:id="@+id/logout"
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
-                        android:layout_height="@dimen/button_settings_height"
-                        android:layout_margin="@dimen/button_margin"
+                        android:layout_height="@dimen/settings_button_height"
+                        android:layout_margin="@dimen/settings_button_margin"
                         android:layout_weight="1"
                         android:background="@drawable/button"
                         android:singleLine="true"
                         android:text="@string/settings_logout" />
 
                 </LinearLayout>
+
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/text_settings"
+                android:layout_marginTop="@dimen/settings_text_margin"
                 android:text="@string/proxy_settings"
-                android:textSize="@dimen/textsize_settings" />
+                android:textSize="@dimen/settings_textsize" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/divider"
-                android:layout_marginBottom="@dimen/margin_layout"
+                android:layout_height="@dimen/settings_divider"
                 android:background="?android:attr/listDivider" />
 
             <CheckBox
@@ -286,9 +286,9 @@
                     android:ems="10"
                     android:hint="@string/enter_proxy"
                     android:inputType="number|numberDecimal"
-                    android:padding="@dimen/edittext_background_padding"
+                    android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/settings_edittext_textsize" />
 
                 <EditText
                     android:id="@+id/edit_proxyport"
@@ -300,9 +300,9 @@
                     android:ems="10"
                     android:hint="@string/proxy_port"
                     android:inputType="number"
-                    android:padding="@dimen/edittext_background_padding"
+                    android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/settings_edittext_textsize" />
 
             </LinearLayout>
 
@@ -310,7 +310,6 @@
                 android:id="@+id/settings_enable_auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:singleLine="true"
                 android:text="@string/settings_enable_proxy_auth" />
 
@@ -329,9 +328,9 @@
                     android:ems="10"
                     android:hint="@string/edit_proxyuser"
                     android:inputType="textPersonName"
-                    android:padding="@dimen/edittext_background_padding"
+                    android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/settings_edittext_textsize" />
 
                 <EditText
                     android:id="@+id/edit_proxypass"
@@ -343,9 +342,9 @@
                     android:ems="10"
                     android:hint="@string/proxy_password"
                     android:inputType="textPassword"
-                    android:padding="@dimen/edittext_background_padding"
+                    android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/settings_edittext_textsize" />
 
             </LinearLayout>
 

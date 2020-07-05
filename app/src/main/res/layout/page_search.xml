@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/search_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height" />
+        android:layout_height="@dimen/searchpage_toolbar_height" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/search_tab"

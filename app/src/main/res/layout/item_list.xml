@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/list_padding">
+        android:padding="@dimen/listitem_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,37 +18,38 @@
             android:orientation="horizontal">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="@dimen/profile_middle"
-                android:layout_height="@dimen/profile_middle">
+                android:layout_width="@dimen/listitem_profile"
+                android:layout_height="@dimen/listitem_profile">
 
                 <ImageView
                     android:id="@+id/list_owner_profile"
-                    android:layout_width="@dimen/profile_middle"
-                    android:layout_height="@dimen/profile_middle"
+                    android:layout_width="@dimen/listitem_profile"
+                    android:layout_height="@dimen/listitem_profile"
                     android:contentDescription="@string/item_list_pb_desc" />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/list_padding"
-                android:layout_marginEnd="@dimen/list_padding"
+                android:layout_marginStart="@dimen/listitem_layout_margin"
+                android:layout_marginEnd="@dimen/listitem_layout_margin"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/list_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/padding_drawable"
                     android:singleLine="true"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/listitem_textsize_title" />
 
                 <TextView
                     android:id="@+id/list_ownername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/listitem_padding_drawable"
                     android:singleLine="true"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/listitem_textsize_name" />
+
             </LinearLayout>
 
         </LinearLayout>
@@ -68,74 +69,74 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:textSize="12sp" />
+                android:textSize="@dimen/listitem_textsize_date" />
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/list_bar_padding"
-            android:paddingRight="@dimen/list_bar_padding">
+            android:paddingLeft="@dimen/listitem_bar_padding"
+            android:paddingRight="@dimen/listitem_bar_padding">
 
             <Button
                 android:id="@+id/list_member"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/list_button_height"
+                android:layout_height="@dimen/listitem_button_height"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_weight="1"
                 android:background="@drawable/button"
-                android:drawablePadding="@dimen/padding_drawable"
+                android:drawablePadding="@dimen/listitem_padding_drawable"
                 android:paddingStart="@dimen/listitem_button_padding"
                 android:paddingEnd="@dimen/listitem_button_padding"
                 android:singleLine="true"
-                android:textSize="12sp"
+                android:textSize="@dimen/listitem_textsize_button"
                 app:drawableStartCompat="@drawable/member" />
 
             <Button
                 android:id="@+id/list_subscriber"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/list_button_height"
+                android:layout_height="@dimen/listitem_button_height"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_weight="1"
                 android:background="@drawable/button"
-                android:drawablePadding="@dimen/padding_drawable"
+                android:drawablePadding="@dimen/listitem_padding_drawable"
                 android:paddingStart="@dimen/listitem_button_padding"
                 android:paddingEnd="@dimen/listitem_button_padding"
                 android:singleLine="true"
-                android:textSize="12sp"
+                android:textSize="@dimen/listitem_textsize_button"
                 app:drawableStartCompat="@drawable/subscriber" />
 
             <Button
                 android:id="@+id/list_follow"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/list_button_height"
+                android:layout_height="@dimen/listitem_button_height"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_weight="1"
                 android:background="@drawable/button"
-                android:drawablePadding="@dimen/padding_drawable"
                 android:singleLine="true"
                 android:text="@string/user_follow"
-                android:textSize="12sp" />
+                android:textSize="@dimen/listitem_textsize_button" />
 
             <Button
                 android:id="@+id/list_delete"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/list_button_height"
+                android:layout_height="@dimen/listitem_button_height"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_weight="1"
                 android:background="@drawable/button"
-                android:drawablePadding="@dimen/padding_drawable"
                 android:singleLine="true"
                 android:text="@string/delete_list"
-                android:textSize="12sp"
+                android:textSize="@dimen/listitem_textsize_button"
                 android:visibility="gone" />
 
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
