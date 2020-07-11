@@ -509,7 +509,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         }
         if (settings.getImageLoad()) {
             if (user.hasBannerImg()) {
-                profile_layer.getLayoutParams().height = (int) getResources().getDimension(R.dimen.profile_banner_height);
+                int layoutHeight = profile_layer.getMeasuredWidth() / 3;
+                int buttonHeight = (int) getResources().getDimension(R.dimen.profile_button_height);
+                profile_layer.getLayoutParams().height = layoutHeight + buttonHeight;
                 String bannerLink = user.getBannerLink() + "/600x200";
                 Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage);
             } else {
@@ -570,7 +572,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      */
     public void onError(EngineException err) {
         ErrorHandler.handleFailure(this, err);
-        if (user == null) {
+        if (user == null || err.resourceNotFound()) {
             finish();
         }
     }

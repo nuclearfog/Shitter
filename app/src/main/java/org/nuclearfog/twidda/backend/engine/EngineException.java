@@ -4,6 +4,7 @@ import twitter4j.TwitterException;
 
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.NOT_AUTHORIZED;
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
+import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.USER_NOT_FOUND;
 
 
 public class EngineException extends Exception {
@@ -148,7 +149,7 @@ public class EngineException extends Exception {
      * @return true if resource not found or access denied
      */
     public boolean resourceNotFound() {
-        return errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED;
+        return errorType == RESOURCE_NOT_FOUND || errorType == NOT_AUTHORIZED || errorType == USER_NOT_FOUND;
     }
 
 
