@@ -25,7 +25,7 @@ public abstract class ErrorHandler {
             case RATE_LIMIT_EX:
                 int timeToWait = error.getTimeToWait();
                 if (timeToWait > 0) {
-                    String errMsg = context.getString(R.string.error_limit_exceeded);
+                    String errMsg = context.getString(R.string.error_limit_exceeded) + " ";
                     if (timeToWait >= 60)
                         errMsg += timeToWait / 60 + "m ";
                     errMsg += timeToWait % 60 + "s";

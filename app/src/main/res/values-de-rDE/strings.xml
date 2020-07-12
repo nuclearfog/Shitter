@@ -20,7 +20,7 @@
     <string name="confirm_delete_tweet">Tweet löschen?</string>
     <string name="error_enter_pin">PIN eingeben!</string>
     <string name="confirm_delete_database">Datenbank löschen?</string>
-    <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach: "</string>
+    <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach:"</string>
     <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="info_tweet_sent">Tweet gesendet</string>
     <string name="info_error">Fehler!</string>
@@ -35,7 +35,7 @@
     <string name="info_user_unblocked">entblockt!</string>
     <string name="info_tweet_removed">Tweet gelöscht!</string>
     <string name="tweet_answering">"antwort "</string>
-    <string name="tweet_sent_from">"gesendet von: "</string>
+    <string name="tweet_sent_from">"gesendet von:"</string>
     <string name="user_mute">Stummschalten</string>
     <string name="user_unmute">Stummschaltung aufheben</string>
     <string name="info_user_muted">stummgeschaltet!</string>

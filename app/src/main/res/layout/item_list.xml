@@ -59,19 +59,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/list_createdat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/list_createdat"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:textSize="@dimen/listitem_textsize_date" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/listitem_padding_drawable"
+            android:singleLine="true"
+            android:textSize="@dimen/listitem_textsize_date"
+            app:drawableStartCompat="@drawable/calendar" />
 
         <LinearLayout
             android:layout_width="match_parent"

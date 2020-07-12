@@ -28,7 +28,7 @@
     <string name="confirm_delete_tweet">delete tweet?</string>
     <string name="error_enter_pin">Enter PIN!</string>
     <string name="confirm_delete_database">delete database?</string>
-    <string name="error_limit_exceeded">"Rate limit exceeded! Retry after: "</string>
+    <string name="error_limit_exceeded">"Rate limit exceeded! Retry after:"</string>
     <string name="error_sending_tweet">error while sending</string>
     <string name="info_tweet_sent">tweet sent</string>
     <string name="info_error">Error!</string>
@@ -41,8 +41,8 @@
     <string name="info_user_blocked">blocked!</string>
     <string name="info_user_unblocked">unblocked</string>
     <string name="info_tweet_removed">Tweet removed!</string>
-    <string name="tweet_answering">answering </string>
-    <string name="tweet_sent_from">sent from: </string>
+    <string name="tweet_answering">answering</string>
+    <string name="tweet_sent_from">sent from:</string>
     <string name="user_mute">mute</string>
     <string name="user_unmute">un-mute</string>
     <string name="info_user_muted">muted</string>

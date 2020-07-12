@@ -364,7 +364,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         favButton.setText(buttonNumber.format(tweet.getFavorCount()));
         rtwButton.setText(buttonNumber.format(tweet.getRetweetCount()));
         tweet_api.setText(R.string.tweet_sent_from);
-        tweet_api.append(tweet.getSource());
+        tweet_api.append(" " + tweet.getSource());
 
         if (header.getVisibility() != VISIBLE) {
             header.setVisibility(VISIBLE);

@@ -80,7 +80,7 @@
     <dimen name="tweetitem_textsize_button">12sp</dimen>
     <dimen name="tweetitem_textsize_date">12sp</dimen>
 
-    <!--dimens of item_tweet.xml-->
+    <!--dimens of item_trend.xml-->
     <dimen name="trenditem_layout_padding">5dp</dimen>
     <dimen name="trenditem_margin_layout">5dp</dimen>
     <dimen name="trenditem_textsize_trendindex">20sp</dimen>
@@ -101,7 +101,7 @@
     <dimen name="listitem_layout_margin">5dp</dimen>
     <dimen name="listitem_textsize_date">12sp</dimen>
     <dimen name="listitem_textsize_title">18sp</dimen>
-    <dimen name="listitem_textsize_name">18sp</dimen>
+    <dimen name="listitem_textsize_name">14sp</dimen>
     <dimen name="listitem_textsize_button">12sp</dimen>
     <dimen name="listitem_bar_padding">10dp</dimen>
     <dimen name="listitem_padding_drawable">5dp</dimen>
