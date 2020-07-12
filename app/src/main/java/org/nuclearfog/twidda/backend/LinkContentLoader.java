@@ -78,7 +78,13 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                 } else if (path.equals("intent/tweet")) {
                     if (link.isHierarchical()) {
                         String tweet = link.getQueryParameter("text");
+                        String url = link.getQueryParameter("url");
+                        String via = link.getQueryParameter("via");
                         if (tweet != null) {
+                            if (url != null)
+                                tweet += " " + url;
+                            if (via != null)
+                                tweet += " via @" + via;
                             data.putString(KEY_TWEETPOPUP_TEXT, tweet);
                             dataHolder = new DataHolder(data, TweetPopup.class);
                         }

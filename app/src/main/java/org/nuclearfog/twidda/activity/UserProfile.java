@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spanned;
@@ -509,7 +510,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         }
         if (settings.getImageLoad()) {
             if (user.hasBannerImg()) {
-                int layoutHeight = profile_layer.getMeasuredWidth() / 3;
+                Point displaySize = new Point();
+                getWindowManager().getDefaultDisplay().getSize(displaySize);
+                int layoutHeight = displaySize.x / 3;
                 int buttonHeight = (int) getResources().getDimension(R.dimen.profile_button_height);
                 profile_layer.getLayoutParams().height = layoutHeight + buttonHeight;
                 String bannerLink = user.getBannerLink() + "/600x200";

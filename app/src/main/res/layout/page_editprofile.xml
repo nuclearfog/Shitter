@@ -23,6 +23,7 @@
             android:orientation="vertical">
 
             <FrameLayout
+                android:id="@+id/editprofile_header"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/editprofile_banner_height"
                 android:layout_marginBottom="@dimen/editprofile_layout_margin"

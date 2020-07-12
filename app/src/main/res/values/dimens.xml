@@ -57,7 +57,6 @@
     <integer name="profile_text_bio_lines">3</integer>
 
     <!--dimens of page_editprofile.xml-->
-    <dimen name="editprofile_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="editprofile_banner_height">144dp</dimen>
     <dimen name="editprofile_image">80dp</dimen>
     <dimen name="editprofile_image_margin">10dp</dimen>
@@ -70,6 +69,8 @@
     <dimen name="editprofile_edittext_padding">5dp</dimen>
     <dimen name="editprofile_textsize">18sp</dimen>
     <dimen name="editprofile_bio_maxheight">150dp</dimen>
+    <dimen name="editprofile_toolbar_height">@dimen/toolbar_height</dimen>
+    <dimen name="editprofile_dummy_height">@dimen/profile_button_height</dimen>
 
     <!--dimens of item_tweet.xml-->
     <dimen name="tweetitem_profile_small">36sp</dimen>

@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -71,6 +72,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.page_editprofile);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
         View root = findViewById(R.id.page_edit);
+        View header = findViewById(R.id.editprofile_header);
         profile_image = findViewById(R.id.edit_pb);
         profile_banner = findViewById(R.id.edit_banner);
         add_banner_btn = findViewById(R.id.edit_add_banner);
@@ -88,6 +90,12 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         GlobalSettings settings = GlobalSettings.getInstance(this);
         FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
+        Point displaySize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(displaySize);
+        int layoutHeight = displaySize.x / 3;
+        int buttonHeight = (int) getResources().getDimension(R.dimen.editprofile_dummy_height);
+        header.getLayoutParams().height = layoutHeight + buttonHeight;
+        header.requestLayout();
 
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
