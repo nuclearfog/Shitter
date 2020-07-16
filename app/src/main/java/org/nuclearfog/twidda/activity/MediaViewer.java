@@ -6,7 +6,6 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
-import android.os.AsyncTask.Status;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -40,6 +39,7 @@ import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
+import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
@@ -124,7 +124,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                             videoWindow.setVisibility(VISIBLE);
                             Uri video = Uri.parse(link[0]);
                             videoView.setVideoURI(video);
-                            videoView.start();
                             break;
                     }
                 }
@@ -145,7 +144,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     @Override
     protected void onDestroy() {
-        if (imageAsync != null && imageAsync.getStatus() == Status.RUNNING)
+        if (imageAsync != null && imageAsync.getStatus() == RUNNING)
             imageAsync.cancel(true);
         super.onDestroy();
     }
@@ -180,7 +179,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             mp.setLooping(true);
         } else {
             videoController.show(0);
-            mp.seekTo(videoPos);
+            if (videoPos > 0) {
+                mp.seekTo(videoPos);
+            }
         }
         mp.setOnInfoListener(this);
         mp.start();
