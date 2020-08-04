@@ -108,14 +108,20 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         switch (reqCode) {
             case REQUEST_APP_LOGIN:
-                if (returnCode == RESULT_CANCELED)
+                if (returnCode == RESULT_CANCELED) {
                     finish();
+                }
                 break;
 
             case REQUEST_APP_SETTINGS:
-                root.setBackgroundColor(settings.getBackgroundColor());
-                tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-                adapter.notifySettingsChanged();
+                if (returnCode == RETURN_APP_LOGOUT) {
+                    adapter.clear();
+                    pager.setAdapter(adapter);
+                } else {
+                    root.setBackgroundColor(settings.getBackgroundColor());
+                    tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
+                    adapter.notifySettingsChanged();
+                }
                 break;
         }
         super.onActivityResult(reqCode, returnCode, intent);

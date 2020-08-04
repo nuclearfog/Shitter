@@ -25,6 +25,7 @@ import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.content.Intent.ACTION_VIEW;
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -35,8 +36,6 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
     private Button linkButton, loginButton;
     private EditText pinInput;
     private View root;
-    @Nullable
-    private String link;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -107,25 +106,21 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
         switch (v.getId()) {
             case R.id.linkButton:
-                if (link == null) {
+                if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
                     registerAsync = new Registration(this);
                     registerAsync.execute();
-                } else {
-                    connect(link);
                 }
                 break;
 
             case R.id.verifier:
-                if (link == null) {
+                if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
                     Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-                } else if (pinInput.getText() != null) {
+                } else if (pinInput.getText() != null && pinInput.length() > 0) {
                     String twitterPin = pinInput.getText().toString();
-                    if (!twitterPin.trim().isEmpty()) {
-                        registerAsync = new Registration(this);
-                        registerAsync.execute(twitterPin);
-                    } else {
-                        Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
-                    }
+                    registerAsync = new Registration(this);
+                    registerAsync.execute(twitterPin);
+                } else {
+                    Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
                 }
                 break;
         }
@@ -133,12 +128,12 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
 
 
     public void connect(String link) {
-        this.link = link;
         Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-        if (loginIntent.resolveActivity(getPackageManager()) != null)
+        if (loginIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(loginIntent);
-        else
+        } else {
             Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+        }
     }
 
 

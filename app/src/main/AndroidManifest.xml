@@ -36,6 +36,9 @@
                     android:host="twitter.com" />
                 <data
                     android:scheme="https"
+                    android:host="www.twitter.com" />
+                <data
+                    android:scheme="https"
                     android:host="mobile.twitter.com" />
             </intent-filter>
 

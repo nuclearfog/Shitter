@@ -68,6 +68,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     }
 
 
+    public void clear() {
+        fragments = new Fragment[0];
+        notifyDataSetChanged();
+    }
+
+
     public void setupForHomePage() {
         Bundle home_tl = new Bundle();
         Bundle ment_tl = new Bundle();
