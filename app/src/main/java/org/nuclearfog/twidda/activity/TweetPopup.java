@@ -390,14 +390,16 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         }
         if (accessGranted) {
             Intent mediaSelect = new Intent(ACTION_PICK);
-            if (selectedFormat == MediaType.IMAGE)
+            if (selectedFormat == MediaType.IMAGE) {
                 mediaSelect.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE);
-            else
+            } else {
                 mediaSelect.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE + TYPE_VIDEO);
-            if (mediaSelect.resolveActivity(getPackageManager()) != null)
+            }
+            if (mediaSelect.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(mediaSelect, REQ_PICK_MEDIA);
-            else
+            } else {
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+            }
         }
     }
 

@@ -224,10 +224,11 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         }
         if (accessGranted) {
             Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-            if (galleryIntent.resolveActivity(getPackageManager()) != null)
+            if (galleryIntent.resolveActivity(getPackageManager()) != null) {
                 startActivityForResult(galleryIntent, REQ_PERM_READ);
-            else
+            } else {
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+            }
         }
     }
 }
