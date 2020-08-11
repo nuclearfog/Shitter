@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserFragment
  */
-public class UserListLoader extends AsyncTask<Long, Void, UserListHolder> {
+public class UserListLoader extends AsyncTask<Void, Void, UserListHolder> {
 
     public static final long NO_CURSOR = -1;
 
@@ -38,29 +38,29 @@ public class UserListLoader extends AsyncTask<Long, Void, UserListHolder> {
 
     private final Action action;
     private String search;
-    private long id;
+    private long id, cursor;
 
 
-    public UserListLoader(UserFragment callback, Action action, long id, String search) {
+    public UserListLoader(UserFragment callback, Action action, long id, long cursor, String search) {
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;
         this.search = search;
+        this.cursor = cursor;
         this.id = id;
     }
 
 
     @Override
     protected void onPreExecute() {
-        if (callback.get() != null) {
+        if (callback.get() != null && cursor == NO_CURSOR) {
             callback.get().setRefresh(true);
         }
     }
 
 
     @Override
-    protected UserListHolder doInBackground(Long[] param) {
-        long cursor = param[0];
+    protected UserListHolder doInBackground(Void[] v) {
         try {
             switch (action) {
                 case FOLLOWS:

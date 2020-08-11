@@ -6,6 +6,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
@@ -25,6 +26,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
@@ -35,6 +38,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  */
 public class UserAdapter extends Adapter<ViewHolder> {
 
+    private static final int NO_INDEX = -1;
     private static final int ITEM_USER = 0;
     private static final int ITEM_GAP = 1;
 
@@ -43,12 +47,14 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     private List<TwitterUser> users;
     private long nextCursor;
+    private int loadingIndex;
 
 
     public UserAdapter(UserClickListener itemClickListener, GlobalSettings settings) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
         users = new ArrayList<>();
+        loadingIndex = NO_INDEX;
     }
 
 
@@ -71,6 +77,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 // remove footer
                 users.remove(end);
                 notifyItemRemoved(end);
+            } else if (loadingIndex != NO_INDEX) {
+                int oldIndex = loadingIndex;
+                loadingIndex = NO_INDEX;
+                notifyItemChanged(oldIndex);
             }
             users.addAll(end, data.getUsers());
             notifyItemRangeInserted(end, data.getSize());
@@ -127,7 +137,13 @@ public class UserAdapter extends Adapter<ViewHolder> {
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClickListener.onFooterClick(nextCursor);
+                    int position = vh.getLayoutPosition();
+                    if (position != NO_POSITION) {
+                        itemClickListener.onFooterClick(nextCursor);
+                        vh.loadCircle.setVisibility(VISIBLE);
+                        vh.loadBtn.setVisibility(INVISIBLE);
+                        loadingIndex = position;
+                    }
                 }
             });
             return vh;
@@ -153,6 +169,15 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 }
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.profileImg);
             }
+        } else if (holder instanceof PlaceHolder) {
+            PlaceHolder vh = (PlaceHolder) holder;
+            if (loadingIndex != NO_INDEX) {
+                vh.loadCircle.setVisibility(VISIBLE);
+                vh.loadBtn.setVisibility(INVISIBLE);
+            } else {
+                vh.loadCircle.setVisibility(INVISIBLE);
+                vh.loadBtn.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -176,11 +201,13 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     class PlaceHolder extends ViewHolder {
 
+        final ProgressBar loadCircle;
         final Button loadBtn;
 
         PlaceHolder(@NonNull View v) {
             super(v);
-            loadBtn = v.findViewById(R.id.item_placeholder);
+            loadCircle = v.findViewById(R.id.placeholder_loading);
+            loadBtn = v.findViewById(R.id.placeholder_button);
         }
     }
 

@@ -7,6 +7,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.DrawableRes;
@@ -28,6 +29,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
@@ -39,6 +42,7 @@ import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
  */
 public class TweetAdapter extends Adapter<ViewHolder> {
 
+    private static final int NO_INDEX = -1;
     private static final int VIEW_TWEET = 0;
     private static final int VIEW_GAP = 1;
     private static final int MIN_COUNT = 2;
@@ -46,6 +50,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private TweetClickListener itemClickListener;
     private NumberFormat formatter;
     private GlobalSettings settings;
+    private int loadingIndex;
 
     private List<Tweet> tweets;
 
@@ -55,6 +60,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         formatter = NumberFormat.getIntegerInstance();
         tweets = new ArrayList<>();
         this.settings = settings;
+        loadingIndex = NO_INDEX;
     }
 
     /**
@@ -65,6 +71,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void insertAt(@NonNull List<Tweet> data, int index) {
+        if (loadingIndex != NO_INDEX) {
+            int oldIndex = loadingIndex;
+            loadingIndex = NO_INDEX;
+            notifyItemChanged(oldIndex);
+        }
         if (data.size() > MIN_COUNT) {
             if (tweets.isEmpty() || tweets.get(index) != null) {
                 // Add placeholder
@@ -96,6 +107,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         if (data.size() > MIN_COUNT) {
             tweets.add(null);
         }
+        loadingIndex = NO_INDEX;
         notifyDataSetChanged();
     }
 
@@ -189,6 +201,9 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                             maxId = tweets.get(position - 1).getId();
                         }
                         itemClickListener.onHolderClick(sinceId, maxId, position);
+                        vh.loadCircle.setVisibility(VISIBLE);
+                        vh.loadBtn.setVisibility(INVISIBLE);
+                        loadingIndex = position;
                     }
                 }
             });
@@ -232,6 +247,15 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             } else {
                 vh.profile.setImageResource(0);
             }
+        } else if (holder instanceof PlaceHolder) {
+            PlaceHolder vh = (PlaceHolder) holder;
+            if (loadingIndex != NO_INDEX) {
+                vh.loadCircle.setVisibility(VISIBLE);
+                vh.loadBtn.setVisibility(INVISIBLE);
+            } else {
+                vh.loadCircle.setVisibility(INVISIBLE);
+                vh.loadBtn.setVisibility(VISIBLE);
+            }
         }
     }
 
@@ -262,10 +286,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     class PlaceHolder extends ViewHolder {
         final Button loadBtn;
+        final ProgressBar loadCircle;
 
         PlaceHolder(@NonNull View v) {
             super(v);
-            loadBtn = v.findViewById(R.id.item_placeholder);
+            loadBtn = v.findViewById(R.id.placeholder_button);
+            loadCircle = v.findViewById(R.id.placeholder_loading);
         }
     }
 

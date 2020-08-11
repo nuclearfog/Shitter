@@ -199,8 +199,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
                     action = Action.LIST;
                     break;
             }
-            userTask = new UserListLoader(this, action, id, search);
-            userTask.execute(cursor);
+            userTask = new UserListLoader(this, action, id, cursor, search);
+            userTask.execute();
         }
     }
 }

@@ -60,7 +60,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
     @Override
     protected void onPreExecute() {
-        if (callback.get() != null) {
+        if (callback.get() != null && pos == CLEAR_LIST) {
             callback.get().setRefresh(true);
         }
     }
