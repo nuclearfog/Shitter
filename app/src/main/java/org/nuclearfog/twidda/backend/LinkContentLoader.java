@@ -75,7 +75,7 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                             dataHolder = new DataHolder(data, SearchPage.class);
                         }
                     }
-                } else if (path.equals("intent/tweet")) {
+                } else if (path.equals("intent/tweet") || path.equals("share")) {
                     if (link.isHierarchical()) {
                         String tweet = link.getQueryParameter("text");
                         String url = link.getQueryParameter("url");
