@@ -160,6 +160,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
         if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
         }
+        adapter.disableLoading();
     }
 
 

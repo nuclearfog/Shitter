@@ -195,6 +195,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         if (getContext() != null) {
             ErrorHandler.handleFailure(getContext(), error);
         }
+        adapter.disableLoading();
     }
 
 

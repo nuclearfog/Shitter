@@ -71,11 +71,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void insertAt(@NonNull List<Tweet> data, int index) {
-        if (loadingIndex != NO_INDEX) {
-            int oldIndex = loadingIndex;
-            loadingIndex = NO_INDEX;
-            notifyItemChanged(oldIndex);
-        }
+        disableLoading();
         if (data.size() > MIN_COUNT) {
             if (tweets.isEmpty() || tweets.get(index) != null) {
                 // Add placeholder
@@ -138,6 +134,16 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         return tweets.isEmpty();
     }
 
+    /**
+     * disable placeholder load animation
+     */
+    public void disableLoading() {
+        if (loadingIndex != NO_INDEX) {
+            int oldIndex = loadingIndex;
+            loadingIndex = NO_INDEX;
+            notifyItemChanged(oldIndex);
+        }
+    }
 
     @Override
     public long getItemId(int index) {

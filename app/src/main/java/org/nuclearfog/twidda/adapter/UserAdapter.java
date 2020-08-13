@@ -77,15 +77,24 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 // remove footer
                 users.remove(end);
                 notifyItemRemoved(end);
-            } else if (loadingIndex != NO_INDEX) {
-                int oldIndex = loadingIndex;
-                loadingIndex = NO_INDEX;
-                notifyItemChanged(oldIndex);
+            } else {
+                disableLoading();
             }
             users.addAll(end, data.getUsers());
             notifyItemRangeInserted(end, data.getSize());
         }
         nextCursor = data.getNext();
+    }
+
+    /**
+     * disable loading animation in footer
+     */
+    public void disableLoading() {
+        if (loadingIndex != NO_INDEX) {
+            int oldIndex = loadingIndex;
+            loadingIndex = NO_INDEX;
+            notifyItemChanged(oldIndex);
+        }
     }
 
 
