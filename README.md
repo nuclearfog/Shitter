@@ -25,7 +25,7 @@ Features:
 
 Screenshots:
 
-<img src="/images/shitter_1.jpg" width="180"/> <img src="/images/shitter_2.jpg" width="180"/> <img src="/images/shitter_3.jpg" width="180"/>
+<img src="/images/shitter_1.jpg" width="180"/> <img src="/images/shitter_2.jpg" width="180"/> <img src="/images/shitter_3.jpg" width="180"/> <img src="/images/shitter_4.jpg" width="180"/>
 
 
 Credits:
