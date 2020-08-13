@@ -15,7 +15,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +41,7 @@ import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
@@ -78,9 +79,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private TweetUploader uploaderAsync;
     private Location location;
     private List<String> mediaPath;
-    private View mediaBtn, previewBtn, locationProg, locationBtn;
+    private ImageButton mediaBtn, previewBtn, locationBtn;
+    private View locationProg;
     private Dialog loadingCircle;
-    private TextView imgCount;
     private EditText tweetText;
 
     private MediaType selectedFormat = MediaType.NONE;
@@ -97,7 +98,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         mediaBtn = findViewById(R.id.tweet_add_media);
         previewBtn = findViewById(R.id.tweet_prev_media);
         tweetText = findViewById(R.id.tweet_input);
-        imgCount = findViewById(R.id.imgcount);
         locationProg = findViewById(R.id.location_progress);
         loadingCircle = new Dialog(this, R.style.LoadingDialog);
         View load = View.inflate(this, R.layout.item_load, null);
@@ -169,10 +169,9 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                                 if (mediaPath.size() < MAX_IMAGES) {
                                     mediaPath.add(path);
                                     previewBtn.setVisibility(VISIBLE);
-                                    String count = Integer.toString(mediaPath.size());
-                                    imgCount.setText(count);
-                                    if (mediaPath.size() == MAX_IMAGES)
-                                        mediaBtn.setVisibility(INVISIBLE);
+                                    if (mediaPath.size() == MAX_IMAGES) {
+                                        mediaBtn.setVisibility(GONE);
+                                    }
                                 }
                             } else {
                                 Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
@@ -182,9 +181,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                         case "gif":
                             if (selectedFormat == MediaType.NONE) {
                                 selectedFormat = MediaType.GIF;
-                                mediaPath.add(path);
+                                previewBtn.setImageResource(R.drawable.video);
                                 previewBtn.setVisibility(VISIBLE);
-                                mediaBtn.setVisibility(INVISIBLE);
+                                mediaBtn.setVisibility(GONE);
+                                mediaPath.add(path);
                             }
                             break;
 
@@ -192,9 +192,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                         case "3gp":
                             if (selectedFormat == MediaType.NONE) {
                                 selectedFormat = MediaType.VIDEO;
-                                mediaPath.add(path);
+                                previewBtn.setImageResource(R.drawable.video);
                                 previewBtn.setVisibility(VISIBLE);
-                                mediaBtn.setVisibility(INVISIBLE);
+                                mediaBtn.setVisibility(GONE);
+                                mediaPath.add(path);
                             }
                             break;
 
