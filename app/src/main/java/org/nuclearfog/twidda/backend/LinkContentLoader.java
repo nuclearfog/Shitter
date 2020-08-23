@@ -77,17 +77,18 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                     }
                 } else if (path.equals("intent/tweet") || path.equals("share")) {
                     if (link.isHierarchical()) {
-                        String tweet = link.getQueryParameter("text");
+                        String tweet = "";
+                        String text = link.getQueryParameter("text");
                         String url = link.getQueryParameter("url");
                         String via = link.getQueryParameter("via");
-                        if (tweet != null) {
-                            if (url != null)
-                                tweet += " " + url;
-                            if (via != null)
-                                tweet += " via @" + via;
-                            data.putString(KEY_TWEETPOPUP_TEXT, tweet);
-                            dataHolder = new DataHolder(data, TweetPopup.class);
-                        }
+                        if (text != null)
+                            tweet = text + " ";
+                        if (url != null)
+                            tweet += url + " ";
+                        if (via != null)
+                            tweet += "via @" + via;
+                        data.putString(KEY_TWEETPOPUP_TEXT, tweet);
+                        dataHolder = new DataHolder(data, TweetPopup.class);
                     }
                 } else if (path.startsWith("hashtag/")) {
                     String search = '#' + path.substring(8);
@@ -137,6 +138,8 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                     intent.putExtras(result.data);
                 callback.get().startActivity(intent);
             }
+        } else {
+            callback.get().onError();
         }
     }
 

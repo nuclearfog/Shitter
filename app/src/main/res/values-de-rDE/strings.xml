@@ -147,4 +147,5 @@
     <string name="settings_enable_proxy_auth">Aktiviere Proxy Authentifizierung</string>
     <string name="info_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
     <string name="confirm_discard_proxy_changes">Einstellungen Verwerfen</string>
+    <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
 </resources>

@@ -21,27 +21,31 @@
             android:layout_height="wrap_content"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/settings_layout_padding"
-            android:paddingRight="@dimen/settings_layout_padding">
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_divider"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/settings_text_margin"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding"
                 android:text="@string/color_settings"
                 android:textSize="@dimen/settings_textsize" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider"
-                android:background="?android:attr/listDivider" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding">
 
                 <LinearLayout
                     android:id="@+id/color_background_edge"
@@ -79,7 +83,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding">
 
                 <Button
                     android:id="@+id/color_popup"
@@ -103,21 +109,27 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settins_font"
-                android:textSize="@dimen/settings_textsize" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_divider"
-                android:background="?android:attr/listDivider" />
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding"
+                android:text="@string/settins_font"
+                android:textSize="@dimen/settings_textsize" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding">
 
                 <Spinner
                     android:id="@+id/spinner_font"
@@ -132,43 +144,31 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/data_consumption"
-                android:textSize="@dimen/settings_textsize" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_divider"
-                android:background="?android:attr/listDivider" />
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding"
+                android:text="@string/data_consumption"
+                android:textSize="@dimen/settings_textsize" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
+                android:layout_height="match_parent"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/load_dialog"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/settings_button_height"
-                    android:layout_marginStart="@dimen/settings_button_margin"
-                    android:layout_marginLeft="@dimen/settings_button_margin"
-                    android:layout_marginEnd="@dimen/settings_button_margin"
-                    android:layout_marginRight="@dimen/settings_button_margin"
-                    android:layout_weight="3"
-                    android:background="@drawable/button"
-                    android:singleLine="true"
-                    android:text="@string/settings_list_size"
-                    android:textSize="@dimen/settings_textsize_small" />
 
                 <CheckBox
                     android:id="@+id/toggleImg"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_checkbox_height"
-                    android:layout_weight="4"
+                    android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/settings_image"
                     android:textSize="@dimen/settings_textsize_small" />
@@ -177,12 +177,42 @@
                     android:id="@+id/toggleAns"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_checkbox_height"
-                    android:layout_weight="5"
+                    android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/load_answer"
                     android:textSize="@dimen/settings_textsize_small" />
-
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/load_dialog"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/settings_button_height"
+                    android:layout_margin="@dimen/settings_button_margin"
+                    android:layout_marginStart="@dimen/settings_button_margin"
+                    android:layout_marginEnd="@dimen/settings_button_margin"
+                    android:layout_weight="1"
+                    android:background="@drawable/button"
+                    android:singleLine="true"
+                    android:text="@string/settings_list_size" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_divider"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
 
             <LinearLayout
                 android:id="@+id/Login_options"
@@ -194,36 +224,41 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/settings_text_margin"
+                    android:paddingLeft="@dimen/settings_layout_padding"
+                    android:paddingRight="@dimen/settings_layout_padding"
                     android:text="@string/trend_setting"
                     android:textSize="@dimen/settings_textsize" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_divider"
-                    android:background="?android:attr/listDivider" />
 
                 <Spinner
                     android:id="@+id/spinner_woeid"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/settings_layout_padding"
+                    android:paddingRight="@dimen/settings_layout_padding" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/settings_divider"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                    android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/settings_text_margin"
+                    android:paddingLeft="@dimen/settings_layout_padding"
+                    android:paddingRight="@dimen/settings_layout_padding"
                     android:text="@string/user_data"
                     android:textSize="@dimen/settings_textsize" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_divider"
-                    android:background="?android:attr/listDivider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/settings_layout_padding"
+                    android:paddingRight="@dimen/settings_layout_padding">
 
                     <Button
                         android:id="@+id/delete_db"
@@ -249,31 +284,39 @@
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/settings_divider"
+                    android:background="?android:attr/listDivider"
+                    android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                    android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
+
             </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/settings_text_margin"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding"
                 android:text="@string/proxy_settings"
                 android:textSize="@dimen/settings_textsize" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider"
-                android:background="?android:attr/listDivider" />
 
             <CheckBox
                 android:id="@+id/settings_enable_proxy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding"
                 android:singleLine="true"
                 android:text="@string/settings_enable_proxy" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding">
 
                 <EditText
                     android:id="@+id/edit_proxyadress"
@@ -310,13 +353,17 @@
                 android:id="@+id/settings_enable_auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding"
                 android:singleLine="true"
                 android:text="@string/settings_enable_proxy_auth" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding">
 
                 <EditText
                     android:id="@+id/edit_proxyuser"
@@ -347,6 +394,14 @@
                     android:textSize="@dimen/settings_edittext_textsize" />
 
             </LinearLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/settings_divider"
+                android:background="?android:attr/listDivider"
+                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
+                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
 
         </LinearLayout>
 

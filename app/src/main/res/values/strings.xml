@@ -150,4 +150,5 @@
     <string name="settings_enable_proxy_auth">enable proxy authentication</string>
     <string name="info_wrong_proxy_settings">Wrong Proxy settings!</string>
     <string name="confirm_discard_proxy_changes">Discard changes</string>
+    <string name="error_open_link">Could not open link!</string>
 </resources>

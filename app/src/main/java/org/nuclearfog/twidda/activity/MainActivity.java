@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -238,16 +240,30 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         adapter.scrollToTop(tab.getPosition());
     }
 
-
+    /**
+     * called from {@link LinkContentLoader} to set progress circle
+     */
     public void setLoading(boolean enable) {
-        if (enable)
+        if (enable) {
             loadingCircle.show();
-        else
+        } else {
             loadingCircle.dismiss();
+        }
     }
 
+    /**
+     * called from {@link LinkContentLoader} when an error occurs
+     */
+    public void onError() {
+        Toast.makeText(this, R.string.error_open_link, Toast.LENGTH_SHORT).show();
+    }
 
-    public void setTab(int page) {
+    /**
+     * set current tab
+     *
+     * @param page page number
+     */
+    public void setTab(@IntRange(from = 0, to = 2) int page) {
         pager.setCurrentItem(page);
     }
 }
