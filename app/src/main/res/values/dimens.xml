@@ -5,6 +5,7 @@
 
     <!--dimens of page_settings.xml-->
     <dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
+    <dimen name="settings_checkbox_margin">@dimen/settings_layout_padding</dimen>
     <dimen name="settings_divider">2dp</dimen>
     <dimen name="settings_info_appname_font">18sp</dimen>
     <dimen name="settings_layout_padding">10dp</dimen>
@@ -130,7 +131,6 @@
     <dimen name="tweetpopup_margin_layout">5dp</dimen>
     <dimen name="tweetpopup_text_width">300dp</dimen>
     <dimen name="tweetpopup_text_height">200dp</dimen>
-    <dimen name="tweetpopup_textsize_count">18sp</dimen>
     <dimen name="tweetpopup_button_size">40dp</dimen>
     <dimen name="tweetpopup_button_margin">12dp</dimen>
     <dimen name="tweetpopup_location_progress_size">30dp</dimen>

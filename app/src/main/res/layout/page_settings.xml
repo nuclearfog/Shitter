@@ -60,7 +60,6 @@
                         style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-
                         android:layout_margin="@dimen/settings_button_color_edge_thickness"
                         android:singleLine="true"
                         android:text="@string/background" />
@@ -168,6 +167,8 @@
                     android:id="@+id/toggleImg"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_checkbox_height"
+                    android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                    android:layout_marginRight="@dimen/settings_checkbox_margin"
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/settings_image"
@@ -177,6 +178,8 @@
                     android:id="@+id/toggleAns"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_checkbox_height"
+                    android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                    android:layout_marginRight="@dimen/settings_checkbox_margin"
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="@string/load_answer"
@@ -186,7 +189,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/settings_layout_padding"
+                android:paddingRight="@dimen/settings_layout_padding">
 
                 <Button
                     android:id="@+id/load_dialog"
@@ -204,7 +209,7 @@
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2" />
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <View
@@ -306,8 +311,8 @@
                 android:id="@+id/settings_enable_proxy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
+                android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                android:layout_marginRight="@dimen/settings_checkbox_margin"
                 android:singleLine="true"
                 android:text="@string/settings_enable_proxy" />
 
@@ -353,6 +358,8 @@
                 android:id="@+id/settings_enable_auth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                android:layout_marginRight="@dimen/settings_checkbox_margin"
                 android:paddingLeft="@dimen/settings_layout_padding"
                 android:paddingRight="@dimen/settings_layout_padding"
                 android:singleLine="true"
@@ -396,7 +403,6 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_divider"
                 android:background="?android:attr/listDivider"
