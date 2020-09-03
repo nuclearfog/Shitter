@@ -41,6 +41,7 @@ public class Tweet {
     private final long myRetweetId;
     private final boolean retweeted;
     private final boolean favored;
+    private final boolean sensitiveMedia;
 
     private final String locationName;
     private final String locationCoordinates;
@@ -77,6 +78,7 @@ public class Tweet {
         replyID = status.getInReplyToStatusId();
         myRetweetId = status.getCurrentUserRetweetId();
         replyUserId = status.getInReplyToUserId();
+        sensitiveMedia = status.isPossiblySensitive();
 
         // remove HTML tag
         String api = "" + status.getSource();
@@ -154,12 +156,13 @@ public class Tweet {
      * @param myRetweetId ID of the current users retweeted tweet
      * @param retweeted tweet is retweeted by current user
      * @param favored tweet is favored by current user
+     * @param sensitiveMedia tweet contains sensitie media content
      * @param geo location gps coordinates
      * @param place location full place name
      */
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] medias, MediaType mediaType, String source, long replyID,
-                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, String place, String geo) {
+                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, boolean sensitiveMedia, String place, String geo) {
 
         this.tweetID = tweetID;
         this.user = user;
@@ -172,6 +175,7 @@ public class Tweet {
         this.mediaType = mediaType;
         this.retweeted = retweeted;
         this.favored = favored;
+        this.sensitiveMedia = sensitiveMedia;
         this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
         this.tweet = tweet != null ? tweet : "";
@@ -306,6 +310,15 @@ public class Tweet {
      */
     public MediaType getMediaType() {
         return mediaType;
+    }
+
+    /**
+     * check if tweet contains sensitive media
+     *
+     * @return true if media has sensitive conent
+     */
+    public boolean containsSensitiveMedia() {
+        return sensitiveMedia;
     }
 
     /**

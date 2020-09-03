@@ -17,7 +17,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserConnection;
+import org.nuclearfog.twidda.backend.items.UserRelation;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
@@ -459,9 +459,9 @@ public class TwitterEngine {
      * @return User Properties
      * @throws EngineException if Connection is unavailable
      */
-    public UserConnection getConnection(long userId) throws EngineException {
+    public UserRelation getConnection(long userId) throws EngineException {
         try {
-            return new UserConnection(twitter.showFriendship(twitterID, userId));
+            return new UserRelation(twitter.showFriendship(twitterID, userId));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -475,9 +475,9 @@ public class TwitterEngine {
      * @return User Properties
      * @throws EngineException if Connection is unavailable
      */
-    public UserConnection getConnection(String username) throws EngineException {
+    public UserRelation getConnection(String username) throws EngineException {
         try {
-            return new UserConnection(twitter.showFriendship(twitter.getScreenName(), username));
+            return new UserRelation(twitter.showFriendship(twitter.getScreenName(), username));
         } catch (TwitterException err) {
             throw new EngineException(err);
         }

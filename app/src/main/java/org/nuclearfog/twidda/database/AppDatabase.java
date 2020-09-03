@@ -28,8 +28,9 @@ public class AppDatabase {
     private static final int RPL_MASK = 1 << 5;     //  tweet is from a reply timeline
 
     private static final int MEDIA_IMAGE_MASK = 1 << 6; // tweet contains images
-    private static final int MEDIA_VIDEO_MASK = 1 << 7; // tweet contains a video
-    private static final int MEDIA_ANGIF_MASK = 1 << 8; // tweet contains an animation
+    private static final int MEDIA_VIDEO_MASK = 2 << 6; // tweet contains a video
+    private static final int MEDIA_ANGIF_MASK = 3 << 6; // tweet contains an animation
+    private static final int MEDIA_SENS_MASK = 1 << 8; // tweet contains sensitive media
 
     private static final int VER_MASK = 1;          //  user is verified
     private static final int LCK_MASK = 1 << 1;     //  user is private
@@ -107,7 +108,7 @@ public class AppDatabase {
         removeOldFavorites(db, ownerId);
         for (Tweet tweet : fav) {
             storeStatus(tweet, 0, db);
-            storeFavorite(tweet, ownerId, db);
+            storeFavorite(tweet.getId(), ownerId, db);
         }
         commit(db);
     }
@@ -153,7 +154,7 @@ public class AppDatabase {
     public void storeFavorite(Tweet tweet) {
         SQLiteDatabase db = getDbWrite();
         storeStatus(tweet, 0, db);
-        storeFavorite(tweet, homeId, db);
+        storeFavorite(tweet.getId(), homeId, db);
         commit(db);
     }
 
@@ -339,21 +340,21 @@ public class AppDatabase {
         SQLiteDatabase db = getDbWrite();
         ContentValues statColumn = new ContentValues();
         ContentValues userColumn = new ContentValues();
-        int register = getTweetStatus(db, tweet.getId());
+        int flags = getTweetFlags(db, tweet.getId());
         if (tweet.retweeted())
-            register |= RTW_MASK;
+            flags |= RTW_MASK;
         else
-            register &= ~RTW_MASK;
+            flags &= ~RTW_MASK;
         if (tweet.favored())
-            register |= FAV_MASK;
+            flags |= FAV_MASK;
         else
-            register &= ~FAV_MASK;
+            flags &= ~FAV_MASK;
         statColumn.put("tweet", tweet.getTweet());
         statColumn.put("retweet", tweet.getRetweetCount());
         statColumn.put("favorite", tweet.getFavorCount());
         statColumn.put("retweeterID", tweet.getMyRetweetId());
         statColumn.put("replyname", tweet.getReplyName());
-        statColumn.put("statusregister", register);
+        statColumn.put("statusregister", flags);
         statColumn.put("media", getMediaLinks(tweet));
 
         TwitterUser user = tweet.getUser();
@@ -411,10 +412,10 @@ public class AppDatabase {
         final String[] updateArgs = {Long.toString(tweetId)};
 
         SQLiteDatabase db = getDbWrite();
-        int register = getTweetStatus(db, tweetId);
-        register &= ~FAV_MASK;
+        int flags = getTweetFlags(db, tweetId);
+        flags &= ~FAV_MASK;
         ContentValues status = new ContentValues();
-        status.put("statusregister", register);
+        status.put("statusregister", flags);
         db.delete("favorit", "tweetID=? AND ownerID=?", delArgs);
         db.update("tweet", status, "tweet.tweetID=?", updateArgs);
         commit(db);
@@ -518,19 +519,24 @@ public class AppDatabase {
         final String[] ARGS = new String[]{Long.toString(id)};
 
         SQLiteDatabase db = getDbWrite();
-        int userRegister = getUserStatus(db, id);
+        int flags = getUserFlags(db, id);
         if (mute)
-            userRegister |= EXCL_USR;
+            flags |= EXCL_USR;
         else
-            userRegister &= ~EXCL_USR;
+            flags &= ~EXCL_USR;
 
         ContentValues userColumn = new ContentValues();
-        userColumn.put("userregister", userRegister);
+        userColumn.put("userregister", flags);
         db.update("user", userColumn, "user.userID=?", ARGS);
         commit(db);
     }
 
-
+    /**
+     * get tweet information from database
+     *
+     * @param cursor cursor containing tweet informations
+     * @return tweet instance
+     */
     private Tweet getStatus(Cursor cursor) {
         long time = cursor.getLong(cursor.getColumnIndex("time"));
         String tweettext = cursor.getString(cursor.getColumnIndex("tweet"));
@@ -549,23 +555,30 @@ public class AppDatabase {
         int statusregister = cursor.getInt(cursor.getColumnIndex("statusregister"));
         boolean favorited = (statusregister & FAV_MASK) != 0;
         boolean retweeted = (statusregister & RTW_MASK) != 0;
+        boolean sensitive = (statusregister & MEDIA_SENS_MASK) != 0;
         String[] medias = parseMedia(medialinks);
         Tweet.MediaType mediaType = Tweet.MediaType.NONE;
-        if ((statusregister & MEDIA_IMAGE_MASK) != 0)
+        if ((statusregister & MEDIA_IMAGE_MASK) != MEDIA_IMAGE_MASK)
             mediaType = Tweet.MediaType.IMAGE;
-        else if ((statusregister & MEDIA_VIDEO_MASK) != 0)
+        else if ((statusregister & MEDIA_VIDEO_MASK) != MEDIA_VIDEO_MASK)
             mediaType = Tweet.MediaType.VIDEO;
-        else if ((statusregister & MEDIA_ANGIF_MASK) != 0)
+        else if ((statusregister & MEDIA_ANGIF_MASK) != MEDIA_ANGIF_MASK)
             mediaType = Tweet.MediaType.GIF;
         TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
         if (retweetId > 1)
             embeddedTweet = getStatus(retweetId);
         return new Tweet(tweetId, retweet, favorit, user, tweettext, time, replyname, replyUserId, medias,
-                mediaType, source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited, place, geo);
+                mediaType, source, replyStatusId, embeddedTweet, retweeterId, retweeted, favorited, sensitive, place, geo);
     }
 
-
+    /**
+     * get user information from table
+     *
+     * @param userId Id of the user
+     * @param db     SQLITE DB
+     * @return user instance
+     */
     @Nullable
     private TwitterUser getUser(long userId, SQLiteDatabase db) {
         final String[] ARGS = new String[]{Long.toString(userId)};
@@ -579,7 +592,12 @@ public class AppDatabase {
         return user;
     }
 
-
+    /**
+     * get user information from database
+     *
+     * @param cursor cursor containing user data
+     * @return user instance
+     */
     private TwitterUser getUser(Cursor cursor) {
         long userId = cursor.getLong(cursor.getColumnIndex("userID"));
         String username = cursor.getString(cursor.getColumnIndex("username"));
@@ -603,32 +621,38 @@ public class AppDatabase {
                 isLocked, isReq, defaultImg, link, banner, createdAt, following, follower, tCount, fCount);
     }
 
-
+    /**
+     * store user information into database
+     *
+     * @param user user information
+     * @param db   SQLITE DB
+     * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE} or {@link SQLiteDatabase#CONFLICT_REPLACE}
+     */
     private void storeUser(TwitterUser user, SQLiteDatabase db, int mode) {
         ContentValues userColumn = new ContentValues();
-        int userRegister = getUserStatus(db, user.getId());
+        int flags = getUserFlags(db, user.getId());
         if (user.isVerified())
-            userRegister |= VER_MASK;
+            flags |= VER_MASK;
         else
-            userRegister &= ~VER_MASK;
+            flags &= ~VER_MASK;
         if (user.isLocked())
-            userRegister |= LCK_MASK;
+            flags |= LCK_MASK;
         else
-            userRegister &= ~LCK_MASK;
+            flags &= ~LCK_MASK;
         if (user.followRequested())
-            userRegister |= FRQ_MASK;
+            flags |= FRQ_MASK;
         else
-            userRegister &= ~FRQ_MASK;
+            flags &= ~FRQ_MASK;
         if (user.hasDefaultProfileImage())
-            userRegister |= DEF_IMG;
+            flags |= DEF_IMG;
         else
-            userRegister &= ~DEF_IMG;
+            flags &= ~DEF_IMG;
 
         userColumn.put("userID", user.getId());
         userColumn.put("username", user.getUsername());
         userColumn.put("scrname", user.getScreenname());
         userColumn.put("pbLink", user.getImageLink());
-        userColumn.put("userregister", userRegister);
+        userColumn.put("userregister", flags);
         userColumn.put("bio", user.getBio());
         userColumn.put("link", user.getLink());
         userColumn.put("location", user.getLocation());
@@ -643,6 +667,13 @@ public class AppDatabase {
     }
 
 
+    /**
+     * save tweet into database
+     *
+     * @param tweet          Tweet information
+     * @param statusRegister predefined statusregister or "0" if there isn't one
+     * @param db             SQLite database
+     */
     private void storeStatus(Tweet tweet, int statusRegister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
         TwitterUser user = tweet.getUser();
@@ -654,7 +685,7 @@ public class AppDatabase {
             rtId = rtStat.getId();
         }
 
-        statusRegister |= getTweetStatus(db, tweet.getId());
+        statusRegister |= getTweetFlags(db, tweet.getId());
         if (tweet.favored()) {
             statusRegister |= FAV_MASK;
         } else {
@@ -664,6 +695,11 @@ public class AppDatabase {
             statusRegister |= RTW_MASK;
         } else {
             statusRegister &= ~RTW_MASK;
+        }
+        if (tweet.containsSensitiveMedia()) {
+            statusRegister |= MEDIA_SENS_MASK;
+        } else {
+            statusRegister &= ~MEDIA_SENS_MASK;
         }
         switch (tweet.getMediaType()) {
             case IMAGE:
@@ -701,21 +737,37 @@ public class AppDatabase {
         db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
     }
 
-
-    private void storeFavorite(Tweet tweet, long ownerId, SQLiteDatabase db) {
+    /**
+     * Store Tweet into favorite table of a user
+     *
+     * @param tweetId ID of the favored tweet
+     * @param ownerId ID of the favorite list owner
+     * @param db      SQLITE DB
+     */
+    private void storeFavorite(long tweetId, long ownerId, SQLiteDatabase db) {
         ContentValues favTable = new ContentValues();
-        favTable.put("tweetID", tweet.getId());
+        favTable.put("tweetID", tweetId);
         favTable.put("ownerID", ownerId);
         db.insertWithOnConflict("favorit", null, favTable, CONFLICT_REPLACE);
     }
 
-
+    /**
+     * clear old favorites from table
+     *
+     * @param db     SQLITE DB
+     * @param userId ID of the favorite list owner
+     */
     private void removeOldFavorites(SQLiteDatabase db, long userId) {
         final String[] delArgs = {Long.toString(userId)};
         db.delete("favorit", "ownerID=?", delArgs);
     }
 
-
+    /**
+     * store direct message
+     *
+     * @param message direct message information
+     * @param db      SQLITE DB
+     */
     private void storeMessage(Message message, SQLiteDatabase db) {
         ContentValues messageColumn = new ContentValues();
         messageColumn.put("messageID", message.getId());
@@ -728,8 +780,14 @@ public class AppDatabase {
         db.insertWithOnConflict("message", null, messageColumn, CONFLICT_IGNORE);
     }
 
-
-    private int getTweetStatus(SQLiteDatabase db, long tweetID) {
+    /**
+     * get statusregister of a tweet or "0" if tweet was not found
+     *
+     * @param db      SQLITE DB
+     * @param tweetID ID of the tweet
+     * @return tweet flags
+     */
+    private int getTweetFlags(SQLiteDatabase db, long tweetID) {
         final String[] ARGS = new String[]{Long.toString(tweetID)};
         final String QUERY = "SELECT statusregister FROM tweet WHERE tweetID=? LIMIT 1;";
 
@@ -743,8 +801,14 @@ public class AppDatabase {
         return result;
     }
 
-
-    private int getUserStatus(SQLiteDatabase db, long userID) {
+    /**
+     * get flags of a twitter user or "0" if user was not found
+     *
+     * @param db     SQLITE DB
+     * @param userID ID of the user
+     * @return user flags
+     */
+    private int getUserFlags(SQLiteDatabase db, long userID) {
         final String[] ARGS = new String[]{Long.toString(userID)};
         final String QUERY = "SELECT userregister FROM user WHERE userID=? LIMIT 1;";
 
@@ -776,25 +840,42 @@ public class AppDatabase {
         return result;
     }
 
-
+    /**
+     * Get SQLite instance for reading database
+     *
+     * @return SQLite instance
+     */
     private synchronized SQLiteDatabase getDbRead() {
         return dataHelper.getDatabase();
     }
 
-
+    /**
+     * GET SQLite instance for writing database
+     *
+     * @return SQLite instance
+     */
     private synchronized SQLiteDatabase getDbWrite() {
         SQLiteDatabase db = dataHelper.getDatabase();
         db.beginTransaction();
         return db;
     }
 
-
+    /**
+     * Commit changes and close Database
+     *
+     * @param db SQLite database
+     */
     private synchronized void commit(SQLiteDatabase db) {
         db.setTransactionSuccessful();
         db.endTransaction();
     }
 
-
+    /**
+     * Parse string where media links are separated by ' ; '
+     *
+     * @param media tweet media link
+     * @return array of media links
+     */
     private String[] parseMedia(String media) {
         int index;
         List<String> links = new LinkedList<>();
@@ -808,7 +889,12 @@ public class AppDatabase {
         return links.toArray(new String[0]);
     }
 
-
+    /**
+     * create string where media links are separated by ' ; '
+     *
+     * @param tweet tweet informations
+     * @return String of media links
+     */
     private String getMediaLinks(Tweet tweet) {
         StringBuilder media = new StringBuilder();
         for (String link : tweet.getMediaLinks())

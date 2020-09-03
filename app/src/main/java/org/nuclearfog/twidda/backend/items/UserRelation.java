@@ -7,7 +7,7 @@ import twitter4j.Relationship;
 /**
  * Holder for relationship information between the current user and another user
  */
-public class UserConnection {
+public class UserRelation {
 
     private final String targetScreenname;
     private final boolean isHome;
@@ -22,7 +22,7 @@ public class UserConnection {
      *
      * @param connect twitter4j relationship information
      */
-    public UserConnection(Relationship connect) {
+    public UserRelation(Relationship connect) {
         targetScreenname = '@' + connect.getTargetUserScreenName();
         isHome = connect.getSourceUserId() == connect.getTargetUserId();
         isFriend = connect.isSourceFollowingTarget();

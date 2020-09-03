@@ -132,7 +132,7 @@
     <dimen name="tweetpopup_text_width">300dp</dimen>
     <dimen name="tweetpopup_text_height">200dp</dimen>
     <dimen name="tweetpopup_button_size">40dp</dimen>
-    <dimen name="tweetpopup_button_margin">12dp</dimen>
+    <dimen name="tweetpopup_button_margin">7dp</dimen>
     <dimen name="tweetpopup_location_progress_size">30dp</dimen>
 
     <!--dimens of popup_dm.xml-->
@@ -141,7 +141,7 @@
     <dimen name="dmpopup_button_size">40dp</dimen>
     <dimen name="dmpopup_text_width">300dp</dimen>
     <dimen name="dmpopup_text_height">200dp</dimen>
-    <dimen name="dmpopup_button_margin">12dp</dimen>
+    <dimen name="dmpopup_button_margin">7dp</dimen>
 
     <!--dimens of item_load.xml-->
     <dimen name="loaditem_button_size">36sp</dimen>

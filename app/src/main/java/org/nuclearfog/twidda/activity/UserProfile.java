@@ -38,7 +38,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserConnection;
+import org.nuclearfog.twidda.backend.items.UserRelation;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -89,7 +89,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     private TabLayout tabLayout;
 
     private ProfileLoader profileAsync;
-    private UserConnection properties;
+    private UserRelation relation;
     private TwitterUser user;
 
     @Override
@@ -233,27 +233,27 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                 listItem.setVisible(false);
             }
         }
-        if (properties != null) {
-            if (properties.isFriend()) {
+        if (relation != null) {
+            if (relation.isFriend()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 followIcon.setIcon(R.drawable.follow_enabled);
                 followIcon.setTitle(R.string.user_unfollow);
                 listItem.setVisible(true);
             }
-            if (properties.isBlocked()) {
+            if (relation.isBlocked()) {
                 MenuItem blockIcon = m.findItem(R.id.profile_block);
                 blockIcon.setTitle(R.string.user_unblock);
             }
-            if (properties.isMuted()) {
+            if (relation.isMuted()) {
                 MenuItem muteIcon = m.findItem(R.id.profile_mute);
                 muteIcon.setTitle(R.string.user_unmute);
             }
-            if (properties.canDm()) {
+            if (relation.canDm()) {
                 MenuItem dmIcon = m.findItem(R.id.profile_message);
                 dmIcon.setVisible(true);
             }
-            if (properties.isFollower()) {
+            if (relation.isFollower()) {
                 follow_back.setVisibility(VISIBLE);
             }
         }
@@ -265,7 +265,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (profileAsync != null && user != null && profileAsync.getStatus() != RUNNING) {
-            if (user != null && properties != null) {
+            if (user != null && relation != null) {
                 switch (item.getItemId()) {
                     case R.id.profile_tweet:
                         String tweetPrefix = user.getScreenname() + " ";
@@ -282,7 +282,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_follow:
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_FOLLOW);
-                        if (!properties.isFriend()) {
+                        if (!relation.isFriend()) {
                             profileAsync.execute(user.getId());
                         } else {
                             new Builder(this).setMessage(R.string.confirm_unfollow)
@@ -298,7 +298,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_mute:
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_MUTE);
-                        if (properties.isMuted()) {
+                        if (relation.isMuted()) {
                             profileAsync.execute(user.getId());
                         } else {
                             new Builder(this).setMessage(R.string.confirm_mute)
@@ -314,7 +314,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_block:
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_BLOCK);
-                        if (properties.isBlocked()) {
+                        if (relation.isBlocked()) {
                             profileAsync.execute(user.getId());
                         } else {
                             new Builder(this).setMessage(R.string.confirm_block)
@@ -330,11 +330,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_message:
                         Intent dmPage;
-                        if (properties.isHome()) {
+                        if (relation.isHome()) {
                             dmPage = new Intent(this, DirectMessage.class);
                         } else {
                             dmPage = new Intent(this, MessagePopup.class);
-                            dmPage.putExtra(KEY_DM_PREFIX, properties.getTargetScreenname());
+                            dmPage.putExtra(KEY_DM_PREFIX, relation.getTargetScreenname());
                         }
                         startActivity(dmPage);
                         break;
@@ -397,10 +397,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (user != null && properties != null) {
+        if (user != null && relation != null) {
             switch (v.getId()) {
                 case R.id.following:
-                    if (!user.isLocked() || properties.isFriend() || user.getId() == settings.getUserId()) {
+                    if (!(user.isLocked() || relation.isBlocked()) || relation.isFriend() || user.getId() == settings.getUserId()) {
                         Intent following = new Intent(this, UserDetail.class);
                         following.putExtra(KEY_USERDETAIL_ID, user.getId());
                         following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
@@ -409,7 +409,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
                     break;
 
                 case R.id.follower:
-                    if (!user.isLocked() || properties.isFriend() || user.getId() == settings.getUserId()) {
+                    if (!(user.isLocked() || relation.isBlocked()) || relation.isFriend() || user.getId() == settings.getUserId()) {
                         Intent follower = new Intent(this, UserDetail.class);
                         follower.putExtra(KEY_USERDETAIL_ID, user.getId());
                         follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
@@ -534,8 +534,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      *
      * @param properties relationship to the current user
      */
-    public void setConnection(UserConnection properties) {
-        this.properties = properties;
+    public void setConnection(UserRelation properties) {
+        this.relation = properties;
         invalidateOptionsMenu();
     }
 
@@ -545,7 +545,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
      * @param properties connection to an user
      * @param action     Action on the user profile
      */
-    public void onAction(UserConnection properties, ProfileLoader.Action action) {
+    public void onAction(UserRelation properties, ProfileLoader.Action action) {
         switch (action) {
             case ACTION_FOLLOW:
                 if (properties.isFriend())

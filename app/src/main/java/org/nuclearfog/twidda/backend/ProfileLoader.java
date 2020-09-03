@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserConnection;
+import org.nuclearfog.twidda.backend.items.UserRelation;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserProfile
  */
-public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserConnection> {
+public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> {
 
     public enum Action {
         LDR_PROFILE,
@@ -44,8 +44,8 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserConnection
 
 
     @Override
-    protected UserConnection doInBackground(Object[] args) {
-        UserConnection connection;
+    protected UserRelation doInBackground(Object[] args) {
+        UserRelation connection;
         TwitterUser user;
         long userId = 0;
         String username = "";
@@ -136,7 +136,7 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserConnection
 
 
     @Override
-    protected void onPostExecute(UserConnection properties) {
+    protected void onPostExecute(UserRelation properties) {
         if (callback.get() != null) {
             if (properties != null) {
                 callback.get().setConnection(properties);
