@@ -10,7 +10,14 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
+/**
+ * Spinner Adapter for font settings
+ *
+ * @see org.nuclearfog.twidda.activity.AppSettings
+ */
 public class FontAdapter extends BaseAdapter {
+
+    private static final float FONT_SIZE = 24.0f;
 
     private final Typeface[] fonts = GlobalSettings.fonts;
     private final String[] names = GlobalSettings.fontnames;
@@ -43,7 +50,7 @@ public class FontAdapter extends BaseAdapter {
             tv = (TextView) view;
         else {
             tv = new TextView(parent.getContext());
-            tv.setTextSize(COMPLEX_UNIT_SP, 20);
+            tv.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
         }
         tv.setText(name);
         tv.setTypeface(font);

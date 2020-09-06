@@ -12,7 +12,7 @@ import java.io.File;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Memory leak save version of SQLiteOpenHelper
+ * This class creates and manages SQLite table versions
  */
 public class DatabaseAdapter {
 
@@ -109,7 +109,8 @@ public class DatabaseAdapter {
         db.execSQL(INDX_FAVOR);
         db.execSQL(INDX_TREND);
         /// Database just created? set current version
-        if (db.getVersion() == 0)
+        if (db.getVersion() == 0) {
             db.setVersion(LATEST_VERSION);
+        }
     }
 }

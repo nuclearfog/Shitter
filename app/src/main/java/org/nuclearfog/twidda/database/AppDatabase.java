@@ -18,8 +18,13 @@ import java.util.List;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
 import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
+/**
+ * Connection Class to SQLite Database of the app
+ * All tweet, user and message information are stored here
+ */
 public class AppDatabase {
 
+    // Tweet flags
     private static final int FAV_MASK = 1;          //  tweet is favored by user
     private static final int RTW_MASK = 1 << 1;     //  tweet is retweeted by user
     private static final int HOM_MASK = 1 << 2;     //  tweet is from home timeline
@@ -27,11 +32,13 @@ public class AppDatabase {
     private static final int UTW_MASK = 1 << 4;     //  tweet is from an users timeline
     private static final int RPL_MASK = 1 << 5;     //  tweet is from a reply timeline
 
+    // Media content flags
     private static final int MEDIA_IMAGE_MASK = 1 << 6; // tweet contains images
     private static final int MEDIA_VIDEO_MASK = 2 << 6; // tweet contains a video
     private static final int MEDIA_ANGIF_MASK = 3 << 6; // tweet contains an animation
-    private static final int MEDIA_SENS_MASK = 1 << 8; // tweet contains sensitive media
+    private static final int MEDIA_SENS_MASK = 1 << 8;  // tweet contains sensitive media
 
+    // user flags
     private static final int VER_MASK = 1;          //  user is verified
     private static final int LCK_MASK = 1 << 1;     //  user is private
     private static final int FRQ_MASK = 1 << 2;     //  a follow request is pending
@@ -558,11 +565,11 @@ public class AppDatabase {
         boolean sensitive = (statusregister & MEDIA_SENS_MASK) != 0;
         String[] medias = parseMedia(medialinks);
         Tweet.MediaType mediaType = Tweet.MediaType.NONE;
-        if ((statusregister & MEDIA_IMAGE_MASK) != MEDIA_IMAGE_MASK)
+        if ((statusregister & MEDIA_IMAGE_MASK) == MEDIA_IMAGE_MASK)
             mediaType = Tweet.MediaType.IMAGE;
-        else if ((statusregister & MEDIA_VIDEO_MASK) != MEDIA_VIDEO_MASK)
+        else if ((statusregister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK)
             mediaType = Tweet.MediaType.VIDEO;
-        else if ((statusregister & MEDIA_ANGIF_MASK) != MEDIA_ANGIF_MASK)
+        else if ((statusregister & MEDIA_ANGIF_MASK) == MEDIA_ANGIF_MASK)
             mediaType = Tweet.MediaType.GIF;
         TwitterUser user = getUser(cursor);
         Tweet embeddedTweet = null;
@@ -613,10 +620,10 @@ public class AppDatabase {
         int follower = cursor.getInt(cursor.getColumnIndex("follower"));
         int tCount = cursor.getInt(cursor.getColumnIndex("tweetCount"));
         int fCount = cursor.getInt(cursor.getColumnIndex("favorCount"));
-        boolean isVerified = (userRegister & VER_MASK) > 0;
-        boolean isLocked = (userRegister & LCK_MASK) > 0;
-        boolean isReq = (userRegister & FRQ_MASK) > 0;
-        boolean defaultImg = (userRegister & DEF_IMG) > 0;
+        boolean isVerified = (userRegister & VER_MASK) != 0;
+        boolean isLocked = (userRegister & LCK_MASK) != 0;
+        boolean isReq = (userRegister & FRQ_MASK) != 0;
+        boolean defaultImg = (userRegister & DEF_IMG) != 0;
         return new TwitterUser(userId, username, screenname, profileImg, bio, location, isVerified,
                 isLocked, isReq, defaultImg, link, banner, createdAt, following, follower, tCount, fCount);
     }

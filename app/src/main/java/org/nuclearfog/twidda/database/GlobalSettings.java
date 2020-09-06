@@ -12,12 +12,17 @@ import org.nuclearfog.twidda.backend.items.TrendLocation;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * This class manages app settings
+ */
 public class GlobalSettings {
 
+    // Font settings
     public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
             Typeface.SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
     public static final String[] fontnames = {"Default", "Monospace", "Serif", "sans-serif-thin"};
 
+    // Setting names stored in SharedPreference
     private static final String BACKGROUND_COLOR = "background_color";
     private static final String HIGHLIGHT_COLOR = "highlight_color";
     private static final String FONT_COLOR = "font_color";

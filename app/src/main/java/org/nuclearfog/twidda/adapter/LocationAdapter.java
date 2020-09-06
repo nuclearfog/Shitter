@@ -18,6 +18,8 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 
 /**
  * Adapter class for Location selection spinner
+ *
+ * @see org.nuclearfog.twidda.activity.AppSettings
  */
 public class LocationAdapter extends BaseAdapter {
 
@@ -31,13 +33,22 @@ public class LocationAdapter extends BaseAdapter {
     }
 
 
+    /**
+     * Add a single item to top
+     *
+     * @param top top item to add
+     */
     @MainThread
     public void addTop(TrendLocation top) {
         data.add(top);
         notifyDataSetChanged();
     }
 
-
+    /**
+     * replace content with new items
+     *
+     * @param newData item list
+     */
     @MainThread
     public void setData(List<TrendLocation> newData) {
         data.clear();
@@ -45,7 +56,12 @@ public class LocationAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * get position of the item or "0" if not found
+     *
+     * @param item item to search
+     * @return index of the item
+     */
     public int getPosition(TrendLocation item) {
         int pos = data.indexOf(item);
         if (pos == -1) {
