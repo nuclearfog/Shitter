@@ -121,6 +121,20 @@
                         android:contentDescription="@string/image_preview_button"
                         android:visibility="gone" />
 
+                    <TextView
+                        android:id="@+id/tweet_sensitive"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tweet_sensitive_media"
+                        android:drawablePadding="@dimen/tweet_padding_drawable"
+                        app:drawableLeftCompat="@drawable/sensitive"
+                        app:drawableStartCompat="@drawable/sensitive"
+                        android:paddingLeft="@dimen/tweet_button_padding"
+                        android:paddingRight="@dimen/tweet_button_padding"
+                        android:textSize="@dimen/tweet_textsize_api"
+                        android:singleLine="true"
+                        android:visibility="gone" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

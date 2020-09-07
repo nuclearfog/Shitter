@@ -74,7 +74,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
-    private View header, footer;
+    private View header, footer, sensitive_media;
     private FragmentAdapter adapter;
 
     private GlobalSettings settings;
@@ -105,6 +105,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweetLocName = findViewById(R.id.tweet_location_name);
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
         mediaButton = findViewById(R.id.tweet_media_attach);
+        sensitive_media = findViewById(R.id.tweet_sensitive);
 
         tool.setTitle("");
         setSupportActionBar(tool);
@@ -381,6 +382,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             replyName.setText(R.string.tweet_answering);
             replyName.append(tweet.getReplyName());
             replyName.setVisibility(VISIBLE);
+        }
+        if (tweet.containsSensitiveMedia()) {
+            sensitive_media.setVisibility(VISIBLE);
         }
         switch (tweet.getMediaType()) {
             case IMAGE:
