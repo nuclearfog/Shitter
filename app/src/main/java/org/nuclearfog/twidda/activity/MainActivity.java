@@ -32,7 +32,7 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 /**
- * Main Activity
+ * Main Activity of the App
  */
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
 
     static {
-        // Enable vector drawable support
+        // Enable vector drawable support for API 16 to 21
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     protected void onStart() {
         super.onStart();
         if (!settings.getLogin()) {
-            Intent loginIntent = new Intent(this, LoginPage.class);
+            Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
         } else if (adapter.isEmpty()) {
             adapter.setupForHomePage();

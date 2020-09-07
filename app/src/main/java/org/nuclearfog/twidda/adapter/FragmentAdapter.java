@@ -35,6 +35,9 @@ import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_RETWEET;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCR;
 
+/**
+ * Fragment adapter for ViewPager
+ */
 public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     private Fragment[] fragments;
@@ -62,18 +65,26 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         return fragments.length;
     }
 
-
+    /**
+     * Check if adapter is empty
+     *
+     * @return true if adapter does not contain fragments
+     */
     public boolean isEmpty() {
         return fragments.length == 0;
     }
 
-
+    /**
+     * Clear all fragments
+     */
     public void clear() {
         fragments = new Fragment[0];
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for the home activity
+     */
     public void setupForHomePage() {
         Bundle home_tl = new Bundle();
         Bundle ment_tl = new Bundle();
@@ -88,7 +99,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for viewing user tweets and favs
+     *
+     * @param userId ID of the user
+     */
     public void setupProfilePage(long userId) {
         Bundle usr_tweet = new Bundle();
         Bundle usr_favor = new Bundle();
@@ -104,7 +119,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for viewing user tweets and favs
+     *
+     * @param username screen name of the user
+     */
     public void setupProfilePage(String username) {
         Bundle usr_tweet = new Bundle();
         Bundle usr_favor = new Bundle();
@@ -120,7 +139,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for search for tweet and user search
+     *
+     * @param search Search string
+     */
     public void setupSearchPage(String search) {
         Bundle tweetSearch = new Bundle();
         Bundle userSearch = new Bundle();
@@ -136,7 +159,12 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for tweet page to show replies of a tweet
+     *
+     * @param tweetId   ID of the tweet
+     * @param replyName screen name of the author
+     */
     public void setupTweetPage(long tweetId, String replyName) {
         Bundle param = new Bundle();
         param.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_ANSWER);
@@ -148,7 +176,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a list of friends
+     *
+     * @param userId ID of the user
+     */
     public void setupFriendsPage(long userId) {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, userId);
@@ -159,7 +191,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a list of follower
+     *
+     * @param userId ID of the user
+     */
     public void setupFollowerPage(long userId) {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, userId);
@@ -170,14 +206,20 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a list of direct messages
+     */
     public void setupMessagePage() {
         fragments = new Fragment[1];
         fragments[0] = new MessageFragment();
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a list of users which retweets a tweet
+     *
+     * @param tweetId ID if the tweet
+     */
     public void setupRetweeterPage(long tweetId) {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, tweetId);
@@ -188,17 +230,25 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
-    public void setupListPage(long listId) {
+    /**
+     * setup adapter for a list of user lists created by an user
+     *
+     * @param userId ID of the user
+     */
+    public void setupListPage(long userId) {
         Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_LIST_OWNER_ID, listId);
+        param.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
         fragments = new Fragment[1];
         fragments[0] = new ListFragment();
         fragments[0].setArguments(param);
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a list of user lists created by an user
+     *
+     * @param ownerName screen name of the owner
+     */
     public void setupListPage(String ownerName) {
         Bundle param = new Bundle();
         param.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
@@ -208,7 +258,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a list of users subscribing an user list
+     *
+     * @param listId ID of an user list
+     */
     public void setupSubscriberPage(long listId) {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, listId);
@@ -219,7 +273,11 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * setup adapter for a page of tweets and users in an user list
+     *
+     * @param listId ID of an user list
+     */
     public void setupListContentPage(long listId) {
         Bundle tweetParam = new Bundle();
         Bundle userParam = new Bundle();

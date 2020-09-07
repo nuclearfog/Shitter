@@ -25,6 +25,11 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+/**
+ * Adapter class for Trend list
+ *
+ * @see org.nuclearfog.twidda.fragment.TrendFragment
+ */
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     private TrendClickListener itemClickListener;
@@ -41,7 +46,11 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         trends = new ArrayList<>();
     }
 
-
+    /**
+     * replace data from list
+     *
+     * @param trendList list of trends
+     */
     @MainThread
     public void setData(@NonNull List<TwitterTrend> trendList) {
         trends.clear();
@@ -49,14 +58,20 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * clear all data from adapter
+     */
     @MainThread
     public void clear() {
         trends.clear();
         notifyDataSetChanged();
     }
 
-
+    /**
+     * check if adapter is empty
+     *
+     * @return true if adapter is empty
+     */
     public boolean isEmpty() {
         return trends.isEmpty();
     }

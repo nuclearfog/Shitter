@@ -30,6 +30,11 @@ import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
 
+/**
+ * Adapter class for user lists
+ *
+ * @see org.nuclearfog.twidda.fragment.ListFragment
+ */
 public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
 
     private ListClickListener listener;
@@ -199,7 +204,9 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
         }
     }
 
-
+    /**
+     * Listener for an item
+     */
     public interface ListClickListener {
 
         enum Action {
@@ -210,6 +217,12 @@ public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
             DELETE
         }
 
+        /**
+         * called when an item is clicked
+         *
+         * @param listItem Item data and information
+         * @param action   which button was clicked
+         */
         void onClick(TwitterList listItem, Action action);
     }
 }

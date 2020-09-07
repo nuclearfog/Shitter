@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import org.nuclearfog.twidda.activity.TweetDetail;
+import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
@@ -30,8 +30,8 @@ import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 
 
 public class TweetFragment extends Fragment implements OnRefreshListener, TweetClickListener, FragmentChangeObserver {
@@ -121,7 +121,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         if (getContext() != null && !reload.isRefreshing()) {
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
-            Intent tweetIntent = new Intent(getContext(), TweetDetail.class);
+            Intent tweetIntent = new Intent(getContext(), TweetActivity.class);
             tweetIntent.putExtra(KEY_TWEET_ID, tweet.getId());
             tweetIntent.putExtra(KEY_TWEET_NAME, tweet.getUser().getScreenname());
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);

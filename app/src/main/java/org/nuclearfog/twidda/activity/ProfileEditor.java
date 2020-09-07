@@ -49,7 +49,9 @@ import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 
-
+/**
+ * Activity for Twitter profile editor
+ */
 public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener {
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
@@ -59,10 +61,12 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private static final int REQ_PROFILE_BANNER = 5;
 
     private ProfileUpdater editorAsync;
+
     private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
     private Button add_banner_btn;
     private Dialog loadingCircle;
+
     private TwitterUser user;
     private String profileLink, bannerLink;
 
@@ -255,7 +259,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         }
     }
 
-
+    /**
+     * Set current user's information
+     *
+     * @param user Current user
+     */
     public void setUser(TwitterUser user) {
         String pbLink = user.getImageLink();
         String bnLink = user.getBannerLink() + "/600x200";
@@ -295,7 +303,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         }
     }
 
-
+    /**
+     * Get images from storage or ask for permission
+     *
+     * @param request image type to load from storage
+     */
     private void getMedia(int request) {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

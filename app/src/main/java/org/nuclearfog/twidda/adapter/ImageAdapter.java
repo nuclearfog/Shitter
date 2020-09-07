@@ -22,7 +22,9 @@ import java.util.List;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
-
+/**
+ * Adapter class for image previews
+ */
 public class ImageAdapter extends Adapter<ViewHolder> {
 
     private static final int PICTURE = 0;
@@ -34,7 +36,11 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private boolean loading = false;
     private boolean saveImg = true;
 
-
+    /**
+     * Create an adapter for image previews
+     *
+     * @param itemClickListener Click listener for images
+     */
     public ImageAdapter(OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         images = new LinkedList<>();
@@ -58,12 +64,18 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         notifyItemRemoved(circlePos);
     }
 
-
+    /**
+     * disable save button on images
+     */
     public void disableSaveButton() {
         saveImg = false;
     }
 
-
+    /**
+     * check if image adapter is empty
+     *
+     * @return true if there isn't any image
+     */
     public boolean isEmpty() {
         return images.isEmpty();
     }

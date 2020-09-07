@@ -52,7 +52,9 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 
-
+/**
+ * Activity to create a tweet
+ */
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener, OnDismissListener {
 
     public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
@@ -340,6 +342,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     /**
      * Show confirmation dialog if an error occurs while sending tweet
+     *
      * @param tweet tweet to re-send
      */
     public void onError(final TweetHolder tweet, EngineException error) {

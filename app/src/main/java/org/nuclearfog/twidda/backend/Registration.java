@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activity.LoginPage;
+import org.nuclearfog.twidda.activity.LoginActivity;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 
@@ -12,21 +12,22 @@ import java.lang.ref.WeakReference;
 
 /**
  * Background task to connect to twitter and initialize keys
- * @see LoginPage
+ *
+ * @see LoginActivity
  */
 public class Registration extends AsyncTask<String, Void, String> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<LoginPage> callback;
+    private WeakReference<LoginActivity> callback;
     private TwitterEngine mTwitter;
 
     /**
      * Login to twitter with PIN
      *
-     * @param callback  Activity Context
+     * @param callback Activity Context
      */
-    public Registration(LoginPage callback) {
+    public Registration(LoginActivity callback) {
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
     }

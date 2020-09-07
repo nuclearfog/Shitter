@@ -31,6 +31,11 @@ import java.util.List;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
 
+/**
+ * Adapter class for direct messages list
+ *
+ * @see org.nuclearfog.twidda.fragment.MessageFragment
+ */
 public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
     private OnItemSelected itemClickListener;
@@ -45,7 +50,11 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         messages = new ArrayList<>();
     }
 
-
+    /**
+     * replace all messages from list
+     *
+     * @param messageList new message list
+     */
     @MainThread
     public void replaceAll(@NonNull List<Message> messageList) {
         messages.clear();
@@ -53,7 +62,11 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         notifyDataSetChanged();
     }
 
-
+    /**
+     * Remove a single item from list if found
+     *
+     * @param id message ID
+     */
     @MainThread
     public void remove(long id) {
         int pos = -1;

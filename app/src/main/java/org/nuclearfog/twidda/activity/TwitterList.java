@@ -13,7 +13,9 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-
+/**
+ * Activity to show user lists of a twitter user
+ */
 public class TwitterList extends AppCompatActivity {
 
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";

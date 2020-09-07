@@ -196,7 +196,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     }
 
 
-    class ItemHolder extends ViewHolder {
+    static class ItemHolder extends ViewHolder {
         final ImageView profileImg;
         final TextView username, screenname;
 
@@ -208,7 +208,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    class PlaceHolder extends ViewHolder {
+    static class PlaceHolder extends ViewHolder {
 
         final ProgressBar loadCircle;
         final Button loadBtn;

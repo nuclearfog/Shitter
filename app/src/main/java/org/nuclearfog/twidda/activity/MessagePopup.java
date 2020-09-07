@@ -41,7 +41,9 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
 
-
+/**
+ * Direct message popup activity
+ */
 public class MessagePopup extends AppCompatActivity implements OnClickListener, OnDismissListener {
 
     public static final String KEY_DM_PREFIX = "dm_prefix";
@@ -50,9 +52,11 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     private static final int REQ_PERM_READ = 4;
 
     private MessageUploader messageAsync;
+
     private EditText receiver, message;
     private ImageButton media;
     private Dialog loadingCircle;
+
     @Nullable
     private String mediaPath;
 
@@ -138,8 +142,9 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQ_PERM_READ && grantResults[0] == PERMISSION_GRANTED)
+        if (requestCode == REQ_PERM_READ && grantResults[0] == PERMISSION_GRANTED) {
             getMedia();
+        }
     }
 
 
@@ -212,7 +217,10 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         ErrorHandler.handleFailure(this, error);
     }
 
-
+    /**
+     * access to storage to add an image to the direct message
+     * or ask for permission
+     */
     private void getMedia() {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -30,9 +30,14 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class LoginPage extends AppCompatActivity implements OnClickListener {
+/**
+ * Login Activity of the App
+ * called from {@link MainActivity} when this app isn't logged in to twitter
+ */
+public class LoginActivity extends AppCompatActivity implements OnClickListener {
 
     private Registration registerAsync;
+
     private Button linkButton, loginButton;
     private EditText pinInput;
     private View root;
@@ -126,7 +131,11 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         }
     }
 
-
+    /**
+     * Called when a twitter login link was created
+     *
+     * @param link Link to twitter login page
+     */
     public void connect(String link) {
         Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
         if (loginIntent.resolveActivity(getPackageManager()) != null) {
@@ -136,12 +145,19 @@ public class LoginPage extends AppCompatActivity implements OnClickListener {
         }
     }
 
-
+    /**
+     * Called when the app is registered successfully to twitter
+     */
     public void onSuccess() {
         setResult(Activity.RESULT_OK);
         finish();
     }
 
+    /**
+     * called when an error occurs while login
+     *
+     * @param error Twitter exception
+     */
     public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
     }

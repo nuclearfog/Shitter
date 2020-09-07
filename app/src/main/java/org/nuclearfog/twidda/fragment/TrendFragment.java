@@ -31,6 +31,9 @@ import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
+/**
+ * Fragment class for trend lists
+ */
 public class TrendFragment extends Fragment implements OnRefreshListener, TrendClickListener, FragmentChangeObserver {
 
     private TrendListLoader trendTask;

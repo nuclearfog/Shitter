@@ -17,7 +17,9 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-
+/**
+ * Activity to show an user list, members and tweets
+ */
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener {
 
     public static final String KEY_LISTDETAIL_ID = "list-id";

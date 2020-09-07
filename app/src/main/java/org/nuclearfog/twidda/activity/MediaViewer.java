@@ -44,7 +44,9 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
-
+/**
+ * Media viewer activity for images and videos
+ */
 public class MediaViewer extends AppCompatActivity implements OnImageClickListener,
         OnPreparedListener, OnInfoListener, OnErrorListener {
 
@@ -52,17 +54,18 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final String KEY_MEDIA_TYPE = "media_type";
 
     /// Media Types
-    private static final int MEDIAVIEWER_NONE = 0;
-    public static final int MEDIAVIEWER_IMG_S = 1;
-    public static final int MEDIAVIEWER_IMAGE = 2;
-    public static final int MEDIAVIEWER_VIDEO = 3;
-    public static final int MEDIAVIEWER_ANGIF = 4;
+    private static final int MEDIAVIEWER_NONE = 0;  // Not Initialized
+    public static final int MEDIAVIEWER_IMG_S = 1;  // Image from Storage
+    public static final int MEDIAVIEWER_IMAGE = 2;  // Image from Twitter
+    public static final int MEDIAVIEWER_VIDEO = 3;  // Video from Twitter
+    public static final int MEDIAVIEWER_ANGIF = 4;  // GIF from Twitter
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
     private static final int REQCODE_SD = 6;
 
     private ImageLoader imageAsync;
+
     private ProgressBar video_progress;
     private ProgressBar image_progress;
     private MediaController videoController;
@@ -71,8 +74,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
-    private int type;
 
+    private int type;
     private int videoPos = 0;
 
 
@@ -214,12 +217,18 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         return false;
     }
 
-
+    /**
+     * Called from {@link ImageLoader} when all images are downloaded successfully
+     */
     public void onSuccess() {
         adapter.disableLoading();
     }
 
-
+    /**
+     * Called from {@link ImageLoader} when an error occurs
+     *
+     * @param err Exception caught by {@link ImageLoader}
+     */
     public void onError(@Nullable EngineException err) {
         if (err != null) {
             ErrorHandler.handleFailure(getApplicationContext(), err);
@@ -227,7 +236,11 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         finish();
     }
 
-
+    /**
+     * set downloaded image into preview list
+     *
+     * @param image Image container
+     */
     public void setImage(ImageHolder image) {
         if (adapter.isEmpty()) {
             zoomImage.reset();
@@ -237,7 +250,11 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         adapter.addLast(image);
     }
 
-
+    /**
+     * called to save an image into storage
+     *
+     * @param image Image file
+     */
     private void storeImage(Bitmap image) {
         String name = "shitter_" + formatter.format(new Date());
         try {

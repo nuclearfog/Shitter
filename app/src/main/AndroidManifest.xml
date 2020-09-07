@@ -70,7 +70,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.TweetDetail"
+            android:name=".activity.TweetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
@@ -80,7 +80,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.LoginPage"
+            android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

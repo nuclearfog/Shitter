@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activity.TweetDetail;
+import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -15,7 +15,8 @@ import java.lang.ref.WeakReference;
 
 /**
  * Background task to download tweet informations and to take actions
- * @see TweetDetail
+ *
+ * @see TweetActivity
  */
 public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
 
@@ -29,12 +30,12 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
     @Nullable
     private EngineException twException;
     private TwitterEngine mTwitter;
-    private WeakReference<TweetDetail> callback;
+    private WeakReference<TweetActivity> callback;
     private AppDatabase db;
     private final Action action;
 
 
-    public TweetLoader(TweetDetail callback, Action action) {
+    public TweetLoader(TweetActivity callback, Action action) {
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
         this.callback = new WeakReference<>(callback);

@@ -43,6 +43,9 @@ import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
 
+/**
+ * Fragment class for user lists
+ */
 public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener {
 
     public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";

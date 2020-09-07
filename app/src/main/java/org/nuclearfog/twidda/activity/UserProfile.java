@@ -56,9 +56,9 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.TweetDetail.LINK_PATTERN;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
@@ -379,7 +379,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         if (LINK_PATTERN.matcher(shortLink).matches()) {
             String name = shortLink.substring(20, shortLink.indexOf('/', 20));
             long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-            Intent intent = new Intent(this, TweetDetail.class);
+            Intent intent = new Intent(this, TweetActivity.class);
             intent.putExtra(KEY_TWEET_ID, id);
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);

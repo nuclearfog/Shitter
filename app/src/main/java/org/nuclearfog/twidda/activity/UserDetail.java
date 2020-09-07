@@ -13,6 +13,9 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+/**
+ * Activity to show a list of twitter users
+ */
 public class UserDetail extends AppCompatActivity {
 
     public static final String KEY_USERDETAIL_MODE = "userlist_mode";

@@ -61,8 +61,10 @@ import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
-
-public class TweetDetail extends AppCompatActivity implements OnClickListener,
+/**
+ * Tweet Activity for tweet and user informations
+ */
+public class TweetActivity extends AppCompatActivity implements OnClickListener,
         OnLongClickListener, OnTagClickListener {
 
     public static final String KEY_TWEET_ID = "tweetID";
@@ -177,7 +179,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
                     deleteDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            statusAsync = new TweetLoader(TweetDetail.this, Action.DELETE);
+                            statusAsync = new TweetLoader(TweetActivity.this, Action.DELETE);
                             statusAsync.execute(tweet.getId());
                         }
                     });
@@ -242,7 +244,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
 
                 case R.id.answer_reference_detail:
                     if (tweet != null) {
-                        Intent answerIntent = new Intent(getApplicationContext(), TweetDetail.class);
+                        Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
                         answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
                         answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
                         startActivity(answerIntent);
@@ -324,7 +326,7 @@ public class TweetDetail extends AppCompatActivity implements OnClickListener,
         if (LINK_PATTERN.matcher(shortLink).matches()) {
             String name = shortLink.substring(20, shortLink.indexOf('/', 20));
             long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-            Intent intent = new Intent(this, TweetDetail.class);
+            Intent intent = new Intent(this, TweetActivity.class);
             intent.putExtra(KEY_TWEET_ID, id);
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);

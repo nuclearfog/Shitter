@@ -22,7 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.activity.SearchPage;
-import org.nuclearfog.twidda.activity.TweetDetail;
+import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
@@ -40,11 +40,14 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetDetail.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.TweetDetail.LINK_PATTERN;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
+/**
+ * Fragment class for direct message lists
+ */
 public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected {
 
     private MessageListLoader messageTask;
@@ -117,7 +120,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
             if (LINK_PATTERN.matcher(shortLink).matches()) {
                 String name = shortLink.substring(20, shortLink.indexOf('/', 20));
                 long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-                Intent intent = new Intent(getContext(), TweetDetail.class);
+                Intent intent = new Intent(getContext(), TweetActivity.class);
                 intent.putExtra(KEY_TWEET_ID, id);
                 intent.putExtra(KEY_TWEET_NAME, name);
                 startActivity(intent);

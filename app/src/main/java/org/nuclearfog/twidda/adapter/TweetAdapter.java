@@ -290,7 +290,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     }
 
 
-    class PlaceHolder extends ViewHolder {
+    static class PlaceHolder extends ViewHolder {
         final Button loadBtn;
         final ProgressBar loadCircle;
 
