@@ -26,9 +26,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_divider"
-                android:background="?android:attr/listDivider"
-                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
+                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin"
+                android:background="?android:attr/listDivider" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -163,7 +162,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
-                <CheckBox
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/toggleImg"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_checkbox_height"
@@ -174,7 +173,7 @@
                     android:text="@string/settings_image"
                     android:textSize="@dimen/settings_textsize_small" />
 
-                <CheckBox
+                <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/toggleAns"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_checkbox_height"
@@ -184,6 +183,7 @@
                     android:singleLine="true"
                     android:text="@string/load_answer"
                     android:textSize="@dimen/settings_textsize_small" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -384,7 +384,8 @@
                     android:inputType="textPersonName"
                     android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                    android:textSize="@dimen/settings_edittext_textsize"
+                    android:autofillHints="username" />
 
                 <EditText
                     android:id="@+id/edit_proxypass"
@@ -396,6 +397,7 @@
                     android:ems="10"
                     android:hint="@string/proxy_password"
                     android:inputType="textPassword"
+                    android:autofillHints="password"
                     android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
                     android:textSize="@dimen/settings_edittext_textsize" />
@@ -405,9 +407,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/settings_divider"
-                android:background="?android:attr/listDivider"
                 android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
+                android:background="?android:attr/listDivider" />
 
         </LinearLayout>
 

@@ -12,7 +12,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -73,7 +72,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private NumberPicker load_picker;
     private Dialog load_dialog_selector, color_dialog_selector;
-    private CheckBox enableProxy, enableAuth;
+    private CompoundButton enableProxy, enableAuth;
     private Spinner locationSpinner;
     private LocationAdapter locationAdapter;
     private View root, colorButton1_edge;
@@ -90,8 +89,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Button logout = findViewById(R.id.logout);
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
         View login_layout = findViewById(R.id.Login_options);
-        CheckBox toggleImg = findViewById(R.id.toggleImg);
-        CheckBox toggleAns = findViewById(R.id.toggleAns);
+        CompoundButton toggleImg = findViewById(R.id.toggleImg);
+        CompoundButton toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);

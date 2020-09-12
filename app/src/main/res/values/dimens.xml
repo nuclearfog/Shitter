@@ -10,8 +10,8 @@
     <dimen name="settings_info_appname_font">18sp</dimen>
     <dimen name="settings_layout_padding">10dp</dimen>
     <dimen name="settings_text_margin">5dp</dimen>
-    <dimen name="settings_textsize">18sp</dimen>
-    <dimen name="settings_textsize_small">11sp</dimen>
+    <dimen name="settings_textsize">20sp</dimen>
+    <dimen name="settings_textsize_small">14sp</dimen>
     <dimen name="settings_button_color_height">40sp</dimen>
     <dimen name="settings_button_height">30sp</dimen>
     <dimen name="settings_button_color_edge_thickness">1dp</dimen>
