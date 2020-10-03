@@ -97,8 +97,8 @@
     <string name="load_answer">answer load</string>
     <string name="info_tweet_retweeted">tweet retweeted!</string>
     <string name="info_tweet_unretweeted">retweet removed!</string>
-    <string name="info_tweet_favored">tweet_favored</string>
-    <string name="info_tweet_unfavored">tweet removed from favors!</string>
+    <string name="info_tweet_favored">tweet favored!</string>
+    <string name="info_tweet_unfavored">tweet removed from favorites!</string>
     <string name="proxy_settings">Proxy settings</string>
     <string name="enter_proxy">Proxy IP address</string>
     <string name="proxy_port">Port</string>
@@ -152,4 +152,5 @@
     <string name="confirm_discard_proxy_changes">Discard changes</string>
     <string name="error_open_link">Could not open link!</string>
     <string name="tweet_sensitive_media">sensitive media</string>
+    <string name="error_image_exists">Error, image already exists!</string>
 </resources>
