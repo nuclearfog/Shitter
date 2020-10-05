@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Environment;
 
 import org.nuclearfog.twidda.activity.MediaViewer;
 
@@ -14,7 +15,7 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 /**
  * this class is for saving images into storage
  */
-public class ImageSaver extends AsyncTask<Object, Void, ImageSaver.ImageStat> {
+public class ImageSaver extends AsyncTask<Void, Void, ImageSaver.ImageStat> {
 
     public enum ImageStat {
         IMAGE_SAVE_SUCCESS,
@@ -22,28 +23,26 @@ public class ImageSaver extends AsyncTask<Object, Void, ImageSaver.ImageStat> {
         IMAGE_DUPLICATE
     }
 
-    private WeakReference<MediaViewer> callback;
-    private File imagePath;
+    private final Bitmap image;
+    private final String link;
+    private final WeakReference<MediaViewer> callback;
+    private File imageFile;
 
 
-    public ImageSaver(MediaViewer activity) {
+    public ImageSaver(MediaViewer activity, Bitmap image, String link) {
         this.callback = new WeakReference<>(activity);
+        this.image = image;
+        this.link = link;
         // path where images to save
-        imagePath = activity.getExternalFilesDir(DIRECTORY_PICTURES);
-        if (imagePath == null) {
-            imagePath = activity.getFilesDir();
-        }
+        imageFile = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
     }
 
 
     @Override
-    protected ImageStat doInBackground(Object[] data) {
+    protected ImageStat doInBackground(Void... v) {
         try {
-            String link = (String) data[0];
-            Bitmap image = (Bitmap) data[1];
-            link = link.substring(link.lastIndexOf('/') + 1);
-            String name = "shitter_" + link;
-            File imageFile = new File(imagePath, name);
+            String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
+            imageFile = new File(imageFile, name);
             if (imageFile.exists())
                 return ImageStat.IMAGE_DUPLICATE;
             FileOutputStream imageWrite = new FileOutputStream(imageFile);
@@ -61,7 +60,7 @@ public class ImageSaver extends AsyncTask<Object, Void, ImageSaver.ImageStat> {
     @Override
     protected void onPostExecute(ImageStat status) {
         if (callback.get() != null) {
-            callback.get().onImageSaved(status);
+            callback.get().onImageSaved(status, imageFile.toString());
         }
     }
 }

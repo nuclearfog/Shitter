@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.content.ContentValues;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -238,10 +240,17 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      *
      * @param status status code of the image saver
      */
-    public void onImageSaved(ImageSaver.ImageStat status) {
+    public void onImageSaved(ImageSaver.ImageStat status, String path) {
         switch (status) {
             case IMAGE_SAVE_SUCCESS:
                 Toast.makeText(this, R.string.info_image_saved, Toast.LENGTH_LONG).show();
+                // Add image to gallery
+                ContentValues values = new ContentValues();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                values.put(MediaStore.MediaColumns.DATA, path);
+                getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
                 break;
 
             case IMAGE_SAVE_FAILED:
@@ -280,8 +289,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             String[] links = param.getStringArray(KEY_MEDIA_LINK);
             if (links != null) {
                 String link = links[pos];
-                imageSave = new ImageSaver(this);
-                imageSave.execute(link, image);
+                imageSave = new ImageSaver(this, image, link);
+                imageSave.execute();
             }
         }
     }
