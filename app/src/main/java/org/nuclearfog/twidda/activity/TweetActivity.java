@@ -316,7 +316,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         startActivity(intent);
     }
 
-
+    /**
+     * called when a link is clicked
+     *
+     * @param tag link string
+     */
     @Override
     public void onLinkClick(String tag) {
         String shortLink = tag;
@@ -324,6 +328,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (cut > 0) {
             shortLink = shortLink.substring(0, cut);
         }
+        // check if the link if from a tweet
         if (LINK_PATTERN.matcher(shortLink).matches()) {
             String name = shortLink.substring(20, shortLink.indexOf('/', 20));
             long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));

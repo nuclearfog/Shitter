@@ -122,7 +122,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                         int pos = item.getAdapterPosition();
                         if (pos != NO_POSITION) {
                             Bitmap img = images.get(pos).getOriginalImage();
-                            itemClickListener.onSaveClick(img);
+                            itemClickListener.onImageSave(img, pos);
                         }
                     }
                 });
@@ -181,7 +181,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
          * long touch on image_add
          *
          * @param image selected image_add bitmap
+         * @param index current image index
          */
-        void onSaveClick(Bitmap image);
+        void onImageSave(Bitmap image, int index);
     }
 }

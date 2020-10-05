@@ -8,7 +8,6 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -24,14 +23,11 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
+import org.nuclearfog.twidda.backend.ImageSaver;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.zoomview.ZoomView;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
@@ -39,6 +35,7 @@ import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
+import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -60,11 +57,11 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final int MEDIAVIEWER_VIDEO = 3;  // Video from Twitter
     public static final int MEDIAVIEWER_ANGIF = 4;  // GIF from Twitter
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.GERMANY);
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
     private static final int REQCODE_SD = 6;
 
     private ImageLoader imageAsync;
+    private ImageSaver imageSave;
 
     private ProgressBar video_progress;
     private ProgressBar image_progress;
@@ -161,7 +158,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
-    public void onSaveClick(Bitmap image) {
+    public void onImageSave(Bitmap image, int pos) {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
@@ -171,7 +168,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             }
         }
         if (accessGranted) {
-            storeImage(image);
+            storeImage(image, pos);
         }
     }
 
@@ -237,6 +234,27 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
     /**
+     * callback for image saver
+     *
+     * @param status status code of the image saver
+     */
+    public void onImageSaved(ImageSaver.ImageStat status) {
+        switch (status) {
+            case IMAGE_SAVE_SUCCESS:
+                Toast.makeText(this, R.string.info_image_saved, Toast.LENGTH_LONG).show();
+                break;
+
+            case IMAGE_SAVE_FAILED:
+                Toast.makeText(this, R.string.error_image_save, Toast.LENGTH_SHORT).show();
+                break;
+
+            case IMAGE_DUPLICATE:
+                Toast.makeText(this, R.string.error_image_exists, Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    /**
      * set downloaded image into preview list
      *
      * @param image Image container
@@ -254,14 +272,17 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      * called to save an image into storage
      *
      * @param image Image file
+     * @param pos   image position
      */
-    private void storeImage(Bitmap image) {
-        String name = "shitter_" + formatter.format(new Date());
-        try {
-            MediaStore.Images.Media.insertImage(getContentResolver(), image, name, "");
-            Toast.makeText(this, R.string.info_image_saved, Toast.LENGTH_LONG).show();
-        } catch (Exception err) {
-            Toast.makeText(this, R.string.error_image_save, Toast.LENGTH_SHORT).show();
+    private void storeImage(Bitmap image, int pos) {
+        Bundle param = getIntent().getExtras();
+        if (param != null && (imageSave == null || imageSave.getStatus() == FINISHED)) {
+            String[] links = param.getStringArray(KEY_MEDIA_LINK);
+            if (links != null) {
+                String link = links[pos];
+                imageSave = new ImageSaver(this);
+                imageSave.execute(link, image);
+            }
         }
     }
 }
