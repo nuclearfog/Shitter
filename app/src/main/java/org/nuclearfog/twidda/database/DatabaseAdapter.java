@@ -19,32 +19,59 @@ public class DatabaseAdapter {
     private static final int LATEST_VERSION = 3;
     private static final String DB_NAME = "database.db";
 
+    /**
+     * SQL query to create a table for user information
+     */
     private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS user (" +
             "userID INTEGER PRIMARY KEY,username TEXT,scrname TEXT," +
             "pbLink TEXT,banner TEXT,bio TEXT,location TEXT,link TEXT,userregister INTEGER," +
             "createdAt INTEGER,following INTEGER,follower INTEGER,tweetCount INTEGER,favorCount INTEGER);";
 
+    /**
+     * SQL query to create a table for tweet information
+     */
     private static final String TABLE_TWEET = "CREATE TABLE IF NOT EXISTS tweet (" +
             "tweetID INTEGER PRIMARY KEY,userID INTEGER,retweetID INTEGER,replyID INTEGER,retweeterID INTEGER," +
             "replyname TEXT,replyUserID INTEGER,time INTEGER,tweet TEXT,media TEXT,retweet INTEGER,favorite INTEGER," +
             "statusregister INTEGER,source TEXT,place TEXT,geo TEXT,FOREIGN KEY (userID) REFERENCES user(userID));";
 
+    /**
+     * SQL query to create a table for favorite tweets
+     */
     private static final String TABLE_FAVORS = "CREATE TABLE IF NOT EXISTS favorit (" +
             "ownerID INTEGER,tweetID INTEGER," +
             "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
             "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
 
+    /**
+     * SQL query to create a table for trend information
+     */
     private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS trend (" +
             "woeID INTEGER,trendpos INTEGER,vol INTEGER,trendname TEXT);";
 
+    /**
+     * SQL query to create a table for message information
+     */
     private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS message (" +
             "messageID INTEGER PRIMARY KEY,time INTEGER,senderID INTEGER,receiverID INTEGER," +
             "message TEXT);";
 
+    /**
+     * index for tweet table
+     */
     private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
+
+    /**
+     * index for favorite table
+     */
     private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
+
+    /**
+     * index for trend table
+     */
     private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend ON trend(woeID);";
 
+    //update for trend table
     private static final String TABLE_TWEET_ADD_PLACE = "ALTER TABLE tweet ADD COLUMN place TEXT";
     private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE tweet ADD COLUMN geo TEXT";
     private static final String TABLE_TREND_ADD_VOL = "ALTER TABLE trend ADD COLUMN vol INTEGER";
@@ -63,7 +90,11 @@ public class DatabaseAdapter {
         updateTable();
     }
 
-
+    /**
+     * get database instance
+     *
+     * @return SQLite database
+     */
     public synchronized SQLiteDatabase getDatabase() {
         if (BuildConfig.DEBUG && db.isDbLockedByCurrentThread())
             throw new AssertionError("DB locked!");
@@ -72,20 +103,31 @@ public class DatabaseAdapter {
         return db;
     }
 
-
+    /**
+     * get database adapter instance
+     *
+     * @param context application context
+     * @return database instance
+     */
     public static DatabaseAdapter getInstance(@NonNull Context context) {
         if (instance == null)
             instance = new DatabaseAdapter(context);
         return instance;
     }
 
-
+    /**
+     * delete database and destroy instance
+     *
+     * @param c application context
+     */
     public static void deleteDatabase(Context c) {
         SQLiteDatabase.deleteDatabase(c.getDatabasePath(DB_NAME));
         instance = null;
     }
 
-
+    /**
+     * update old table versions if necessary
+     */
     private void updateTable() {
         if (db.getVersion() < 2) {
             db.execSQL(TABLE_TWEET_ADD_PLACE);
@@ -98,7 +140,9 @@ public class DatabaseAdapter {
         }
     }
 
-
+    /**
+     * initialize tables if there aren't any
+     */
     private void initTables() {
         db.execSQL(TABLE_USER);
         db.execSQL(TABLE_TWEET);
