@@ -148,6 +148,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
 
     /**
      * called from {@link TrendListLoader} to enable or disable RefreshLayout
+     *
      * @param enable true to enable RefreshLayout with delay
      */
     public void setRefresh(boolean enable) {
@@ -164,7 +165,9 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
         }
     }
 
-
+    /**
+     * load content into the list
+     */
     private void load() {
         trendTask = new TrendListLoader(this);
         trendTask.execute(settings.getTrendLocation().getWoeId());

@@ -166,7 +166,11 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
         adapter.disableLoading();
     }
 
-
+    /**
+     * load content into the list
+     *
+     * @param cursor cursor of the list or {@link UserListLoader#NO_CURSOR} if there is none
+     */
     private void load(long cursor) {
         Bundle param = getArguments();
         if (param != null) {

@@ -217,9 +217,13 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         }
     }
 
-
-    private void load(MessageListLoader.Action m) {
-        messageTask = new MessageListLoader(this, m);
+    /**
+     * load content into the list
+     *
+     * @param action mode for loading or removing messages
+     */
+    private void load(MessageListLoader.Action action) {
+        messageTask = new MessageListLoader(this, action);
         messageTask.execute();
     }
 }

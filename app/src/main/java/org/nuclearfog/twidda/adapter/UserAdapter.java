@@ -84,6 +84,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             notifyItemRangeInserted(end, data.getSize());
         }
         nextCursor = data.getNext();
+        loadingIndex = NO_INDEX;
     }
 
     /**

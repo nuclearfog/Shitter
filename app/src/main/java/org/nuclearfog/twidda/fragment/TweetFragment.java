@@ -33,7 +33,9 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 
-
+/**
+ * #Fragment class for a list of tweets
+ */
 public class TweetFragment extends Fragment implements OnRefreshListener, TweetClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
@@ -170,6 +172,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
 
     /**
      * called from {@link TweetListLoader} to enable or disable RefreshLayout
+     *
      * @param enable true to enable RefreshLayout with delay
      */
     public void setRefresh(boolean enable) {
@@ -198,8 +201,14 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         adapter.disableLoading();
     }
 
-
-    private void load(long sinceId, long maxId, int pos) {
+    /**
+     * load content into the list
+     *
+     * @param sinceId ID where to start at
+     * @param maxId   ID where to stop
+     * @param index   index where tweet list should be added
+     */
+    private void load(long sinceId, long maxId, int index) {
         Bundle param = getArguments();
         if (param != null) {
             int mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
@@ -239,7 +248,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
                     action = Action.LIST;
                     break;
             }
-            tweetTask = new TweetListLoader(this, action, id, search, pos);
+            tweetTask = new TweetListLoader(this, action, id, search, index);
             tweetTask.execute(sinceId, maxId);
         }
     }

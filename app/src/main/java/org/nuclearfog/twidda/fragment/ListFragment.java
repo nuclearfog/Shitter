@@ -217,7 +217,9 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         }
     }
 
-
+    /**
+     * load content into the list
+     */
     private void load() {
         Bundle param = getArguments();
         if (param != null) {
