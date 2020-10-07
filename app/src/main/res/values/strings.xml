@@ -153,4 +153,5 @@
     <string name="error_open_link">Could not open link!</string>
     <string name="tweet_sensitive_media">sensitive media</string>
     <string name="error_image_exists">Error, image already exists!</string>
+    <string name="info_phone_tls_support">Phone does not support TLS 1.2. App will probably not work!</string>
 </resources>

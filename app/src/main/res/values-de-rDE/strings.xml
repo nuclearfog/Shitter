@@ -150,4 +150,5 @@
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">sensible inhalte</string>
     <string name="error_image_exists">Fehler, Bild ist bereits vorhanden!</string>
+    <string name="info_phone_tls_support">TLS 1.2 wird nicht unterstützt. Die App wird möglicherweise nicht funktionieren!</string>
 </resources>
