@@ -20,9 +20,9 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.tools.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -33,7 +33,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
 
 /**
  * Adapter class for tweet list

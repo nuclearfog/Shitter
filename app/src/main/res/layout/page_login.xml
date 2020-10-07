@@ -19,23 +19,55 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/linkButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/loginpage_button_margin"
-            android:background="@drawable/button"
-            android:paddingLeft="@dimen/loginpage_button_padding"
-            android:paddingRight="@dimen/loginpage_button_padding"
-            android:text="@string/register_link"
-            android:textSize="@dimen/loginpage_textsize_button" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/loginpage_number_padding"
+                android:layout_marginEnd="@dimen/loginpage_number_padding"
+                android:text="@string/login_first_opt"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/linkButton"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/loginpage_button_size"
+                android:background="@drawable/button"
+                android:paddingLeft="@dimen/loginpage_button_padding"
+                android:paddingRight="@dimen/loginpage_button_padding"
+                android:text="@string/register_link"
+                android:textSize="@dimen/loginpage_textsize_button" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/loginpage_button_size"
             android:gravity="center_vertical"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/loginpage_number_padding"
+                android:layout_marginEnd="@dimen/loginpage_number_padding"
+                android:text="@string/login_sec_opt"
+                android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/pin"
@@ -47,24 +79,47 @@
                 android:inputType="numberPassword"
                 android:singleLine="true"
                 android:textSize="@dimen/loginpage_textsize_login_key"
-                app:drawableEndCompat="@drawable/copy"
                 app:drawableLeftCompat="@drawable/key"
-                app:drawableRightCompat="@drawable/copy"
-                app:drawableStartCompat="@drawable/key" />
+                app:drawableStartCompat="@drawable/key"
+                android:autofillHints="pin" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/verifier"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/loginpage_button_size"
-            android:background="@drawable/button"
-            android:paddingLeft="@dimen/loginpage_button_padding"
-            android:paddingRight="@dimen/loginpage_button_padding"
-            android:text="@string/login_verifier"
-            android:textSize="@dimen/loginpage_textsize_button" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/loginpage_number_padding"
+                android:layout_marginEnd="@dimen/loginpage_number_padding"
+                android:text="@string/login_thr_opt"
+                android:textSize="24sp" />
+
+            <Button
+                android:id="@+id/verifier"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/loginpage_button_size"
+                android:background="@drawable/button"
+                android:paddingLeft="@dimen/loginpage_button_padding"
+                android:paddingRight="@dimen/loginpage_button_padding"
+                android:text="@string/login_verifier"
+                android:textSize="@dimen/loginpage_textsize_button" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 

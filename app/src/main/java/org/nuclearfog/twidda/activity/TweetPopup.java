@@ -27,9 +27,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
-import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.tools.ErrorHandler;
+import org.nuclearfog.twidda.backend.tools.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
@@ -288,7 +288,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
 
     @Override
-    public void onLocationChanged(Location location) {
+    public void onLocationChanged(@NonNull Location location) {
         this.location = location;
         Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
         locationProg.setVisibility(INVISIBLE);
@@ -296,7 +296,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onProviderDisabled(@NonNull String provider) {
         if (location == null)
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         locationProg.setVisibility(INVISIBLE);
@@ -304,7 +304,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
+    public void onProviderEnabled(@NonNull String provider) {
     }
 
     @Override

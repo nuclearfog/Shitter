@@ -42,6 +42,7 @@ public class UserListLoader extends AsyncTask<Void, Void, UserListHolder> {
 
 
     public UserListLoader(UserFragment callback, Action action, long id, long cursor, String search) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;

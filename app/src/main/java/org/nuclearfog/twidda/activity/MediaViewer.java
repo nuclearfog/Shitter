@@ -27,8 +27,8 @@ import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.ImageSaver;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.backend.tools.ErrorHandler;
 import org.nuclearfog.zoomview.ZoomView;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;

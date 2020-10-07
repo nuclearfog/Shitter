@@ -36,6 +36,7 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
 
 
     public TweetLoader(TweetActivity callback, Action action) {
+        super();
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
         this.callback = new WeakReference<>(callback);

@@ -36,6 +36,7 @@ public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
 
 
     public MessageListLoader(MessageFragment callback, Action action) {
+        super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());

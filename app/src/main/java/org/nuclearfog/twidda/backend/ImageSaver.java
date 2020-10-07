@@ -30,6 +30,7 @@ public class ImageSaver extends AsyncTask<Void, Void, ImageSaver.ImageStat> {
 
 
     public ImageSaver(MediaViewer activity, Bitmap image, String link) {
+        super();
         this.callback = new WeakReference<>(activity);
         this.image = image;
         this.link = link;

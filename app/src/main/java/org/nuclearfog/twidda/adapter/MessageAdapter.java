@@ -20,16 +20,16 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.tools.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.helper.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
 
 /**
  * Adapter class for direct messages list

@@ -34,9 +34,9 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
-import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.tools.ErrorHandler;
+import org.nuclearfog.twidda.backend.tools.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;

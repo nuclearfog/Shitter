@@ -20,8 +20,8 @@ import androidx.appcompat.widget.Toolbar;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
-import org.nuclearfog.twidda.backend.helper.FontTool;
+import org.nuclearfog.twidda.backend.tools.ErrorHandler;
+import org.nuclearfog.twidda.backend.tools.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.security.NoSuchAlgorithmException;
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         root = findViewById(R.id.login_root);
         pinInput = findViewById(R.id.pin);
 
-        toolbar.setTitle("");
+        toolbar.setTitle(R.string.login_info);
         setSupportActionBar(toolbar);
 
         linkButton.setOnClickListener(this);

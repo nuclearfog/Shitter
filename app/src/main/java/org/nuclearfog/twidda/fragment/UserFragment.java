@@ -22,9 +22,9 @@ import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserListLoader;
 import org.nuclearfog.twidda.backend.UserListLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.helper.ErrorHandler;
 import org.nuclearfog.twidda.backend.holder.UserListHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.tools.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.FINISHED;

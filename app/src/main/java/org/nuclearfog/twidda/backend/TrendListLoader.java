@@ -30,6 +30,7 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
 
 
     public TrendListLoader(TrendFragment callback) {
+        super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());

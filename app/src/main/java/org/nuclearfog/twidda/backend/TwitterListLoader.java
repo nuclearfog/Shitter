@@ -34,6 +34,7 @@ public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<Twitt
 
 
     public TwitterListLoader(ListFragment callback, Action action) {
+        super();
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.callback = new WeakReference<>(callback);
         this.action = action;

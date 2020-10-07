@@ -29,6 +29,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
 
     public ProfileUpdater(ProfileEditor callback) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);

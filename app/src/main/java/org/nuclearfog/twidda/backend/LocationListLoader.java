@@ -25,6 +25,7 @@ public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation
 
 
     public LocationListLoader(AppSettings callback) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
     }

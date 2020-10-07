@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.helper.FontTool;
 import org.nuclearfog.twidda.backend.holder.UserListHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.tools.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;

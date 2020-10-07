@@ -31,6 +31,7 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
      * @param message message to send
      */
     public MessageUploader(@NonNull MessagePopup callback, MessageHolder message) {
+        super();
         mTwitter = TwitterEngine.getInstance(callback);
         this.callback = new WeakReference<>(callback);
         this.message = message;

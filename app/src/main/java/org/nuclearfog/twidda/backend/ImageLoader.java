@@ -37,6 +37,7 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
      * @param callback Activity context
      */
     public ImageLoader(@NonNull MediaViewer callback) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         Point displaySize = new Point();

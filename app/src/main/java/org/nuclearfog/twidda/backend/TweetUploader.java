@@ -30,6 +30,7 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
      * @param tweet    tweet information
      */
     public TweetUploader(TweetPopup callback, TweetHolder tweet) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         this.tweet = tweet;

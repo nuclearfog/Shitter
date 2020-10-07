@@ -36,6 +36,7 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> 
 
 
     public ProfileLoader(UserProfile callback, Action action) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);

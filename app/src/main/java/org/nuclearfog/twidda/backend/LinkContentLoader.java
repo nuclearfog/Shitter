@@ -40,6 +40,7 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
     private WeakReference<MainActivity> callback;
 
     public LinkContentLoader(MainActivity callback) {
+        super();
         this.callback = new WeakReference<>(callback);
     }
 

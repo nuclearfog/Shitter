@@ -48,6 +48,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
 
     public TweetListLoader(TweetFragment callback, Action action, long id, String search, int pos) {
+        super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());

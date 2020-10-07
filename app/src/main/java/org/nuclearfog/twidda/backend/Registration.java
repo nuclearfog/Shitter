@@ -28,6 +28,7 @@ public class Registration extends AsyncTask<String, Void, String> {
      * @param callback Activity Context
      */
     public Registration(LoginActivity callback) {
+        super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
     }
