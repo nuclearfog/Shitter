@@ -112,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             case REQUEST_APP_LOGIN:
                 if (returnCode == RESULT_CANCELED) {
                     finish();
+                } else {
+                    root.setBackgroundColor(settings.getBackgroundColor());
+                    tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
+                    adapter.notifySettingsChanged();
                 }
                 break;
 
