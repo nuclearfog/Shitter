@@ -1,0 +1,12 @@
+<p><i>Shitter</i> ist ein alternativer Android-Client für Twitter.</p>
+<p><br><b>Features:</b></p><ul>
+<li>schneller Zugriff auf Tweets und Benutzerprofile</li>
+<li>anpassbare Farben</li>
+<li>Text-Highlighting</li>
+<li>Bild/Video Upload</li>
+<li>Bild/Video Vorschau</li>
+<li>Twitter Trends</li>
+<li>Twitter Suche</li>
+<li>Direktnachrichten</li>
+<li>Twitter-Profile Editor</li>
+<li>Proxy Setup</li></ul>
