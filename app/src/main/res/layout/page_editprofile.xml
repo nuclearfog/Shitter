@@ -81,7 +81,8 @@
                 android:hint="@string/enter_username"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize" />
+                android:textSize="@dimen/editprofile_textsize"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -103,7 +104,8 @@
                 android:hint="@string/edit_location_hint"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize" />
+                android:textSize="@dimen/editprofile_textsize"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -125,7 +127,8 @@
                 android:hint="@string/edit_hint_link"
                 android:inputType="text"
                 android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize" />
+                android:textSize="@dimen/editprofile_textsize"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -147,7 +150,8 @@
                 android:gravity="top"
                 android:hint="@string/edit_hint_enter_descr"
                 android:inputType="textMultiLine"
-                android:textSize="@dimen/editprofile_textsize" />
+                android:textSize="@dimen/editprofile_textsize"
+                android:importantForAutofill="no" />
 
         </LinearLayout>
 

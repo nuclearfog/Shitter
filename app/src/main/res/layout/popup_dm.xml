@@ -28,7 +28,8 @@
                 android:background="@android:color/transparent"
                 android:hint="@string/username"
                 android:inputType="text"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:importantForAutofill="no" />
 
             <ImageButton
                 android:id="@+id/dm_media"
@@ -59,7 +60,8 @@
             android:background="@android:color/transparent"
             android:gravity="start"
             android:hint="@string/dm_message"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:importantForAutofill="no" />
 
     </LinearLayout>
 

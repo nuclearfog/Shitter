@@ -336,7 +336,8 @@
                     android:inputType="number|numberDecimal"
                     android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                    android:textSize="@dimen/settings_edittext_textsize"
+                    android:importantForAutofill="no" />
 
                 <EditText
                     android:id="@+id/edit_proxyport"
@@ -350,7 +351,8 @@
                     android:inputType="number"
                     android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                    android:textSize="@dimen/settings_edittext_textsize"
+                    android:importantForAutofill="no" />
 
             </LinearLayout>
 
