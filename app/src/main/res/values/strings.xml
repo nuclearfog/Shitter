@@ -123,8 +123,8 @@
     <string name="edit_hint_enter_descr">enter profile description</string>
     <string name="settins_font">Font style</string>
     <string name="page_profile_edior">Edit profile</string>
-    <string name="error_no_card_app">No card app installed!</string>
-    <string name="error_no_media_app">No media app found!</string>
+    <string name="error_no_card_app">No card app found!</string>
+    <string name="error_no_media_app">No gallery app found!</string>
     <string name="delete_list">delete list</string>
     <string name="confirm_delete_list">Delete list?</string>
     <string name="confirm_delete_message">Delete message?</string>
@@ -158,4 +158,7 @@
     <string name="login_first_opt" translatable="false">1.</string>
     <string name="login_sec_opt" translatable="false">2.</string>
     <string name="login_thr_opt" translatable="false">3.</string>
+    <string name="info_fetching_link">opening twitter login site</string>
+    <string name="info_login_to_twitter">login to Twitter</string>
+    <string name="info_twitter_login_link">Please click the link below to login</string>
 </resources>

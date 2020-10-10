@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,7 +35,6 @@ import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Login Activity of the App
@@ -42,6 +43,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class LoginActivity extends AppCompatActivity implements OnClickListener {
 
     private Registration registerAsync;
+    private GlobalSettings settings;
 
     private Button linkButton, loginButton;
     private EditText pinInput;
@@ -57,6 +59,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         root = findViewById(R.id.login_root);
         pinInput = findViewById(R.id.pin);
 
+        settings = GlobalSettings.getInstance(this);
         toolbar.setTitle(R.string.login_info);
         setSupportActionBar(toolbar);
 
@@ -69,7 +72,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     protected void onStart() {
         super.onStart();
-        GlobalSettings settings = GlobalSettings.getInstance(this);
         linkButton.setTypeface(settings.getFontFace());
         loginButton.setTypeface(settings.getFontFace());
         pinInput.setTypeface(settings.getFontFace());
@@ -112,12 +114,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     @Override
     public void onClick(View v) {
-        if (registerAsync != null && registerAsync.getStatus() == RUNNING)
-            registerAsync.cancel(true);
-
         switch (v.getId()) {
             case R.id.linkButton:
                 if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
+                    Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
                     registerAsync = new Registration(this);
                     registerAsync.execute();
                 }
@@ -127,6 +127,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
                 if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
                     Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
                 } else if (pinInput.getText() != null && pinInput.length() > 0) {
+                    Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
                     String twitterPin = pinInput.getText().toString();
                     registerAsync = new Registration(this);
                     registerAsync.execute(twitterPin);
@@ -146,8 +147,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
         if (loginIntent.resolveActivity(getPackageManager()) != null) {
             startActivity(loginIntent);
-        } else {
-            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+        } else { // If no browser was found, a popup with the login link appears
+            Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
+            dialog.setContentView(R.layout.dialog_login_info);
+            TextView callbackURL = dialog.findViewById(R.id.login_request_link);
+            callbackURL.setLinkTextColor(settings.getHighlightColor());
+            callbackURL.setText(link);
+            dialog.show();
         }
     }
 
@@ -169,7 +175,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     }
 
     /**
-     * Check if phone supports TLS 1.2
+     * Check if phone supports TLS 1.2 which is required for twitter api
      */
     private void checkTLSSupport() {
         boolean tls12Found = false;
@@ -177,7 +183,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
             String[] protocols = param.getProtocols();
             for (String protocol : protocols) {
-                if (protocol.equals("TLSv1.2")) {
+                if (protocol.equals("TLSv1.2") || protocol.equals("TLSv1.3")) {
                     tls12Found = true;
                     break;
                 }

@@ -216,7 +216,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
             Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
-            dialog.setContentView(R.layout.popup_app_info);
+            dialog.setContentView(R.layout.dialog_app_info);
             String versionName = " V" + BuildConfig.VERSION_NAME;
             TextView appInfo = dialog.findViewById(R.id.settings_app_info);
             appInfo.setLinkTextColor(settings.getHighlightColor());

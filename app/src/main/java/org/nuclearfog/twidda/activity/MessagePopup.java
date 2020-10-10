@@ -49,6 +49,8 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     public static final String KEY_DM_PREFIX = "dm_prefix";
     private static final String[] PERM_READ = {Manifest.permission.READ_EXTERNAL_STORAGE};
     private static final String[] PICK_IMAGE = {MediaStore.Images.Media.DATA};
+    private static final String TYPE_IMAGE = "image/*";
+    private static final int REQ_MEDIA = 3;
     private static final int REQ_PERM_READ = 4;
 
     private MessageUploader messageAsync;
@@ -126,7 +128,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
-        if (reqCode == REQ_PERM_READ && returnCode == RESULT_OK) {
+        if (reqCode == REQ_MEDIA && returnCode == RESULT_OK) {
             if (intent != null && intent.getData() != null) {
                 Cursor c = getContentResolver().query(intent.getData(), PICK_IMAGE, null, null, null);
                 if (c != null && c.moveToFirst()) {
@@ -231,9 +233,10 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
             }
         }
         if (accessGranted) {
-            Intent galleryIntent = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
+            Intent galleryIntent = new Intent(ACTION_PICK);
+            galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE);
             if (galleryIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(galleryIntent, REQ_PERM_READ);
+                startActivityForResult(galleryIntent, REQ_MEDIA);
             } else {
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
             }

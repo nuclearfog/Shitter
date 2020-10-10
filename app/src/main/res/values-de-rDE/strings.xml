@@ -152,4 +152,7 @@
     <string name="error_image_exists">Fehler, Bild ist bereits vorhanden!</string>
     <string name="info_phone_tls_support">TLS 1.2 wird nicht unterstützt. Die App wird möglicherweise nicht funktionieren!</string>
     <string name="login_info">3 Schritte zum Login</string>
+    <string name="info_fetching_link">öffne Twitter login Seite</string>
+    <string name="info_login_to_twitter">Melde in Twitter an</string>
+    <string name="info_twitter_login_link">Zum Anmelden bitte Link anklicken</string>
 </resources>

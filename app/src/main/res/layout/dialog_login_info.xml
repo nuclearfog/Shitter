@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/loginpopup_text_padding">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/info_twitter_login_link"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/login_request_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/loginpopup_text_margin"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:textSize="18sp" />
+
+</LinearLayout>
