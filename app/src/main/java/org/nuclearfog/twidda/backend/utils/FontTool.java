@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.tools;
+package org.nuclearfog.twidda.backend.utils;
 
 import android.view.View;
 import android.view.ViewGroup;

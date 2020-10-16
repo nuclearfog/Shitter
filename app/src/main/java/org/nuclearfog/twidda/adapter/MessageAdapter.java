@@ -22,14 +22,14 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.tools.FontTool;
+import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
 
 /**
  * Adapter class for direct messages list
@@ -38,10 +38,10 @@ import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
  */
 public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
-    private OnItemSelected itemClickListener;
-    private GlobalSettings settings;
+    private final OnItemSelected itemClickListener;
+    private final GlobalSettings settings;
 
-    private List<Message> messages;
+    private final List<Message> messages;
 
 
     public MessageAdapter(OnItemSelected itemClickListener, GlobalSettings settings) {

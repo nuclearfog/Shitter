@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.tools;
+package org.nuclearfog.twidda.backend.utils;
 
 import android.content.Context;
 import android.widget.Toast;

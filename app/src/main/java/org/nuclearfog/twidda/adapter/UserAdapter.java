@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.UserListHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.tools.FontTool;
+import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -42,10 +42,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_USER = 0;
     private static final int ITEM_GAP = 1;
 
-    private UserClickListener itemClickListener;
-    private GlobalSettings settings;
+    private final UserClickListener itemClickListener;
+    private final GlobalSettings settings;
 
-    private List<TwitterUser> users;
+    private final List<TwitterUser> users;
     private long nextCursor;
     private int loadingIndex;
 

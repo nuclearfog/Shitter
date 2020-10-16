@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.tools.FontTool;
+import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -28,7 +28,7 @@ import java.util.List;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
 
 /**
  * Adapter class for user lists
@@ -37,11 +37,11 @@ import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
  */
 public class ListAdapter extends Adapter<ListAdapter.ListHolder> {
 
-    private ListClickListener listener;
-    private NumberFormat formatter;
-    private GlobalSettings settings;
+    private final ListClickListener listener;
+    private final NumberFormat formatter;
+    private final GlobalSettings settings;
 
-    private List<TwitterList> data;
+    private final List<TwitterList> data;
 
 
     public ListAdapter(ListClickListener listener, GlobalSettings settings) {

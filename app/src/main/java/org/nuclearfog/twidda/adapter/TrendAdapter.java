@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
-import org.nuclearfog.twidda.backend.tools.FontTool;
+import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -32,11 +32,11 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  */
 public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
-    private TrendClickListener itemClickListener;
-    private GlobalSettings settings;
-    private NumberFormat formatter;
+    private final TrendClickListener itemClickListener;
+    private final GlobalSettings settings;
+    private final NumberFormat formatter;
 
-    private List<TwitterTrend> trends;
+    private final List<TwitterTrend> trends;
 
 
     public TrendAdapter(TrendClickListener itemClickListener, GlobalSettings settings) {

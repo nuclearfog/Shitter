@@ -22,7 +22,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.tools.FontTool;
+import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -33,7 +33,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.tools.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
 
 /**
  * Adapter class for tweet list
@@ -47,12 +47,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private static final int VIEW_GAP = 1;
     private static final int MIN_COUNT = 2;
 
-    private TweetClickListener itemClickListener;
-    private NumberFormat formatter;
-    private GlobalSettings settings;
+    private final TweetClickListener itemClickListener;
+    private final NumberFormat formatter;
+    private final GlobalSettings settings;
     private int loadingIndex;
 
-    private List<Tweet> tweets;
+    private final List<Tweet> tweets;
 
 
     public TweetAdapter(TweetClickListener itemClickListener, GlobalSettings settings) {

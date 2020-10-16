@@ -30,7 +30,7 @@ import org.nuclearfog.twidda.backend.MessageListLoader;
 import org.nuclearfog.twidda.backend.TrendListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.tools.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
