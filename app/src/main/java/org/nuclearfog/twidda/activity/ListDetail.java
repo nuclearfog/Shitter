@@ -1,10 +1,14 @@
 package org.nuclearfog.twidda.activity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
@@ -14,17 +18,25 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.UserListManager;
+import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
+import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.backend.UserListManager.Action.ADD_USER;
 
 /**
  * Activity to show an user list, members and tweets
  */
-public class ListDetail extends AppCompatActivity implements OnTabSelectedListener {
+public class ListDetail extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, ListManagerCallback {
 
     public static final String KEY_LISTDETAIL_ID = "list-id";
     public static final String KEY_LISTDETAIL_TITLE = "list-title";
     public static final String KEY_LISTDETAIL_DESCR = "list-descr";
+
+    private UserListManager listAsync;
 
     private FragmentAdapter adapter;
     private TabLayout tablayout;
@@ -70,6 +82,17 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.userlist, m);
+        MenuItem search = m.findItem(R.id.add_user);
+        SearchView addUser = (SearchView) search.getActionView();
+        addUser.setQueryHint(getString(R.string.list_add_user));
+        addUser.setOnQueryTextListener(this);
+        return super.onCreateOptionsMenu(m);
+    }
+
+
+    @Override
     public void onBackPressed() {
         if (tablayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
@@ -92,5 +115,36 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onTabReselected(Tab tab) {
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (listAsync == null || listAsync.getStatus() != RUNNING) {
+            Bundle param = getIntent().getExtras();
+            if (param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
+                long id = param.getLong(KEY_LISTDETAIL_ID);
+                listAsync = new UserListManager(id, ADD_USER, getApplicationContext(), this);
+                listAsync.execute(query);
+            }
+        }
+        return true;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+
+    @Override
+    public void onSuccess() {
+    }
+
+
+    @Override
+    public void onFailure(EngineException err) {
+
     }
 }

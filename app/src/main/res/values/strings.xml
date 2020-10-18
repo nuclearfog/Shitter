@@ -169,4 +169,5 @@
     <string name="userlist_error_empty_text">Title and description must be set!</string>
     <string name="info_list_updated">Userlist updated</string>
     <string name="info_list_created">Userlist created</string>
+    <string name="list_add_user">add user to list</string>
 </resources>

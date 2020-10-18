@@ -1078,6 +1078,36 @@ public class TwitterEngine {
     }
 
     /**
+     * adds user  to an user list
+     *
+     * @param listId    I of the list
+     * @param usernames screen names of the users
+     * @throws EngineException if access is unavailable
+     */
+    public void addUserToList(long listId, String[] usernames) throws EngineException {
+        try {
+            twitter.createUserListMembers(listId, usernames);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+    /**
+     * removes an user from user list
+     *
+     * @param listId   I of the list
+     * @param username screen names of an user
+     * @throws EngineException if access is unavailable
+     */
+    public void delUserFromList(long listId, String username) throws EngineException {
+        try {
+            twitter.destroyUserListMember(listId, username);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+    /**
      * convert #twitter4j.User to TwitterUser List
      *
      * @param users Twitter4J user List

@@ -163,4 +163,5 @@
     <string name="userlist_error_empty_text">Title und Beschreibung dürfen nicht leer sein!</string>
     <string name="info_list_updated">Liste wurde aktualisiert</string>
     <string name="info_list_created">Liste wurde erstellt</string>
+    <string name="list_add_user">Nutzer hinzufügen</string>
 </resources>
