@@ -55,7 +55,7 @@
                 android:gravity="end"
                 android:orientation="horizontal">
 
-                <androidx.appcompat.widget.SwitchCompat
+                <CheckBox
                     android:id="@+id/list_edit_public_sw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,6 +76,7 @@
             </LinearLayout>
 
         </LinearLayout>
+
     </FrameLayout>
 
 </androidx.cardview.widget.CardView>
