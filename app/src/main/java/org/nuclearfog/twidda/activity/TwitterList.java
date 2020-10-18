@@ -1,8 +1,12 @@
 package org.nuclearfog.twidda.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,6 +22,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class TwitterList extends AppCompatActivity {
 
+    public static final int REQ_CREATE_LIST = 1;
+    public static final int RET_LIST_CREATED = 2;
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
@@ -49,5 +55,20 @@ public class TwitterList extends AppCompatActivity {
                 adapter.setupListPage(ownerName);
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.lists, m);
+        return super.onCreateOptionsMenu(m);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.list_create) {
+            Intent createList = new Intent(this, ListPopup.class);
+            startActivityForResult(createList, REQ_CREATE_LIST);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.BuildConfig;
+import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
@@ -1058,6 +1059,23 @@ public class TwitterEngine {
         }
     }
 
+    /**
+     * creates an user list
+     *
+     * @param list holder for list information
+     * @throws EngineException if access is unavailable
+     */
+    public void updateUserList(ListHolder list) throws EngineException {
+        try {
+            if (list.exists()) {
+                twitter.updateUserList(list.getId(), list.getTitle(), list.isPublic(), list.getDescription());
+            } else {
+                twitter.createUserList(list.getTitle(), list.isPublic(), list.getDescription());
+            }
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
 
     /**
      * convert #twitter4j.User to TwitterUser List

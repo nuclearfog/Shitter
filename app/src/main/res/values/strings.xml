@@ -161,4 +161,12 @@
     <string name="info_fetching_link">opening twitter login site</string>
     <string name="info_login_to_twitter">login to Twitter</string>
     <string name="info_twitter_login_link">Please click the link below to login</string>
+    <string name="menu_new_list">create new list</string>
+    <string name="userlist_public_sel">public</string>
+    <string name="userlist_enter_title">Enter list title</string>
+    <string name="userlist_enter_descr">Enter list description</string>
+    <string name="userlist_create">Create list</string>
+    <string name="userlist_error_empty_text">Title and description must be set!</string>
+    <string name="info_list_updated">Userlist updated</string>
+    <string name="info_list_created">Userlist created</string>
 </resources>
