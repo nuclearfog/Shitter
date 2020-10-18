@@ -168,8 +168,10 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
     @Override
     public void onReset() {
-        list.setAdapter(adapter);
-        load();
+        if (list != null) {
+            list.setAdapter(adapter);
+            load();
+        }
     }
 
 

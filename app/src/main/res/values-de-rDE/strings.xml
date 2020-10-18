@@ -164,4 +164,6 @@
     <string name="info_list_updated">Liste wurde aktualisiert</string>
     <string name="info_list_created">Liste wurde erstellt</string>
     <string name="list_add_user">Nutzer hinzufügen</string>
+    <string name="info_adding_user_to_list">Füge Nutzer zur Liste hinzu</string>
+    <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt</string>
 </resources>

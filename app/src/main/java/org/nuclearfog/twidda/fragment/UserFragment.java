@@ -125,6 +125,10 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onReset() {
+        if (list != null) {
+            list.setAdapter(adapter);
+            load(NO_CURSOR);
+        }
     }
 
     /**

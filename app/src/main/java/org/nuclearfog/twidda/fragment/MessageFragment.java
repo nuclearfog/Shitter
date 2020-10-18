@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -109,6 +110,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     }
 
 
+    @SuppressLint("QueryPermissionsNeeded")
     @Override
     public void onLinkClick(String tag) {
         if (getContext() != null) {

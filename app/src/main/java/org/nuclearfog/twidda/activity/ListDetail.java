@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private ViewPager pager;
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -85,10 +87,18 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.userlist, m);
         MenuItem search = m.findItem(R.id.add_user);
-        SearchView addUser = (SearchView) search.getActionView();
-        addUser.setQueryHint(getString(R.string.list_add_user));
-        addUser.setOnQueryTextListener(this);
+        SearchView searchUser = (SearchView) search.getActionView();
+        searchUser.setQueryHint(getString(R.string.list_add_user));
+        searchUser.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu m) {
+        MenuItem search = m.findItem(R.id.add_user);
+        search.collapseActionView();
+        return super.onPrepareOptionsMenu(m);
     }
 
 
@@ -124,6 +134,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             Bundle param = getIntent().getExtras();
             if (param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
                 long id = param.getLong(KEY_LISTDETAIL_ID);
+                Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
                 listAsync = new UserListManager(id, ADD_USER, getApplicationContext(), this);
                 listAsync.execute(query);
             }
@@ -140,11 +151,13 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onSuccess() {
+        adapter.notifySettingsChanged();
+        Toast.makeText(this, R.string.info_user_added_to_list, Toast.LENGTH_SHORT).show();
+        invalidateOptionsMenu();
     }
 
 
     @Override
     public void onFailure(EngineException err) {
-
     }
 }
