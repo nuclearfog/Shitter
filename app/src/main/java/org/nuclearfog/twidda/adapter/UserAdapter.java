@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.holder.UserListHolder;
+import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -59,13 +59,13 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
 
     @MainThread
-    public void setData(@NonNull UserListHolder data) {
+    public void setData(@NonNull TwitterUserList data) {
         if (users.isEmpty() || !data.hasPrevious()) {
             if (!users.isEmpty()) {
                 // replace previous data
                 users.clear();
             }
-            users.addAll(data.getUsers());
+            users.addAll(data);
             if (data.hasNext()) {
                 // add footer
                 users.add(null);
@@ -80,8 +80,8 @@ public class UserAdapter extends Adapter<ViewHolder> {
             } else {
                 disableLoading();
             }
-            users.addAll(end, data.getUsers());
-            notifyItemRangeInserted(end, data.getSize());
+            users.addAll(end, data);
+            notifyItemRangeInserted(end, data.size());
         }
         nextCursor = data.getNext();
         loadingIndex = NO_INDEX;

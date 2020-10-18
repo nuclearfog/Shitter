@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserListLoader;
 import org.nuclearfog.twidda.backend.UserListLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.holder.UserListHolder;
+import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -132,7 +132,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      *
      * @param data list of twitter users
      */
-    public void setData(UserListHolder data) {
+    public void setData(TwitterUserList data) {
         adapter.setData(data);
     }
 

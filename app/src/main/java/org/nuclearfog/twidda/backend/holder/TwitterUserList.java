@@ -4,18 +4,17 @@ import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 
-import java.util.List;
+import java.util.LinkedList;
 
 /**
- * Container class for user list information
+ * custom twitter user list with cursors included
  */
-public class UserListHolder {
+public class TwitterUserList extends LinkedList<TwitterUser> {
 
-    private final List<TwitterUser> users;
     private final long prevCursor, nextCursor;
 
-    public UserListHolder(List<TwitterUser> users, long prevCursor, long nextCursor) {
-        this.users = users;
+    public TwitterUserList(long prevCursor, long nextCursor) {
+        super();
         this.prevCursor = prevCursor;
         this.nextCursor = nextCursor;
     }
@@ -47,27 +46,9 @@ public class UserListHolder {
         return nextCursor;
     }
 
-    /**
-     * get size of the attached list
-     *
-     * @return size of the list
-     */
-    public int getSize() {
-        return users.size();
-    }
-
-    /**
-     * get attached list
-     *
-     * @return list
-     */
-    public List<TwitterUser> getUsers() {
-        return users;
-    }
-
     @Override
     @NonNull
     public String toString() {
-        return "size=" + getSize() + " pre=" + prevCursor + " pos=" + nextCursor;
+        return "size=" + size() + " pre=" + prevCursor + " pos=" + nextCursor;
     }
 }

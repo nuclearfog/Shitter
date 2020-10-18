@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.holder.UserListHolder;
+import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.fragment.UserFragment;
 
 import java.lang.ref.WeakReference;
@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserFragment
  */
-public class UserListLoader extends AsyncTask<Void, Void, UserListHolder> {
+public class UserListLoader extends AsyncTask<Void, Void, TwitterUserList> {
 
     public static final long NO_CURSOR = -1;
 
@@ -33,12 +33,13 @@ public class UserListLoader extends AsyncTask<Void, Void, UserListHolder> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<UserFragment> callback;
-    private TwitterEngine mTwitter;
+    private final WeakReference<UserFragment> callback;
+    private final TwitterEngine mTwitter;
 
     private final Action action;
-    private String search;
-    private long id, cursor;
+    private final String search;
+    private final long id;
+    private final long cursor;
 
 
     public UserListLoader(UserFragment callback, Action action, long id, long cursor, String search) {
@@ -61,7 +62,7 @@ public class UserListLoader extends AsyncTask<Void, Void, UserListHolder> {
 
 
     @Override
-    protected UserListHolder doInBackground(Void[] v) {
+    protected TwitterUserList doInBackground(Void[] v) {
         try {
             switch (action) {
                 case FOLLOWS:
@@ -97,7 +98,7 @@ public class UserListLoader extends AsyncTask<Void, Void, UserListHolder> {
 
 
     @Override
-    protected void onPostExecute(UserListHolder users) {
+    protected void onPostExecute(TwitterUserList users) {
         if (callback.get() != null) {
             callback.get().setRefresh(false);
             if (users != null) {
