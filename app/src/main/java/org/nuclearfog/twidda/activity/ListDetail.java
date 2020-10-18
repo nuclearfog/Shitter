@@ -23,7 +23,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener {
 
     public static final String KEY_LISTDETAIL_ID = "list-id";
-    public static final String KEY_LISTDETAIL_NAME = "list-name";
+    public static final String KEY_LISTDETAIL_TITLE = "list-title";
+    public static final String KEY_LISTDETAIL_DESCR = "list-descr";
 
     private FragmentAdapter adapter;
     private TabLayout tablayout;
@@ -39,7 +40,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         pager = findViewById(R.id.listdetail_pager);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
 
         adapter = new FragmentAdapter(getSupportFragmentManager());
@@ -52,7 +52,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
             long id = param.getLong(KEY_LISTDETAIL_ID);
-            String name = param.getString(KEY_LISTDETAIL_NAME, "");
+            String title = param.getString(KEY_LISTDETAIL_TITLE, "");
+            String subTitle = param.getString(KEY_LISTDETAIL_DESCR, "");
             adapter.setupListContentPage(id);
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
@@ -60,9 +61,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                 tlTab.setIcon(R.drawable.list);
                 trTab.setIcon(R.drawable.user);
             }
-            toolbar.setTitle(name);
+            toolbar.setTitle(title);
+            toolbar.setSubtitle(subTitle);
             setSupportActionBar(toolbar);
         }
+        FontTool.setViewFontAndColor(settings, root);
     }
 
 

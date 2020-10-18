@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.ListDetail;
 import org.nuclearfog.twidda.activity.UserDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
+import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.TwitterListLoader;
@@ -33,8 +34,9 @@ import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_DESCR;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_NAME;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_TITLE;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRBR;
@@ -46,7 +48,7 @@ import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
 /**
  * Fragment class for user lists
  */
-public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener {
+public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener, FragmentChangeObserver {
 
     public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";
     public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
@@ -54,6 +56,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     private TwitterListLoader listTask;
 
     private SwipeRefreshLayout reloadLayout;
+    private RecyclerView list;
     private ListAdapter adapter;
 
     @Override
@@ -63,15 +66,15 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         GlobalSettings settings = GlobalSettings.getInstance(context);
         adapter = new ListAdapter(this, settings);
 
-        RecyclerView listView = new RecyclerView(inflater.getContext());
-        listView.setLayoutManager(new LinearLayoutManager(context));
-        listView.setHasFixedSize(true);
-        listView.setAdapter(adapter);
+        list = new RecyclerView(inflater.getContext());
+        list.setLayoutManager(new LinearLayoutManager(context));
+        list.setHasFixedSize(true);
+        list.setAdapter(adapter);
 
         reloadLayout = new SwipeRefreshLayout(context);
         reloadLayout.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reloadLayout.setOnRefreshListener(this);
-        reloadLayout.addView(listView);
+        reloadLayout.addView(list);
         return reloadLayout;
     }
 
@@ -140,7 +143,8 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                 case MEMBER:
                     Intent list = new Intent(getContext(), ListDetail.class);
                     list.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
-                    list.putExtra(KEY_LISTDETAIL_NAME, listItem.getTitle());
+                    list.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
+                    list.putExtra(KEY_LISTDETAIL_DESCR, listItem.getDescription());
                     startActivity(list);
                     break;
 
@@ -159,6 +163,18 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     break;
             }
         }
+    }
+
+
+    @Override
+    public void onReset() {
+        list.setAdapter(adapter);
+        load();
+    }
+
+
+    @Override
+    public void onTabChange() {
     }
 
     /**

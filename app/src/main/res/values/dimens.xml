@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--global dimens-->
-    <dimen name="toolbar_height">45dp</dimen>
+    <dimen name="toolbar_height">54dp</dimen>
 
     <!--dimens of page_settings.xml-->
     <dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>

@@ -27,6 +27,8 @@ public class TwitterList extends AppCompatActivity {
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
+    private FragmentAdapter adapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -38,7 +40,7 @@ public class TwitterList extends AppCompatActivity {
 
         toolbar.setTitle(R.string.list_appbar);
         setSupportActionBar(toolbar);
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
@@ -57,11 +59,22 @@ public class TwitterList extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
+        super.onActivityResult(reqCode, returnCode, intent);
+        if (reqCode == REQ_CREATE_LIST && returnCode == RET_LIST_CREATED) {
+            adapter.notifySettingsChanged();
+        }
+    }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.lists, m);
         return super.onCreateOptionsMenu(m);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
