@@ -22,9 +22,29 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class TwitterList extends AppCompatActivity {
 
+    /**
+     * request code for {@link ListPopup}
+     */
     public static final int REQ_CREATE_LIST = 1;
+
+    /**
+     * return code for {@link ListPopup} if list was created
+     */
     public static final int RET_LIST_CREATED = 2;
+
+    /**
+     * Key to set up if the current user owns the lists
+     */
+    public static final String KEY_USERLIST_HOME_LIST = "userlist-home";
+
+    /**
+     * Key for the ID the list owner
+     */
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
+
+    /**
+     * alternative key for the screen name of the owner
+     */
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
     private FragmentAdapter adapter;
@@ -72,6 +92,10 @@ public class TwitterList extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.lists, m);
+        Bundle param = getIntent().getExtras();
+        if (param != null && param.getBoolean(KEY_USERLIST_HOME_LIST, false)) {
+            m.findItem(R.id.list_create).setVisible(true);
+        }
         return super.onCreateOptionsMenu(m);
     }
 

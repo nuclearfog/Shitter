@@ -33,12 +33,22 @@ import static org.nuclearfog.twidda.backend.UserListManager.Action.ADD_USER;
  */
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener, ListManagerCallback {
 
+    /**
+     * Key for the list ID, required
+     */
     public static final String KEY_LISTDETAIL_ID = "list-id";
+
+    /**
+     * Key for the list title
+     */
     public static final String KEY_LISTDETAIL_TITLE = "list-title";
+
+    /**
+     * Key for the list description
+     */
     public static final String KEY_LISTDETAIL_DESCR = "list-descr";
 
     private UserListManager listAsync;
-
     private FragmentAdapter adapter;
     private TabLayout tablayout;
     private ViewPager pager;

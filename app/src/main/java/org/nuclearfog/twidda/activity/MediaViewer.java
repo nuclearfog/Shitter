@@ -49,7 +49,15 @@ import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 public class MediaViewer extends AppCompatActivity implements OnImageClickListener,
         OnPreparedListener, OnInfoListener, OnErrorListener {
 
+    /**
+     * Key for the media URL, local or online, required
+     */
     public static final String KEY_MEDIA_LINK = "media_link";
+
+    /**
+     * Key for the media type, required
+     * {@link #MEDIAVIEWER_IMG_S}, {@link #MEDIAVIEWER_IMAGE}, {@link #MEDIAVIEWER_VIDEO} or {@link #MEDIAVIEWER_ANGIF}
+     */
     public static final String KEY_MEDIA_TYPE = "media_type";
 
     /// Media Types

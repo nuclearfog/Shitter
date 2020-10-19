@@ -57,7 +57,14 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
  */
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener, OnDismissListener {
 
+    /**
+     * key for the replied tweet if any
+     */
     public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
+
+    /**
+     * key for the text added to the tweet if any
+     */
     public static final String KEY_TWEETPOPUP_TEXT = "tweet_text";
 
     private enum MediaType {

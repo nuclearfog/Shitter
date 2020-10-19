@@ -67,8 +67,19 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 public class TweetActivity extends AppCompatActivity implements OnClickListener,
         OnLongClickListener, OnTagClickListener {
 
+    /**
+     * ID of the tweet to open. required
+     */
     public static final String KEY_TWEET_ID = "tweetID";
+
+    /**
+     * screen name of the author. optional
+     */
     public static final String KEY_TWEET_NAME = "username";
+
+    /**
+     * regex pattern of a tweet URL
+     */
     public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;

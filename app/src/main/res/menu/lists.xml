@@ -6,5 +6,6 @@
         android:id="@+id/list_create"
         android:icon="@drawable/new_list"
         android:title="@string/menu_new_list"
+        android:visible="false"
         app:showAsAction="always" />
 </menu>

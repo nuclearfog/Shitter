@@ -46,7 +46,11 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
  */
 public class MessagePopup extends AppCompatActivity implements OnClickListener, OnDismissListener {
 
+    /**
+     * key for the screen name if any
+     */
     public static final String KEY_DM_PREFIX = "dm_prefix";
+
     private static final String[] PERM_READ = {Manifest.permission.READ_EXTERNAL_STORAGE};
     private static final String[] PICK_IMAGE = {MediaStore.Images.Media.DATA};
     private static final String TYPE_IMAGE = "image/*";

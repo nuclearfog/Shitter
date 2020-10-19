@@ -18,12 +18,35 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class UserDetail extends AppCompatActivity {
 
+    /**
+     * type of users to get from twitter
+     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS} or {@link #USERLIST_SUBSCRBR}
+     */
     public static final String KEY_USERDETAIL_MODE = "userlist_mode";
-    public static final String KEY_USERDETAIL_ID = "userlist_owner_id";
 
+    /**
+     * ID of a userlist, an user or a tweet to get the users from
+     */
+    public static final String KEY_USERDETAIL_ID = "userlist_id";
+
+    /**
+     * friends of an user, requires user ID
+     */
     public static final int USERLIST_FRIENDS = 1;
+
+    /**
+     * follower of an user, requires user ID
+     */
     public static final int USERLIST_FOLLOWER = 2;
+
+    /**
+     * user retweeting a tweet, requires tweet ID
+     */
     public static final int USERLIST_RETWEETS = 3;
+
+    /**
+     * user list, requires list ID
+     */
     public static final int USERLIST_SUBSCRBR = 5;
 
     @Override

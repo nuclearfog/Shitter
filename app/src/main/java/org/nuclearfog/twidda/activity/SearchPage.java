@@ -29,6 +29,9 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
  */
 public class SearchPage extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
+    /**
+     * Key for the search query, required
+     */
     public static final String KEY_SEARCH_QUERY = "search_query";
 
     private FragmentAdapter adapter;

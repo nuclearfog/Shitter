@@ -60,6 +60,7 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_HOME_LIST;
 import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
@@ -71,10 +72,29 @@ import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 public class UserProfile extends AppCompatActivity implements OnClickListener,
         OnTagClickListener, OnTabSelectedListener {
 
+    /**
+     * Key for the user ID
+     */
     public static final String KEY_PROFILE_ID = "profile_id";
+
+    /**
+     * Alternative Key for the screen name
+     */
     public static final String KEY_PROFILE_NAME = "profile_name";
+
+    /**
+     * request code for {@link ProfileEditor}
+     */
+    public static final int REQUEST_PROFILE_CHANGED = 1;
+
+    /**
+     * return code if {@link ProfileEditor} changed profile information
+     */
     public static final int RETURN_PROFILE_CHANGED = 2;
-    private static final int REQUEST_PROFILE_CHANGED = 1;
+
+    /**
+     * background color mask for TextView backgrounds
+     */
     private static final int TRANSPARENCY = 0xafffffff;
 
     private FragmentAdapter adapter;
@@ -341,6 +361,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_lists:
                         Intent listPage = new Intent(this, TwitterList.class);
+                        listPage.putExtra(KEY_USERLIST_HOME_LIST, user.getId() == settings.getUserId());
                         listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
                         startActivity(listPage);
                         break;
