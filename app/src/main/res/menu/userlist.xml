@@ -5,7 +5,8 @@
     <item
         android:id="@+id/add_user"
         android:title="@string/list_add_user"
-        android:iconifiedByDefault="false"
+        android:icon="@drawable/follow"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom|collapseActionView" />
+
 </menu>

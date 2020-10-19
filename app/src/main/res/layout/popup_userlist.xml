@@ -25,11 +25,20 @@
             android:orientation="vertical"
             android:padding="@dimen/tweetpopup_margin_layout">
 
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/userlist_edittext_margin"
+                android:singleLine="true"
+                android:text="@string/userlist_create_new_list"
+                android:textSize="@dimen/userlist_title_textsize" />
+
             <EditText
                 android:id="@+id/list_edit_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/userlist_edittext_margin"
+                android:layout_margin="@dimen/userlist_edittext_margin"
                 android:autofillHints="@string/userlist_enter_title"
                 android:background="@android:color/transparent"
                 android:ems="10"
@@ -41,6 +50,7 @@
                 android:id="@+id/list_edit_descr"
                 android:layout_width="@dimen/userlist_descr_width"
                 android:layout_height="@dimen/userlist_descr_height"
+                android:layout_margin="@dimen/userlist_edittext_margin"
                 android:autofillHints="@string/userlist_enter_descr"
                 android:background="@android:color/transparent"
                 android:ems="10"

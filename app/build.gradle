@@ -8,8 +8,8 @@ android {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 23
-        versionName '1.7.15'
+        versionCode 24
+        versionName '1.8'
         vectorDrawables.useSupportLibrary true
     }
 

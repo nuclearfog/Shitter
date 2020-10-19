@@ -172,4 +172,5 @@
     <string name="list_add_user">add user to list</string>
     <string name="info_adding_user_to_list">Adding user to list</string>
     <string name="info_user_added_to_list">User added to list</string>
+    <string name="userlist_create_new_list">Create a new userlist</string>
 </resources>

@@ -11,13 +11,17 @@ import org.nuclearfog.twidda.backend.holder.ListHolder;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * This class creates and updates user lists
+ * Backend for {@link ListPopup}
+ */
 public class UserListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
 
-    private final WeakReference<ListPopup> callback;
 
     @Nullable
     private EngineException err;
     private final TwitterEngine mTwitter;
+    private final WeakReference<ListPopup> callback;
 
 
     public UserListUpdater(ListPopup activity) {
