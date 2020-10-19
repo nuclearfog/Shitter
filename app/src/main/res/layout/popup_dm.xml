@@ -16,20 +16,20 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dmpopup_margin_layout"
+            android:layout_margin="@dimen/dmpopup_margin_layout"
             android:gravity="end|center_vertical"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/dm_receiver"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="@string/username"
+                android:importantForAutofill="no"
                 android:inputType="text"
-                android:singleLine="true"
-                android:importantForAutofill="no" />
+                android:singleLine="true" />
 
             <ImageButton
                 android:id="@+id/dm_media"
@@ -57,11 +57,12 @@
             android:id="@+id/dm_text"
             android:layout_width="@dimen/dmpopup_text_width"
             android:layout_height="@dimen/dmpopup_text_height"
+            android:layout_margin="@dimen/dmpopup_margin_layout"
             android:background="@android:color/transparent"
             android:gravity="start"
             android:hint="@string/dm_message"
-            android:inputType="textMultiLine"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine" />
 
     </LinearLayout>
 

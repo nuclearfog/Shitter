@@ -17,11 +17,12 @@
             android:id="@+id/tweet_input"
             android:layout_width="@dimen/tweetpopup_text_width"
             android:layout_height="@dimen/tweetpopup_text_height"
+            android:layout_margin="@dimen/tweetpopup_margin_layout"
             android:background="@android:color/transparent"
             android:gravity="top"
             android:hint="@string/tweet"
-            android:inputType="textMultiLine"
-            android:importantForAutofill="no" />
+            android:importantForAutofill="no"
+            android:inputType="textMultiLine" />
 
         <LinearLayout
             android:layout_width="match_parent"
