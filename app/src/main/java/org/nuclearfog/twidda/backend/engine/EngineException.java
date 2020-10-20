@@ -34,7 +34,7 @@ public class EngineException extends Exception {
         BITMAP_FAILURE
     }
 
-    private ErrorType errorType;
+    private final ErrorType errorType;
     private int retryAfter;
 
 
@@ -56,6 +56,7 @@ public class EngineException extends Exception {
             case 17:
             case 50:    // USER not found
             case 63:    // USER suspended
+            case 108:
                 errorType = ErrorType.USER_NOT_FOUND;
                 break;
 

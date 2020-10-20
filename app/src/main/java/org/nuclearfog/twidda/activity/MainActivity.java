@@ -36,15 +36,32 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
  */
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 
+    /**
+     * Code returned from {@link AppSettings} when user clears the database
+     */
     public static final int RETURN_DB_CLEARED = 1;
+
+    /**
+     * Code returned from {@link AppSettings} when user logs out from Twitter
+     */
     public static final int RETURN_APP_LOGOUT = 2;
+
+    /**
+     * Request code for {@link LoginActivity}
+     */
     private static final int REQUEST_APP_LOGIN = 1;
+
+    /**
+     * Request code for {@link AppSettings}
+     */
     private static final int REQUEST_APP_SETTINGS = 2;
 
     private FragmentAdapter adapter;
-    private TabLayout tablayout;
     private GlobalSettings settings;
+
+    // Views and dialogs
     private Dialog loadingCircle;
+    private TabLayout tablayout;
     private ViewPager pager;
     private View root;
 

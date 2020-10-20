@@ -504,7 +504,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
         follower.setText(formatter.format(user.getFollower()));
         txtUser.setText(user.getUsername());
         txtScrName.setText(user.getScreenname());
-        bioTxt.setText(bio);
 
         if (profile_head.getVisibility() != VISIBLE) {
             profile_head.setVisibility(VISIBLE);
@@ -516,6 +515,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
             txtLocation.setVisibility(VISIBLE);
         } else {
             txtLocation.setVisibility(GONE);
+        }
+        if (!user.getBio().isEmpty()) {
+            bioTxt.setVisibility(VISIBLE);
+            bioTxt.setText(bio);
+        } else {
+            bioTxt.setVisibility(GONE);
         }
         if (!user.getLink().isEmpty()) {
             String link = user.getLink();

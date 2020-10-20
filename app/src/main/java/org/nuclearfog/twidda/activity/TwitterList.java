@@ -33,11 +33,6 @@ public class TwitterList extends AppCompatActivity {
     public static final int RET_LIST_CREATED = 2;
 
     /**
-     * return code for {@link ListPopup} if list was updated
-     */
-    public static final int RET_LIST_UPDATED = 3;
-
-    /**
      * Key to set up if the current user owns the lists
      */
     public static final String KEY_CURRENT_USER_OWNS = "userlist-current-user-owns-list";

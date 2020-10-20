@@ -56,8 +56,20 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
+
+    /**
+     * Request code for read permissions
+     */
     private static final int REQ_PERM = 3;
+
+    /**
+     * Request code for loading new profile image
+     */
     private static final int REQ_PROFILE_IMG = 4;
+
+    /**
+     * Request code for loading new banner image
+     */
     private static final int REQ_PROFILE_BANNER = 5;
 
     private ProfileUpdater editorAsync;

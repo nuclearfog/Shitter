@@ -84,9 +84,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private Toolbar toolbar;
 
     // list information
-    private long listId;
-    private String title, description;
-    private boolean isPublic, belongsToCurrentUser;
+    private long listId = -1;
+    private String title = "";
+    private String description = "";
+    private boolean isPublic = false;
+    private boolean belongsToCurrentUser = false;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -109,10 +111,10 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            listId = param.getLong(KEY_LISTDETAIL_ID);
-            title = param.getString(KEY_LISTDETAIL_TITLE);
-            description = param.getString(KEY_LISTDETAIL_DESCR);
-            isPublic = param.getBoolean(KEY_LISTDETAIL_VISIB);
+            listId = param.getLong(KEY_LISTDETAIL_ID, -1);
+            title = param.getString(KEY_LISTDETAIL_TITLE, "");
+            description = param.getString(KEY_LISTDETAIL_DESCR, "");
+            isPublic = param.getBoolean(KEY_LISTDETAIL_VISIB, false);
             belongsToCurrentUser = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
             adapter.setupListContentPage(listId);
             Tab tlTab = tablayout.getTabAt(0);
@@ -185,6 +187,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             title = data.getStringExtra(KEY_LISTDETAIL_TITLE);
             description = data.getStringExtra(KEY_LISTDETAIL_DESCR);
             isPublic = data.getBooleanExtra(KEY_LISTDETAIL_VISIB, false);
+            if (title == null || description == null)
+                title = description = "";
             toolbar.setTitle(title);
             toolbar.setSubtitle(description);
         }

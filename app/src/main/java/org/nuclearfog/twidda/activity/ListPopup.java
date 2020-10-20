@@ -89,7 +89,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
             listId = extras.getLong(KEY_LIST_ID, -1);
             title = extras.getString(KEY_LIST_TITLE, "");
             description = extras.getString(KEY_LIST_DESCR, "");
-            isPublic = extras.getBoolean(KEY_LIST_VISIB);
+            isPublic = extras.getBoolean(KEY_LIST_VISIB, false);
         }
         titleInput.setText(title);
         subTitleInput.setText(description);
@@ -104,7 +104,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
 
     @Override
     public void onBackPressed() {
-        if (titleInput.getText().toString().equals(title)
+        if (visibility.isChecked() == isPublic && titleInput.getText().toString().equals(title)
                 && subTitleInput.getText().toString().equals(description)) {
             super.onBackPressed();
         } else {
