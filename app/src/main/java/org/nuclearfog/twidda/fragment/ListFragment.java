@@ -34,9 +34,11 @@ import java.util.List;
 
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_DESCR;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_TITLE;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_VISIB;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRBR;
@@ -54,6 +56,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
 
     private TwitterListLoader listTask;
+    private GlobalSettings settings;
 
     private SwipeRefreshLayout reloadLayout;
     private RecyclerView list;
@@ -63,7 +66,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Context context = inflater.getContext();
 
-        GlobalSettings settings = GlobalSettings.getInstance(context);
+        settings = GlobalSettings.getInstance(context);
         adapter = new ListAdapter(this, settings);
 
         list = new RecyclerView(inflater.getContext());
@@ -141,11 +144,15 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     break;
 
                 case MEMBER:
-                    Intent list = new Intent(getContext(), ListDetail.class);
-                    list.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
-                    list.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
-                    list.putExtra(KEY_LISTDETAIL_DESCR, listItem.getDescription());
-                    startActivity(list);
+                    Intent detailedList = new Intent(getContext(), ListDetail.class);
+                    Bundle param = getArguments();
+                    if (param.getLong(KEY_FRAG_LIST_OWNER_ID, -1) == settings.getUserId())
+                        detailedList.putExtra(KEY_CURRENT_USER_OWNS, true);
+                    detailedList.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
+                    detailedList.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
+                    detailedList.putExtra(KEY_LISTDETAIL_DESCR, listItem.getDescription());
+                    detailedList.putExtra(KEY_LISTDETAIL_VISIB, !listItem.isPrivate());
+                    startActivity(detailedList);
                     break;
 
                 case DELETE:

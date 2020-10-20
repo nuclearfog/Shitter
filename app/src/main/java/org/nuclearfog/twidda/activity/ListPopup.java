@@ -1,12 +1,14 @@
 package org.nuclearfog.twidda.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,6 +26,11 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_DESCR;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_TITLE;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_VISIB;
+import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.TwitterList.RET_LIST_CREATED;
 
 /**
@@ -52,9 +59,14 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
     public static final String KEY_LIST_VISIB = "list_visibility";
 
     private UserListUpdater updaterAsync;
-    private EditText title, description;
+    private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
     private View progressCircle;
+
+    private long listId = -1;
+    private String title = "";
+    private String description = "";
+    private boolean isPublic = false;
 
 
     @Override
@@ -62,9 +74,10 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
         super.onCreate(b);
         setContentView(R.layout.popup_userlist);
         View root = findViewById(R.id.list_popup_root);
-        Button update = findViewById(R.id.userlist_create_list);
-        title = findViewById(R.id.list_edit_title);
-        description = findViewById(R.id.list_edit_descr);
+        Button updateButton = findViewById(R.id.userlist_create_list);
+        TextView popupTitle = findViewById(R.id.popup_list_title);
+        titleInput = findViewById(R.id.list_edit_title);
+        subTitleInput = findViewById(R.id.list_edit_descr);
         visibility = findViewById(R.id.list_edit_public_sw);
         progressCircle = findViewById(R.id.list_popup_loading);
 
@@ -73,24 +86,26 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
         FontTool.setViewFont(settings, root);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            title.setText(extras.getString(KEY_LIST_TITLE, ""));
-            description.setText(extras.getString(KEY_LIST_DESCR, ""));
-            visibility.setChecked(extras.getBoolean(KEY_LIST_VISIB, true));
+            listId = extras.getLong(KEY_LIST_ID, -1);
+            title = extras.getString(KEY_LIST_TITLE, "");
+            description = extras.getString(KEY_LIST_DESCR, "");
+            isPublic = extras.getBoolean(KEY_LIST_VISIB);
         }
-        update.setOnClickListener(this);
+        titleInput.setText(title);
+        subTitleInput.setText(description);
+        visibility.setChecked(isPublic);
+        if (listId > 0) {
+            popupTitle.setText(R.string.edit_list);
+            updateButton.setText(R.string.update_list);
+        }
+        updateButton.setOnClickListener(this);
     }
 
 
     @Override
     public void onBackPressed() {
-        Bundle extras = getIntent().getExtras();
-        String titleStr = "";
-        String descrStr = "";
-        if (extras != null) {
-            titleStr = extras.getString(KEY_LIST_TITLE, titleStr);
-            descrStr = extras.getString(KEY_LIST_DESCR, descrStr);
-        }
-        if (titleStr.equals(title.getText().toString()) && descrStr.equals(description.getText().toString())) {
+        if (titleInput.getText().toString().equals(title)
+                && subTitleInput.getText().toString().equals(description)) {
             super.onBackPressed();
         } else {
             Builder alertDialog = new Builder(this, R.style.ConfirmDialog);
@@ -110,18 +125,18 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.userlist_create_list) {
-            String titleStr = title.getText().toString();
-            String descrStr = description.getText().toString();
+            String titleStr = titleInput.getText().toString();
+            String descrStr = subTitleInput.getText().toString();
             boolean isPublic = visibility.isChecked();
             if (titleStr.trim().isEmpty() || descrStr.trim().isEmpty()) {
                 Toast.makeText(this, R.string.userlist_error_empty_text, Toast.LENGTH_SHORT).show();
             } else if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
-                Bundle extras = getIntent().getExtras();
                 ListHolder mHolder;
-                if (extras != null && extras.containsKey(KEY_LIST_ID)) {
-                    long id = extras.getLong(KEY_LIST_ID);
-                    mHolder = new ListHolder(titleStr, descrStr, isPublic, id);
+                if (listId > 0) {
+                    // update existing list
+                    mHolder = new ListHolder(titleStr, descrStr, isPublic, listId);
                 } else {
+                    // create new one
                     mHolder = new ListHolder(titleStr, descrStr, isPublic);
                 }
                 updaterAsync = new UserListUpdater(this);
@@ -139,11 +154,18 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
 
     /**
      * called when a list was updated successfully
+     *
+     * @param result updated list data
      */
-    public void onSuccess() {
-        Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey(KEY_LIST_ID)) {
+    public void onSuccess(ListHolder result) {
+        if (listId > 0) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(KEY_LISTDETAIL_ID, result.getId());
+            resultIntent.putExtra(KEY_LISTDETAIL_TITLE, result.getTitle());
+            resultIntent.putExtra(KEY_LISTDETAIL_DESCR, result.getDescription());
+            resultIntent.putExtra(KEY_LISTDETAIL_VISIB, result.isPublic());
+            setResult(RET_LIST_CHANGED, resultIntent);
         } else {
             // it's a new list, if no list ID is defined
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();

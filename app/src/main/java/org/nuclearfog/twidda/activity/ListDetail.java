@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -22,10 +24,15 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.UserListManager;
 import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_DESCR;
+import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_ID;
+import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_TITLE;
+import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_VISIB;
 import static org.nuclearfog.twidda.backend.UserListManager.Action.ADD_USER;
 
 /**
@@ -48,18 +55,45 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      */
     public static final String KEY_LISTDETAIL_DESCR = "list-descr";
 
+    /**
+     * Key for the list description
+     */
+    public static final String KEY_LISTDETAIL_VISIB = "list-visibility";
+
+    /**
+     * Key to check if this list is owned by the current user
+     */
+    public static final String KEY_CURRENT_USER_OWNS = "list-owner";
+
+    /**
+     * Request code for list editing
+     */
+    public static final int REQ_LIST_CHANGE = 1;
+
+    /**
+     * Return code when this list was sucessfully changed
+     */
+    public static final int RET_LIST_CHANGED = 2;
+
     private UserListManager listAsync;
     private FragmentAdapter adapter;
+
+    // Views
     private TabLayout tablayout;
     private ViewPager pager;
+    private Toolbar toolbar;
 
+    // list information
+    private long listId;
+    private String title, description;
+    private boolean isPublic, belongsToCurrentUser;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_listdetail);
         View root = findViewById(R.id.listdetail_root);
-        Toolbar toolbar = findViewById(R.id.listdetail_toolbar);
+        toolbar = findViewById(R.id.listdetail_toolbar);
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
 
@@ -74,11 +108,13 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         tablayout.addOnTabSelectedListener(this);
 
         Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
-            long id = param.getLong(KEY_LISTDETAIL_ID);
-            String title = param.getString(KEY_LISTDETAIL_TITLE, "");
-            String subTitle = param.getString(KEY_LISTDETAIL_DESCR, "");
-            adapter.setupListContentPage(id);
+        if (param != null) {
+            listId = param.getLong(KEY_LISTDETAIL_ID);
+            title = param.getString(KEY_LISTDETAIL_TITLE);
+            description = param.getString(KEY_LISTDETAIL_DESCR);
+            isPublic = param.getBoolean(KEY_LISTDETAIL_VISIB);
+            belongsToCurrentUser = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
+            adapter.setupListContentPage(listId);
             Tab tlTab = tablayout.getTabAt(0);
             Tab trTab = tablayout.getTabAt(1);
             if (tlTab != null && trTab != null) {
@@ -86,7 +122,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                 trTab.setIcon(R.drawable.user);
             }
             toolbar.setTitle(title);
-            toolbar.setSubtitle(subTitle);
+            toolbar.setSubtitle(description);
             setSupportActionBar(toolbar);
         }
         FontTool.setViewFontAndColor(settings, root);
@@ -96,19 +132,39 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.userlist, m);
-        MenuItem search = m.findItem(R.id.add_user);
+        MenuItem search = m.findItem(R.id.menu_list_add_user);
+        MenuItem editList = m.findItem(R.id.menu_list_edit);
         SearchView searchUser = (SearchView) search.getActionView();
-        searchUser.setQueryHint(getString(R.string.list_add_user));
-        searchUser.setOnQueryTextListener(this);
+        if (belongsToCurrentUser) {
+            searchUser.setQueryHint(getString(R.string.menu_add_user));
+            searchUser.setOnQueryTextListener(this);
+        } else {
+            editList.setVisible(false);
+            search.setVisible(false);
+        }
         return super.onCreateOptionsMenu(m);
     }
 
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        MenuItem search = m.findItem(R.id.add_user);
+        MenuItem search = m.findItem(R.id.menu_list_add_user);
         search.collapseActionView();
         return super.onPrepareOptionsMenu(m);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_list_edit) {
+            Intent editList = new Intent(this, ListPopup.class);
+            editList.putExtra(KEY_LIST_ID, listId);
+            editList.putExtra(KEY_LIST_TITLE, title);
+            editList.putExtra(KEY_LIST_DESCR, description);
+            editList.putExtra(KEY_LIST_VISIB, isPublic);
+            startActivityForResult(editList, REQ_LIST_CHANGE);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -119,6 +175,20 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         } else {
             super.onBackPressed();
         }
+    }
+
+
+    @Override
+    public void onActivityResult(int reqCode, int returnCode, @Nullable Intent data) {
+        if (reqCode == REQ_LIST_CHANGE && returnCode == RET_LIST_CHANGED && data != null) {
+            // refresh list information
+            title = data.getStringExtra(KEY_LISTDETAIL_TITLE);
+            description = data.getStringExtra(KEY_LISTDETAIL_DESCR);
+            isPublic = data.getBooleanExtra(KEY_LISTDETAIL_VISIB, false);
+            toolbar.setTitle(title);
+            toolbar.setSubtitle(description);
+        }
+        super.onActivityResult(reqCode, returnCode, data);
     }
 
 
@@ -141,13 +211,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onQueryTextSubmit(String query) {
         if (listAsync == null || listAsync.getStatus() != RUNNING) {
-            Bundle param = getIntent().getExtras();
-            if (param != null && param.containsKey(KEY_LISTDETAIL_ID)) {
-                long id = param.getLong(KEY_LISTDETAIL_ID);
-                Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-                listAsync = new UserListManager(id, ADD_USER, getApplicationContext(), this);
-                listAsync.execute(query);
-            }
+            Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
+            listAsync = new UserListManager(listId, ADD_USER, getApplicationContext(), this);
+            listAsync.execute(query);
         }
         return true;
     }
@@ -169,5 +235,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onFailure(EngineException err) {
+        ErrorHandler.handleFailure(this, err);
     }
 }

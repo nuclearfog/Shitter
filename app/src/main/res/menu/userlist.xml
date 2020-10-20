@@ -3,10 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/add_user"
-        android:title="@string/list_add_user"
+        android:id="@+id/menu_list_add_user"
+        android:title="@string/menu_add_user"
         android:icon="@drawable/follow"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/menu_list_edit"
+        android:title="@string/edit_list"
+        android:icon="@drawable/edit_list"
+        app:showAsAction="ifRoom" />
 
 </menu>

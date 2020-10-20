@@ -26,6 +26,7 @@
             android:padding="@dimen/tweetpopup_margin_layout">
 
             <TextView
+                android:id="@+id/popup_list_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/userlist_edittext_margin"
@@ -69,6 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:singleLine="true"
                     android:text="@string/userlist_public_sel"
                     app:switchPadding="@dimen/userlist_switch_padding" />
 
@@ -80,6 +82,7 @@
                     android:background="@drawable/button"
                     android:paddingLeft="@dimen/userlist_button_padding"
                     android:paddingRight="@dimen/userlist_button_padding"
+                    android:singleLine="true"
                     android:text="@string/userlist_create" />
 
             </LinearLayout>
