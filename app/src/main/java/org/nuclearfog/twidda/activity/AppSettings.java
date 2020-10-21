@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -46,6 +45,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -53,7 +53,7 @@ import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
 
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener,
-        OnCheckedChangeListener, OnItemSelectedListener {
+        OnCheckedChangeListener, OnItemSelectedListener, DialogInterface.OnClickListener, OnColorChangedListener {
 
     private static final int INVERTCOLOR = 0xffffff;
     private static final String[] PICKER_SELECT = {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
@@ -68,10 +68,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     private GlobalSettings settings;
     private LocationListLoader locationAsync;
+    private Dialog load_dialog_selector, proxyDialog, databaseDialog, logoutDialog, color_dialog_selector;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private NumberPicker load_picker;
-    private Dialog load_dialog_selector, color_dialog_selector;
     private CompoundButton enableProxy, enableAuth;
     private Spinner locationSpinner;
     private LocationAdapter locationAdapter;
@@ -183,16 +183,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             TwitterEngine.resetTwitter();
             super.onBackPressed();
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
-            builder.setTitle(R.string.info_error).setMessage(R.string.info_wrong_proxy_settings);
-            builder.setPositiveButton(R.string.confirm_discard_proxy_changes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    // exit without saving proxy settings
-                    AppSettings.super.onBackPressed();
-                }
-            });
-            builder.setNegativeButton(android.R.string.cancel, null).show();
+            if (proxyDialog == null) {
+                Builder builder = new Builder(this, R.style.ConfirmDialog);
+                builder.setTitle(R.string.info_error);
+                builder.setMessage(R.string.info_wrong_proxy_settings);
+                builder.setPositiveButton(R.string.confirm_discard_proxy_changes, this);
+                builder.setNegativeButton(android.R.string.cancel, null);
+                proxyDialog = builder.create();
+            }
+            if (!proxyDialog.isShowing()) {
+                proxyDialog.show();
+            }
         }
     }
 
@@ -228,37 +229,53 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE) {
+            if (dialog == proxyDialog) {
+                // exit without saving proxy settings
+                AppSettings.super.onBackPressed();
+            } else if (dialog == databaseDialog) {
+                DatabaseAdapter.deleteDatabase(getApplicationContext());
+                setResult(RETURN_DB_CLEARED);
+            } else if (dialog == logoutDialog) {
+                settings.logout();
+                TwitterEngine.resetTwitter();
+                DatabaseAdapter.deleteDatabase(getApplicationContext());
+                setResult(RETURN_APP_LOGOUT);
+                finish();
+            }
+        }
+
+    }
+
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_db:
-                new Builder(this, R.style.ConfirmDialog)
-                        .setMessage(R.string.confirm_delete_database)
-                        .setNegativeButton(R.string.confirm_no, null)
-                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                DatabaseAdapter.deleteDatabase(getApplicationContext());
-                                setResult(RETURN_DB_CLEARED);
-                            }
-                        })
-                        .show();
+                if (databaseDialog == null) {
+                    Builder builder = new Builder(this, R.style.ConfirmDialog);
+                    builder.setMessage(R.string.confirm_delete_database);
+                    builder.setNegativeButton(R.string.confirm_no, null);
+                    builder.setPositiveButton(R.string.confirm_yes, this);
+                    databaseDialog = builder.create();
+                }
+                if (!databaseDialog.isShowing()) {
+                    databaseDialog.show();
+                }
                 break;
 
             case R.id.logout:
-                new Builder(this, R.style.ConfirmDialog)
-                        .setMessage(R.string.confirm_log_lout)
-                        .setNegativeButton(R.string.confirm_no, null)
-                        .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                settings.logout();
-                                TwitterEngine.resetTwitter();
-                                DatabaseAdapter.deleteDatabase(getApplicationContext());
-                                setResult(RETURN_APP_LOGOUT);
-                                finish();
-                            }
-                        })
-                        .show();
+                if (logoutDialog == null) {
+                    Builder builder = new Builder(this, R.style.ConfirmDialog);
+                    builder.setMessage(R.string.confirm_log_lout);
+                    builder.setNegativeButton(R.string.confirm_no, null);
+                    builder.setPositiveButton(R.string.confirm_yes, this);
+                    logoutDialog = builder.create();
+                }
+                if (!logoutDialog.isShowing()) {
+                    logoutDialog.show();
+                }
                 break;
 
             case R.id.color_background:
@@ -286,7 +303,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 break;
 
             case R.id.load_dialog:
-                load_dialog_selector.show();
+                if (!load_dialog_selector.isShowing()) {
+                    load_dialog_selector.show();
+                }
                 break;
         }
     }
@@ -369,6 +388,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
+
+    @Override
+    public void onColorChanged(int i) {
+        color = i;
+    }
+
     /**
      * set location information from twitter
      *
@@ -395,17 +420,16 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      * @param preColor preselected color
      */
     private void setColor(int preColor) {
-        color_dialog_selector = ColorPickerDialogBuilder.with(this)
-                .showAlphaSlider(false).initialColor(preColor)
-                .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE).density(15)
-                .setOnColorChangedListener(new OnColorChangedListener() {
-                    @Override
-                    public void onColorChanged(int i) {
-                        color = i;
-                    }
-                }).build();
-        color_dialog_selector.setOnDismissListener(this);
-        color_dialog_selector.show();
+        if (color_dialog_selector == null) {
+            color_dialog_selector = ColorPickerDialogBuilder.with(this)
+                    .showAlphaSlider(false).initialColor(preColor)
+                    .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
+                    .setOnColorChangedListener(this).density(15).build();
+            color_dialog_selector.setOnDismissListener(this);
+        }
+        if (!color_dialog_selector.isShowing()) {
+            color_dialog_selector.show();
+        }
     }
 
     /**

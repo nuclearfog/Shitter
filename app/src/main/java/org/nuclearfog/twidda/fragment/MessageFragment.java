@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -48,11 +50,14 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 /**
  * Fragment class for direct message lists
  */
-public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected {
+public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected, DialogInterface.OnClickListener {
 
     private MessageListLoader messageTask;
     private SwipeRefreshLayout reload;
     private MessageAdapter adapter;
+    private Dialog deleteDialog;
+
+    private long deleteId;
 
 
     @Override
@@ -150,17 +155,17 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     break;
 
                 case DELETE:
-                    Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                    confirmDialog.setMessage(R.string.confirm_delete_message);
-                    confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                    confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
-                            messageTask.execute(message.getId());
-                        }
-                    });
-                    confirmDialog.show();
+                    if (deleteDialog == null) {
+                        Builder builder = new Builder(getContext(), R.style.ConfirmDialog);
+                        builder.setMessage(R.string.confirm_delete_message);
+                        builder.setNegativeButton(R.string.confirm_no, null);
+                        builder.setPositiveButton(R.string.confirm_yes, this);
+                        deleteDialog = builder.create();
+                    }
+                    if (!deleteDialog.isShowing()) {
+                        deleteDialog.show();
+                    }
+                    deleteId = message.getId();
                     break;
 
                 case PROFILE:
@@ -169,6 +174,15 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     startActivity(profile);
                     break;
             }
+        }
+    }
+
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE && dialog == deleteDialog) {
+            messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
+            messageTask.execute(deleteId);
         }
     }
 
