@@ -68,6 +68,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
         super.onStart();
         if (trendTask == null) {
             load();
+            setRefresh(true);
         }
     }
 
@@ -104,6 +105,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
             adapter.clear();
+            setRefresh(true);
             load();
         }
     }
@@ -123,6 +125,7 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
      */
     public void setData(List<TwitterTrend> data) {
         adapter.setData(data);
+        setRefresh(false);
     }
 
     /**
@@ -141,9 +144,9 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null) {
+        if (getContext() != null)
             ErrorHandler.handleFailure(getContext(), error);
-        }
+        setRefresh(false);
     }
 
     /**
@@ -151,12 +154,13 @@ public class TrendFragment extends Fragment implements OnRefreshListener, TrendC
      *
      * @param enable true to enable RefreshLayout with delay
      */
-    public void setRefresh(boolean enable) {
+    private void setRefresh(boolean enable) {
         if (enable) {
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (trendTask.getStatus() != FINISHED && !reload.isRefreshing())
+                    if (trendTask != null && trendTask.getStatus() != FINISHED
+                            && !reload.isRefreshing())
                         reload.setRefreshing(true);
                 }
             }, 500);

@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserFragment
  */
-public class UserListLoader extends AsyncTask<Void, Void, TwitterUserList> {
+public class UserListLoader extends AsyncTask<Long, Void, TwitterUserList> {
 
     public static final long NO_CURSOR = -1;
 
@@ -39,31 +39,22 @@ public class UserListLoader extends AsyncTask<Void, Void, TwitterUserList> {
     private final Action action;
     private final String search;
     private final long id;
-    private final long cursor;
 
 
-    public UserListLoader(UserFragment callback, Action action, long id, long cursor, String search) {
+    public UserListLoader(UserFragment callback, Action action, long id, String search) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;
         this.search = search;
-        this.cursor = cursor;
         this.id = id;
     }
 
 
     @Override
-    protected void onPreExecute() {
-        if (callback.get() != null && cursor == NO_CURSOR) {
-            callback.get().setRefresh(true);
-        }
-    }
-
-
-    @Override
-    protected TwitterUserList doInBackground(Void[] v) {
+    protected TwitterUserList doInBackground(Long[] param) {
         try {
+            long cursor = param[0];
             switch (action) {
                 case FOLLOWS:
                     return mTwitter.getFollower(id, cursor);
@@ -100,10 +91,9 @@ public class UserListLoader extends AsyncTask<Void, Void, TwitterUserList> {
     @Override
     protected void onPostExecute(TwitterUserList users) {
         if (callback.get() != null) {
-            callback.get().setRefresh(false);
             if (users != null) {
                 callback.get().setData(users);
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }

@@ -138,24 +138,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      */
     public void setData(TwitterUserList data) {
         adapter.setData(data);
-    }
-
-    /**
-     * called from {@link UserListLoader} to enable or disable RefreshLayout
-     * @param enable true to enable RefreshLayout with delay
-     */
-    public void setRefresh(boolean enable) {
-        if (enable) {
-            reload.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (userTask.getStatus() != FINISHED && !reload.isRefreshing())
-                        reload.setRefreshing(true);
-                }
-            }, 500);
-        } else {
-            reload.setRefreshing(false);
-        }
+        setRefresh(false);
     }
 
     /**
@@ -163,11 +146,34 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      *
      * @param error Engine exception
      */
-    public void onError(EngineException error) {
-        if (getContext() != null) {
+    public void onError(@Nullable EngineException error) {
+        if (getContext() != null && error != null) {
             ErrorHandler.handleFailure(getContext(), error);
         }
         adapter.disableLoading();
+        setRefresh(false);
+    }
+
+    /**
+     * enables or disables swiperefresh
+     *
+     * @param enable true to enable RefreshLayout with delay
+     */
+    private void setRefresh(boolean enable) {
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (userTask != null && userTask.getStatus() != FINISHED
+                            && !reload.isRefreshing()) {
+                        reload.setRefreshing(true);
+                    }
+                }
+            }, 500);
+
+        } else {
+            reload.setRefreshing(false);
+        }
     }
 
     /**
@@ -179,7 +185,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
         Bundle param = getArguments();
         if (param != null) {
             int mode = param.getInt(KEY_FRAG_USER_MODE, 0);
-            long id = param.getLong(KEY_FRAG_USER_ID, 1);
+            long id = param.getLong(KEY_FRAG_USER_ID, 0);
             String search = param.getString(KEY_FRAG_USER_SEARCH, "");
             Action action = Action.NONE;
             switch (mode) {
@@ -211,8 +217,11 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
                     action = Action.LIST;
                     break;
             }
-            userTask = new UserListLoader(this, action, id, cursor, search);
-            userTask.execute();
+            userTask = new UserListLoader(this, action, id, search);
+            userTask.execute(cursor);
+            if (cursor == NO_CURSOR) {
+                setRefresh(true);
+            }
         }
     }
 }

@@ -52,7 +52,14 @@ import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
  */
 public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener, FragmentChangeObserver {
 
+    /**
+     * Key for the owner ID
+     */
     public static final String KEY_FRAG_LIST_OWNER_ID = "list_owner_id";
+
+    /**
+     * alternative key for the owner name
+     */
     public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
 
     private TwitterListLoader listTask;
@@ -86,6 +93,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public void onStart() {
         super.onStart();
         if (listTask == null) {
+            setRefresh(true);
             load();
         }
     }
@@ -146,7 +154,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                 case MEMBER:
                     Intent detailedList = new Intent(getContext(), ListDetail.class);
                     Bundle param = getArguments();
-                    if (param.getLong(KEY_FRAG_LIST_OWNER_ID, -1) == settings.getUserId())
+                    if (param != null && param.getLong(KEY_FRAG_LIST_OWNER_ID) == settings.getUserId())
                         detailedList.putExtra(KEY_CURRENT_USER_OWNS, true);
                     detailedList.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
                     detailedList.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
@@ -177,6 +185,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public void onReset() {
         if (list != null) {
             list.setAdapter(adapter);
+            setRefresh(true);
             load();
         }
     }
@@ -193,6 +202,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
      */
     public void setData(List<TwitterList> data) {
         adapter.setData(data);
+        setRefresh(false);
     }
 
     /**
@@ -222,7 +232,8 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
             reloadLayout.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (listTask.getStatus() != FINISHED && !reloadLayout.isRefreshing())
+                    if (listTask != null && listTask.getStatus() != FINISHED
+                            && !reloadLayout.isRefreshing())
                         reloadLayout.setRefreshing(true);
                 }
             }, 500);
@@ -236,10 +247,10 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
      *
      * @param error Twitter exception
      */
-    public void onError(EngineException error) {
-        if (getContext() != null) {
+    public void onError(@Nullable EngineException error) {
+        if (getContext() != null && error != null)
             ErrorHandler.handleFailure(getContext(), error);
-        }
+        setRefresh(false);
     }
 
     /**

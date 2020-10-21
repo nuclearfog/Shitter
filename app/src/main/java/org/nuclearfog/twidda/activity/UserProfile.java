@@ -60,7 +60,6 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activity.TwitterList.KEY_CURRENT_USER_OWNS;
 import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
@@ -68,9 +67,10 @@ import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 
-
-public class UserProfile extends AppCompatActivity implements OnClickListener,
-        OnTagClickListener, OnTabSelectedListener {
+/**
+ * Activity class for user profile page
+ */
+public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener {
 
     /**
      * Key for the user ID
@@ -361,7 +361,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener,
 
                     case R.id.profile_lists:
                         Intent listPage = new Intent(this, TwitterList.class);
-                        listPage.putExtra(KEY_CURRENT_USER_OWNS, user.getId() == settings.getUserId());
                         listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
                         startActivity(listPage);
                         break;

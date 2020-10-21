@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -55,6 +54,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     private SwipeRefreshLayout reload;
     private MessageAdapter adapter;
 
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Context context = inflater.getContext();
@@ -80,6 +80,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         super.onStart();
         if (messageTask == null) {
             load(MessageListLoader.Action.DB);
+            setRefresh(true);
         }
     }
 
@@ -110,7 +111,6 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
     }
 
 
-    @SuppressLint("QueryPermissionsNeeded")
     @Override
     public void onLinkClick(String tag) {
         if (getContext() != null) {
@@ -179,6 +179,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
      */
     public void setData(List<Message> data) {
         adapter.replaceAll(data);
+        setRefresh(false);
     }
 
     /**
@@ -192,6 +193,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     /**
      * called from {@link TrendListLoader} to enable or disable RefreshLayout
+     *
      * @param enable true to enable RefreshLayout with delay
      */
     public void setRefresh(boolean enable) {
@@ -199,7 +201,8 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (messageTask.getStatus() != FINISHED && !reload.isRefreshing())
+                    if (messageTask != null && messageTask.getStatus() != FINISHED
+                            && !reload.isRefreshing())
                         reload.setRefreshing(true);
                 }
             }, 500);
@@ -214,9 +217,9 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null) {
+        if (getContext() != null && error != null)
             ErrorHandler.handleFailure(getContext(), error);
-        }
+        setRefresh(false);
     }
 
     /**

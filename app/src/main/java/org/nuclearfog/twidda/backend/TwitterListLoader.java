@@ -28,8 +28,8 @@ public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<Twitt
 
     @Nullable
     private EngineException twException;
-    private WeakReference<ListFragment> callback;
-    private TwitterEngine mTwitter;
+    private final WeakReference<ListFragment> callback;
+    private final TwitterEngine mTwitter;
     private final Action action;
 
 
@@ -38,14 +38,6 @@ public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<Twitt
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.callback = new WeakReference<>(callback);
         this.action = action;
-    }
-
-
-    @Override
-    protected void onPreExecute() {
-        if (callback.get() != null) {
-            callback.get().setRefresh(true);
-        }
     }
 
 
@@ -99,10 +91,9 @@ public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<Twitt
     @Override
     protected void onPostExecute(List<TwitterList> result) {
         if (callback.get() != null) {
-            callback.get().setRefresh(false);
             if (result != null) {
                 callback.get().setData(result);
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }

@@ -37,13 +37,13 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<TweetFragment> callback;
-    private TwitterEngine mTwitter;
-    private AppDatabase db;
+    private final WeakReference<TweetFragment> callback;
+    private final TwitterEngine mTwitter;
+    private final AppDatabase db;
 
-    private Action action;
-    private String search;
-    private long id;
+    private final Action action;
+    private final String search;
+    private final long id;
     private int pos;
 
 
@@ -56,14 +56,6 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
         this.search = search;
         this.id = id;
         this.pos = pos;
-    }
-
-
-    @Override
-    protected void onPreExecute() {
-        if (callback.get() != null && pos == CLEAR_LIST) {
-            callback.get().setRefresh(true);
-        }
     }
 
 
@@ -105,9 +97,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     break;
 
                 case USR_TWEETS:
-                    if (search != null) {
-                        tweets = mTwitter.getUserTweets(search, sinceId, maxId);
-                    } else {
+                    if (id > 0) {
                         if (sinceId == 0 && maxId == 0) {
                             tweets = db.getUserTweets(id);
                             if (tweets.isEmpty()) {
@@ -120,13 +110,13 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                         } else if (maxId > 1) {
                             tweets = mTwitter.getUserTweets(id, sinceId, maxId);
                         }
+                    } else if (search != null) {
+                        tweets = mTwitter.getUserTweets(search, sinceId, maxId);
                     }
                     break;
 
                 case USR_FAVORS:
-                    if (search != null) {
-                        tweets = mTwitter.getUserFavs(search, sinceId, maxId);
-                    } else {
+                    if (id > 0) {
                         if (sinceId == 0 && maxId == 0) {
                             tweets = db.getUserFavs(id);
                             if (tweets.isEmpty()) {
@@ -140,6 +130,8 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                         } else if (maxId > 1) {
                             tweets = mTwitter.getUserFavs(id, sinceId, maxId);
                         }
+                    } else if (search != null) {
+                        tweets = mTwitter.getUserFavs(search, sinceId, maxId);
                     }
                     break;
 
@@ -186,11 +178,9 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
     @Override
     protected void onPostExecute(List<Tweet> tweets) {
         if (callback.get() != null) {
-            callback.get().setRefresh(false);
             if (tweets != null) {
                 callback.get().setData(tweets, pos);
-            }
-            if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }

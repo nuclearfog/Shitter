@@ -38,9 +38,26 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
  */
 public class TweetFragment extends Fragment implements OnRefreshListener, TweetClickListener, FragmentChangeObserver {
 
+    /**
+     * Key to define what type of tweets should be loaded
+     * {@link #TWEET_FRAG_HOME}, {@link #TWEET_FRAG_MENT}, {@link #TWEET_FRAG_TWEETS}, {@link #TWEET_FRAG_FAVORS}
+     * {@link #TWEET_FRAG_ANSWER}, {@link #TWEET_FRAG_SEARCH}, {@link #TWEET_FRAG_LIST}
+     */
     public static final String KEY_FRAG_TWEET_MODE = "tweet_mode";
+
+    /**
+     * Key to define a search string such as username or text
+     */
     public static final String KEY_FRAG_TWEET_SEARCH = "tweet_search";
+
+    /**
+     * Key to define a tweet ID to get replies
+     */
     public static final String KEY_FRAG_TWEET_ID = "tweet_id";
+
+    /**
+     * Key to return an ID of a removed tweet
+     */
     public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 
     public static final int TWEET_FRAG_HOME = 1;
@@ -85,6 +102,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         super.onStart();
         if (tweetTask == null) {
             load(0, 0, CLEAR_LIST);
+            setRefresh(true);
         }
     }
 
@@ -101,7 +119,8 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         if (intent != null && reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED) {
-            adapter.remove(intent.getLongExtra(INTENT_TWEET_REMOVED_ID, 0));
+            long removedTweetId = intent.getLongExtra(INTENT_TWEET_REMOVED_ID, 0);
+            adapter.remove(removedTweetId);
         }
         super.onActivityResult(reqCode, returnCode, intent);
     }
@@ -145,6 +164,7 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
             list.setAdapter(adapter); // force redrawing list
             load(0, 0, CLEAR_LIST);
+            setRefresh(true);
         }
     }
 
@@ -168,37 +188,41 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         } else {
             adapter.insertAt(tweets, pos);
         }
+        setRefresh(false);
     }
 
-    /**
-     * called from {@link TweetListLoader} to enable or disable RefreshLayout
-     *
-     * @param enable true to enable RefreshLayout with delay
-     */
-    public void setRefresh(boolean enable) {
-        if (enable) {
-            reload.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (tweetTask.getStatus() != FINISHED && !reload.isRefreshing())
-                        reload.setRefreshing(true);
-                }
-            }, 500);
-        } else {
-            reload.setRefreshing(false);
-        }
-    }
 
     /**
      * called from {@link TweetListLoader} if an error occurs
      *
      * @param error Twitter exception
      */
-    public void onError(EngineException error) {
-        if (getContext() != null) {
+    public void onError(@Nullable EngineException error) {
+        if (getContext() != null && error != null)
             ErrorHandler.handleFailure(getContext(), error);
-        }
         adapter.disableLoading();
+        setRefresh(false);
+    }
+
+
+    /**
+     * called from {@link TweetListLoader} to enable or disable RefreshLayout
+     *
+     * @param enable true to enable RefreshLayout with delay
+     */
+    private void setRefresh(boolean enable) {
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (tweetTask != null && tweetTask.getStatus() != FINISHED
+                            && !reload.isRefreshing())
+                        reload.setRefreshing(true);
+                }
+            }, 500);
+        } else {
+            reload.setRefreshing(false);
+        }
     }
 
     /**
@@ -212,8 +236,8 @@ public class TweetFragment extends Fragment implements OnRefreshListener, TweetC
         Bundle param = getArguments();
         if (param != null) {
             int mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
-            long id = param.getLong(KEY_FRAG_TWEET_ID, 1);
-            String search = param.getString(KEY_FRAG_TWEET_SEARCH);
+            long id = param.getLong(KEY_FRAG_TWEET_ID, 0);
+            String search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
             Action action = Action.NONE;
 
             switch (mode) {

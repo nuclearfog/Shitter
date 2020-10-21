@@ -94,6 +94,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Nullable
     private Tweet tweet;
 
+    private long tweetId;
+
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
@@ -148,11 +150,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         if (statusAsync == null && param != null) {
             if (param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
-                long tweetID = param.getLong(KEY_TWEET_ID);
+                tweetId = param.getLong(KEY_TWEET_ID);
                 String username = param.getString(KEY_TWEET_NAME);
-                adapter.setupTweetPage(tweetID, username);
+                adapter.setupTweetPage(tweetId, username);
                 statusAsync = new TweetLoader(this, Action.LOAD);
-                statusAsync.execute(tweetID);
+                statusAsync.execute(tweetId);
             }
         }
     }
@@ -480,13 +482,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
         if (error.resourceNotFound()) {
-            Bundle param = getIntent().getExtras();
-            if (param != null) {
-                Intent returnData = new Intent();
-                long tweetID = param.getLong(KEY_TWEET_ID);
-                returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetID);
-                setResult(RETURN_TWEET_CHANGED, returnData);
-            }
+            Intent returnData = new Intent();
+            returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetId);
+            setResult(RETURN_TWEET_CHANGED, returnData);
             finish();
         } else if (tweet == null) {
             finish();

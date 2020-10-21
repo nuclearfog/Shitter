@@ -82,7 +82,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private VideoView videoView;
     private ZoomView zoomImage;
 
-    private int type;
+    private String[] mediaLinks = {};
+    private int type = MEDIAVIEWER_NONE;
     private int videoPos = 0;
 
 
@@ -102,6 +103,12 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         videoView.setZOrderOnTop(true);
         videoView.setOnPreparedListener(this);
         videoView.setOnErrorListener(this);
+
+        Bundle param = getIntent().getExtras();
+        if (param != null && param.containsKey(KEY_MEDIA_LINK)) {
+            mediaLinks = param.getStringArray(KEY_MEDIA_LINK);
+            type = param.getInt(KEY_MEDIA_TYPE, MEDIAVIEWER_NONE);
+        }
     }
 
 
@@ -109,33 +116,27 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     protected void onStart() {
         super.onStart();
         if (imageWindow.getVisibility() != VISIBLE && videoWindow.getVisibility() != VISIBLE) {
-            Bundle param = getIntent().getExtras();
-            if (param != null && type == MEDIAVIEWER_NONE) {
-                String[] link = param.getStringArray(KEY_MEDIA_LINK);
-                type = param.getInt(KEY_MEDIA_TYPE, MEDIAVIEWER_NONE);
+            if (mediaLinks != null && mediaLinks.length > 0) {
+                switch (type) {
+                    case MEDIAVIEWER_IMG_S:
+                        adapter.disableSaveButton();
+                    case MEDIAVIEWER_IMAGE:
+                        imageWindow.setVisibility(VISIBLE);
+                        imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                        imageList.setAdapter(adapter);
+                        if (imageAsync == null) {
+                            imageAsync = new ImageLoader(this);
+                            imageAsync.execute(mediaLinks);
+                        }
+                        break;
 
-                if (link != null && link.length > 0) {
-                    switch (type) {
-                        case MEDIAVIEWER_IMG_S:
-                            adapter.disableSaveButton();
-                        case MEDIAVIEWER_IMAGE:
-                            imageWindow.setVisibility(VISIBLE);
-                            imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                            imageList.setAdapter(adapter);
-                            if (imageAsync == null) {
-                                imageAsync = new ImageLoader(this);
-                                imageAsync.execute(link);
-                            }
-                            break;
-
-                        case MEDIAVIEWER_VIDEO:
-                            videoView.setMediaController(videoController);
-                        case MEDIAVIEWER_ANGIF:
-                            videoWindow.setVisibility(VISIBLE);
-                            Uri video = Uri.parse(link[0]);
-                            videoView.setVideoURI(video);
-                            break;
-                    }
+                    case MEDIAVIEWER_VIDEO:
+                        videoView.setMediaController(videoController);
+                    case MEDIAVIEWER_ANGIF:
+                        videoWindow.setVisibility(VISIBLE);
+                        Uri video = Uri.parse(mediaLinks[0]);
+                        videoView.setVideoURI(video);
+                        break;
                 }
             }
         }
@@ -292,11 +293,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      * @param pos   image position
      */
     private void storeImage(Bitmap image, int pos) {
-        Bundle param = getIntent().getExtras();
-        if (param != null && (imageSave == null || imageSave.getStatus() == FINISHED)) {
-            String[] links = param.getStringArray(KEY_MEDIA_LINK);
-            if (links != null) {
-                String link = links[pos];
+        if (imageSave == null || imageSave.getStatus() == FINISHED) {
+            if (mediaLinks != null) {
+                String link = mediaLinks[pos];
                 imageSave = new ImageSaver(this, image, link);
                 imageSave.execute();
             }

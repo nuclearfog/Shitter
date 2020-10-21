@@ -33,11 +33,6 @@ public class TwitterList extends AppCompatActivity {
     public static final int RET_LIST_CREATED = 2;
 
     /**
-     * Key to set up if the current user owns the lists
-     */
-    public static final String KEY_CURRENT_USER_OWNS = "userlist-current-user-owns-list";
-
-    /**
      * Key for the ID the list owner
      */
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
@@ -48,6 +43,8 @@ public class TwitterList extends AppCompatActivity {
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
     private FragmentAdapter adapter;
+
+    private boolean currentUsersLists = false;
 
 
     @Override
@@ -71,6 +68,7 @@ public class TwitterList extends AppCompatActivity {
         if (param != null) {
             if (param.containsKey(KEY_USERLIST_OWNER_ID)) {
                 long ownerId = param.getLong(KEY_USERLIST_OWNER_ID);
+                currentUsersLists = ownerId == settings.getUserId();
                 adapter.setupListPage(ownerId);
             } else if (param.containsKey(KEY_USERLIST_OWNER_NAME)) {
                 String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);
@@ -92,8 +90,7 @@ public class TwitterList extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.lists, m);
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.getBoolean(KEY_CURRENT_USER_OWNS, false)) {
+        if (currentUsersLists) {
             m.findItem(R.id.list_create).setVisible(true);
         }
         return super.onCreateOptionsMenu(m);

@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @see MessageFragment
  */
-public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
+public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
     public enum Action {
         DB,
@@ -29,10 +29,12 @@ public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<MessageFragment> callback;
-    private TwitterEngine mTwitter;
-    private AppDatabase db;
-    private Action action;
+    private final WeakReference<MessageFragment> callback;
+    private final TwitterEngine mTwitter;
+    private final AppDatabase db;
+    private final Action action;
+
+    private long removeMsgId = -1;
 
 
     public MessageListLoader(MessageFragment callback, Action action) {
@@ -41,14 +43,6 @@ public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;
-    }
-
-
-    @Override
-    protected void onPreExecute() {
-        if (callback.get() != null) {
-            callback.get().setRefresh(true);
-        }
     }
 
 
@@ -75,14 +69,14 @@ public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
                     messageId = param[0];
                     mTwitter.deleteMessage(messageId);
                     db.deleteMessage(messageId);
-                    publishProgress(messageId);
+                    removeMsgId = messageId;
                     break;
             }
         } catch (EngineException twException) {
             this.twException = twException;
             if (twException.resourceNotFound()) {
                 db.deleteMessage(messageId);
-                publishProgress(messageId);
+                removeMsgId = messageId;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -92,24 +86,16 @@ public class MessageListLoader extends AsyncTask<Long, Long, List<Message>> {
 
 
     @Override
-    protected void onProgressUpdate(Long[] ids) {
-        long messageId = ids[0];
-        if (callback.get() != null) {
-            callback.get().removeItem(messageId);
-        }
-    }
-
-
-    @Override
     protected void onPostExecute(@Nullable List<Message> messages) {
         if (callback.get() != null) {
-            callback.get().setRefresh(false);
             if (messages != null) {
                 callback.get().setData(messages);
-            }
-            if (twException != null) {
+            } else if (removeMsgId > 0) {
+                callback.get().removeItem(removeMsgId);
+            } else {
                 callback.get().onError(twException);
             }
+
         }
     }
 }

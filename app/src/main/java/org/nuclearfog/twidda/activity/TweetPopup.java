@@ -94,6 +94,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private EditText tweetText;
 
     private MediaType selectedFormat = MediaType.NONE;
+    private String prefix = "";
     private long inReplyId = 0;
 
     @Override
@@ -119,10 +120,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         Bundle param = getIntent().getExtras();
         if (param != null) {
             inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, 0);
-            if (param.containsKey(KEY_TWEETPOPUP_TEXT)) {
-                String addition = param.getString(KEY_TWEETPOPUP_TEXT);
-                tweetText.append(addition);
-            }
+            prefix = param.getString(KEY_TWEETPOPUP_TEXT, "");
+            tweetText.append(prefix);
         }
 
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
@@ -371,7 +370,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      * show confirmation dialog when closing edited tweet
      */
     private void showClosingMsg() {
-        if (tweetText.getText().length() > 0 || !mediaPath.isEmpty()) {
+        if (!prefix.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
             Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
             closeDialog.setMessage(R.string.confirm_cancel_tweet);
             closeDialog.setNegativeButton(R.string.confirm_no, null);
