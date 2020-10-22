@@ -88,7 +88,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private String title = "";
     private String description = "";
     private boolean isPublic = false;
-    private boolean belongsToCurrentUser = false;
+    private boolean currentUserOwnsList = false;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -115,8 +115,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             title = param.getString(KEY_LISTDETAIL_TITLE, "");
             description = param.getString(KEY_LISTDETAIL_DESCR, "");
             isPublic = param.getBoolean(KEY_LISTDETAIL_VISIB, false);
-            belongsToCurrentUser = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
-            adapter.setupListContentPage(listId);
+            currentUserOwnsList = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
+            adapter.setupListContentPage(listId, currentUserOwnsList);
             Tab tweetTab = tablayout.getTabAt(0);
             Tab userTab = tablayout.getTabAt(1);
             if (tweetTab != null && userTab != null) {
@@ -137,7 +137,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         MenuItem search = m.findItem(R.id.menu_list_add_user);
         MenuItem editList = m.findItem(R.id.menu_list_edit);
         SearchView searchUser = (SearchView) search.getActionView();
-        if (belongsToCurrentUser) {
+        if (currentUserOwnsList) {
             searchUser.setQueryHint(getString(R.string.menu_add_user));
             searchUser.setOnQueryTextListener(this);
         } else {
@@ -230,7 +230,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public void onSuccess() {
+    public void onSuccess(String[] names) {
         adapter.notifySettingsChanged();
         Toast.makeText(this, R.string.info_user_added_to_list, Toast.LENGTH_SHORT).show();
         invalidateOptionsMenu();

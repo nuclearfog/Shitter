@@ -175,4 +175,7 @@
     <string name="userlist_create_new_list">Create a new userlist</string>
     <string name="edit_list">Edit list</string>
     <string name="update_list">update list</string>
+    <string name="confirm_remove_user_from_list">remov user from list?</string>
+    <string name="info_user_removed">user removed from list!</string>
+    <string name="info_following_list">following list..</string>
 </resources>

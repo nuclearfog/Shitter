@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,7 +84,6 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public static final int LIST_USER_SUBSCR_TO = 2;
 
     private TwitterListLoader listTask;
-    private GlobalSettings settings;
 
     private SwipeRefreshLayout reloadLayout;
     private RecyclerView list;
@@ -97,7 +97,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
         Context context = inflater.getContext();
 
-        settings = GlobalSettings.getInstance(context);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
         adapter = new ListAdapter(this, settings);
 
         list = new RecyclerView(inflater.getContext());
@@ -163,28 +163,27 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                             followDialog.show();
                         }
                     } else {
+                        Toast.makeText(requireContext(), R.string.info_following_list, Toast.LENGTH_SHORT).show();
                         listTask = new TwitterListLoader(this, FOLLOW, listItem.getId(), "");
                         listTask.execute(listItem.getId());
                     }
                     break;
 
                 case SUBSCRIBER:
-                    Intent following = new Intent(getContext(), UserDetail.class);
-                    following.putExtra(KEY_USERDETAIL_ID, listItem.getId());
-                    following.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRBR);
-                    startActivity(following);
+                    Intent subscriberIntent = new Intent(getContext(), UserDetail.class);
+                    subscriberIntent.putExtra(KEY_USERDETAIL_ID, listItem.getId());
+                    subscriberIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRBR);
+                    startActivity(subscriberIntent);
                     break;
 
                 case MEMBER:
-                    Intent detailedList = new Intent(getContext(), ListDetail.class);
-                    Bundle param = getArguments();
-                    if (param != null && param.getLong(KEY_FRAG_LIST_OWNER_ID) == settings.getUserId())
-                        detailedList.putExtra(KEY_CURRENT_USER_OWNS, true);
-                    detailedList.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
-                    detailedList.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
-                    detailedList.putExtra(KEY_LISTDETAIL_DESCR, listItem.getDescription());
-                    detailedList.putExtra(KEY_LISTDETAIL_VISIB, !listItem.isPrivate());
-                    startActivity(detailedList);
+                    Intent listIntent = new Intent(getContext(), ListDetail.class);
+                    listIntent.putExtra(KEY_CURRENT_USER_OWNS, listItem.isListOwner());
+                    listIntent.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
+                    listIntent.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
+                    listIntent.putExtra(KEY_LISTDETAIL_DESCR, listItem.getDescription());
+                    listIntent.putExtra(KEY_LISTDETAIL_VISIB, !listItem.isPrivate());
+                    startActivity(listIntent);
                     break;
 
                 case DELETE:
@@ -238,6 +237,9 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
     @Override
     public void onTabChange() {
+        if (list != null) {
+            list.smoothScrollToPosition(0);
+        }
     }
 
     /**

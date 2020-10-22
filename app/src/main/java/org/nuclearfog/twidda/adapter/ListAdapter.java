@@ -25,7 +25,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 
-import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
@@ -136,21 +135,17 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     }
                 }
             });
-            vh.followList.setOnClickListener(new OnClickListener() {
+            vh.action.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        listener.onClick(data.get(position), ListClickListener.Action.FOLLOW);
-                    }
-                }
-            });
-            vh.deleteList.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        listener.onClick(data.get(position), ListClickListener.Action.DELETE);
+                        TwitterList list = data.get(position);
+                        if (list.isListOwner()) {
+                            listener.onClick(list, ListClickListener.Action.DELETE);
+                        } else {
+                            listener.onClick(list, ListClickListener.Action.FOLLOW);
+                        }
                     }
                 }
             });
@@ -214,17 +209,14 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 }
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
             }
-            if (item.isFollowing()) {
-                vh.followList.setText(R.string.user_unfollow);
-            } else {
-                vh.followList.setText(R.string.user_follow);
-            }
             if (item.isListOwner()) {
-                vh.followList.setVisibility(VISIBLE);
-                vh.deleteList.setVisibility(GONE);
+                vh.action.setText(R.string.delete_list);
             } else {
-                vh.followList.setVisibility(GONE);
-                vh.deleteList.setVisibility(VISIBLE);
+                if (item.isFollowing()) {
+                    vh.action.setText(R.string.user_unfollow);
+                } else {
+                    vh.action.setText(R.string.user_follow);
+                }
             }
             if (item.isPrivate()) {
                 vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
@@ -257,15 +249,14 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
     static class ListHolder extends ViewHolder {
         final ImageView pb_image;
-        final Button followList, deleteList;
+        final Button action;
         final TextView title, ownername, description, createdAt;
         final TextView memberCount, subscriberCount;
 
         ListHolder(View v) {
             super(v);
             pb_image = v.findViewById(R.id.list_owner_profile);
-            followList = v.findViewById(R.id.list_follow);
-            deleteList = v.findViewById(R.id.list_delete);
+            action = v.findViewById(R.id.list_action);
             title = v.findViewById(R.id.list_title);
             ownername = v.findViewById(R.id.list_ownername);
             description = v.findViewById(R.id.list_description);

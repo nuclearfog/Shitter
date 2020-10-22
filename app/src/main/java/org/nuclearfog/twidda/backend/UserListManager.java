@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference;
  * Backend class to manage users on user lists
  * Twitter users can be added and removed
  */
-public class UserListManager extends AsyncTask<String, Void, Boolean> {
+public class UserListManager extends AsyncTask<String, Void, String[]> {
 
     public enum Action {
         ADD_USER,
@@ -40,7 +40,7 @@ public class UserListManager extends AsyncTask<String, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(String... strings) {
+    protected String[] doInBackground(String... strings) {
         try {
             switch (mode) {
                 case ADD_USER:
@@ -54,17 +54,17 @@ public class UserListManager extends AsyncTask<String, Void, Boolean> {
 
         } catch (EngineException err) {
             this.err = err;
-            return false;
+            return null;
         }
-        return true;
+        return strings;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(String[] names) {
         if (callback.get() != null) {
-            if (success) {
-                callback.get().onSuccess();
+            if (names != null) {
+                callback.get().onSuccess(names);
             } else {
                 callback.get().onFailure(err);
             }
@@ -78,8 +78,10 @@ public class UserListManager extends AsyncTask<String, Void, Boolean> {
 
         /**
          * Called when AsyncTask finished successfully
+         *
+         * @param names the names of the users added or removed from list
          */
-        void onSuccess();
+        void onSuccess(String[] names);
 
         /**
          * called when an error occurs

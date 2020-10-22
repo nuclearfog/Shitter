@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
@@ -44,6 +46,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     private final TwitterUserList data;
     private int loadingIndex;
+    private boolean userRemovable = false;
 
 
     public UserAdapter(UserClickListener itemClickListener, GlobalSettings settings) {
@@ -74,6 +77,18 @@ public class UserAdapter extends Adapter<ViewHolder> {
             notifyItemRangeInserted(end, newData.size());
         }
         disableLoading();
+    }
+
+
+    @MainThread
+    public void removeUser(String username) {
+        for (int pos = 0; pos < data.size(); pos++) {
+            if (data.get(pos).getScreenname().equals(username)) {
+                data.remove(pos);
+                notifyItemRemoved(pos);
+                break;
+            }
+        }
     }
 
 
@@ -116,6 +131,20 @@ public class UserAdapter extends Adapter<ViewHolder> {
                     }
                 }
             });
+            if (userRemovable) {
+                vh.delete.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = vh.getLayoutPosition();
+                        TwitterUser user = data.get(position);
+                        if (position != NO_POSITION && user != null) {
+                            itemClickListener.onDelete(user.getScreenname());
+                        }
+                    }
+                });
+            } else {
+                vh.delete.setVisibility(GONE);
+            }
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
@@ -180,7 +209,21 @@ public class UserAdapter extends Adapter<ViewHolder> {
         }
     }
 
+    /**
+     * enables delete button for an user item
+     *
+     * @param enable true to enable delete button
+     */
+    public void enableDeleteButton(boolean enable) {
+        userRemovable = enable;
+    }
 
+    /**
+     * sets the TextView icons
+     *
+     * @param tv   TextView to add an icon
+     * @param icon icon drawable
+     */
     private void setIcon(TextView tv, @DrawableRes int icon) {
         tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
     }
@@ -189,12 +232,14 @@ public class UserAdapter extends Adapter<ViewHolder> {
     static class ItemHolder extends ViewHolder {
         final ImageView profileImg;
         final TextView username, screenname;
+        final ImageButton delete;
 
         ItemHolder(View v) {
             super(v);
             username = v.findViewById(R.id.username_detail);
             screenname = v.findViewById(R.id.screenname_detail);
             profileImg = v.findViewById(R.id.user_profileimg);
+            delete = v.findViewById(R.id.useritem_del_user);
         }
     }
 
@@ -229,5 +274,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
          * @param cursor next cursor of the list
          */
         void onFooterClick(long cursor);
+
+        /**
+         * remove user from a list
+         *
+         * @param name screen name of the user
+         */
+        void onDelete(String name);
     }
 }

@@ -28,6 +28,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_LIST;
 import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_MENT;
 import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_SEARCH;
 import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_TWEETS;
+import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_SEARCH;
@@ -291,15 +292,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     /**
      * setup adapter for a page of tweets and users in an user list
      *
-     * @param listId ID of an user list
+     * @param listId      ID of an user list
+     * @param ownerOfList true if current user owns the list
      */
-    public void setupListContentPage(long listId) {
+    public void setupListContentPage(long listId, boolean ownerOfList) {
         Bundle tweetParam = new Bundle();
         Bundle userParam = new Bundle();
         tweetParam.putLong(KEY_FRAG_TWEET_ID, listId);
-        userParam.putLong(KEY_FRAG_USER_ID, listId);
         tweetParam.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
         userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LISTS);
+        userParam.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
+        userParam.putLong(KEY_FRAG_USER_ID, listId);
         fragments = new Fragment[2];
         fragments[0] = new TweetFragment();
         fragments[1] = new UserFragment();

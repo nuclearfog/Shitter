@@ -30,7 +30,7 @@ public class TwitterList {
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
-        isOwner = homeId != owner.getId();
+        isOwner = homeId == owner.getId();
         this.title = title != null ? title : "";
         this.description = description != null ? description : "";
         this.isFollowing = isFollowing;
