@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.fragment;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
@@ -46,11 +48,13 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.NO_CURSOR;
 
 /**
  * Fragment class for user lists
  */
-public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener, FragmentChangeObserver {
+public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener,
+        FragmentChangeObserver, DialogInterface.OnClickListener {
 
     /**
      * Key for the owner ID
@@ -68,6 +72,10 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     private SwipeRefreshLayout reloadLayout;
     private RecyclerView list;
     private ListAdapter adapter;
+
+    private Dialog followDialog, deleteDialog;
+
+    private long selectedList;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
@@ -94,7 +102,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         super.onStart();
         if (listTask == null) {
             setRefresh(true);
-            load();
+            load(NO_CURSOR);
         }
     }
 
@@ -110,7 +118,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     @Override
     public void onRefresh() {
         if (listTask != null && listTask.getStatus() != RUNNING) {
-            load();
+            load(NO_CURSOR);
         }
     }
 
@@ -127,19 +135,19 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
                 case FOLLOW:
                     if (listItem.isFollowing()) {
-                        Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                        confirmDialog.setMessage(R.string.confirm_unfollow_list);
-                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                        confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                listTask = new TwitterListLoader(ListFragment.this, FOLLOW);
-                                listTask.execute(listItem.getId());
-                            }
-                        });
-                        confirmDialog.show();
+                        if (followDialog == null) {
+                            Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
+                            confirmDialog.setMessage(R.string.confirm_unfollow_list);
+                            confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                            confirmDialog.setPositiveButton(R.string.confirm_yes, this);
+                            followDialog = confirmDialog.create();
+                        }
+                        if (!followDialog.isShowing()) {
+                            selectedList = listItem.getId();
+                            followDialog.show();
+                        }
                     } else {
-                        listTask = new TwitterListLoader(this, FOLLOW);
+                        listTask = new TwitterListLoader(this, FOLLOW, listItem.getId(), "");
                         listTask.execute(listItem.getId());
                     }
                     break;
@@ -164,18 +172,32 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     break;
 
                 case DELETE:
-                    Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                    confirmDialog.setMessage(R.string.confirm_delete_list);
-                    confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                    confirmDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listTask = new TwitterListLoader(ListFragment.this, DELETE);
-                            listTask.execute(listItem.getId());
-                        }
-                    });
-                    confirmDialog.show();
+                    if (deleteDialog == null) {
+                        Builder confirmDialog = new Builder(requireContext(), R.style.ConfirmDialog);
+                        confirmDialog.setMessage(R.string.confirm_delete_list);
+                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
+                        confirmDialog.setPositiveButton(R.string.confirm_yes, this);
+                        deleteDialog = confirmDialog.create();
+                    }
+                    if (!deleteDialog.isShowing()) {
+                        selectedList = listItem.getId();
+                        deleteDialog.show();
+                    }
                     break;
+            }
+        }
+    }
+
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE) {
+            if (dialog == followDialog) {
+                listTask = new TwitterListLoader(this, FOLLOW, selectedList, "");
+                listTask.execute();
+            } else if (dialog == deleteDialog) {
+                listTask = new TwitterListLoader(this, DELETE, selectedList, "");
+                listTask.execute();
             }
         }
     }
@@ -186,7 +208,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         if (list != null) {
             list.setAdapter(adapter);
             setRefresh(true);
-            load();
+            load(NO_CURSOR);
         }
     }
 
@@ -225,9 +247,10 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
     /**
      * called from {@link TwitterListLoader} to enable or disable RefreshLayout
+     *
      * @param enable true to enable RefreshLayout with delay
      */
-    public void setRefresh(boolean enable) {
+    private void setRefresh(boolean enable) {
         if (enable) {
             reloadLayout.postDelayed(new Runnable() {
                 @Override
@@ -256,17 +279,13 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     /**
      * load content into the list
      */
-    private void load() {
+    private void load(long cursor) {
         Bundle param = getArguments();
         if (param != null) {
-            listTask = new TwitterListLoader(this, LOAD);
-            if (param.containsKey(KEY_FRAG_LIST_OWNER_ID)) {
-                long ownerId = param.getLong(KEY_FRAG_LIST_OWNER_ID);
-                listTask.execute(ownerId);
-            } else if (param.containsKey(KEY_FRAG_LIST_OWNER_NAME)) {
-                String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME);
-                listTask.execute(ownerName);
-            }
+            long id = param.getLong(KEY_FRAG_LIST_OWNER_ID, 0);
+            String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
+            listTask = new TwitterListLoader(this, LOAD, id, ownerName);
+            listTask.execute(cursor);
         }
     }
 }

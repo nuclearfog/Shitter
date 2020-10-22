@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -36,7 +38,7 @@ import static org.nuclearfog.twidda.activity.TwitterList.RET_LIST_CREATED;
 /**
  * Popup activity for the list editor
  */
-public class ListPopup extends AppCompatActivity implements OnClickListener {
+public class ListPopup extends AppCompatActivity implements OnClickListener, DialogInterface.OnClickListener {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -62,6 +64,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
     private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
     private View progressCircle;
+    private Dialog leaveDialog;
 
     private long listId = -1;
     private String title = "";
@@ -108,16 +111,15 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
                 && subTitleInput.getText().toString().equals(description)) {
             super.onBackPressed();
         } else {
-            Builder alertDialog = new Builder(this, R.style.ConfirmDialog);
-            alertDialog.setMessage(R.string.confirm_discard);
-            alertDialog.setNegativeButton(R.string.confirm_no, null);
-            alertDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            alertDialog.show();
+            if (leaveDialog == null) {
+                Builder builder = new Builder(this, R.style.ConfirmDialog);
+                builder.setMessage(R.string.confirm_discard);
+                builder.setNegativeButton(R.string.confirm_no, null);
+                builder.setPositiveButton(R.string.confirm_yes, this);
+                leaveDialog = builder.show();
+            } else if (!leaveDialog.isShowing()) {
+                leaveDialog.show();
+            }
         }
     }
 
@@ -142,6 +144,14 @@ public class ListPopup extends AppCompatActivity implements OnClickListener {
                 updaterAsync = new UserListUpdater(this);
                 updaterAsync.execute(mHolder);
             }
+        }
+    }
+
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE && dialog == leaveDialog) {
+            finish();
         }
     }
 

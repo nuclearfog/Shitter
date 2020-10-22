@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -37,6 +36,7 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
@@ -55,7 +55,8 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 /**
  * Activity to create a tweet
  */
-public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener, OnDismissListener {
+public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener,
+        OnDismissListener, DialogInterface.OnClickListener {
 
     /**
      * key for the replied tweet if any
@@ -90,12 +91,13 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private List<String> mediaPath;
     private ImageButton mediaBtn, previewBtn, locationBtn;
     private View locationProg;
-    private Dialog loadingCircle;
+    private Dialog loadingCircle, errorDialog, closingDialog;
     private EditText tweetText;
 
     private MediaType selectedFormat = MediaType.NONE;
     private String prefix = "";
     private long inReplyId = 0;
+    private TweetHolder tweet;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -244,15 +246,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                 if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                     Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
                 } else if (locationProg.getVisibility() == INVISIBLE) {
-                    TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
+                    tweet = new TweetHolder(tweetStr, inReplyId);
                     if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
                         tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
                     else if (selectedFormat == MediaType.VIDEO)
                         tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
                     if (location != null)
                         tweet.addLocation(location);
-                    uploaderAsync = new TweetUploader(this, tweet);
-                    uploaderAsync.execute();
+                    uploaderAsync = new TweetUploader(this);
+                    uploaderAsync.execute(tweet);
                 }
                 break;
 
@@ -325,6 +327,19 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         }
     }
 
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE) {
+            if (dialog == errorDialog) {
+                uploaderAsync = new TweetUploader(this);
+                uploaderAsync.execute(tweet);
+            } else if (dialog == closingDialog) {
+                finish();
+            }
+        }
+    }
+
     /**
      * enable or disable loading dialog
      *
@@ -348,21 +363,18 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     /**
      * Show confirmation dialog if an error occurs while sending tweet
-     *
-     * @param tweet tweet to re-send
      */
-    public void onError(final TweetHolder tweet, EngineException error) {
+    public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.ConfirmDialog);
-        builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet)
-                .setPositiveButton(R.string.confirm_retry, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        uploaderAsync = new TweetUploader(TweetPopup.this, tweet);
-                        uploaderAsync.execute();
-                    }
-                })
-                .setNegativeButton(android.R.string.cancel, null).show();
+        if (errorDialog == null) {
+            Builder builder = new Builder(this, R.style.ConfirmDialog);
+            builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet);
+            builder.setPositiveButton(R.string.confirm_retry, this);
+            builder.setNegativeButton(android.R.string.cancel, null);
+            errorDialog = builder.show();
+        } else if (!errorDialog.isShowing()) {
+            errorDialog.show();
+        }
     }
 
 
@@ -371,16 +383,15 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      */
     private void showClosingMsg() {
         if (!prefix.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
-            Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
-            closeDialog.setMessage(R.string.confirm_cancel_tweet);
-            closeDialog.setNegativeButton(R.string.confirm_no, null);
-            closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            closeDialog.show();
+            if (closingDialog == null) {
+                Builder builder = new Builder(this, R.style.ConfirmDialog);
+                builder.setMessage(R.string.confirm_cancel_tweet);
+                builder.setNegativeButton(R.string.confirm_no, null);
+                builder.setPositiveButton(R.string.confirm_yes, this);
+                closingDialog = builder.show();
+            } else if (!closingDialog.isShowing()) {
+                closingDialog.show();
+            }
         } else {
             finish();
         }

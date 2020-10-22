@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
@@ -43,6 +44,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
+import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -65,7 +67,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
  * Tweet Activity for tweet and user informations
  */
 public class TweetActivity extends AppCompatActivity implements OnClickListener,
-        OnLongClickListener, OnTagClickListener {
+        OnLongClickListener, OnTagClickListener, DialogInterface.OnClickListener {
 
     /**
      * ID of the tweet to open. required
@@ -86,6 +88,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
     private View header, footer, sensitive_media;
+    private Dialog deleteDialog;
     private FragmentAdapter adapter;
 
     private GlobalSettings settings;
@@ -188,17 +191,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
-                    Builder deleteDialog = new Builder(this, R.style.ConfirmDialog);
-                    deleteDialog.setMessage(R.string.confirm_delete_tweet);
-                    deleteDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            statusAsync = new TweetLoader(TweetActivity.this, Action.DELETE);
-                            statusAsync.execute(tweet.getId());
-                        }
-                    });
-                    deleteDialog.setNegativeButton(R.string.confirm_no, null);
-                    deleteDialog.show();
+                    if (deleteDialog == null) {
+                        Builder builder = new Builder(this, R.style.ConfirmDialog);
+                        builder.setMessage(R.string.confirm_delete_tweet);
+                        builder.setPositiveButton(R.string.confirm_yes, this);
+                        builder.setNegativeButton(R.string.confirm_no, null);
+                        deleteDialog = builder.create();
+                    }
+                    if (!deleteDialog.isShowing()) {
+                        deleteDialog.show();
+                    }
                     break;
 
                 case R.id.tweet_link:
@@ -226,6 +228,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE && dialog == deleteDialog && tweet != null) {
+            statusAsync = new TweetLoader(TweetActivity.this, Action.DELETE);
+            statusAsync.execute(tweet.getId());
+        }
     }
 
 

@@ -12,6 +12,7 @@ import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.holder.UserHolder;
+import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.items.Tweet;
@@ -903,13 +904,16 @@ public class TwitterEngine {
      * get user list
      *
      * @param userId id of the list owner
+     * @param cursor list cursor to set the start point
      * @return list information
      * @throws EngineException if access is unavailable
      */
-    public List<TwitterList> getUserList(long userId) throws EngineException {
+    public UserListList getUserList(long userId, long cursor) throws EngineException {
         try {
-            List<TwitterList> result = new LinkedList<>(); // TODO add a paging system
             List<UserList> lists = twitter.getUserLists(userId);
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = 0;
+            UserListList result = new UserListList(0, 0); // todo add paging system
             for (UserList list : lists)
                 result.add(new TwitterList(list, twitterID));
             return result;
@@ -923,13 +927,16 @@ public class TwitterEngine {
      * get user list
      *
      * @param username id of the list owner
+     * @param cursor   list cursor to set the start point
      * @return list information
      * @throws EngineException if access is unavailable
      */
-    public List<TwitterList> getUserList(String username) throws EngineException {
+    public UserListList getUserList(String username, long cursor) throws EngineException {
         try {
-            List<TwitterList> result = new LinkedList<>();
             List<UserList> lists = twitter.getUserLists(username);
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = 0;
+            UserListList result = new UserListList(prevCursor, nextCursor); // todo add paging system
             for (UserList list : lists)
                 result.add(new TwitterList(list, twitterID));
             return result;
@@ -938,6 +945,28 @@ public class TwitterEngine {
         }
     }
 
+    /**
+     * get the lists the user has been added to
+     *
+     * @param userId ID of the user
+     * @param cursor list cursor
+     * @return a list of user lists
+     * @throws EngineException if access is unavailable
+     */
+    public UserListList getUserListMemberships(long userId, long cursor) throws EngineException {
+        try {
+            int count = settings.getListSize();
+            PagableResponseList<UserList> lists = twitter.getUserListMemberships(userId, count, cursor);
+            long prevCursor = cursor > 0 ? cursor : 0;
+            long nextCursor = lists.getNextCursor();
+            UserListList result = new UserListList(prevCursor, nextCursor);
+            for (UserList list : lists)
+                result.add(new TwitterList(list, twitterID));
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
 
     /**
      * Follow action for twitter list

@@ -13,27 +13,25 @@ import java.lang.ref.WeakReference;
 
 /**
  * Background task for uploading tweet
+ *
  * @see TweetPopup
  */
-public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
+public class TweetUploader extends AsyncTask<TweetHolder, Void, Boolean> {
 
     @Nullable
     private EngineException twException;
-    private WeakReference<TweetPopup> callback;
-    private TwitterEngine mTwitter;
-    private TweetHolder tweet;
+    private final WeakReference<TweetPopup> callback;
+    private final TwitterEngine mTwitter;
 
     /**
      * initialize task
      *
      * @param callback Activity context
-     * @param tweet    tweet information
      */
-    public TweetUploader(TweetPopup callback, TweetHolder tweet) {
+    public TweetUploader(TweetPopup callback) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
-        this.tweet = tweet;
     }
 
 
@@ -46,8 +44,9 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(Void[] v) {
+    protected Boolean doInBackground(TweetHolder[] param) {
         try {
+            TweetHolder tweet = param[0];
             mTwitter.uploadStatus(tweet);
             return true;
         } catch (EngineException twException) {
@@ -66,7 +65,7 @@ public class TweetUploader extends AsyncTask<Void, Void, Boolean> {
             if (success) {
                 callback.get().onSuccess();
             } else if (twException != null) {
-                callback.get().onError(tweet, twException);
+                callback.get().onError(twException);
             }
         }
     }

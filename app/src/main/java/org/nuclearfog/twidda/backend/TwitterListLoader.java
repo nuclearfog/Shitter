@@ -6,11 +6,11 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.fragment.ListFragment;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 
 /**
@@ -18,7 +18,9 @@ import java.util.List;
  *
  * @see ListFragment
  */
-public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<TwitterList>> {
+public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
+
+    public static final long NO_CURSOR = -1;
 
     public enum Action {
         LOAD,
@@ -32,39 +34,37 @@ public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<Twitt
     private final TwitterEngine mTwitter;
     private final Action action;
 
+    private final long id;
+    private final String ownerName;
 
-    public TwitterListLoader(ListFragment callback, Action action) {
+
+    public TwitterListLoader(ListFragment callback, Action action, long id, String ownerName) {
         super();
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.callback = new WeakReference<>(callback);
         this.action = action;
+        this.ownerName = ownerName;
+        this.id = id;
     }
 
 
     @Override
-    protected List<TwitterList> doInBackground(Object[] param) {
+    protected UserListList doInBackground(Long[] param) {
         try {
             switch (action) {
                 case LOAD:
-                    if (param[0] instanceof Long) {
-                        long ownerId = (long) param[0];
-                        return mTwitter.getUserList(ownerId);
+                    long cursor = param[0];
+                    if (id > 0) {
+                        return mTwitter.getUserList(id, cursor);
                     } else {
-                        String ownerName = (String) param[0];
-                        return mTwitter.getUserList(ownerName);
+                        return mTwitter.getUserList(ownerName, cursor);
                     }
 
                 case FOLLOW:
-                    long listId = (long) param[0];
-                    TwitterList result = mTwitter.followUserList(listId);
-                    publishProgress(result);
-                    break;
+                    return new UserListList(mTwitter.followUserList(id));
 
                 case DELETE:
-                    listId = (long) param[0];
-                    TwitterList deletedList = mTwitter.deleteUserList(listId);
-                    publishProgress(deletedList);
-                    break;
+                    return new UserListList(mTwitter.deleteUserList(id));
             }
         } catch (EngineException twException) {
             this.twException = twException;
@@ -76,23 +76,24 @@ public class TwitterListLoader extends AsyncTask<Object, TwitterList, List<Twitt
 
 
     @Override
-    protected void onProgressUpdate(TwitterList[] lists) {
-        TwitterList list = lists[0];
-        if (callback.get() != null) {
-            if (action == Action.FOLLOW) {
-                callback.get().updateItem(list);
-            } else if (action == Action.DELETE) {
-                callback.get().removeItem(list.getId());
-            }
-        }
-    }
-
-
-    @Override
-    protected void onPostExecute(List<TwitterList> result) {
+    protected void onPostExecute(UserListList result) {
         if (callback.get() != null) {
             if (result != null) {
-                callback.get().setData(result);
+                switch (action) {
+                    case LOAD:
+                        callback.get().setData(result);
+                        break;
+
+                    case FOLLOW:
+                        TwitterList list = result.get(0);
+                        callback.get().updateItem(list);
+                        break;
+
+                    case DELETE:
+                        long id = result.get(0).getId();
+                        callback.get().removeItem(id);
+                        break;
+                }
             } else {
                 callback.get().onError(twException);
             }
