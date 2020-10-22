@@ -27,11 +27,10 @@ import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.TwitterListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import java.util.List;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.FINISHED;
@@ -189,6 +188,13 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     }
 
 
+    public void onFooterClick(long cursor) {
+        if (listTask != null && listTask.getStatus() != RUNNING) {
+            load(cursor);
+        }
+    }
+
+
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == BUTTON_POSITIVE) {
@@ -222,7 +228,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
      *
      * @param data List of Twitter list data
      */
-    public void setData(List<TwitterList> data) {
+    public void setData(UserListList data) {
         adapter.setData(data);
         setRefresh(false);
     }
@@ -273,6 +279,7 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     public void onError(@Nullable EngineException error) {
         if (getContext() != null && error != null)
             ErrorHandler.handleFailure(getContext(), error);
+        adapter.disableLoading();
         setRefresh(false);
     }
 

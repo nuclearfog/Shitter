@@ -14,6 +14,10 @@ public class UserListList extends LinkedList<TwitterList> {
     private long prevCursor = 0;
     private long nextCursor = 0;
 
+    public UserListList() {
+        super();
+    }
+
     /**
      * @param list single list item
      */
@@ -30,6 +34,15 @@ public class UserListList extends LinkedList<TwitterList> {
         super();
         this.prevCursor = prevCursor;
         this.nextCursor = nextCursor;
+    }
+
+    /**
+     * set next list cursor
+     *
+     * @param next
+     */
+    public void setNextCursor(long next) {
+        nextCursor = next;
     }
 
 
@@ -52,12 +65,52 @@ public class UserListList extends LinkedList<TwitterList> {
     }
 
     /**
+     * get prev link to a list
+     *
+     * @return cursor
+     */
+    public long getPrev() {
+        return prevCursor;
+    }
+
+    /**
      * get next link to a list
      *
      * @return cursor
      */
     public long getNext() {
         return nextCursor;
+    }
+
+    /**
+     * replace whole list including cursors
+     *
+     * @param list new list
+     */
+    public void replace(UserListList list) {
+        super.clear();
+        super.addAll(list);
+        prevCursor = list.getPrev();
+        nextCursor = list.getNext();
+    }
+
+    /**
+     * add a sublist at the bottom of this list including next cursor
+     *
+     * @param list  new sublist
+     * @param index position where to insert at
+     */
+    public void addListAt(UserListList list, int index) {
+        super.addAll(index, list);
+        nextCursor = list.getNext();
+    }
+
+    @Override
+    public void clear() {
+        // resetting cursors
+        prevCursor = 0;
+        nextCursor = 0;
+        super.clear();
     }
 
     @Override

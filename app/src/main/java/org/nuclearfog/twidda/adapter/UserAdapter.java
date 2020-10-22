@@ -23,9 +23,6 @@ import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
@@ -45,77 +42,58 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private final UserClickListener itemClickListener;
     private final GlobalSettings settings;
 
-    private final List<TwitterUser> users;
-    private long nextCursor;
+    private final TwitterUserList data;
     private int loadingIndex;
 
 
     public UserAdapter(UserClickListener itemClickListener, GlobalSettings settings) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
-        users = new ArrayList<>();
+        data = new TwitterUserList();
         loadingIndex = NO_INDEX;
     }
 
 
     @MainThread
-    public void setData(@NonNull TwitterUserList data) {
-        if (users.isEmpty() || !data.hasPrevious()) {
-            if (!users.isEmpty()) {
-                // replace previous data
-                users.clear();
-            }
-            users.addAll(data);
-            if (data.hasNext()) {
+    public void setData(@NonNull TwitterUserList newData) {
+        if (data.isEmpty() || !newData.hasPrevious()) {
+            data.replace(newData);
+            if (newData.hasNext()) {
                 // add footer
-                users.add(null);
+                data.add(null);
             }
             notifyDataSetChanged();
         } else {
-            int end = users.size() - 1;
-            if (!data.hasNext()) {
+            int end = data.size() - 1;
+            if (!newData.hasNext()) {
                 // remove footer
-                users.remove(end);
+                data.remove(end);
                 notifyItemRemoved(end);
-            } else {
-                disableLoading();
             }
-            users.addAll(end, data);
-            notifyItemRangeInserted(end, data.size());
+            data.addListAt(newData, end);
+            notifyItemRangeInserted(end, newData.size());
         }
-        nextCursor = data.getNext();
-        loadingIndex = NO_INDEX;
-    }
-
-    /**
-     * disable loading animation in footer
-     */
-    public void disableLoading() {
-        if (loadingIndex != NO_INDEX) {
-            int oldIndex = loadingIndex;
-            loadingIndex = NO_INDEX;
-            notifyItemChanged(oldIndex);
-        }
+        disableLoading();
     }
 
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return data.size();
     }
 
 
     @Override
     public long getItemId(int index) {
-        if (users.get(index) != null)
-            return users.get(index).getId();
+        if (data.get(index) != null)
+            return data.get(index).getId();
         return NO_ID;
     }
 
 
     @Override
     public int getItemViewType(int index) {
-        if (users.get(index) == null)
+        if (data.get(index) == null)
             return ITEM_GAP;
         return ITEM_USER;
     }
@@ -132,7 +110,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
-                    TwitterUser user = users.get(position);
+                    TwitterUser user = data.get(position);
                     if (position != NO_POSITION && user != null) {
                         itemClickListener.onUserClick(user);
                     }
@@ -149,7 +127,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        itemClickListener.onFooterClick(nextCursor);
+                        itemClickListener.onFooterClick(data.getNext());
                         vh.loadCircle.setVisibility(VISIBLE);
                         vh.loadBtn.setVisibility(INVISIBLE);
                         loadingIndex = position;
@@ -163,7 +141,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-        TwitterUser user = users.get(index);
+        TwitterUser user = data.get(index);
         if (holder instanceof ItemHolder && user != null) {
             ItemHolder vh = (ItemHolder) holder;
             vh.username.setText(user.getUsername());
@@ -188,6 +166,17 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 vh.loadCircle.setVisibility(INVISIBLE);
                 vh.loadBtn.setVisibility(VISIBLE);
             }
+        }
+    }
+
+    /**
+     * disable loading animation in footer
+     */
+    public void disableLoading() {
+        if (loadingIndex != NO_INDEX) {
+            int oldIndex = loadingIndex;
+            loadingIndex = NO_INDEX;
+            notifyItemChanged(oldIndex);
         }
     }
 
@@ -234,6 +223,11 @@ public class UserAdapter extends Adapter<ViewHolder> {
          */
         void onUserClick(TwitterUser user);
 
+        /**
+         * handle footer click
+         *
+         * @param cursor next cursor of the list
+         */
         void onFooterClick(long cursor);
     }
 }
