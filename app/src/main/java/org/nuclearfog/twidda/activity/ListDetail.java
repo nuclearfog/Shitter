@@ -117,11 +117,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             isPublic = param.getBoolean(KEY_LISTDETAIL_VISIB, false);
             belongsToCurrentUser = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
             adapter.setupListContentPage(listId);
-            Tab tlTab = tablayout.getTabAt(0);
-            Tab trTab = tablayout.getTabAt(1);
-            if (tlTab != null && trTab != null) {
-                tlTab.setIcon(R.drawable.list);
-                trTab.setIcon(R.drawable.user);
+            Tab tweetTab = tablayout.getTabAt(0);
+            Tab userTab = tablayout.getTabAt(1);
+            if (tweetTab != null && userTab != null) {
+                tweetTab.setIcon(R.drawable.list);
+                userTab.setIcon(R.drawable.user);
             }
             toolbar.setTitle(title);
             toolbar.setSubtitle(description);

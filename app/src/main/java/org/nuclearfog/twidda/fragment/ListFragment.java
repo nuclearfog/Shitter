@@ -46,7 +46,8 @@ import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRBR;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_MEMBERSHIPS;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_USERLISTS;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.NO_CURSOR;
 
 /**
@@ -64,6 +65,22 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
      * alternative key for the owner name
      */
     public static final String KEY_FRAG_LIST_OWNER_NAME = "list_owner_name";
+
+    /**
+     * key to define the type of the list
+     * {@link #LIST_USER_OWNS} or {@link #LIST_USER_SUBSCR_TO}
+     */
+    public static final String KEY_FRAG_LIST_LIST_TYPE = "list_type";
+
+    /**
+     * setup for lists of an user
+     */
+    public static final int LIST_USER_OWNS = 1;
+
+    /**
+     * setup for list an user is subscribed to
+     */
+    public static final int LIST_USER_SUBSCR_TO = 2;
 
     private TwitterListLoader listTask;
     private GlobalSettings settings;
@@ -291,7 +308,11 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         if (param != null) {
             long id = param.getLong(KEY_FRAG_LIST_OWNER_ID, 0);
             String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
-            listTask = new TwitterListLoader(this, LOAD, id, ownerName);
+            int type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
+            if (type == LIST_USER_OWNS)
+                listTask = new TwitterListLoader(this, LOAD_USERLISTS, id, ownerName);
+            else if (type == LIST_USER_SUBSCR_TO)
+                listTask = new TwitterListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
             listTask.execute(cursor);
         }
     }

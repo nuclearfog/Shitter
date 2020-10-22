@@ -23,7 +23,8 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
     public static final long NO_CURSOR = -1;
 
     public enum Action {
-        LOAD,
+        LOAD_USERLISTS,
+        LOAD_MEMBERSHIPS,
         FOLLOW,
         DELETE
     }
@@ -52,12 +53,20 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
     protected UserListList doInBackground(Long[] param) {
         try {
             switch (action) {
-                case LOAD:
+                case LOAD_USERLISTS:
                     long cursor = param[0];
                     if (id > 0) {
                         return mTwitter.getUserList(id, cursor);
                     } else {
                         return mTwitter.getUserList(ownerName, cursor);
+                    }
+
+                case LOAD_MEMBERSHIPS:
+                    cursor = param[0];
+                    if (id > 0) {
+                        return mTwitter.getUserListMemberships(id, "", cursor);
+                    } else {
+                        return mTwitter.getUserListMemberships(0, ownerName, cursor);
                     }
 
                 case FOLLOW:
@@ -80,7 +89,8 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
         if (callback.get() != null) {
             if (result != null) {
                 switch (action) {
-                    case LOAD:
+                    case LOAD_USERLISTS:
+                    case LOAD_MEMBERSHIPS:
                         callback.get().setData(result);
                         break;
 

@@ -913,7 +913,7 @@ public class TwitterEngine {
             List<UserList> lists = twitter.getUserLists(userId);
             long prevCursor = cursor > 0 ? cursor : 0;
             long nextCursor = 0;
-            UserListList result = new UserListList(0, 0); // todo add paging system
+            UserListList result = new UserListList(prevCursor, nextCursor); // todo add paging system
             for (UserList list : lists)
                 result.add(new TwitterList(list, twitterID));
             return result;
@@ -948,15 +948,20 @@ public class TwitterEngine {
     /**
      * get the lists the user has been added to
      *
-     * @param userId ID of the user
-     * @param cursor list cursor
+     * @param userId   ID of the user
+     * @param username alternative to userId if id is '0'
+     * @param cursor   list cursor
      * @return a list of user lists
      * @throws EngineException if access is unavailable
      */
-    public UserListList getUserListMemberships(long userId, long cursor) throws EngineException {
+    public UserListList getUserListMemberships(long userId, String username, long cursor) throws EngineException {
         try {
             int count = settings.getListSize();
-            PagableResponseList<UserList> lists = twitter.getUserListMemberships(userId, count, cursor);
+            PagableResponseList<UserList> lists;
+            if (userId > 0)
+                lists = twitter.getUserListMemberships(userId, count, cursor);
+            else
+                lists = twitter.getUserListMemberships(username, count, cursor);
             long prevCursor = cursor > 0 ? cursor : 0;
             long nextCursor = lists.getNextCursor();
             UserListList result = new UserListList(prevCursor, nextCursor);

@@ -11,6 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/listpage_toolbar_height" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/list_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/list_pager"
         android:layout_width="match_parent"

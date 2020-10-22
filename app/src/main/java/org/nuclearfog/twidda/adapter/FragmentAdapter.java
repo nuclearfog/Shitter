@@ -13,8 +13,11 @@ import org.nuclearfog.twidda.fragment.TrendFragment;
 import org.nuclearfog.twidda.fragment.TweetFragment;
 import org.nuclearfog.twidda.fragment.UserFragment;
 
+import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_LIST_TYPE;
 import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_OWNER_ID;
 import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_OWNER_NAME;
+import static org.nuclearfog.twidda.fragment.ListFragment.LIST_USER_OWNS;
+import static org.nuclearfog.twidda.fragment.ListFragment.LIST_USER_SUBSCR_TO;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
@@ -236,11 +239,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * @param userId ID of the user
      */
     public void setupListPage(long userId) {
-        Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
-        fragments = new Fragment[1];
+        Bundle userListParam = new Bundle();
+        Bundle subscriberParam = new Bundle();
+        userListParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+        userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
+        subscriberParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+        subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
+        fragments = new Fragment[2];
         fragments[0] = new ListFragment();
-        fragments[0].setArguments(param);
+        fragments[1] = new ListFragment();
+        fragments[0].setArguments(userListParam);
+        fragments[1].setArguments(subscriberParam);
         notifyDataSetChanged();
     }
 
@@ -250,11 +259,17 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * @param ownerName screen name of the owner
      */
     public void setupListPage(String ownerName) {
-        Bundle param = new Bundle();
-        param.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
-        fragments = new Fragment[1];
+        Bundle userListParam = new Bundle();
+        Bundle subscriberParam = new Bundle();
+        userListParam.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
+        userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
+        subscriberParam.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
+        subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
+        fragments = new Fragment[2];
         fragments[0] = new ListFragment();
-        fragments[0].setArguments(param);
+        fragments[1] = new ListFragment();
+        fragments[0].setArguments(userListParam);
+        fragments[1].setArguments(subscriberParam);
         notifyDataSetChanged();
     }
 
