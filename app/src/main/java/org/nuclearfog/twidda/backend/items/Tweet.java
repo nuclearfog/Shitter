@@ -60,11 +60,12 @@ public class Tweet {
 
     /**
      * Tweet constructor
-     * @param status twitter4j status
-     * @param retweetCount set retweet count
-     * @param retweeted set if tweet is retweeted by current user
+     *
+     * @param status        twitter4j status
+     * @param retweetCount  set retweet count
+     * @param retweeted     set if tweet is retweeted by current user
      * @param favoriteCount set favor count
-     * @param favored set if tweet is favored by current user
+     * @param favored       set if tweet is favored by current user
      */
     public Tweet(Status status, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
         this.retweetCount = retweetCount;
@@ -141,24 +142,25 @@ public class Tweet {
 
     /**
      * Tweet constructor for database tweets
-     * @param tweetID unique id of tweet
-     * @param retweetCount number of retweets
-     * @param favoriteCount number of favors
-     * @param user tweet author
-     * @param tweet tweet text
-     * @param time time long format
-     * @param replyName author's name of replied tweet
-     * @param replyUserId quthor's ID of replied tweet
-     * @param medias Media links attached to tweet
-     * @param source used API of the tweet
-     * @param replyID ID of replied tweet
-     * @param embedded quoted tweet
-     * @param myRetweetId ID of the current users retweeted tweet
-     * @param retweeted tweet is retweeted by current user
-     * @param favored tweet is favored by current user
+     *
+     * @param tweetID        unique id of tweet
+     * @param retweetCount   number of retweets
+     * @param favoriteCount  number of favors
+     * @param user           tweet author
+     * @param tweet          tweet text
+     * @param time           time long format
+     * @param replyName      author's name of replied tweet
+     * @param replyUserId    quthor's ID of replied tweet
+     * @param medias         Media links attached to tweet
+     * @param source         used API of the tweet
+     * @param replyID        ID of replied tweet
+     * @param embedded       quoted tweet
+     * @param myRetweetId    ID of the current users retweeted tweet
+     * @param retweeted      tweet is retweeted by current user
+     * @param favored        tweet is favored by current user
      * @param sensitiveMedia tweet contains sensitie media content
-     * @param geo location gps coordinates
-     * @param place location full place name
+     * @param geo            location gps coordinates
+     * @param place          location full place name
      */
     public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
                  String replyName, long replyUserId, String[] medias, MediaType mediaType, String source, long replyID,

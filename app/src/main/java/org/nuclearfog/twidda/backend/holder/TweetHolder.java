@@ -38,8 +38,9 @@ public class TweetHolder {
 
     /**
      * Add media paths to the holder
+     *
      * @param mediaLinks array of media paths from storage
-     * @param mType type of media
+     * @param mType      type of media
      */
     public void addMedia(String[] mediaLinks, MediaType mType) {
         this.mediaPaths = mediaLinks;
@@ -48,6 +49,7 @@ public class TweetHolder {
 
     /**
      * Add location to a tweet
+     *
      * @param location location information
      */
     public void addLocation(Location location) {
@@ -58,6 +60,7 @@ public class TweetHolder {
 
     /**
      * get tweet message
+     *
      * @return tweet text
      */
     public String getText() {
@@ -66,6 +69,7 @@ public class TweetHolder {
 
     /**
      * get ID of the replied tweet
+     *
      * @return Tweet ID
      */
     public long getReplyId() {
@@ -74,6 +78,7 @@ public class TweetHolder {
 
     /**
      * get type of attached media if any
+     *
      * @return media type
      */
     public MediaType getMediaType() {
@@ -100,6 +105,7 @@ public class TweetHolder {
 
     /**
      * get longitude of the location
+     *
      * @return longitude
      */
     public double getLongitude() {
@@ -108,6 +114,7 @@ public class TweetHolder {
 
     /**
      * get latitude of the location
+     *
      * @return latitude
      */
     public double getLatitude() {
@@ -116,6 +123,7 @@ public class TweetHolder {
 
     /**
      * return if holder has location information attached
+     *
      * @return true if location is attached
      */
     public boolean hasLocation() {
@@ -124,6 +132,7 @@ public class TweetHolder {
 
     /**
      * return if tweet is a reply
+     *
      * @return true if tweet is a reply
      */
     public boolean isReply() {

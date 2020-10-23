@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="colorAccent">@android:color/white</item>
         <item name="android:colorBackground">@android:color/black</item>
@@ -56,12 +57,11 @@
     </style>
 
     <style name="NegativeButton" parent="Widget.AppCompat.ButtonBar.AlertDialog">
-        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textColor">@color/negative_button</item>
     </style>
 
     <style name="PositiveButton" parent="Widget.AppCompat.ButtonBar.AlertDialog">
-        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:textColor">@color/positive_button</item>
     </style>
-
 
 </resources>

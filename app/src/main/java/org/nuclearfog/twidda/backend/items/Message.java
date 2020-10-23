@@ -31,11 +31,12 @@ public class Message {
 
     /**
      * construct message object from database information
+     *
      * @param messageId ID of direct message
-     * @param sender sender user
-     * @param receiver receiver user
-     * @param time timestamp long format
-     * @param message message text
+     * @param sender    sender user
+     * @param receiver  receiver user
+     * @param time      timestamp long format
+     * @param message   message text
      */
     public Message(long messageId, TwitterUser sender, TwitterUser receiver, long time, String message) {
         this.messageId = messageId;

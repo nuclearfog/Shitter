@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * Background task to send a direct messages to a user
+ *
  * @see MessagePopup
  */
 public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
@@ -28,7 +29,7 @@ public class MessageUploader extends AsyncTask<Void, Void, Boolean> {
      * send direct message
      *
      * @param callback Activity context
-     * @param message message to send
+     * @param message  message to send
      */
     public MessageUploader(@NonNull MessagePopup callback, MessageHolder message) {
         super();

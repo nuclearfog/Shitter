@@ -144,9 +144,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
                         TwitterList list = data.get(position);
-                        if (!list.getListOwner().isLocked()) {
-                            listener.onClick(list, ListClickListener.Action.PROFILE);
-                        }
+                        listener.onClick(list, ListClickListener.Action.PROFILE);
                     }
                 }
             });
@@ -156,10 +154,9 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
                         TwitterList list = data.get(position);
-                        TwitterUser owner = list.getListOwner();
                         if (list.isListOwner()) {
                             listener.onClick(list, ListClickListener.Action.DELETE);
-                        } else if (!owner.isLocked()) {
+                        } else {
                             listener.onClick(list, ListClickListener.Action.FOLLOW);
                         }
                     }
@@ -171,9 +168,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
                         TwitterList list = data.get(position);
-                        if (!list.getListOwner().isLocked()) {
-                            listener.onClick(list, ListClickListener.Action.SUBSCRIBER);
-                        }
+                        listener.onClick(list, ListClickListener.Action.SUBSCRIBER);
                     }
                 }
             });
@@ -183,9 +178,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
                         TwitterList list = data.get(position);
-                        if (!list.getListOwner().isLocked()) {
-                            listener.onClick(list, ListClickListener.Action.MEMBER);
-                        }
+                        listener.onClick(list, ListClickListener.Action.MEMBER);
                     }
                 }
             });

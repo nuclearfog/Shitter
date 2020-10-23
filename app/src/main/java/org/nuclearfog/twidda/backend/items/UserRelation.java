@@ -34,6 +34,7 @@ public class UserRelation {
 
     /**
      * screen name of target user
+     *
      * @return screen name
      */
     public String getTargetScreenname() {
@@ -42,6 +43,7 @@ public class UserRelation {
 
     /**
      * return if target user is authenticating user
+     *
      * @return true if target user is current user
      */
     public boolean isHome() {
@@ -50,6 +52,7 @@ public class UserRelation {
 
     /**
      * return if target user is followed by current user
+     *
      * @return true if target user is followed by current user
      */
     public boolean isFriend() {
@@ -58,6 +61,7 @@ public class UserRelation {
 
     /**
      * return if target user is following current user
+     *
      * @return true if target user is following current user
      */
     public boolean isFollower() {
@@ -66,6 +70,7 @@ public class UserRelation {
 
     /**
      * return if current user is blocking target user
+     *
      * @return true if current user is blocking target user
      */
     public boolean isBlocked() {
@@ -74,6 +79,7 @@ public class UserRelation {
 
     /**
      * return if current user is muting target user
+     *
      * @return true if current user is muting target user
      */
     public boolean isMuted() {
@@ -82,6 +88,7 @@ public class UserRelation {
 
     /**
      * return if target user can receive direct message
+     *
      * @return true if target user can receive direct messages
      */
     public boolean canDm() {

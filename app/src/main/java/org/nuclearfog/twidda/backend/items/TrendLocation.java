@@ -30,8 +30,9 @@ public class TrendLocation {
 
     /**
      * construct location object from local
+     *
      * @param placeName name of locale
-     * @param id woe id
+     * @param id        woe id
      */
     public TrendLocation(String placeName, int id) {
         this.placeName = placeName;
@@ -40,6 +41,7 @@ public class TrendLocation {
 
     /**
      * get place name
+     *
      * @return country followed by place
      */
     public String getName() {
@@ -48,6 +50,7 @@ public class TrendLocation {
 
     /**
      * get World ID
+     *
      * @return woeID
      */
     public int getWoeId() {

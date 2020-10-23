@@ -35,8 +35,9 @@ public abstract class FontTool {
 
     /**
      * Set fonts to all text elements in a view
+     *
      * @param settings current font settings
-     * @param v    Root view containing views
+     * @param v        Root view containing views
      */
     public static void setViewFont(GlobalSettings settings, View v) {
         if (v instanceof ViewGroup) {

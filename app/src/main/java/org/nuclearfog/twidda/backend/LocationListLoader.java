@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Background task to load location information used by twitter such as location names and world ID's
+ *
  * @see AppSettings
  */
 public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation>> {

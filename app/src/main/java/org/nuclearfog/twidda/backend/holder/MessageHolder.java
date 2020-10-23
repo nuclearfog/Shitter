@@ -30,6 +30,7 @@ public class MessageHolder {
 
     /**
      * Get receiver screen name
+     *
      * @return receiver name
      */
     public String getUsername() {
@@ -38,6 +39,7 @@ public class MessageHolder {
 
     /**
      * get message text
+     *
      * @return message
      */
     public String getMessage() {
@@ -46,6 +48,7 @@ public class MessageHolder {
 
     /**
      * get local path of media
+     *
      * @return media path
      */
     public String[] getMediaPath() {
@@ -54,6 +57,7 @@ public class MessageHolder {
 
     /**
      * check if media is attached
+     *
      * @return if media is set
      */
     public boolean hasMedia() {

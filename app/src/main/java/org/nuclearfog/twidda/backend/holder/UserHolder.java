@@ -12,11 +12,11 @@ public class UserHolder {
     /**
      * create user information holder
      *
-     * @param name      user name
-     * @param link      profile link
-     * @param location  profile location string
-     * @param bio       description string
-     * @param profileImage local profile image path
+     * @param name          user name
+     * @param link          profile link
+     * @param location      profile location string
+     * @param bio           description string
+     * @param profileImage  local profile image path
      * @param profileBanner local profile image path
      */
     public UserHolder(String name, String link, String location, String bio, String profileImage, String profileBanner) {
@@ -31,6 +31,7 @@ public class UserHolder {
 
     /**
      * get sser name
+     *
      * @return user name
      */
     public String getName() {
@@ -39,6 +40,7 @@ public class UserHolder {
 
     /**
      * get profile link
+     *
      * @return link
      */
     public String getLink() {
@@ -47,6 +49,7 @@ public class UserHolder {
 
     /**
      * get location
+     *
      * @return location name
      */
     public String getLocation() {
@@ -55,6 +58,7 @@ public class UserHolder {
 
     /**
      * get profile description
+     *
      * @return profile bio
      */
     public String getBio() {
@@ -63,6 +67,7 @@ public class UserHolder {
 
     /**
      * get local image path
+     *
      * @return image path
      */
     public String getProfileImage() {
@@ -71,6 +76,7 @@ public class UserHolder {
 
     /**
      * check if profile image path is included
+     *
      * @return true if image path is included
      */
     public boolean hasProfileImage() {

@@ -324,6 +324,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     /**
      * called to scroll page to top
+     *
      * @param index tab position of page
      */
     public void scrollToTop(int index) {
