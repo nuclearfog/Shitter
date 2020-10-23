@@ -46,7 +46,11 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         images = new LinkedList<>();
     }
 
-
+    /**
+     * add new image at the last position
+     *
+     * @param imageItem image to add
+     */
     @MainThread
     public void addLast(@NonNull ImageHolder imageItem) {
         int imagePos = images.size();
@@ -56,7 +60,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         notifyItemInserted(imagePos);
     }
 
-
+    /**
+     * disable placeholder view
+     */
     @MainThread
     public void disableLoading() {
         loading = false;
@@ -147,7 +153,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     /**
      * Holder for image
      */
-    class ImageItem extends ViewHolder {
+    private final class ImageItem extends ViewHolder {
         final ImageView preview;
         final ImageButton saveButton;
 
@@ -161,7 +167,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     /**
      * Holder for progress circle
      */
-    class LoadItem extends ViewHolder {
+    private final class LoadItem extends ViewHolder {
 
         LoadItem(View v) {
             super(v);

@@ -41,10 +41,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_USER = 0;
     private static final int ITEM_GAP = 1;
 
-    private final UserClickListener itemClickListener;
-    private final GlobalSettings settings;
+    private UserClickListener itemClickListener;
+    private GlobalSettings settings;
 
-    private final TwitterUserList data;
+    private TwitterUserList data;
     private int loadingIndex;
     private boolean userRemovable = false;
 
@@ -59,7 +59,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     @MainThread
     public void setData(@NonNull TwitterUserList newData) {
-        if (data.isEmpty() || !newData.hasPrevious()) {
+        if (newData.isEmpty()) {
+            if (!data.isEmpty() && data.peekLast() == null) {
+                // remove footer
+                data.pollLast();
+            }
+        } else if (data.isEmpty() || !newData.hasPrevious()) {
             data.replace(newData);
             if (newData.hasNext()) {
                 // add footer
@@ -228,8 +233,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
         tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
     }
 
-
-    static class ItemHolder extends ViewHolder {
+    /**
+     * Holder for an user view item
+     */
+    private final class ItemHolder extends ViewHolder {
         final ImageView profileImg;
         final TextView username, screenname;
         final ImageButton delete;
@@ -243,8 +250,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    static class PlaceHolder extends ViewHolder {
-
+    /**
+     * Holder for a footer view
+     */
+    private final class PlaceHolder extends ViewHolder {
         final ProgressBar loadCircle;
         final Button loadBtn;
 

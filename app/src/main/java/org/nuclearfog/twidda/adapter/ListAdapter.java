@@ -41,11 +41,11 @@ public class ListAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_FOOTER = 0;
     private static final int ITEM_LIST = 1;
 
-    private final ListClickListener listener;
-    private final NumberFormat formatter;
-    private final GlobalSettings settings;
+    private ListClickListener listener;
+    private NumberFormat formatter;
+    private GlobalSettings settings;
 
-    private final UserListList data;
+    private UserListList data;
     private int loadingIndex;
 
 
@@ -56,10 +56,19 @@ public class ListAdapter extends Adapter<ViewHolder> {
         data = new UserListList();
     }
 
-
+    /**
+     * adds new data to the list
+     *
+     * @param newData new list to add
+     */
     @MainThread
     public void setData(UserListList newData) {
-        if (data.isEmpty() || !newData.hasPrevious()) {
+        if (newData.isEmpty()) {
+            if (!data.isEmpty() && data.peekLast() == null) {
+                // remove footer
+                data.pollLast();
+            }
+        } else if (data.isEmpty() || !newData.hasPrevious()) {
             data.replace(newData);
             if (data.hasNext()) {
                 // Add footer
@@ -79,28 +88,31 @@ public class ListAdapter extends Adapter<ViewHolder> {
         disableLoading();
     }
 
-
+    /**
+     * update a list item
+     *
+     * @param item new userlist item
+     */
     @MainThread
-    public void updateItem(TwitterList newItem) {
-        int index = data.indexOf(newItem);
+    public void updateItem(TwitterList item) {
+        int index = data.indexOf(item);
         if (index != -1) {
-            data.set(index, newItem);
+            data.set(index, item);
             notifyItemChanged(index);
         }
     }
 
-
+    /**
+     * remove userlist item from list
+     *
+     * @param item userlist item to remove
+     */
     @MainThread
-    public void removeItem(long id) {
-        int pos = -1;
-        for (int index = 0; index < data.size() && pos < 0; index++) {
-            if (data.get(index).getId() == id) {
-                data.remove(index);
-                pos = index;
-            }
-        }
-        if (pos != -1) {
-            notifyItemRemoved(pos);
+    public void removeItem(TwitterList item) {
+        int index = data.indexOf(item);
+        if (index != -1) {
+            data.remove(index);
+            notifyItemRemoved(index);
         }
     }
 
@@ -246,8 +258,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
         }
     }
 
-
-    static class ListHolder extends ViewHolder {
+    /**
+     * view holder class for an user list item
+     */
+    private final class ListHolder extends ViewHolder {
         final ImageView pb_image;
         final Button action;
         final TextView title, ownername, description, createdAt;
@@ -266,7 +280,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
         }
     }
 
-    static class PlaceHolder extends ViewHolder {
+    /**
+     * view holder class for a footer view
+     */
+    private final class PlaceHolder extends ViewHolder {
 
         final ProgressBar loadCircle;
         final Button loadBtn;

@@ -264,10 +264,10 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     /**
      * remove item with specific ID
      *
-     * @param id ID of list to remove
+     * @param list Twitter list item
      */
-    public void removeItem(long id) {
-        adapter.removeItem(id);
+    public void removeItem(TwitterList list) {
+        adapter.removeItem(list);
     }
 
     /**

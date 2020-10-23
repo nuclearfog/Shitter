@@ -172,4 +172,5 @@
     <string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
     <string name="info_user_removed">Nutzer von der Liste entfernt!</string>
     <string name="info_following_list">folge Liste..</string>
+    <string name="descr_remove_user">Nutzer von der Liste entfernen</string>
 </resources>

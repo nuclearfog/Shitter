@@ -47,12 +47,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private static final int VIEW_GAP = 1;
     private static final int MIN_COUNT = 2;
 
-    private final TweetClickListener itemClickListener;
-    private final NumberFormat formatter;
-    private final GlobalSettings settings;
-    private int loadingIndex;
+    private TweetClickListener itemClickListener;
+    private NumberFormat formatter;
+    private GlobalSettings settings;
 
-    private final List<Tweet> tweets;
+    private List<Tweet> tweets;
+    private int loadingIndex;
 
 
     public TweetAdapter(TweetClickListener itemClickListener, GlobalSettings settings) {
@@ -265,13 +265,20 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         }
     }
 
-
+    /**
+     * sets an icon for a textview
+     *
+     * @param tv       TextView to add an icon
+     * @param drawable icon
+     */
     private void setIcon(TextView tv, @DrawableRes int drawable) {
         tv.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
     }
 
-
-    class TweetHolder extends ViewHolder {
+    /**
+     * Holder class for the tweet view
+     */
+    private final class TweetHolder extends ViewHolder {
         final TextView username, screenname, tweet, retweet;
         final TextView favorite, retweeter, time;
         final ImageView profile;
@@ -289,8 +296,10 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         }
     }
 
-
-    static class PlaceHolder extends ViewHolder {
+    /**
+     * Holder class for the placeholder view
+     */
+    private final class PlaceHolder extends ViewHolder {
         final Button loadBtn;
         final ProgressBar loadCircle;
 

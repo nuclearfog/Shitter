@@ -19,8 +19,8 @@ public class FontAdapter extends BaseAdapter {
 
     private static final float FONT_SIZE = 24.0f;
 
-    private final Typeface[] fonts = GlobalSettings.fonts;
-    private final String[] names = GlobalSettings.fontnames;
+    private Typeface[] fonts = GlobalSettings.fonts;
+    private String[] names = GlobalSettings.fontnames;
 
 
     @Override

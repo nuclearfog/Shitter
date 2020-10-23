@@ -95,13 +95,13 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
                         break;
 
                     case FOLLOW:
-                        TwitterList list = result.get(0);
-                        callback.get().updateItem(list);
+                        TwitterList update = result.get(0);
+                        callback.get().updateItem(update);
                         break;
 
                     case DELETE:
-                        long id = result.get(0).getId();
-                        callback.get().removeItem(id);
+                        TwitterList remove = result.get(0);
+                        callback.get().removeItem(remove);
                         break;
                 }
             } else {

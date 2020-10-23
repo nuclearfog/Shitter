@@ -55,6 +55,7 @@
             android:layout_width="@dimen/useritem_button_size"
             android:layout_height="@dimen/useritem_button_size"
             android:background="@drawable/button"
+            android:contentDescription="@string/descr_remove_user"
             app:srcCompat="@drawable/cross" />
 
     </LinearLayout>

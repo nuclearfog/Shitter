@@ -36,12 +36,12 @@ import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
  *
  * @see org.nuclearfog.twidda.fragment.MessageFragment
  */
-public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
+public class MessageAdapter extends Adapter<ViewHolder> {
 
-    private final OnItemSelected itemClickListener;
-    private final GlobalSettings settings;
+    private OnItemSelected itemClickListener;
+    private GlobalSettings settings;
 
-    private final List<Message> messages;
+    private List<Message> messages;
 
 
     public MessageAdapter(OnItemSelected itemClickListener, GlobalSettings settings) {
@@ -96,7 +96,7 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
     @NonNull
     @Override
-    public MessageHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
         final MessageHolder vh = new MessageHolder(view);
         FontTool.setViewFontAndColor(settings, view);
@@ -134,37 +134,45 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
 
 
     @Override
-    public void onBindViewHolder(@NonNull MessageHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         Spanned text;
         Message message = messages.get(index);
         TwitterUser sender = message.getSender();
         text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
 
-        vh.message.setText(text);
-        vh.username.setText(sender.getUsername());
-        vh.screenname.setText(sender.getScreenname());
-        vh.createdAt.setText(getTimeString(message.getTime()));
-        vh.receivername.setText(message.getReceiver().getScreenname());
+        MessageHolder holder = (MessageHolder) vh;
+        holder.message.setText(text);
+        holder.username.setText(sender.getUsername());
+        holder.screenname.setText(sender.getScreenname());
+        holder.createdAt.setText(getTimeString(message.getTime()));
+        holder.receivername.setText(message.getReceiver().getScreenname());
 
-        setIcon(vh.username, sender.isVerified() ? R.drawable.verify : 0);
-        setIcon(vh.screenname, sender.isLocked() ? R.drawable.lock : 0);
+        setIcon(holder.username, sender.isVerified() ? R.drawable.verify : 0);
+        setIcon(holder.screenname, sender.isLocked() ? R.drawable.lock : 0);
 
         if (settings.getImageLoad()) {
             String pbLink = sender.getImageLink();
             if (!sender.hasDefaultProfileImage()) {
                 pbLink += "_mini";
             }
-            Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.profile_img);
+            Picasso.get().load(pbLink).error(R.drawable.no_image).into(holder.profile_img);
         }
     }
 
-
+    /**
+     * sets an icon to a extview
+     *
+     * @param tv   textview
+     * @param icon icon drawable
+     */
     private void setIcon(TextView tv, @DrawableRes int icon) {
         tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
     }
 
-
-    static class MessageHolder extends ViewHolder {
+    /**
+     * Holder class for a message view
+     */
+    private final class MessageHolder extends ViewHolder {
         final ImageView profile_img;
         final TextView username;
         final TextView screenname;
@@ -187,7 +195,9 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
         }
     }
 
-
+    /**
+     * callback for the click listener
+     */
     public interface OnItemSelected extends OnTagClickListener {
 
         enum Action {
@@ -196,6 +206,12 @@ public class MessageAdapter extends Adapter<MessageAdapter.MessageHolder> {
             PROFILE
         }
 
+        /**
+         * called when a button was clicked
+         *
+         * @param message Message information
+         * @param action  what button was clicked
+         */
         void onClick(Message message, Action action);
     }
 }

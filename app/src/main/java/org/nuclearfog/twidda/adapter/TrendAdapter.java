@@ -30,13 +30,13 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  *
  * @see org.nuclearfog.twidda.fragment.TrendFragment
  */
-public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
+public class TrendAdapter extends Adapter<ViewHolder> {
 
-    private final TrendClickListener itemClickListener;
-    private final GlobalSettings settings;
-    private final NumberFormat formatter;
+    private TrendClickListener itemClickListener;
+    private GlobalSettings settings;
+    private NumberFormat formatter;
 
-    private final List<TwitterTrend> trends;
+    private List<TwitterTrend> trends;
 
 
     public TrendAdapter(TrendClickListener itemClickListener, GlobalSettings settings) {
@@ -85,7 +85,7 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
     @NonNull
     @Override
-    public ItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
         final ItemHolder vh = new ItemHolder(v);
         FontTool.setViewFontAndColor(settings, v);
@@ -104,22 +104,25 @@ public class TrendAdapter extends Adapter<TrendAdapter.ItemHolder> {
 
 
     @Override
-    public void onBindViewHolder(@NonNull ItemHolder vh, int index) {
+    public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
+        ItemHolder holder = (ItemHolder) vh;
         TwitterTrend trend = trends.get(index);
-        vh.pos.setText(trend.getRankStr());
-        vh.name.setText(trend.getName());
+        holder.pos.setText(trend.getRankStr());
+        holder.name.setText(trend.getName());
         if (trend.hasRangeInfo()) {
-            Resources resources = vh.vol.getContext().getResources();
+            Resources resources = holder.vol.getContext().getResources();
             String trendVol = formatter.format(trend.getRange()) + " " + resources.getString(R.string.trend_range);
-            vh.vol.setText(trendVol);
-            vh.vol.setVisibility(VISIBLE);
+            holder.vol.setText(trendVol);
+            holder.vol.setVisibility(VISIBLE);
         } else {
-            vh.vol.setVisibility(GONE);
+            holder.vol.setVisibility(GONE);
         }
     }
 
-
-    static class ItemHolder extends ViewHolder {
+    /**
+     * view holder class for an item view
+     */
+    private final class ItemHolder extends ViewHolder {
         final TextView name, pos, vol;
 
         ItemHolder(View v) {
