@@ -76,11 +76,7 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> 
                         connection = mTwitter.getConnection(username);
                     }
                     if (!connection.isHome()) {
-                        if (connection.isBlocked() || connection.isMuted()) {
-                            db.muteUser(userId, true);
-                        } else {
-                            db.muteUser(userId, false);
-                        }
+                        db.muteUser(userId, connection.isBlocked() || connection.isMuted());
                     }
                     return connection;
 

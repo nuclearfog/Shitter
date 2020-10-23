@@ -37,16 +37,6 @@ public class UserListList extends LinkedList<TwitterList> {
     }
 
     /**
-     * set next list cursor
-     *
-     * @param next
-     */
-    public void setNextCursor(long next) {
-        nextCursor = next;
-    }
-
-
-    /**
      * check if list is linked to a previous list
      *
      * @return true if list is linked
