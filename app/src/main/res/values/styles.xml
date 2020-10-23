@@ -18,6 +18,8 @@
         <item name="android:colorBackground">@color/bright_transparent</item>
         <item name="android:textColor">@android:color/holo_red_dark</item>
         <item name="android:textColorPrimary">@android:color/black</item>
+        <item name="buttonBarPositiveButtonStyle">@style/PositiveButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NegativeButton</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
@@ -52,4 +54,14 @@
         <item name="cardUseCompatPadding">true</item>
         <item name="cardCornerRadius">10dp</item>
     </style>
+
+    <style name="NegativeButton" parent="Widget.AppCompat.ButtonBar.AlertDialog">
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+    </style>
+
+    <style name="PositiveButton" parent="Widget.AppCompat.ButtonBar.AlertDialog">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
+
 </resources>

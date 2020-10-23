@@ -39,8 +39,9 @@
                     android:id="@+id/list_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textSize="@dimen/listitem_textsize_title" />
+                    android:drawablePadding="@dimen/listitem_padding_drawable"
+                    android:textSize="@dimen/listitem_textsize_title"
+                    android:singleLine="true" />
 
                 <TextView
                     android:id="@+id/list_ownername"

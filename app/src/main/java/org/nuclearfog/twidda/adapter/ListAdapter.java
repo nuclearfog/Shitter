@@ -143,7 +143,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        listener.onClick(data.get(position), ListClickListener.Action.PROFILE);
+                        TwitterList list = data.get(position);
+                        if (!list.getListOwner().isLocked()) {
+                            listener.onClick(list, ListClickListener.Action.PROFILE);
+                        }
                     }
                 }
             });
@@ -153,9 +156,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
                         TwitterList list = data.get(position);
+                        TwitterUser owner = list.getListOwner();
                         if (list.isListOwner()) {
                             listener.onClick(list, ListClickListener.Action.DELETE);
-                        } else {
+                        } else if (!owner.isLocked()) {
                             listener.onClick(list, ListClickListener.Action.FOLLOW);
                         }
                     }
@@ -166,7 +170,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        listener.onClick(data.get(position), ListClickListener.Action.SUBSCRIBER);
+                        TwitterList list = data.get(position);
+                        if (!list.getListOwner().isLocked()) {
+                            listener.onClick(list, ListClickListener.Action.SUBSCRIBER);
+                        }
                     }
                 }
             });
@@ -175,7 +182,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        listener.onClick(data.get(position), ListClickListener.Action.MEMBER);
+                        TwitterList list = data.get(position);
+                        if (!list.getListOwner().isLocked()) {
+                            listener.onClick(list, ListClickListener.Action.MEMBER);
+                        }
                     }
                 }
             });
@@ -234,6 +244,11 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
             } else {
                 vh.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+            if (owner.isLocked()) {
+                vh.ownername.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            } else {
+                vh.ownername.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         } else if (holder instanceof PlaceHolder) {
             PlaceHolder placeHolder = (PlaceHolder) holder;
