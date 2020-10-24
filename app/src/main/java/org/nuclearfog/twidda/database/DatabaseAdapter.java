@@ -76,6 +76,71 @@ public class DatabaseAdapter {
     private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE tweet ADD COLUMN geo TEXT";
     private static final String TABLE_TREND_ADD_VOL = "ALTER TABLE trend ADD COLUMN vol INTEGER";
 
+    /**
+     * SQL query to get home timeline tweets
+     */
+    static final String HOMETL_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+            "WHERE statusregister&? IS NOT 0 ORDER BY tweetID DESC LIMIT ?";
+
+    /**
+     * SQL query to get mention timeline
+     */
+    static final String MENTION_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+            "WHERE statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
+
+    /**
+     * SQL query to get tweets of an user
+     */
+    static final String USERTWEET_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+            "WHERE statusregister&? IS NOT 0 AND user.userID=? ORDER BY tweetID DESC LIMIT ?";
+
+    /**
+     * SQL query to get tweets favorited by an user
+     */
+    static final String USERFAVORIT_QUERY = "SELECT * FROM tweet INNER JOIN favorit on tweet.tweetID=favorit.tweetID " +
+            "INNER JOIN user ON tweet.userID=user.userID WHERE favorit.ownerID=? ORDER BY tweetID DESC LIMIT ?";
+
+    /**
+     * SQL query to get a single tweet specified by an ID
+     */
+    static final String SINGLE_TWEET_QUERY = "SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID WHERE tweet.tweetID=? LIMIT 1";
+
+    /**
+     * SQL query to get replies of a tweet specified by a reply ID
+     */
+    static final String ANSWER_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
+            "WHERE tweet.replyID=? AND statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
+
+    /**
+     * SQL query to get locale based trends
+     */
+    static final String TREND_QUERY = "SELECT * FROM trend WHERE woeID=? ORDER BY trendpos ASC";
+
+    /**
+     * SQL query to get direct messages
+     */
+    static final String MESSAGE_QUERY = "SELECT * FROM message ORDER BY messageID DESC LIMIT ?";
+
+    /**
+     * SQL query to get user information
+     */
+    static final String USER_QUERY = "SELECT * FROM user WHERE userID=? LIMIT 1";
+
+    /**
+     * SQL query to get a status register for a tweet
+     */
+    static final String TWEETFLAG_QUERY = "SELECT statusregister FROM tweet WHERE tweetID=? LIMIT 1;";
+
+    /**
+     * SQL query to get a status register of an user
+     */
+    static final String USERFLAG_QUERY = "SELECT userregister FROM user WHERE userID=? LIMIT 1;";
+
+    /**
+     * SQL query to check if a status exists in database
+     */
+    static final String STATUS_EXIST_QUERY = "SELECT tweetID FROM tweet WHERE tweetID=? LIMIT 1;";
+
     private static DatabaseAdapter instance;
 
     private final File databasePath;
