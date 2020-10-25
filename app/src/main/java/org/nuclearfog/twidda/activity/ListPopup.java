@@ -98,7 +98,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, Dia
         subTitleInput.setText(description);
         visibility.setChecked(isPublic);
         if (listId > 0) {
-            popupTitle.setText(R.string.edit_list);
+            popupTitle.setText(R.string.menu_edit_list);
             updateButton.setText(R.string.update_list);
         }
         updateButton.setOnClickListener(this);
@@ -131,7 +131,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, Dia
             String descrStr = subTitleInput.getText().toString();
             boolean isPublic = visibility.isChecked();
             if (titleStr.trim().isEmpty() || descrStr.trim().isEmpty()) {
-                Toast.makeText(this, R.string.userlist_error_empty_text, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_empty_list_information, Toast.LENGTH_SHORT).show();
             } else if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
                 ListHolder mHolder;
                 if (listId > 0) {

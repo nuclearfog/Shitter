@@ -5,7 +5,7 @@
     <item
         android:id="@+id/message"
         android:icon="@drawable/message"
-        android:title="@string/directmessage"
+        android:title="@string/menu_write_message"
         app:showAsAction="always" />
 
 </menu>

@@ -3,14 +3,14 @@
 
     <item
         android:id="@+id/tweet_link"
-        android:title="@string/tweet_open_browser" />
+        android:title="@string/menu_tweet_open_browser" />
 
     <item
         android:id="@+id/link_copy"
-        android:title="@string/link_to_clipboard" />
+        android:title="@string/menu_link_to_clipboard" />
 
     <item
         android:id="@+id/delete_tweet"
-        android:title="@string/tweet_delete"
+        android:title="@string/menu_tweet_delete"
         android:visible="false" />
 </menu>

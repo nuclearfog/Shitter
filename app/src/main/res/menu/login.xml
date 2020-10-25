@@ -5,7 +5,7 @@
     <item
         android:id="@+id/login_setting"
         android:icon="@drawable/setting"
-        android:title="@string/tweet"
+        android:title="@string/menu_open_settings"
         app:showAsAction="always" />
 
 </menu>
