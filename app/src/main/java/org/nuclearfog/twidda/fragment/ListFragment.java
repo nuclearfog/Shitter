@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,10 +28,11 @@ import org.nuclearfog.twidda.backend.TwitterListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
@@ -50,12 +49,14 @@ import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_MEMBERSHIPS;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_USERLISTS;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_DELETE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_UNFOLLOW;
 
 /**
  * Fragment class for user lists
  */
 public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener,
-        FragmentChangeObserver, DialogInterface.OnClickListener {
+        FragmentChangeObserver, OnDialogClick {
 
     /**
      * Key for the owner ID
@@ -105,6 +106,8 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
 
+        followDialog = DialogBuilder.create(requireContext(), LIST_UNFOLLOW, this);
+        deleteDialog = DialogBuilder.create(requireContext(), LIST_DELETE, this);
         reloadLayout = new SwipeRefreshLayout(context);
         reloadLayout.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reloadLayout.setOnRefreshListener(this);
@@ -151,13 +154,6 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
 
                 case FOLLOW:
                     if (listItem.isFollowing()) {
-                        if (followDialog == null) {
-                            Builder confirmDialog = new Builder(getContext(), R.style.ConfirmDialog);
-                            confirmDialog.setMessage(R.string.confirm_unfollow_list);
-                            confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                            confirmDialog.setPositiveButton(R.string.confirm_yes, this);
-                            followDialog = confirmDialog.create();
-                        }
                         if (!followDialog.isShowing()) {
                             selectedList = listItem.getId();
                             followDialog.show();
@@ -187,13 +183,6 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
                     break;
 
                 case DELETE:
-                    if (deleteDialog == null) {
-                        Builder confirmDialog = new Builder(requireContext(), R.style.ConfirmDialog);
-                        confirmDialog.setMessage(R.string.confirm_delete_list);
-                        confirmDialog.setNegativeButton(R.string.confirm_no, null);
-                        confirmDialog.setPositiveButton(R.string.confirm_yes, this);
-                        deleteDialog = confirmDialog.create();
-                    }
                     if (!deleteDialog.isShowing()) {
                         selectedList = listItem.getId();
                         deleteDialog.show();
@@ -204,23 +193,21 @@ public class ListFragment extends Fragment implements OnRefreshListener, ListCli
     }
 
 
-    public void onFooterClick(long cursor) {
-        if (listTask != null && listTask.getStatus() != RUNNING) {
-            load(cursor);
+    @Override
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == LIST_UNFOLLOW) {
+            listTask = new TwitterListLoader(this, FOLLOW, selectedList, "");
+            listTask.execute();
+        } else if (type == LIST_DELETE) {
+            listTask = new TwitterListLoader(this, DELETE, selectedList, "");
+            listTask.execute();
         }
     }
 
 
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE) {
-            if (dialog == followDialog) {
-                listTask = new TwitterListLoader(this, FOLLOW, selectedList, "");
-                listTask.execute();
-            } else if (dialog == deleteDialog) {
-                listTask = new TwitterListLoader(this, DELETE, selectedList, "");
-                listTask.execute();
-            }
+    public void onFooterClick(long cursor) {
+        if (listTask != null && listTask.getStatus() != RUNNING) {
+            load(cursor);
         }
     }
 

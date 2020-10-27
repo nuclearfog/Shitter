@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,18 +12,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserListUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -34,11 +33,12 @@ import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_TITLE;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_VISIB;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.TwitterList.RET_LIST_CREATED;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTPOPUP_LEAVE;
 
 /**
  * Popup activity for the list editor
  */
-public class ListPopup extends AppCompatActivity implements OnClickListener, DialogInterface.OnClickListener {
+public class ListPopup extends AppCompatActivity implements OnClickListener, OnDialogClick {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -101,6 +101,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, Dia
             popupTitle.setText(R.string.menu_edit_list);
             updateButton.setText(R.string.update_list);
         }
+        leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
         updateButton.setOnClickListener(this);
     }
 
@@ -111,13 +112,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, Dia
                 && subTitleInput.getText().toString().equals(description)) {
             super.onBackPressed();
         } else {
-            if (leaveDialog == null) {
-                Builder builder = new Builder(this, R.style.ConfirmDialog);
-                builder.setMessage(R.string.confirm_discard);
-                builder.setNegativeButton(R.string.confirm_no, null);
-                builder.setPositiveButton(R.string.confirm_yes, this);
-                leaveDialog = builder.show();
-            } else if (!leaveDialog.isShowing()) {
+            if (!leaveDialog.isShowing()) {
                 leaveDialog.show();
             }
         }
@@ -149,10 +144,8 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, Dia
 
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE && dialog == leaveDialog) {
-            finish();
-        }
+    public void onConfirm(DialogBuilder.DialogType type) {
+        finish();
     }
 
     /**

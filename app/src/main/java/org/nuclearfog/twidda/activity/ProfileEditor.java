@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -34,6 +33,8 @@ import org.nuclearfog.twidda.backend.ProfileUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -48,11 +49,12 @@ import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDIT_LEAVE;
 
 /**
  * Activity for Twitter profile editor
  */
-public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener {
+public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick {
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
@@ -77,7 +79,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
     private Button add_banner_btn;
-    private Dialog loadingCircle;
+    private Dialog loadingCircle, closeDialog;
 
     private TwitterUser user;
     private String profileLink, bannerLink;
@@ -113,6 +115,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         header.getLayoutParams().height = layoutHeight + buttonHeight;
         header.requestLayout();
 
+        closeDialog = DialogBuilder.create(this, PROFILE_EDIT_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
@@ -154,16 +157,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                 && userLoc.equals(user.getLocation()) && userBio.equals(user.getBio())
                 && profileLink == null && bannerLink == null) {
             finish();
-        } else {
-            Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
-            closeDialog.setMessage(R.string.confirm_discard);
-            closeDialog.setNegativeButton(R.string.confirm_no, null);
-            closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
+        } else if (!closeDialog.isShowing()) {
             closeDialog.show();
         }
     }
@@ -251,10 +245,19 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         }
     }
 
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         if (editorAsync != null && editorAsync.getStatus() == RUNNING) {
             editorAsync.cancel(true);
+        }
+    }
+
+
+    @Override
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == PROFILE_EDIT_LEAVE) {
+            finish();
         }
     }
 

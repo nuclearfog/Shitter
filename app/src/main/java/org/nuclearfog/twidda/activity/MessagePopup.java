@@ -17,13 +17,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -40,11 +41,12 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MSG_POPUP_LEAVE;
 
 /**
  * Direct message popup activity
  */
-public class MessagePopup extends AppCompatActivity implements OnClickListener, OnDismissListener {
+public class MessagePopup extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick {
 
     /**
      * key for the screen name if any
@@ -61,7 +63,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
     private EditText receiver, message;
     private ImageButton media;
-    private Dialog loadingCircle;
+    private Dialog loadingCircle, leaveDialog;
 
     @Nullable
     private String mediaPath;
@@ -90,6 +92,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         root.setBackgroundColor(settings.getPopupColor());
         FontTool.setViewFontAndColor(settings, root);
 
+        leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
@@ -106,17 +109,8 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     public void onBackPressed() {
         if (receiver.getText().length() == 0 && message.getText().length() == 0 && mediaPath == null) {
             super.onBackPressed();
-        } else {
-            Builder closeDialog = new Builder(this, R.style.ConfirmDialog);
-            closeDialog.setMessage(R.string.confirm_cancel_message);
-            closeDialog.setNegativeButton(R.string.confirm_no, null);
-            closeDialog.setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            closeDialog.show();
+        } else if (!leaveDialog.isShowing()) {
+            leaveDialog.show();
         }
     }
 
@@ -190,6 +184,13 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     public void onDismiss(DialogInterface dialog) {
         if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
             messageAsync.cancel(true);
+        }
+    }
+
+    @Override
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == MSG_POPUP_LEAVE) {
+            finish();
         }
     }
 

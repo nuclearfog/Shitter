@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,12 +29,12 @@ import org.nuclearfog.twidda.backend.MessageListLoader;
 import org.nuclearfog.twidda.backend.TrendListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -46,11 +44,12 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_MESSAGE;
 
 /**
  * Fragment class for direct message lists
  */
-public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected, DialogInterface.OnClickListener {
+public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected, DialogBuilder.OnDialogClick {
 
     private MessageListLoader messageTask;
     private SwipeRefreshLayout reload;
@@ -72,6 +71,7 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         list.setHasFixedSize(true);
         list.setAdapter(adapter);
 
+        deleteDialog = DialogBuilder.create(requireContext(), DEL_MESSAGE, this);
         reload = new SwipeRefreshLayout(context);
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
@@ -155,13 +155,6 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     break;
 
                 case DELETE:
-                    if (deleteDialog == null) {
-                        Builder builder = new Builder(getContext(), R.style.ConfirmDialog);
-                        builder.setMessage(R.string.confirm_delete_message);
-                        builder.setNegativeButton(R.string.confirm_no, null);
-                        builder.setPositiveButton(R.string.confirm_yes, this);
-                        deleteDialog = builder.create();
-                    }
                     if (!deleteDialog.isShowing()) {
                         deleteDialog.show();
                     }
@@ -177,13 +170,10 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         }
     }
 
-
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE && dialog == deleteDialog) {
-            messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
-            messageTask.execute(deleteId);
-        }
+    public void onConfirm(DialogBuilder.DialogType type) {
+        messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
+        messageTask.execute(deleteId);
     }
 
     /**

@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -37,6 +36,8 @@ import org.nuclearfog.twidda.backend.LocationListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
@@ -45,15 +46,17 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_DATABASE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LOGOUT_APP;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG_PROXY;
 
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener,
-        OnCheckedChangeListener, OnItemSelectedListener, DialogInterface.OnClickListener, OnColorChangedListener {
+        OnCheckedChangeListener, OnItemSelectedListener, OnDialogClick, OnColorChangedListener {
 
     private static final int INVERTCOLOR = 0xffffff;
     private static final String[] PICKER_SELECT = {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
@@ -150,6 +153,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enableAuth.setChecked(settings.isProxyAuthSet());
         setProxySetupVisibility(settings.isProxyEnabled(), settings.isProxyAuthSet());
 
+        proxyDialog = DialogBuilder.create(this, WRONG_PROXY, this);
+        databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
+        logoutDialog = DialogBuilder.create(this, LOGOUT_APP, this);
+
         logout.setOnClickListener(this);
         load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
@@ -183,14 +190,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             TwitterEngine.resetTwitter();
             super.onBackPressed();
         } else {
-            if (proxyDialog == null) {
-                Builder builder = new Builder(this, R.style.ConfirmDialog);
-                builder.setTitle(R.string.info_error);
-                builder.setMessage(R.string.info_wrong_proxy_settings);
-                builder.setPositiveButton(R.string.confirm_discard_proxy_changes, this);
-                builder.setNegativeButton(android.R.string.cancel, null);
-                proxyDialog = builder.create();
-            }
             if (!proxyDialog.isShowing()) {
                 proxyDialog.show();
             }
@@ -229,23 +228,26 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE) {
-            if (dialog == proxyDialog) {
-                // exit without saving proxy settings
-                AppSettings.super.onBackPressed();
-            } else if (dialog == databaseDialog) {
-                DatabaseAdapter.deleteDatabase(getApplicationContext());
-                setResult(RETURN_DB_CLEARED);
-            } else if (dialog == logoutDialog) {
+    public void onConfirm(DialogBuilder.DialogType type) {
+        switch (type) {
+            case LOGOUT_APP:
                 settings.logout();
                 TwitterEngine.resetTwitter();
                 DatabaseAdapter.deleteDatabase(getApplicationContext());
                 setResult(RETURN_APP_LOGOUT);
                 finish();
-            }
-        }
+                break;
 
+            case DEL_DATABASE:
+                DatabaseAdapter.deleteDatabase(getApplicationContext());
+                setResult(RETURN_DB_CLEARED);
+                break;
+
+            case WRONG_PROXY:
+                // exit without saving proxy settings
+                finish();
+                break;
+        }
     }
 
 
@@ -253,26 +255,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delete_db:
-                if (databaseDialog == null) {
-                    Builder builder = new Builder(this, R.style.ConfirmDialog);
-                    builder.setMessage(R.string.confirm_delete_database);
-                    builder.setNegativeButton(R.string.confirm_no, null);
-                    builder.setPositiveButton(R.string.confirm_yes, this);
-                    databaseDialog = builder.create();
-                }
                 if (!databaseDialog.isShowing()) {
                     databaseDialog.show();
                 }
                 break;
 
             case R.id.logout:
-                if (logoutDialog == null) {
-                    Builder builder = new Builder(this, R.style.ConfirmDialog);
-                    builder.setMessage(R.string.confirm_log_lout);
-                    builder.setNegativeButton(R.string.confirm_no, null);
-                    builder.setPositiveButton(R.string.confirm_yes, this);
-                    logoutDialog = builder.create();
-                }
                 if (!logoutDialog.isShowing()) {
                     logoutDialog.show();
                 }

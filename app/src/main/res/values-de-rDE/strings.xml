@@ -93,10 +93,8 @@
     <string name="proxy_port">Port</string>
     <string name="proxy_settings">Proxy Einstellung</string>
     <string name="login_verifier">Login</string>
-    <string name="popup">Popup</string>
+    <string name="settings_button_popup">Popup</string>
     <string name="login_pin">PIN eingeben</string>
-    <string name="userlist_following">Following</string>
-    <string name="userlist_follower">Follower</string>
     <string name="enter_proxy">Proxy IP Adresse</string>
     <string name="edit_proxyuser">Nutzername</string>
     <string name="app_name">Shitter</string>
@@ -143,7 +141,7 @@
     <string name="settings_enable_proxy">Proxy aktivieren</string>
     <string name="settings_enable_proxy_auth">Aktiviere Proxy Authentifizierung</string>
     <string name="info_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
-    <string name="confirm_discard_proxy_changes">Einstellungen Verwerfen</string>
+    <string name="confirm_discard_proxy_changes">verwerfen</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">sensible inhalte</string>
     <string name="error_image_exists">Fehler, Bild ist bereits vorhanden!</string>

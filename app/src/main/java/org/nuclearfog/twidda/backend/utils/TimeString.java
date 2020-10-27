@@ -3,9 +3,20 @@ package org.nuclearfog.twidda.backend.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * this class creates time strings
+ */
+public final class TimeString {
 
-public abstract class TimeString {
+    private TimeString() {
+    }
 
+    /**
+     * creates a time string from the difference between the current time and the given time
+     *
+     * @param time time value from which to create a difference
+     * @return time string showing the time difference
+     */
     public static String getTimeString(long time) {
         long diff = new Date().getTime() - time;
         long seconds = diff / 1000;

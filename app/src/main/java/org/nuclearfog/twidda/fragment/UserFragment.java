@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,24 +25,27 @@ import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserListLoader;
 import org.nuclearfog.twidda.backend.UserListLoader.Action;
 import org.nuclearfog.twidda.backend.UserListManager;
+import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.UserListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.UserListManager.Action.DEL_USER;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_USER_LIST;
 
 /**
  * Fragment class for lists a list of users
  */
 public class UserFragment extends Fragment implements OnRefreshListener, UserClickListener,
-        FragmentChangeObserver, DialogInterface.OnClickListener, UserListManager.ListManagerCallback {
+        FragmentChangeObserver, OnDialogClick, ListManagerCallback {
 
     /**
      * key to set the type of user list to show
@@ -106,6 +107,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
             search = param.getString(KEY_FRAG_USER_SEARCH, "");
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
+        deleteDialog = DialogBuilder.create(requireContext(), DEL_USER_LIST, this);
         reload = new SwipeRefreshLayout(context);
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
@@ -159,13 +161,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     @Override
     public void onDelete(String name) {
         deleteUserName = name;
-        if (deleteDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.ConfirmDialog);
-            builder.setMessage(R.string.confirm_remove_user_from_list);
-            builder.setPositiveButton(android.R.string.ok, this);
-            builder.setNegativeButton(android.R.string.cancel, null);
-            deleteDialog = builder.show();
-        } else if (!deleteDialog.isShowing()) {
+        if (!deleteDialog.isShowing()) {
             deleteDialog.show();
         }
     }
@@ -189,8 +185,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE && dialog == deleteDialog) {
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == DEL_USER_LIST) {
             if (listTask == null || listTask.getStatus() != RUNNING) {
                 listTask = new UserListManager(id, DEL_USER, requireContext(), this);
                 listTask.execute(deleteUserName);

@@ -93,7 +93,7 @@
                     android:layout_margin="@dimen/settings_button_margin"
                     android:layout_weight="1"
                     android:singleLine="true"
-                    android:text="@string/popup" />
+                    android:text="@string/settings_button_popup" />
 
                 <Button
                     android:id="@+id/highlight_color"

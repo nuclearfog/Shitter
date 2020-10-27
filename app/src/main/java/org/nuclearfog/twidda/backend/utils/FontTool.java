@@ -9,7 +9,10 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 /**
  * Class for converting all fonts in a view
  */
-public abstract class FontTool {
+public final class FontTool {
+
+    private FontTool() {
+    }
 
     /**
      * Set fonts type & color to all text elements in a view

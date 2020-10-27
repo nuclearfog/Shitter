@@ -20,13 +20,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -36,7 +36,6 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
@@ -51,12 +50,14 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEETPOPUP_ERROR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEETPOPUP_LEAVE;
 
 /**
  * Activity to create a tweet
  */
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener,
-        OnDismissListener, DialogInterface.OnClickListener {
+        OnDismissListener, DialogBuilder.OnDialogClick {
 
     /**
      * key for the replied tweet if any
@@ -126,6 +127,8 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             tweetText.append(prefix);
         }
 
+        errorDialog = DialogBuilder.create(this, TWEETPOPUP_ERROR, this);
+        closingDialog = DialogBuilder.create(this, TWEETPOPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
@@ -329,14 +332,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE) {
-            if (dialog == errorDialog) {
-                uploaderAsync = new TweetUploader(this);
-                uploaderAsync.execute(tweet);
-            } else if (dialog == closingDialog) {
-                finish();
-            }
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == TWEETPOPUP_ERROR) {
+            uploaderAsync = new TweetUploader(this);
+            uploaderAsync.execute(tweet);
+        } else if (type == TWEETPOPUP_LEAVE) {
+            finish();
         }
     }
 
@@ -366,13 +367,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      */
     public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
-        if (errorDialog == null) {
-            Builder builder = new Builder(this, R.style.ConfirmDialog);
-            builder.setTitle(R.string.info_error).setMessage(R.string.error_sending_tweet);
-            builder.setPositiveButton(R.string.confirm_retry, this);
-            builder.setNegativeButton(android.R.string.cancel, null);
-            errorDialog = builder.show();
-        } else if (!errorDialog.isShowing()) {
+        if (!errorDialog.isShowing()) {
             errorDialog.show();
         }
     }
@@ -383,13 +378,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      */
     private void showClosingMsg() {
         if (!prefix.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
-            if (closingDialog == null) {
-                Builder builder = new Builder(this, R.style.ConfirmDialog);
-                builder.setMessage(R.string.confirm_cancel_tweet);
-                builder.setNegativeButton(R.string.confirm_no, null);
-                builder.setPositiveButton(R.string.confirm_yes, this);
-                closingDialog = builder.show();
-            } else if (!closingDialog.isShowing()) {
+            if (!closingDialog.isShowing()) {
                 closingDialog.show();
             }
         } else {

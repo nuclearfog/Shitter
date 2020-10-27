@@ -1,6 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
-import android.content.DialogInterface;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -37,6 +36,8 @@ import org.nuclearfog.twidda.backend.ProfileLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserRelation;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -66,11 +67,15 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
 
 /**
  * Activity class for user profile page
  */
-public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener, OnTabSelectedListener {
+public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener,
+        OnTabSelectedListener, OnDialogClick {
 
     /**
      * Key for the user ID
@@ -107,6 +112,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private View profile_head, profile_layer;
     private ViewPager pager;
     private TabLayout tabLayout;
+    private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
     private ProfileLoader profileAsync;
     private UserRelation relation;
@@ -167,6 +173,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(pager);
+        unfollowConfirm = DialogBuilder.create(this, PROFILE_UNFOLLOW, this);
+        blockConfirm = DialogBuilder.create(this, PROFILE_BLOCK, this);
+        muteConfirm = DialogBuilder.create(this, PROFILE_MUTE, this);
 
         tabLayout.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
@@ -301,34 +310,20 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                         break;
 
                     case R.id.profile_follow:
-                        profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_FOLLOW);
                         if (!relation.isFriend()) {
+                            profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_FOLLOW);
                             profileAsync.execute(user.getId());
-                        } else {
-                            new Builder(this).setMessage(R.string.confirm_unfollow)
-                                    .setNegativeButton(R.string.confirm_no, null)
-                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            profileAsync.execute(user.getId());
-                                        }
-                                    }).show();
+                        } else if (!unfollowConfirm.isShowing()) {
+                            unfollowConfirm.show();
                         }
                         break;
 
                     case R.id.profile_mute:
-                        profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_MUTE);
                         if (relation.isMuted()) {
+                            profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_MUTE);
                             profileAsync.execute(user.getId());
-                        } else {
-                            new Builder(this).setMessage(R.string.confirm_mute)
-                                    .setNegativeButton(R.string.confirm_no, null)
-                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            profileAsync.execute(user.getId());
-                                        }
-                                    }).show();
+                        } else if (!muteConfirm.isShowing()) {
+                            muteConfirm.show();
                         }
                         break;
 
@@ -336,15 +331,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                         profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_BLOCK);
                         if (relation.isBlocked()) {
                             profileAsync.execute(user.getId());
-                        } else {
-                            new Builder(this).setMessage(R.string.confirm_block)
-                                    .setNegativeButton(R.string.confirm_no, null)
-                                    .setPositiveButton(R.string.confirm_yes, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            profileAsync.execute(user.getId());
-                                        }
-                                    }).show();
+                        } else if (!blockConfirm.isShowing()) {
+                            blockConfirm.show();
                         }
                         break;
 
@@ -462,6 +450,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     startActivity(mediaBanner);
                     break;
             }
+        }
+    }
+
+
+    @Override
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == PROFILE_UNFOLLOW) {
+            profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_FOLLOW);
+            profileAsync.execute(user.getId());
+        } else if (type == PROFILE_BLOCK) {
+            profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_BLOCK);
+            profileAsync.execute(user.getId());
+        } else if (type == PROFILE_MUTE) {
+            profileAsync = new ProfileLoader(this, ProfileLoader.Action.ACTION_MUTE);
+            profileAsync.execute(user.getId());
         }
     }
 

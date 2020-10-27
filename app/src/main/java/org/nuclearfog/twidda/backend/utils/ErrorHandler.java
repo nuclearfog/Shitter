@@ -12,7 +12,10 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
  * This class handles {@link EngineException} from {@link org.nuclearfog.twidda.backend.engine.TwitterEngine}
  * and prints Toast messages to current activity
  */
-public abstract class ErrorHandler {
+public final class ErrorHandler {
+
+    private ErrorHandler() {
+    }
 
     /**
      * show error messages and handle failures

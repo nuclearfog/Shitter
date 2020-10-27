@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
@@ -36,6 +34,8 @@ import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -44,7 +44,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
-import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -60,6 +59,7 @@ import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DELETE_TWEET;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
 
@@ -67,7 +67,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
  * Tweet Activity for tweet and user informations
  */
 public class TweetActivity extends AppCompatActivity implements OnClickListener,
-        OnLongClickListener, OnTagClickListener, DialogInterface.OnClickListener {
+        OnLongClickListener, OnTagClickListener, OnDialogClick {
 
     /**
      * ID of the tweet to open. required
@@ -135,6 +135,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
+        deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
 
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
@@ -191,13 +192,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
             switch (item.getItemId()) {
                 case R.id.delete_tweet:
-                    if (deleteDialog == null) {
-                        Builder builder = new Builder(this, R.style.ConfirmDialog);
-                        builder.setMessage(R.string.confirm_delete_tweet);
-                        builder.setPositiveButton(R.string.confirm_yes, this);
-                        builder.setNegativeButton(R.string.confirm_no, null);
-                        deleteDialog = builder.create();
-                    }
                     if (!deleteDialog.isShowing()) {
                         deleteDialog.show();
                     }
@@ -228,15 +222,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE && dialog == deleteDialog && tweet != null) {
-            statusAsync = new TweetLoader(TweetActivity.this, Action.DELETE);
-            statusAsync.execute(tweet.getId());
-        }
     }
 
 
@@ -330,6 +315,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
         }
         return false;
+    }
+
+
+    @Override
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == DELETE_TWEET && tweet != null) {
+            statusAsync = new TweetLoader(TweetActivity.this, Action.DELETE);
+            statusAsync.execute(tweet.getId());
+        }
     }
 
 

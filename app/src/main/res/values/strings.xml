@@ -6,12 +6,12 @@
     <string name="login_verifier">login</string>
     <string name="tweet">Tweet</string>
     <string name="settings">Settings</string>
-    <string name="userlist_following">Following</string>
-    <string name="userlist_follower">Follower</string>
+    <string name="userlist_following" translatable="false">Following</string>
+    <string name="userlist_follower" translatable="false">Follower</string>
     <string name="userlist_retweet">Tweet retweeted by</string>
     <string name="background">Background</string>
     <string name="settings_font">Font</string>
-    <string name="popup">Popup</string>
+    <string name="settings_button_popup">Popup</string>
     <string name="highlight">Highlight</string>
     <string name="settings_list_size">List size</string>
     <string name="user_follow">follow</string>
@@ -87,7 +87,7 @@
     <string name="item_image_save">save image</string>
     <string name="settings_enable_proxy">enable proxy</string>
     <string name="settings_enable_proxy_auth">enable proxy authentication</string>
-    <string name="confirm_discard_proxy_changes">Discard changes</string>
+    <string name="confirm_discard_proxy_changes">discard</string>
     <string name="tweet_sensitive_media">sensitive media</string>
     <string name="login_info">3 steps to login</string>
     <string name="login_first_opt" translatable="false">1.</string>

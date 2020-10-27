@@ -225,12 +225,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             TweetHolder vh = (TweetHolder) holder;
             TwitterUser user = tweet.getUser();
             if (tweet.getEmbeddedTweet() != null) {
-                String retweeter = "RT " + user.getScreenname();
-                vh.retweeter.setText(retweeter);
+                vh.retweeter.setText(user.getScreenname());
+                vh.retweeter.setVisibility(VISIBLE);
                 tweet = tweet.getEmbeddedTweet();
                 user = tweet.getUser();
             } else {
-                vh.retweeter.setText("");
+                vh.retweeter.setVisibility(INVISIBLE);
             }
             Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
             vh.tweet.setText(text);
