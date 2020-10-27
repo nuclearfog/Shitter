@@ -24,7 +24,8 @@ import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.view.View.GONE;
+import java.text.NumberFormat;
+
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
@@ -43,6 +44,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     private UserClickListener itemClickListener;
     private GlobalSettings settings;
+    private NumberFormat formatter;
 
     private TwitterUserList data;
     private int loadingIndex;
@@ -52,6 +54,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     public UserAdapter(UserClickListener itemClickListener, GlobalSettings settings) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
+        formatter = NumberFormat.getIntegerInstance();
         data = new TwitterUserList();
         loadingIndex = NO_INDEX;
     }
@@ -137,6 +140,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 }
             });
             if (userRemovable) {
+                vh.delete.setVisibility(VISIBLE);
                 vh.delete.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -148,7 +152,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                     }
                 });
             } else {
-                vh.delete.setVisibility(GONE);
+                vh.delete.setVisibility(INVISIBLE);
             }
             return vh;
         } else {
@@ -180,7 +184,8 @@ public class UserAdapter extends Adapter<ViewHolder> {
             ItemHolder vh = (ItemHolder) holder;
             vh.username.setText(user.getUsername());
             vh.screenname.setText(user.getScreenname());
-
+            vh.following.setText(formatter.format(user.getFollowing()));
+            vh.follower.setText(formatter.format(user.getFollower()));
             setIcon(vh.username, user.isVerified() ? R.drawable.verify : 0);
             setIcon(vh.screenname, user.isLocked() ? R.drawable.lock : 0);
 
@@ -238,7 +243,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
      */
     private final class ItemHolder extends ViewHolder {
         final ImageView profileImg;
-        final TextView username, screenname;
+        final TextView username, screenname, following, follower;
         final ImageButton delete;
 
         ItemHolder(View v) {
@@ -247,6 +252,8 @@ public class UserAdapter extends Adapter<ViewHolder> {
             screenname = v.findViewById(R.id.screenname_detail);
             profileImg = v.findViewById(R.id.user_profileimg);
             delete = v.findViewById(R.id.useritem_del_user);
+            following = v.findViewById(R.id.item_user_friends);
+            follower = v.findViewById(R.id.item_user_follower);
         }
     }
 
