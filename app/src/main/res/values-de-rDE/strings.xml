@@ -7,7 +7,7 @@
     <string name="confirm_retry">wiederholen</string>
     <string name="color_settings">Farbeinstellungen</string>
     <string name="data_consumption">Datenverbrauch</string>
-    <string name="trend_setting">Trendeinstellung</string>
+    <string name="trend_setting">Trend Standort</string>
     <string name="register_link">PIN aufrufen</string>
     <string name="profile_image">Profilbild</string>
     <string name="settings">Einstellungen</string>
@@ -48,8 +48,6 @@
     <string name="settings_logout">Ausloggen</string>
     <string name="dm_answer">Antworten</string>
     <string name="delete_dm">löschen</string>
-    <string name="confirm_yes">Ja</string>
-    <string name="confirm_no">Nein</string>
     <string name="confirm_cancel_tweet">Tweet verwerfen?</string>
     <string name="confirm_log_lout">ausloggen?</string>
     <string name="confirm_unfollow">User entfolgen?</string>
@@ -59,7 +57,7 @@
     <string name="send_tweet">Tweet senden</string>
     <string name="tweet_add_image">Bild hinzufügen</string>
     <string name="image_preview">Bildvorschau</string>
-    <string name="menu_link_to_clipboard">Link in Zwischenablage kopieren</string>
+    <string name="menu_link_to_clipboard">Tweet Link kopieren</string>
     <string name="info_clipboard">Link in Zwischenablage kopiert!</string>
     <string name="profile_link">Link</string>
     <string name="image_preview_button">Bildvorschau Button</string>
@@ -97,8 +95,6 @@
     <string name="login_pin">PIN eingeben</string>
     <string name="enter_proxy">Proxy IP Adresse</string>
     <string name="edit_proxyuser">Nutzername</string>
-    <string name="app_name">Shitter</string>
-    <string name="tweet">Tweet</string>
     <string name="proxy_password">Passwort</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">User stummschalten?</string>

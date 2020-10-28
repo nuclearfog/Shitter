@@ -48,8 +48,8 @@ public final class DialogBuilder {
      * @return dialog instance
      */
     public static Dialog create(Context context, final DialogType type, final OnDialogClick listener) {
-        int posButton = R.string.confirm_yes;
-        int negButton = R.string.confirm_no;
+        int posButton = android.R.string.yes;
+        int negButton = android.R.string.no;
         int title = 0;
         int message = 0;
 

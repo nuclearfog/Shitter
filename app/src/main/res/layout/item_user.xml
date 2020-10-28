@@ -53,6 +53,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/useritem_margin_layout"
                 android:orientation="horizontal">
 
                 <TextView
@@ -62,6 +63,7 @@
                     android:layout_weight="1"
                     android:drawablePadding="@dimen/useritem_padding_drawable"
                     android:singleLine="true"
+                    android:textSize="@dimen/useritem_textsize_small"
                     app:drawableStartCompat="@drawable/following" />
 
                 <TextView
@@ -71,6 +73,7 @@
                     android:layout_weight="1"
                     android:drawablePadding="@dimen/useritem_padding_drawable"
                     android:singleLine="true"
+                    android:textSize="@dimen/useritem_textsize_small"
                     app:drawableStartCompat="@drawable/follower" />
 
             </LinearLayout>
