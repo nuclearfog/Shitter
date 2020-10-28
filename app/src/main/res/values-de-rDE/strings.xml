@@ -83,7 +83,7 @@
     <string name="error_image_save">Fehler beim Speichern!</string>
     <string name="error_not_authorized">Keine Berechtigung!</string>
     <string name="error_file_format">Dateiformat nicht unterstützt!</string>
-    <string name="load_answer">Antworten laden</string>
+    <string name="settings_enable_ans_load">Antworten laden</string>
     <string name="info_tweet_retweeted">Tweet retweeted!</string>
     <string name="info_tweet_unretweeted">Retweet entfernt!</string>
     <string name="info_tweet_favored">Tweet favorisiert!</string>
@@ -171,4 +171,5 @@
     <string name="menu_write_message">Direktnachricht</string>
     <string name="menu_follow_user">Nutzer folgen</string>
     <string name="menu_goto_lists">Nutzerlisten</string>
+    <string name="settings_enable_hq_img">hochauflösend</string>
 </resources>

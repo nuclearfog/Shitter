@@ -192,7 +192,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             if (settings.getImageLoad()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage()) {
-                    pbLink += "_mini";
+                    pbLink += settings.getImageSuffix();
                 }
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.profileImg);
             }

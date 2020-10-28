@@ -248,7 +248,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             if (settings.getImageLoad()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
-                    pbLink += "_mini";
+                    pbLink += settings.getImageSuffix();
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.profile);
             } else {
                 vh.profile.setImageResource(0);

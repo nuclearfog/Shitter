@@ -30,6 +30,7 @@ public class GlobalSettings {
     private static final String INDEX_FONT = "index_font";
     private static final String LIST_SIZE = "preload";
     private static final String IMAGE_LOAD = "image_load";
+    private static final String IMAGE_QUALITY = "image_hq";
     private static final String ANSWER_LOAD = "answer_load";
     private static final String LOGGED_IN = "login";
     private static final String AUTH_KEY1 = "key1";
@@ -64,6 +65,7 @@ public class GlobalSettings {
     private TrendLocation location;
     private String key1, key2;
     private boolean loadImage;
+    private boolean hqImages;
     private boolean loadAnswer;
     private boolean loggedIn;
     private boolean isProxyEnabled;
@@ -196,13 +198,45 @@ public class GlobalSettings {
     /**
      * enable/disable image load load
      *
-     * @param image true if enabled
+     * @param enable true if enabled
      */
-    public void setImageLoad(boolean image) {
-        loadImage = image;
+    public void setImageLoad(boolean enable) {
+        loadImage = enable;
 
         Editor edit = settings.edit();
-        edit.putBoolean(IMAGE_LOAD, image);
+        edit.putBoolean(IMAGE_LOAD, enable);
+        edit.apply();
+    }
+
+    /**
+     * sets image quality
+     *
+     * @return true if thumbnails should be in high resolution
+     */
+    public boolean getImageQuality() {
+        return hqImages;
+    }
+
+    /**
+     * returns the twitter image suffix depending on the resolution
+     *
+     * @return suffix string
+     */
+    public String getImageSuffix() {
+        if (hqImages)
+            return "_bigger";
+        return "_mini";
+    }
+
+    /**
+     * sets the image quality
+     *
+     * @param enable true if small thumbnails should be in high resolution
+     */
+    public void setHighQualityImage(boolean enable) {
+        hqImages = enable;
+        Editor edit = settings.edit();
+        edit.putBoolean(IMAGE_QUALITY, enable);
         edit.apply();
     }
 
@@ -518,6 +552,7 @@ public class GlobalSettings {
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
         loadImage = settings.getBoolean(IMAGE_LOAD, DEFAULT_DATA_USAGE);
         loadAnswer = settings.getBoolean(ANSWER_LOAD, DEFAULT_DATA_USAGE);
+        hqImages = settings.getBoolean(IMAGE_QUALITY, DEFAULT_DATA_USAGE);
         loggedIn = settings.getBoolean(LOGGED_IN, false);
         key1 = settings.getString(AUTH_KEY1, "");
         key2 = settings.getString(AUTH_KEY2, "");

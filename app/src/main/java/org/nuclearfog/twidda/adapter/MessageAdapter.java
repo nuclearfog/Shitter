@@ -153,7 +153,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         if (settings.getImageLoad()) {
             String pbLink = sender.getImageLink();
             if (!sender.hasDefaultProfileImage()) {
-                pbLink += "_mini";
+                pbLink += settings.getImageSuffix();
             }
             Picasso.get().load(pbLink).error(R.drawable.no_image).into(holder.profile_img);
         }

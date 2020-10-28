@@ -53,7 +53,7 @@
     <string name="confirm_discard">discard changes?</string>
     <string name="user_data">User data</string>
     <string name="follows_you">follows you</string>
-    <string name="load_answer">answer load</string>
+    <string name="settings_enable_ans_load">answer load</string>
     <string name="proxy_settings">Proxy settings</string>
     <string name="enter_proxy">Proxy IP address</string>
     <string name="proxy_port">Port</string>
@@ -78,6 +78,7 @@
     <string name="profile_banner">Profile banner image</string>
     <string name="editprofile_add_banner">add banner</string>
     <string name="settings_3rd_party_license">App and 3rd party license:</string>
+    <string name="settings_enable_hq_img">High resolution</string>
     <string name="settings_info_license_link" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
     <string name="settings_info_github">App on GitHub:</string>
     <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>

@@ -6,6 +6,7 @@
     <!--dimens of page_settings.xml-->
     <dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="settings_checkbox_margin">@dimen/settings_layout_padding</dimen>
+    <dimen name="settings_checkbox_textsize">13sp</dimen>
     <dimen name="settings_divider">2dp</dimen>
     <dimen name="settings_info_appname_font">18sp</dimen>
     <dimen name="settings_layout_padding">10dp</dimen>

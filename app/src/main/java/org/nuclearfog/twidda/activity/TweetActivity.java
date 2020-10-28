@@ -432,7 +432,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (settings.getImageLoad()) {
             String pbLink = tweet.getUser().getImageLink();
             if (!tweet.getUser().hasDefaultProfileImage())
-                pbLink += "_bigger";
+                pbLink += settings.getImageSuffix();
             Picasso.get().load(pbLink).error(R.drawable.no_image).into(profile_img);
         }
         String placeName = tweet.getLocationName();

@@ -220,7 +220,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
             if (settings.getImageLoad()) {
                 String pbLink = owner.getImageLink();
                 if (!owner.hasDefaultProfileImage()) {
-                    pbLink += "_mini";
+                    pbLink += settings.getImageSuffix();
                 }
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
             }

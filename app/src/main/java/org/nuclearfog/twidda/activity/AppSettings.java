@@ -75,7 +75,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private NumberPicker load_picker;
-    private CompoundButton enableProxy, enableAuth;
+    private CompoundButton enableProxy, enableAuth, hqImage;
     private Spinner locationSpinner;
     private LocationAdapter locationAdapter;
     private View root, colorButton1_edge;
@@ -97,6 +97,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
+        hqImage = findViewById(R.id.settings_image_hq);
         locationSpinner = findViewById(R.id.spinner_woeid);
         colorButton1_edge = findViewById(R.id.color_background_edge);
         colorButton1 = findViewById(R.id.color_background);
@@ -151,6 +152,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         load_picker.setValue((settings.getListSize()) / 10);
         enableProxy.setChecked(settings.isProxyEnabled());
         enableAuth.setChecked(settings.isProxyAuthSet());
+        hqImage.setEnabled(settings.getImageLoad());
+        hqImage.setChecked(settings.getImageQuality());
         setProxySetupVisibility(settings.isProxyEnabled(), settings.isProxyAuthSet());
 
         proxyDialog = DialogBuilder.create(this, WRONG_PROXY, this);
@@ -168,6 +171,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         toggleAns.setOnCheckedChangeListener(this);
         enableProxy.setOnCheckedChangeListener(this);
         enableAuth.setOnCheckedChangeListener(this);
+        hqImage.setOnCheckedChangeListener(this);
         fontSpinner.setOnItemSelectedListener(this);
         locationSpinner.setOnItemSelectedListener(this);
         load_dialog_selector.setOnDismissListener(this);
@@ -344,6 +348,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         switch (c.getId()) {
             case R.id.toggleImg:
                 settings.setImageLoad(checked);
+                hqImage.setEnabled(checked);
                 break;
 
             case R.id.toggleAns:
@@ -356,6 +361,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
             case R.id.settings_enable_auth:
                 setProxySetupVisibility(true, checked);
+                break;
+
+            case R.id.settings_image_hq:
+                settings.setHighQualityImage(checked);
                 break;
         }
     }
