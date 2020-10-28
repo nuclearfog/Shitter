@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -43,7 +44,6 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
@@ -57,6 +57,10 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFI
 public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick {
 
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
+
+    /**
+     * Cursor mode to get the full path to the image
+     */
     private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
 
     /**
@@ -73,6 +77,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      * Request code for loading new banner image
      */
     private static final int REQ_PROFILE_BANNER = 5;
+
+    /**
+     * MIME type for profile and banner images
+     */
+    private static final String IMG_MIME = "image/*";
 
     private ProfileUpdater editorAsync;
 
@@ -333,11 +342,13 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
             }
         }
         if (accessGranted) {
-            Intent media = new Intent(ACTION_PICK, EXTERNAL_CONTENT_URI);
-            if (media.resolveActivity(getPackageManager()) != null)
-                startActivityForResult(media, request);
-            else
+            Intent mediaSelect = new Intent(ACTION_PICK);
+            mediaSelect.setType(IMG_MIME);
+            try {
+                startActivityForResult(mediaSelect, request);
+            } catch (ActivityNotFoundException err) {
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+            }
         }
     }
 }

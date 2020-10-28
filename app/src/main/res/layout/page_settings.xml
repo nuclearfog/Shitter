@@ -237,7 +237,6 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/settings_button_height"
                     android:layout_margin="@dimen/settings_button_margin"
-                    android:layout_marginStart="@dimen/settings_button_margin"
                     android:layout_weight="3"
                     android:background="@drawable/button"
                     android:paddingLeft="@dimen/settings_checkbox_margin"

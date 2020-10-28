@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activity;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
@@ -34,7 +35,6 @@ import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -53,10 +53,29 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
      */
     public static final String KEY_DM_PREFIX = "dm_prefix";
 
+    /**
+     * permission request for the external storage
+     */
     private static final String[] PERM_READ = {Manifest.permission.READ_EXTERNAL_STORAGE};
+
+    /**
+     * Cursor mode to get the full path to the image
+     */
     private static final String[] PICK_IMAGE = {MediaStore.Images.Media.DATA};
+
+    /**
+     * mime type for image files with undefined extensions
+     */
     private static final String TYPE_IMAGE = "image/*";
+
+    /**
+     * request code to access gallery images
+     */
     private static final int REQ_MEDIA = 3;
+
+    /**
+     * request code to get read permission
+     */
     private static final int REQ_PERM_READ = 4;
 
     private MessageUploader messageAsync;
@@ -238,11 +257,11 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
             }
         }
         if (accessGranted) {
-            Intent galleryIntent = new Intent(ACTION_PICK);
-            galleryIntent.setDataAndType(EXTERNAL_CONTENT_URI, TYPE_IMAGE);
-            if (galleryIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(galleryIntent, REQ_MEDIA);
-            } else {
+            Intent mediaSelect = new Intent(ACTION_PICK);
+            mediaSelect.setType(TYPE_IMAGE);
+            try {
+                startActivityForResult(mediaSelect, REQ_MEDIA);
+            } catch (ActivityNotFoundException err) {
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
             }
         }

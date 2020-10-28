@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -134,10 +135,10 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
             } else {
                 Uri link = Uri.parse(tag);
                 Intent intent = new Intent(Intent.ACTION_VIEW, link);
-                if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                try {
                     startActivity(intent);
-                } else {
-                    Toast.makeText(getContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
+                } catch (ActivityNotFoundException err) {
+                    Toast.makeText(requireContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
                 }
             }
         }

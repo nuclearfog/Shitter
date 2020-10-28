@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -201,12 +202,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                     String username = tweet.getUser().getScreenname().substring(1);
                     String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
-                    if (intent.resolveActivity(getPackageManager()) != null)
+                    try {
                         startActivity(intent);
-                    else
+                    } catch (ActivityNotFoundException err) {
                         Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-                    break;
-
+                    }
                 case R.id.link_copy:
                     username = tweet.getUser().getScreenname().substring(1);
                     tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
@@ -265,11 +265,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                     if (tweet != null) {
                         Intent locationIntent = new Intent(Intent.ACTION_VIEW);
                         locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
-                        if (locationIntent.resolveActivity(getPackageManager()) != null)
+                        try {
                             startActivity(locationIntent);
-                        else
+                        } catch (ActivityNotFoundException err) {
                             Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
-                        break;
+                        }
                     }
 
                 case R.id.tweet_media_attach:
@@ -355,11 +355,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
         } else {
+            // open link in a browser
             Uri link = Uri.parse(tag);
             Intent intent = new Intent(Intent.ACTION_VIEW, link);
-            if (intent.resolveActivity(getPackageManager()) != null) {
+            try {
                 startActivity(intent);
-            } else {
+            } catch (ActivityNotFoundException err) {
                 Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
             }
         }

@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
@@ -27,6 +28,7 @@ import org.nuclearfog.twidda.backend.TweetUploader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -37,9 +39,9 @@ import java.util.List;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -57,7 +59,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET
  * Activity to create a tweet
  */
 public class TweetPopup extends AppCompatActivity implements OnClickListener, LocationListener,
-        OnDismissListener, DialogBuilder.OnDialogClick {
+        OnDismissListener, OnDialogClick {
 
     /**
      * key for the replied tweet if any
@@ -76,13 +78,44 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         VIDEO
     }
 
+    /**
+     * permission request for the external storage
+     */
     private static final String[] PERM_STORAGE = {READ_EXTERNAL_STORAGE};
+
+    /**
+     * permission request for GPS location
+     */
     private static final String[] PERM_LOCATION = {ACCESS_FINE_LOCATION};
+
+    /**
+     * Cursor mode to get the full path to the image
+     */
     private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
+
+    /**
+     * mime type for image files with undefined extensions
+     */
     private static final String TYPE_IMAGE = "image/*";
+
+    /**
+     * mime type for image files with undefined extensions
+     */
     private static final String TYPE_VIDEO = "video/*";
+
+    /**
+     * request code to access gallery picker
+     */
     private static final int REQ_PICK_MEDIA = 3;
+
+    /**
+     * request code to check permissions
+     */
     private static final int REQ_CHECK_PERM = 4;
+
+    /**
+     * max amount of images (limited to 4 by twitter)
+     */
     private static final int MAX_IMAGES = 4;
 
     @Nullable
@@ -400,18 +433,24 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         }
         if (accessGranted) {
             Intent mediaSelect = new Intent(ACTION_PICK);
-            String mediaType;
-            if (selectedFormat == MediaType.IMAGE) {
-                // pick only images
-                mediaType = TYPE_IMAGE;
+            mediaSelect.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                // Add multiple mime types
+                if (selectedFormat == MediaType.IMAGE) {
+                    mediaSelect.setType(TYPE_IMAGE);
+                } else {
+                    // pick image or video
+                    mediaSelect.setType("*/*");
+                    String[] mimeTypes = new String[]{TYPE_IMAGE, TYPE_VIDEO};
+                    mediaSelect.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+                }
             } else {
-                // pick image or video
-                mediaType = TYPE_IMAGE + ";" + TYPE_VIDEO;
+                // TODO add a selector for the user to choose between image or video
+                mediaSelect.setType(TYPE_IMAGE);
             }
-            mediaSelect.setDataAndType(EXTERNAL_CONTENT_URI, mediaType);
-            if (mediaSelect.resolveActivity(getPackageManager()) != null) {
+            try {
                 startActivityForResult(mediaSelect, REQ_PICK_MEDIA);
-            } else {
+            } catch (ActivityNotFoundException err) {
                 Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
             }
         }

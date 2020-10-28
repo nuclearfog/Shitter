@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -145,9 +146,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      */
     public void connect(String link) {
         Intent loginIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-        if (loginIntent.resolveActivity(getPackageManager()) != null) {
+        try {
             startActivity(loginIntent);
-        } else { // If no browser was found, a popup with the login link appears
+        } catch (ActivityNotFoundException err) {
+            // If no browser was found, a popup with the login link appears
             Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
             dialog.setContentView(R.layout.dialog_login_info);
             TextView callbackURL = dialog.findViewById(R.id.login_request_link);

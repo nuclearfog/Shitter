@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
@@ -394,9 +395,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         } else {
             Uri link = Uri.parse(tag);
             Intent intent = new Intent(Intent.ACTION_VIEW, link);
-            if (intent.resolveActivity(getPackageManager()) != null) {
+            try {
                 startActivity(intent);
-            } else {
+            } catch (ActivityNotFoundException err) {
                 Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
             }
         }
@@ -429,10 +430,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     if (!user.getLink().isEmpty()) {
                         String link = user.getLink();
                         Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-                        if (browserIntent.resolveActivity(getPackageManager()) != null)
+                        try {
                             startActivity(browserIntent);
-                        else
+                        } catch (ActivityNotFoundException err) {
                             Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+                        }
                     }
                     break;
 
