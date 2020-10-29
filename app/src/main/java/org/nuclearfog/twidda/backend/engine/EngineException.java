@@ -6,7 +6,9 @@ import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.NOT
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.USER_NOT_FOUND;
 
-
+/**
+ * Exception class for {@link TwitterEngine}
+ */
 public class EngineException extends Exception {
 
     public enum ErrorType {

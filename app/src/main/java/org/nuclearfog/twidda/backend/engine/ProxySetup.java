@@ -16,8 +16,16 @@ import java.util.List;
 /**
  * Creates a https proxy connection for all connections
  */
-abstract class ProxySetup {
+class ProxySetup {
 
+    private ProxySetup() {
+    }
+
+    /**
+     * initializes the proxy connection with login
+     *
+     * @param settings App settings
+     */
     static void setConnection(GlobalSettings settings) {
         ProxyConnection proxyConnection;
         ProxyAuthenticator proxyLogin;

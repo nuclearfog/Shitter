@@ -11,16 +11,50 @@ import androidx.annotation.NonNull;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.graphics.Typeface.DEFAULT;
+import static android.graphics.Typeface.MONOSPACE;
+import static android.graphics.Typeface.NORMAL;
+import static android.graphics.Typeface.SERIF;
 
 /**
  * This class manages app settings
  */
 public class GlobalSettings {
 
-    // Font settings
-    public static final Typeface[] fonts = {Typeface.DEFAULT, Typeface.MONOSPACE,
-            Typeface.SERIF, Typeface.create("sans-serif-thin", Typeface.NORMAL)};
-    public static final String[] fontnames = {"Default", "Monospace", "Serif", "sans-serif-thin"};
+    /**
+     * link suffix for low resolution profile images
+     */
+    public static final String PROFILE_IMG_LOW_RES = "_mini";
+
+    /**
+     * link suffix for high resolution profile images
+     */
+    public static final String PROFILE_IMG_HIGH_RES = "_bigger";
+
+    /**
+     * link suffix for low resolution banner images
+     */
+    public static final String BANNER_IMG_LOW_RES = "/300x100";
+
+    /**
+     * link suffix for standard banner image resolution
+     */
+    public static final String BANNER_IMG_MID_RES = "/600x200";
+
+    /**
+     * link suffix for high resolution banner images
+     */
+    public static final String BANNER_IMG_HIGH_RES = "/1500x500";
+
+    /**
+     * custom font families from android system
+     */
+    public static final Typeface[] FONTS = {DEFAULT, MONOSPACE, SERIF, Typeface.create("sans-serif-thin", NORMAL)};
+
+    /**
+     * names of the font types {@link #FONTS}
+     */
+    public static final String[] FONT_NAMES = {"Default", "Monospace", "Serif", "sans-serif-thin"};
 
     // Setting names stored in SharedPreference
     private static final String BACKGROUND_COLOR = "background_color";
@@ -224,8 +258,19 @@ public class GlobalSettings {
      */
     public String getImageSuffix() {
         if (hqImages)
-            return "_bigger";
-        return "_mini";
+            return PROFILE_IMG_HIGH_RES;
+        return PROFILE_IMG_LOW_RES;
+    }
+
+    /**
+     * returns the suffix for the banner image link
+     *
+     * @return suffix string
+     */
+    public String getBannerSuffix() {
+        if (hqImages)
+            return BANNER_IMG_MID_RES;
+        return BANNER_IMG_LOW_RES;
     }
 
     /**
@@ -314,7 +359,7 @@ public class GlobalSettings {
      * @return font family
      */
     public Typeface getFontFace() {
-        return fonts[indexFont];
+        return FONTS[indexFont];
     }
 
     /**

@@ -50,6 +50,8 @@ import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDIT_LEAVE;
+import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
+import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
 /**
  * Activity for Twitter profile editor
@@ -290,10 +292,10 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      */
     public void setUser(TwitterUser user) {
         String pbLink = user.getImageLink();
-        String bnLink = user.getBannerLink() + "/600x200";
+        String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
 
         if (!user.hasDefaultProfileImage())
-            pbLink += "_bigger";
+            pbLink += PROFILE_IMG_HIGH_RES;
         Picasso.get().load(pbLink).into(profile_image);
         if (user.hasBannerImg()) {
             Picasso.get().load(bnLink).into(profile_banner);

@@ -78,7 +78,7 @@
     <string name="profile_banner">Profile banner image</string>
     <string name="editprofile_add_banner">add banner</string>
     <string name="settings_3rd_party_license">App and 3rd party license:</string>
-    <string name="settings_enable_hq_img">High resolution</string>
+    <string name="settings_enable_hq_img">high resolution</string>
     <string name="settings_info_license_link" translatable="false">http://www.apache.org/licenses/LICENSE-2.0</string>
     <string name="settings_info_github">App on GitHub:</string>
     <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>

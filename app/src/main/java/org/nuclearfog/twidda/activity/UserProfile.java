@@ -71,6 +71,8 @@ import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
+import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_HIGH_RES;
+import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
 /**
  * Activity class for user profile page
@@ -447,7 +449,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
                 case R.id.profile_banner:
                     Intent mediaBanner = new Intent(this, MediaViewer.class);
-                    mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + "/1500x500"});
+                    mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + BANNER_IMG_HIGH_RES});
                     mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                     startActivity(mediaBanner);
                     break;
@@ -545,7 +547,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 int layoutHeight = displaySize.x / 3;
                 int buttonHeight = (int) getResources().getDimension(R.dimen.profile_button_height);
                 profile_layer.getLayoutParams().height = layoutHeight + buttonHeight;
-                String bannerLink = user.getBannerLink() + "/600x200";
+                String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
                 Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage);
             } else {
                 bannerImage.setImageResource(0);
@@ -554,7 +556,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             profile_layer.requestLayout();
             String imgLink = user.getImageLink();
             if (!user.hasDefaultProfileImage())
-                imgLink += "_bigger";
+                imgLink += PROFILE_IMG_HIGH_RES;
             Picasso.get().load(imgLink).error(R.drawable.no_image).into(profileImage);
         }
     }
