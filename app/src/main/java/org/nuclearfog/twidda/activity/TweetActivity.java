@@ -207,6 +207,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                     } catch (ActivityNotFoundException err) {
                         Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
                     }
+                    break;
+
                 case R.id.link_copy:
                     username = tweet.getUser().getScreenname().substring(1);
                     tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
