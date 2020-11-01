@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
-
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
@@ -21,7 +19,7 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 /**
  * Fragment class for trend lists
  */
-public class TrendFragment extends ListFragment implements OnRefreshListener, TrendClickListener {
+public class TrendFragment extends ListFragment implements TrendClickListener {
 
     private TrendListLoader trendTask;
     private TrendAdapter adapter;
@@ -67,7 +65,7 @@ public class TrendFragment extends ListFragment implements OnRefreshListener, Tr
 
 
     @Override
-    public void onRefresh() {
+    protected void onReload() {
         if (trendTask != null && trendTask.getStatus() != RUNNING) {
             load();
         }

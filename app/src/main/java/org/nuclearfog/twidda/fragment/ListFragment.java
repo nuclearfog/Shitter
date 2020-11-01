@@ -32,6 +32,8 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     private SwipeRefreshLayout reload;
     private GlobalSettings settings;
 
+    private boolean refreshLock = false;
+
 
     @Override
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
@@ -50,17 +52,25 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
         return reload;
     }
 
+
+    @Override
+    public final void onRefresh() {
+        refreshLock = true;
+        onReload();
+    }
+
     /**
      * enables or disables swipe layout
      *
      * @param enable true to enable swipe view delayed, false to stop immediately
      */
     protected void setRefresh(boolean enable) {
+        refreshLock = !enable;
         if (enable) {
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!reload.isRefreshing()) {
+                    if (!reload.isRefreshing() && !refreshLock) {
                         reload.setRefreshing(true);
                     }
                 }
@@ -106,14 +116,19 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     abstract void onCreate();
 
     /**
-     * initialize list adapter
-     *
-     * @return adapter for the recycler view list
+     * called when swipe refresh was activated manually
      */
-    abstract Adapter<RecyclerView.ViewHolder> initAdapter();
+    abstract void onReload();
 
     /**
      * called to reset all data
      */
     abstract void onReset();
+
+    /**
+     * initialize list adapter
+     *
+     * @return adapter for the recycler view list
+     */
+    abstract Adapter<RecyclerView.ViewHolder> initAdapter();
 }

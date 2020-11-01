@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.activity.SearchPage;
@@ -38,7 +36,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_M
 /**
  * Fragment class for direct message lists
  */
-public class MessageFragment extends ListFragment implements OnRefreshListener, OnItemSelected, OnDialogClick {
+public class MessageFragment extends ListFragment implements OnItemSelected, OnDialogClick {
 
     private GlobalSettings settings;
     private MessageListLoader messageTask;
@@ -81,7 +79,7 @@ public class MessageFragment extends ListFragment implements OnRefreshListener, 
 
 
     @Override
-    public void onRefresh() {
+    protected void onReload() {
         if (messageTask != null && messageTask.getStatus() != RUNNING) {
             load(MessageListLoader.Action.LOAD);
         }

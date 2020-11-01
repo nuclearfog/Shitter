@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
@@ -25,7 +24,7 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 /**
  * #Fragment class for a list of tweets
  */
-public class TweetFragment extends ListFragment implements OnRefreshListener, TweetClickListener {
+public class TweetFragment extends ListFragment implements TweetClickListener {
 
     /**
      * Key to define what type of tweets should be loaded
@@ -116,7 +115,7 @@ public class TweetFragment extends ListFragment implements OnRefreshListener, Tw
 
 
     @Override
-    public void onRefresh() {
+    protected void onReload() {
         if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
             long sinceId = 0;
             if (!adapter.isEmpty())

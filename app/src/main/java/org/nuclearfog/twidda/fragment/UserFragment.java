@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
@@ -33,7 +32,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_U
 /**
  * Fragment class for lists a list of users
  */
-public class UserFragment extends ListFragment implements OnRefreshListener, UserClickListener,
+public class UserFragment extends ListFragment implements UserClickListener,
         OnDialogClick, ListManagerCallback {
 
     /**
@@ -151,7 +150,7 @@ public class UserFragment extends ListFragment implements OnRefreshListener, Use
 
 
     @Override
-    public void onRefresh() {
+    protected void onReload() {
         if (userTask != null && userTask.getStatus() != RUNNING) {
             load(NO_CURSOR);
         }
