@@ -77,7 +77,7 @@ public class TrendFragment extends ListFragment implements OnRefreshListener, Tr
     @Override
     public void onTrendClick(TwitterTrend trend) {
         if (!isRefreshing()) {
-            Intent intent = new Intent(getContext(), SearchPage.class);
+            Intent intent = new Intent(requireContext(), SearchPage.class);
             intent.putExtra(KEY_SEARCH_QUERY, trend.getSearchString());
             startActivity(intent);
         }
@@ -108,8 +108,8 @@ public class TrendFragment extends ListFragment implements OnRefreshListener, Tr
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null)
-            ErrorHandler.handleFailure(getContext(), error);
+        if (error != null)
+            ErrorHandler.handleFailure(requireContext(), error);
         setRefresh(false);
     }
 

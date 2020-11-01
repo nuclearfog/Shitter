@@ -128,10 +128,10 @@ public class TweetFragment extends ListFragment implements OnRefreshListener, Tw
 
     @Override
     public void onTweetClick(Tweet tweet) {
-        if (getContext() != null && !isRefreshing()) {
+        if (!isRefreshing()) {
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
-            Intent tweetIntent = new Intent(getContext(), TweetActivity.class);
+            Intent tweetIntent = new Intent(requireContext(), TweetActivity.class);
             tweetIntent.putExtra(KEY_TWEET_ID, tweet.getId());
             tweetIntent.putExtra(KEY_TWEET_NAME, tweet.getUser().getScreenname());
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);
@@ -169,8 +169,8 @@ public class TweetFragment extends ListFragment implements OnRefreshListener, Tw
      * @param error Twitter exception
      */
     public void onError(@Nullable EngineException error) {
-        if (getContext() != null && error != null)
-            ErrorHandler.handleFailure(getContext(), error);
+        if (error != null)
+            ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
     }

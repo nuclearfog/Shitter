@@ -153,7 +153,7 @@ public class MessageFragment extends ListFragment implements OnRefreshListener, 
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        messageTask = new MessageListLoader(MessageFragment.this, MessageListLoader.Action.DEL);
+        messageTask = new MessageListLoader(this, MessageListLoader.Action.DEL);
         messageTask.execute(deleteId);
     }
 
