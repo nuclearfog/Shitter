@@ -22,6 +22,7 @@ import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.fragment.UserListFragment;
 
 import java.text.NumberFormat;
 
@@ -33,7 +34,7 @@ import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
 /**
  * Adapter class for user lists
  *
- * @see org.nuclearfog.twidda.fragment.ListFragment
+ * @see UserListFragment
  */
 public class ListAdapter extends Adapter<ViewHolder> {
 

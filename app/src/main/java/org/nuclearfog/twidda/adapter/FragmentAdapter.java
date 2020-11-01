@@ -7,17 +7,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import org.nuclearfog.twidda.fragment.ListFragment;
 import org.nuclearfog.twidda.fragment.MessageFragment;
 import org.nuclearfog.twidda.fragment.TrendFragment;
 import org.nuclearfog.twidda.fragment.TweetFragment;
 import org.nuclearfog.twidda.fragment.UserFragment;
+import org.nuclearfog.twidda.fragment.UserListFragment;
 
-import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_LIST_TYPE;
-import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_OWNER_ID;
-import static org.nuclearfog.twidda.fragment.ListFragment.KEY_FRAG_LIST_OWNER_NAME;
-import static org.nuclearfog.twidda.fragment.ListFragment.LIST_USER_OWNS;
-import static org.nuclearfog.twidda.fragment.ListFragment.LIST_USER_SUBSCR_TO;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
@@ -38,6 +33,11 @@ import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_LISTS;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_RETWEET;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCR;
+import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
+import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
+import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
+import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_OWNS;
+import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_SUBSCR_TO;
 
 /**
  * Fragment adapter for ViewPager
@@ -247,8 +247,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         subscriberParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
         subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
         fragments = new Fragment[2];
-        fragments[0] = new ListFragment();
-        fragments[1] = new ListFragment();
+        fragments[0] = new UserListFragment();
+        fragments[1] = new UserListFragment();
         fragments[0].setArguments(userListParam);
         fragments[1].setArguments(subscriberParam);
         notifyDataSetChanged();
@@ -267,8 +267,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         subscriberParam.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
         subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
         fragments = new Fragment[2];
-        fragments[0] = new ListFragment();
-        fragments[1] = new ListFragment();
+        fragments[0] = new UserListFragment();
+        fragments[1] = new UserListFragment();
         fragments[0].setArguments(userListParam);
         fragments[1].setArguments(subscriberParam);
         notifyDataSetChanged();

@@ -55,7 +55,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_
 /**
  * Fragment class for user lists
  */
-public class ListFragment extends Fragment implements OnRefreshListener, ListClickListener,
+public class UserListFragment extends Fragment implements OnRefreshListener, ListClickListener,
         FragmentChangeObserver, OnDialogClick {
 
     /**

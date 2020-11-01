@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
-import org.nuclearfog.twidda.fragment.ListFragment;
+import org.nuclearfog.twidda.fragment.UserListFragment;
 
 import java.lang.ref.WeakReference;
 
@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task for downloading twitter lists created by a user
  *
- * @see ListFragment
+ * @see UserListFragment
  */
 public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
 
@@ -31,7 +31,7 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
 
     @Nullable
     private EngineException twException;
-    private final WeakReference<ListFragment> callback;
+    private final WeakReference<UserListFragment> callback;
     private final TwitterEngine mTwitter;
     private final Action action;
 
@@ -39,7 +39,7 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
     private final String ownerName;
 
 
-    public TwitterListLoader(ListFragment callback, Action action, long id, String ownerName) {
+    public TwitterListLoader(UserListFragment callback, Action action, long id, String ownerName) {
         super();
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.callback = new WeakReference<>(callback);
