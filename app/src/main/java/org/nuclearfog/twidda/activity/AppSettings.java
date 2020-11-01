@@ -417,14 +417,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      * @param preColor preselected color
      */
     private void setColor(int preColor) {
-        if (color_dialog_selector == null) {
+        if (color_dialog_selector == null || !color_dialog_selector.isShowing()) {
             color_dialog_selector = ColorPickerDialogBuilder.with(this)
                     .showAlphaSlider(false).initialColor(preColor)
                     .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
                     .setOnColorChangedListener(this).density(15).build();
             color_dialog_selector.setOnDismissListener(this);
-        }
-        if (!color_dialog_selector.isShowing()) {
             color_dialog_selector.show();
         }
     }

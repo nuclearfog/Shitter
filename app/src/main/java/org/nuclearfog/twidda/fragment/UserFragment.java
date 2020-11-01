@@ -56,12 +56,40 @@ public class UserFragment extends ListFragment implements OnRefreshListener, Use
      */
     public static final String KEY_FRAG_DEL_USER = "user_en_del";
 
+    /**
+     * configuration for a list of users following the specified user
+     */
     public static final int USER_FRAG_FOLLOWS = 1;
+
+    /**
+     * configuration for a list of users followed by the specified user
+     */
     public static final int USER_FRAG_FRIENDS = 2;
+
+    /**
+     * configuration to get a list of users retweeting a tweet
+     */
     public static final int USER_FRAG_RETWEET = 3;
+
+    /**
+     * configuration to get a list of users favoriting a tweet
+     * todo implement this function if there is an API for it
+     */
     public static final int USER_FRAG_FAVORIT = 4;
+
+    /**
+     * configuration for a list of searched users
+     */
     public static final int USER_FRAG_SEARCH = 5;
+
+    /**
+     * configuration for a list of userlist subscriber
+     */
     public static final int USER_FRAG_SUBSCR = 6;
+
+    /**
+     * configuration for a list of users added to a list
+     */
     public static final int USER_FRAG_LISTS = 7;
 
     private UserListLoader userTask;

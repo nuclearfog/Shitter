@@ -32,8 +32,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     private SwipeRefreshLayout reload;
     private GlobalSettings settings;
 
-    private boolean isRefreshing = false;
-
 
     @Override
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
@@ -58,12 +56,11 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * @param enable true to enable swipe view delayed, false to stop immediately
      */
     protected void setRefresh(boolean enable) {
-        isRefreshing = enable;
         if (enable) {
             reload.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (isRefreshing) {
+                    if (!reload.isRefreshing()) {
                         reload.setRefreshing(true);
                     }
                 }
@@ -88,7 +85,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     public void reset() {
         if (reload != null && list != null) {
             reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-            list.setAdapter(list.getAdapter()); // force redrawing list
+            list.setAdapter(list.getAdapter()); // force redrawing list to apply colors
             setRefresh(true);
         }
         onReset();

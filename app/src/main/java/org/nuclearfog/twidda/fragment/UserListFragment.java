@@ -124,8 +124,8 @@ public class UserListFragment extends ListFragment implements OnRefreshListener,
 
 
     @Override
-    public void onClick(final TwitterList listItem, Action action) {
-        if (isRefreshing()) {
+    public void onClick(TwitterList listItem, Action action) {
+        if (!isRefreshing()) {
             switch (action) {
                 case PROFILE:
                     Intent profile = new Intent(requireContext(), UserProfile.class);
@@ -227,8 +227,6 @@ public class UserListFragment extends ListFragment implements OnRefreshListener,
     public void removeItem(TwitterList list) {
         adapter.removeItem(list);
     }
-
-
 
     /**
      * called from {@link TwitterListLoader} if an error occurs

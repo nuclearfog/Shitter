@@ -309,6 +309,15 @@ public class ListAdapter extends Adapter<ViewHolder> {
      */
     public interface ListClickListener {
 
+        /**
+         * type of item click
+         * <p>
+         * {@link #PROFILE} if the profile image of the list owner was clicked
+         * {@link #FOLLOW} if the follow button was clicked
+         * {@link #SUBSCRIBER} if the subscriber button was clicked
+         * {@link #MEMBER} if the member button was clicked
+         * {@link #DELETE} if the delete button was clicked
+         */
         enum Action {
             PROFILE,
             FOLLOW,
