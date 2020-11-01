@@ -1,27 +1,17 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.ListDetail;
 import org.nuclearfog.twidda.activity.UserDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.TwitterListLoader;
@@ -33,7 +23,6 @@ import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_DESCR;
@@ -55,8 +44,8 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_
 /**
  * Fragment class for user lists
  */
-public class UserListFragment extends Fragment implements OnRefreshListener, ListClickListener,
-        FragmentChangeObserver, OnDialogClick {
+public class UserListFragment extends ListFragment implements OnRefreshListener,
+        ListClickListener, OnDialogClick {
 
     /**
      * Key for the owner ID
@@ -85,34 +74,19 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
     public static final int LIST_USER_SUBSCR_TO = 2;
 
     private TwitterListLoader listTask;
-
-    private SwipeRefreshLayout reloadLayout;
-    private RecyclerView list;
-    private ListAdapter adapter;
+    private GlobalSettings settings;
 
     private Dialog followDialog, deleteDialog;
+    private ListAdapter adapter;
 
     private long selectedList;
 
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
-        Context context = inflater.getContext();
-
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        adapter = new ListAdapter(this, settings);
-
-        list = new RecyclerView(inflater.getContext());
-        list.setLayoutManager(new LinearLayoutManager(context));
-        list.setHasFixedSize(true);
-        list.setAdapter(adapter);
-
+    protected void onCreate() {
+        settings = GlobalSettings.getInstance(requireContext());
         followDialog = DialogBuilder.create(requireContext(), LIST_UNFOLLOW, this);
         deleteDialog = DialogBuilder.create(requireContext(), LIST_DELETE, this);
-        reloadLayout = new SwipeRefreshLayout(context);
-        reloadLayout.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        reloadLayout.setOnRefreshListener(this);
-        reloadLayout.addView(list);
-        return reloadLayout;
     }
 
 
@@ -123,6 +97,13 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
             setRefresh(true);
             load(NO_CURSOR);
         }
+    }
+
+
+    @Override
+    protected void onReset() {
+        setRefresh(true);
+        load(NO_CURSOR);
     }
 
 
@@ -144,10 +125,10 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
 
     @Override
     public void onClick(final TwitterList listItem, Action action) {
-        if (getContext() != null && !reloadLayout.isRefreshing()) {
+        if (isRefreshing()) {
             switch (action) {
                 case PROFILE:
-                    Intent profile = new Intent(getContext(), UserProfile.class);
+                    Intent profile = new Intent(requireContext(), UserProfile.class);
                     profile.putExtra(KEY_PROFILE_ID, listItem.getListOwner().getId());
                     startActivity(profile);
                     break;
@@ -166,14 +147,14 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
                     break;
 
                 case SUBSCRIBER:
-                    Intent subscriberIntent = new Intent(getContext(), UserDetail.class);
+                    Intent subscriberIntent = new Intent(requireContext(), UserDetail.class);
                     subscriberIntent.putExtra(KEY_USERDETAIL_ID, listItem.getId());
                     subscriberIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRBR);
                     startActivity(subscriberIntent);
                     break;
 
                 case MEMBER:
-                    Intent listIntent = new Intent(getContext(), ListDetail.class);
+                    Intent listIntent = new Intent(requireContext(), ListDetail.class);
                     listIntent.putExtra(KEY_CURRENT_USER_OWNS, listItem.isListOwner());
                     listIntent.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
                     listIntent.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
@@ -205,6 +186,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
     }
 
 
+    @Override
     public void onFooterClick(long cursor) {
         if (listTask != null && listTask.getStatus() != RUNNING) {
             load(cursor);
@@ -213,20 +195,9 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
 
 
     @Override
-    public void onReset() {
-        if (list != null) {
-            list.setAdapter(adapter);
-            setRefresh(true);
-            load(NO_CURSOR);
-        }
-    }
-
-
-    @Override
-    public void onTabChange() {
-        if (list != null) {
-            list.smoothScrollToPosition(0);
-        }
+    protected ListAdapter initAdapter() {
+        adapter = new ListAdapter(this, settings);
+        return adapter;
     }
 
     /**
@@ -257,25 +228,7 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
         adapter.removeItem(list);
     }
 
-    /**
-     * called from {@link TwitterListLoader} to enable or disable RefreshLayout
-     *
-     * @param enable true to enable RefreshLayout with delay
-     */
-    private void setRefresh(boolean enable) {
-        if (enable) {
-            reloadLayout.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (listTask != null && listTask.getStatus() != FINISHED
-                            && !reloadLayout.isRefreshing())
-                        reloadLayout.setRefreshing(true);
-                }
-            }, 500);
-        } else {
-            reloadLayout.setRefreshing(false);
-        }
-    }
+
 
     /**
      * called from {@link TwitterListLoader} if an error occurs
@@ -283,8 +236,8 @@ public class UserListFragment extends Fragment implements OnRefreshListener, Lis
      * @param error Twitter exception
      */
     public void onError(@Nullable EngineException error) {
-        if (getContext() != null && error != null)
-            ErrorHandler.handleFailure(getContext(), error);
+        if (error != null)
+            ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
     }

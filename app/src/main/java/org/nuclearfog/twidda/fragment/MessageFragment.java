@@ -2,21 +2,10 @@ package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
@@ -27,16 +16,15 @@ import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageListLoader;
-import org.nuclearfog.twidda.backend.TrendListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
@@ -50,10 +38,10 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_M
 /**
  * Fragment class for direct message lists
  */
-public class MessageFragment extends Fragment implements OnRefreshListener, OnItemSelected, DialogBuilder.OnDialogClick {
+public class MessageFragment extends ListFragment implements OnRefreshListener, OnItemSelected, OnDialogClick {
 
+    private GlobalSettings settings;
     private MessageListLoader messageTask;
-    private SwipeRefreshLayout reload;
     private MessageAdapter adapter;
     private Dialog deleteDialog;
 
@@ -61,23 +49,9 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
-        Context context = inflater.getContext();
-
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-        adapter = new MessageAdapter(this, settings);
-
-        RecyclerView list = new RecyclerView(context);
-        list.setLayoutManager(new LinearLayoutManager(context));
-        list.setHasFixedSize(true);
-        list.setAdapter(adapter);
-
+    protected void onCreate() {
+        settings = GlobalSettings.getInstance(requireContext());
         deleteDialog = DialogBuilder.create(requireContext(), DEL_MESSAGE, this);
-        reload = new SwipeRefreshLayout(context);
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        reload.setOnRefreshListener(this);
-        reload.addView(list);
-        return reload;
     }
 
 
@@ -88,6 +62,13 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
             load(MessageListLoader.Action.DB);
             setRefresh(true);
         }
+    }
+
+
+    @Override
+    protected void onReset() {
+        setRefresh(true);
+        load(MessageListLoader.Action.DB);
     }
 
 
@@ -109,8 +90,8 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onTagClick(String tag) {
-        if (getContext() != null && !reload.isRefreshing()) {
-            Intent intent = new Intent(getContext(), SearchPage.class);
+        if (!isRefreshing()) {
+            Intent intent = new Intent(requireContext(), SearchPage.class);
             intent.putExtra(KEY_SEARCH_QUERY, tag);
             startActivity(intent);
         }
@@ -119,27 +100,25 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onLinkClick(String tag) {
-        if (getContext() != null) {
-            String shortLink = tag;
-            int cut = shortLink.indexOf('?');
-            if (cut > 0) {
-                shortLink = shortLink.substring(0, cut);
-            }
-            if (LINK_PATTERN.matcher(shortLink).matches()) {
-                String name = shortLink.substring(20, shortLink.indexOf('/', 20));
-                long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-                Intent intent = new Intent(getContext(), TweetActivity.class);
-                intent.putExtra(KEY_TWEET_ID, id);
-                intent.putExtra(KEY_TWEET_NAME, name);
+        String shortLink = tag;
+        int cut = shortLink.indexOf('?');
+        if (cut > 0) {
+            shortLink = shortLink.substring(0, cut);
+        }
+        if (LINK_PATTERN.matcher(shortLink).matches()) {
+            String name = shortLink.substring(20, shortLink.indexOf('/', 20));
+            long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
+            Intent intent = new Intent(requireContext(), TweetActivity.class);
+            intent.putExtra(KEY_TWEET_ID, id);
+            intent.putExtra(KEY_TWEET_NAME, name);
+            startActivity(intent);
+        } else {
+            Uri link = Uri.parse(tag);
+            Intent intent = new Intent(Intent.ACTION_VIEW, link);
+            try {
                 startActivity(intent);
-            } else {
-                Uri link = Uri.parse(tag);
-                Intent intent = new Intent(Intent.ACTION_VIEW, link);
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException err) {
-                    Toast.makeText(requireContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
-                }
+            } catch (ActivityNotFoundException err) {
+                Toast.makeText(requireContext(), R.string.error_connection_failed, LENGTH_SHORT).show();
             }
         }
     }
@@ -147,10 +126,10 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
 
     @Override
     public void onClick(final Message message, Action action) {
-        if (getContext() != null && !reload.isRefreshing()) {
+        if (!isRefreshing()) {
             switch (action) {
                 case ANSWER:
-                    Intent sendDm = new Intent(getContext(), MessagePopup.class);
+                    Intent sendDm = new Intent(requireContext(), MessagePopup.class);
                     sendDm.putExtra(KEY_DM_PREFIX, message.getSender().getScreenname());
                     startActivity(sendDm);
                     break;
@@ -163,13 +142,14 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
                     break;
 
                 case PROFILE:
-                    Intent profile = new Intent(getContext(), UserProfile.class);
+                    Intent profile = new Intent(requireContext(), UserProfile.class);
                     profile.putExtra(KEY_PROFILE_ID, message.getSender().getId());
                     startActivity(profile);
                     break;
             }
         }
     }
+
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
@@ -196,24 +176,11 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
         adapter.remove(id);
     }
 
-    /**
-     * called from {@link TrendListLoader} to enable or disable RefreshLayout
-     *
-     * @param enable true to enable RefreshLayout with delay
-     */
-    public void setRefresh(boolean enable) {
-        if (enable) {
-            reload.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (messageTask != null && messageTask.getStatus() != FINISHED
-                            && !reload.isRefreshing())
-                        reload.setRefreshing(true);
-                }
-            }, 500);
-        } else {
-            reload.setRefreshing(false);
-        }
+
+    @Override
+    protected MessageAdapter initAdapter() {
+        adapter = new MessageAdapter(this, settings);
+        return adapter;
     }
 
     /**
@@ -222,8 +189,8 @@ public class MessageFragment extends Fragment implements OnRefreshListener, OnIt
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (getContext() != null && error != null)
-            ErrorHandler.handleFailure(getContext(), error);
+        if (error != null)
+            ErrorHandler.handleFailure(requireContext(), error);
         setRefresh(false);
     }
 

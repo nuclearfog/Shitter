@@ -1,25 +1,15 @@
 package org.nuclearfog.twidda.fragment;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
-import org.nuclearfog.twidda.adapter.FragmentAdapter.FragmentChangeObserver;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.UserListLoader;
@@ -34,7 +24,6 @@ import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.UserListLoader.NO_CURSOR;
@@ -44,8 +33,8 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_U
 /**
  * Fragment class for lists a list of users
  */
-public class UserFragment extends Fragment implements OnRefreshListener, UserClickListener,
-        FragmentChangeObserver, OnDialogClick, ListManagerCallback {
+public class UserFragment extends ListFragment implements OnRefreshListener, UserClickListener,
+        OnDialogClick, ListManagerCallback {
 
     /**
      * key to set the type of user list to show
@@ -77,9 +66,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     private UserListLoader userTask;
     private UserListManager listTask;
+    private GlobalSettings settings;
 
-    private SwipeRefreshLayout reload;
-    private RecyclerView list;
     private Dialog deleteDialog;
     private UserAdapter adapter;
 
@@ -89,17 +77,9 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
     private int mode = 0;
     private boolean delUser = false;
 
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
-        Context context = inflater.getContext();
-        GlobalSettings settings = GlobalSettings.getInstance(context);
-
-        adapter = new UserAdapter(this, settings);
-        list = new RecyclerView(context);
-        list.setLayoutManager(new LinearLayoutManager(context));
-        list.setHasFixedSize(true);
-        list.setAdapter(adapter);
-
+    protected void onCreate() {
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_USER_MODE, 0);
@@ -108,11 +88,7 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
         deleteDialog = DialogBuilder.create(requireContext(), DEL_USER_LIST, this);
-        reload = new SwipeRefreshLayout(context);
-        reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
-        reload.setOnRefreshListener(this);
-        reload.addView(list);
-        return reload;
+        settings = GlobalSettings.getInstance(requireContext());
     }
 
 
@@ -126,10 +102,23 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
 
     @Override
+    protected void onReset() {
+        load(NO_CURSOR);
+    }
+
+
+    @Override
     public void onDestroy() {
         if (userTask != null && userTask.getStatus() == RUNNING)
             userTask.cancel(true);
         super.onDestroy();
+    }
+
+
+    @Override
+    protected UserAdapter initAdapter() {
+        adapter = new UserAdapter(this, settings);
+        return adapter;
     }
 
 
@@ -143,8 +132,8 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
 
     @Override
     public void onUserClick(TwitterUser user) {
-        if (getContext() != null && !reload.isRefreshing()) {
-            Intent intent = new Intent(getContext(), UserProfile.class);
+        if (!isRefreshing()) {
+            Intent intent = new Intent(requireContext(), UserProfile.class);
             intent.putExtra(KEY_PROFILE_ID, user.getId());
             startActivity(intent);
         }
@@ -163,23 +152,6 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
         deleteUserName = name;
         if (!deleteDialog.isShowing()) {
             deleteDialog.show();
-        }
-    }
-
-
-    @Override
-    public void onTabChange() {
-        if (list != null) {
-            list.smoothScrollToPosition(0);
-        }
-    }
-
-
-    @Override
-    public void onReset() {
-        if (list != null) {
-            list.setAdapter(adapter);
-            load(NO_CURSOR);
         }
     }
 
@@ -225,34 +197,13 @@ public class UserFragment extends Fragment implements OnRefreshListener, UserCli
      * @param error Engine exception
      */
     public void onError(@Nullable EngineException error) {
-        if (getContext() != null && error != null) {
-            ErrorHandler.handleFailure(getContext(), error);
+        if (error != null) {
+            ErrorHandler.handleFailure(requireContext(), error);
         }
         adapter.disableLoading();
         setRefresh(false);
     }
 
-    /**
-     * enables or disables swiperefresh
-     *
-     * @param enable true to enable RefreshLayout with delay
-     */
-    private void setRefresh(boolean enable) {
-        if (enable) {
-            reload.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (userTask != null && userTask.getStatus() != FINISHED
-                            && !reload.isRefreshing()) {
-                        reload.setRefreshing(true);
-                    }
-                }
-            }, 500);
-
-        } else {
-            reload.setRefreshing(false);
-        }
-    }
 
     /**
      * load content into the list

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
+import org.nuclearfog.twidda.fragment.ListFragment;
 import org.nuclearfog.twidda.fragment.MessageFragment;
 import org.nuclearfog.twidda.fragment.TrendFragment;
 import org.nuclearfog.twidda.fragment.TweetFragment;
@@ -44,7 +45,7 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_SUBSCR_T
  */
 public class FragmentAdapter extends FragmentStatePagerAdapter {
 
-    private Fragment[] fragments;
+    private ListFragment[] fragments;
 
     /**
      * Initialize Fragment Adapter
@@ -53,7 +54,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      */
     public FragmentAdapter(FragmentManager fManager) {
         super(fManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        fragments = new Fragment[0];
+        fragments = new ListFragment[0];
     }
 
 
@@ -82,7 +83,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * Clear all fragments
      */
     public void clear() {
-        fragments = new Fragment[0];
+        fragments = new ListFragment[0];
         notifyDataSetChanged();
     }
 
@@ -94,7 +95,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle ment_tl = new Bundle();
         home_tl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_HOME);
         ment_tl.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_MENT);
-        fragments = new Fragment[3];
+        fragments = new ListFragment[3];
         fragments[0] = new TweetFragment();
         fragments[1] = new TrendFragment();
         fragments[2] = new TweetFragment();
@@ -115,7 +116,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         usr_favor.putLong(KEY_FRAG_TWEET_ID, userId);
         usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
         usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
-        fragments = new Fragment[2];
+        fragments = new ListFragment[2];
         fragments[0] = new TweetFragment();
         fragments[1] = new TweetFragment();
         fragments[0].setArguments(usr_tweet);
@@ -135,7 +136,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         usr_favor.putString(KEY_FRAG_TWEET_SEARCH, username);
         usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
         usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
-        fragments = new Fragment[2];
+        fragments = new ListFragment[2];
         fragments[0] = new TweetFragment();
         fragments[1] = new TweetFragment();
         fragments[0].setArguments(usr_tweet);
@@ -155,7 +156,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         userSearch.putString(KEY_FRAG_USER_SEARCH, search);
         tweetSearch.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_SEARCH);
         userSearch.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SEARCH);
-        fragments = new Fragment[2];
+        fragments = new ListFragment[2];
         fragments[0] = new TweetFragment();
         fragments[1] = new UserFragment();
         fragments[0].setArguments(tweetSearch);
@@ -174,7 +175,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         param.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_ANSWER);
         param.putString(KEY_FRAG_TWEET_SEARCH, replyName);
         param.putLong(KEY_FRAG_TWEET_ID, tweetId);
-        fragments = new Fragment[1];
+        fragments = new ListFragment[1];
         fragments[0] = new TweetFragment();
         fragments[0].setArguments(param);
         notifyDataSetChanged();
@@ -189,7 +190,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, userId);
         param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
-        fragments = new Fragment[1];
+        fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
         notifyDataSetChanged();
@@ -204,7 +205,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, userId);
         param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWS);
-        fragments = new Fragment[1];
+        fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
         notifyDataSetChanged();
@@ -214,7 +215,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * setup adapter for a list of direct messages
      */
     public void setupMessagePage() {
-        fragments = new Fragment[1];
+        fragments = new ListFragment[1];
         fragments[0] = new MessageFragment();
         notifyDataSetChanged();
     }
@@ -228,7 +229,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, tweetId);
         param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
-        fragments = new Fragment[1];
+        fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
         notifyDataSetChanged();
@@ -246,7 +247,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
         subscriberParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
         subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
-        fragments = new Fragment[2];
+        fragments = new ListFragment[2];
         fragments[0] = new UserListFragment();
         fragments[1] = new UserListFragment();
         fragments[0].setArguments(userListParam);
@@ -266,7 +267,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
         subscriberParam.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
         subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
-        fragments = new Fragment[2];
+        fragments = new ListFragment[2];
         fragments[0] = new UserListFragment();
         fragments[1] = new UserListFragment();
         fragments[0].setArguments(userListParam);
@@ -283,7 +284,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         Bundle param = new Bundle();
         param.putLong(KEY_FRAG_USER_ID, listId);
         param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCR);
-        fragments = new Fragment[1];
+        fragments = new ListFragment[1];
         fragments[0] = new UserFragment();
         fragments[0].setArguments(param);
         notifyDataSetChanged();
@@ -303,7 +304,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LISTS);
         userParam.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
         userParam.putLong(KEY_FRAG_USER_ID, listId);
-        fragments = new Fragment[2];
+        fragments = new ListFragment[2];
         fragments[0] = new TweetFragment();
         fragments[1] = new UserFragment();
         fragments[0].setArguments(tweetParam);
@@ -315,10 +316,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * called when app settings change
      */
     public void notifySettingsChanged() {
-        for (Fragment fragment : fragments) {
-            if (fragment instanceof FragmentChangeObserver) {
-                ((FragmentChangeObserver) fragment).onReset();
-            }
+        for (ListFragment fragment : fragments) {
+            fragment.reset();
         }
     }
 
@@ -328,22 +327,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * @param index tab position of page
      */
     public void scrollToTop(int index) {
-        if (fragments[index] instanceof FragmentChangeObserver) {
-            ((FragmentChangeObserver) fragments[index]).onTabChange();
-        }
-    }
-
-
-    public interface FragmentChangeObserver {
-
-        /**
-         * called if settings changed to refresh fragments
-         */
-        void onReset();
-
-        /**
-         * called when the current tab changes
-         */
-        void onTabChange();
+        fragments[index].onTabChange();
     }
 }
