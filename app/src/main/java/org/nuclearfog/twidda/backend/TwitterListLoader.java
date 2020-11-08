@@ -68,12 +68,6 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
                     } else {
                         return mTwitter.getUserListMemberships(0, ownerName, cursor);
                     }
-
-                case FOLLOW:
-                    return new UserListList(mTwitter.followUserList(id));
-
-                case DELETE:
-                    return new UserListList(mTwitter.deleteUserList(id));
             }
         } catch (EngineException twException) {
             this.twException = twException;

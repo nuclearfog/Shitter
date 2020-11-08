@@ -22,6 +22,7 @@
     <dimen name="settings_edittext_margin">1dp</dimen>
     <dimen name="settings_edittext_textsize">14sp</dimen>
     <dimen name="settings_divider_top_bottom_margin">7dp</dimen>
+    <dimen name="settings_spinner_font_width">150sp</dimen>
 
     <!--dimens of page_tweet.xml-->
     <dimen name="tweet_toolbar_height">@dimen/toolbar_height</dimen>
@@ -101,16 +102,17 @@
     <!--dimens of item_list.xml-->
     <dimen name="listitem_padding">5dp</dimen>
     <dimen name="listitem_margin">4dp</dimen>
-    <dimen name="listitem_button_height">20sp</dimen>
-    <dimen name="listitem_profile">40sp</dimen>
+    <dimen name="listitem_textview_height">20sp</dimen>
+    <dimen name="listitem_image_size">14sp</dimen>
+    <dimen name="listitem_profile">56sp</dimen>
     <dimen name="listitem_layout_margin">5dp</dimen>
     <dimen name="listitem_textsize_date">12sp</dimen>
     <dimen name="listitem_textsize_title">18sp</dimen>
     <dimen name="listitem_textsize_name">14sp</dimen>
-    <dimen name="listitem_textsize_button">12sp</dimen>
+    <dimen name="listitem_textsize_small">12sp</dimen>
     <dimen name="listitem_bar_padding">10dp</dimen>
     <dimen name="listitem_padding_drawable">5dp</dimen>
-    <dimen name="listitem_button_padding">5dp</dimen>
+    <integer name="listitem_description_max_lines">6</integer>
 
     <!--dimens of item_dm.xml-->
     <dimen name="dmitem_profile">40sp</dimen>

@@ -113,22 +113,22 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     /**
      * called to initialize sub classes
      */
-    abstract void onCreate();
+    protected abstract void onCreate();
 
     /**
      * called when swipe refresh was activated manually
      */
-    abstract void onReload();
+    protected abstract void onReload();
 
     /**
      * called to reset all data
      */
-    abstract void onReset();
+    protected abstract void onReset();
 
     /**
      * initialize list adapter
      *
      * @return adapter for the recycler view list
      */
-    abstract Adapter<RecyclerView.ViewHolder> initAdapter();
+    protected abstract Adapter<RecyclerView.ViewHolder> initAdapter();
 }

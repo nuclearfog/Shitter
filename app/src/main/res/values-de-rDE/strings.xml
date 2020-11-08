@@ -3,7 +3,6 @@
     <string name="settings_font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
     <string name="settings_list_size">Listengröße</string>
-    <string name="user_follow">folgen</string>
     <string name="confirm_retry">wiederholen</string>
     <string name="color_settings">Farbeinstellungen</string>
     <string name="data_consumption">Datenverbrauch</string>
@@ -107,7 +106,6 @@
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
     <string name="item_list_pb_desc">Profile Listenbesitzer</string>
     <string name="list_appbar">Listen</string>
-    <string name="user_list_subscr">Listenbeobachter</string>
     <string name="edit_hint_enter_descr">Profilebeschreibung eingeben</string>
     <string name="edit_hint_link">Link eingeben</string>
     <string name="edit_location_hint">Standortnamen eingeben</string>
@@ -150,18 +148,16 @@
     <string name="userlist_enter_title">Titel eingeben</string>
     <string name="userlist_enter_descr">Beschreibung der Liste eingeben</string>
     <string name="userlist_create">Liste erstellen</string>
-    <string name="error_empty_list_information">Title und Beschreibung dürfen nicht leer sein!</string>
+    <string name="error_empty_list_information">Titel ist leer!</string>
     <string name="info_list_updated">Liste wurde aktualisiert</string>
     <string name="info_list_created">Liste wurde erstellt</string>
     <string name="menu_add_user">Nutzer hinzufügen</string>
     <string name="info_adding_user_to_list">Füge Nutzer zur Liste hinzu</string>
-    <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt</string>
     <string name="userlist_create_new_list">Neue Liste erstellen</string>
     <string name="menu_edit_list">Liste bearbeiten</string>
     <string name="update_list">Liste aktualisieren</string>
     <string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
     <string name="info_user_removed">Nutzer von der Liste entfernt!</string>
-    <string name="info_following_list">folge Liste..</string>
     <string name="descr_remove_user">Nutzer von der Liste entfernen</string>
     <string name="menu_tweet">tweet verfassen</string>
     <string name="menu_open_home_profile">öffne Profil</string>
@@ -172,4 +168,10 @@
     <string name="menu_follow_user">Nutzer folgen</string>
     <string name="menu_goto_lists">Nutzerlisten</string>
     <string name="settings_enable_hq_img">hochauflösend</string>
+    <string name="list_following_indicator">Liste gefolgt</string>
+    <string name="info_list_removed">Liste gelöscht!</string>
+    <string name="menu_list_follow">Liste folgen</string>
+    <string name="menu_unfollow_list">Liste entfolgen</string>
+    <string name="info_list_followed">Liste gefolgt</string>
+    <string name="info_list_unfollowed">Liste entfolgt</string>
 </resources>

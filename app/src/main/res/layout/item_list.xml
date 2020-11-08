@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -36,14 +37,6 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/list_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/listitem_padding_drawable"
-                    android:textSize="@dimen/listitem_textsize_title"
-                    android:singleLine="true" />
-
-                <TextView
                     android:id="@+id/list_ownername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -51,23 +44,57 @@
                     android:singleLine="true"
                     android:textSize="@dimen/listitem_textsize_name" />
 
+                <TextView
+                    android:id="@+id/list_screenname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/list_createdat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/listitem_padding_drawable"
+                    android:singleLine="true"
+                    android:textSize="@dimen/listitem_textsize_date"
+                    app:drawableStartCompat="@drawable/calendar" />
+
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/list_title"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_weight="5"
+                android:drawablePadding="@dimen/listitem_padding_drawable"
+                android:singleLine="true"
+                android:textSize="@dimen/listitem_textsize_title" />
+
+            <TextView
+                android:id="@+id/list_action"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:drawablePadding="@dimen/listitem_padding_drawable"
+                android:singleLine="true"
+                android:text="@string/list_following_indicator"
+                android:textSize="@dimen/listitem_textsize_small"
+                app:drawableStartCompat="@drawable/followback" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/list_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/list_createdat"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/listitem_padding_drawable"
-            android:singleLine="true"
-            android:textSize="@dimen/listitem_textsize_date"
-            app:drawableStartCompat="@drawable/calendar" />
+            android:maxLines="@integer/listitem_description_max_lines" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -76,47 +103,47 @@
             android:paddingLeft="@dimen/listitem_bar_padding"
             android:paddingRight="@dimen/listitem_bar_padding">
 
-            <Button
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="@dimen/listitem_image_size"
+                android:layout_height="@dimen/listitem_image_size"
+                app:srcCompat="@drawable/user"
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription" />
+
+            <TextView
                 android:id="@+id/list_member"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_button_height"
+                android:layout_height="@dimen/listitem_textview_height"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_weight="1"
-                android:background="@drawable/button"
-                android:drawablePadding="@dimen/listitem_padding_drawable"
-                android:paddingStart="@dimen/listitem_button_padding"
-                android:paddingEnd="@dimen/listitem_button_padding"
+                android:layout_marginStart="@dimen/listitem_padding_drawable"
+                android:layout_marginLeft="@dimen/listitem_padding_drawable"
                 android:singleLine="true"
-                android:textSize="@dimen/listitem_textsize_button"
-                app:drawableStartCompat="@drawable/member" />
+                android:textSize="@dimen/listitem_textsize_small" />
 
-            <Button
+            <ImageView
+                android:layout_width="@dimen/listitem_image_size"
+                android:layout_height="@dimen/listitem_image_size"
+                app:srcCompat="@drawable/subscriber"
+                android:layout_gravity="center"
+                tools:ignore="ContentDescription" />
+
+            <TextView
                 android:id="@+id/list_subscriber"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_button_height"
+                android:layout_height="@dimen/listitem_textview_height"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_weight="1"
-                android:background="@drawable/button"
+                android:layout_marginStart="@dimen/listitem_padding_drawable"
+                android:layout_marginLeft="@dimen/listitem_padding_drawable"
                 android:drawablePadding="@dimen/listitem_padding_drawable"
-                android:paddingStart="@dimen/listitem_button_padding"
-                android:paddingEnd="@dimen/listitem_button_padding"
                 android:singleLine="true"
-                android:textSize="@dimen/listitem_textsize_button"
-                app:drawableStartCompat="@drawable/subscriber" />
-
-            <Button
-                android:id="@+id/list_action"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_button_height"
-                android:layout_margin="@dimen/listitem_margin"
-                android:layout_weight="1"
-                android:background="@drawable/button"
-                android:singleLine="true"
-                android:text="@string/user_follow"
-                android:textSize="@dimen/listitem_textsize_button" />
+                android:textSize="@dimen/listitem_textsize_small" />
 
         </LinearLayout>
 

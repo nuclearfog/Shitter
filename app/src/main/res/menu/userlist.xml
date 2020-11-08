@@ -4,15 +4,26 @@
 
     <item
         android:id="@+id/menu_list_add_user"
-        android:title="@string/menu_add_user"
         android:icon="@drawable/follow"
+        android:title="@string/menu_add_user"
+        android:visible="false"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/menu_list_edit"
-        android:title="@string/menu_edit_list"
         android:icon="@drawable/edit_list"
-        app:showAsAction="ifRoom" />
+        android:title="@string/menu_edit_list"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/menu_delete_list"
+        android:title="@string/delete_list"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/menu_follow_list"
+        android:title="@string/menu_list_follow"
+        android:visible="false" />
 
 </menu>

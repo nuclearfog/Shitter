@@ -1,15 +1,11 @@
 package org.nuclearfog.twidda.fragment;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.ListDetail;
-import org.nuclearfog.twidda.activity.UserDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
@@ -17,33 +13,22 @@ import org.nuclearfog.twidda.backend.TwitterListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_DESCR;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_TITLE;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_VISIB;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_SUBSCRBR;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.DELETE;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_MEMBERSHIPS;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_USERLISTS;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_DELETE;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_UNFOLLOW;
 
 /**
  * Fragment class for user lists
  */
-public class UserListFragment extends ListFragment implements ListClickListener, OnDialogClick {
+public class UserListFragment extends ListFragment implements ListClickListener {
 
     /**
      * Key for the owner ID
@@ -62,29 +47,39 @@ public class UserListFragment extends ListFragment implements ListClickListener,
     public static final String KEY_FRAG_LIST_LIST_TYPE = "list_type";
 
     /**
-     * setup for lists of an user
+     * setup the list to show all userlists owned by a specified user
      */
     public static final int LIST_USER_OWNS = 1;
 
     /**
-     * setup for list an user is subscribed to
+     * setup the list to show all userlists the specified user is added to
      */
     public static final int LIST_USER_SUBSCR_TO = 2;
 
+    /**
+     * request code to open an user list to check for changes
+     */
+    public static final int REQUEST_OPEN_LIST = 3;
+
+    /**
+     * activity result key to return the ID of a removed list
+     * called with {@link #RETURN_LIST_REMOVED}
+     */
+    public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
+
+    /**
+     * return code for {@link #REQUEST_OPEN_LIST} when an userlist was deleted
+     */
+    public static final int RETURN_LIST_REMOVED = 4;
+
     private TwitterListLoader listTask;
     private GlobalSettings settings;
-
-    private Dialog followDialog, deleteDialog;
     private ListAdapter adapter;
-
-    private long selectedList;
 
 
     @Override
     protected void onCreate() {
         settings = GlobalSettings.getInstance(requireContext());
-        followDialog = DialogBuilder.create(requireContext(), LIST_UNFOLLOW, this);
-        deleteDialog = DialogBuilder.create(requireContext(), LIST_DELETE, this);
     }
 
 
@@ -114,6 +109,16 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_OPEN_LIST && resultCode == RETURN_LIST_REMOVED && data != null) {
+            long removedListId = data.getLongExtra(RESULT_REMOVED_LIST_ID, 0);
+            adapter.removeItem(removedListId);
+        }
+    }
+
+
+    @Override
     protected void onReload() {
         if (listTask != null && listTask.getStatus() != RUNNING) {
             load(NO_CURSOR);
@@ -122,65 +127,19 @@ public class UserListFragment extends ListFragment implements ListClickListener,
 
 
     @Override
-    public void onClick(TwitterList listItem, Action action) {
-        if (!isRefreshing()) {
-            switch (action) {
-                case PROFILE:
-                    Intent profile = new Intent(requireContext(), UserProfile.class);
-                    profile.putExtra(KEY_PROFILE_ID, listItem.getListOwner().getId());
-                    startActivity(profile);
-                    break;
-
-                case FOLLOW:
-                    if (listItem.isFollowing()) {
-                        if (!followDialog.isShowing()) {
-                            selectedList = listItem.getId();
-                            followDialog.show();
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), R.string.info_following_list, Toast.LENGTH_SHORT).show();
-                        listTask = new TwitterListLoader(this, FOLLOW, listItem.getId(), "");
-                        listTask.execute(listItem.getId());
-                    }
-                    break;
-
-                case SUBSCRIBER:
-                    Intent subscriberIntent = new Intent(requireContext(), UserDetail.class);
-                    subscriberIntent.putExtra(KEY_USERDETAIL_ID, listItem.getId());
-                    subscriberIntent.putExtra(KEY_USERDETAIL_MODE, USERLIST_SUBSCRBR);
-                    startActivity(subscriberIntent);
-                    break;
-
-                case MEMBER:
-                    Intent listIntent = new Intent(requireContext(), ListDetail.class);
-                    listIntent.putExtra(KEY_CURRENT_USER_OWNS, listItem.isListOwner());
-                    listIntent.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
-                    listIntent.putExtra(KEY_LISTDETAIL_TITLE, listItem.getTitle());
-                    listIntent.putExtra(KEY_LISTDETAIL_DESCR, listItem.getDescription());
-                    listIntent.putExtra(KEY_LISTDETAIL_VISIB, !listItem.isPrivate());
-                    startActivity(listIntent);
-                    break;
-
-                case DELETE:
-                    if (!deleteDialog.isShowing()) {
-                        selectedList = listItem.getId();
-                        deleteDialog.show();
-                    }
-                    break;
-            }
-        }
+    public void onListClick(TwitterList listItem) {
+        Intent listIntent = new Intent(requireContext(), ListDetail.class);
+        listIntent.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
+        listIntent.putExtra(KEY_CURRENT_USER_OWNS, listItem.isListOwner());
+        startActivityForResult(listIntent, REQUEST_OPEN_LIST);
     }
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == LIST_UNFOLLOW) {
-            listTask = new TwitterListLoader(this, FOLLOW, selectedList, "");
-            listTask.execute();
-        } else if (type == LIST_DELETE) {
-            listTask = new TwitterListLoader(this, DELETE, selectedList, "");
-            listTask.execute();
-        }
+    public void onProfileClick(TwitterUser user) {
+        Intent profile = new Intent(requireContext(), UserProfile.class);
+        profile.putExtra(KEY_PROFILE_ID, user.getId());
+        startActivity(profile);
     }
 
 
@@ -223,7 +182,7 @@ public class UserListFragment extends ListFragment implements ListClickListener,
      * @param list Twitter list item
      */
     public void removeItem(TwitterList list) {
-        adapter.removeItem(list);
+        adapter.removeItem(list.getId());
     }
 
     /**
@@ -244,14 +203,16 @@ public class UserListFragment extends ListFragment implements ListClickListener,
     private void load(long cursor) {
         Bundle param = getArguments();
         if (param != null) {
-            long id = param.getLong(KEY_FRAG_LIST_OWNER_ID, 0);
+            long id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
             String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
             int type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
-            if (type == LIST_USER_OWNS)
+            if (type == LIST_USER_OWNS) {
                 listTask = new TwitterListLoader(this, LOAD_USERLISTS, id, ownerName);
-            else if (type == LIST_USER_SUBSCR_TO)
+                listTask.execute(cursor);
+            } else if (type == LIST_USER_SUBSCR_TO) {
                 listTask = new TwitterListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
-            listTask.execute(cursor);
+                listTask.execute(cursor);
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,10 +26,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_DESCR;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_TITLE;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_VISIB;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.TwitterList.RET_LIST_CREATED;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTPOPUP_LEAVE;
@@ -125,7 +120,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
             String titleStr = titleInput.getText().toString();
             String descrStr = subTitleInput.getText().toString();
             boolean isPublic = visibility.isChecked();
-            if (titleStr.trim().isEmpty() || descrStr.trim().isEmpty()) {
+            if (titleStr.trim().isEmpty()) {
                 Toast.makeText(this, R.string.error_empty_list_information, Toast.LENGTH_SHORT).show();
             } else if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
                 ListHolder mHolder;
@@ -138,6 +133,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
                 }
                 updaterAsync = new UserListUpdater(this);
                 updaterAsync.execute(mHolder);
+                progressCircle.setVisibility(VISIBLE);
             }
         }
     }
@@ -149,26 +145,12 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
     }
 
     /**
-     * called when an update starts
-     */
-    public void startLoading() {
-        progressCircle.setVisibility(VISIBLE);
-    }
-
-    /**
      * called when a list was updated successfully
-     *
-     * @param result updated list data
      */
-    public void onSuccess(ListHolder result) {
+    public void onSuccess() {
         if (listId > 0) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(KEY_LISTDETAIL_ID, result.getId());
-            resultIntent.putExtra(KEY_LISTDETAIL_TITLE, result.getTitle());
-            resultIntent.putExtra(KEY_LISTDETAIL_DESCR, result.getDescription());
-            resultIntent.putExtra(KEY_LISTDETAIL_VISIB, result.isPublic());
-            setResult(RET_LIST_CHANGED, resultIntent);
+            setResult(RET_LIST_CHANGED);
         } else {
             // it's a new list, if no list ID is defined
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();

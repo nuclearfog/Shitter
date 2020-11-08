@@ -107,33 +107,19 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     /**
      * setup adapter for viewing user tweets and favs
      *
-     * @param userId ID of the user
-     */
-    public void setupProfilePage(long userId) {
-        Bundle usr_tweet = new Bundle();
-        Bundle usr_favor = new Bundle();
-        usr_tweet.putLong(KEY_FRAG_TWEET_ID, userId);
-        usr_favor.putLong(KEY_FRAG_TWEET_ID, userId);
-        usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
-        usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
-        fragments = new ListFragment[2];
-        fragments[0] = new TweetFragment();
-        fragments[1] = new TweetFragment();
-        fragments[0].setArguments(usr_tweet);
-        fragments[1].setArguments(usr_favor);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for viewing user tweets and favs
-     *
+     * @param userId   ID of the user
      * @param username screen name of the user
      */
-    public void setupProfilePage(String username) {
+    public void setupProfilePage(long userId, String username) {
         Bundle usr_tweet = new Bundle();
         Bundle usr_favor = new Bundle();
-        usr_tweet.putString(KEY_FRAG_TWEET_SEARCH, username);
-        usr_favor.putString(KEY_FRAG_TWEET_SEARCH, username);
+        if (userId > 0) {
+            usr_tweet.putLong(KEY_FRAG_TWEET_ID, userId);
+            usr_favor.putLong(KEY_FRAG_TWEET_ID, userId);
+        } else {
+            usr_tweet.putString(KEY_FRAG_TWEET_SEARCH, username);
+            usr_favor.putString(KEY_FRAG_TWEET_SEARCH, username);
+        }
         usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
         usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
         fragments = new ListFragment[2];
@@ -238,77 +224,52 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     /**
      * setup adapter for a list of user lists created by an user
      *
-     * @param userId ID of the user
+     * @param userId   ID of the user
+     * @param username screen name of the owner
      */
-    public void setupListPage(long userId) {
+    public void setupListPage(long userId, String username) {
         Bundle userListParam = new Bundle();
         Bundle subscriberParam = new Bundle();
-        userListParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+        if (userId > 0) {
+            userListParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+            subscriberParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
+        } else {
+            userListParam.putString(KEY_FRAG_LIST_OWNER_NAME, username);
+            subscriberParam.putString(KEY_FRAG_LIST_OWNER_NAME, username);
+        }
         userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
-        subscriberParam.putLong(KEY_FRAG_LIST_OWNER_ID, userId);
         subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
         fragments = new ListFragment[2];
         fragments[0] = new UserListFragment();
         fragments[1] = new UserListFragment();
         fragments[0].setArguments(userListParam);
         fragments[1].setArguments(subscriberParam);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for a list of user lists created by an user
-     *
-     * @param ownerName screen name of the owner
-     */
-    public void setupListPage(String ownerName) {
-        Bundle userListParam = new Bundle();
-        Bundle subscriberParam = new Bundle();
-        userListParam.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
-        userListParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_OWNS);
-        subscriberParam.putString(KEY_FRAG_LIST_OWNER_NAME, ownerName);
-        subscriberParam.putInt(KEY_FRAG_LIST_LIST_TYPE, LIST_USER_SUBSCR_TO);
-        fragments = new ListFragment[2];
-        fragments[0] = new UserListFragment();
-        fragments[1] = new UserListFragment();
-        fragments[0].setArguments(userListParam);
-        fragments[1].setArguments(subscriberParam);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for a list of users subscribing an user list
-     *
-     * @param listId ID of an user list
-     */
-    public void setupSubscriberPage(long listId) {
-        Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_USER_ID, listId);
-        param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCR);
-        fragments = new ListFragment[1];
-        fragments[0] = new UserFragment();
-        fragments[0].setArguments(param);
         notifyDataSetChanged();
     }
 
     /**
      * setup adapter for a page of tweets and users in an user list
      *
-     * @param listId      ID of an user list
-     * @param ownerOfList true if current user owns the list
+     * @param listId ID of an user list
      */
     public void setupListContentPage(long listId, boolean ownerOfList) {
         Bundle tweetParam = new Bundle();
         Bundle userParam = new Bundle();
+        Bundle subscrParam = new Bundle();
         tweetParam.putLong(KEY_FRAG_TWEET_ID, listId);
         tweetParam.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_LIST);
         userParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_LISTS);
         userParam.putBoolean(KEY_FRAG_DEL_USER, ownerOfList);
         userParam.putLong(KEY_FRAG_USER_ID, listId);
-        fragments = new ListFragment[2];
+        subscrParam.putLong(KEY_FRAG_USER_ID, listId);
+        subscrParam.putInt(KEY_FRAG_USER_MODE, USER_FRAG_SUBSCR);
+        fragments = new ListFragment[3];
         fragments[0] = new TweetFragment();
         fragments[1] = new UserFragment();
+        fragments[2] = new UserFragment();
         fragments[0].setArguments(tweetParam);
         fragments[1].setArguments(userParam);
+        fragments[2].setArguments(subscrParam);
         notifyDataSetChanged();
     }
 

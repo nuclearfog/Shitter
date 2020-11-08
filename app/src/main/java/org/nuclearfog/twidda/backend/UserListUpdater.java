@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
  * This class creates and updates user lists
  * Backend for {@link ListPopup}
  */
-public class UserListUpdater extends AsyncTask<ListHolder, Void, ListHolder> {
+public class UserListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
 
 
     @Nullable
@@ -32,31 +32,23 @@ public class UserListUpdater extends AsyncTask<ListHolder, Void, ListHolder> {
 
 
     @Override
-    protected void onPreExecute() {
-        if (callback.get() != null) {
-            callback.get().startLoading();
-        }
-    }
-
-
-    @Override
-    protected ListHolder doInBackground(ListHolder... listHolders) {
+    protected Boolean doInBackground(ListHolder... listHolders) {
         try {
             ListHolder mList = listHolders[0];
             mTwitter.updateUserList(mList);
-            return mList;
+            return true;
         } catch (EngineException err) {
             this.err = err;
         }
-        return null;
+        return false;
     }
 
 
     @Override
-    protected void onPostExecute(ListHolder result) {
+    protected void onPostExecute(Boolean success) {
         if (callback.get() != null) {
-            if (result != null) {
-                callback.get().onSuccess(result);
+            if (success) {
+                callback.get().onSuccess();
             } else {
                 callback.get().onError(err);
             }

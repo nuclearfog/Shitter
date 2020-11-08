@@ -26,6 +26,7 @@ import org.nuclearfog.twidda.fragment.UserListFragment;
 
 import java.text.NumberFormat;
 
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
@@ -106,14 +107,16 @@ public class ListAdapter extends Adapter<ViewHolder> {
     /**
      * remove userlist item from list
      *
-     * @param item userlist item to remove
+     * @param itemId userlist id to remove
      */
     @MainThread
-    public void removeItem(TwitterList item) {
-        int index = data.indexOf(item);
-        if (index != -1) {
-            data.remove(index);
-            notifyItemRemoved(index);
+    public void removeItem(long itemId) {
+        for (int index = 0; index < data.size(); index++) {
+            if (data.get(index).getId() == itemId) {
+                data.remove(index);
+                notifyItemRemoved(index);
+                break;
+            }
         }
     }
 
@@ -144,42 +147,18 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        TwitterList list = data.get(position);
-                        listener.onClick(list, ListClickListener.Action.PROFILE);
+                        TwitterUser user = data.get(position).getListOwner();
+                        listener.onProfileClick(user);
                     }
                 }
             });
-            vh.action.setOnClickListener(new OnClickListener() {
+            v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
                         TwitterList list = data.get(position);
-                        if (list.isListOwner()) {
-                            listener.onClick(list, ListClickListener.Action.DELETE);
-                        } else {
-                            listener.onClick(list, ListClickListener.Action.FOLLOW);
-                        }
-                    }
-                }
-            });
-            vh.subscriberCount.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        TwitterList list = data.get(position);
-                        listener.onClick(list, ListClickListener.Action.SUBSCRIBER);
-                    }
-                }
-            });
-            vh.memberCount.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
-                    if (position != NO_POSITION) {
-                        TwitterList list = data.get(position);
-                        listener.onClick(list, ListClickListener.Action.MEMBER);
+                        listener.onListClick(list);
                     }
                 }
             });
@@ -213,7 +192,8 @@ public class ListAdapter extends Adapter<ViewHolder> {
             TwitterList item = data.get(index);
             TwitterUser owner = item.getListOwner();
             vh.title.setText(item.getTitle());
-            vh.ownername.setText(owner.getScreenname());
+            vh.username.setText(owner.getUsername());
+            vh.screenname.setText(owner.getScreenname());
             vh.description.setText(item.getDescription());
             vh.createdAt.setText(getTimeString(item.getCreatedAt()));
             vh.memberCount.setText(formatter.format(item.getMemberCount()));
@@ -225,24 +205,25 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 }
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
             }
-            if (item.isListOwner()) {
-                vh.action.setText(R.string.delete_list);
+            if (!item.isListOwner() && item.isFollowing()) {
+                vh.followIndicator.setVisibility(VISIBLE);
             } else {
-                if (item.isFollowing()) {
-                    vh.action.setText(R.string.user_unfollow);
-                } else {
-                    vh.action.setText(R.string.user_follow);
-                }
+                vh.followIndicator.setVisibility(GONE);
             }
             if (item.isPrivate()) {
                 vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
             } else {
                 vh.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
-            if (owner.isLocked()) {
-                vh.ownername.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            if (owner.isVerified()) {
+                vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
             } else {
-                vh.ownername.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+            if (owner.isLocked()) {
+                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            } else {
+                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         } else if (holder instanceof PlaceHolder) {
             PlaceHolder placeHolder = (PlaceHolder) holder;
@@ -272,16 +253,16 @@ public class ListAdapter extends Adapter<ViewHolder> {
      */
     private final class ListHolder extends ViewHolder {
         final ImageView pb_image;
-        final Button action;
-        final TextView title, ownername, description, createdAt;
-        final TextView memberCount, subscriberCount;
+        final TextView title, username, screenname, description, createdAt;
+        final TextView memberCount, subscriberCount, followIndicator;
 
         ListHolder(View v) {
             super(v);
             pb_image = v.findViewById(R.id.list_owner_profile);
-            action = v.findViewById(R.id.list_action);
+            followIndicator = v.findViewById(R.id.list_action);
             title = v.findViewById(R.id.list_title);
-            ownername = v.findViewById(R.id.list_ownername);
+            username = v.findViewById(R.id.list_ownername);
+            screenname = v.findViewById(R.id.list_screenname);
             description = v.findViewById(R.id.list_description);
             createdAt = v.findViewById(R.id.list_createdat);
             memberCount = v.findViewById(R.id.list_member);
@@ -310,29 +291,18 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public interface ListClickListener {
 
         /**
-         * type of item click
-         * <p>
-         * {@link #PROFILE} if the profile image of the list owner was clicked
-         * {@link #FOLLOW} if the follow button was clicked
-         * {@link #SUBSCRIBER} if the subscriber button was clicked
-         * {@link #MEMBER} if the member button was clicked
-         * {@link #DELETE} if the delete button was clicked
-         */
-        enum Action {
-            PROFILE,
-            FOLLOW,
-            SUBSCRIBER,
-            MEMBER,
-            DELETE
-        }
-
-        /**
          * called when an item is clicked
          *
          * @param listItem Item data and information
-         * @param action   which button was clicked
          */
-        void onClick(TwitterList listItem, Action action);
+        void onListClick(TwitterList listItem);
+
+        /**
+         * called when the profile image of the owner was clicked
+         *
+         * @param user user information
+         */
+        void onProfileClick(TwitterUser user);
 
         /**
          * called when the footer is clicked

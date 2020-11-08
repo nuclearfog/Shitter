@@ -974,22 +974,37 @@ public class TwitterEngine {
     }
 
     /**
+     * load user list information
+     *
+     * @param listId ID of the userlist
+     * @return list information
+     * @throws EngineException if access is unavailable
+     */
+    public TwitterList loadUserList(long listId) throws EngineException {
+        try {
+            return new TwitterList(twitter.showUserList(listId), twitterID);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+    /**
      * Follow action for twitter list
      *
      * @param listId ID of the list
+     * @param follow ID of the list
      * @return List information
      * @throws EngineException if access is unavailable
      */
-    public TwitterList followUserList(long listId) throws EngineException {
+    public TwitterList followUserList(long listId, boolean follow) throws EngineException {
         try {
-            UserList list = twitter.showUserList(listId);
-            if (list.isFollowing()) {
-                twitter.destroyUserListSubscription(listId);
-                return new TwitterList(list, twitterID, false);
+            UserList list;
+            if (follow) {
+                list = twitter.createUserListSubscription(listId);
             } else {
-                twitter.createUserListSubscription(listId);
-                return new TwitterList(list, twitterID, true);
+                list = twitter.destroyUserListSubscription(listId);
             }
+            return new TwitterList(list, twitterID, follow);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }

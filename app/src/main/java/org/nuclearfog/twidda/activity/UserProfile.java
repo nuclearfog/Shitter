@@ -197,11 +197,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             profileAsync = new ProfileLoader(this, LDR_PROFILE);
             if (param.containsKey(KEY_PROFILE_ID)) {
                 long userId = param.getLong(KEY_PROFILE_ID);
-                adapter.setupProfilePage(userId);
+                adapter.setupProfilePage(userId, "");
                 profileAsync.execute(userId);
             } else {
                 String username = param.getString(KEY_PROFILE_NAME, "");
-                adapter.setupProfilePage(username);
+                adapter.setupProfilePage(-1, username);
                 profileAsync.execute(username);
             }
             Tab tweetTab = tabLayout.getTabAt(0);

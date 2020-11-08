@@ -20,7 +20,7 @@ public class UserDetail extends AppCompatActivity {
 
     /**
      * type of users to get from twitter
-     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS} or {@link #USERLIST_SUBSCRBR}
+     * {@link #USERLIST_FRIENDS}, {@link #USERLIST_FOLLOWER}, {@link #USERLIST_RETWEETS}
      */
     public static final String KEY_USERDETAIL_MODE = "userlist_mode";
 
@@ -44,10 +44,6 @@ public class UserDetail extends AppCompatActivity {
      */
     public static final int USERLIST_RETWEETS = 3;
 
-    /**
-     * user list, requires list ID
-     */
-    public static final int USERLIST_SUBSCRBR = 5;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -80,11 +76,6 @@ public class UserDetail extends AppCompatActivity {
                 case USERLIST_RETWEETS:
                     toolbar.setTitle(R.string.userlist_retweet);
                     adapter.setupRetweeterPage(id);
-                    break;
-
-                case USERLIST_SUBSCRBR:
-                    toolbar.setTitle(R.string.user_list_subscr);
-                    adapter.setupSubscriberPage(id);
                     break;
             }
         }

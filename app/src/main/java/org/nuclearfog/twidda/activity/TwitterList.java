@@ -82,10 +82,10 @@ public class TwitterList extends AppCompatActivity implements TabLayout.OnTabSel
             if (param.containsKey(KEY_USERLIST_OWNER_ID)) {
                 long ownerId = param.getLong(KEY_USERLIST_OWNER_ID);
                 currentUsersLists = ownerId == settings.getUserId();
-                adapter.setupListPage(ownerId);
+                adapter.setupListPage(ownerId, "");
             } else if (param.containsKey(KEY_USERLIST_OWNER_NAME)) {
                 String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);
-                adapter.setupListPage(ownerName);
+                adapter.setupListPage(-1, ownerName);
             }
             Tab userList = mTab.getTabAt(0);
             Tab userSub = mTab.getTabAt(1);
