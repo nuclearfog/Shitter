@@ -198,22 +198,22 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_profile:
-                Intent user = new Intent(this, UserProfile.class);
-                user.putExtra(KEY_PROFILE_ID, settings.getUserId());
-                startActivity(user);
-                break;
-
-            case R.id.action_tweet:
-                Intent tweet = new Intent(this, TweetPopup.class);
-                startActivity(tweet);
-                break;
-
-            case R.id.action_settings:
-                Intent settings = new Intent(this, AppSettings.class);
-                startActivityForResult(settings, REQUEST_APP_SETTINGS);
-                break;
+        int menuId = item.getItemId();
+        // open home profile
+        if (menuId == R.id.action_profile) {
+            Intent user = new Intent(this, UserProfile.class);
+            user.putExtra(KEY_PROFILE_ID, settings.getUserId());
+            startActivity(user);
+        }
+        // open tweet editor
+        else if (menuId == R.id.action_tweet) {
+            Intent tweet = new Intent(this, TweetPopup.class);
+            startActivity(tweet);
+        }
+        // open app settings
+        else if (menuId == R.id.action_settings) {
+            Intent settings = new Intent(this, AppSettings.class);
+            startActivityForResult(settings, REQUEST_APP_SETTINGS);
         }
         return super.onOptionsItemSelected(item);
     }

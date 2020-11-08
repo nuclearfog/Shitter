@@ -22,7 +22,7 @@
     <dimen name="settings_edittext_margin">1dp</dimen>
     <dimen name="settings_edittext_textsize">14sp</dimen>
     <dimen name="settings_divider_top_bottom_margin">7dp</dimen>
-    <dimen name="settings_spinner_font_width">150sp</dimen>
+    <dimen name="settings_spinner_font_width">175sp</dimen>
 
     <!--dimens of page_tweet.xml-->
     <dimen name="tweet_toolbar_height">@dimen/toolbar_height</dimen>

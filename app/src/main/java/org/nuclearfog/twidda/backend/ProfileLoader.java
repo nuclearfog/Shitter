@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserProfile
  */
-public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> {
+public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, UserRelation> {
 
     public enum Action {
         LDR_PROFILE,
@@ -32,29 +32,30 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> 
     private WeakReference<UserProfile> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
-    private final Action action;
+    private long userId;
+    private String screenName;
 
 
-    public ProfileLoader(UserProfile callback, Action action) {
+    public ProfileLoader(UserProfile callback, TwitterUser user) {
+        this(callback, user.getId(), user.getScreenname());
+    }
+
+
+    public ProfileLoader(UserProfile callback, long userId, String screenName) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
-        this.action = action;
+        this.userId = userId;
+        this.screenName = screenName;
     }
 
 
     @Override
-    protected UserRelation doInBackground(Object[] args) {
+    protected UserRelation doInBackground(Action[] actions) {
         UserRelation connection;
         TwitterUser user;
-        long userId = 0;
-        String username = "";
-        if (args[0] instanceof Long) {
-            userId = (long) args[0];
-        } else if (args[0] instanceof String) {
-            username = (String) args[0];
-        }
+        Action action = actions[0];
         try {
             switch (action) {
                 case LDR_PROFILE:
@@ -65,7 +66,7 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> 
                         }
                         user = mTwitter.getUser(userId);
                     } else {    // Search user by name
-                        user = mTwitter.getUser(username);
+                        user = mTwitter.getUser(screenName);
                     }
                     publishProgress(user);
                     db.storeUser(user);
@@ -73,7 +74,7 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> 
                     if (userId > 0) {
                         connection = mTwitter.getConnection(userId);
                     } else {
-                        connection = mTwitter.getConnection(username);
+                        connection = mTwitter.getConnection(screenName);
                     }
                     if (!connection.isHome()) {
                         db.muteUser(userId, connection.isBlocked() || connection.isMuted());
@@ -136,11 +137,12 @@ public class ProfileLoader extends AsyncTask<Object, TwitterUser, UserRelation> 
     protected void onPostExecute(UserRelation properties) {
         if (callback.get() != null) {
             if (properties != null) {
-                callback.get().setConnection(properties);
-                callback.get().onAction(properties, action);
+                callback.get().onAction(properties);
             } else if (twException != null) {
                 callback.get().onError(twException);
             }
         }
     }
+
+
 }

@@ -125,6 +125,7 @@
     <string name="info_loading">loading..</string>
     <string name="info_profile_updated">Profile updated!</string>
     <string name="info_followed">followed!</string>
+    <string name="info_unfollowed">unfollowed!</string>
     <string name="info_user_blocked">blocked!</string>
     <string name="info_user_unblocked">unblocked</string>
     <string name="info_tweet_removed">Tweet removed!</string>

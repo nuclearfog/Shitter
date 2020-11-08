@@ -191,36 +191,36 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
-            switch (item.getItemId()) {
-                case R.id.delete_tweet:
-                    if (!deleteDialog.isShowing()) {
-                        deleteDialog.show();
-                    }
-                    break;
-
-                case R.id.tweet_link:
-                    String username = tweet.getUser().getScreenname().substring(1);
-                    String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
-                    try {
-                        startActivity(intent);
-                    } catch (ActivityNotFoundException err) {
-                        Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-                    }
-                    break;
-
-                case R.id.link_copy:
-                    username = tweet.getUser().getScreenname().substring(1);
-                    tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
-                    ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                    if (clip != null) {
-                        ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
-                        clip.setPrimaryClip(linkClip);
-                        Toast.makeText(this, R.string.info_clipboard, LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, R.string.error_cant_copy_clipboard, LENGTH_SHORT).show();
-                    }
-                    break;
+            int itemId = item.getItemId();
+            // Delete tweet option
+            if (itemId == R.id.delete_tweet) {
+                if (!deleteDialog.isShowing()) {
+                    deleteDialog.show();
+                }
+            }
+            // get tweet link
+            else if (itemId == R.id.tweet_link) {
+                String username = tweet.getUser().getScreenname().substring(1);
+                String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException err) {
+                    Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+                }
+            }
+            // copy tweet link to clipboeard
+            else if (itemId == R.id.link_copy) {
+                String username = tweet.getUser().getScreenname().substring(1);
+                String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
+                ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                if (clip != null) {
+                    ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
+                    clip.setPrimaryClip(linkClip);
+                    Toast.makeText(this, R.string.info_clipboard, LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, R.string.error_cant_copy_clipboard, LENGTH_SHORT).show();
+                }
             }
         }
         return super.onOptionsItemSelected(item);
@@ -230,70 +230,71 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public void onClick(View v) {
         if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
-            switch (v.getId()) {
-                case R.id.tweet_answer:
-                    String tweetPrefix = tweet.getUser().getScreenname() + " ";
-                    Intent tweetPopup = new Intent(this, TweetPopup.class);
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweet.getId());
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
-                    startActivity(tweetPopup);
-                    break;
-
-                case R.id.tweet_retweet:
-                    Intent userList = new Intent(this, UserDetail.class);
-                    userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
-                    userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
-                    startActivity(userList);
-                    break;
-
-                case R.id.profileimage_detail:
-                    if (tweet != null) {
-                        Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                        profile.putExtra(UserProfile.KEY_PROFILE_ID, tweet.getUser().getId());
-                        startActivity(profile);
+            int viewId = v.getId();
+            // answer to the tweet
+            if (viewId == R.id.tweet_answer) {
+                String tweetPrefix = tweet.getUser().getScreenname() + " ";
+                Intent tweetPopup = new Intent(this, TweetPopup.class);
+                tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweet.getId());
+                tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
+                startActivity(tweetPopup);
+            }
+            // retweet tweet
+            else if (viewId == R.id.tweet_retweet) {
+                Intent userList = new Intent(this, UserDetail.class);
+                userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
+                userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
+                startActivity(userList);
+            }
+            // open profile of the tweet author
+            else if (viewId == R.id.profileimage_detail) {
+                if (tweet != null) {
+                    Intent profile = new Intent(getApplicationContext(), UserProfile.class);
+                    profile.putExtra(UserProfile.KEY_PROFILE_ID, tweet.getUser().getId());
+                    startActivity(profile);
+                }
+            }
+            // open replied tweet
+            else if (viewId == R.id.answer_reference_detail) {
+                if (tweet != null) {
+                    Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
+                    answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
+                    answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
+                    startActivity(answerIntent);
+                }
+            }
+            // open tweet location coordinates
+            else if (viewId == R.id.tweet_location_coordinate) {
+                if (tweet != null) {
+                    Intent locationIntent = new Intent(Intent.ACTION_VIEW);
+                    locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
+                    try {
+                        startActivity(locationIntent);
+                    } catch (ActivityNotFoundException err) {
+                        Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
                     }
-                    break;
+                }
+            }
+            // open tweet media
+            else if (viewId == R.id.tweet_media_attach) {
+                if (tweet != null) {
+                    Intent mediaIntent = new Intent(this, MediaViewer.class);
+                    mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                    switch (tweet.getMediaType()) {
+                        case IMAGE:
+                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                            break;
 
-                case R.id.answer_reference_detail:
-                    if (tweet != null) {
-                        Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
-                        answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
-                        answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
-                        startActivity(answerIntent);
+                        case VIDEO:
+                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
+                            break;
+
+                        case GIF:
+                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
+                            break;
                     }
-                    break;
-
-                case R.id.tweet_location_coordinate:
-                    if (tweet != null) {
-                        Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-                        locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
-                        try {
-                            startActivity(locationIntent);
-                        } catch (ActivityNotFoundException err) {
-                            Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
-                        }
-                    }
-
-                case R.id.tweet_media_attach:
-                    if (tweet != null) {
-                        Intent mediaIntent = new Intent(this, MediaViewer.class);
-                        mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                        switch (tweet.getMediaType()) {
-                            case IMAGE:
-                                mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                                break;
-
-                            case VIDEO:
-                                mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-                                break;
-
-                            case GIF:
-                                mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
-                                break;
-                        }
-                        startActivity(mediaIntent);
-                    }
-                    break;
+                    startActivity(mediaIntent);
+                }
             }
         }
     }
@@ -302,18 +303,19 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
-            switch (v.getId()) {
-                case R.id.tweet_retweet:
-                    statusAsync = new TweetLoader(this, Action.RETWEET);
-                    statusAsync.execute(tweet.getId());
-                    Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
-                    return true;
-
-                case R.id.tweet_favorit:
-                    statusAsync = new TweetLoader(this, Action.FAVORITE);
-                    statusAsync.execute(tweet.getId());
-                    Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
-                    return true;
+            // retweet the tweet
+            if (v.getId() == R.id.tweet_retweet) {
+                statusAsync = new TweetLoader(this, Action.RETWEET);
+                statusAsync.execute(tweet.getId());
+                Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
+                return true;
+            }
+            // favorite the tweet
+            else if (v.getId() == R.id.tweet_favorit) {
+                statusAsync = new TweetLoader(this, Action.FAVORITE);
+                statusAsync.execute(tweet.getId());
+                Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
+                return true;
             }
         }
         return false;

@@ -240,19 +240,17 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.edit_pb:
-                getMedia(REQ_PROFILE_IMG);
-                break;
-
-            case R.id.edit_add_banner:
-            case R.id.edit_banner:
-                getMedia(REQ_PROFILE_BANNER);
-                break;
-
-            case R.id.kill_button:
-                loadingCircle.dismiss();
-                break;
+        // select net profile image
+        if (v.getId() == R.id.edit_pb) {
+            getMedia(REQ_PROFILE_IMG);
+        }
+        // select new banner image
+        else if (v.getId() == R.id.edit_add_banner) {
+            getMedia(REQ_PROFILE_BANNER);
+        }
+        // stop update
+        else if (v.getId() == R.id.kill_button) {
+            loadingCircle.dismiss();
         }
     }
 

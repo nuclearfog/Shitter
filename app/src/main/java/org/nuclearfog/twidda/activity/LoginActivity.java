@@ -115,27 +115,26 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.linkButton:
-                if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
-                    Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
-                    registerAsync = new Registration(this);
-                    registerAsync.execute();
-                }
-                break;
-
-            case R.id.verifier:
-                if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
-                    Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-                } else if (pinInput.getText() != null && pinInput.length() > 0) {
-                    Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
-                    String twitterPin = pinInput.getText().toString();
-                    registerAsync = new Registration(this);
-                    registerAsync.execute(twitterPin);
-                } else {
-                    Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
-                }
-                break;
+        // get login request link
+        if (v.getId() == R.id.linkButton) {
+            if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
+                Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
+                registerAsync = new Registration(this);
+                registerAsync.execute();
+            }
+        }
+        // verify user
+        else if (v.getId() == R.id.verifier) {
+            if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
+                Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
+            } else if (pinInput.getText() != null && pinInput.length() > 0) {
+                Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
+                String twitterPin = pinInput.getText().toString();
+                registerAsync = new Registration(this);
+                registerAsync.execute(twitterPin);
+            } else {
+                Toast.makeText(this, R.string.error_enter_pin, LENGTH_LONG).show();
+            }
         }
     }
 

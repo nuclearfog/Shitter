@@ -276,57 +276,52 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tweet_send:
-                String tweetStr = tweetText.getText().toString();
-                if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
-                    Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
-                } else if (locationProg.getVisibility() == INVISIBLE) {
-                    tweet = new TweetHolder(tweetStr, inReplyId);
-                    if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
-                        tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
-                    else if (selectedFormat == MediaType.VIDEO)
-                        tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
-                    if (location != null)
-                        tweet.addLocation(location);
-                    uploaderAsync = new TweetUploader(this);
-                    uploaderAsync.execute(tweet);
-                }
-                break;
+        int viewId = v.getId();
+        if (viewId == R.id.tweet_send) {
+            String tweetStr = tweetText.getText().toString();
+            // check if tweet is empty
+            if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
+                Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
+            }
+            // check if gps locating is not pending
+            else if (locationProg.getVisibility() == INVISIBLE) {
+                tweet = new TweetHolder(tweetStr, inReplyId);
+                // add media
+                if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
+                    tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
+                else if (selectedFormat == MediaType.VIDEO)
+                    tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
+                // add location
+                if (location != null)
+                    tweet.addLocation(location);
+                // send tweet
+                uploaderAsync = new TweetUploader(this);
+                uploaderAsync.execute(tweet);
+            }
+        } else if (viewId == R.id.close) {
+            showClosingMsg();
+        } else if (viewId == R.id.tweet_add_media) {
+            getMedia();
+        } else if (viewId == R.id.tweet_prev_media) {
+            Intent image = new Intent(this, MediaViewer.class);
+            image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
 
-            case R.id.close:
-                showClosingMsg();
-                break;
+            switch (selectedFormat) {
+                case VIDEO:
+                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
+                    startActivity(image);
+                    break;
 
-            case R.id.tweet_add_media:
-                getMedia();
-                break;
-
-            case R.id.tweet_prev_media:
-                Intent image = new Intent(this, MediaViewer.class);
-                image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
-
-                switch (selectedFormat) {
-                    case VIDEO:
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-                        startActivity(image);
-                        break;
-
-                    case GIF:
-                    case IMAGE:
-                        image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
-                        startActivity(image);
-                        break;
-                }
-                break;
-
-            case R.id.tweet_add_location:
-                getLocation();
-                break;
-
-            case R.id.kill_button:
-                loadingCircle.dismiss();
-                break;
+                case GIF:
+                case IMAGE:
+                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
+                    startActivity(image);
+                    break;
+            }
+        } else if (viewId == R.id.tweet_add_location) {
+            getLocation();
+        } else if (viewId == R.id.kill_button) {
+            loadingCircle.dismiss();
         }
     }
 

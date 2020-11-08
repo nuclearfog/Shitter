@@ -23,10 +23,10 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 /**
  * Activity to show user lists of a twitter user
  */
-public class TwitterList extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     /**
-     * request code for {@link ListPopup}OnTabSelectedListener
+     * request code for {@link ListPopup} OnTabSelectedListener
      */
     public static final int REQ_CREATE_LIST = 1;
 
@@ -46,11 +46,10 @@ public class TwitterList extends AppCompatActivity implements TabLayout.OnTabSel
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
     private FragmentAdapter adapter;
-
     private ViewPager pager;
     private TabLayout mTab;
 
-    private boolean currentUsersLists = false;
+    private boolean isHome = false;
 
 
     @Override
@@ -81,7 +80,7 @@ public class TwitterList extends AppCompatActivity implements TabLayout.OnTabSel
         if (param != null) {
             if (param.containsKey(KEY_USERLIST_OWNER_ID)) {
                 long ownerId = param.getLong(KEY_USERLIST_OWNER_ID);
-                currentUsersLists = ownerId == settings.getUserId();
+                isHome = ownerId == settings.getUserId();
                 adapter.setupListPage(ownerId, "");
             } else if (param.containsKey(KEY_USERLIST_OWNER_NAME)) {
                 String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);
@@ -119,9 +118,7 @@ public class TwitterList extends AppCompatActivity implements TabLayout.OnTabSel
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.lists, m);
-        if (currentUsersLists) {
-            m.findItem(R.id.list_create).setVisible(true);
-        }
+        m.findItem(R.id.list_create).setVisible(isHome);
         return super.onCreateOptionsMenu(m);
     }
 

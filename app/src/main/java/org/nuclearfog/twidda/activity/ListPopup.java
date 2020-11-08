@@ -27,7 +27,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
-import static org.nuclearfog.twidda.activity.TwitterList.RET_LIST_CREATED;
+import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTPOPUP_LEAVE;
 
 /**

@@ -101,7 +101,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.TwitterList"
+            android:name=".activity.UserLists"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

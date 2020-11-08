@@ -13,7 +13,7 @@ import org.nuclearfog.twidda.activity.MainActivity;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.activity.TweetPopup;
-import org.nuclearfog.twidda.activity.TwitterList;
+import org.nuclearfog.twidda.activity.UserLists;
 import org.nuclearfog.twidda.activity.UserProfile;
 
 import java.lang.ref.WeakReference;
@@ -23,7 +23,7 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activity.TwitterList.KEY_USERLIST_OWNER_NAME;
+import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_NAME;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_NAME;
 
 /**
@@ -110,7 +110,7 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
                 } else if (LIST_PATH.matcher(path).matches()) {
                     String username = '@' + path.substring(0, path.indexOf('/'));
                     data.putString(KEY_USERLIST_OWNER_NAME, username);
-                    dataHolder = new DataHolder(data, TwitterList.class);
+                    dataHolder = new DataHolder(data, UserLists.class);
                 }
             }
         } catch (Exception e) {

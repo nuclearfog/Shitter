@@ -66,17 +66,19 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      */
     protected void setRefresh(boolean enable) {
         refreshLock = !enable;
-        if (enable) {
-            reload.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!reload.isRefreshing() && !refreshLock) {
-                        reload.setRefreshing(true);
+        if (reload != null) {
+            if (enable) {
+                reload.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!reload.isRefreshing() && !refreshLock) {
+                            reload.setRefreshing(true);
+                        }
                     }
-                }
-            }, REFRESH_DELAY);
-        } else {
-            reload.setRefreshing(false);
+                }, REFRESH_DELAY);
+            } else {
+                reload.setRefreshing(false);
+            }
         }
     }
 
@@ -116,7 +118,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     protected abstract void onCreate();
 
     /**
-     * called when swipe refresh was activated manually
+     * called when swipe refresh is active
      */
     protected abstract void onReload();
 

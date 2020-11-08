@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import java.lang.ref.WeakReference;
 
 /**
- * Backend class to manage users on user lists
+ * Backend async task to manage users on user lists
  * Twitter users can be added and removed
  */
 public class UserListManager extends AsyncTask<String, Void, String[]> {
@@ -86,7 +86,7 @@ public class UserListManager extends AsyncTask<String, Void, String[]> {
         /**
          * called when an error occurs
          *
-         * @param err Engine exception throwed by backend
+         * @param err Engine exception thrown by backend
          */
         void onFailure(EngineException err);
     }

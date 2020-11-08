@@ -169,33 +169,33 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dm_send:
-                String username = receiver.getText().toString();
-                String message = this.message.getText().toString();
-                if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
-                    MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-                    messageAsync = new MessageUploader(this, messageHolder);
-                    messageAsync.execute();
-                } else {
-                    Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.dm_media:
-                if (mediaPath == null)
-                    getMedia();
-                else {
-                    Intent image = new Intent(this, MediaViewer.class);
-                    image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
-                    image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
-                    startActivity(image);
-                }
-                break;
-
-            case R.id.kill_button:
-                loadingCircle.dismiss();
-                break;
+        int viewId = v.getId();
+        // send direct message
+        if (viewId == R.id.dm_send) {
+            String username = receiver.getText().toString();
+            String message = this.message.getText().toString();
+            if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
+                MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
+                messageAsync = new MessageUploader(this, messageHolder);
+                messageAsync.execute();
+            } else {
+                Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
+            }
+        }
+        // open media
+        else if (viewId == R.id.dm_media) {
+            if (mediaPath == null)
+                getMedia();
+            else {
+                Intent image = new Intent(this, MediaViewer.class);
+                image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
+                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
+                startActivity(image);
+            }
+        }
+        // stop updating
+        else if (viewId == R.id.kill_button) {
+            loadingCircle.dismiss();
         }
     }
 

@@ -174,4 +174,5 @@
     <string name="menu_unfollow_list">Liste entfolgen</string>
     <string name="info_list_followed">Liste gefolgt</string>
     <string name="info_list_unfollowed">Liste entfolgt</string>
+    <string name="info_unfollowed">entfolgt!</string>
 </resources>

@@ -257,48 +257,48 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.delete_db:
-                if (!databaseDialog.isShowing()) {
-                    databaseDialog.show();
-                }
-                break;
-
-            case R.id.logout:
-                if (!logoutDialog.isShowing()) {
-                    logoutDialog.show();
-                }
-                break;
-
-            case R.id.color_background:
-                mode = ColorMode.BACKGROUND;
-                color = settings.getBackgroundColor();
-                setColor(color);
-                break;
-
-            case R.id.color_font:
-                mode = ColorMode.FONTCOLOR;
-                color = settings.getFontColor();
-                setColor(color);
-                break;
-
-            case R.id.color_popup:
-                mode = ColorMode.POPUPCOLOR;
-                color = settings.getPopupColor();
-                setColor(color);
-                break;
-
-            case R.id.highlight_color:
-                mode = ColorMode.HIGHLIGHT;
-                color = settings.getHighlightColor();
-                setColor(color);
-                break;
-
-            case R.id.load_dialog:
-                if (!load_dialog_selector.isShowing()) {
-                    load_dialog_selector.show();
-                }
-                break;
+        int viewId = v.getId();
+        // delete database
+        if (viewId == R.id.delete_db) {
+            if (!databaseDialog.isShowing()) {
+                databaseDialog.show();
+            }
+        }
+        // logout from twitter
+        else if (viewId == R.id.logout) {
+            if (!logoutDialog.isShowing()) {
+                logoutDialog.show();
+            }
+        }
+        // set background color
+        else if (viewId == R.id.color_background) {
+            mode = ColorMode.BACKGROUND;
+            color = settings.getBackgroundColor();
+            setColor(color);
+        }
+        // set font color
+        else if (viewId == R.id.color_font) {
+            mode = ColorMode.FONTCOLOR;
+            color = settings.getFontColor();
+            setColor(color);
+        }
+        // set popup color
+        else if (viewId == R.id.color_popup) {
+            mode = ColorMode.POPUPCOLOR;
+            color = settings.getPopupColor();
+            setColor(color);
+        }
+        // set highlight color
+        else if (viewId == R.id.highlight_color) {
+            mode = ColorMode.HIGHLIGHT;
+            color = settings.getHighlightColor();
+            setColor(color);
+        }
+        // open number picker
+        else if (viewId == R.id.load_dialog) {
+            if (!load_dialog_selector.isShowing()) {
+                load_dialog_selector.show();
+            }
         }
     }
 
@@ -345,27 +345,27 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onCheckedChanged(CompoundButton c, boolean checked) {
-        switch (c.getId()) {
-            case R.id.toggleImg:
-                settings.setImageLoad(checked);
-                hqImage.setEnabled(checked);
-                break;
-
-            case R.id.toggleAns:
-                settings.setAnswerLoad(checked);
-                break;
-
-            case R.id.settings_enable_proxy:
-                setProxySetupVisibility(checked, checked & enableAuth.isChecked());
-                break;
-
-            case R.id.settings_enable_auth:
-                setProxySetupVisibility(true, checked);
-                break;
-
-            case R.id.settings_image_hq:
-                settings.setHighQualityImage(checked);
-                break;
+        int viewId = c.getId();
+        // toggle image loading
+        if (viewId == R.id.toggleImg) {
+            settings.setImageLoad(checked);
+            hqImage.setEnabled(checked);
+        }
+        // toggle automatic answer load
+        else if (viewId == R.id.toggleAns) {
+            settings.setAnswerLoad(checked);
+        }
+        // enable proxy settings
+        else if (viewId == R.id.settings_enable_proxy) {
+            setProxySetupVisibility(checked, checked & enableAuth.isChecked());
+        }
+        //enable proxy authentication
+        else if (viewId == R.id.settings_enable_auth) {
+            setProxySetupVisibility(true, checked);
+        }
+        // enable high quality images
+        else if (viewId == R.id.settings_image_hq) {
+            settings.setHighQualityImage(checked);
         }
     }
 
