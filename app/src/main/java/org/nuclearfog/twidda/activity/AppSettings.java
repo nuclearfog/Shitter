@@ -121,7 +121,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         locationAdapter = new LocationAdapter(settings);
         locationAdapter.addTop(settings.getTrendLocation());
         locationSpinner.setAdapter(locationAdapter);
-        FontAdapter fontAdapter = new FontAdapter();
+        FontAdapter fontAdapter = new FontAdapter(settings);
         fontSpinner.setAdapter(fontAdapter);
         fontSpinner.setSelection(settings.getFont());
         load_picker.setMinValue(1);

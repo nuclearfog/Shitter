@@ -127,7 +127,8 @@
                 android:layout_width="@dimen/settings_spinner_font_width"
                 android:layout_height="match_parent"
                 android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding" />
+                android:paddingRight="@dimen/settings_layout_padding"
+                android:popupBackground="@color/dropdown_background" />
 
             <View
                 android:layout_width="match_parent"
@@ -260,7 +261,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="@dimen/settings_layout_padding"
-                    android:paddingRight="@dimen/settings_layout_padding" />
+                    android:paddingRight="@dimen/settings_layout_padding"
+                    android:popupBackground="@color/dropdown_background" />
 
                 <View
                     android:layout_width="match_parent"

@@ -17,10 +17,16 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
  */
 public class FontAdapter extends BaseAdapter {
 
+    private static final int TEXT_PADDING = 20;
     private static final float FONT_SIZE = 24.0f;
+    private static final Typeface[] fonts = GlobalSettings.FONTS;
+    private static final String[] names = GlobalSettings.FONT_NAMES;
 
-    private Typeface[] fonts = GlobalSettings.FONTS;
-    private String[] names = GlobalSettings.FONT_NAMES;
+    private GlobalSettings settings;
+
+    public FontAdapter(GlobalSettings settings) {
+        this.settings = settings;
+    }
 
 
     @Override
@@ -51,9 +57,11 @@ public class FontAdapter extends BaseAdapter {
         else {
             tv = new TextView(parent.getContext());
             tv.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
+            tv.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
         }
         tv.setText(name);
         tv.setTypeface(font);
+        tv.setTextColor(settings.getFontColor());
         return tv;
     }
 }

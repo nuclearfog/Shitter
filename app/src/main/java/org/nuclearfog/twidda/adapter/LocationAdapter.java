@@ -23,6 +23,9 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
  */
 public class LocationAdapter extends BaseAdapter {
 
+    private static final int TEXT_PADDING = 20;
+    private static final float TEXT_SIZE = 16.0f;
+
     private GlobalSettings settings;
     private List<TrendLocation> data;
 
@@ -96,7 +99,8 @@ public class LocationAdapter extends BaseAdapter {
             tv = (TextView) view;
         } else {
             tv = new TextView(parent.getContext());
-            tv.setTextSize(COMPLEX_UNIT_DIP, 16);
+            tv.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
+            tv.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
         }
         tv.setTextColor(settings.getFontColor());
         tv.setTypeface(settings.getFontFace());
