@@ -70,7 +70,7 @@
             <TextView
                 android:id="@+id/list_title"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_height="wrap_content"
                 android:layout_weight="5"
                 android:drawablePadding="@dimen/listitem_padding_drawable"
                 android:singleLine="true"
@@ -79,7 +79,7 @@
             <TextView
                 android:id="@+id/list_action"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:drawablePadding="@dimen/listitem_padding_drawable"
@@ -94,11 +94,13 @@
             android:id="@+id/list_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/listitem_layout_margin"
             android:maxLines="@integer/listitem_description_max_lines" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/listitem_bar_padding"
             android:paddingRight="@dimen/listitem_bar_padding">
@@ -106,13 +108,14 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="@dimen/listitem_textview_height"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/listitem_padding_drawable"
+                android:paddingRight="@dimen/listitem_padding_drawable" />
 
             <ImageView
-                android:layout_width="@dimen/listitem_image_size"
-                android:layout_height="@dimen/listitem_image_size"
+                android:layout_width="@dimen/listitem_icon_size"
+                android:layout_height="@dimen/listitem_icon_size"
                 app:srcCompat="@drawable/user"
-                android:layout_gravity="center"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -120,17 +123,18 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/listitem_textview_height"
                 android:layout_margin="@dimen/listitem_margin"
-                android:layout_weight="1"
                 android:layout_marginStart="@dimen/listitem_padding_drawable"
                 android:layout_marginLeft="@dimen/listitem_padding_drawable"
+                android:layout_weight="1"
+                android:paddingLeft="@dimen/listitem_padding_drawable"
+                android:paddingRight="@dimen/listitem_padding_drawable"
                 android:singleLine="true"
                 android:textSize="@dimen/listitem_textsize_small" />
 
             <ImageView
-                android:layout_width="@dimen/listitem_image_size"
-                android:layout_height="@dimen/listitem_image_size"
+                android:layout_width="@dimen/listitem_icon_size"
+                android:layout_height="@dimen/listitem_icon_size"
                 app:srcCompat="@drawable/subscriber"
-                android:layout_gravity="center"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -138,10 +142,12 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/listitem_textview_height"
                 android:layout_margin="@dimen/listitem_margin"
-                android:layout_weight="1"
                 android:layout_marginStart="@dimen/listitem_padding_drawable"
                 android:layout_marginLeft="@dimen/listitem_padding_drawable"
+                android:layout_weight="1"
                 android:drawablePadding="@dimen/listitem_padding_drawable"
+                android:paddingLeft="@dimen/listitem_padding_drawable"
+                android:paddingRight="@dimen/listitem_padding_drawable"
                 android:singleLine="true"
                 android:textSize="@dimen/listitem_textsize_small" />
 

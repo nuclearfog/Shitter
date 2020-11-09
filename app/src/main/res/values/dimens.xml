@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--global dimens-->
-    <dimen name="toolbar_height">54dp</dimen>
+    <dimen name="toolbar_height">56dp</dimen>
 
     <!--dimens of page_settings.xml-->
     <dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
@@ -103,13 +103,13 @@
     <dimen name="listitem_padding">5dp</dimen>
     <dimen name="listitem_margin">4dp</dimen>
     <dimen name="listitem_textview_height">20sp</dimen>
-    <dimen name="listitem_image_size">14sp</dimen>
+    <dimen name="listitem_icon_size">12sp</dimen>
     <dimen name="listitem_profile">56sp</dimen>
     <dimen name="listitem_layout_margin">5dp</dimen>
     <dimen name="listitem_textsize_date">12sp</dimen>
     <dimen name="listitem_textsize_title">18sp</dimen>
     <dimen name="listitem_textsize_name">14sp</dimen>
-    <dimen name="listitem_textsize_small">12sp</dimen>
+    <dimen name="listitem_textsize_small">14sp</dimen>
     <dimen name="listitem_bar_padding">10dp</dimen>
     <dimen name="listitem_padding_drawable">5dp</dimen>
     <integer name="listitem_description_max_lines">6</integer>
