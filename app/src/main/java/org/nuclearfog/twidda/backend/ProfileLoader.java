@@ -14,17 +14,23 @@ import org.nuclearfog.twidda.database.AppDatabase;
 import java.lang.ref.WeakReference;
 
 /**
- * task for loading user profile information and take actions
+ * This background task loads profile information about a twitter user and take actions like following
  *
  * @see UserProfile
  */
 public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, UserRelation> {
 
+    /**
+     * actions to be taken
+     */
     public enum Action {
         LDR_PROFILE,
         ACTION_FOLLOW,
+        ACTION_UNFOLLOW,
         ACTION_BLOCK,
-        ACTION_MUTE
+        ACTION_UNBLOCK,
+        ACTION_MUTE,
+        ACTION_UNMUTE
     }
 
     @Nullable
@@ -52,69 +58,65 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
 
 
     @Override
-    protected UserRelation doInBackground(Action[] actions) {
-        UserRelation connection;
-        TwitterUser user;
-        Action action = actions[0];
+    protected UserRelation doInBackground(Action[] action) {
         try {
-            switch (action) {
+            switch (action[0]) {
                 case LDR_PROFILE:
-                    if (userId > 0) { // search user by ID
+                    // load user information from database
+                    TwitterUser user;
+                    if (userId > 0) {
                         user = db.getUser(userId);
                         if (user != null) {
                             publishProgress(user);
                         }
-                        user = mTwitter.getUser(userId);
-                    } else {    // Search user by name
-                        user = mTwitter.getUser(screenName);
                     }
+                    // load user information from twitter
+                    user = mTwitter.getUser(userId, screenName);
                     publishProgress(user);
                     db.storeUser(user);
-
-                    if (userId > 0) {
-                        connection = mTwitter.getConnection(userId);
-                    } else {
-                        connection = mTwitter.getConnection(screenName);
+                    // load user relations from twitter
+                    UserRelation relation = mTwitter.getConnection(userId, screenName);
+                    if (!relation.isHome()) {
+                        boolean muteUser = relation.isBlocked() || relation.isMuted();
+                        db.muteUser(userId, muteUser);
                     }
-                    if (!connection.isHome()) {
-                        db.muteUser(userId, connection.isBlocked() || connection.isMuted());
-                    }
-                    return connection;
+                    return relation;
 
                 case ACTION_FOLLOW:
-                    connection = mTwitter.getConnection(userId);
-                    if (!connection.isFriend()) {
-                        user = mTwitter.followUser(userId);
-                    } else {
-                        user = mTwitter.unfollowUser(userId);
-                    }
+                    user = mTwitter.followUser(userId);
                     publishProgress(user);
-                    return mTwitter.getConnection(userId);
+                    break;
+
+                case ACTION_UNFOLLOW:
+                    user = mTwitter.unfollowUser(userId);
+                    publishProgress(user);
+                    break;
 
                 case ACTION_BLOCK:
-                    connection = mTwitter.getConnection(userId);
-                    if (!connection.isBlocked()) {
-                        user = mTwitter.blockUser(userId);
-                        db.muteUser(userId, true);
-                    } else {
-                        user = mTwitter.unblockUser(userId);
-                        db.muteUser(userId, false);
-                    }
+                    user = mTwitter.blockUser(userId);
                     publishProgress(user);
-                    return mTwitter.getConnection(userId);
+                    db.muteUser(userId, true);
+                    break;
+
+                case ACTION_UNBLOCK:
+                    user = mTwitter.unblockUser(userId);
+                    publishProgress(user);
+                    db.muteUser(userId, false);
+                    break;
 
                 case ACTION_MUTE:
-                    connection = mTwitter.getConnection(userId);
-                    if (!connection.isMuted()) {
-                        user = mTwitter.muteUser(userId);
-                        db.muteUser(userId, true);
-                    } else {
-                        user = mTwitter.unmuteUser(userId);
-                        db.muteUser(userId, false);
-                    }
+                    user = mTwitter.muteUser(userId);
                     publishProgress(user);
-                    return mTwitter.getConnection(userId);
+                    db.muteUser(userId, true);
+                    break;
+
+                case ACTION_UNMUTE:
+                    user = mTwitter.unmuteUser(userId);
+                    publishProgress(user);
+                    db.muteUser(userId, false);
+                    break;
             }
+            return mTwitter.getConnection(userId, screenName);
         } catch (EngineException twException) {
             this.twException = twException;
         } catch (Exception exception) {
@@ -143,6 +145,4 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
             }
         }
     }
-
-
 }

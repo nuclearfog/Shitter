@@ -90,7 +90,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private ImageView profile_img, mediaButton;
     private View header, footer, sensitive_media;
     private Dialog deleteDialog;
-    private FragmentAdapter adapter;
 
     private GlobalSettings settings;
     @Nullable
@@ -126,8 +125,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
         tool.setTitle("");
         setSupportActionBar(tool);
+        Bundle param = getIntent().getExtras();
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        if (param != null) {
+            tweetId = param.getLong(KEY_TWEET_ID);
+            String username = param.getString(KEY_TWEET_NAME, "");
+            adapter.setupTweetPage(tweetId, username);
+        }
 
-        adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
@@ -156,10 +161,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync == null && param != null) {
             if (param.containsKey(KEY_TWEET_ID) && param.containsKey(KEY_TWEET_NAME)) {
                 tweetId = param.getLong(KEY_TWEET_ID);
-                String username = param.getString(KEY_TWEET_NAME);
-                adapter.setupTweetPage(tweetId, username);
-                statusAsync = new TweetLoader(this, Action.LOAD);
-                statusAsync.execute(tweetId);
+                statusAsync = new TweetLoader(this, tweetId);
+                statusAsync.execute(Action.LOAD);
             }
         }
     }
@@ -302,18 +305,25 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onLongClick(View v) {
-        if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
+        if (statusAsync != null && statusAsync.getStatus() != RUNNING && tweet != null) {
+            statusAsync = new TweetLoader(this, tweet);
             // retweet the tweet
             if (v.getId() == R.id.tweet_retweet) {
-                statusAsync = new TweetLoader(this, Action.RETWEET);
-                statusAsync.execute(tweet.getId());
+                if (tweet.retweeted()) {
+                    statusAsync.execute(Action.UNRETWEET);
+                } else {
+                    statusAsync.execute(Action.RETWEET);
+                }
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                 return true;
             }
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorit) {
-                statusAsync = new TweetLoader(this, Action.FAVORITE);
-                statusAsync.execute(tweet.getId());
+                if (tweet.favored()) {
+                    statusAsync.execute(Action.UNFAVORITE);
+                } else {
+                    statusAsync.execute(Action.FAVORITE);
+                }
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                 return true;
             }
@@ -325,8 +335,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
         if (type == DELETE_TWEET && tweet != null) {
-            statusAsync = new TweetLoader(TweetActivity.this, Action.DELETE);
-            statusAsync.execute(tweet.getId());
+            statusAsync = new TweetLoader(this, tweet.getId());
+            statusAsync.execute(Action.DELETE);
         }
     }
 
@@ -455,23 +465,24 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     /**
      * called after a tweet action
      *
-     * @param tweet  tweet information
      * @param action action type
      */
-    public void onAction(Tweet tweet, Action action) {
+    public void onAction(Action action) {
         switch (action) {
             case RETWEET:
-                if (tweet.retweeted())
-                    Toast.makeText(this, R.string.info_tweet_retweeted, LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.info_tweet_retweeted, LENGTH_SHORT).show();
+                break;
+
+            case UNRETWEET:
+                Toast.makeText(this, R.string.info_tweet_unretweeted, LENGTH_SHORT).show();
                 break;
 
             case FAVORITE:
-                if (tweet.favored())
-                    Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
+                break;
+
+            case UNFAVORITE:
+                Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
                 break;
 
             case DELETE:

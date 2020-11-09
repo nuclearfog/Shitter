@@ -70,6 +70,9 @@ import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_BLOCK;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_FOLLOW;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_MUTE;
+import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_UNBLOCK;
+import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_UNFOLLOW;
+import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_UNMUTE;
 import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
@@ -322,14 +325,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 } else if (menuId == R.id.profile_mute) {
                     if (relation.isMuted()) {
                         profileAsync = new ProfileLoader(this, user);
-                        profileAsync.execute(ACTION_MUTE);
+                        profileAsync.execute(ACTION_UNMUTE);
                     } else if (!muteConfirm.isShowing()) {
                         muteConfirm.show();
                     }
                 } else if (menuId == R.id.profile_block) {
                     if (relation.isBlocked()) {
                         profileAsync = new ProfileLoader(this, user);
-                        profileAsync.execute(ACTION_BLOCK);
+                        profileAsync.execute(ACTION_UNBLOCK);
                     } else if (!blockConfirm.isShowing()) {
                         blockConfirm.show();
                     }
@@ -445,7 +448,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (user != null) {
             profileAsync = new ProfileLoader(this, user);
             if (type == PROFILE_UNFOLLOW) {
-                profileAsync.execute(ACTION_FOLLOW);
+                profileAsync.execute(ACTION_UNFOLLOW);
             } else if (type == PROFILE_BLOCK) {
                 profileAsync.execute(ACTION_BLOCK);
             } else if (type == PROFILE_MUTE) {
@@ -544,38 +547,38 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     }
 
     /**
-     * print messages after user action
+     * sets user relation information and checks for status changes
      *
-     * @param properties connection to an user
+     * @param relation relation to an user
      */
-    public void onAction(UserRelation properties) {
-        if (relation != null) {
+    public void onAction(UserRelation relation) {
+        if (this.relation != null) {
             // check if block status changed
-            if (properties.isBlocked() != relation.isBlocked()) {
-                if (properties.isBlocked()) {
+            if (relation.isBlocked() != this.relation.isBlocked()) {
+                if (relation.isBlocked()) {
                     Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, R.string.info_user_unblocked, Toast.LENGTH_SHORT).show();
                 }
             }
             // check if following status changed
-            else if (properties.isFriend() != relation.isFriend()) {
-                if (properties.isFriend()) {
+            else if (relation.isFriend() != this.relation.isFriend()) {
+                if (relation.isFriend()) {
                     Toast.makeText(this, R.string.info_followed, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, R.string.info_unfollowed, Toast.LENGTH_SHORT).show();
                 }
             }
             // check if mute status changed
-            else if (properties.isMuted() != relation.isMuted()) {
-                if (properties.isMuted()) {
+            else if (relation.isMuted() != this.relation.isMuted()) {
+                if (relation.isMuted()) {
                     Toast.makeText(this, R.string.info_user_muted, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, R.string.info_user_unmuted, Toast.LENGTH_SHORT).show();
                 }
             }
         }
-        relation = properties;
+        this.relation = relation;
         invalidateOptionsMenu();
     }
 

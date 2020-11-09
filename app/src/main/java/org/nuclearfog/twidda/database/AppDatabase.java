@@ -389,21 +389,6 @@ public class AppDatabase {
     }
 
     /**
-     * remove status containing a retweet
-     *
-     * @param tweetId tweet ID of retweet
-     */
-    public void removeRetweet(long tweetId) {
-        Tweet tweet = getStatus(tweetId);
-        if (tweet != null) {
-            final String[] args = {Long.toString(tweet.getMyRetweetId())};
-            SQLiteDatabase db = getDbWrite();
-            db.delete("tweet", "tweetID=?", args);
-            commit(db);
-        }
-    }
-
-    /**
      * remove status from favorites
      *
      * @param tweetId tweet ID

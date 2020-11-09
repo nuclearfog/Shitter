@@ -18,12 +18,14 @@ import java.lang.ref.WeakReference;
  *
  * @see TweetActivity
  */
-public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
+public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoader.Action> {
 
     public enum Action {
         LOAD,
         RETWEET,
+        UNRETWEET,
         FAVORITE,
+        UNFAVORITE,
         DELETE
     }
 
@@ -32,27 +34,31 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
     private TwitterEngine mTwitter;
     private WeakReference<TweetActivity> callback;
     private AppDatabase db;
-    private final Action action;
+    private long tweetId, myRetweetId;
 
 
-    public TweetLoader(TweetActivity callback, Action action) {
+    public TweetLoader(TweetActivity callback, Tweet tweet) {
+        this(callback, tweet.getId());
+        this.myRetweetId = tweet.getMyRetweetId();
+    }
+
+
+    public TweetLoader(TweetActivity callback, long tweetId) {
         super();
-        mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
         this.callback = new WeakReference<>(callback);
-        this.action = action;
+        this.tweetId = tweetId;
     }
 
 
     @Override
-    protected Tweet doInBackground(Long[] data) {
-        Tweet tweet = null;
-        long tweetId = data[0];
-        boolean updateStatus = false;
+    protected Action doInBackground(Action[] action) {
         try {
-            switch (action) {
+            switch (action[0]) {
                 case LOAD:
-                    tweet = db.getStatus(tweetId);
+                    boolean updateStatus = false;
+                    Tweet tweet = db.getStatus(tweetId);
                     if (tweet != null) {
                         publishProgress(tweet);
                         updateStatus = true;
@@ -64,27 +70,34 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
                     break;
 
                 case DELETE:
-                    tweet = mTwitter.deleteTweet(tweetId);
+                    mTwitter.deleteTweet(tweetId);
                     db.removeStatus(tweetId);
                     break;
 
                 case RETWEET:
-                    tweet = mTwitter.retweet(tweetId);
+                    tweet = mTwitter.retweet(tweetId, true);
                     publishProgress(tweet);
-
-                    if (!tweet.retweeted())
-                        db.removeRetweet(tweetId);
                     db.updateStatus(tweet);
                     break;
 
-                case FAVORITE:
-                    tweet = mTwitter.favorite(tweetId);
+                case UNRETWEET:
+                    tweet = mTwitter.retweet(tweetId, false);
                     publishProgress(tweet);
+                    db.updateStatus(tweet);
+                    // remove status pointing on the retweeted status
+                    db.removeStatus(myRetweetId);
+                    break;
 
-                    if (tweet.favored())
-                        db.storeFavorite(tweet);
-                    else
-                        db.removeFavorite(tweetId);
+                case FAVORITE:
+                    tweet = mTwitter.favorite(tweetId, true);
+                    publishProgress(tweet);
+                    db.storeFavorite(tweet);
+                    break;
+
+                case UNFAVORITE:
+                    tweet = mTwitter.favorite(tweetId, false);
+                    publishProgress(tweet);
+                    db.removeFavorite(tweetId);
                     break;
             }
         } catch (EngineException twException) {
@@ -95,7 +108,7 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
         } catch (Exception exception) {
             exception.printStackTrace();
         }
-        return tweet;
+        return action[0];
     }
 
 
@@ -109,13 +122,12 @@ public class TweetLoader extends AsyncTask<Long, Tweet, Tweet> {
 
 
     @Override
-    protected void onPostExecute(Tweet tweet) {
+    protected void onPostExecute(Action action) {
         if (callback.get() != null) {
-            if (tweet != null) {
-                callback.get().onAction(tweet, action);
-            }
             if (twException != null) {
                 callback.get().onError(twException);
+            } else {
+                callback.get().onAction(action);
             }
         }
     }

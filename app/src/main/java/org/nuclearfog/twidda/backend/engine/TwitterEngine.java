@@ -414,29 +414,18 @@ public class TwitterEngine {
     /**
      * Get User Context
      *
-     * @param userId User ID
+     * @param userId   User ID
+     * @param username User screen name, if user ID is defined, username can be empty
      * @return User Object
      * @throws EngineException if Access is unavailable
      */
-    public TwitterUser getUser(long userId) throws EngineException {
+    public TwitterUser getUser(long userId, String username) throws EngineException {
         try {
-            return new TwitterUser(twitter.showUser(userId));
-        } catch (TwitterException err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * Get User Context
-     *
-     * @param username screen name of the user
-     * @return User Object
-     * @throws EngineException if Access is unavailable
-     */
-    public TwitterUser getUser(String username) throws EngineException {
-        try {
-            return new TwitterUser(twitter.showUser(username));
+            if (userId > 0) {
+                return new TwitterUser(twitter.showUser(userId));
+            } else {
+                return new TwitterUser(twitter.showUser(username));
+            }
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -461,34 +450,22 @@ public class TwitterEngine {
     /**
      * Efficient Access of Connection Information
      *
-     * @param userId User ID compared with Home ID
+     * @param userId   User ID compared with Home ID
+     * @param username User screen name
      * @return User Properties
      * @throws EngineException if Connection is unavailable
      */
-    public UserRelation getConnection(long userId) throws EngineException {
+    public UserRelation getConnection(long userId, String username) throws EngineException {
         try {
-            return new UserRelation(twitter.showFriendship(twitterID, userId));
+            if (userId > 0) {
+                return new UserRelation(twitter.showFriendship(twitterID, userId));
+            } else {
+                return new UserRelation(twitter.showFriendship(twitter.getScreenName(), username));
+            }
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
     }
-
-
-    /**
-     * Efficient Access of Connection Information
-     *
-     * @param username screen name of the user
-     * @return User Properties
-     * @throws EngineException if Connection is unavailable
-     */
-    public UserRelation getConnection(String username) throws EngineException {
-        try {
-            return new UserRelation(twitter.showFriendship(twitter.getScreenName(), username));
-        } catch (TwitterException err) {
-            throw new EngineException(err);
-        }
-    }
-
 
     /**
      * Follow Twitter user
@@ -721,25 +698,21 @@ public class TwitterEngine {
      * Retweet Action
      *
      * @param tweetId Tweet ID
+     * @param retweet true to retweet this tweet
      * @throws EngineException if Access is unavailable
      */
-    public Tweet retweet(long tweetId) throws EngineException {
+    public Tweet retweet(long tweetId, boolean retweet) throws EngineException {
         try {
             Status tweet = twitter.showStatus(tweetId);
-            boolean retweeted = tweet.isRetweeted();
-            boolean favorited = tweet.isFavorited();
             int retweetCount = tweet.getRetweetCount();
-            int favoritCount = tweet.getFavoriteCount();
-
-            if (tweet.isRetweeted()) {
-                twitter.unRetweetStatus(tweet.getId());
-                if (retweetCount > 0)
-                    retweetCount--;
-            } else {
-                twitter.retweetStatus(tweet.getId());
+            if (retweet) {
+                twitter.retweetStatus(tweetId).getRetweetedStatus();
                 retweetCount++;
+            } else {
+                twitter.unRetweetStatus(tweetId);
+                retweetCount--;
             }
-            return new Tweet(tweet, retweetCount, !retweeted, favoritCount, favorited);
+            return new Tweet(tweet, retweetCount, retweet, tweet.getFavoriteCount(), tweet.isFavorited());
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -749,26 +722,22 @@ public class TwitterEngine {
     /**
      * Favorite Action
      *
-     * @param tweetId Tweet ID
+     * @param tweetId  Tweet ID
+     * @param favorite true to favorite this tweet
      * @throws EngineException if Access is unavailable
      */
-    public Tweet favorite(long tweetId) throws EngineException {
+    public Tweet favorite(long tweetId, boolean favorite) throws EngineException {
         try {
             Status tweet = twitter.showStatus(tweetId);
-            boolean retweeted = tweet.isRetweeted();
-            boolean favorited = tweet.isFavorited();
-            int retweetCount = tweet.getRetweetCount();
             int favoritCount = tweet.getFavoriteCount();
-
-            if (tweet.isFavorited()) {
-                tweet = twitter.destroyFavorite(tweet.getId());
-                if (favoritCount > 0)
-                    favoritCount--;
-            } else {
-                tweet = twitter.createFavorite(tweet.getId());
+            if (favorite) {
+                tweet = twitter.createFavorite(tweetId);
                 favoritCount++;
+            } else {
+                tweet = twitter.destroyFavorite(tweetId);
+                favoritCount--;
             }
-            return new Tweet(tweet, retweetCount, retweeted, favoritCount, !favorited);
+            return new Tweet(tweet, tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }
@@ -777,12 +746,11 @@ public class TwitterEngine {
 
     /**
      * @param tweetId Tweet ID
-     * @return dummy tweet
      * @throws EngineException if Access is unavailable
      */
-    public Tweet deleteTweet(long tweetId) throws EngineException {
+    public void deleteTweet(long tweetId) throws EngineException {
         try {
-            return new Tweet(twitter.destroyStatus(tweetId));
+            twitter.destroyStatus(tweetId);
         } catch (TwitterException err) {
             throw new EngineException(err);
         }

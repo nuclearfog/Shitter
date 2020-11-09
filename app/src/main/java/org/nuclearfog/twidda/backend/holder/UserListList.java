@@ -18,13 +18,6 @@ public class UserListList extends LinkedList<TwitterList> {
         super();
     }
 
-    /**
-     * @param list single list item
-     */
-    public UserListList(TwitterList list) {
-        super();
-        add(list);
-    }
 
     /**
      * @param prevCursor previous list cursor or 0 if list starts

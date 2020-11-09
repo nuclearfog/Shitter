@@ -9,8 +9,14 @@ import twitter4j.Place;
 import twitter4j.Status;
 import twitter4j.URLEntity;
 
+/**
+ * Tweet class containing information about a tweet
+ */
 public class Tweet {
 
+    /**
+     * type of media attached to the tweet
+     */
     public enum MediaType {
         IMAGE,
         VIDEO,
@@ -23,36 +29,35 @@ public class Tweet {
     private static final String ANGIF = "animated_gif";
     private static final String MEDIA_VIDEO = "application/x-mpegURL";
 
-    private final long tweetID;
-    private final long time;
-    private final String tweet;
-    private final String[] medias;
-    private final String source;
+    private long tweetID;
+    private long time;
+    private String tweet;
+    private String[] medias;
+    private String source;
 
-    private final TwitterUser user;
-    private final Tweet embedded;
+    private TwitterUser user;
+    private Tweet embedded;
 
-    private final long replyID;
-    private final long replyUserId;
-    private final String replyName;
+    private long replyID;
+    private long replyUserId;
+    private String replyName;
 
-    private final int retweetCount;
-    private final int favoriteCount;
-    private final long myRetweetId;
-    private final boolean retweeted;
-    private final boolean favored;
-    private final boolean sensitiveMedia;
+    private int retweetCount;
+    private int favoriteCount;
+    private long myRetweetId;
+    private boolean retweeted;
+    private boolean favored;
+    private boolean sensitiveMedia;
 
-    private final String locationName;
-    private final String locationCoordinates;
+    private String locationName;
+    private String locationCoordinates;
 
-    private final MediaType mediaType;
-
+    private MediaType mediaType;
 
     /**
-     * Tweet Constructor
+     * constructor for tweets from twitter
      *
-     * @param status Twitter4J status
+     * @param status tweet
      */
     public Tweet(Status status) {
         this(status, status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());
