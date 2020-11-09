@@ -44,8 +44,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
     @Override
     protected void onReset() {
-        setRefresh(true);
+        adapter.clear();
         load();
+        setRefresh(true);
     }
 
 

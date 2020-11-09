@@ -65,8 +65,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
     @Override
     protected void onReset() {
-        setRefresh(true);
         load(MessageListLoader.Action.DB);
+        setRefresh(true);
     }
 
 

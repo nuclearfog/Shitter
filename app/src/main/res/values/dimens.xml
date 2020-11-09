@@ -109,7 +109,7 @@
     <dimen name="listitem_textsize_date">12sp</dimen>
     <dimen name="listitem_textsize_title">18sp</dimen>
     <dimen name="listitem_textsize_name">14sp</dimen>
-    <dimen name="listitem_textsize_small">14sp</dimen>
+    <dimen name="listitem_textsize_small">12sp</dimen>
     <dimen name="listitem_bar_padding">10dp</dimen>
     <dimen name="listitem_padding_drawable">5dp</dimen>
     <integer name="listitem_description_max_lines">6</integer>

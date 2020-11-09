@@ -81,7 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:drawablePadding="@dimen/listitem_padding_drawable"
                 android:singleLine="true"
                 android:text="@string/list_following_indicator"
@@ -107,7 +107,7 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:paddingLeft="@dimen/listitem_padding_drawable"
                 android:paddingRight="@dimen/listitem_padding_drawable" />
@@ -121,7 +121,7 @@
             <TextView
                 android:id="@+id/list_member"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_marginStart="@dimen/listitem_padding_drawable"
                 android:layout_marginLeft="@dimen/listitem_padding_drawable"
@@ -140,7 +140,7 @@
             <TextView
                 android:id="@+id/list_subscriber"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/listitem_textview_height"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/listitem_margin"
                 android:layout_marginStart="@dimen/listitem_padding_drawable"
                 android:layout_marginLeft="@dimen/listitem_padding_drawable"

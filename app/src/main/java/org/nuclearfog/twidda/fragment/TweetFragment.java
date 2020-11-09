@@ -83,6 +83,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
     @Override
     protected void onReset() {
+        adapter.clear();
         load(0, 0, CLEAR_LIST);
         setRefresh(true);
     }

@@ -126,6 +126,15 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     }
 
     /**
+     * removes all items from adapter
+     */
+    @MainThread
+    public void clear() {
+        tweets.clear();
+        notifyDataSetChanged();
+    }
+
+    /**
      * check if list is empty
      *
      * @return true if list is empty

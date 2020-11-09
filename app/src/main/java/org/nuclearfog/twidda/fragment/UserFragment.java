@@ -131,6 +131,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     @Override
     protected void onReset() {
         load(NO_CURSOR);
+        setRefresh(true);
     }
 
 
