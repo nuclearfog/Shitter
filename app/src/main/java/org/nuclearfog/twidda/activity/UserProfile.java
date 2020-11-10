@@ -278,12 +278,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 followIcon.setIcon(R.drawable.follow_enabled);
-                followIcon.setTitle(R.string.user_unfollow);
+                followIcon.setTitle(R.string.menu_user_unfollow);
                 listItem.setVisible(true);
             }
             if (relation.isBlocked()) {
                 MenuItem blockIcon = m.findItem(R.id.profile_block);
-                blockIcon.setTitle(R.string.user_unblock);
+                blockIcon.setTitle(R.string.menu_user_unblock);
             }
             if (relation.isMuted()) {
                 MenuItem muteIcon = m.findItem(R.id.profile_mute);

@@ -124,7 +124,7 @@
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/tweet_media_button_margin"
                             android:background="@drawable/button"
-                            android:contentDescription="@string/image_preview_button"
+                            android:contentDescription="@string/image_preview"
                             android:visibility="gone" />
 
                         <TextView

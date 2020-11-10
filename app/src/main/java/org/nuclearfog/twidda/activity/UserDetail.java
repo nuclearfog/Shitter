@@ -74,7 +74,7 @@ public class UserDetail extends AppCompatActivity {
                     break;
 
                 case USERLIST_RETWEETS:
-                    toolbar.setTitle(R.string.userlist_retweet);
+                    toolbar.setTitle(R.string.toolbar_userlist_retweet);
                     adapter.setupRetweeterPage(id);
                     break;
             }
