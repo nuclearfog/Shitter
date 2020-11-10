@@ -25,7 +25,7 @@
     <string name="confirm_delete_database">delete database?</string>
     <string name="user_unfollow">unfollow</string>
     <string name="user_unblock">unblock user</string>
-    <string name="tweet_answering">answering</string>
+    <string name="tweet_answering">"to "</string>
     <string name="tweet_sent_from">sent from:</string>
     <string name="user_unmute">un-mute user</string>
     <string name="directmessage">Direct Message</string>
@@ -181,7 +181,7 @@
     <string name="menu_tweet_delete">Delete</string>
     <string name="menu_tweet_open_browser">Open in Browser</string>
     <string name="menu_mute_user">mute user</string>
-    <string name="menu_edit_profile">Edit Profile</string>
+    <string name="menu_edit_profile">edit profile</string>
     <string name="menu_edit_save">save</string>
     <string name="menu_add_user">add user to list</string>
     <string name="menu_edit_list">edit list</string>
@@ -192,4 +192,5 @@
     <string name="menu_unfollow_list">unfollow list</string>
     <string name="info_list_followed">Userlist followed</string>
     <string name="info_list_unfollowed">Userlist unfollowed</string>
+    <string name="descr_add_profile_image">Change profile image</string>
 </resources>

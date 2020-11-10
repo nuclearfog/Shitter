@@ -75,6 +75,7 @@
     <dimen name="editprofile_bio_maxheight">150dp</dimen>
     <dimen name="editprofile_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="editprofile_dummy_height">@dimen/profile_button_height</dimen>
+    <dimen name="editprofile_add_btn_size">40dp</dimen>
 
     <!--dimens of item_tweet.xml-->
     <dimen name="tweetitem_profile_small">36sp</dimen>
@@ -102,7 +103,6 @@
     <!--dimens of item_list.xml-->
     <dimen name="listitem_padding">5dp</dimen>
     <dimen name="listitem_margin">4dp</dimen>
-    <dimen name="listitem_textview_height">20sp</dimen>
     <dimen name="listitem_icon_size">12sp</dimen>
     <dimen name="listitem_profile">56sp</dimen>
     <dimen name="listitem_layout_margin">5dp</dimen>

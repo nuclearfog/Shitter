@@ -89,8 +89,9 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
     private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
-    private Button add_banner_btn;
     private Dialog loadingCircle, closeDialog;
+    private Button addBannerBtn;
+    private View changeBannerBtn;
 
     private TwitterUser user;
     private String profileLink, bannerLink;
@@ -104,7 +105,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         View header = findViewById(R.id.editprofile_header);
         profile_image = findViewById(R.id.edit_pb);
         profile_banner = findViewById(R.id.edit_banner);
-        add_banner_btn = findViewById(R.id.edit_add_banner);
+        addBannerBtn = findViewById(R.id.edit_add_banner);
+        changeBannerBtn = findViewById(R.id.edit_change_banner);
         name = findViewById(R.id.edit_name);
         link = findViewById(R.id.edit_link);
         loc = findViewById(R.id.edit_location);
@@ -134,7 +136,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
         profile_image.setOnClickListener(this);
         profile_banner.setOnClickListener(this);
-        add_banner_btn.setOnClickListener(this);
+        addBannerBtn.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         loadingCircle.setOnDismissListener(this);
     }
@@ -220,8 +222,12 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                         profile_image.setImageBitmap(image);
                         profileLink = mediaPath;
                     } else {
+                        int bannerHeight = profile_banner.getMeasuredWidth() / 3;
+                        if (bannerHeight > 0)
+                            profile_banner.setMaxHeight(bannerHeight);
                         profile_banner.setImageBitmap(image);
-                        add_banner_btn.setVisibility(INVISIBLE);
+                        addBannerBtn.setVisibility(INVISIBLE);
+                        changeBannerBtn.setVisibility(VISIBLE);
                         bannerLink = mediaPath;
                     }
                     c.close();
@@ -240,16 +246,17 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
+        int viewId = v.getId();
         // select net profile image
-        if (v.getId() == R.id.edit_pb) {
+        if (viewId == R.id.edit_pb) {
             getMedia(REQ_PROFILE_IMG);
         }
         // select new banner image
-        else if (v.getId() == R.id.edit_add_banner) {
+        else if (viewId == R.id.edit_add_banner || viewId == R.id.edit_banner) {
             getMedia(REQ_PROFILE_BANNER);
         }
         // stop update
-        else if (v.getId() == R.id.kill_button) {
+        else if (viewId == R.id.kill_button) {
             loadingCircle.dismiss();
         }
     }
@@ -297,7 +304,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         Picasso.get().load(pbLink).into(profile_image);
         if (user.hasBannerImg()) {
             Picasso.get().load(bnLink).into(profile_banner);
-            add_banner_btn.setVisibility(INVISIBLE);
+            addBannerBtn.setVisibility(INVISIBLE);
+            changeBannerBtn.setVisibility(VISIBLE);
+        } else {
+            addBannerBtn.setVisibility(VISIBLE);
+            changeBannerBtn.setVisibility(INVISIBLE);
         }
         name.setText(user.getUsername());
         link.setText(user.getLink());

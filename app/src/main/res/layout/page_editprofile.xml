@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/page_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,7 +40,8 @@
                     android:background="@drawable/button"
                     android:paddingLeft="@dimen/editprofile_button_padding"
                     android:paddingRight="@dimen/editprofile_button_padding"
-                    android:text="@string/editprofile_add_banner" />
+                    android:text="@string/editprofile_add_banner"
+                    android:visibility="invisible" />
 
                 <ImageView
                     android:id="@+id/edit_banner"
@@ -52,14 +54,37 @@
                     android:scaleType="centerCrop" />
 
                 <ImageView
-                    android:id="@+id/edit_pb"
+                    android:id="@+id/edit_change_banner"
+                    android:layout_width="@dimen/editprofile_add_btn_size"
+                    android:layout_height="@dimen/editprofile_add_btn_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/descr_add_profile_image"
+                    app:srcCompat="@drawable/add" />
+
+                <FrameLayout
                     android:layout_width="@dimen/editprofile_image"
                     android:layout_height="@dimen/editprofile_image"
                     android:layout_gravity="bottom"
+                    android:layout_marginStart="@dimen/editprofile_image_margin"
                     android:layout_marginLeft="@dimen/editprofile_image_margin"
-                    android:layout_marginRight="@dimen/editprofile_image_margin"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/image_preview" />
+                    android:layout_marginEnd="@dimen/editprofile_image_margin"
+                    android:layout_marginRight="@dimen/editprofile_image_margin">
+
+                    <ImageView
+                        android:id="@+id/edit_pb"
+                        android:layout_width="@dimen/editprofile_image"
+                        android:layout_height="@dimen/editprofile_image"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/image_preview" />
+
+                    <ImageView
+                        android:layout_width="@dimen/editprofile_add_btn_size"
+                        android:layout_height="@dimen/editprofile_add_btn_size"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/descr_add_profile_image"
+                        app:srcCompat="@drawable/add" />
+
+                </FrameLayout>
 
             </FrameLayout>
 

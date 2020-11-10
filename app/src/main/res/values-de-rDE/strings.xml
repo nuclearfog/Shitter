@@ -31,7 +31,7 @@
     <string name="info_user_blocked">geblockt!</string>
     <string name="info_user_unblocked">entblockt!</string>
     <string name="info_tweet_removed">Tweet gelöscht!</string>
-    <string name="tweet_answering">"antwort "</string>
+    <string name="tweet_answering">"an "</string>
     <string name="tweet_sent_from">"gesendet von:"</string>
     <string name="menu_mute_user">Stummschalten</string>
     <string name="user_unmute">Stummschaltung aufheben</string>
@@ -175,4 +175,5 @@
     <string name="info_list_followed">Liste gefolgt</string>
     <string name="info_list_unfollowed">Liste entfolgt</string>
     <string name="info_unfollowed">entfolgt!</string>
+    <string name="descr_add_profile_image">Profilbild ändern</string>
 </resources>
