@@ -34,7 +34,7 @@
     <string name="tweet_answering">"an "</string>
     <string name="tweet_sent_from">"gesendet von: "</string>
     <string name="menu_mute_user">Stummschalten</string>
-    <string name="user_unmute">Stummschaltung aufheben</string>
+    <string name="menu_unmute_user">Stummschaltung aufheben</string>
     <string name="info_user_muted">stummgeschaltet!</string>
     <string name="info_user_unmuted">Stummschaltung aufgehoben!</string>
     <string name="directmessage">Direktnachrichten</string>
@@ -66,7 +66,7 @@
     <string name="error_status_length">Status ist zu lang!</string>
     <string name="error_duplicate_status">Tweet wurde schon versendet!</string>
     <string name="error_dm_length">Direktnachricht länge überschritten!</string>
-    <string name="follow_requested">warten auf Bestätigung</string>
+    <string name="menu_follow_requested">warten auf Bestätigung</string>
     <string name="info_loading">lädt..</string>
     <string name="profile_location">Standort</string>
     <string name="profile_bio">Bio</string>

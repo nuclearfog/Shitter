@@ -266,7 +266,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             if (user.followRequested()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 followIcon.setIcon(R.drawable.follow_requested);
-                followIcon.setTitle(R.string.follow_requested);
+                followIcon.setTitle(R.string.menu_follow_requested);
             }
             if (user.isLocked() && user.getId() != settings.getUserId()) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
@@ -287,7 +287,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             }
             if (relation.isMuted()) {
                 MenuItem muteIcon = m.findItem(R.id.profile_mute);
-                muteIcon.setTitle(R.string.user_unmute);
+                muteIcon.setTitle(R.string.menu_unmute_user);
             }
             if (relation.canDm()) {
                 MenuItem dmIcon = m.findItem(R.id.profile_message);
