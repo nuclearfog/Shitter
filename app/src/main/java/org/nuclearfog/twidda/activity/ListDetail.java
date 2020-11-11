@@ -88,6 +88,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private Dialog unfollowDialog, deleteDialog;
 
     private TwitterList twitterList;
+    private long listId;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -112,7 +113,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            long listId = param.getLong(KEY_LISTDETAIL_ID);
+            listId = param.getLong(KEY_LISTDETAIL_ID);
             boolean currentUserOwnsList = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
             adapter.setupListContentPage(listId, currentUserOwnsList);
             Tab tweetTab = tablayout.getTabAt(0);
@@ -265,19 +266,15 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            if (USERNAME_PATTERN.matcher(query).matches()) {
-                if (userListManager == null || userListManager.getStatus() != RUNNING) {
-                    Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-                    long listId = param.getLong(KEY_LISTDETAIL_ID);
-                    userListManager = new UserListManager(listId, ADD_USER, this, this);
-                    userListManager.execute(query);
-                    return true;
-                }
-            } else {
-                Toast.makeText(this, R.string.error_username_format, Toast.LENGTH_SHORT).show();
+        if (USERNAME_PATTERN.matcher(query).matches()) {
+            if (userListManager == null || userListManager.getStatus() != RUNNING) {
+                Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
+                userListManager = new UserListManager(listId, ADD_USER, this, this);
+                userListManager.execute(query);
+                return true;
             }
+        } else {
+            Toast.makeText(this, R.string.error_username_format, Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -341,6 +338,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public void onFailure(EngineException err) {
         ErrorHandler.handleFailure(this, err);
         if (twitterList == null) {
+            if (err.resourceNotFound()) {
+                Intent result = new Intent();
+                result.putExtra(RESULT_REMOVED_LIST_ID, listId);
+                setResult(RETURN_LIST_REMOVED, result);
+            }
             finish();
         }
     }
