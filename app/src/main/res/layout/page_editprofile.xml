@@ -75,7 +75,8 @@
                         android:layout_width="@dimen/editprofile_image"
                         android:layout_height="@dimen/editprofile_image"
                         android:adjustViewBounds="true"
-                        android:contentDescription="@string/image_preview" />
+                        android:contentDescription="@string/image_preview"
+                        android:scaleType="centerCrop" />
 
                     <ImageView
                         android:layout_width="@dimen/editprofile_add_btn_size"
