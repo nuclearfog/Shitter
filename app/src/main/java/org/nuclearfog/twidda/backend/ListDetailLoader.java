@@ -14,10 +14,25 @@ import java.lang.ref.WeakReference;
  */
 public class ListDetailLoader extends AsyncTask<Long, Void, TwitterList> {
 
+    /**
+     * Actions to perform
+     */
     public enum Action {
+        /**
+         * load userlist information
+         */
         LOAD,
+        /**
+         * follow user list
+         */
         FOLLOW,
+        /**
+         * unfollow user list
+         */
         UNFOLLOW,
+        /**
+         * delete user list
+         */
         DELETE,
     }
 
@@ -26,7 +41,10 @@ public class ListDetailLoader extends AsyncTask<Long, Void, TwitterList> {
     private EngineException err;
     private Action action;
 
-
+    /**
+     * @param callback Callback to update list information
+     * @param action   what action should be performed
+     */
     public ListDetailLoader(ListDetail callback, Action action) {
         super();
         mTwitter = TwitterEngine.getInstance(callback.getApplicationContext());

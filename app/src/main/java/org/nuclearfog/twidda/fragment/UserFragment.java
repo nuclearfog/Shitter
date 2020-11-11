@@ -266,7 +266,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
                 break;
 
             case USER_FRAG_LISTS:
-                action = Action.LIST;
+                action = Action.LISTMEMBER;
                 break;
         }
         adapter.enableDeleteButton(delUser);

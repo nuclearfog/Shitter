@@ -23,6 +23,8 @@ import com.google.android.material.tabs.TabLayout.Tab;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.ListDetailLoader;
+import org.nuclearfog.twidda.backend.UserListManager;
+import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
@@ -30,6 +32,8 @@ import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_DESCR;
@@ -40,6 +44,7 @@ import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.DELETE;
 import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.LOAD;
 import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.UNFOLLOW;
+import static org.nuclearfog.twidda.backend.UserListManager.Action.ADD_USER;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_DELETE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_UNFOLLOW;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
@@ -49,7 +54,7 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_REMOVE
  * Activity to show an user list, members and tweets
  */
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener,
-        OnQueryTextListener, OnDialogClick {
+        OnQueryTextListener, ListManagerCallback, OnDialogClick {
 
     /**
      * Key for the list ID, required
@@ -71,8 +76,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      */
     public static final int RET_LIST_CHANGED = 2;
 
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
+
     private FragmentAdapter adapter;
     private ListDetailLoader listLoaderTask;
+    private UserListManager userListManager;
 
     private TabLayout tablayout;
     private ViewPager pager;
@@ -257,10 +265,31 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        if (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING) {
-            Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
+        Bundle param = getIntent().getExtras();
+        if (param != null) {
+            if (USERNAME_PATTERN.matcher(query).matches()) {
+                if (userListManager == null || userListManager.getStatus() != RUNNING) {
+                    Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
+                    long listId = param.getLong(KEY_LISTDETAIL_ID);
+                    userListManager = new UserListManager(listId, ADD_USER, this, this);
+                    userListManager.execute(query);
+                    return true;
+                }
+            } else {
+                Toast.makeText(this, R.string.error_username_format, Toast.LENGTH_SHORT).show();
+            }
         }
-        return true;
+        return false;
+    }
+
+
+    @Override
+    public void onSuccess(String[] names) {
+        String info = names[0];
+        if (!info.startsWith("@"))
+            info = '@' + info;
+        info += getString(R.string.info_user_added_to_list);
+        Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
     }
 
 

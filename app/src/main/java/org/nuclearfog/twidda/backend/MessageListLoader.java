@@ -21,9 +21,21 @@ import java.util.List;
  */
 public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
+    /**
+     * action to perform
+     */
     public enum Action {
+        /**
+         * load messages from database
+         */
         DB,
+        /**
+         * load messages online
+         */
         LOAD,
+        /**
+         * delete message
+         */
         DEL
     }
 
@@ -36,7 +48,10 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
 
     private long removeMsgId = -1;
 
-
+    /**
+     * @param callback Callback to update data
+     * @param action   what action should be performed
+     */
     public MessageListLoader(MessageFragment callback, Action action) {
         super();
         this.callback = new WeakReference<>(callback);
@@ -95,7 +110,6 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
             } else {
                 callback.get().onError(twException);
             }
-
         }
     }
 }

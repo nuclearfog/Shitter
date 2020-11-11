@@ -20,14 +20,38 @@ public class UserListLoader extends AsyncTask<Long, Void, TwitterUserList> {
 
     public static final long NO_CURSOR = -1;
 
+    /**
+     * actions to perform
+     */
     public enum Action {
+        /**
+         * load follower list
+         */
         FOLLOWS,
+        /**
+         * load following list
+         */
         FRIENDS,
+        /**
+         * load users retweeting a tweet
+         */
         RETWEET,
+        /**
+         * load users favoriting a tweet
+         */
         FAVORIT,
+        /**
+         * search for users
+         */
         SEARCH,
+        /**
+         * load users subscribing an userlist
+         */
         SUBSCRIBER,
-        LIST,
+        /**
+         * load members of an userlist
+         */
+        LISTMEMBER,
         NONE
     }
 
@@ -75,7 +99,7 @@ public class UserListLoader extends AsyncTask<Long, Void, TwitterUserList> {
                 case SUBSCRIBER:
                     return mTwitter.getListFollower(id, cursor);
 
-                case LIST:
+                case LISTMEMBER:
                     return mTwitter.getListMember(id, cursor);
 
             }

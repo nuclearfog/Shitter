@@ -91,20 +91,6 @@ public class ListAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * update a list item
-     *
-     * @param item new userlist item
-     */
-    @MainThread
-    public void updateItem(TwitterList item) {
-        int index = data.indexOf(item);
-        if (index != -1) {
-            data.set(index, item);
-            notifyItemChanged(index);
-        }
-    }
-
-    /**
      * remove userlist item from list
      *
      * @param itemId userlist id to remove

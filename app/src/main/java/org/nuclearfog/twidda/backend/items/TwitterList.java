@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.items;
 
 import androidx.annotation.NonNull;
 
+import twitter4j.UserList;
+
 /**
  * Class for Twitter list information
  */
@@ -19,7 +21,7 @@ public class TwitterList {
     private final int memberCount;
     private final int subscriberCnt;
 
-    public TwitterList(twitter4j.UserList list, long homeId, boolean isFollowing) {
+    public TwitterList(UserList list, long homeId, boolean isFollowing) {
         String description = list.getDescription();
         String title = list.getName();
         id = list.getId();

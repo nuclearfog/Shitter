@@ -24,12 +24,33 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
      * actions to be taken
      */
     public enum Action {
+        /**
+         * Load profile information
+         */
         LDR_PROFILE,
+        /**
+         * follow user
+         */
         ACTION_FOLLOW,
+        /**
+         * un-follow user
+         */
         ACTION_UNFOLLOW,
+        /**
+         * block user
+         */
         ACTION_BLOCK,
+        /**
+         * un-block user
+         */
         ACTION_UNBLOCK,
+        /**
+         * mute user
+         */
         ACTION_MUTE,
+        /**
+         * un-mute user
+         */
         ACTION_UNMUTE
     }
 
@@ -41,12 +62,19 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
     private long userId;
     private String screenName;
 
-
+    /**
+     * @param callback Callback to return the result
+     * @param user     twitter user information
+     */
     public ProfileLoader(UserProfile callback, TwitterUser user) {
         this(callback, user.getId(), user.getScreenname());
     }
 
-
+    /**
+     * @param callback   Callback to return the result
+     * @param userId     ID of the twitter user
+     * @param screenName username alternative to User ID
+     */
     public ProfileLoader(UserProfile callback, long userId, String screenName) {
         super();
         this.callback = new WeakReference<>(callback);
@@ -128,9 +156,8 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
 
     @Override
     protected void onProgressUpdate(TwitterUser[] users) {
-        final TwitterUser user = users[0];
-        if (callback.get() != null && user != null) {
-            callback.get().setUser(user);
+        if (callback.get() != null) {
+            callback.get().setUser(users[0]);
         }
     }
 

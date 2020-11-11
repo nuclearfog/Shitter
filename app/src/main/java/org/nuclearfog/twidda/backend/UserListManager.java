@@ -16,8 +16,17 @@ import java.lang.ref.WeakReference;
  */
 public class UserListManager extends AsyncTask<String, Void, String[]> {
 
+    /**
+     * actions to be taken
+     */
     public enum Action {
+        /**
+         * add user to list
+         */
         ADD_USER,
+        /**
+         * remove user from list
+         */
         DEL_USER
     }
 
@@ -27,13 +36,18 @@ public class UserListManager extends AsyncTask<String, Void, String[]> {
     private final WeakReference<ListManagerCallback> callback;
 
     private final long listId;
-    private final Action mode;
+    private final Action action;
 
-
-    public UserListManager(long listId, Action mode, Context c, ListManagerCallback callback) {
+    /**
+     * @param listId   ID of the user list
+     * @param action   what action should be performed
+     * @param c        activity context
+     * @param callback callback to update information
+     */
+    public UserListManager(long listId, Action action, Context c, ListManagerCallback callback) {
         super();
         this.listId = listId;
-        this.mode = mode;
+        this.action = action;
         mTwitter = TwitterEngine.getInstance(c);
         this.callback = new WeakReference<>(callback);
     }
@@ -42,7 +56,7 @@ public class UserListManager extends AsyncTask<String, Void, String[]> {
     @Override
     protected String[] doInBackground(String... strings) {
         try {
-            switch (mode) {
+            switch (action) {
                 case ADD_USER:
                     mTwitter.addUserToList(listId, strings);
                     break;

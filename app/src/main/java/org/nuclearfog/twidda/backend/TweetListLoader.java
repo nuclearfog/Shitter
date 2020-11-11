@@ -23,15 +23,42 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.CLEAR_LIST;
  */
 public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
-    public enum Action {
+    /**
+     * Type of tweet list
+     */
+    public enum ListType {
+        /**
+         * tweets from home timeline
+         */
         TL_HOME,
+        /**
+         * tweets from the mention timeline
+         */
         TL_MENT,
+        /**
+         * tweets of an user
+         */
         USR_TWEETS,
+        /**
+         * favorite tweets of an user
+         */
         USR_FAVORS,
-        TWEET_ANS,
+        /**
+         * tweet replies to a tweet
+         */
+        REPLIES,
+        /**
+         * tweet replies from database
+         */
         DB_ANS,
+        /**
+         * tweets from twitter search
+         */
         TWEET_SEARCH,
-        LIST,
+        /**
+         * tweets from an userlist
+         */
+        USERLIST,
         NONE
     }
 
@@ -41,18 +68,24 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
     private final TwitterEngine mTwitter;
     private final AppDatabase db;
 
-    private final Action action;
+    private final ListType listType;
     private final String search;
     private final long id;
     private int pos;
 
-
-    public TweetListLoader(TweetFragment callback, Action action, long id, String search, int pos) {
+    /**
+     * @param callback callback to update tweet data
+     * @param listType type of tweet list to load
+     * @param id       ID, depending on what list type should be loaded
+     * @param search   search string if any
+     * @param pos      index of the list where tweets should be inserted
+     */
+    public TweetListLoader(TweetFragment callback, ListType listType, long id, String search, int pos) {
         super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());
-        this.action = action;
+        this.listType = listType;
         this.search = search;
         this.id = id;
         this.pos = pos;
@@ -65,7 +98,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
         long sinceId = param[0];
         long maxId = param[1];
         try {
-            switch (action) {
+            switch (listType) {
                 case TL_HOME:
                     if (sinceId == 0 && maxId == 0) {
                         tweets = db.getHomeTimeline();
@@ -139,7 +172,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     tweets = db.getAnswers(id);
                     break;
 
-                case TWEET_ANS:
+                case REPLIES:
                     if (sinceId == 0 && maxId == 0) {
                         tweets = db.getAnswers(id);
                         if (tweets.isEmpty()) {
@@ -162,7 +195,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
                     tweets = mTwitter.searchTweets(search, sinceId, maxId);
                     break;
 
-                case LIST:
+                case USERLIST:
                     tweets = mTwitter.getListTweets(id, sinceId, maxId);
                     break;
             }

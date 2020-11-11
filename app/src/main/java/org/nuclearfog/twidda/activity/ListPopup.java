@@ -121,7 +121,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
             String descrStr = subTitleInput.getText().toString();
             boolean isPublic = visibility.isChecked();
             if (titleStr.trim().isEmpty()) {
-                Toast.makeText(this, R.string.error_empty_list_information, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
             } else if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
                 ListHolder mHolder;
                 if (listId > 0) {

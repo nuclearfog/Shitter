@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.TweetListLoader;
-import org.nuclearfog.twidda.backend.TweetListLoader.Action;
+import org.nuclearfog.twidda.backend.TweetListLoader.ListType;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -189,38 +189,38 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
             int mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
             long id = param.getLong(KEY_FRAG_TWEET_ID, 0);
             String search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
-            Action action = Action.NONE;
+            ListType action = ListType.NONE;
 
             switch (mode) {
                 case TWEET_FRAG_HOME:
-                    action = Action.TL_HOME;
+                    action = ListType.TL_HOME;
                     break;
 
                 case TWEET_FRAG_MENT:
-                    action = Action.TL_MENT;
+                    action = ListType.TL_MENT;
                     break;
 
                 case TWEET_FRAG_TWEETS:
-                    action = Action.USR_TWEETS;
+                    action = ListType.USR_TWEETS;
                     break;
 
                 case TWEET_FRAG_FAVORS:
-                    action = Action.USR_FAVORS;
+                    action = ListType.USR_FAVORS;
                     break;
 
                 case TWEET_FRAG_ANSWER:
                     if (tweetTask != null || settings.getAnswerLoad())
-                        action = Action.TWEET_ANS;
+                        action = ListType.REPLIES;
                     else
-                        action = Action.DB_ANS;
+                        action = ListType.DB_ANS;
                     break;
 
                 case TWEET_FRAG_SEARCH:
-                    action = Action.TWEET_SEARCH;
+                    action = ListType.TWEET_SEARCH;
                     break;
 
                 case TWEET_FRAG_LIST:
-                    action = Action.LIST;
+                    action = ListType.USERLIST;
                     break;
             }
             tweetTask = new TweetListLoader(this, action, id, search, index);

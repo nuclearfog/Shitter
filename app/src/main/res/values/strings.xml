@@ -102,8 +102,9 @@
     <string name="descr_add_profile_image">Change profile image</string>
 
     <!-- toast messages to inform user -->
-    <string name="info_user_removed">user removed from list!</string>
-    <string name="info_adding_user_to_list">Adding user to list</string>
+    <string name="info_user_removed">User removed from list!</string>
+    <string name="info_adding_user_to_list">adding user to list</string>
+    <string name="info_user_added_to_list">" added to List!"</string>
     <string name="info_list_updated">Userlist updated</string>
     <string name="info_list_created">Userlist created</string>
     <string name="info_fetching_link">opening twitter login site</string>
@@ -115,14 +116,14 @@
     <string name="info_get_link">Get Twitter PIN from browser first. Please press the first button!</string>
     <string name="info_gps_attached">GPS position added</string>
     <string name="info_get_location">starting location…</string>
-    <string name="info_tweet_retweeted">tweet retweeted!</string>
-    <string name="info_tweet_unretweeted">retweet removed!</string>
-    <string name="info_tweet_favored">tweet favored!</string>
-    <string name="info_tweet_unfavored">tweet removed from favorites!</string>
-    <string name="info_user_muted">muted</string>
-    <string name="info_user_unmuted">un-muted</string>
+    <string name="info_tweet_retweeted">retweeted!</string>
+    <string name="info_tweet_unretweeted">Retweet removed!</string>
+    <string name="info_tweet_favored">Tweet favored!</string>
+    <string name="info_tweet_unfavored">Tweet removed from favorites!</string>
+    <string name="info_user_muted">User muted</string>
+    <string name="info_user_unmuted">User unmuted</string>
     <string name="info_dm_send">Directmessage sent!</string>
-    <string name="info_image_saved">image saved!</string>
+    <string name="info_image_saved">Image saved!</string>
     <string name="info_clipboard">Link copied to clipboard!</string>
     <string name="info_loading">loading..</string>
     <string name="info_profile_updated">Profile updated!</string>
@@ -167,7 +168,8 @@
     <string name="error_status_length">Tweet needs to be shorter!</string>
     <string name="error_duplicate_status">Duplicate Status!</string>
     <string name="error_dm_length">Directmessage exceeds the limit!</string>
-    <string name="error_empty_list_information">Title must be set!</string>
+    <string name="error_list_title_empty">Empty list title!</string>
+    <string name="error_username_format">Wrong username format!</string>
 
     <!-- menu icon strings -->
     <string name="menu_tweet">Write Tweet</string>
@@ -185,7 +187,7 @@
     <string name="menu_mute_user">Mute</string>
     <string name="menu_edit_profile">Edit Profile</string>
     <string name="menu_edit_save">Save</string>
-    <string name="menu_add_user">add user to list</string>
+    <string name="menu_add_user">Add user to list</string>
     <string name="menu_edit_list">Edit List</string>
     <string name="menu_link_to_clipboard">Copy Tweet Link</string>
     <string name="menu_list_follow">Follow</string>

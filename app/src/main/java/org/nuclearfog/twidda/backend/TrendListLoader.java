@@ -28,7 +28,9 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
     private final AppDatabase db;
     private final boolean isEmpty;
 
-
+    /**
+     * @param callback callback to update data
+     */
     public TrendListLoader(TrendFragment callback) {
         super();
         this.callback = new WeakReference<>(callback);

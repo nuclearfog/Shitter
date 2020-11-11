@@ -147,7 +147,7 @@
     <string name="userlist_enter_title">Titel eingeben</string>
     <string name="userlist_enter_descr">Beschreibung der Liste eingeben</string>
     <string name="userlist_create">Liste erstellen</string>
-    <string name="error_empty_list_information">Titel ist leer!</string>
+    <string name="error_list_title_empty">Titel ist leer!</string>
     <string name="info_list_updated">Liste wurde aktualisiert</string>
     <string name="info_list_created">Liste wurde erstellt</string>
     <string name="menu_add_user">Nutzer hinzufügen</string>
@@ -176,4 +176,6 @@
     <string name="descr_add_profile_image">Profilbild ändern</string>
     <string name="settings_enable_hq_img">Hohe Bildqualität</string>
     <string name="menu_app_info">Über</string>
+    <string name="info_user_added_to_list">" wurde zur Liste hinzugefügt!"</string>
+    <string name="error_username_format">Nutzername falsch!</string>
 </resources>

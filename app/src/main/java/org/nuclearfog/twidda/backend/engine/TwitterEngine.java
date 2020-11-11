@@ -695,7 +695,7 @@ public class TwitterEngine {
 
 
     /**
-     * Retweet Action
+     * Retweet Type
      *
      * @param tweetId Tweet ID
      * @param retweet true to retweet this tweet
@@ -720,7 +720,7 @@ public class TwitterEngine {
 
 
     /**
-     * Favorite Action
+     * Favorite Type
      *
      * @param tweetId  Tweet ID
      * @param favorite true to favorite this tweet
@@ -876,32 +876,13 @@ public class TwitterEngine {
      * @return list information
      * @throws EngineException if access is unavailable
      */
-    public UserListList getUserList(long userId, long cursor) throws EngineException {
+    public UserListList getUserList(long userId, String username, long cursor) throws EngineException {
         try {
-            List<UserList> lists = twitter.getUserLists(userId);
-            long prevCursor = cursor > 0 ? cursor : 0;
-            long nextCursor = 0;
-            UserListList result = new UserListList(prevCursor, nextCursor); // todo add paging system
-            for (UserList list : lists)
-                result.add(new TwitterList(list, twitterID));
-            return result;
-        } catch (TwitterException err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * get user list
-     *
-     * @param username id of the list owner
-     * @param cursor   list cursor to set the start point
-     * @return list information
-     * @throws EngineException if access is unavailable
-     */
-    public UserListList getUserList(String username, long cursor) throws EngineException {
-        try {
-            List<UserList> lists = twitter.getUserLists(username);
+            List<UserList> lists;
+            if (userId > 0)
+                lists = twitter.getUserLists(userId);
+            else
+                lists = twitter.getUserLists(username);
             long prevCursor = cursor > 0 ? cursor : 0;
             long nextCursor = 0;
             UserListList result = new UserListList(prevCursor, nextCursor); // todo add paging system

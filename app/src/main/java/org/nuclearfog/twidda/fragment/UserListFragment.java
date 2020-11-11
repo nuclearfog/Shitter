@@ -21,9 +21,9 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_MEMBERSHIPS;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Action.LOAD_USERLISTS;
 import static org.nuclearfog.twidda.backend.TwitterListLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Type.LOAD_MEMBERSHIPS;
+import static org.nuclearfog.twidda.backend.TwitterListLoader.Type.LOAD_USERLISTS;
 
 /**
  * Fragment class for user lists
@@ -168,31 +168,12 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     }
 
     /**
-     * update item in list
-     *
-     * @param item Twitter list item
-     */
-    public void updateItem(TwitterList item) {
-        adapter.updateItem(item);
-    }
-
-    /**
-     * remove item with specific ID
-     *
-     * @param list Twitter list item
-     */
-    public void removeItem(TwitterList list) {
-        adapter.removeItem(list.getId());
-    }
-
-    /**
      * called from {@link TwitterListLoader} if an error occurs
      *
      * @param error Twitter exception
      */
     public void onError(@Nullable EngineException error) {
-        if (error != null)
-            ErrorHandler.handleFailure(requireContext(), error);
+        ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
     }

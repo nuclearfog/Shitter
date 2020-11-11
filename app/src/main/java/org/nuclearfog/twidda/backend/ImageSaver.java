@@ -17,9 +17,21 @@ import static android.os.Environment.DIRECTORY_PICTURES;
  */
 public class ImageSaver extends AsyncTask<Void, Void, ImageSaver.ImageStat> {
 
+    /**
+     * statuscodes
+     */
     public enum ImageStat {
+        /**
+         * image saving succeed
+         */
         IMAGE_SAVE_SUCCESS,
+        /**
+         * failed to save image
+         */
         IMAGE_SAVE_FAILED,
+        /**
+         * image exists already
+         */
         IMAGE_DUPLICATE
     }
 
@@ -28,7 +40,11 @@ public class ImageSaver extends AsyncTask<Void, Void, ImageSaver.ImageStat> {
     private final WeakReference<MediaViewer> callback;
     private File imageFile;
 
-
+    /**
+     * @param activity callback to update activity
+     * @param image    image bitmap
+     * @param link     online link of the image to generate filename
+     */
     public ImageSaver(MediaViewer activity, Bitmap image, String link) {
         super();
         this.callback = new WeakReference<>(activity);

@@ -20,12 +20,33 @@ import java.lang.ref.WeakReference;
  */
 public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoader.Action> {
 
+    /**
+     * actions for the tweet
+     */
     public enum Action {
+        /**
+         * Load tweet
+         */
         LOAD,
+        /**
+         * retweet tweet
+         */
         RETWEET,
+        /**
+         * remove retweet
+         */
         UNRETWEET,
+        /**
+         * favorite tweet
+         */
         FAVORITE,
+        /**
+         * remove tweet from favorites
+         */
         UNFAVORITE,
+        /**
+         * delete own tweet
+         */
         DELETE
     }
 
@@ -36,13 +57,19 @@ public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoade
     private AppDatabase db;
     private long tweetId, myRetweetId;
 
-
+    /**
+     * @param callback Callback to return tweet information
+     * @param tweet    Tweet information
+     */
     public TweetLoader(TweetActivity callback, Tweet tweet) {
         this(callback, tweet.getId());
         this.myRetweetId = tweet.getMyRetweetId();
     }
 
-
+    /**
+     * @param callback Callback to return tweet information
+     * @param tweetId  ID of the tweet
+     */
     public TweetLoader(TweetActivity callback, long tweetId) {
         super();
         db = new AppDatabase(callback);
@@ -65,8 +92,10 @@ public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoade
                     }
                     tweet = mTwitter.getStatus(tweetId);
                     publishProgress(tweet);
-                    if (updateStatus)
+                    if (updateStatus) {
+                        // update tweet if there is a database entry
                         db.updateStatus(tweet);
+                    }
                     break;
 
                 case DELETE:
@@ -114,9 +143,8 @@ public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoade
 
     @Override
     protected void onProgressUpdate(Tweet[] tweets) {
-        Tweet tweet = tweets[0];
-        if (callback.get() != null && tweet != null) {
-            callback.get().setTweet(tweet);
+        if (callback.get() != null) {
+            callback.get().setTweet(tweets[0]);
         }
     }
 
