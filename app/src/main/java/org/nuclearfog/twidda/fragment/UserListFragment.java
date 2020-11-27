@@ -73,7 +73,6 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public static final int RETURN_LIST_REMOVED = 4;
 
     private TwitterListLoader listTask;
-    private GlobalSettings settings;
     private ListAdapter adapter;
 
 
@@ -173,7 +172,8 @@ public class UserListFragment extends ListFragment implements ListClickListener 
      * @param error Twitter exception
      */
     public void onError(@Nullable EngineException error) {
-        ErrorHandler.handleFailure(requireContext(), error);
+        if (error != null)
+            ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
     }

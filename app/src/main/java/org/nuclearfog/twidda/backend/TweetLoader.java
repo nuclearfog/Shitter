@@ -153,9 +153,9 @@ public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoade
     protected void onPostExecute(Action action) {
         if (callback.get() != null) {
             if (twException != null) {
-                callback.get().onError(twException);
+                callback.get().onError(twException, tweetId);
             } else {
-                callback.get().onAction(action);
+                callback.get().onAction(action, tweetId);
             }
         }
     }

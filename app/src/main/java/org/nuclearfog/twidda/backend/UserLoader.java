@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserFragment
  */
-public class UserListLoader extends AsyncTask<Long, Void, TwitterUserList> {
+public class UserLoader extends AsyncTask<Long, Void, TwitterUserList> {
 
     public static final long NO_CURSOR = -1;
 
@@ -65,7 +65,7 @@ public class UserListLoader extends AsyncTask<Long, Void, TwitterUserList> {
     private final long id;
 
 
-    public UserListLoader(UserFragment callback, Action action, long id, String search) {
+    public UserLoader(UserFragment callback, Action action, long id, String search) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback.getContext());

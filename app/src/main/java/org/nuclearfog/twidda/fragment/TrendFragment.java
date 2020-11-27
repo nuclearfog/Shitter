@@ -21,9 +21,9 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
  */
 public class TrendFragment extends ListFragment implements TrendClickListener {
 
+
     private TrendListLoader trendTask;
     private TrendAdapter adapter;
-    private GlobalSettings settings;
 
 
     @Override

@@ -30,7 +30,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
     private RecyclerView list;
     private SwipeRefreshLayout reload;
-    private GlobalSettings settings;
+    protected GlobalSettings settings;
 
     private boolean refreshLock = false;
 
@@ -66,19 +66,17 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      */
     protected void setRefresh(boolean enable) {
         refreshLock = !enable;
-        if (reload != null) {
-            if (enable) {
-                reload.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!reload.isRefreshing() && !refreshLock) {
-                            reload.setRefreshing(true);
-                        }
+        if (enable) {
+            reload.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!reload.isRefreshing() && !refreshLock) {
+                        reload.setRefreshing(true);
                     }
-                }, REFRESH_DELAY);
-            } else {
-                reload.setRefreshing(false);
-            }
+                }
+            }, REFRESH_DELAY);
+        } else {
+            reload.setRefreshing(false);
         }
     }
 

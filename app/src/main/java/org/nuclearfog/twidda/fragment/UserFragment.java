@@ -11,10 +11,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
-import org.nuclearfog.twidda.backend.UserListLoader;
-import org.nuclearfog.twidda.backend.UserListLoader.Action;
 import org.nuclearfog.twidda.backend.UserListManager;
 import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
+import org.nuclearfog.twidda.backend.UserLoader;
+import org.nuclearfog.twidda.backend.UserLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -25,8 +25,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.UserListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.UserListManager.Action.DEL_USER;
+import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_USER_LIST;
 
 /**
@@ -91,9 +91,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
      */
     public static final int USER_FRAG_LISTS = 7;
 
-    private UserListLoader userTask;
+    private UserLoader userTask;
     private UserListManager listTask;
-    private GlobalSettings settings;
 
     private Dialog deleteDialog;
     private UserAdapter adapter;
@@ -236,7 +235,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     /**
      * load content into the list
      *
-     * @param cursor cursor of the list or {@link UserListLoader#NO_CURSOR} if there is none
+     * @param cursor cursor of the list or {@link UserLoader#NO_CURSOR} if there is none
      */
     private void load(long cursor) {
         Action action = Action.NONE;
@@ -270,7 +269,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
                 break;
         }
         adapter.enableDeleteButton(delUser);
-        userTask = new UserListLoader(this, action, id, search);
+        userTask = new UserLoader(this, action, id, search);
         userTask.execute(cursor);
         if (cursor == NO_CURSOR) {
             setRefresh(true);

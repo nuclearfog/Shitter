@@ -62,7 +62,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
     private TweetListLoader tweetTask;
     private TweetAdapter adapter;
-    private GlobalSettings settings;
 
 
     @Override

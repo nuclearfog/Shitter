@@ -38,7 +38,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_M
  */
 public class MessageFragment extends ListFragment implements OnItemSelected, OnDialogClick {
 
-    private GlobalSettings settings;
+
     private MessageListLoader messageTask;
     private MessageAdapter adapter;
     private Dialog deleteDialog;

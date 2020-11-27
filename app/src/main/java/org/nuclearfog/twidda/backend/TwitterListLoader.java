@@ -82,7 +82,7 @@ public class TwitterListLoader extends AsyncTask<Long, Void, UserListList> {
         if (callback.get() != null) {
             if (result != null) {
                 callback.get().setData(result);
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }
