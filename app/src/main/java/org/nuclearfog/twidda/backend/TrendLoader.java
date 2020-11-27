@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @see TrendFragment
  */
-public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
+public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
 
     @Nullable
     private EngineException twException;
@@ -31,7 +31,7 @@ public class TrendListLoader extends AsyncTask<Integer, Void, List<TwitterTrend>
     /**
      * @param callback callback to update data
      */
-    public TrendListLoader(TrendFragment callback) {
+    public TrendLoader(TrendFragment callback) {
         super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());

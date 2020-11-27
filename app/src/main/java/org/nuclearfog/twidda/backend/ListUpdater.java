@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
  * This class creates and updates user lists
  * Backend for {@link ListPopup}
  */
-public class UserListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
+public class ListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
 
 
     @Nullable
@@ -24,7 +24,7 @@ public class UserListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
     private final WeakReference<ListPopup> callback;
 
 
-    public UserListUpdater(ListPopup activity) {
+    public ListUpdater(ListPopup activity) {
         super();
         callback = new WeakReference<>(activity);
         mTwitter = TwitterEngine.getInstance(activity);

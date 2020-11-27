@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,19 +36,23 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
     @Override
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
-        Context context = requireContext();
-        settings = GlobalSettings.getInstance(context);
-        onCreate();
+        settings = GlobalSettings.getInstance(requireContext());
 
-        list = new RecyclerView(context);
-        list.setLayoutManager(new LinearLayoutManager(context));
+        list = new RecyclerView(requireContext());
+        list.setLayoutManager(new LinearLayoutManager(requireContext()));
         list.setAdapter(initAdapter());
 
-        reload = new SwipeRefreshLayout(context);
+        reload = new SwipeRefreshLayout(requireContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
         reload.addView(list);
         return reload;
+    }
+
+
+    @Override
+    public final void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        onCreated();
     }
 
 
@@ -112,7 +115,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     /**
      * called to initialize sub classes
      */
-    protected abstract void onCreate();
+    protected abstract void onCreated();
 
     /**
      * called when swipe refresh is active

@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @see MessageFragment
  */
-public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
+public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
     /**
      * action to perform
@@ -52,7 +52,7 @@ public class MessageListLoader extends AsyncTask<Long, Void, List<Message>> {
      * @param callback Callback to update data
      * @param action   what action should be performed
      */
-    public MessageListLoader(MessageFragment callback, Action action) {
+    public MessageLoader(MessageFragment callback, Action action) {
         super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());

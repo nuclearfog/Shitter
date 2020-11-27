@@ -21,7 +21,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.CLEAR_LIST;
  *
  * @see TweetFragment
  */
-public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
+public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
 
     /**
      * Type of tweet list
@@ -80,7 +80,7 @@ public class TweetListLoader extends AsyncTask<Long, Void, List<Tweet>> {
      * @param search   search string if any
      * @param pos      index of the list where tweets should be inserted
      */
-    public TweetListLoader(TweetFragment callback, ListType listType, long id, String search, int pos) {
+    public TweetLoader(TweetFragment callback, ListType listType, long id, String search, int pos) {
         super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());

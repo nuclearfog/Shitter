@@ -11,10 +11,10 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import java.lang.ref.WeakReference;
 
 /**
- * Backend async task to manage users on user lists
+ * Backend async task to manage users on lists
  * Twitter users can be added and removed
  */
-public class UserListManager extends AsyncTask<String, Void, String[]> {
+public class ListManager extends AsyncTask<String, Void, String[]> {
 
     /**
      * actions to be taken
@@ -44,7 +44,7 @@ public class UserListManager extends AsyncTask<String, Void, String[]> {
      * @param c        activity context
      * @param callback callback to update information
      */
-    public UserListManager(long listId, Action action, Context c, ListManagerCallback callback) {
+    public ListManager(long listId, Action action, Context c, ListManagerCallback callback) {
         super();
         this.listId = listId;
         this.action = action;

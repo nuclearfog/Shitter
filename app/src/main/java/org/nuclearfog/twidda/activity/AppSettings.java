@@ -32,7 +32,7 @@ import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
-import org.nuclearfog.twidda.backend.LocationListLoader;
+import org.nuclearfog.twidda.backend.LocationLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
@@ -70,7 +70,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     }
 
     private GlobalSettings settings;
-    private LocationListLoader locationAsync;
+    private LocationLoader locationAsync;
     private Dialog load_dialog_selector, proxyDialog, databaseDialog, logoutDialog, color_dialog_selector;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
@@ -182,7 +182,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     protected void onStart() {
         super.onStart();
         if (settings.getLogin() && locationAsync == null) {
-            locationAsync = new LocationListLoader(this);
+            locationAsync = new LocationLoader(this);
             locationAsync.execute();
         }
     }

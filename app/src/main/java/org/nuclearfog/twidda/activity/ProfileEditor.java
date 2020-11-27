@@ -30,7 +30,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.ProfileUpdater;
+import org.nuclearfog.twidda.backend.UserUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserHolder;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
@@ -85,7 +85,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      */
     private static final String IMG_MIME = "image/*";
 
-    private ProfileUpdater editorAsync;
+    private UserUpdater editorAsync;
 
     private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
@@ -146,7 +146,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         if (editorAsync == null) {
-            editorAsync = new ProfileUpdater(this);
+            editorAsync = new UserUpdater(this);
             editorAsync.execute();
         }
     }
@@ -199,7 +199,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                     link.setError(errMsg);
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
-                    editorAsync = new ProfileUpdater(this, userHolder);
+                    editorAsync = new UserUpdater(this, userHolder);
                     editorAsync.execute();
                 }
             }

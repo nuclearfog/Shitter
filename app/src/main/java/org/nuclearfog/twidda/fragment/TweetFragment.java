@@ -8,8 +8,8 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
-import org.nuclearfog.twidda.backend.TweetListLoader;
-import org.nuclearfog.twidda.backend.TweetListLoader.ListType;
+import org.nuclearfog.twidda.backend.TweetLoader;
+import org.nuclearfog.twidda.backend.TweetLoader.ListType;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -60,12 +60,12 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
     public static final int RETURN_TWEET_CHANGED = 1;
     private static final int REQUEST_TWEET_CHANGED = 2;
 
-    private TweetListLoader tweetTask;
+    private TweetLoader tweetTask;
     private TweetAdapter adapter;
 
 
     @Override
-    protected void onCreate() {
+    protected void onCreated() {
         settings = GlobalSettings.getInstance(requireContext());
     }
 
@@ -163,7 +163,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 
     /**
-     * called from {@link TweetListLoader} if an error occurs
+     * called from {@link TweetLoader} if an error occurs
      *
      * @param error Twitter exception
      */
@@ -222,7 +222,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
                     action = ListType.USERLIST;
                     break;
             }
-            tweetTask = new TweetListLoader(this, action, id, search, index);
+            tweetTask = new TweetLoader(this, action, id, search, index);
             tweetTask.execute(sinceId, maxId);
         }
     }

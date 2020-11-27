@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.MessageUploader;
+import org.nuclearfog.twidda.backend.MessageUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
@@ -78,7 +78,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
      */
     private static final int REQ_PERM_READ = 4;
 
-    private MessageUploader messageAsync;
+    private MessageUpdater messageAsync;
 
     private EditText receiver, message;
     private ImageButton media;
@@ -176,7 +176,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
             String message = this.message.getText().toString();
             if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
                 MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-                messageAsync = new MessageUploader(this, messageHolder);
+                messageAsync = new MessageUpdater(this, messageHolder);
                 messageAsync.execute();
             } else {
                 Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();

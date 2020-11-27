@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @see AppSettings
  */
-public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
+public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
 
     @Nullable
     private EngineException twException;
@@ -25,7 +25,7 @@ public class LocationListLoader extends AsyncTask<Void, Void, List<TrendLocation
     private TwitterEngine mTwitter;
 
 
-    public LocationListLoader(AppSettings callback) {
+    public LocationLoader(AppSettings callback) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);

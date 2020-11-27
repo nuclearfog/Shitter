@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.activity.ListDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
-import org.nuclearfog.twidda.backend.UserListLoader;
+import org.nuclearfog.twidda.backend.ListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
@@ -21,9 +21,9 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.UserListLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.UserListLoader.Type.LOAD_MEMBERSHIPS;
-import static org.nuclearfog.twidda.backend.UserListLoader.Type.LOAD_USERLISTS;
+import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
+import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
 
 /**
  * Fragment class for user lists
@@ -72,12 +72,12 @@ public class UserListFragment extends ListFragment implements ListClickListener 
      */
     public static final int RETURN_LIST_REMOVED = 4;
 
-    private UserListLoader listTask;
+    private ListLoader listTask;
     private ListAdapter adapter;
 
 
     @Override
-    protected void onCreate() {
+    protected void onCreated() {
         settings = GlobalSettings.getInstance(requireContext());
     }
 
@@ -167,7 +167,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     }
 
     /**
-     * called from {@link UserListLoader} if an error occurs
+     * called from {@link ListLoader} if an error occurs
      *
      * @param error Twitter exception
      */
@@ -188,10 +188,10 @@ public class UserListFragment extends ListFragment implements ListClickListener 
             String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
             int type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
             if (type == LIST_USER_OWNS) {
-                listTask = new UserListLoader(this, LOAD_USERLISTS, id, ownerName);
+                listTask = new ListLoader(this, LOAD_USERLISTS, id, ownerName);
                 listTask.execute(cursor);
             } else if (type == LIST_USER_SUBSCR_TO) {
-                listTask = new UserListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
+                listTask = new ListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
                 listTask.execute(cursor);
             }
         }

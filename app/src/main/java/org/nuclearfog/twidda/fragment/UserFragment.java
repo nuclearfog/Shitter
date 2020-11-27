@@ -11,8 +11,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
-import org.nuclearfog.twidda.backend.UserListManager;
-import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
+import org.nuclearfog.twidda.backend.ListManager;
+import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
@@ -25,7 +25,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.UserListManager.Action.DEL_USER;
+import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_USER_LIST;
 
@@ -92,7 +92,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public static final int USER_FRAG_LISTS = 7;
 
     private UserLoader userTask;
-    private UserListManager listTask;
+    private ListManager listTask;
 
     private Dialog deleteDialog;
     private UserAdapter adapter;
@@ -105,7 +105,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    protected void onCreate() {
+    protected void onCreated() {
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_USER_MODE, 0);
@@ -187,7 +187,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public void onConfirm(DialogBuilder.DialogType type) {
         if (type == DEL_USER_LIST) {
             if (listTask == null || listTask.getStatus() != RUNNING) {
-                listTask = new UserListManager(id, DEL_USER, requireContext(), this);
+                listTask = new ListManager(id, DEL_USER, requireContext(), this);
                 listTask.execute(deleteUserName);
             }
         }

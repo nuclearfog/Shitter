@@ -31,7 +31,7 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_NAME;
  *
  * @see MainActivity
  */
-public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader.DataHolder> {
+public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
 
     private static final Pattern TWEET_PATH = Pattern.compile("[\\w]+/status/\\d+");
     private static final Pattern USER_PATH = Pattern.compile("[\\w]+/?(\\bwith_replies\\b|\\bmedia\\b|\\blikes\\b)?");
@@ -39,7 +39,7 @@ public class LinkContentLoader extends AsyncTask<Uri, Integer, LinkContentLoader
 
     private WeakReference<MainActivity> callback;
 
-    public LinkContentLoader(MainActivity callback) {
+    public LinkLoader(MainActivity callback) {
         super();
         this.callback = new WeakReference<>(callback);
     }

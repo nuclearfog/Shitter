@@ -24,7 +24,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.LinkContentLoader;
+import org.nuclearfog.twidda.backend.LinkLoader;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.view.Window.FEATURE_NO_TITLE;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 mnTab.setIcon(R.drawable.mention);
             }
             if (getIntent().getData() != null) {
-                LinkContentLoader linkLoader = new LinkContentLoader(this);
+                LinkLoader linkLoader = new LinkLoader(this);
                 linkLoader.execute(getIntent().getData());
             }
         }
@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     }
 
     /**
-     * called from {@link LinkContentLoader} to set progress circle
+     * called from {@link LinkLoader} to set progress circle
      */
     public void setLoading(boolean enable) {
         if (enable) {
@@ -273,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     }
 
     /**
-     * called from {@link LinkContentLoader} when an error occurs
+     * called from {@link LinkLoader} when an error occurs
      */
     public void onError() {
         Toast.makeText(this, R.string.error_open_link, Toast.LENGTH_SHORT).show();

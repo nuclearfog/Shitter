@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @see ProfileEditor
  */
-public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
+public class UserUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
     @Nullable
     private EngineException twException;
@@ -28,7 +28,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
     private AppDatabase db;
 
 
-    public ProfileUpdater(ProfileEditor callback) {
+    public UserUpdater(ProfileEditor callback) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
@@ -36,7 +36,7 @@ public class ProfileUpdater extends AsyncTask<Void, Void, TwitterUser> {
     }
 
 
-    public ProfileUpdater(ProfileEditor callback, UserHolder userHolder) {
+    public UserUpdater(ProfileEditor callback, UserHolder userHolder) {
         this(callback);
         this.userHolder = userHolder;
     }

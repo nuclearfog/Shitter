@@ -22,9 +22,9 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.ListDetailLoader;
-import org.nuclearfog.twidda.backend.UserListManager;
-import org.nuclearfog.twidda.backend.UserListManager.ListManagerCallback;
+import org.nuclearfog.twidda.backend.ListAction;
+import org.nuclearfog.twidda.backend.ListManager;
+import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
@@ -40,11 +40,11 @@ import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_DESCR;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_ID;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_TITLE;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_VISIB;
-import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.DELETE;
-import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.FOLLOW;
-import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.LOAD;
-import static org.nuclearfog.twidda.backend.ListDetailLoader.Action.UNFOLLOW;
-import static org.nuclearfog.twidda.backend.UserListManager.Action.ADD_USER;
+import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
+import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
+import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
+import static org.nuclearfog.twidda.backend.ListAction.Action.UNFOLLOW;
+import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_DELETE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_UNFOLLOW;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
@@ -79,8 +79,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
     private FragmentAdapter adapter;
-    private ListDetailLoader listLoaderTask;
-    private UserListManager userListManager;
+    private ListAction listLoaderTask;
+    private ListManager userListManager;
 
     private TabLayout tablayout;
     private ViewPager pager;
@@ -205,7 +205,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                         unfollowDialog.show();
                     }
                 } else {
-                    listLoaderTask = new ListDetailLoader(this, FOLLOW);
+                    listLoaderTask = new ListAction(this, FOLLOW);
                     listLoaderTask.execute(twitterList.getId());
                 }
             }
@@ -236,12 +236,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public void onConfirm(DialogBuilder.DialogType type) {
         switch (type) {
             case LIST_DELETE:
-                listLoaderTask = new ListDetailLoader(this, DELETE);
+                listLoaderTask = new ListAction(this, DELETE);
                 listLoaderTask.execute(twitterList.getId());
                 break;
 
             case LIST_UNFOLLOW:
-                listLoaderTask = new ListDetailLoader(this, UNFOLLOW);
+                listLoaderTask = new ListAction(this, UNFOLLOW);
                 listLoaderTask.execute(twitterList.getId());
                 break;
         }
@@ -269,7 +269,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         if (USERNAME_PATTERN.matcher(query).matches()) {
             if (userListManager == null || userListManager.getStatus() != RUNNING) {
                 Toast.makeText(this, R.string.info_adding_user_to_list, Toast.LENGTH_SHORT).show();
-                userListManager = new UserListManager(listId, ADD_USER, this, this);
+                userListManager = new ListManager(listId, ADD_USER, this, this);
                 userListManager.execute(query);
                 return true;
             }
@@ -296,12 +296,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     }
 
     /**
-     * called from {@link ListDetailLoader} to update userlist information
+     * called from {@link ListAction} to update userlist information
      *
      * @param twitterList userlist information
      * @param action      what action was performed
      */
-    public void onSuccess(TwitterList twitterList, ListDetailLoader.Action action) {
+    public void onSuccess(TwitterList twitterList, ListAction.Action action) {
         this.twitterList = twitterList;
         switch (action) {
             case LOAD:
@@ -331,7 +331,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     }
 
     /**
-     * called from {@link ListDetailLoader} if an error occurs
+     * called from {@link ListAction} if an error occurs
      *
      * @param err error information
      */
@@ -354,7 +354,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         Bundle param = getIntent().getExtras();
         if (param != null) {
             long listId = param.getLong(KEY_LISTDETAIL_ID);
-            listLoaderTask = new ListDetailLoader(this, LOAD);
+            listLoaderTask = new ListAction(this, LOAD);
             listLoaderTask.execute(listId);
         }
     }

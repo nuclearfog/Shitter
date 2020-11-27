@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.UserListUpdater;
+import org.nuclearfog.twidda.backend.ListUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
@@ -55,7 +55,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
      */
     public static final String KEY_LIST_VISIB = "list_visibility";
 
-    private UserListUpdater updaterAsync;
+    private ListUpdater updaterAsync;
     private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
     private View progressCircle;
@@ -131,7 +131,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
                     // create new one
                     mHolder = new ListHolder(titleStr, descrStr, isPublic);
                 }
-                updaterAsync = new UserListUpdater(this);
+                updaterAsync = new ListUpdater(this);
                 updaterAsync.execute(mHolder);
                 progressCircle.setVisibility(VISIBLE);
             }

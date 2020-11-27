@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 /**
  * async task to load list information and take action to the list
  */
-public class ListDetailLoader extends AsyncTask<Long, Void, TwitterList> {
+public class ListAction extends AsyncTask<Long, Void, TwitterList> {
 
     /**
      * Actions to perform
@@ -45,7 +45,7 @@ public class ListDetailLoader extends AsyncTask<Long, Void, TwitterList> {
      * @param callback Callback to update list information
      * @param action   what action should be performed
      */
-    public ListDetailLoader(ListDetail callback, Action action) {
+    public ListAction(ListDetail callback, Action action) {
         super();
         mTwitter = TwitterEngine.getInstance(callback.getApplicationContext());
         this.callback = new WeakReference<>(callback);

@@ -5,7 +5,7 @@ import android.content.Intent;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
-import org.nuclearfog.twidda.backend.TrendListLoader;
+import org.nuclearfog.twidda.backend.TrendLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterTrend;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -22,12 +22,12 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 public class TrendFragment extends ListFragment implements TrendClickListener {
 
 
-    private TrendListLoader trendTask;
+    private TrendLoader trendTask;
     private TrendAdapter adapter;
 
 
     @Override
-    protected void onCreate() {
+    protected void onCreated() {
         settings = GlobalSettings.getInstance(requireContext());
     }
 
@@ -102,7 +102,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
     }
 
     /**
-     * called from {@link TrendListLoader} if an error occurs
+     * called from {@link TrendLoader} if an error occurs
      *
      * @param error Twitter exception
      */
@@ -116,7 +116,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
      * load content into the list
      */
     private void load() {
-        trendTask = new TrendListLoader(this);
+        trendTask = new TrendLoader(this);
         trendTask.execute(settings.getTrendLocation().getWoeId());
     }
 }

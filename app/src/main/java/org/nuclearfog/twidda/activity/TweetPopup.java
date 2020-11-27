@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.TweetUploader;
+import org.nuclearfog.twidda.backend.TweetUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
@@ -120,7 +120,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
 
     @Nullable
     private LocationManager mLocation;
-    private TweetUploader uploaderAsync;
+    private TweetUpdater uploaderAsync;
     private Location location;
     private List<String> mediaPath;
     private ImageButton mediaBtn, previewBtn, locationBtn;
@@ -295,7 +295,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                 if (location != null)
                     tweet.addLocation(location);
                 // send tweet
-                uploaderAsync = new TweetUploader(this);
+                uploaderAsync = new TweetUpdater(this);
                 uploaderAsync.execute(tweet);
             }
         } else if (viewId == R.id.close) {
@@ -362,7 +362,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
         if (type == TWEETPOPUP_ERROR) {
-            uploaderAsync = new TweetUploader(this);
+            uploaderAsync = new TweetUpdater(this);
             uploaderAsync.execute(tweet);
         } else if (type == TWEETPOPUP_LEAVE) {
             finish();

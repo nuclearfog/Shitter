@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @see TweetPopup
  */
-public class TweetUploader extends AsyncTask<TweetHolder, Void, Boolean> {
+public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
 
     @Nullable
     private EngineException twException;
@@ -28,7 +28,7 @@ public class TweetUploader extends AsyncTask<TweetHolder, Void, Boolean> {
      *
      * @param callback Activity context
      */
-    public TweetUploader(TweetPopup callback) {
+    public TweetUpdater(TweetPopup callback) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
