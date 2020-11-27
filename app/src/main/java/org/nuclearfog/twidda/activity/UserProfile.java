@@ -33,7 +33,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.ProfileLoader;
+import org.nuclearfog.twidda.backend.UserAction;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterUser;
 import org.nuclearfog.twidda.backend.items.UserRelation;
@@ -67,13 +67,13 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
 import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_ID;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_BLOCK;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_FOLLOW;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_MUTE;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_UNBLOCK;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_UNFOLLOW;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.ACTION_UNMUTE;
-import static org.nuclearfog.twidda.backend.ProfileLoader.Action.LDR_PROFILE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNBLOCK;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.LDR_PROFILE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
@@ -123,7 +123,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private TabLayout tabLayout;
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
-    private ProfileLoader profileAsync;
+    private UserAction profileAsync;
     private UserRelation relation;
     private TwitterUser user;
 
@@ -216,7 +216,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (profileAsync == null && param != null) {
             long userId = param.getLong(KEY_PROFILE_ID, -1);
             String username = param.getString(KEY_PROFILE_NAME, "");
-            profileAsync = new ProfileLoader(this, userId, username);
+            profileAsync = new UserAction(this, userId, username);
             profileAsync.execute(LDR_PROFILE);
         }
     }
@@ -317,21 +317,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
                 } else if (menuId == R.id.profile_follow) {
                     if (!relation.isFriend()) {
-                        profileAsync = new ProfileLoader(this, user);
+                        profileAsync = new UserAction(this, user);
                         profileAsync.execute(ACTION_FOLLOW);
                     } else if (!unfollowConfirm.isShowing()) {
                         unfollowConfirm.show();
                     }
                 } else if (menuId == R.id.profile_mute) {
                     if (relation.isMuted()) {
-                        profileAsync = new ProfileLoader(this, user);
+                        profileAsync = new UserAction(this, user);
                         profileAsync.execute(ACTION_UNMUTE);
                     } else if (!muteConfirm.isShowing()) {
                         muteConfirm.show();
                     }
                 } else if (menuId == R.id.profile_block) {
                     if (relation.isBlocked()) {
-                        profileAsync = new ProfileLoader(this, user);
+                        profileAsync = new UserAction(this, user);
                         profileAsync.execute(ACTION_UNBLOCK);
                     } else if (!blockConfirm.isShowing()) {
                         blockConfirm.show();
@@ -446,7 +446,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
         if (user != null) {
-            profileAsync = new ProfileLoader(this, user);
+            profileAsync = new UserAction(this, user);
             if (type == PROFILE_UNFOLLOW) {
                 profileAsync.execute(ACTION_UNFOLLOW);
             } else if (type == PROFILE_BLOCK) {

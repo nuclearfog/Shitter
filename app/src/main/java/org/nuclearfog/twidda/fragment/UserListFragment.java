@@ -9,7 +9,7 @@ import org.nuclearfog.twidda.activity.ListDetail;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
-import org.nuclearfog.twidda.backend.TwitterListLoader;
+import org.nuclearfog.twidda.backend.UserListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.TwitterList;
@@ -21,9 +21,9 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Type.LOAD_MEMBERSHIPS;
-import static org.nuclearfog.twidda.backend.TwitterListLoader.Type.LOAD_USERLISTS;
+import static org.nuclearfog.twidda.backend.UserListLoader.NO_CURSOR;
+import static org.nuclearfog.twidda.backend.UserListLoader.Type.LOAD_MEMBERSHIPS;
+import static org.nuclearfog.twidda.backend.UserListLoader.Type.LOAD_USERLISTS;
 
 /**
  * Fragment class for user lists
@@ -72,7 +72,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
      */
     public static final int RETURN_LIST_REMOVED = 4;
 
-    private TwitterListLoader listTask;
+    private UserListLoader listTask;
     private ListAdapter adapter;
 
 
@@ -167,7 +167,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     }
 
     /**
-     * called from {@link TwitterListLoader} if an error occurs
+     * called from {@link UserListLoader} if an error occurs
      *
      * @param error Twitter exception
      */
@@ -188,10 +188,10 @@ public class UserListFragment extends ListFragment implements ListClickListener 
             String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
             int type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
             if (type == LIST_USER_OWNS) {
-                listTask = new TwitterListLoader(this, LOAD_USERLISTS, id, ownerName);
+                listTask = new UserListLoader(this, LOAD_USERLISTS, id, ownerName);
                 listTask.execute(cursor);
             } else if (type == LIST_USER_SUBSCR_TO) {
-                listTask = new TwitterListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
+                listTask = new UserListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
                 listTask.execute(cursor);
             }
         }

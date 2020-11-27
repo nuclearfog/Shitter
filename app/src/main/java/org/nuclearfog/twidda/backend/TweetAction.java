@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @see TweetActivity
  */
-public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoader.Action> {
+public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetAction.Action> {
 
     /**
      * actions for the tweet
@@ -61,7 +61,7 @@ public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoade
      * @param callback Callback to return tweet information
      * @param tweet    Tweet information
      */
-    public TweetLoader(TweetActivity callback, Tweet tweet) {
+    public TweetAction(TweetActivity callback, Tweet tweet) {
         this(callback, tweet.getId());
         this.myRetweetId = tweet.getMyRetweetId();
     }
@@ -70,7 +70,7 @@ public class TweetLoader extends AsyncTask<TweetLoader.Action, Tweet, TweetLoade
      * @param callback Callback to return tweet information
      * @param tweetId  ID of the tweet
      */
-    public TweetLoader(TweetActivity callback, long tweetId) {
+    public TweetAction(TweetActivity callback, long tweetId) {
         super();
         db = new AppDatabase(callback);
         mTwitter = TwitterEngine.getInstance(callback);

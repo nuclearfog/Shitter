@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserProfile
  */
-public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, UserRelation> {
+public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRelation> {
 
     /**
      * actions to be taken
@@ -66,7 +66,7 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
      * @param callback Callback to return the result
      * @param user     twitter user information
      */
-    public ProfileLoader(UserProfile callback, TwitterUser user) {
+    public UserAction(UserProfile callback, TwitterUser user) {
         this(callback, user.getId(), user.getScreenname());
     }
 
@@ -75,7 +75,7 @@ public class ProfileLoader extends AsyncTask<ProfileLoader.Action, TwitterUser, 
      * @param userId     ID of the twitter user
      * @param screenName username alternative to User ID
      */
-    public ProfileLoader(UserProfile callback, long userId, String screenName) {
+    public UserAction(UserProfile callback, long userId, String screenName) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);

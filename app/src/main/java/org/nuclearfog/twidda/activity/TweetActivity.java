@@ -31,8 +31,8 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.TweetLoader;
-import org.nuclearfog.twidda.backend.TweetLoader.Action;
+import org.nuclearfog.twidda.backend.TweetAction;
+import org.nuclearfog.twidda.backend.TweetAction.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
@@ -93,7 +93,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     private GlobalSettings settings;
     @Nullable
-    private TweetLoader statusAsync;
+    private TweetAction statusAsync;
     @Nullable
     private Tweet tweet;
 
@@ -160,7 +160,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync == null && param != null) {
             if (param.containsKey(KEY_TWEET_ID)) {
                 long tweetId = param.getLong(KEY_TWEET_ID);
-                statusAsync = new TweetLoader(this, tweetId);
+                statusAsync = new TweetAction(this, tweetId);
                 statusAsync.execute(Action.LOAD);
             }
         }
@@ -303,7 +303,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         if (statusAsync != null && statusAsync.getStatus() != RUNNING && tweet != null) {
-            statusAsync = new TweetLoader(this, tweet);
+            statusAsync = new TweetAction(this, tweet);
             // retweet the tweet
             if (v.getId() == R.id.tweet_retweet) {
                 if (tweet.retweeted()) {
@@ -332,7 +332,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
         if (type == DELETE_TWEET && tweet != null) {
-            statusAsync = new TweetLoader(this, tweet.getId());
+            statusAsync = new TweetAction(this, tweet.getId());
             statusAsync.execute(Action.DELETE);
         }
     }
