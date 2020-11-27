@@ -358,11 +358,12 @@
                     android:digits="0123456789."
                     android:ems="10"
                     android:hint="@string/enter_proxy"
+                    android:importantForAutofill="no"
                     android:inputType="number|numberDecimal"
+                    android:maxLength="15"
                     android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize"
-                    android:importantForAutofill="no" />
+                    android:textSize="@dimen/settings_edittext_textsize" />
 
                 <EditText
                     android:id="@+id/edit_proxyport"
@@ -373,11 +374,12 @@
                     android:background="@color/half_transparent"
                     android:ems="10"
                     android:hint="@string/proxy_port"
+                    android:importantForAutofill="no"
                     android:inputType="number"
+                    android:maxLength="5"
                     android:padding="@dimen/settings_edittext_padding"
                     android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize"
-                    android:importantForAutofill="no" />
+                    android:textSize="@dimen/settings_edittext_textsize" />
 
             </LinearLayout>
 

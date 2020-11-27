@@ -39,10 +39,10 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/linkButton"
+                android:id="@+id/login_get_link"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/loginpage_button_size"
+                android:layout_height="@dimen/loginpage_button_height"
                 android:background="@drawable/button"
                 android:paddingLeft="@dimen/loginpage_button_padding"
                 android:paddingRight="@dimen/loginpage_button_padding"
@@ -57,7 +57,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/loginpage_button_size"
+            android:layout_height="@dimen/loginpage_button_height"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -70,18 +70,19 @@
                 android:textSize="24sp" />
 
             <EditText
-                android:id="@+id/pin"
+                android:id="@+id/login_enter_pin"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/loginpage_button_height"
+                android:autofillHints="pin"
                 android:background="@android:color/transparent"
                 android:drawablePadding="@dimen/loginpage_padding_drawable"
                 android:hint="@string/login_pin"
                 android:inputType="numberPassword"
+                android:maxLength="@integer/loginpage_pin_max_chars"
                 android:singleLine="true"
                 android:textSize="@dimen/loginpage_textsize_login_key"
                 app:drawableLeftCompat="@drawable/key"
-                app:drawableStartCompat="@drawable/key"
-                android:autofillHints="pin" />
+                app:drawableStartCompat="@drawable/key" />
 
         </LinearLayout>
 
@@ -105,10 +106,10 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/verifier"
+                android:id="@+id/login_verifier"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/loginpage_button_size"
+                android:layout_height="@dimen/loginpage_button_height"
                 android:background="@drawable/button"
                 android:paddingLeft="@dimen/loginpage_button_padding"
                 android:paddingRight="@dimen/loginpage_button_padding"

@@ -55,10 +55,10 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         super.onCreate(b);
         setContentView(R.layout.page_login);
         Toolbar toolbar = findViewById(R.id.login_toolbar);
-        linkButton = findViewById(R.id.linkButton);
-        loginButton = findViewById(R.id.verifier);
+        linkButton = findViewById(R.id.login_get_link);
+        loginButton = findViewById(R.id.login_verifier);
         root = findViewById(R.id.login_root);
-        pinInput = findViewById(R.id.pin);
+        pinInput = findViewById(R.id.login_enter_pin);
 
         settings = GlobalSettings.getInstance(this);
         toolbar.setTitle(R.string.login_info);
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     public void onClick(View v) {
         // get login request link
-        if (v.getId() == R.id.linkButton) {
+        if (v.getId() == R.id.login_get_link) {
             if (registerAsync == null || registerAsync.getStatus() != RUNNING) {
                 Toast.makeText(this, R.string.info_fetching_link, LENGTH_LONG).show();
                 registerAsync = new Registration(this);
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             }
         }
         // verify user
-        else if (v.getId() == R.id.verifier) {
+        else if (v.getId() == R.id.login_verifier) {
             if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
                 Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
             } else if (pinInput.getText() != null && pinInput.length() > 0) {

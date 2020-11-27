@@ -102,13 +102,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/editprofile_layout_padding"
                 android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
                 android:background="@color/half_transparent"
                 android:hint="@string/enter_username"
+                android:importantForAutofill="no"
                 android:inputType="text"
+                android:maxLength="@integer/editprofile_username_max_length"
+                android:padding="@dimen/editprofile_edittext_padding"
                 android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize"
-                android:importantForAutofill="no" />
+                android:textSize="@dimen/editprofile_textsize" />
 
             <TextView
                 android:layout_width="match_parent"
