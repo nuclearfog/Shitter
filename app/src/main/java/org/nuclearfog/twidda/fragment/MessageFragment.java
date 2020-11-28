@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.activity.SearchPage;
@@ -186,9 +188,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
      *
      * @param error Twitter exception
      */
-    public void onError(EngineException error) {
-        if (error != null)
-            ErrorHandler.handleFailure(requireContext(), error);
+    public void onError(@NonNull EngineException error) {
+        ErrorHandler.handleFailure(requireContext(), error);
         setRefresh(false);
     }
 

@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
@@ -164,9 +163,8 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
      *
      * @param err twitter exception
      */
-    public void onError(@Nullable EngineException err) {
-        if (err != null)
-            ErrorHandler.handleFailure(this, err);
+    public void onError(EngineException err) {
+        ErrorHandler.handleFailure(this, err);
         progressCircle.setVisibility(INVISIBLE);
     }
 }

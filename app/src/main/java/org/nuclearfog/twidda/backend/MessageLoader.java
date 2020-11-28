@@ -93,8 +93,6 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
                 db.deleteMessage(messageId);
                 removeMsgId = messageId;
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return null;
     }
@@ -105,10 +103,13 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
         if (callback.get() != null) {
             if (messages != null) {
                 callback.get().setData(messages);
-            } else if (removeMsgId > 0) {
-                callback.get().removeItem(removeMsgId);
             } else {
-                callback.get().onError(twException);
+                if (removeMsgId > 0) {
+                    callback.get().removeItem(removeMsgId);
+                }
+                if (twException != null) {
+                    callback.get().onError(twException);
+                }
             }
         }
     }

@@ -499,7 +499,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      * @param error   Engine Exception7
      * @param tweetId ID of the tweet from which an error occurred
      */
-    public void onError(EngineException error, long tweetId) {
+    public void onError(@NonNull EngineException error, long tweetId) {
         ErrorHandler.handleFailure(this, error);
         if (error.resourceNotFound()) {
             Intent returnData = new Intent();

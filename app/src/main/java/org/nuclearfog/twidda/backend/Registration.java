@@ -43,8 +43,6 @@ public class Registration extends AsyncTask<String, Void, String> {
             return "";
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return null;
     }

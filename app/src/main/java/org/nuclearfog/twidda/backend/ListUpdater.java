@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.activity.ListPopup;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
@@ -18,7 +16,6 @@ import java.lang.ref.WeakReference;
 public class ListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
 
 
-    @Nullable
     private EngineException err;
     private final TwitterEngine mTwitter;
     private final WeakReference<ListPopup> callback;
@@ -39,8 +36,8 @@ public class ListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
             return true;
         } catch (EngineException err) {
             this.err = err;
+            return false;
         }
-        return false;
     }
 
 

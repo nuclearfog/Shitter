@@ -201,8 +201,6 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
             }
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return tweets;
     }

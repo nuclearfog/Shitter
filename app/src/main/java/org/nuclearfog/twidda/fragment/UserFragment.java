@@ -203,9 +203,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
     @Override
     public void onFailure(EngineException err) {
-        if (err != null) {
-            ErrorHandler.handleFailure(requireContext(), err);
-        }
+        ErrorHandler.handleFailure(requireContext(), err);
     }
 
     /**

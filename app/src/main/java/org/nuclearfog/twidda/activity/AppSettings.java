@@ -394,12 +394,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     /**
      * set location information from twitter
      *
-     * @param data locaion data
+     * @param data location data
      */
     public void setLocationData(List<TrendLocation> data) {
         locationAdapter.setData(data);
         int position = locationAdapter.getPosition(settings.getTrendLocation());
-        locationSpinner.setSelection(position);
+        if (position > 0) {
+            locationSpinner.setSelection(position);
+        }
     }
 
     /**

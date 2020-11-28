@@ -58,10 +58,8 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
             return trends;
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            return null;
         }
-        return null;
     }
 
 

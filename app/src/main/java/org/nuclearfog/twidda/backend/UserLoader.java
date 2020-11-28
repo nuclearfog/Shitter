@@ -105,8 +105,6 @@ public class UserLoader extends AsyncTask<Long, Void, TwitterUserList> {
             }
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return null;
     }

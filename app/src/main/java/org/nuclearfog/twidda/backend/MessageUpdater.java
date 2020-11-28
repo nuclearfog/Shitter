@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.activity.MessagePopup;
 import org.nuclearfog.twidda.backend.engine.EngineException;
@@ -19,7 +18,6 @@ import java.lang.ref.WeakReference;
  */
 public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
-    @Nullable
     private EngineException twException;
     private WeakReference<MessagePopup> callback;
     private TwitterEngine mTwitter;
@@ -54,10 +52,8 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             return true;
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            return false;
         }
-        return false;
     }
 
 
@@ -67,7 +63,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
             callback.get().setLoading(false);
             if (success) {
                 callback.get().onSuccess();
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }

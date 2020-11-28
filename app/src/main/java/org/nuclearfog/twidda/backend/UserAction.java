@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
@@ -54,7 +52,6 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
         ACTION_UNMUTE
     }
 
-    @Nullable
     private EngineException twException;
     private WeakReference<UserProfile> callback;
     private TwitterEngine mTwitter;
@@ -147,10 +144,8 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
             return mTwitter.getConnection(userId, screenName);
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            return null;
         }
-        return null;
     }
 
 
@@ -167,7 +162,7 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
         if (callback.get() != null) {
             if (properties != null) {
                 callback.get().onAction(properties);
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }

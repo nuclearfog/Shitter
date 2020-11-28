@@ -14,16 +14,15 @@ import org.nuclearfog.twidda.database.AppDatabase;
 import java.lang.ref.WeakReference;
 
 /**
- * Task for editing profile information and updating images
+ * Background task for loading and editing profile information
  *
  * @see ProfileEditor
  */
-public class UserUpdater extends AsyncTask<Void, Void, TwitterUser> {
+public class UserUpdater extends AsyncTask<UserHolder, Void, TwitterUser> {
 
     @Nullable
     private EngineException twException;
     private WeakReference<ProfileEditor> callback;
-    private UserHolder userHolder;
     private TwitterEngine mTwitter;
     private AppDatabase db;
 
@@ -36,12 +35,6 @@ public class UserUpdater extends AsyncTask<Void, Void, TwitterUser> {
     }
 
 
-    public UserUpdater(ProfileEditor callback, UserHolder userHolder) {
-        this(callback);
-        this.userHolder = userHolder;
-    }
-
-
     @Override
     protected void onPreExecute() {
         if (callback.get() != null) {
@@ -51,18 +44,16 @@ public class UserUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
 
     @Override
-    protected TwitterUser doInBackground(Void[] v) {
+    protected TwitterUser doInBackground(UserHolder[] holder) {
         try {
-            if (userHolder == null) {
+            if (holder.length == 0) {
                 return mTwitter.getCurrentUser();
             } else {
-                TwitterUser user = mTwitter.updateProfile(userHolder);
+                TwitterUser user = mTwitter.updateProfile(holder[0]);
                 db.storeUser(user);
             }
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return null;
     }
@@ -70,14 +61,15 @@ public class UserUpdater extends AsyncTask<Void, Void, TwitterUser> {
 
     @Override
     protected void onPostExecute(@Nullable TwitterUser user) {
-        if (callback.get() != null) {
-            callback.get().setLoading(false);
-            if (twException != null) {
-                callback.get().setError(twException);
-            } else if (user != null) {
-                callback.get().setUser(user);
-            } else if (userHolder != null) {
-                callback.get().setSuccess();
+        ProfileEditor activity = callback.get();
+        if (activity != null) {
+            activity.setLoading(false);
+            if (user != null) {
+                activity.setUser(user);
+            } else if (twException != null) {
+                activity.setError(twException);
+            } else {
+                activity.setSuccess();
             }
         }
     }

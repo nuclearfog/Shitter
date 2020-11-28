@@ -107,8 +107,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
      * @param error Twitter exception
      */
     public void onError(EngineException error) {
-        if (error != null)
-            ErrorHandler.handleFailure(requireContext(), error);
+        ErrorHandler.handleFailure(requireContext(), error);
         setRefresh(false);
     }
 

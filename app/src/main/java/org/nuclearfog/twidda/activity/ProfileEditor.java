@@ -199,8 +199,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                     link.setError(errMsg);
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
-                    editorAsync = new UserUpdater(this, userHolder);
-                    editorAsync.execute();
+                    editorAsync = new UserUpdater(this);
+                    editorAsync.execute(userHolder);
                 }
             }
         }
@@ -331,7 +331,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      *
      * @param err Engine Exception
      */
-    public void setError(EngineException err) {
+    public void setError(@NonNull EngineException err) {
         ErrorHandler.handleFailure(this, err);
         if (user == null) {
             finish();

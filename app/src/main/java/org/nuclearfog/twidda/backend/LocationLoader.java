@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.activity.AppSettings;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
@@ -19,7 +17,7 @@ import java.util.List;
  */
 public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
 
-    @Nullable
+
     private EngineException twException;
     private WeakReference<AppSettings> callback;
     private TwitterEngine mTwitter;
@@ -38,8 +36,6 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
             return mTwitter.getLocations();
         } catch (EngineException twException) {
             this.twException = twException;
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return null;
     }
@@ -48,9 +44,9 @@ public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
     @Override
     protected void onPostExecute(List<TrendLocation> locations) {
         if (callback.get() != null) {
-            if (locations != null && !locations.isEmpty()) {
+            if (locations != null) {
                 callback.get().setLocationData(locations);
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }
