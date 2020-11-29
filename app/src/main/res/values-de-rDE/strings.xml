@@ -66,7 +66,7 @@
     <string name="error_status_length">Status ist zu lang!</string>
     <string name="error_duplicate_status">Tweet wurde schon versendet!</string>
     <string name="error_dm_length">Direktnachricht länge überschritten!</string>
-    <string name="menu_follow_requested">warten auf Bestätigung</string>
+    <string name="menu_follow_requested">Anfrage gesendet</string>
     <string name="info_loading">lädt..</string>
     <string name="profile_location">Standort</string>
     <string name="profile_bio">Bio</string>
@@ -95,7 +95,7 @@
     <string name="edit_proxyuser">Nutzername</string>
     <string name="proxy_password">Passwort</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
-    <string name="confirm_mute">User stummschalten?</string>
+    <string name="confirm_mute">Nutzer stummschalten?</string>
     <string name="error_location">Standort konnte nicht ermittelt werden!</string>
     <string name="error_cant_copy_clipboard">Link konnte nicht kopiert werden!</string>
     <string name="info_gps_attached">GPS Position hinzugefügt</string>
@@ -103,7 +103,7 @@
     <string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
     <string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
-    <string name="item_list_pb_desc">Profile Listenbesitzer</string>
+    <string name="item_list_pb_desc">Profil des Listeninhabers</string>
     <string name="list_appbar">Listen</string>
     <string name="edit_hint_enter_descr">Profilebeschreibung eingeben</string>
     <string name="edit_hint_link">Link eingeben</string>
@@ -158,9 +158,9 @@
     <string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
     <string name="info_user_removed">Nutzer von der Liste entfernt!</string>
     <string name="descr_remove_user">Nutzer von der Liste entfernen</string>
-    <string name="menu_tweet">tweet verfassen</string>
-    <string name="menu_open_home_profile">öffne Profil</string>
-    <string name="menu_open_twitter_search">öffne Twitter suche</string>
+    <string name="menu_tweet">Tweet verfassen</string>
+    <string name="menu_open_home_profile">Öffne Profil</string>
+    <string name="menu_open_twitter_search">Twitter suche</string>
     <string name="menu_open_settings">Einstellungen öffnen</string>
     <string name="menu_create_list">Erstelle Nutzerliste</string>
     <string name="menu_write_message">Direktnachricht</string>
@@ -176,7 +176,7 @@
     <string name="descr_add_profile_image">Profilbild ändern</string>
     <string name="settings_enable_hq_img">Hohe Bildqualität</string>
     <string name="menu_app_info">Über</string>
-    <string name="info_user_added_to_list">" wurde zur Liste hinzugefügt!"</string>
+    <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
     <string name="error_not_defined">Undefinierter Fehler!</string>
 </resources>
