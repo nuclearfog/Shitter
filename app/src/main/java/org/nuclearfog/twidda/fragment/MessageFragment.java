@@ -125,7 +125,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
 
     @Override
-    public void onClick(final Message message, Action action) {
+    public void onClick(Message message, Action action) {
         if (!isRefreshing()) {
             switch (action) {
                 case ANSWER:
