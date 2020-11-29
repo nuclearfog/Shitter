@@ -237,10 +237,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      *
      * @param err Exception caught by {@link ImageLoader}
      */
-    public void onError(@Nullable EngineException err) {
-        if (err != null) {
-            ErrorHandler.handleFailure(getApplicationContext(), err);
-        }
+    public void onError(EngineException err) {
+        ErrorHandler.handleFailure(getApplicationContext(), err);
         finish();
     }
 

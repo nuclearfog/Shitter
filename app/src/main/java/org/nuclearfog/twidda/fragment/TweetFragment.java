@@ -167,9 +167,8 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
      *
      * @param error Twitter exception
      */
-    public void onError(@Nullable EngineException error) {
-        if (error != null)
-            ErrorHandler.handleFailure(requireContext(), error);
+    public void onError(EngineException error) {
+        ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
     }

@@ -134,8 +134,6 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
             if (twException.resourceNotFound()) {
                 db.removeStatus(tweetId);
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
         }
         return action[0];
     }

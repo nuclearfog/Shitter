@@ -331,7 +331,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      *
      * @param err Engine Exception
      */
-    public void setError(@NonNull EngineException err) {
+    public void setError(EngineException err) {
         ErrorHandler.handleFailure(this, err);
         if (user == null) {
             finish();

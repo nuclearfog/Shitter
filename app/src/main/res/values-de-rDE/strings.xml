@@ -81,7 +81,7 @@
     <string name="error_image_save">Fehler beim Speichern!</string>
     <string name="error_not_authorized">Keine Berechtigung!</string>
     <string name="error_file_format">Dateiformat nicht unterstützt!</string>
-    <string name="settings_enable_ans_load">Tweet-Replies autom. laden</string>
+    <string name="settings_enable_ans_load">Tweet-Replies automatisch laden</string>
     <string name="info_tweet_retweeted">Tweet retweeted!</string>
     <string name="info_tweet_unretweeted">Retweet entfernt!</string>
     <string name="info_tweet_favored">Tweet favorisiert!</string>
@@ -178,4 +178,5 @@
     <string name="menu_app_info">Über</string>
     <string name="info_user_added_to_list">" wurde zur Liste hinzugefügt!"</string>
     <string name="error_username_format">Nutzername falsch!</string>
+    <string name="error_not_defined">Undefinierter Fehler!</string>
 </resources>

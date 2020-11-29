@@ -8,13 +8,15 @@ android {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 26
-        versionName '1.8.2'
+        versionCode 27
+        versionName '1.8.3'
+        resConfigs "en", "de"
         vectorDrawables.useSupportLibrary true
     }
 
     buildTypes {
         all {
+            // Twitter API Keys stored in .gradle/gradle.properties
             buildConfigField 'String', 'API_KEY_1', TWITTER_CONSUMER_KEY
             buildConfigField 'String', 'API_KEY_2', TWITTER_CONSUMER_SECRET
         }

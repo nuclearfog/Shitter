@@ -47,7 +47,7 @@
     <string name="confirm_discard">discard changes?</string>
     <string name="user_data">User data</string>
     <string name="follows_you">follows you</string>
-    <string name="settings_enable_ans_load">Load Tweet replies</string>
+    <string name="settings_enable_ans_load">Load Tweet replies automatically</string>
     <string name="proxy_settings">Proxy settings</string>
     <string name="enter_proxy">Proxy IP address</string>
     <string name="proxy_port">Port</string>
@@ -168,6 +168,7 @@
     <string name="error_dm_length">Directmessage exceeds the limit!</string>
     <string name="error_list_title_empty">Empty list title!</string>
     <string name="error_username_format">Wrong username format!</string>
+    <string name="error_not_defined">Not defined Error!</string>
 
     <!-- menu icon strings -->
     <string name="menu_tweet">Write Tweet</string>

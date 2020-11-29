@@ -15,7 +15,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.NumberPicker;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -55,11 +56,10 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_D
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LOGOUT_APP;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG_PROXY;
 
-public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener,
+public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
         OnCheckedChangeListener, OnItemSelectedListener, OnDialogClick, OnColorChangedListener {
 
     private static final int INVERTCOLOR = 0xffffff;
-    private static final String[] PICKER_SELECT = {"10", "20", "30", "40", "50", "60", "70", "80", "90", "100"};
 
     private enum ColorMode {
         BACKGROUND,
@@ -71,13 +71,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     private GlobalSettings settings;
     private LocationLoader locationAsync;
-    private Dialog load_dialog_selector, proxyDialog, databaseDialog, logoutDialog, color_dialog_selector;
+    private LocationAdapter locationAdapter;
+
+    private Dialog proxyDialog, databaseDialog, logoutDialog, color_dialog_selector;
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-    private NumberPicker load_picker;
     private CompoundButton enableProxy, enableAuth, hqImage;
     private Spinner locationSpinner;
-    private LocationAdapter locationAdapter;
+    private TextView list_size;
     private View root, colorButton1_edge;
 
     private ColorMode mode = ColorMode.NONE;
@@ -88,13 +89,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         super.onCreate(b);
         setContentView(R.layout.page_settings);
         Button delButton = findViewById(R.id.delete_db);
-        Button load_popup = findViewById(R.id.load_dialog);
         Button logout = findViewById(R.id.logout);
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
         View login_layout = findViewById(R.id.Login_options);
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
+        SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
@@ -108,29 +109,22 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         proxyPort = findViewById(R.id.edit_proxyport);
         proxyUser = findViewById(R.id.edit_proxyuser);
         proxyPass = findViewById(R.id.edit_proxypass);
+        list_size = findViewById(R.id.settings_list_size);
         root = findViewById(R.id.settings_layout);
-        load_picker = new NumberPicker(this);
 
         toolbar.setTitle(R.string.settings);
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
-        if (!settings.getLogin())
+        if (!settings.getLogin()) {
             login_layout.setVisibility(GONE);
-
+        }
         locationAdapter = new LocationAdapter(settings);
         locationAdapter.addTop(settings.getTrendLocation());
         locationSpinner.setAdapter(locationAdapter);
         FontAdapter fontAdapter = new FontAdapter(settings);
         fontSpinner.setAdapter(fontAdapter);
         fontSpinner.setSelection(settings.getFont());
-        load_picker.setMinValue(1);
-        load_picker.setMaxValue(10);
-        load_picker.setDisplayedValues(PICKER_SELECT);
-        load_picker.setWrapSelectorWheel(false);
-        load_picker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
-        load_dialog_selector = new Dialog(this);
-        load_dialog_selector.setContentView(load_picker);
 
         FontTool.setViewFontAndColor(settings, root);
         toggleImg.setChecked(settings.getImageLoad());
@@ -149,7 +143,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
-        load_picker.setValue((settings.getListSize()) / 10);
+        list_size.setText(Integer.toString(settings.getListSize()));
+        listSizeSelector.setProgress(settings.getListSize() / 10 - 1);
         enableProxy.setChecked(settings.isProxyEnabled());
         enableAuth.setChecked(settings.isProxyAuthSet());
         hqImage.setEnabled(settings.getImageLoad());
@@ -161,7 +156,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         logoutDialog = DialogBuilder.create(this, LOGOUT_APP, this);
 
         logout.setOnClickListener(this);
-        load_popup.setOnClickListener(this);
         delButton.setOnClickListener(this);
         colorButton1.setOnClickListener(this);
         colorButton2.setOnClickListener(this);
@@ -174,7 +168,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         hqImage.setOnCheckedChangeListener(this);
         fontSpinner.setOnItemSelectedListener(this);
         locationSpinner.setOnItemSelectedListener(this);
-        load_dialog_selector.setOnDismissListener(this);
+        listSizeSelector.setOnSeekBarChangeListener(this);
     }
 
 
@@ -294,12 +288,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             color = settings.getHighlightColor();
             setColor(color);
         }
-        // open number picker
-        else if (viewId == R.id.load_dialog) {
-            if (!load_dialog_selector.isShowing()) {
-                load_dialog_selector.show();
-            }
-        }
     }
 
 
@@ -333,11 +321,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                     colorButton4.setBackgroundColor(color);
                     colorButton4.setTextColor(color ^ INVERTCOLOR);
                     break;
-            }
-        } else if (d == load_dialog_selector) {
-            int selection = load_picker.getValue() * 10;
-            if (settings.getListSize() != selection) {
-                settings.setListSize(selection);
             }
         }
     }
@@ -389,6 +372,24 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onColorChanged(int i) {
         color = i;
+    }
+
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        String text = Integer.toString((progress + 1) * 10);
+        list_size.setText(text);
+    }
+
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        settings.setListSize((seekBar.getProgress() + 1) * 10);
     }
 
     /**

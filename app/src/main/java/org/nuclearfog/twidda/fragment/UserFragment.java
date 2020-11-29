@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.UserAdapter;
@@ -221,10 +219,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
      *
      * @param error Engine exception
      */
-    public void onError(@Nullable EngineException error) {
-        if (error != null) {
-            ErrorHandler.handleFailure(requireContext(), error);
-        }
+    public void onError(EngineException error) {
+        ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
     }

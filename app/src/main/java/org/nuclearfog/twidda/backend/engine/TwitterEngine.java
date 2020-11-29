@@ -43,7 +43,6 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Trend;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.UploadedMedia;
 import twitter4j.User;
@@ -140,7 +139,7 @@ public class TwitterEngine {
         try {
             if (reqToken == null)
                 reqToken = twitter.getOAuthRequestToken();
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
         return reqToken.getAuthenticationURL();
@@ -166,7 +165,7 @@ public class TwitterEngine {
             } else {
                 throw new EngineException(EngineException.InternalErrorType.TOKENNOTSET);
             }
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -190,7 +189,7 @@ public class TwitterEngine {
                 paging.setMaxId(maxId - 1);
             List<Status> homeTweets = twitter.getHomeTimeline(paging);
             return convertStatusList(homeTweets);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -214,7 +213,7 @@ public class TwitterEngine {
                 paging.setMaxId(maxId - 1);
             List<Status> mentions = twitter.getMentionsTimeline(paging);
             return convertStatusList(mentions);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -242,7 +241,7 @@ public class TwitterEngine {
             QueryResult result = twitter.search(q);
             List<Status> results = result.getTweets();
             return convertStatusList(results);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -263,7 +262,7 @@ public class TwitterEngine {
             for (Trend trend : trends)
                 result.add(new TwitterTrend(trend, index++));
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -282,7 +281,7 @@ public class TwitterEngine {
             for (Location location : locations)
                 result.add(new TrendLocation(location));
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -308,7 +307,7 @@ public class TwitterEngine {
             TwitterUserList result = new TwitterUserList(prevPage, nextPage);
             result.addAll(users);
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -332,7 +331,7 @@ public class TwitterEngine {
             if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserTimeline(userId, paging));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -356,7 +355,7 @@ public class TwitterEngine {
             if (maxId > 0)
                 paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserTimeline(username, paging));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -380,7 +379,7 @@ public class TwitterEngine {
             if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getFavorites(userId, paging));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -405,7 +404,7 @@ public class TwitterEngine {
                 paging.setMaxId(maxId - 1);
             List<Status> tweets = twitter.getFavorites(username, paging);
             return convertStatusList(tweets);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -426,7 +425,7 @@ public class TwitterEngine {
             } else {
                 return new TwitterUser(twitter.showUser(username));
             }
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -441,7 +440,7 @@ public class TwitterEngine {
     public TwitterUser getCurrentUser() throws EngineException {
         try {
             return new TwitterUser(twitter.showUser(twitterID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -462,7 +461,7 @@ public class TwitterEngine {
             } else {
                 return new UserRelation(twitter.showFriendship(twitter.getScreenName(), username));
             }
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -477,7 +476,7 @@ public class TwitterEngine {
     public TwitterUser followUser(long userID) throws EngineException {
         try {
             return new TwitterUser(twitter.createFriendship(userID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -493,7 +492,7 @@ public class TwitterEngine {
     public TwitterUser unfollowUser(long userID) throws EngineException {
         try {
             return new TwitterUser(twitter.destroyFriendship(userID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -509,7 +508,7 @@ public class TwitterEngine {
     public TwitterUser blockUser(long UserID) throws EngineException {
         try {
             return new TwitterUser(twitter.createBlock(UserID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -525,7 +524,7 @@ public class TwitterEngine {
     public TwitterUser unblockUser(long UserID) throws EngineException {
         try {
             return new TwitterUser(twitter.destroyBlock(UserID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -541,7 +540,7 @@ public class TwitterEngine {
     public TwitterUser muteUser(long UserID) throws EngineException {
         try {
             return new TwitterUser(twitter.createMute(UserID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -557,7 +556,7 @@ public class TwitterEngine {
     public TwitterUser unmuteUser(long UserID) throws EngineException {
         try {
             return new TwitterUser(twitter.destroyMute(UserID));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -582,7 +581,7 @@ public class TwitterEngine {
                 result.addAll(convertUserList(twitter.lookupUsers(ids)));
             }
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -607,7 +606,7 @@ public class TwitterEngine {
                 result.addAll(convertUserList(twitter.lookupUsers(ids)));
             }
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -634,7 +633,7 @@ public class TwitterEngine {
                 mStatus.setMediaIds(id);
             }
             twitter.updateStatus(mStatus);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -651,7 +650,7 @@ public class TwitterEngine {
         try {
             Status tweet = twitter.showStatus(tweetId);
             return new Tweet(tweet);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -688,7 +687,7 @@ public class TwitterEngine {
                 }
             }
             return convertStatusList(answers);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -713,7 +712,7 @@ public class TwitterEngine {
                 retweetCount--;
             }
             return new Tweet(tweet, retweetCount, retweet, tweet.getFavoriteCount(), tweet.isFavorited());
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -738,7 +737,7 @@ public class TwitterEngine {
                 favoritCount--;
             }
             return new Tweet(tweet, tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -751,7 +750,7 @@ public class TwitterEngine {
     public void deleteTweet(long tweetId) throws EngineException {
         try {
             twitter.destroyStatus(tweetId);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -776,7 +775,7 @@ public class TwitterEngine {
                 result.addAll(convertUserList(twitter.lookupUsers(ids)));
             }
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -797,7 +796,7 @@ public class TwitterEngine {
                 result.add(getMessage(dm));
             }
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -818,7 +817,7 @@ public class TwitterEngine {
             } else {
                 twitter.sendDirectMessage(id, messageHolder.getMessage());
             }
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -833,7 +832,7 @@ public class TwitterEngine {
     public void deleteMessage(long id) throws EngineException {
         try {
             twitter.destroyDirectMessage(id);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -862,7 +861,7 @@ public class TwitterEngine {
             String user_bio = userHolder.getBio();
             User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
             return new TwitterUser(user);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -889,7 +888,7 @@ public class TwitterEngine {
             for (UserList list : lists)
                 result.add(new TwitterList(list, twitterID));
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -917,7 +916,7 @@ public class TwitterEngine {
             for (UserList list : lists)
                 result.add(new TwitterList(list, twitterID));
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -932,7 +931,7 @@ public class TwitterEngine {
     public TwitterList loadUserList(long listId) throws EngineException {
         try {
             return new TwitterList(twitter.showUserList(listId), twitterID);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -954,7 +953,7 @@ public class TwitterEngine {
                 list = twitter.destroyUserListSubscription(listId);
             }
             return new TwitterList(list, twitterID, follow);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -969,7 +968,7 @@ public class TwitterEngine {
     public TwitterList deleteUserList(long listId) throws EngineException {
         try {
             return new TwitterList(twitter.destroyUserList(listId), twitterID);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -989,7 +988,7 @@ public class TwitterEngine {
             TwitterUserList result = new TwitterUserList(prevCursor, nextCursor);
             result.addAll(convertUserList(followerList));
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1009,7 +1008,7 @@ public class TwitterEngine {
             TwitterUserList result = new TwitterUserList(prevCursor, nextCursor);
             result.addAll(convertUserList(users));
             return result;
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1033,7 +1032,7 @@ public class TwitterEngine {
             if (maxId > 1)
                 paging.setMaxId(maxId - 1);
             return convertStatusList(twitter.getUserListStatuses(listId, paging));
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1070,7 +1069,7 @@ public class TwitterEngine {
             } else {
                 twitter.createUserList(list.getTitle(), list.isPublic(), list.getDescription());
             }
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1085,7 +1084,7 @@ public class TwitterEngine {
     public void addUserToList(long listId, String[] usernames) throws EngineException {
         try {
             twitter.createUserListMembers(listId, usernames);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1100,7 +1099,7 @@ public class TwitterEngine {
     public void delUserFromList(long listId, String username) throws EngineException {
         try {
             twitter.destroyUserListMember(listId, username);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1145,7 +1144,7 @@ public class TwitterEngine {
             User sender = twitter.showUser(dm.getSenderId());
             User receiver = twitter.showUser(dm.getRecipientId());
             return new Message(dm, sender, receiver);
-        } catch (TwitterException err) {
+        } catch (Exception err) {
             throw new EngineException(err);
         }
     }
@@ -1168,10 +1167,10 @@ public class TwitterEngine {
                 ids[i++] = media.getMediaId();
             }
             return ids;
-        } catch (TwitterException err) {
-            throw new EngineException(err);
         } catch (FileNotFoundException err) {
             throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
+        } catch (Exception err) {
+            throw new EngineException(err);
         }
     }
 
@@ -1188,10 +1187,10 @@ public class TwitterEngine {
             File file = new File(path);
             UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
             return media.getMediaId();
-        } catch (TwitterException err) {
-            throw new EngineException(err);
         } catch (FileNotFoundException err) {
             throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
+        } catch (Exception err) {
+            throw new EngineException(err);
         }
     }
 }
