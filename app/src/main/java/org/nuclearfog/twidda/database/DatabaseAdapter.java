@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.BuildConfig;
-
 import java.io.File;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -161,8 +159,7 @@ public class DatabaseAdapter {
      * @return SQLite database
      */
     public synchronized SQLiteDatabase getDatabase() {
-        if (BuildConfig.DEBUG && db.isDbLockedByCurrentThread())
-            throw new AssertionError("DB locked!");
+        // TODO add Multithreading safety
         if (!db.isOpen())
             db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
         return db;

@@ -201,55 +201,57 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         if (reqCode == REQ_PICK_MEDIA && returnCode == RESULT_OK) {
             if (intent != null && intent.getData() != null) {
                 Cursor cursor = getContentResolver().query(intent.getData(), GET_MEDIA, null, null, null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(GET_MEDIA[0]);
-                    String path = cursor.getString(index);
-                    String extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
-                    switch (extension) {
-                        case "jpg":
-                        case "jpeg":
-                        case "png":
-                            if (selectedFormat == MediaType.NONE)
-                                selectedFormat = MediaType.IMAGE;
-                            if (selectedFormat == MediaType.IMAGE) {
-                                if (mediaPath.size() < MAX_IMAGES) {
-                                    mediaPath.add(path);
-                                    previewBtn.setVisibility(VISIBLE);
-                                    if (mediaPath.size() == MAX_IMAGES) {
-                                        mediaBtn.setVisibility(GONE);
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        int index = cursor.getColumnIndex(GET_MEDIA[0]);
+                        String path = cursor.getString(index);
+                        String extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
+                        switch (extension) {
+                            case "jpg":
+                            case "jpeg":
+                            case "png":
+                                if (selectedFormat == MediaType.NONE)
+                                    selectedFormat = MediaType.IMAGE;
+                                if (selectedFormat == MediaType.IMAGE) {
+                                    if (mediaPath.size() < MAX_IMAGES) {
+                                        mediaPath.add(path);
+                                        previewBtn.setVisibility(VISIBLE);
+                                        if (mediaPath.size() == MAX_IMAGES) {
+                                            mediaBtn.setVisibility(GONE);
+                                        }
                                     }
+                                } else {
+                                    Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
                                 }
-                            } else {
-                                Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
-                            }
-                            break;
+                                break;
 
-                        case "gif":
-                            if (selectedFormat == MediaType.NONE) {
-                                selectedFormat = MediaType.GIF;
-                                previewBtn.setImageResource(R.drawable.video);
-                                previewBtn.setVisibility(VISIBLE);
-                                mediaBtn.setVisibility(GONE);
-                                mediaPath.add(path);
-                            }
-                            break;
+                            case "gif":
+                                if (selectedFormat == MediaType.NONE) {
+                                    selectedFormat = MediaType.GIF;
+                                    previewBtn.setImageResource(R.drawable.video);
+                                    previewBtn.setVisibility(VISIBLE);
+                                    mediaBtn.setVisibility(GONE);
+                                    mediaPath.add(path);
+                                }
+                                break;
 
-                        case "mp4":
-                        case "3gp":
-                            if (selectedFormat == MediaType.NONE) {
-                                selectedFormat = MediaType.VIDEO;
-                                previewBtn.setImageResource(R.drawable.video);
-                                previewBtn.setVisibility(VISIBLE);
-                                mediaBtn.setVisibility(GONE);
-                                mediaPath.add(path);
-                            }
-                            break;
+                            case "mp4":
+                            case "3gp":
+                                if (selectedFormat == MediaType.NONE) {
+                                    selectedFormat = MediaType.VIDEO;
+                                    previewBtn.setImageResource(R.drawable.video);
+                                    previewBtn.setVisibility(VISIBLE);
+                                    mediaBtn.setVisibility(GONE);
+                                    mediaPath.add(path);
+                                }
+                                break;
 
-                        default:
-                            Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
-                            break;
+                            default:
+                                Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
+                                break;
+                        }
+                        cursor.close();
                     }
-                    cursor.close();
                 }
             }
         }

@@ -214,21 +214,23 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         if (returnCode == RESULT_OK && (reqCode == REQ_PROFILE_IMG || reqCode == REQ_PROFILE_BANNER)) {
             if (intent != null && intent.getData() != null) {
                 Cursor c = getContentResolver().query(intent.getData(), MEDIA_MODE, null, null, null);
-                if (c != null && c.moveToFirst()) {
-                    int index = c.getColumnIndex(MEDIA_MODE[0]);
-                    String mediaPath = c.getString(index);
-                    Bitmap image = BitmapFactory.decodeFile(mediaPath);
-                    if (reqCode == REQ_PROFILE_IMG) {
-                        profile_image.setImageBitmap(image);
-                        profileLink = mediaPath;
-                    } else {
-                        int bannerHeight = profile_banner.getMeasuredWidth() / 3;
-                        if (bannerHeight > 0)
-                            profile_banner.setMaxHeight(bannerHeight);
-                        profile_banner.setImageBitmap(image);
-                        addBannerBtn.setVisibility(INVISIBLE);
-                        changeBannerBtn.setVisibility(VISIBLE);
-                        bannerLink = mediaPath;
+                if (c != null) {
+                    if (c.moveToFirst()) {
+                        int index = c.getColumnIndex(MEDIA_MODE[0]);
+                        String mediaPath = c.getString(index);
+                        Bitmap image = BitmapFactory.decodeFile(mediaPath);
+                        if (reqCode == REQ_PROFILE_IMG) {
+                            profile_image.setImageBitmap(image);
+                            profileLink = mediaPath;
+                        } else {
+                            int bannerHeight = profile_banner.getMeasuredWidth() / 3;
+                            if (bannerHeight > 0)
+                                profile_banner.setMaxHeight(bannerHeight);
+                            profile_banner.setImageBitmap(image);
+                            addBannerBtn.setVisibility(INVISIBLE);
+                            changeBannerBtn.setVisibility(VISIBLE);
+                            bannerLink = mediaPath;
+                        }
                     }
                     c.close();
                 }

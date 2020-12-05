@@ -148,10 +148,12 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         if (reqCode == REQ_MEDIA && returnCode == RESULT_OK) {
             if (intent != null && intent.getData() != null) {
                 Cursor c = getContentResolver().query(intent.getData(), PICK_IMAGE, null, null, null);
-                if (c != null && c.moveToFirst()) {
-                    int index = c.getColumnIndex(PICK_IMAGE[0]);
-                    mediaPath = c.getString(index);
-                    media.setImageResource(R.drawable.image);
+                if (c != null) {
+                    if (c.moveToFirst()) {
+                        int index = c.getColumnIndex(PICK_IMAGE[0]);
+                        mediaPath = c.getString(index);
+                        media.setImageResource(R.drawable.image);
+                    }
                     c.close();
                 }
             }

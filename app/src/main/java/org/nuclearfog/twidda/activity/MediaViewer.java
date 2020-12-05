@@ -34,7 +34,6 @@ import org.nuclearfog.zoomview.ZoomView;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -74,6 +73,14 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     public static final int MEDIAVIEWER_VIDEO = 3;  // Video from Twitter
     public static final int MEDIAVIEWER_ANGIF = 4;  // GIF from Twitter
 
+    /**
+     * Quality of the saved jpeg images
+     */
+    private static final int JPEG_QUALITY = 90;
+
+    /**
+     * request write permission on API < 29
+     */
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
     private static final int REQCODE_SD = 6;
 
@@ -89,7 +96,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private VideoView videoView;
     private ZoomView zoomImage;
 
-    private String[] mediaLinks = {};
+    private String[] mediaLinks;
     private int type = MEDIAVIEWER_NONE;
     private int videoPos = 0;
 
@@ -277,30 +284,32 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
                     boolean imageSaved = false;
                     try {
                         String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
-                        OutputStream fileStream;
-                        // Add image to gallery
-                        ContentValues values = new ContentValues();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            // use scoped storage
+                            ContentValues values = new ContentValues();
                             values.put(MediaStore.Images.Media.DISPLAY_NAME, name);
                             values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
                             values.put(MediaStore.MediaColumns.RELATIVE_PATH, DIRECTORY_PICTURES);
                             values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
                             Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
                             if (imageUri != null) {
-                                fileStream = getContentResolver().openOutputStream(imageUri);
+                                OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
                                 if (fileStream != null) {
-                                    imageSaved = image.compress(Bitmap.CompressFormat.JPEG, 90, fileStream);
+                                    imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
                                     fileStream.close();
                                 }
                             }
                         } else {
+                            // store images directly
                             File imageFile = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES), name + ".jpg");
-                            fileStream = new FileOutputStream(imageFile);
-                            imageSaved = image.compress(Bitmap.CompressFormat.JPEG, 90, fileStream);
+                            OutputStream fileStream = new FileOutputStream(imageFile);
+                            imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
                             fileStream.close();
-                            MediaScannerConnection.scanFile(getApplicationContext(), new String[]{imageFile.toString()}, null, null);
+                            // start media scanner to scan for new image
+                            String[] fileName = {imageFile.toString()};
+                            MediaScannerConnection.scanFile(getApplicationContext(), fileName, null, null);
                         }
-                    } catch (IOException err) {
+                    } catch (Exception err) {
                         err.printStackTrace();
                     }
                     if (imageSaved) {
