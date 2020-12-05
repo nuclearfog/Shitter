@@ -141,7 +141,6 @@
     <string name="error_limit_exceeded">"Rate limit exceeded! Retry after:"</string>
     <string name="error_sending_tweet">error while sending</string>
     <string name="error_open_link">Could not open link!</string>
-    <string name="error_image_exists">Error, image already exists!</string>
     <string name="error_cant_load_video">Could not play video!</string>
     <string name="error_image_loading">Could not load image!</string>
     <string name="error_file_not_found">File not found!</string>

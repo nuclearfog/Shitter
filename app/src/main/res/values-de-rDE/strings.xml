@@ -137,7 +137,6 @@
     <string name="confirm_discard_proxy_changes">verwerfen</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">Sensible Inhalte</string>
-    <string name="error_image_exists">Fehler, Bild ist bereits vorhanden!</string>
     <string name="info_phone_tls_support">TLS 1.2 wird nicht unterstützt. Die App wird möglicherweise nicht funktionieren!</string>
     <string name="login_info">3 Schritte zum Login</string>
     <string name="info_fetching_link">öffne Twitter login Seite</string>

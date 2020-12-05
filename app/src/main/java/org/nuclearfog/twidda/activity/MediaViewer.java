@@ -6,9 +6,11 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.MediaController;
@@ -25,11 +27,15 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
-import org.nuclearfog.twidda.backend.ImageSaver;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.zoomview.ZoomView;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
@@ -37,8 +43,9 @@ import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
-import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.os.Environment.DIRECTORY_PICTURES;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
@@ -71,7 +78,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private static final int REQCODE_SD = 6;
 
     private ImageLoader imageAsync;
-    private ImageSaver imageSave;
+    private Thread imageSaveThread;
 
     private ProgressBar video_progress;
     private ProgressBar image_progress;
@@ -171,7 +178,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     @Override
     public void onImageSave(Bitmap image, int pos) {
         boolean accessGranted = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
             if (check == PERMISSION_DENIED) {
                 requestPermissions(REQ_WRITE_SD, REQCODE_SD);
@@ -179,7 +186,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             }
         }
         if (accessGranted) {
-            storeImage(image, pos);
+            storeImage(image, mediaLinks[pos]);
         }
     }
 
@@ -243,34 +250,6 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     }
 
     /**
-     * callback for image saver
-     *
-     * @param status status code of the image saver
-     */
-    public void onImageSaved(ImageSaver.ImageStat status, String path) {
-        switch (status) {
-            case IMAGE_SAVE_SUCCESS:
-                Toast.makeText(this, R.string.info_image_saved, Toast.LENGTH_LONG).show();
-                // Add image to gallery
-                ContentValues values = new ContentValues();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                values.put(MediaStore.MediaColumns.DATA, path);
-                getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-                break;
-
-            case IMAGE_SAVE_FAILED:
-                Toast.makeText(this, R.string.error_image_save, Toast.LENGTH_SHORT).show();
-                break;
-
-            case IMAGE_DUPLICATE:
-                Toast.makeText(this, R.string.error_image_exists, Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
-
-    /**
      * set downloaded image into preview list
      *
      * @param image Image container
@@ -288,15 +267,60 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      * called to save an image into storage
      *
      * @param image Image file
-     * @param pos   image position
+     * @param link  image link or path
      */
-    private void storeImage(Bitmap image, int pos) {
-        if (imageSave == null || imageSave.getStatus() == FINISHED) {
-            if (mediaLinks != null) {
-                String link = mediaLinks[pos];
-                imageSave = new ImageSaver(this, image, link);
-                imageSave.execute();
-            }
+    private void storeImage(final Bitmap image, final String link) {
+        if (imageSaveThread == null || !imageSaveThread.isAlive()) {
+            imageSaveThread = new Thread() {
+                @Override
+                public void run() {
+                    boolean imageSaved = false;
+                    try {
+                        String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
+                        OutputStream fileStream;
+                        // Add image to gallery
+                        ContentValues values = new ContentValues();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            values.put(MediaStore.Images.Media.DISPLAY_NAME, name);
+                            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                            values.put(MediaStore.MediaColumns.RELATIVE_PATH, DIRECTORY_PICTURES);
+                            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                            Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
+                            if (imageUri != null) {
+                                fileStream = getContentResolver().openOutputStream(imageUri);
+                                if (fileStream != null) {
+                                    imageSaved = image.compress(Bitmap.CompressFormat.JPEG, 90, fileStream);
+                                    fileStream.close();
+                                }
+                            }
+                        } else {
+                            File imageFile = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES), name + ".jpg");
+                            fileStream = new FileOutputStream(imageFile);
+                            imageSaved = image.compress(Bitmap.CompressFormat.JPEG, 90, fileStream);
+                            fileStream.close();
+                            MediaScannerConnection.scanFile(getApplicationContext(), new String[]{imageFile.toString()}, null, null);
+                        }
+                    } catch (IOException err) {
+                        err.printStackTrace();
+                    }
+                    if (imageSaved) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            };
+            imageSaveThread.start();
         }
     }
 }
