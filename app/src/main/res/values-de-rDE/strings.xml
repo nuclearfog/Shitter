@@ -178,4 +178,8 @@
     <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
     <string name="error_not_defined">Undefinierter Fehler!</string>
+    <string name="dialog_button_yes">Ja</string>
+    <string name="dialog_button_no">Nein</string>
+    <string name="dialog_button_cancel">Abbrechen</string>
+    <string name="dialog_button_ok">Ok</string>
 </resources>

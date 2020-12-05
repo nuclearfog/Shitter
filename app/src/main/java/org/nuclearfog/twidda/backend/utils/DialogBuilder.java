@@ -48,8 +48,8 @@ public final class DialogBuilder {
      * @return dialog instance
      */
     public static Dialog create(Context context, final DialogType type, final OnDialogClick listener) {
-        int posButton = android.R.string.yes;
-        int negButton = android.R.string.no;
+        int posButton = R.string.dialog_button_yes;
+        int negButton = R.string.dialog_button_no;
         int title = 0;
         int message = 0;
 
@@ -62,7 +62,7 @@ public final class DialogBuilder {
                 title = R.string.info_error;
                 message = R.string.info_wrong_proxy_settings;
                 posButton = R.string.confirm_discard_proxy_changes;
-                negButton = android.R.string.cancel;
+                negButton = R.string.dialog_button_cancel;
                 break;
 
             case DEL_DATABASE:
@@ -86,7 +86,7 @@ public final class DialogBuilder {
                 title = R.string.info_error;
                 message = R.string.error_sending_tweet;
                 posButton = R.string.confirm_retry;
-                negButton = android.R.string.cancel;
+                negButton = R.string.dialog_button_cancel;
                 break;
 
             case MSG_POPUP_LEAVE:
@@ -111,8 +111,8 @@ public final class DialogBuilder {
 
             case DEL_USER_LIST:
                 message = R.string.confirm_remove_user_from_list;
-                posButton = android.R.string.ok;
-                negButton = android.R.string.cancel;
+                posButton = R.string.dialog_button_ok;
+                negButton = R.string.dialog_button_cancel;
                 break;
 
             case LIST_UNFOLLOW:
