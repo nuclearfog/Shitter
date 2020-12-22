@@ -18,8 +18,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.List;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_DATA;
 
 /**
  * #Fragment class for a list of tweets
@@ -131,8 +130,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
             if (tweet.getEmbeddedTweet() != null)
                 tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(requireContext(), TweetActivity.class);
-            tweetIntent.putExtra(KEY_TWEET_ID, tweet.getId());
-            tweetIntent.putExtra(KEY_TWEET_NAME, tweet.getUser().getScreenname());
+            tweetIntent.putExtra(KEY_TWEET_DATA, tweet);
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);
         }
     }

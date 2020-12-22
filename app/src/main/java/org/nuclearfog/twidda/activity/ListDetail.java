@@ -37,7 +37,6 @@ import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_DESCR;
-import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_ID;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_TITLE;
 import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_VISIB;
 import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
@@ -59,12 +58,17 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     /**
      * Key for the list ID, required
      */
-    public static final String KEY_LISTDETAIL_ID = "list-id";
+    public static final String KEY_LIST_ID = "list-id";
 
     /**
      * Key to check if this list is owned by the current user
      */
-    public static final String KEY_CURRENT_USER_OWNS = "list-owner";
+    public static final String KEY_LIST_OWNER = "list-owner";
+
+    /**
+     * Key to get user list object
+     */
+    public static final String KEY_LIST_DATA = "list_data";
 
     /**
      * Request code for list editing
@@ -113,20 +117,28 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            listId = param.getLong(KEY_LISTDETAIL_ID);
-            boolean currentUserOwnsList = param.getBoolean(KEY_CURRENT_USER_OWNS, false);
-            adapter.setupListContentPage(listId, currentUserOwnsList);
-            Tab tweetTab = tablayout.getTabAt(0);
-            Tab userTab = tablayout.getTabAt(1);
-            Tab subscrTab = tablayout.getTabAt(2);
-            if (tweetTab != null && userTab != null && subscrTab != null) {
-                tweetTab.setIcon(R.drawable.list);
-                userTab.setIcon(R.drawable.user);
-                subscrTab.setIcon(R.drawable.subscriber);
+            boolean currentUserOwnsList;
+            if (param.containsKey(KEY_LIST_DATA)) {
+                userList = (UserList) param.getSerializable(KEY_LIST_DATA);
+                currentUserOwnsList = userList.isListOwner();
+                listId = userList.getId();
+            } else {
+                currentUserOwnsList = param.getBoolean(KEY_LIST_OWNER, false);
+                listId = param.getLong(KEY_LIST_ID);
             }
-            toolbar.setTitle("");
-            setSupportActionBar(toolbar);
+            adapter.setupListContentPage(listId, currentUserOwnsList);
         }
+
+        Tab tweetTab = tablayout.getTabAt(0);
+        Tab userTab = tablayout.getTabAt(1);
+        Tab subscrTab = tablayout.getTabAt(2);
+        if (tweetTab != null && userTab != null && subscrTab != null) {
+            tweetTab.setIcon(R.drawable.list);
+            userTab.setIcon(R.drawable.user);
+            subscrTab.setIcon(R.drawable.subscriber);
+        }
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         FontTool.setViewFontAndColor(settings, root);
     }
 
@@ -135,6 +147,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     protected void onStart() {
         super.onStart();
         if (listLoaderTask == null && userList == null) {
+            if (userList != null) {
+                toolbar.setTitle(userList.getTitle());
+                toolbar.setSubtitle(userList.getDescription());
+                invalidateOptionsMenu();
+            }
             loadList();
         }
     }
@@ -190,7 +207,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             int itemId = item.getItemId();
             if (itemId == R.id.menu_list_edit) {
                 Intent editList = new Intent(this, ListPopup.class);
-                editList.putExtra(KEY_LIST_ID, userList.getId());
+                editList.putExtra(ListPopup.KEY_LIST_ID, userList.getId());
                 editList.putExtra(KEY_LIST_TITLE, userList.getTitle());
                 editList.putExtra(KEY_LIST_DESCR, userList.getDescription());
                 editList.putExtra(KEY_LIST_VISIB, !userList.isPrivate());
@@ -351,11 +368,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      * load list information
      */
     private void loadList() {
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            long listId = param.getLong(KEY_LISTDETAIL_ID);
-            listLoaderTask = new ListAction(this, LOAD);
-            listLoaderTask.execute(listId);
-        }
+        listLoaderTask = new ListAction(this, LOAD);
+        listLoaderTask.execute(listId);
     }
 }

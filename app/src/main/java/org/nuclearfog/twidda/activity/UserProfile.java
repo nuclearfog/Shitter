@@ -73,7 +73,8 @@ import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNBLOCK;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
-import static org.nuclearfog.twidda.backend.UserAction.Action.LDR_PROFILE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
+import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
@@ -95,6 +96,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      * Alternative Key for the screen name
      */
     public static final String KEY_PROFILE_NAME = "profile_name";
+
+    /**
+     * key for user object
+     */
+    public static final String KEY_PROFILE_DATA = "profile_data";
 
     /**
      * request code for {@link ProfileEditor}
@@ -126,6 +132,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private UserAction profileAsync;
     private Relation relation;
     private User user;
+    private String username;
+    private long userId;
 
 
     @Override
@@ -189,8 +197,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            long userId = param.getLong(KEY_PROFILE_ID, -1);
-            String username = param.getString(KEY_PROFILE_NAME, "");
+            if (param.containsKey(KEY_PROFILE_DATA)) {
+                user = (User) param.getSerializable(KEY_PROFILE_DATA);
+                userId = user.getId();
+                username = user.getScreenname();
+            } else {
+                userId = param.getLong(KEY_PROFILE_ID, -1);
+                username = param.getString(KEY_PROFILE_NAME, "");
+            }
             adapter.setupProfilePage(userId, username);
         }
         Tab tweetTab = tabLayout.getTabAt(0);
@@ -212,12 +226,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     protected void onStart() {
         super.onStart();
-        Bundle param = getIntent().getExtras();
-        if (profileAsync == null && param != null) {
-            long userId = param.getLong(KEY_PROFILE_ID, -1);
-            String username = param.getString(KEY_PROFILE_NAME, "");
+        if (profileAsync == null) {
             profileAsync = new UserAction(this, userId, username);
-            profileAsync.execute(LDR_PROFILE);
+            if (user == null) {
+                profileAsync.execute(PROFILE_DB);
+            } else {
+                profileAsync.execute(PROFILE_lOAD);
+                setUser(user);
+            }
         }
     }
 

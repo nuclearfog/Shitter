@@ -18,8 +18,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_CURRENT_USER_OWNS;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LISTDETAIL_ID;
+import static org.nuclearfog.twidda.activity.ListDetail.KEY_LIST_DATA;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
@@ -128,8 +127,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     @Override
     public void onListClick(UserList listItem) {
         Intent listIntent = new Intent(requireContext(), ListDetail.class);
-        listIntent.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
-        listIntent.putExtra(KEY_CURRENT_USER_OWNS, listItem.isListOwner());
+        listIntent.putExtra(KEY_LIST_DATA, listItem);
         startActivityForResult(listIntent, REQUEST_OPEN_LIST);
     }
 

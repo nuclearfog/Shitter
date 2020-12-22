@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_USER_LIST;
@@ -159,10 +159,11 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public void onUserClick(User user) {
         if (!isRefreshing()) {
             Intent intent = new Intent(requireContext(), UserProfile.class);
-            intent.putExtra(KEY_PROFILE_ID, user.getId());
+            intent.putExtra(KEY_PROFILE_DATA, user);
             startActivity(intent);
         }
     }
+
 
     @Override
     public void onFooterClick(long cursor) {

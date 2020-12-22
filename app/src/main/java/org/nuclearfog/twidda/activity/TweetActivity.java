@@ -73,12 +73,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     /**
      * ID of the tweet to open. required
      */
-    public static final String KEY_TWEET_ID = "tweetID";
+    public static final String KEY_TWEET_ID = "tweet_tweet_id";
 
     /**
      * screen name of the author. optional
      */
-    public static final String KEY_TWEET_NAME = "username";
+    public static final String KEY_TWEET_NAME = "tweet_author";
+
+    /**
+     * key for a tweet object
+     */
+    public static final String KEY_TWEET_DATA = "tweet_data";
 
     /**
      * regex pattern of a tweet URL
@@ -96,6 +101,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private TweetAction statusAsync;
     @Nullable
     private Tweet tweet;
+    private long tweetId;
 
 
     @Override
@@ -127,8 +133,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         Bundle param = getIntent().getExtras();
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         if (param != null) {
-            long tweetId = param.getLong(KEY_TWEET_ID);
-            String username = param.getString(KEY_TWEET_NAME, "");
+            String username;
+            if (param.containsKey(KEY_TWEET_DATA)) {
+                tweet = (Tweet) param.getSerializable(KEY_TWEET_DATA);
+                username = tweet.getUser().getScreenname();
+                tweetId = tweet.getId();
+            } else {
+                tweetId = param.getLong(KEY_TWEET_ID);
+                username = param.getString(KEY_TWEET_NAME, "");
+            }
             adapter.setupTweetPage(tweetId, username);
         }
 
@@ -156,12 +169,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     protected void onStart() {
         super.onStart();
-        Bundle param = getIntent().getExtras();
-        if (statusAsync == null && param != null) {
-            if (param.containsKey(KEY_TWEET_ID)) {
-                long tweetId = param.getLong(KEY_TWEET_ID);
+        if (statusAsync == null) {
+            if (tweet == null) {
                 statusAsync = new TweetAction(this, tweetId);
+                statusAsync.execute(Action.LD_DB);
+            } else {
+                statusAsync = new TweetAction(this, tweet.getId());
                 statusAsync.execute(Action.LOAD);
+                setTweet(tweet);
             }
         }
     }
@@ -250,7 +265,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             else if (v.getId() == R.id.profileimage_detail) {
                 if (tweet != null) {
                     Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                    profile.putExtra(UserProfile.KEY_PROFILE_ID, tweet.getUser().getId());
+                    profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
                     startActivity(profile);
                 }
             }

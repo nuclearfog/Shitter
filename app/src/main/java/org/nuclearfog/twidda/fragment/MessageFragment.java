@@ -32,7 +32,7 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_MESSAGE;
 
 /**
@@ -143,7 +143,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
                 case PROFILE:
                     Intent profile = new Intent(requireContext(), UserProfile.class);
-                    profile.putExtra(KEY_PROFILE_ID, message.getSender().getId());
+                    profile.putExtra(KEY_PROFILE_DATA, message.getSender());
                     startActivity(profile);
                     break;
             }

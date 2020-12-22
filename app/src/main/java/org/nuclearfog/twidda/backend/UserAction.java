@@ -25,7 +25,11 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
         /**
          * Load profile information
          */
-        LDR_PROFILE,
+        PROFILE_lOAD,
+        /**
+         * load profile from database first
+         */
+        PROFILE_DB,
         /**
          * follow user
          */
@@ -86,7 +90,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     protected Relation doInBackground(Action[] action) {
         try {
             switch (action[0]) {
-                case LDR_PROFILE:
+                case PROFILE_DB:
                     // load user information from database
                     User user;
                     if (userId > 0) {
@@ -95,6 +99,8 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                             publishProgress(user);
                         }
                     }
+
+                case PROFILE_lOAD:
                     // load user information from twitter
                     user = mTwitter.getUser(userId, screenName);
                     publishProgress(user);

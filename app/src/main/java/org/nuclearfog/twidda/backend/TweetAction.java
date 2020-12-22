@@ -29,6 +29,10 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
          */
         LOAD,
         /**
+         * load tweet from database first
+         */
+        LD_DB,
+        /**
          * retweet tweet
          */
         RETWEET,
@@ -82,14 +86,16 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     @Override
     protected Action doInBackground(Action[] action) {
         try {
+            boolean updateStatus = false;
             switch (action[0]) {
-                case LOAD:
-                    boolean updateStatus = false;
+                case LD_DB:
                     Tweet tweet = db.getStatus(tweetId);
                     if (tweet != null) {
                         publishProgress(tweet);
                         updateStatus = true;
                     }
+
+                case LOAD:
                     tweet = mTwitter.getStatus(tweetId);
                     publishProgress(tweet);
                     if (updateStatus) {
