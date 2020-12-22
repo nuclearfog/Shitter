@@ -10,7 +10,7 @@ import twitter4j.Location;
 public class TrendLocation {
 
     private final String placeName;
-    private final int id;
+    private final int worldId;
 
     /**
      * construct location object from online
@@ -25,18 +25,18 @@ public class TrendLocation {
             this.placeName = "" + placeName;
         else
             this.placeName = country + ", " + placeName;
-        this.id = location.getWoeid();
+        this.worldId = location.getWoeid();
     }
 
     /**
      * construct location object from local
      *
      * @param placeName name of locale
-     * @param id        woe id
+     * @param worldId   woe id
      */
-    public TrendLocation(String placeName, int id) {
+    public TrendLocation(String placeName, int worldId) {
         this.placeName = placeName;
-        this.id = id;
+        this.worldId = worldId;
     }
 
     /**
@@ -54,7 +54,7 @@ public class TrendLocation {
      * @return woeID
      */
     public int getWoeId() {
-        return id;
+        return worldId;
     }
 
 
@@ -69,6 +69,6 @@ public class TrendLocation {
     public boolean equals(Object obj) {
         if (!(obj instanceof TrendLocation))
             return false;
-        return ((TrendLocation) obj).getWoeId() == id;
+        return ((TrendLocation) obj).getWoeId() == worldId;
     }
 }

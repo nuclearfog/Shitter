@@ -1,11 +1,9 @@
 package org.nuclearfog.twidda.backend.items;
 
-import twitter4j.Trend;
-
 /**
  * Twitter Trend Class
  */
-public class TwitterTrend {
+public class Trend {
 
     private final int rank;
     private final String trendName;
@@ -17,7 +15,7 @@ public class TwitterTrend {
      * @param trend Twitter4J trend
      * @param rank  trend ranking
      */
-    public TwitterTrend(Trend trend, int rank) {
+    public Trend(twitter4j.Trend trend, int rank) {
         this.trendName = "" + trend.getName();
         this.range = trend.getTweetVolume();
         this.rank = rank;
@@ -30,7 +28,7 @@ public class TwitterTrend {
      * @param volume    Trend range
      * @param rank      trend ranking
      */
-    public TwitterTrend(String trendName, int volume, int rank) {
+    public Trend(String trendName, int volume, int rank) {
         this.trendName = trendName;
         this.range = volume;
         this.rank = rank;

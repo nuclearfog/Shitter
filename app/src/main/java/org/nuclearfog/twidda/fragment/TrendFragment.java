@@ -7,7 +7,7 @@ import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.TwitterTrend;
+import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -74,7 +74,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
 
     @Override
-    public void onTrendClick(TwitterTrend trend) {
+    public void onTrendClick(Trend trend) {
         if (!isRefreshing()) {
             Intent intent = new Intent(requireContext(), SearchPage.class);
             intent.putExtra(KEY_SEARCH_QUERY, trend.getSearchString());
@@ -87,7 +87,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
      *
      * @param data Trend data
      */
-    public void setData(List<TwitterTrend> data) {
+    public void setData(List<Trend> data) {
         adapter.setData(data);
         setRefresh(false);
     }

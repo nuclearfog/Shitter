@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.TwitterTrend;
+import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.TrendFragment;
 
@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @see TrendFragment
  */
-public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
+public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
 
     @Nullable
     private EngineException twException;
@@ -41,8 +41,8 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
 
 
     @Override
-    protected List<TwitterTrend> doInBackground(Integer[] param) {
-        List<TwitterTrend> trends;
+    protected List<Trend> doInBackground(Integer[] param) {
+        List<Trend> trends;
         int woeId = param[0];
         try {
             if (isEmpty) {
@@ -64,7 +64,7 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<TwitterTrend>> {
 
 
     @Override
-    protected void onPostExecute(List<TwitterTrend> trends) {
+    protected void onPostExecute(List<Trend> trends) {
         if (callback.get() != null) {
             if (trends != null) {
                 callback.get().setData(trends);

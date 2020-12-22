@@ -26,7 +26,7 @@ import org.nuclearfog.twidda.backend.ListAction;
 import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.items.UserList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -87,7 +87,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private Toolbar toolbar;
     private Dialog unfollowDialog, deleteDialog;
 
-    private TwitterList twitterList;
+    private UserList userList;
     private long listId;
 
     @Override
@@ -134,7 +134,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     @Override
     protected void onStart() {
         super.onStart();
-        if (listLoaderTask == null && twitterList == null) {
+        if (listLoaderTask == null && userList == null) {
             loadList();
         }
     }
@@ -164,8 +164,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         MenuItem search = m.findItem(R.id.menu_list_add_user);
         SearchView searchUser = (SearchView) search.getActionView();
         search.collapseActionView();
-        if (twitterList != null) {
-            if (twitterList.isListOwner()) {
+        if (userList != null) {
+            if (userList.isListOwner()) {
                 searchUser.setQueryHint(getString(R.string.menu_add_user));
                 searchUser.setOnQueryTextListener(this);
                 editList.setVisible(true);
@@ -173,7 +173,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                 search.setVisible(true);
             } else {
                 followList.setVisible(true);
-                if (twitterList.isFollowing()) {
+                if (userList.isFollowing()) {
                     followList.setTitle(R.string.menu_unfollow_list);
                 } else {
                     followList.setTitle(R.string.menu_list_follow);
@@ -186,27 +186,27 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (twitterList != null && (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING)) {
+        if (userList != null && (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING)) {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_list_edit) {
                 Intent editList = new Intent(this, ListPopup.class);
-                editList.putExtra(KEY_LIST_ID, twitterList.getId());
-                editList.putExtra(KEY_LIST_TITLE, twitterList.getTitle());
-                editList.putExtra(KEY_LIST_DESCR, twitterList.getDescription());
-                editList.putExtra(KEY_LIST_VISIB, !twitterList.isPrivate());
+                editList.putExtra(KEY_LIST_ID, userList.getId());
+                editList.putExtra(KEY_LIST_TITLE, userList.getTitle());
+                editList.putExtra(KEY_LIST_DESCR, userList.getDescription());
+                editList.putExtra(KEY_LIST_VISIB, !userList.isPrivate());
                 startActivityForResult(editList, REQ_LIST_CHANGE);
             } else if (itemId == R.id.menu_delete_list) {
                 if (!deleteDialog.isShowing()) {
                     deleteDialog.show();
                 }
             } else if (itemId == R.id.menu_follow_list) {
-                if (twitterList.isFollowing()) {
+                if (userList.isFollowing()) {
                     if (!unfollowDialog.isShowing()) {
                         unfollowDialog.show();
                     }
                 } else {
                     listLoaderTask = new ListAction(this, FOLLOW);
-                    listLoaderTask.execute(twitterList.getId());
+                    listLoaderTask.execute(userList.getId());
                 }
             }
         }
@@ -237,12 +237,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         switch (type) {
             case LIST_DELETE:
                 listLoaderTask = new ListAction(this, DELETE);
-                listLoaderTask.execute(twitterList.getId());
+                listLoaderTask.execute(userList.getId());
                 break;
 
             case LIST_UNFOLLOW:
                 listLoaderTask = new ListAction(this, UNFOLLOW);
-                listLoaderTask.execute(twitterList.getId());
+                listLoaderTask.execute(userList.getId());
                 break;
         }
     }
@@ -298,15 +298,15 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     /**
      * called from {@link ListAction} to update userlist information
      *
-     * @param twitterList userlist information
-     * @param action      what action was performed
+     * @param userList userlist information
+     * @param action   what action was performed
      */
-    public void onSuccess(TwitterList twitterList, ListAction.Action action) {
-        this.twitterList = twitterList;
+    public void onSuccess(UserList userList, ListAction.Action action) {
+        this.userList = userList;
         switch (action) {
             case LOAD:
-                toolbar.setTitle(twitterList.getTitle());
-                toolbar.setSubtitle(twitterList.getDescription());
+                toolbar.setTitle(userList.getTitle());
+                toolbar.setSubtitle(userList.getDescription());
                 invalidateOptionsMenu();
                 break;
 
@@ -322,7 +322,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
             case DELETE:
                 Intent result = new Intent();
-                result.putExtra(RESULT_REMOVED_LIST_ID, twitterList.getId());
+                result.putExtra(RESULT_REMOVED_LIST_ID, userList.getId());
                 setResult(RETURN_LIST_REMOVED, result);
                 Toast.makeText(this, R.string.info_list_removed, Toast.LENGTH_SHORT).show();
                 finish();
@@ -337,7 +337,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      */
     public void onFailure(EngineException err) {
         ErrorHandler.handleFailure(this, err);
-        if (twitterList == null) {
+        if (userList == null) {
             if (err.resourceNotFound()) {
                 Intent result = new Intent();
                 result.putExtra(RESULT_REMOVED_LIST_ID, listId);

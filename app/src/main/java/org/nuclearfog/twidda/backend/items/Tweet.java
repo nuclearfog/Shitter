@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.backend.items;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.Serializable;
+
 import twitter4j.GeoLocation;
 import twitter4j.MediaEntity;
 import twitter4j.Place;
@@ -12,7 +14,7 @@ import twitter4j.URLEntity;
 /**
  * Tweet class containing information about a tweet
  */
-public class Tweet {
+public class Tweet implements Serializable {
 
     /**
      * type of media attached to the tweet
@@ -35,7 +37,7 @@ public class Tweet {
     private String[] medias;
     private String source;
 
-    private TwitterUser user;
+    private User user;
     private Tweet embedded;
 
     private long replyID;
@@ -78,7 +80,7 @@ public class Tweet {
         this.favoriteCount = favoriteCount;
         this.favored = favored;
         tweetID = status.getId();
-        user = new TwitterUser(status.getUser());
+        user = new User(status.getUser());
         tweet = getText(status);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
@@ -167,7 +169,7 @@ public class Tweet {
      * @param geo            location gps coordinates
      * @param place          location full place name
      */
-    public Tweet(long tweetID, int retweetCount, int favoriteCount, TwitterUser user, String tweet, long time,
+    public Tweet(long tweetID, int retweetCount, int favoriteCount, User user, String tweet, long time,
                  String replyName, long replyUserId, String[] medias, MediaType mediaType, String source, long replyID,
                  Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, boolean sensitiveMedia, String place, String geo) {
 
@@ -215,7 +217,7 @@ public class Tweet {
      *
      * @return tweet owner
      */
-    public TwitterUser getUser() {
+    public User getUser() {
         return user;
     }
 

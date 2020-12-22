@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserRelation;
+import org.nuclearfog.twidda.backend.items.Relation;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @see UserProfile
  */
-public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRelation> {
+public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
     /**
      * actions to be taken
@@ -63,7 +63,7 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
      * @param callback Callback to return the result
      * @param user     twitter user information
      */
-    public UserAction(UserProfile callback, TwitterUser user) {
+    public UserAction(UserProfile callback, User user) {
         this(callback, user.getId(), user.getScreenname());
     }
 
@@ -83,12 +83,12 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
 
 
     @Override
-    protected UserRelation doInBackground(Action[] action) {
+    protected Relation doInBackground(Action[] action) {
         try {
             switch (action[0]) {
                 case LDR_PROFILE:
                     // load user information from database
-                    TwitterUser user;
+                    User user;
                     if (userId > 0) {
                         user = db.getUser(userId);
                         if (user != null) {
@@ -100,7 +100,7 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
                     publishProgress(user);
                     db.storeUser(user);
                     // load user relations from twitter
-                    UserRelation relation = mTwitter.getConnection(userId, screenName);
+                    Relation relation = mTwitter.getConnection(userId, screenName);
                     if (!relation.isHome()) {
                         boolean muteUser = relation.isBlocked() || relation.isMuted();
                         db.muteUser(userId, muteUser);
@@ -150,7 +150,7 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
 
 
     @Override
-    protected void onProgressUpdate(TwitterUser[] users) {
+    protected void onProgressUpdate(User[] users) {
         if (callback.get() != null) {
             callback.get().setUser(users[0]);
         }
@@ -158,7 +158,7 @@ public class UserAction extends AsyncTask<UserAction.Action, TwitterUser, UserRe
 
 
     @Override
-    protected void onPostExecute(UserRelation properties) {
+    protected void onPostExecute(Relation properties) {
         if (callback.get() != null) {
             if (properties != null) {
                 callback.get().onAction(properties);

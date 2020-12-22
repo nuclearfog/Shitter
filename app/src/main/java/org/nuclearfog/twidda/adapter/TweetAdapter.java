@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -232,7 +232,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         Tweet tweet = tweets.get(index);
         if (holder instanceof TweetHolder && tweet != null) {
             TweetHolder vh = (TweetHolder) holder;
-            TwitterUser user = tweet.getUser();
+            User user = tweet.getUser();
             if (tweet.getEmbeddedTweet() != null) {
                 vh.retweeter.setText(user.getScreenname());
                 vh.retweeter.setVisibility(VISIBLE);

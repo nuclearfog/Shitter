@@ -2,14 +2,14 @@ package org.nuclearfog.twidda.backend.holder;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 
 import java.util.LinkedList;
 
 /**
  * custom twitter user list with cursors included
  */
-public class TwitterUserList extends LinkedList<TwitterUser> {
+public class TwitterUserList extends LinkedList<User> {
 
     private long prevCursor = 0;
     private long nextCursor = 0;

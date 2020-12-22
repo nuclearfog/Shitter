@@ -2,31 +2,31 @@ package org.nuclearfog.twidda.backend.items;
 
 import androidx.annotation.NonNull;
 
-import twitter4j.UserList;
+import java.io.Serializable;
 
 /**
  * Class for Twitter list information
  */
-public class TwitterList {
+public class UserList implements Serializable {
 
     private final long id;
     private final long createdAt;
     private final String title;
     private final String description;
 
-    private final TwitterUser owner;
+    private final User owner;
     private final boolean isPrivate;
     private final boolean isFollowing;
     private final boolean isOwner;
     private final int memberCount;
     private final int subscriberCnt;
 
-    public TwitterList(UserList list, long homeId, boolean isFollowing) {
+    public UserList(twitter4j.UserList list, long homeId, boolean isFollowing) {
         String description = list.getDescription();
         String title = list.getName();
         id = list.getId();
         createdAt = list.getCreatedAt().getTime();
-        owner = new TwitterUser(list.getUser());
+        owner = new User(list.getUser());
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
@@ -36,7 +36,7 @@ public class TwitterList {
         this.isFollowing = isFollowing;
     }
 
-    public TwitterList(twitter4j.UserList list, long homeId) {
+    public UserList(twitter4j.UserList list, long homeId) {
         this(list, homeId, list.isFollowing());
     }
 
@@ -81,7 +81,7 @@ public class TwitterList {
      *
      * @return twitter user
      */
-    public TwitterUser getListOwner() {
+    public User getListOwner() {
         return owner;
     }
 
@@ -139,8 +139,8 @@ public class TwitterList {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof TwitterList)
-            return ((TwitterList) o).id == id;
+        if (o instanceof UserList)
+            return ((UserList) o).id == id;
         return false;
     }
 }

@@ -12,8 +12,8 @@ import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserListList;
-import org.nuclearfog.twidda.backend.items.TwitterList;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.items.UserList;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -126,7 +126,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
     @Override
-    public void onListClick(TwitterList listItem) {
+    public void onListClick(UserList listItem) {
         Intent listIntent = new Intent(requireContext(), ListDetail.class);
         listIntent.putExtra(KEY_LISTDETAIL_ID, listItem.getId());
         listIntent.putExtra(KEY_CURRENT_USER_OWNS, listItem.isListOwner());
@@ -135,7 +135,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
     @Override
-    public void onProfileClick(TwitterUser user) {
+    public void onProfileClick(User user) {
         Intent profile = new Intent(requireContext(), UserProfile.class);
         profile.putExtra(KEY_PROFILE_ID, user.getId());
         startActivity(profile);

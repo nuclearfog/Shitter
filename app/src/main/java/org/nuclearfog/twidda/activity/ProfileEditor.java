@@ -33,7 +33,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserHolder;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -93,7 +93,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private Button addBannerBtn;
     private View changeBannerBtn;
 
-    private TwitterUser user;
+    private User user;
     private String profileLink, bannerLink;
 
     @Override
@@ -297,7 +297,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      *
      * @param user Current user
      */
-    public void setUser(TwitterUser user) {
+    public void setUser(User user) {
         String pbLink = user.getImageLink();
         String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
 

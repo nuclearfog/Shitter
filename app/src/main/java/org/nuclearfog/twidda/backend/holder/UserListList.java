@@ -2,14 +2,14 @@ package org.nuclearfog.twidda.backend.holder;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.items.UserList;
 
 import java.util.LinkedList;
 
 /**
  * Container class for user lists containing extra cursors for paging
  */
-public class UserListList extends LinkedList<TwitterList> {
+public class UserListList extends LinkedList<UserList> {
 
     private long prevCursor = 0;
     private long nextCursor = 0;

@@ -2,10 +2,12 @@ package org.nuclearfog.twidda.backend.items;
 
 import androidx.annotation.NonNull;
 
-import twitter4j.URLEntity;
-import twitter4j.User;
+import java.io.Serializable;
 
-public class TwitterUser {
+import twitter4j.URLEntity;
+
+public class User implements Serializable {
+
     private final long userID;
     private final long created;
 
@@ -30,7 +32,7 @@ public class TwitterUser {
     private final String profileImg;
     private final String bannerImg;
 
-    public TwitterUser(User user) {
+    public User(twitter4j.User user) {
         String username = user.getName();
         String screenname = user.getScreenName();
         String link = user.getURLEntity().getExpandedURL();
@@ -73,9 +75,9 @@ public class TwitterUser {
         hasDefaultImage = user.isDefaultProfileImage();
     }
 
-    public TwitterUser(long userID, String username, String screenname, String profileImg, String bio, String location,
-                       boolean isVerified, boolean isLocked, boolean isFollowReqSent, boolean hasDefaultImage, String link,
-                       String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
+    public User(long userID, String username, String screenname, String profileImg, String bio, String location,
+                boolean isVerified, boolean isLocked, boolean isFollowReqSent, boolean hasDefaultImage, String link,
+                String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
 
         this.userID = userID;
         this.username = username != null ? username : "";

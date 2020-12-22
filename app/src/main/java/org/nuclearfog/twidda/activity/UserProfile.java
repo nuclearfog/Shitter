@@ -35,8 +35,8 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.UserAction;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
-import org.nuclearfog.twidda.backend.items.UserRelation;
+import org.nuclearfog.twidda.backend.items.Relation;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -124,8 +124,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
     private UserAction profileAsync;
-    private UserRelation relation;
-    private TwitterUser user;
+    private Relation relation;
+    private User user;
 
 
     @Override
@@ -342,7 +342,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                         dmPage = new Intent(this, DirectMessage.class);
                     } else {
                         dmPage = new Intent(this, MessagePopup.class);
-                        dmPage.putExtra(KEY_DM_PREFIX, relation.getTargetScreenname());
+                        dmPage.putExtra(KEY_DM_PREFIX, relation.getTargetScreenName());
                     }
                     startActivity(dmPage);
                 } else if (menuId == R.id.profile_lists) {
@@ -480,7 +480,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      *
      * @param user User data
      */
-    public void setUser(TwitterUser user) {
+    public void setUser(User user) {
         this.user = user;
         NumberFormat formatter = NumberFormat.getIntegerInstance();
         Spanned bio = Tagger.makeTextWithLinks(user.getBio(), settings.getHighlightColor(), this);
@@ -551,7 +551,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      *
      * @param relation relation to an user
      */
-    public void onAction(UserRelation relation) {
+    public void onAction(Relation relation) {
         if (this.relation != null) {
             // check if block status changed
             if (relation.isBlocked() != this.relation.isBlocked()) {

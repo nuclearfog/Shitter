@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.items.TwitterTrend;
+import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -36,7 +36,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     private GlobalSettings settings;
     private NumberFormat formatter;
 
-    private List<TwitterTrend> trends;
+    private List<Trend> trends;
 
 
     public TrendAdapter(TrendClickListener itemClickListener, GlobalSettings settings) {
@@ -52,7 +52,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
      * @param trendList list of trends
      */
     @MainThread
-    public void setData(@NonNull List<TwitterTrend> trendList) {
+    public void setData(@NonNull List<Trend> trendList) {
         trends.clear();
         trends.addAll(trendList);
         notifyDataSetChanged();
@@ -106,7 +106,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         ItemHolder holder = (ItemHolder) vh;
-        TwitterTrend trend = trends.get(index);
+        Trend trend = trends.get(index);
         holder.pos.setText(trend.getRankStr());
         holder.name.setText(trend.getName());
         if (trend.hasRangeInfo()) {
@@ -144,6 +144,6 @@ public class TrendAdapter extends Adapter<ViewHolder> {
          *
          * @param trend trend name
          */
-        void onTrendClick(TwitterTrend trend);
+        void onTrendClick(Trend trend);
     }
 }

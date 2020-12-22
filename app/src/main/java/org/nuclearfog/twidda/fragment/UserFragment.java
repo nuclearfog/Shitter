@@ -15,7 +15,7 @@ import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -156,7 +156,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onUserClick(TwitterUser user) {
+    public void onUserClick(User user) {
         if (!isRefreshing()) {
             Intent intent = new Intent(requireContext(), UserProfile.class);
             intent.putExtra(KEY_PROFILE_ID, user.getId());

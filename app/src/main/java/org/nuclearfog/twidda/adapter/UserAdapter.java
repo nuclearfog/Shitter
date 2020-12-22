@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -133,7 +133,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
-                    TwitterUser user = data.get(position);
+                    User user = data.get(position);
                     if (position != NO_POSITION && user != null) {
                         itemClickListener.onUserClick(user);
                     }
@@ -145,7 +145,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         int position = vh.getLayoutPosition();
-                        TwitterUser user = data.get(position);
+                        User user = data.get(position);
                         if (position != NO_POSITION && user != null) {
                             itemClickListener.onDelete(user.getScreenname());
                         }
@@ -179,7 +179,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-        TwitterUser user = data.get(index);
+        User user = data.get(index);
         if (holder instanceof ItemHolder && user != null) {
             ItemHolder vh = (ItemHolder) holder;
             vh.username.setText(user.getUsername());
@@ -282,7 +282,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
          *
          * @param user user item
          */
-        void onUserClick(TwitterUser user);
+        void onUserClick(User user);
 
         /**
          * handle footer click

@@ -18,8 +18,8 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.UserListList;
-import org.nuclearfog.twidda.backend.items.TwitterList;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.items.UserList;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.UserListFragment;
@@ -133,7 +133,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        TwitterUser user = data.get(position).getListOwner();
+                        User user = data.get(position).getListOwner();
                         listener.onProfileClick(user);
                     }
                 }
@@ -143,7 +143,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        TwitterList list = data.get(position);
+                        UserList list = data.get(position);
                         listener.onListClick(list);
                     }
                 }
@@ -175,8 +175,8 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
         if (holder instanceof ListHolder) {
             ListHolder vh = (ListHolder) holder;
-            TwitterList item = data.get(index);
-            TwitterUser owner = item.getListOwner();
+            UserList item = data.get(index);
+            User owner = item.getListOwner();
             vh.title.setText(item.getTitle());
             vh.username.setText(owner.getUsername());
             vh.screenname.setText(owner.getScreenname());
@@ -281,14 +281,14 @@ public class ListAdapter extends Adapter<ViewHolder> {
          *
          * @param listItem Item data and information
          */
-        void onListClick(TwitterList listItem);
+        void onListClick(UserList listItem);
 
         /**
          * called when the profile image of the owner was clicked
          *
          * @param user user information
          */
-        void onProfileClick(TwitterUser user);
+        void onProfileClick(User user);
 
         /**
          * called when the footer is clicked

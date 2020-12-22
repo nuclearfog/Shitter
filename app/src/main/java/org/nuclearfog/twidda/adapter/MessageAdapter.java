@@ -21,7 +21,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -137,7 +137,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         Spanned text;
         Message message = messages.get(index);
-        TwitterUser sender = message.getSender();
+        User sender = message.getSender();
         text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
 
         MessageHolder holder = (MessageHolder) vh;

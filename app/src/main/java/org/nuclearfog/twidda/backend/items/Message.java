@@ -4,14 +4,13 @@ import androidx.annotation.NonNull;
 
 import twitter4j.DirectMessage;
 import twitter4j.URLEntity;
-import twitter4j.User;
 
 public class Message {
 
     private final long messageId;
     private final long time;
-    private final TwitterUser sender;
-    private final TwitterUser receiver;
+    private final User sender;
+    private final User receiver;
     private final String message;
 
     /**
@@ -21,9 +20,9 @@ public class Message {
      * @param sender   sender user
      * @param receiver receiver user
      */
-    public Message(DirectMessage dm, User sender, User receiver) {
-        this.sender = new TwitterUser(sender);
-        this.receiver = new TwitterUser(receiver);
+    public Message(DirectMessage dm, twitter4j.User sender, twitter4j.User receiver) {
+        this.sender = new User(sender);
+        this.receiver = new User(receiver);
         messageId = dm.getId();
         time = dm.getCreatedAt().getTime();
         message = getText(dm);
@@ -38,7 +37,7 @@ public class Message {
      * @param time      timestamp long format
      * @param message   message text
      */
-    public Message(long messageId, TwitterUser sender, TwitterUser receiver, long time, String message) {
+    public Message(long messageId, User sender, User receiver, long time, String message) {
         this.messageId = messageId;
         this.sender = sender;
         this.receiver = receiver;
@@ -60,7 +59,7 @@ public class Message {
      *
      * @return user
      */
-    public TwitterUser getSender() {
+    public User getSender() {
         return sender;
     }
 
@@ -69,7 +68,7 @@ public class Message {
      *
      * @return user
      */
-    public TwitterUser getReceiver() {
+    public User getReceiver() {
         return receiver;
     }
 

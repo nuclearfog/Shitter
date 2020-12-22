@@ -7,9 +7,9 @@ import twitter4j.Relationship;
 /**
  * Holder for relationship information between the current user and another user
  */
-public class UserRelation {
+public class Relation {
 
-    private final String targetScreenname;
+    private final String targetScreenName;
     private final boolean isHome;
     private final boolean isFriend;
     private final boolean isFollower;
@@ -22,8 +22,8 @@ public class UserRelation {
      *
      * @param connect twitter4j relationship information
      */
-    public UserRelation(Relationship connect) {
-        targetScreenname = '@' + connect.getTargetUserScreenName();
+    public Relation(Relationship connect) {
+        targetScreenName = '@' + connect.getTargetUserScreenName();
         isHome = connect.getSourceUserId() == connect.getTargetUserId();
         isFriend = connect.isSourceFollowingTarget();
         isFollower = connect.isTargetFollowingSource();
@@ -37,8 +37,8 @@ public class UserRelation {
      *
      * @return screen name
      */
-    public String getTargetScreenname() {
-        return targetScreenname;
+    public String getTargetScreenName() {
+        return targetScreenName;
     }
 
     /**
@@ -98,6 +98,6 @@ public class UserRelation {
     @NonNull
     @Override
     public String toString() {
-        return "target=" + targetScreenname + ", isFriend=" + isFriend + ", isFollower=" + isFollower;
+        return "target=" + targetScreenName + ", isFriend=" + isFriend + ", isFollower=" + isFollower;
     }
 }

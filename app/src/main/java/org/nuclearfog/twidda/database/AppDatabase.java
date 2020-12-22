@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterTrend;
-import org.nuclearfog.twidda.backend.items.TwitterUser;
+import org.nuclearfog.twidda.backend.items.User;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -74,7 +74,7 @@ public class AppDatabase {
      *
      * @param user Twitter user
      */
-    public void storeUser(TwitterUser user) {
+    public void storeUser(User user) {
         SQLiteDatabase db = getDbWrite();
         storeUser(user, db, CONFLICT_REPLACE);
         commit(db);
@@ -150,11 +150,11 @@ public class AppDatabase {
      * @param trends List of Trends
      * @param woeId  Yahoo World ID
      */
-    public void storeTrends(List<TwitterTrend> trends, int woeId) {
+    public void storeTrends(List<Trend> trends, int woeId) {
         final String[] ARGS = new String[]{Integer.toString(woeId)};
         SQLiteDatabase db = getDbWrite();
         db.delete("trend", "woeid=?", ARGS);
-        for (TwitterTrend trend : trends) {
+        for (Trend trend : trends) {
             ContentValues trendColumn = new ContentValues();
             trendColumn.put("woeID", woeId);
             trendColumn.put("vol", trend.getRange());
@@ -282,7 +282,7 @@ public class AppDatabase {
      * @return user information or null if not found
      */
     @Nullable
-    public TwitterUser getUser(long userId) {
+    public User getUser(long userId) {
         SQLiteDatabase db = getDbRead();
         return getUser(userId, db);
     }
@@ -358,7 +358,7 @@ public class AppDatabase {
         statColumn.put("statusregister", flags);
         statColumn.put("media", getMediaLinks(tweet));
 
-        TwitterUser user = tweet.getUser();
+        User user = tweet.getUser();
         userColumn.put("username", user.getUsername());
         userColumn.put("scrname", user.getScreenname());
         userColumn.put("pbLink", user.getImageLink());
@@ -426,10 +426,10 @@ public class AppDatabase {
      * @param woeId Yahoo World ID
      * @return list of trends
      */
-    public List<TwitterTrend> getTrends(int woeId) {
+    public List<Trend> getTrends(int woeId) {
         String[] args = {Integer.toString(woeId)};
 
-        List<TwitterTrend> trends = new LinkedList<>();
+        List<Trend> trends = new LinkedList<>();
         SQLiteDatabase db = getDbRead();
         Cursor cursor = db.rawQuery(TREND_QUERY, args);
         if (cursor.moveToFirst()) {
@@ -440,7 +440,7 @@ public class AppDatabase {
                 int vol = cursor.getInt(index);
                 index = cursor.getColumnIndex("trendpos");
                 int pos = cursor.getInt(index);
-                trends.add(new TwitterTrend(trendName, vol, pos));
+                trends.add(new Trend(trendName, vol, pos));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -471,8 +471,8 @@ public class AppDatabase {
                 index = cursor.getColumnIndex("messageID");
                 long messageId = cursor.getLong(index);
 
-                TwitterUser sender = getUser(senderID, db);
-                TwitterUser receiver = getUser(receiverID, db);
+                User sender = getUser(senderID, db);
+                User receiver = getUser(receiverID, db);
 
                 result.add(new Message(messageId, sender, receiver, time, message));
 
@@ -549,7 +549,7 @@ public class AppDatabase {
             mediaType = Tweet.MediaType.IMAGE;
         else if ((statusregister & MEDIA_VIDEO_MASK) == MEDIA_VIDEO_MASK)
             mediaType = Tweet.MediaType.VIDEO;
-        TwitterUser user = getUser(cursor);
+        User user = getUser(cursor);
         Tweet embeddedTweet = null;
         if (retweetId > 1)
             embeddedTweet = getStatus(retweetId);
@@ -565,10 +565,10 @@ public class AppDatabase {
      * @return user instance
      */
     @Nullable
-    private TwitterUser getUser(long userId, SQLiteDatabase db) {
+    private User getUser(long userId, SQLiteDatabase db) {
         String[] args = {Long.toString(userId)};
 
-        TwitterUser user = null;
+        User user = null;
         Cursor cursor = db.rawQuery(USER_QUERY, args);
         if (cursor.moveToFirst())
             user = getUser(cursor);
@@ -582,7 +582,7 @@ public class AppDatabase {
      * @param cursor cursor containing user data
      * @return user instance
      */
-    private TwitterUser getUser(Cursor cursor) {
+    private User getUser(Cursor cursor) {
         long userId = cursor.getLong(cursor.getColumnIndex("userID"));
         String username = cursor.getString(cursor.getColumnIndex("username"));
         String screenname = cursor.getString(cursor.getColumnIndex("scrname"));
@@ -601,7 +601,7 @@ public class AppDatabase {
         boolean isLocked = (userRegister & LCK_MASK) != 0;
         boolean isReq = (userRegister & FRQ_MASK) != 0;
         boolean defaultImg = (userRegister & DEF_IMG) != 0;
-        return new TwitterUser(userId, username, screenname, profileImg, bio, location, isVerified,
+        return new User(userId, username, screenname, profileImg, bio, location, isVerified,
                 isLocked, isReq, defaultImg, link, banner, createdAt, following, follower, tCount, fCount);
     }
 
@@ -612,7 +612,7 @@ public class AppDatabase {
      * @param db   SQLITE DB
      * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE} or {@link SQLiteDatabase#CONFLICT_REPLACE}
      */
-    private void storeUser(TwitterUser user, SQLiteDatabase db, int mode) {
+    private void storeUser(User user, SQLiteDatabase db, int mode) {
         ContentValues userColumn = new ContentValues();
         int flags = getUserFlags(db, user.getId());
         if (user.isVerified())
@@ -660,7 +660,7 @@ public class AppDatabase {
      */
     private void storeStatus(Tweet tweet, int statusRegister, SQLiteDatabase db) {
         ContentValues status = new ContentValues();
-        TwitterUser user = tweet.getUser();
+        User user = tweet.getUser();
         Tweet rtStat = tweet.getEmbeddedTweet();
         long rtId = -1L;
 
