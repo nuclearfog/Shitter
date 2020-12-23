@@ -98,7 +98,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_PROFILE_NAME = "profile_name";
 
     /**
-     * key for user object
+     * key for user object, alternative to {@link #KEY_PROFILE_ID} and {@link #KEY_PROFILE_NAME}
      */
     public static final String KEY_PROFILE_DATA = "profile_data";
 
