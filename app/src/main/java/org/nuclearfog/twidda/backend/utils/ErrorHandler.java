@@ -44,7 +44,7 @@ public final class ErrorHandler {
                     Toast.makeText(context, R.string.error_user_not_found, Toast.LENGTH_SHORT).show();
                     break;
 
-                case REQ_TOKEN_EXPIRED:
+                case APP_SUSPENDED:
                     Toast.makeText(context, R.string.error_request_token, Toast.LENGTH_SHORT).show();
                     break;
 
@@ -94,6 +94,14 @@ public final class ErrorHandler {
 
                 case IMAGE_NOT_LOADED:
                     Toast.makeText(context, R.string.error_image_loading, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case ACCESS_TOKEN_DEAD:
+                    Toast.makeText(context, R.string.error_cant_login, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case TWEET_CANT_REPLY:
+                    Toast.makeText(context, R.string.error_cant_reply_to_tweet, Toast.LENGTH_SHORT).show();
                     break;
 
                 case ERROR_NOT_DEFINED:

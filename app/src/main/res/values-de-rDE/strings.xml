@@ -182,4 +182,6 @@
     <string name="dialog_button_no">Nein</string>
     <string name="dialog_button_cancel">Abbrechen</string>
     <string name="dialog_button_ok">Ok</string>
+    <string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>
+    <string name="error_cant_login">App ist nicht eingeloggt, Bitte neu einloggen!</string>
 </resources>

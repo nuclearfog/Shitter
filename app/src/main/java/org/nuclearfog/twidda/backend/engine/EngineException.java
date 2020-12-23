@@ -13,7 +13,9 @@ public class EngineException extends Exception {
     public enum ErrorType {
         RATE_LIMIT_EX,
         USER_NOT_FOUND,
-        REQ_TOKEN_EXPIRED,
+        APP_SUSPENDED,
+        ACCESS_TOKEN_DEAD,
+        TWEET_CANT_REPLY,
         RESOURCE_NOT_FOUND,
         CANT_SEND_DM,
         NOT_AUTHORIZED,
@@ -64,7 +66,11 @@ public class EngineException extends Exception {
                     break;
 
                 case 32:
-                    errorType = ErrorType.REQ_TOKEN_EXPIRED;
+                    errorType = ErrorType.ACCESS_TOKEN_DEAD;
+                    break;
+
+                case 416:
+                    errorType = ErrorType.APP_SUSPENDED;
                     break;
 
                 case 34:    //
@@ -99,6 +105,10 @@ public class EngineException extends Exception {
 
                 case 89:
                     errorType = ErrorType.TOKEN_EXPIRED;
+                    break;
+
+                case 385: // replying tweet that is not visible or deleted
+                    errorType = ErrorType.TWEET_CANT_REPLY;
                     break;
 
                 default:
