@@ -10,12 +10,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
+import org.nuclearfog.twidda.backend.items.UserList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -37,22 +39,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
     /**
      * Key for the list ID of the list if an existing list should be updated
      */
-    public static final String KEY_LIST_ID = "list_id";
-
-    /**
-     * Key for the title of the list
-     */
-    public static final String KEY_LIST_TITLE = "list_title";
-
-    /**
-     * Key for the list description
-     */
-    public static final String KEY_LIST_DESCR = "list_description";
-
-    /**
-     * Key for the visibility of the list
-     */
-    public static final String KEY_LIST_VISIB = "list_visibility";
+    public static final String KEY_LIST_EDITOR_DATA = "list_edit_data";
 
     private ListUpdater updaterAsync;
     private EditText titleInput, subTitleInput;
@@ -60,10 +47,8 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
     private View progressCircle;
     private Dialog leaveDialog;
 
-    private long listId = -1;
-    private String title = "";
-    private String description = "";
-    private boolean isPublic = false;
+    @Nullable
+    private UserList userList;
 
 
     @Override
@@ -81,17 +66,13 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
         FontTool.setViewFont(settings, root);
+
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            listId = extras.getLong(KEY_LIST_ID, -1);
-            title = extras.getString(KEY_LIST_TITLE, "");
-            description = extras.getString(KEY_LIST_DESCR, "");
-            isPublic = extras.getBoolean(KEY_LIST_VISIB, false);
-        }
-        titleInput.setText(title);
-        subTitleInput.setText(description);
-        visibility.setChecked(isPublic);
-        if (listId > 0) {
+        if (extras != null && extras.containsKey(KEY_LIST_EDITOR_DATA)) {
+            userList = (UserList) extras.getSerializable(KEY_LIST_EDITOR_DATA);
+            titleInput.setText(userList.getTitle());
+            subTitleInput.setText(userList.getDescription());
+            visibility.setChecked(!userList.isPrivate());
             popupTitle.setText(R.string.menu_edit_list);
             updateButton.setText(R.string.update_list);
         }
@@ -102,8 +83,13 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
 
     @Override
     public void onBackPressed() {
-        if (visibility.isChecked() == isPublic && titleInput.getText().toString().equals(title)
-                && subTitleInput.getText().toString().equals(description)) {
+        String title = titleInput.getText().toString();
+        String descr = subTitleInput.getText().toString();
+        // Check for changes, leave if there aren't any
+        if (userList != null && visibility.isChecked() == !userList.isPrivate()
+                && title.equals(userList.getTitle()) && descr.equals(userList.getDescription())) {
+            super.onBackPressed();
+        } else if (title.isEmpty() && descr.isEmpty()) {
             super.onBackPressed();
         } else {
             if (!leaveDialog.isShowing()) {
@@ -123,9 +109,9 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
                 Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
             } else if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
                 ListHolder mHolder;
-                if (listId > 0) {
+                if (userList != null) {
                     // update existing list
-                    mHolder = new ListHolder(titleStr, descrStr, isPublic, listId);
+                    mHolder = new ListHolder(titleStr, descrStr, isPublic, userList.getId());
                 } else {
                     // create new one
                     mHolder = new ListHolder(titleStr, descrStr, isPublic);
@@ -147,11 +133,11 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
      * called when a list was updated successfully
      */
     public void onSuccess() {
-        if (listId > 0) {
+        if (userList != null) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
             setResult(RET_LIST_CHANGED);
         } else {
-            // it's a new list, if no list ID is defined
+            // it's a new list, if no list is defined
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();
             setResult(RET_LIST_CREATED);
         }

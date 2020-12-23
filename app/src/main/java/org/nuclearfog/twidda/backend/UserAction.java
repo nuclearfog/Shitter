@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.database.AppDatabase;
 import java.lang.ref.WeakReference;
 
 /**
- * This background task loads profile information about a twitter user and take actions like following
+ * This background task loads profile information about a twitter user and take actions
  *
  * @see UserProfile
  */

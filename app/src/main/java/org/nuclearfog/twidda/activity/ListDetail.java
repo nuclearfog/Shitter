@@ -36,9 +36,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.regex.Pattern;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_DESCR;
-import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_TITLE;
-import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_VISIB;
+import static org.nuclearfog.twidda.activity.ListPopup.KEY_LIST_EDITOR_DATA;
 import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
 import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
@@ -120,11 +118,14 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             boolean currentUserOwnsList;
             if (param.containsKey(KEY_LIST_DATA)) {
                 userList = (UserList) param.getSerializable(KEY_LIST_DATA);
+                toolbar.setTitle(userList.getTitle());
+                toolbar.setSubtitle(userList.getDescription());
                 currentUserOwnsList = userList.isListOwner();
                 listId = userList.getId();
             } else {
                 currentUserOwnsList = param.getBoolean(KEY_LIST_OWNER, false);
                 listId = param.getLong(KEY_LIST_ID);
+                toolbar.setTitle("");
             }
             adapter.setupListContentPage(listId, currentUserOwnsList);
         }
@@ -137,7 +138,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             userTab.setIcon(R.drawable.user);
             subscrTab.setIcon(R.drawable.subscriber);
         }
-        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         FontTool.setViewFontAndColor(settings, root);
     }
@@ -147,11 +147,6 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     protected void onStart() {
         super.onStart();
         if (listLoaderTask == null && userList == null) {
-            if (userList != null) {
-                toolbar.setTitle(userList.getTitle());
-                toolbar.setSubtitle(userList.getDescription());
-                invalidateOptionsMenu();
-            }
             loadList();
         }
     }
@@ -207,10 +202,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             int itemId = item.getItemId();
             if (itemId == R.id.menu_list_edit) {
                 Intent editList = new Intent(this, ListPopup.class);
-                editList.putExtra(ListPopup.KEY_LIST_ID, userList.getId());
-                editList.putExtra(KEY_LIST_TITLE, userList.getTitle());
-                editList.putExtra(KEY_LIST_DESCR, userList.getDescription());
-                editList.putExtra(KEY_LIST_VISIB, !userList.isPrivate());
+                editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
                 startActivityForResult(editList, REQ_LIST_CHANGE);
             } else if (itemId == R.id.menu_delete_list) {
                 if (!deleteDialog.isShowing()) {
@@ -282,6 +274,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
+
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         if (USERNAME_PATTERN.matcher(query).matches()) {
             if (userListManager == null || userListManager.getStatus() != RUNNING) {
@@ -308,8 +306,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        return false;
+    public void onFailure(EngineException err) {
+        ErrorHandler.handleFailure(this, err);
     }
 
     /**
@@ -350,12 +348,14 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     /**
      * called from {@link ListAction} if an error occurs
      *
-     * @param err error information
+     * @param err    error information
+     * @param listId ID of the list where an error occurred
      */
-    public void onFailure(EngineException err) {
+    public void onFailure(EngineException err, long listId) {
         ErrorHandler.handleFailure(this, err);
         if (userList == null) {
             if (err.resourceNotFound()) {
+                // List does not exist
                 Intent result = new Intent();
                 result.putExtra(RESULT_REMOVED_LIST_ID, listId);
                 setResult(RETURN_LIST_REMOVED, result);

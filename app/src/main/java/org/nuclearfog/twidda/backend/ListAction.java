@@ -84,7 +84,7 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
             if (userList != null) {
                 callback.onSuccess(userList, action);
             } else {
-                callback.onFailure(err);
+                callback.onFailure(err, userList.getId());
             }
         }
     }
