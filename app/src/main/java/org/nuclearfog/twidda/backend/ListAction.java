@@ -41,6 +41,8 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
     private EngineException err;
     private Action action;
 
+    private long missingListId;
+
     /**
      * @param callback Callback to update list information
      * @param action   what action should be performed
@@ -72,6 +74,7 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
             }
         } catch (EngineException err) {
             this.err = err;
+            missingListId = ids[0];
         }
         return null;
     }
@@ -84,7 +87,7 @@ public class ListAction extends AsyncTask<Long, Void, UserList> {
             if (userList != null) {
                 callback.onSuccess(userList, action);
             } else {
-                callback.onFailure(err, userList.getId());
+                callback.onFailure(err, missingListId);
             }
         }
     }

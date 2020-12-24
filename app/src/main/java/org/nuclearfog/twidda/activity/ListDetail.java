@@ -116,8 +116,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         Bundle param = getIntent().getExtras();
         if (param != null) {
             boolean currentUserOwnsList;
-            if (param.containsKey(KEY_LIST_DATA)) {
-                userList = (UserList) param.getSerializable(KEY_LIST_DATA);
+            Object data = param.getSerializable(KEY_LIST_DATA);
+            if (data instanceof UserList) {
+                userList = (UserList) data;
                 toolbar.setTitle(userList.getTitle());
                 toolbar.setSubtitle(userList.getDescription());
                 currentUserOwnsList = userList.isListOwner();

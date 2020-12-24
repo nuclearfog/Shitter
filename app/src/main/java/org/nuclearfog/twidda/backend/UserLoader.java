@@ -23,7 +23,7 @@ public class UserLoader extends AsyncTask<Long, Void, TwitterUserList> {
     /**
      * actions to perform
      */
-    public enum Action {
+    public enum Type {
         /**
          * load follower list
          */
@@ -60,16 +60,16 @@ public class UserLoader extends AsyncTask<Long, Void, TwitterUserList> {
     private final WeakReference<UserFragment> callback;
     private final TwitterEngine mTwitter;
 
-    private final Action action;
+    private final Type type;
     private final String search;
     private final long id;
 
 
-    public UserLoader(UserFragment callback, Action action, long id, String search) {
+    public UserLoader(UserFragment callback, Type type, long id, String search) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback.getContext());
-        this.action = action;
+        this.type = type;
         this.search = search;
         this.id = id;
     }
@@ -79,7 +79,7 @@ public class UserLoader extends AsyncTask<Long, Void, TwitterUserList> {
     protected TwitterUserList doInBackground(Long[] param) {
         try {
             long cursor = param[0];
-            switch (action) {
+            switch (type) {
                 case FOLLOWS:
                     return mTwitter.getFollower(id, cursor);
 

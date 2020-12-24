@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.UserLoader;
-import org.nuclearfog.twidda.backend.UserLoader.Action;
+import org.nuclearfog.twidda.backend.UserLoader.Type;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.User;
@@ -39,7 +39,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     public static final String KEY_FRAG_USER_MODE = "user_mode";
 
     /**
-     * key to define search string
+     * key to define search string like username
      */
     public static final String KEY_FRAG_USER_SEARCH = "user_search";
 
@@ -143,6 +143,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
     @Override
     protected UserAdapter initAdapter() {
         adapter = new UserAdapter(this, settings);
+        adapter.enableDeleteButton(delUser);
         return adapter;
     }
 
@@ -233,38 +234,37 @@ public class UserFragment extends ListFragment implements UserClickListener,
      * @param cursor cursor of the list or {@link UserLoader#NO_CURSOR} if there is none
      */
     private void load(long cursor) {
-        Action action = Action.NONE;
+        Type listType = Type.NONE;
         switch (mode) {
             case USER_FRAG_FOLLOWS:
-                action = Action.FOLLOWS;
+                listType = Type.FOLLOWS;
                 break;
 
             case USER_FRAG_FRIENDS:
-                action = Action.FRIENDS;
+                listType = UserLoader.Type.FRIENDS;
                 break;
 
             case USER_FRAG_RETWEET:
-                action = Action.RETWEET;
+                listType = Type.RETWEET;
                 break;
 
             case USER_FRAG_FAVORIT:
-                action = Action.FAVORIT;
+                listType = Type.FAVORIT;
                 break;
 
             case USER_FRAG_SEARCH:
-                action = Action.SEARCH;
+                listType = Type.SEARCH;
                 break;
 
             case USER_FRAG_SUBSCR:
-                action = Action.SUBSCRIBER;
+                listType = Type.SUBSCRIBER;
                 break;
 
             case USER_FRAG_LISTS:
-                action = Action.LISTMEMBER;
+                listType = Type.LISTMEMBER;
                 break;
         }
-        adapter.enableDeleteButton(delUser);
-        userTask = new UserLoader(this, action, id, search);
+        userTask = new UserLoader(this, listType, id, search);
         userTask.execute(cursor);
         if (cursor == NO_CURSOR) {
             setRefresh(true);

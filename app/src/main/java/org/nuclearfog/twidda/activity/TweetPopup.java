@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -179,6 +180,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     }
 
 
+    @SuppressLint("MissingPermission")
     @Override
     protected void onDestroy() {
         if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
@@ -457,6 +459,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     /**
      * Get current GPS location to attach to tweet
      */
+    @SuppressLint("MissingPermission") // suppressing because of an android studio bug
     private void getLocation() {
         boolean accessGranted = true;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

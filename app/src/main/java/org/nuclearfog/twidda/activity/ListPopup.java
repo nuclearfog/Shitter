@@ -68,13 +68,16 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
         FontTool.setViewFont(settings, root);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey(KEY_LIST_EDITOR_DATA)) {
-            userList = (UserList) extras.getSerializable(KEY_LIST_EDITOR_DATA);
-            titleInput.setText(userList.getTitle());
-            subTitleInput.setText(userList.getDescription());
-            visibility.setChecked(!userList.isPrivate());
-            popupTitle.setText(R.string.menu_edit_list);
-            updateButton.setText(R.string.update_list);
+        if (extras != null) {
+            Object data = extras.getSerializable(KEY_LIST_EDITOR_DATA);
+            if (data instanceof UserList) {
+                userList = (UserList) data;
+                titleInput.setText(userList.getTitle());
+                subTitleInput.setText(userList.getDescription());
+                visibility.setChecked(!userList.isPrivate());
+                popupTitle.setText(R.string.menu_edit_list);
+                updateButton.setText(R.string.update_list);
+            }
         }
         leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
         updateButton.setOnClickListener(this);

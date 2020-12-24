@@ -134,8 +134,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         if (param != null) {
             String username;
-            if (param.containsKey(KEY_TWEET_DATA)) {
-                tweet = (Tweet) param.getSerializable(KEY_TWEET_DATA);
+            Object data = param.getSerializable(KEY_TWEET_DATA);
+            if (data instanceof Tweet) {
+                tweet = (Tweet) data;
                 username = tweet.getUser().getScreenname();
                 tweetId = tweet.getId();
             } else {

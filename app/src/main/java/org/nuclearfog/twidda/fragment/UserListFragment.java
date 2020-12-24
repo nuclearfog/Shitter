@@ -74,9 +74,19 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     private ListLoader listTask;
     private ListAdapter adapter;
 
+    private String ownerName = "";
+    private long id = 0;
+    private int type = 0;
+
 
     @Override
     protected void onCreated() {
+        Bundle param = getArguments();
+        if (param != null) {
+            id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
+            ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
+            type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
+        }
         settings = GlobalSettings.getInstance(requireContext());
     }
 
@@ -179,18 +189,12 @@ public class UserListFragment extends ListFragment implements ListClickListener 
      * load content into the list
      */
     private void load(long cursor) {
-        Bundle param = getArguments();
-        if (param != null) {
-            long id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
-            String ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
-            int type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
-            if (type == LIST_USER_OWNS) {
-                listTask = new ListLoader(this, LOAD_USERLISTS, id, ownerName);
-                listTask.execute(cursor);
-            } else if (type == LIST_USER_SUBSCR_TO) {
-                listTask = new ListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
-                listTask.execute(cursor);
-            }
+        if (type == LIST_USER_OWNS) {
+            listTask = new ListLoader(this, LOAD_USERLISTS, id, ownerName);
+            listTask.execute(cursor);
+        } else if (type == LIST_USER_SUBSCR_TO) {
+            listTask = new ListLoader(this, LOAD_MEMBERSHIPS, id, ownerName);
+            listTask.execute(cursor);
         }
     }
 }

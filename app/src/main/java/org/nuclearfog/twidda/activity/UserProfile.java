@@ -197,8 +197,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
         Bundle param = getIntent().getExtras();
         if (param != null) {
-            if (param.containsKey(KEY_PROFILE_DATA)) {
-                user = (User) param.getSerializable(KEY_PROFILE_DATA);
+            Object data = param.getSerializable(KEY_PROFILE_DATA);
+            if (data instanceof User) {
+                user = (User) data;
                 userId = user.getId();
                 username = user.getScreenname();
             } else {

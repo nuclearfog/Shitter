@@ -47,25 +47,73 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
      */
     public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 
+    /**
+     * setup list for home timeline
+     */
     public static final int TWEET_FRAG_HOME = 1;
+
+    /**
+     * setup list for mention timeline
+     */
     public static final int TWEET_FRAG_MENT = 2;
+
+    /**
+     * setup list for user tweets
+     */
     public static final int TWEET_FRAG_TWEETS = 3;
+
+    /**
+     * setup list for user favorites
+     */
     public static final int TWEET_FRAG_FAVORS = 4;
+
+    /**
+     * setup list for tweet replies
+     */
     public static final int TWEET_FRAG_ANSWER = 5;
+
+    /**
+     * setup list for search
+     */
     public static final int TWEET_FRAG_SEARCH = 6;
+
+    /**
+     * setup list for user list tweets
+     */
     public static final int TWEET_FRAG_LIST = 7;
 
+    /**
+     * replace all items from list
+     */
     public static final int CLEAR_LIST = -1;
+
+    /**
+     * return code if a tweet was not found
+     */
     public static final int RETURN_TWEET_CHANGED = 1;
+
+    /**
+     * request code to check for tweet changes
+     */
     private static final int REQUEST_TWEET_CHANGED = 2;
 
     private TweetLoader tweetTask;
     private TweetAdapter adapter;
 
+    private String search = "";
+    private int mode = 0;
+    private long id = 0;
+
 
     @Override
     protected void onCreated() {
         settings = GlobalSettings.getInstance(requireContext());
+        Bundle param = getArguments();
+        if (param != null) {
+            mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
+            id = param.getLong(KEY_FRAG_TWEET_ID, 0);
+            search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
+        }
     }
 
 
@@ -143,7 +191,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
         }
     }
 
-
     /**
      * Set Tweet data to list
      *
@@ -159,7 +206,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
         setRefresh(false);
     }
 
-
     /**
      * called from {@link TweetLoader} if an error occurs
      *
@@ -171,7 +217,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
         setRefresh(false);
     }
 
-
     /**
      * load content into the list
      *
@@ -180,47 +225,41 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
      * @param index   index where tweet list should be added
      */
     private void load(long sinceId, long maxId, int index) {
-        Bundle param = getArguments();
-        if (param != null) {
-            int mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
-            long id = param.getLong(KEY_FRAG_TWEET_ID, 0);
-            String search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
-            ListType action = ListType.NONE;
+        ListType listType = ListType.NONE;
 
-            switch (mode) {
-                case TWEET_FRAG_HOME:
-                    action = ListType.TL_HOME;
-                    break;
+        switch (mode) {
+            case TWEET_FRAG_HOME:
+                listType = ListType.TL_HOME;
+                break;
 
-                case TWEET_FRAG_MENT:
-                    action = ListType.TL_MENT;
-                    break;
+            case TWEET_FRAG_MENT:
+                listType = ListType.TL_MENT;
+                break;
 
-                case TWEET_FRAG_TWEETS:
-                    action = ListType.USR_TWEETS;
-                    break;
+            case TWEET_FRAG_TWEETS:
+                listType = ListType.USR_TWEETS;
+                break;
 
-                case TWEET_FRAG_FAVORS:
-                    action = ListType.USR_FAVORS;
-                    break;
+            case TWEET_FRAG_FAVORS:
+                listType = ListType.USR_FAVORS;
+                break;
 
-                case TWEET_FRAG_ANSWER:
-                    if (tweetTask != null || settings.getAnswerLoad())
-                        action = ListType.REPLIES;
-                    else
-                        action = ListType.DB_ANS;
-                    break;
+            case TWEET_FRAG_ANSWER:
+                if (tweetTask != null || settings.getAnswerLoad())
+                    listType = ListType.REPLIES;
+                else
+                    listType = ListType.DB_ANS;
+                break;
 
-                case TWEET_FRAG_SEARCH:
-                    action = ListType.TWEET_SEARCH;
-                    break;
+            case TWEET_FRAG_SEARCH:
+                listType = ListType.TWEET_SEARCH;
+                break;
 
-                case TWEET_FRAG_LIST:
-                    action = ListType.USERLIST;
-                    break;
-            }
-            tweetTask = new TweetLoader(this, action, id, search, index);
-            tweetTask.execute(sinceId, maxId);
+            case TWEET_FRAG_LIST:
+                listType = ListType.USERLIST;
+                break;
         }
+        tweetTask = new TweetLoader(this, listType, id, search, index);
+        tweetTask.execute(sinceId, maxId);
     }
 }
