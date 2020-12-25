@@ -119,6 +119,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     private FragmentAdapter adapter;
     private GlobalSettings settings;
+    private UserAction profileAsync;
 
     private TextView tweetTabTxt, favorTabTxt, txtUser, txtScrName;
     private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
@@ -129,9 +130,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private TabLayout tabLayout;
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
-    private UserAction profileAsync;
+    @Nullable
     private Relation relation;
+    @Nullable
     private User user;
+
     private String username;
     private long userId;
 
@@ -419,38 +422,43 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onClick(View v) {
-        if (user != null && relation != null) {
-            int viewId = v.getId();
-            if (viewId == R.id.following) {
+        if (v.getId() == R.id.following) {
+            if (user != null && relation != null) {
                 if (!(user.isLocked() || relation.isBlocked()) || relation.isFriend() || user.getId() == settings.getUserId()) {
                     Intent following = new Intent(this, UserDetail.class);
                     following.putExtra(KEY_USERDETAIL_ID, user.getId());
                     following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
                     startActivity(following);
                 }
-            } else if (viewId == R.id.follower) {
+            }
+        } else if (v.getId() == R.id.follower) {
+            if (user != null && relation != null) {
                 if (!(user.isLocked() || relation.isBlocked()) || relation.isFriend() || user.getId() == settings.getUserId()) {
                     Intent follower = new Intent(this, UserDetail.class);
                     follower.putExtra(KEY_USERDETAIL_ID, user.getId());
                     follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
                     startActivity(follower);
                 }
-            } else if (viewId == R.id.links) {
-                if (!user.getLink().isEmpty()) {
-                    String link = user.getLink();
-                    Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
-                    try {
-                        startActivity(browserIntent);
-                    } catch (ActivityNotFoundException err) {
-                        Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-                    }
+            }
+        } else if (v.getId() == R.id.links) {
+            if (user != null && !user.getLink().isEmpty()) {
+                String link = user.getLink();
+                Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
+                try {
+                    startActivity(browserIntent);
+                } catch (ActivityNotFoundException err) {
+                    Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
                 }
-            } else if (viewId == R.id.profile_img) {
+            }
+        } else if (v.getId() == R.id.profile_img) {
+            if (user != null) {
                 Intent mediaImage = new Intent(this, MediaViewer.class);
                 mediaImage.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
                 mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                 startActivity(mediaImage);
-            } else if (viewId == R.id.profile_banner) {
+            }
+        } else if (v.getId() == R.id.profile_banner) {
+            if (user != null) {
                 Intent mediaBanner = new Intent(this, MediaViewer.class);
                 mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + BANNER_IMG_HIGH_RES});
                 mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);

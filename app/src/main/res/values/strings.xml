@@ -200,5 +200,5 @@
     <string name="dialog_button_yes">yes</string>
     <string name="dialog_button_no">no</string>
     <string name="dialog_button_cancel">cancel</string>
-    <string name="dialog_button_ok">ok</string>
+    <string name="dialog_button_ok">OK</string>
 </resources>

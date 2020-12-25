@@ -78,6 +78,8 @@ public class GlobalSettings {
     private static final String PROXY_PASS = "proxy_pass";
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
+
+    // file name of the preferences
     private static final String NAME = "settings";
 
     // Default App settings

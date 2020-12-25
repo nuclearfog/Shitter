@@ -175,7 +175,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 statusAsync = new TweetAction(this, tweetId);
                 statusAsync.execute(Action.LD_DB);
             } else {
-                statusAsync = new TweetAction(this, tweet.getId());
+                statusAsync = new TweetAction(this, tweetId);
                 statusAsync.execute(Action.LOAD);
                 setTweet(tweet);
             }
@@ -208,7 +208,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (tweet != null && statusAsync != null && statusAsync.getStatus() != RUNNING) {
+        if (tweet != null) {
             // Delete tweet option
             if (item.getItemId() == R.id.delete_tweet) {
                 if (!deleteDialog.isShowing()) {
@@ -246,71 +246,69 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (statusAsync != null && tweet != null && statusAsync.getStatus() != RUNNING) {
-            // answer to the tweet
-            if (v.getId() == R.id.tweet_answer) {
-                String tweetPrefix = tweet.getUser().getScreenname() + " ";
-                Intent tweetPopup = new Intent(this, TweetPopup.class);
-                tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweet.getId());
-                tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
-                startActivity(tweetPopup);
+        // answer to the tweet
+        if (v.getId() == R.id.tweet_answer) {
+            String tweetPrefix = tweet.getUser().getScreenname() + " ";
+            Intent tweetPopup = new Intent(this, TweetPopup.class);
+            tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetId);
+            tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
+            startActivity(tweetPopup);
+        }
+        // show user retweeting this tweet
+        else if (v.getId() == R.id.tweet_retweet) {
+            Intent userList = new Intent(this, UserDetail.class);
+            userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
+            userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
+            startActivity(userList);
+        }
+        // open profile of the tweet author
+        else if (v.getId() == R.id.profileimage_detail) {
+            if (tweet != null) {
+                Intent profile = new Intent(getApplicationContext(), UserProfile.class);
+                profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
+                startActivity(profile);
             }
-            // retweet tweet
-            else if (v.getId() == R.id.tweet_retweet) {
-                Intent userList = new Intent(this, UserDetail.class);
-                userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
-                userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
-                startActivity(userList);
+        }
+        // open replied tweet
+        else if (v.getId() == R.id.answer_reference_detail) {
+            if (tweet != null) {
+                Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
+                answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
+                answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
+                startActivity(answerIntent);
             }
-            // open profile of the tweet author
-            else if (v.getId() == R.id.profileimage_detail) {
-                if (tweet != null) {
-                    Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                    profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
-                    startActivity(profile);
+        }
+        // open tweet location coordinates
+        else if (v.getId() == R.id.tweet_location_coordinate) {
+            if (tweet != null) {
+                Intent locationIntent = new Intent(Intent.ACTION_VIEW);
+                locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
+                try {
+                    startActivity(locationIntent);
+                } catch (ActivityNotFoundException err) {
+                    Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
                 }
             }
-            // open replied tweet
-            else if (v.getId() == R.id.answer_reference_detail) {
-                if (tweet != null) {
-                    Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
-                    answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
-                    answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
-                    startActivity(answerIntent);
-                }
-            }
-            // open tweet location coordinates
-            else if (v.getId() == R.id.tweet_location_coordinate) {
-                if (tweet != null) {
-                    Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-                    locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
-                    try {
-                        startActivity(locationIntent);
-                    } catch (ActivityNotFoundException err) {
-                        Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
-                    }
-                }
-            }
-            // open tweet media
-            else if (v.getId() == R.id.tweet_media_attach) {
-                if (tweet != null) {
-                    Intent mediaIntent = new Intent(this, MediaViewer.class);
-                    mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                    switch (tweet.getMediaType()) {
-                        case IMAGE:
-                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
-                            break;
+        }
+        // open tweet media
+        else if (v.getId() == R.id.tweet_media_attach) {
+            if (tweet != null) {
+                Intent mediaIntent = new Intent(this, MediaViewer.class);
+                mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
+                switch (tweet.getMediaType()) {
+                    case IMAGE:
+                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
+                        break;
 
-                        case VIDEO:
-                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
-                            break;
+                    case VIDEO:
+                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
+                        break;
 
-                        case GIF:
-                            mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
-                            break;
-                    }
-                    startActivity(mediaIntent);
+                    case GIF:
+                        mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
+                        break;
                 }
+                startActivity(mediaIntent);
             }
         }
     }
@@ -318,9 +316,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onLongClick(View v) {
-        if (statusAsync != null && statusAsync.getStatus() != RUNNING && tweet != null) {
+        if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
             statusAsync = new TweetAction(this, tweet);
-            // retweet the tweet
+            // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
                 if (tweet.retweeted()) {
                     statusAsync.execute(Action.UNRETWEET);
@@ -347,8 +345,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == DELETE_TWEET && tweet != null) {
-            statusAsync = new TweetAction(this, tweet.getId());
+        if (type == DELETE_TWEET) {
+            statusAsync = new TweetAction(this, tweetId);
             statusAsync.execute(Action.DELETE);
         }
     }
