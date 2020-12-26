@@ -105,9 +105,9 @@ public class TwitterEngine {
         if (!mTwitter.isInitialized) {
             mTwitter.settings = GlobalSettings.getInstance(context);
             if (mTwitter.settings.getLogin()) {
-                String[] keys = mTwitter.settings.getKeys();
+                String[] keys = mTwitter.settings.getCurrentUserAccessToken();
                 mTwitter.aToken = new AccessToken(keys[0], keys[1]);
-                mTwitter.twitterID = mTwitter.settings.getUserId();
+                mTwitter.twitterID = mTwitter.settings.getCurrentUserId();
             }
             mTwitter.initTwitter();
             mTwitter.isInitialized = true;

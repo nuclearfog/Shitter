@@ -80,7 +80,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         if (param != null) {
             if (param.containsKey(KEY_USERLIST_OWNER_ID)) {
                 long ownerId = param.getLong(KEY_USERLIST_OWNER_ID);
-                isHome = ownerId == settings.getUserId();
+                isHome = ownerId == settings.getCurrentUserId();
                 adapter.setupListPage(ownerId, "");
             } else if (param.containsKey(KEY_USERLIST_OWNER_NAME)) {
                 String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);

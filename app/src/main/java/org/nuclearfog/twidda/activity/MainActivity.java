@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         // open home profile
         if (menuId == R.id.action_profile) {
             Intent user = new Intent(this, UserProfile.class);
-            user.putExtra(KEY_PROFILE_ID, settings.getUserId());
+            user.putExtra(KEY_PROFILE_ID, settings.getCurrentUserId());
             startActivity(user);
         }
         // open tweet editor

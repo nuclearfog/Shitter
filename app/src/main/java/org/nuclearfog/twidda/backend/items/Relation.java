@@ -9,7 +9,6 @@ import twitter4j.Relationship;
  */
 public class Relation {
 
-    private final String targetScreenName;
     private final boolean isHome;
     private final boolean isFriend;
     private final boolean isFollower;
@@ -23,22 +22,12 @@ public class Relation {
      * @param connect twitter4j relationship information
      */
     public Relation(Relationship connect) {
-        targetScreenName = '@' + connect.getTargetUserScreenName();
         isHome = connect.getSourceUserId() == connect.getTargetUserId();
         isFriend = connect.isSourceFollowingTarget();
         isFollower = connect.isTargetFollowingSource();
         isBlocked = connect.isSourceBlockingTarget();
         isMuted = connect.isSourceMutingTarget();
         canDm = connect.canSourceDm();
-    }
-
-    /**
-     * screen name of target user
-     *
-     * @return screen name
-     */
-    public String getTargetScreenName() {
-        return targetScreenName;
     }
 
     /**
@@ -98,6 +87,6 @@ public class Relation {
     @NonNull
     @Override
     public String toString() {
-        return "target=" + targetScreenName + ", isFriend=" + isFriend + ", isFollower=" + isFollower;
+        return ", isFriend=" + isFriend + ", isFollower=" + isFollower;
     }
 }

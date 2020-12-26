@@ -137,6 +137,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     private String username;
     private long userId;
+    private boolean isHomeProfile;
 
 
     @Override
@@ -210,6 +211,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 username = param.getString(KEY_PROFILE_NAME, "");
             }
             adapter.setupProfilePage(userId, username);
+            isHomeProfile = userId == settings.getCurrentUserId();
         }
         Tab tweetTab = tabLayout.getTabAt(0);
         Tab favorTab = tabLayout.getTabAt(1);
@@ -270,25 +272,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
         if (user != null) {
-            if (user.getId() == settings.getUserId()) {
-                MenuItem dmIcon = m.findItem(R.id.profile_message);
-                MenuItem setting = m.findItem(R.id.profile_settings);
-                dmIcon.setVisible(true);
-                setting.setVisible(true);
-            } else {
-                MenuItem followIcon = m.findItem(R.id.profile_follow);
-                MenuItem blockIcon = m.findItem(R.id.profile_block);
-                MenuItem muteIcon = m.findItem(R.id.profile_mute);
-                followIcon.setVisible(true);
-                blockIcon.setVisible(true);
-                muteIcon.setVisible(true);
-            }
             if (user.followRequested()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 followIcon.setIcon(R.drawable.follow_requested);
                 followIcon.setTitle(R.string.menu_follow_requested);
             }
-            if (user.isLocked() && user.getId() != settings.getUserId()) {
+            if (user.isLocked() && !isHomeProfile) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 listItem.setVisible(false);
             }
@@ -317,60 +306,91 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 follow_back.setVisibility(VISIBLE);
             }
         }
+        if (isHomeProfile) {
+            MenuItem dmIcon = m.findItem(R.id.profile_message);
+            MenuItem setting = m.findItem(R.id.profile_settings);
+            dmIcon.setVisible(true);
+            setting.setVisible(true);
+        } else {
+            MenuItem followIcon = m.findItem(R.id.profile_follow);
+            MenuItem blockIcon = m.findItem(R.id.profile_block);
+            MenuItem muteIcon = m.findItem(R.id.profile_mute);
+            followIcon.setVisible(true);
+            blockIcon.setVisible(true);
+            muteIcon.setVisible(true);
+        }
         return super.onPrepareOptionsMenu(m);
     }
 
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (profileAsync != null && user != null && profileAsync.getStatus() != RUNNING) {
+        // write tweet
+        if (item.getItemId() == R.id.profile_tweet) {
+            Intent tweet = new Intent(this, TweetPopup.class);
+            if (!isHomeProfile && user != null) {
+                // add username to tweet
+                String tweetPrefix = user.getScreenname() + " ";
+                tweet.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
+            }
+            startActivity(tweet);
+        }
+        // follow / unfollow user
+        else if (item.getItemId() == R.id.profile_follow) {
             if (user != null && relation != null) {
-                int menuId = item.getItemId();
-                if (menuId == R.id.profile_tweet) {
-                    String tweetPrefix = user.getScreenname() + " ";
-                    Intent tweet = new Intent(this, TweetPopup.class);
-                    if (user.getId() != settings.getUserId())
-                        tweet.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
-                    startActivity(tweet);
-                } else if (menuId == R.id.profile_settings) {
-                    Intent editProfile = new Intent(this, ProfileEditor.class);
-                    startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
-                } else if (menuId == R.id.profile_follow) {
-                    if (!relation.isFriend()) {
-                        profileAsync = new UserAction(this, user);
-                        profileAsync.execute(ACTION_FOLLOW);
-                    } else if (!unfollowConfirm.isShowing()) {
-                        unfollowConfirm.show();
-                    }
-                } else if (menuId == R.id.profile_mute) {
-                    if (relation.isMuted()) {
-                        profileAsync = new UserAction(this, user);
-                        profileAsync.execute(ACTION_UNMUTE);
-                    } else if (!muteConfirm.isShowing()) {
-                        muteConfirm.show();
-                    }
-                } else if (menuId == R.id.profile_block) {
-                    if (relation.isBlocked()) {
-                        profileAsync = new UserAction(this, user);
-                        profileAsync.execute(ACTION_UNBLOCK);
-                    } else if (!blockConfirm.isShowing()) {
-                        blockConfirm.show();
-                    }
-                } else if (menuId == R.id.profile_message) {
-                    Intent dmPage;
-                    if (relation.isHome()) {
-                        dmPage = new Intent(this, DirectMessage.class);
-                    } else {
-                        dmPage = new Intent(this, MessagePopup.class);
-                        dmPage.putExtra(KEY_DM_PREFIX, relation.getTargetScreenName());
-                    }
-                    startActivity(dmPage);
-                } else if (menuId == R.id.profile_lists) {
-                    Intent listPage = new Intent(this, UserLists.class);
-                    listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
-                    startActivity(listPage);
+                if (!relation.isFriend()) {
+                    profileAsync = new UserAction(this, user);
+                    profileAsync.execute(ACTION_FOLLOW);
+                } else if (!unfollowConfirm.isShowing()) {
+                    unfollowConfirm.show();
                 }
             }
+        }
+        // mute user
+        else if (item.getItemId() == R.id.profile_mute) {
+            if (user != null && relation != null) {
+                if (relation.isMuted()) {
+                    profileAsync = new UserAction(this, user);
+                    profileAsync.execute(ACTION_UNMUTE);
+                } else if (!muteConfirm.isShowing()) {
+                    muteConfirm.show();
+                }
+            }
+        }
+        // block user
+        else if (item.getItemId() == R.id.profile_block) {
+            if (user != null && relation != null) {
+                if (relation.isBlocked()) {
+                    profileAsync = new UserAction(this, user);
+                    profileAsync.execute(ACTION_UNBLOCK);
+                } else if (!blockConfirm.isShowing()) {
+                    blockConfirm.show();
+                }
+            }
+        }
+        // open profile editor
+        else if (item.getItemId() == R.id.profile_settings) {
+            Intent editProfile = new Intent(this, ProfileEditor.class);
+            startActivityForResult(editProfile, REQUEST_PROFILE_CHANGED);
+        }
+        // open direct message
+        else if (item.getItemId() == R.id.profile_message) {
+            if (user != null) {
+                Intent dmPage;
+                if (isHomeProfile) {
+                    dmPage = new Intent(this, DirectMessage.class);
+                } else {
+                    dmPage = new Intent(this, MessagePopup.class);
+                    dmPage.putExtra(KEY_DM_PREFIX, user.getScreenname());
+                }
+                startActivity(dmPage);
+            }
+        }
+        // open users list
+        else if (item.getItemId() == R.id.profile_lists) {
+            Intent listPage = new Intent(this, UserLists.class);
+            listPage.putExtra(KEY_USERLIST_OWNER_ID, userId);
+            startActivity(listPage);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -396,11 +416,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onLinkClick(String tag) {
-        String shortLink = tag;
-        int cut = shortLink.indexOf('?');
+        String shortLink;
+        // remove query from link if exists
+        int cut = tag.indexOf('?');
         if (cut > 0) {
-            shortLink = shortLink.substring(0, cut);
+            shortLink = tag.substring(0, cut);
+        } else {
+            shortLink = tag;
         }
+        // link points to a tweet
         if (LINK_PATTERN.matcher(shortLink).matches()) {
             String name = shortLink.substring(20, shortLink.indexOf('/', 20));
             long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
@@ -408,7 +432,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             intent.putExtra(KEY_TWEET_ID, id);
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
-        } else {
+        }
+        // open link in browser
+        else {
             Uri link = Uri.parse(tag);
             Intent intent = new Intent(Intent.ACTION_VIEW, link);
             try {
@@ -422,25 +448,30 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onClick(View v) {
+        // open following page
         if (v.getId() == R.id.following) {
             if (user != null && relation != null) {
-                if (!(user.isLocked() || relation.isBlocked()) || relation.isFriend() || user.getId() == settings.getUserId()) {
+                if (!user.isLocked() || relation.isFriend() || isHomeProfile) {
                     Intent following = new Intent(this, UserDetail.class);
-                    following.putExtra(KEY_USERDETAIL_ID, user.getId());
+                    following.putExtra(KEY_USERDETAIL_ID, userId);
                     following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
                     startActivity(following);
                 }
             }
-        } else if (v.getId() == R.id.follower) {
+        }
+        // open follower page
+        else if (v.getId() == R.id.follower) {
             if (user != null && relation != null) {
-                if (!(user.isLocked() || relation.isBlocked()) || relation.isFriend() || user.getId() == settings.getUserId()) {
+                if (!user.isLocked() || relation.isFriend() || isHomeProfile) {
                     Intent follower = new Intent(this, UserDetail.class);
-                    follower.putExtra(KEY_USERDETAIL_ID, user.getId());
+                    follower.putExtra(KEY_USERDETAIL_ID, userId);
                     follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
                     startActivity(follower);
                 }
             }
-        } else if (v.getId() == R.id.links) {
+        }
+        // open link added to profile
+        else if (v.getId() == R.id.links) {
             if (user != null && !user.getLink().isEmpty()) {
                 String link = user.getLink();
                 Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
@@ -450,14 +481,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                     Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
                 }
             }
-        } else if (v.getId() == R.id.profile_img) {
+        }
+        // open profile image
+        else if (v.getId() == R.id.profile_img) {
             if (user != null) {
                 Intent mediaImage = new Intent(this, MediaViewer.class);
                 mediaImage.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
                 mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                 startActivity(mediaImage);
             }
-        } else if (v.getId() == R.id.profile_banner) {
+        }
+        // open banner image
+        else if (v.getId() == R.id.profile_banner) {
             if (user != null) {
                 Intent mediaBanner = new Intent(this, MediaViewer.class);
                 mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + BANNER_IMG_HIGH_RES});
@@ -472,11 +507,16 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public void onConfirm(DialogBuilder.DialogType type) {
         if (user != null) {
             profileAsync = new UserAction(this, user);
+            // confirmed unfollowing user
             if (type == PROFILE_UNFOLLOW) {
                 profileAsync.execute(ACTION_UNFOLLOW);
-            } else if (type == PROFILE_BLOCK) {
+            }
+            // confirmed blocking user
+            else if (type == PROFILE_BLOCK) {
                 profileAsync.execute(ACTION_BLOCK);
-            } else if (type == PROFILE_MUTE) {
+            }
+            // confirmed muting user
+            else if (type == PROFILE_MUTE) {
                 profileAsync.execute(ACTION_MUTE);
             }
         }

@@ -80,7 +80,7 @@ public class GlobalSettings {
     private static final String TREND_ID = "world_id";
 
     // file name of the preferences
-    private static final String NAME = "settings";
+    private static final String APP_SETTINGS = "settings";
 
     // Default App settings
     @IntRange(from = 0, to = 3)
@@ -128,7 +128,7 @@ public class GlobalSettings {
      */
     public static GlobalSettings getInstance(@NonNull Context context) {
         if (ourInstance.settings == null) {
-            ourInstance.settings = context.getSharedPreferences(NAME, MODE_PRIVATE);
+            ourInstance.settings = context.getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
             ourInstance.initialize();
         }
         return ourInstance;
@@ -542,7 +542,7 @@ public class GlobalSettings {
      *
      * @return access tokens
      */
-    public String[] getKeys() {
+    public String[] getCurrentUserAccessToken() {
         String[] out = new String[2];
         out[0] = key1;
         out[1] = key2;
@@ -554,7 +554,7 @@ public class GlobalSettings {
      *
      * @return User ID
      */
-    public long getUserId() {
+    public long getCurrentUserId() {
         return userId;
     }
 
@@ -565,7 +565,7 @@ public class GlobalSettings {
      * @param key2   2nd access token
      * @param userId User ID
      */
-    public void setConnection(String key1, String key2, Long userId) {
+    public void setConnection(String key1, String key2, long userId) {
         loggedIn = true;
         this.key1 = key1;
         this.key2 = key2;

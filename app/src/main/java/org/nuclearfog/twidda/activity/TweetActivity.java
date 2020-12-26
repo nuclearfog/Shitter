@@ -200,7 +200,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (tweet != null && tweet.getUser().getId() == settings.getUserId())
+        if (tweet != null && tweet.getUser().getId() == settings.getCurrentUserId())
             m.findItem(R.id.delete_tweet).setVisible(true);
         return super.onPrepareOptionsMenu(m);
     }
