@@ -60,8 +60,8 @@ public final class DialogBuilder {
 
             case WRONG_PROXY:
                 title = R.string.info_error;
-                message = R.string.info_wrong_proxy_settings;
-                posButton = R.string.confirm_discard_proxy_changes;
+                message = R.string.error_wrong_proxy_settings;
+                posButton = R.string.confirm_discard_button;
                 negButton = R.string.dialog_button_cancel;
                 break;
 
@@ -85,7 +85,7 @@ public final class DialogBuilder {
             case TWEETPOPUP_ERROR:
                 title = R.string.info_error;
                 message = R.string.error_sending_tweet;
-                posButton = R.string.confirm_retry;
+                posButton = R.string.confirm_retry_button;
                 negButton = R.string.dialog_button_cancel;
                 break;
 

@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/loginpage_number_padding"
                 android:layout_marginEnd="@dimen/loginpage_number_padding"
-                android:text="@string/login_thr_opt"
+                android:text="@string/login_trd_opt"
                 android:textSize="24sp" />
 
             <Button

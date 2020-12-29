@@ -3,8 +3,8 @@
     <string name="settings_font">Schrift</string>
     <string name="highlight">Hervorhebung</string>
     <string name="settings_list_size">Listengröße</string>
-    <string name="confirm_retry">wiederholen</string>
-    <string name="color_settings">Farbeinstellungen</string>
+    <string name="confirm_retry_button">wiederholen</string>
+    <string name="settings_color_settings">Farbeinstellungen</string>
     <string name="data_consumption">Datenverbrauch</string>
     <string name="trend_setting">Trend Standort</string>
     <string name="register_link">PIN aufrufen</string>
@@ -23,7 +23,7 @@
     <string name="info_error">Fehler!</string>
     <string name="menu_tweet_delete">Tweet löschen</string>
     <string name="menu_tweet_open_browser">Im Browser öffnen</string>
-    <string name="error_not_found">night gefunden!</string>
+    <string name="error_not_found">nicht gefunden!</string>
     <string name="menu_user_unfollow">Entfolgen</string>
     <string name="menu_block_user">blocken</string>
     <string name="menu_user_unblock">entblocken</string>
@@ -122,7 +122,7 @@
     <string name="profile_banner">Profilbanner</string>
     <string name="editprofile_add_banner">Profilbanner hinzufügen</string>
     <string name="error_invalid_link">Ungültiger Link!</string>
-    <string name="settings_app_information">App und lizenzinformationen unter:</string>
+    <string name="settings_app_information">App und Lizenzinformationen unter:</string>
     <string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
     <string name="info_cant_add_video">Video konnte nicht hinzugefügt werden!</string>
     <string name="error_file_not_found">Datei nicht gefunden!</string>
@@ -132,8 +132,8 @@
     <string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
     <string name="settings_enable_proxy">Proxy aktivieren</string>
     <string name="settings_enable_proxy_auth">Aktiviere Proxy Authentifizierung</string>
-    <string name="info_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
-    <string name="confirm_discard_proxy_changes">verwerfen</string>
+    <string name="error_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
+    <string name="confirm_discard_button">verwerfen</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">Sensible Inhalte</string>
     <string name="info_phone_tls_support">TLS 1.2 wird nicht unterstützt. Die App wird möglicherweise nicht funktionieren!</string>
@@ -172,7 +172,7 @@
     <string name="info_list_unfollowed">Liste entfolgt</string>
     <string name="info_unfollowed">entfolgt!</string>
     <string name="descr_add_profile_image">Profilbild ändern</string>
-    <string name="settings_enable_hq_img">Hohe Bildqualität</string>
+    <string name="settings_enable_hq_img">Hohe Qualität</string>
     <string name="menu_app_info">Über</string>
     <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
@@ -180,7 +180,7 @@
     <string name="dialog_button_yes">Ja</string>
     <string name="dialog_button_no">Nein</string>
     <string name="dialog_button_cancel">Abbrechen</string>
-    <string name="dialog_button_ok">Ok</string>
+    <string name="dialog_button_ok">OK</string>
     <string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>
     <string name="error_cant_login">App ist nicht eingeloggt, Bitte neu einloggen!</string>
     <string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>

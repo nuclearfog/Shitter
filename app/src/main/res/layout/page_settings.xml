@@ -35,7 +35,7 @@
                 android:layout_marginTop="@dimen/settings_text_margin"
                 android:paddingLeft="@dimen/settings_layout_padding"
                 android:paddingRight="@dimen/settings_layout_padding"
-                android:text="@string/color_settings"
+                android:text="@string/settings_color_settings"
                 android:textSize="@dimen/settings_textsize" />
 
             <LinearLayout
