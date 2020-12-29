@@ -42,7 +42,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -58,6 +57,9 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
  */
 public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick {
 
+    /**
+     * Permission to read images from external storage
+     */
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
 
     /**
@@ -219,10 +221,13 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                         int index = c.getColumnIndex(MEDIA_MODE[0]);
                         String mediaPath = c.getString(index);
                         Bitmap image = BitmapFactory.decodeFile(mediaPath);
+
                         if (reqCode == REQ_PROFILE_IMG) {
+                            // Add image as profile image
                             profile_image.setImageBitmap(image);
                             profileLink = mediaPath;
                         } else {
+                            // Add image as banner image
                             int bannerHeight = profile_banner.getMeasuredWidth() / 3;
                             if (bannerHeight > 0)
                                 profile_banner.setMaxHeight(bannerHeight);
@@ -236,13 +241,6 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                 }
             }
         }
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQ_PERM && grantResults[0] == PERMISSION_GRANTED)
-            getMedia(requestCode);
     }
 
 

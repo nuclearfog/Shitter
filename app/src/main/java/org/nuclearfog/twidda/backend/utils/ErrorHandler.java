@@ -108,6 +108,10 @@ public final class ErrorHandler {
                     if (error.getMessage() != null)
                         Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
                     break;
+
+                case ACCOUNT_UPDATE_FAILED:
+                    Toast.makeText(context, R.string.error_acc_update, Toast.LENGTH_LONG).show();
+                    break;
             }
         } else {
             Toast.makeText(context, R.string.error_not_defined, Toast.LENGTH_SHORT).show();

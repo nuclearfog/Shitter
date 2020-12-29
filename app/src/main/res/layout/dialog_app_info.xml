@@ -26,21 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/infopopup_text_padding"
-        android:text="@string/settings_3rd_party_license" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autoLink="web"
-        android:linksClickable="true"
-        android:padding="@dimen/infopopup_text_padding"
-        android:text="@string/settings_info_license_link" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/infopopup_text_padding"
-        android:text="@string/settings_info_github" />
+        android:text="@string/settings_app_information" />
 
     <TextView
         android:layout_width="match_parent"

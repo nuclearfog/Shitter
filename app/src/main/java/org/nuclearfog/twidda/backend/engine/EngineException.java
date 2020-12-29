@@ -28,6 +28,7 @@ public class EngineException extends Exception {
         NO_LINK_DEFINED,
         NO_CONNECTION,
         IMAGE_NOT_LOADED,
+        ACCOUNT_UPDATE_FAILED,
         ERROR_NOT_DEFINED
     }
 
@@ -80,6 +81,10 @@ public class EngineException extends Exception {
 
                 case 150:
                     errorType = ErrorType.CANT_SEND_DM;
+                    break;
+
+                case 120:
+                    errorType = ErrorType.ACCOUNT_UPDATE_FAILED;
                     break;
 
                 case 136:
