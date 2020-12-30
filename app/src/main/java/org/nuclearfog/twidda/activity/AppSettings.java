@@ -112,7 +112,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         list_size = findViewById(R.id.settings_list_size);
         root = findViewById(R.id.settings_layout);
 
-        toolbar.setTitle(R.string.settings);
+        toolbar.setTitle(R.string.title_settings);
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);

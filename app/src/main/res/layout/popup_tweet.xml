@@ -20,7 +20,7 @@
             android:layout_margin="@dimen/tweetpopup_margin_layout"
             android:background="@android:color/transparent"
             android:gravity="top"
-            android:hint="@string/tweet"
+            android:hint="@string/popup_tweet_hint"
             android:importantForAutofill="no"
             android:inputType="textMultiLine" />
 

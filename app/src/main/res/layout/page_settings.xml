@@ -61,7 +61,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/settings_button_color_edge_thickness"
                         android:singleLine="true"
-                        android:text="@string/background" />
+                        android:text="@string/settings_background" />
                 </LinearLayout>
 
                 <Button
@@ -374,7 +374,7 @@
                     android:background="@color/half_transparent"
                     android:digits="0123456789."
                     android:ems="10"
-                    android:hint="@string/enter_proxy"
+                    android:hint="@string/settings_hint_proxy_ip"
                     android:importantForAutofill="no"
                     android:inputType="number|numberDecimal"
                     android:maxLength="15"

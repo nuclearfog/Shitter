@@ -9,11 +9,11 @@
     <string name="trend_setting">Trend Standort</string>
     <string name="register_link">PIN aufrufen</string>
     <string name="profile_image">Profilbild</string>
-    <string name="settings">Einstellungen</string>
+    <string name="title_settings">Einstellungen</string>
     <string name="settings_image">Bilder laden</string>
     <string name="settings_clear_data">App Daten löschen</string>
     <string name="toolbar_userlist_retweet">Tweet retweetet von</string>
-    <string name="background">Hintergrund</string>
+    <string name="settings_background">Hintergrund</string>
     <string name="confirm_delete_tweet">Tweet löschen?</string>
     <string name="error_enter_pin">PIN eingeben!</string>
     <string name="confirm_delete_database">App Daten Löschen?</string>
@@ -24,7 +24,7 @@
     <string name="menu_tweet_delete">Tweet löschen</string>
     <string name="menu_tweet_open_browser">Im Browser öffnen</string>
     <string name="error_not_found">nicht gefunden!</string>
-    <string name="menu_user_unfollow">Entfolgen</string>
+    <string name="menu_user_unfollow">entfolgen</string>
     <string name="menu_block_user">blocken</string>
     <string name="menu_user_unblock">entblocken</string>
     <string name="info_followed">gefolgt!</string>
@@ -33,7 +33,7 @@
     <string name="info_tweet_removed">Tweet gelöscht!</string>
     <string name="tweet_answering">"an "</string>
     <string name="tweet_sent_from">"gesendet von: "</string>
-    <string name="menu_mute_user">Stummschalten</string>
+    <string name="menu_mute_user">stummschalten</string>
     <string name="menu_unmute_user">Stummschaltung aufheben</string>
     <string name="info_user_muted">stummgeschaltet!</string>
     <string name="info_user_unmuted">Stummschaltung aufgehoben!</string>
@@ -44,12 +44,12 @@
     <string name="error_dm">Nutzername oder Nachricht eingeben!</string>
     <string name="confirm_cancel_message">Nachricht verwerfen?</string>
     <string name="error_empty_tweet">Tweet leer!</string>
-    <string name="settings_logout">Ausloggen</string>
+    <string name="settings_logout">ausloggen</string>
     <string name="dm_answer">Antworten</string>
     <string name="delete_dm">löschen</string>
     <string name="confirm_cancel_tweet">Tweet verwerfen?</string>
     <string name="confirm_log_lout">ausloggen?</string>
-    <string name="confirm_unfollow">User entfolgen?</string>
+    <string name="confirm_unfollow">Nutzer entfolgen?</string>
     <string name="confirm_block">user sperren?</string>
     <string name="info_image_saved">Bild gespeichert!</string>
     <string name="tweet_close">Editor schließen</string>
@@ -76,7 +76,7 @@
     <string name="error_empty_name">Name leer!</string>
     <string name="confirm_discard">Änderungen verwerfen?</string>
     <string name="user_data">Nutzerdaten</string>
-    <string name="error_request_token">Request Token abgelaufen, bitte App aktualisieren!</string>
+    <string name="error_request_token">API Schlüssel abgelaufen, bitte App aktualisieren!</string>
     <string name="follows_you">folgt dir</string>
     <string name="error_image_save">Fehler beim Speichern!</string>
     <string name="error_not_authorized">Keine Berechtigung!</string>
@@ -91,7 +91,7 @@
     <string name="login_verifier">Login</string>
     <string name="settings_button_popup">Popup</string>
     <string name="login_pin">PIN eingeben</string>
-    <string name="enter_proxy">Proxy IP Adresse</string>
+    <string name="settings_hint_proxy_ip">Proxy IP Adresse</string>
     <string name="edit_proxyuser">Nutzername</string>
     <string name="proxy_password">Passwort</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
@@ -131,7 +131,7 @@
     <string name="item_image_save">Bild speichern</string>
     <string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
     <string name="settings_enable_proxy">Proxy aktivieren</string>
-    <string name="settings_enable_proxy_auth">Aktiviere Proxy Authentifizierung</string>
+    <string name="settings_enable_proxy_auth">Proxy Authentifizierung aktivieren</string>
     <string name="error_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
     <string name="confirm_discard_button">verwerfen</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
@@ -157,10 +157,10 @@
     <string name="info_user_removed">Nutzer von der Liste entfernt!</string>
     <string name="descr_remove_user">Nutzer von der Liste entfernen</string>
     <string name="menu_tweet">Tweet verfassen</string>
-    <string name="menu_open_home_profile">Öffne Profil</string>
+    <string name="menu_open_home_profile">öffne Profil</string>
     <string name="menu_open_twitter_search">Twitter suche</string>
     <string name="menu_open_settings">Einstellungen öffnen</string>
-    <string name="menu_create_list">Erstelle Nutzerliste</string>
+    <string name="menu_create_list">erstelle Nutzerliste</string>
     <string name="menu_write_message">Direktnachricht</string>
     <string name="menu_follow_user">folgen</string>
     <string name="menu_goto_lists">Nutzerlisten</string>
