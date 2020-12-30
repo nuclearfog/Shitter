@@ -28,160 +28,153 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <LinearLayout
+                    android:id="@+id/tweet_head"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/tweet_layout_margin"
+                    android:paddingRight="@dimen/tweet_layout_margin"
+                    android:visibility="invisible">
 
                     <LinearLayout
-                        android:id="@+id/tweet_head"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:paddingLeft="@dimen/tweet_layout_margin"
-                        android:paddingRight="@dimen/tweet_layout_margin"
-                        android:visibility="invisible">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="@dimen/tweet_profile"
+                            android:layout_height="@dimen/tweet_profile">
 
-                            <androidx.cardview.widget.CardView
+                            <ImageView
+                                android:id="@+id/profileimage_detail"
                                 android:layout_width="@dimen/tweet_profile"
-                                android:layout_height="@dimen/tweet_profile">
+                                android:layout_height="@dimen/tweet_profile"
+                                android:contentDescription="@string/profile_image" />
 
-                                <ImageView
-                                    android:id="@+id/profileimage_detail"
-                                    android:layout_width="@dimen/tweet_profile"
-                                    android:layout_height="@dimen/tweet_profile"
-                                    android:contentDescription="@string/profile_image" />
-
-                            </androidx.cardview.widget.CardView>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/tweet_layout_margin"
-                                android:layout_marginLeft="@dimen/tweet_layout_margin"
-                                android:layout_marginBottom="@dimen/tweet_layout_margin"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/usernamedetail"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawablePadding="@dimen/tweet_padding_drawable"
-                                    android:singleLine="true" />
-
-                                <TextView
-                                    android:id="@+id/scrnamedetail"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:drawablePadding="@dimen/tweet_padding_drawable"
-                                    android:singleLine="true" />
-
-                                <TextView
-                                    android:id="@+id/timedetail"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:singleLine="true"
-                                    android:textSize="@dimen/tweet_textsize_date" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <Button
-                            android:id="@+id/answer_reference_detail"
-                            style="@style/Widget.AppCompat.Button.Borderless"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/tweet_button_answer_height"
-                            android:background="@drawable/button"
-                            android:paddingLeft="@dimen/tweet_button_padding"
-                            android:paddingRight="@dimen/tweet_button_padding"
-                            android:singleLine="true"
-                            android:textSize="@dimen/tweet_textsize_api"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:id="@+id/tweet_detailed"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/tweet_layout_margin"
-                            android:layout_marginBottom="@dimen/tweet_layout_margin"
-                            android:fadeScrollbars="false"
-                            android:linksClickable="true"
-                            android:maxLines="@integer/tweet_test_max_lines"
-                            android:scrollbars="vertical"
-                            android:textSize="@dimen/tweet_textsize"
-                            android:visibility="gone" />
-
-                        <ImageButton
-                            android:id="@+id/tweet_media_attach"
-                            android:layout_width="@dimen/tweet_button_media_width"
-                            android:layout_height="@dimen/tweet_button_media_height"
-                            android:layout_gravity="center"
-                            android:layout_margin="@dimen/tweet_media_button_margin"
-                            android:background="@drawable/button"
-                            android:contentDescription="@string/image_preview"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:id="@+id/tweet_sensitive"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/tweet_padding_drawable"
-                            android:paddingLeft="@dimen/tweet_button_padding"
-                            android:paddingRight="@dimen/tweet_button_padding"
-                            android:singleLine="true"
-                            android:text="@string/tweet_sensitive_media"
-                            android:textSize="@dimen/tweet_textsize_api"
-                            android:visibility="gone"
-                            app:drawableLeftCompat="@drawable/sensitive"
-                            app:drawableStartCompat="@drawable/sensitive" />
+                        </androidx.cardview.widget.CardView>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:layout_marginStart="@dimen/tweet_layout_margin"
+                            android:layout_marginLeft="@dimen/tweet_layout_margin"
+                            android:layout_marginBottom="@dimen/tweet_layout_margin"
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tweet_location_name"
-                                android:layout_width="wrap_content"
+                                android:id="@+id/usernamedetail"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:drawablePadding="@dimen/tweet_padding_drawable"
-                                android:singleLine="true"
-                                android:textSize="@dimen/tweet_textsize_locale"
-                                android:visibility="gone"
-                                app:drawableLeftCompat="@drawable/userlocation"
-                                app:drawableStartCompat="@drawable/userlocation" />
+                                android:singleLine="true" />
 
-                            <Button
-                                android:id="@+id/tweet_location_coordinate"
-                                style="@style/Widget.AppCompat.Button.Borderless"
-                                android:layout_width="wrap_content"
-                                android:layout_height="@dimen/tweet_button_location"
-                                android:layout_marginLeft="@dimen/tweet_button_margin"
-                                android:layout_marginRight="@dimen/tweet_button_margin"
-                                android:background="@drawable/button"
-                                android:paddingLeft="@dimen/tweet_button_padding"
-                                android:paddingRight="@dimen/tweet_button_padding"
+                            <TextView
+                                android:id="@+id/scrnamedetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="@dimen/tweet_padding_drawable"
+                                android:singleLine="true" />
+
+                            <TextView
+                                android:id="@+id/timedetail"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:singleLine="true"
-                                android:textSize="@dimen/tweet_textsize_locale"
-                                android:visibility="gone" />
+                                android:textSize="@dimen/tweet_textsize_date" />
 
                         </LinearLayout>
 
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/answer_reference_detail"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/tweet_button_answer_height"
+                        android:background="@drawable/button"
+                        android:paddingLeft="@dimen/tweet_button_padding"
+                        android:paddingRight="@dimen/tweet_button_padding"
+                        android:singleLine="true"
+                        android:textSize="@dimen/tweet_textsize_api"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tweet_detailed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/tweet_layout_margin"
+                        android:layout_marginBottom="@dimen/tweet_layout_margin"
+                        android:fadeScrollbars="false"
+                        android:linksClickable="true"
+                        android:maxLines="@integer/tweet_test_max_lines"
+                        android:scrollbars="vertical"
+                        android:textSize="@dimen/tweet_textsize"
+                        android:visibility="gone" />
+
+                    <ImageButton
+                        android:id="@+id/tweet_media_attach"
+                        android:layout_width="@dimen/tweet_button_media_width"
+                        android:layout_height="@dimen/tweet_button_media_height"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/tweet_media_button_margin"
+                        android:background="@drawable/button"
+                        android:contentDescription="@string/image_preview"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tweet_sensitive"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/tweet_padding_drawable"
+                        android:paddingLeft="@dimen/tweet_button_padding"
+                        android:paddingRight="@dimen/tweet_button_padding"
+                        android:singleLine="true"
+                        android:text="@string/tweet_sensitive_media"
+                        android:textSize="@dimen/tweet_textsize_api"
+                        android:visibility="gone"
+                        app:drawableLeftCompat="@drawable/sensitive"
+                        app:drawableStartCompat="@drawable/sensitive" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:id="@+id/used_api"
-                            android:layout_width="match_parent"
+                            android:id="@+id/tweet_location_name"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:linksClickable="false"
+                            android:drawablePadding="@dimen/tweet_padding_drawable"
                             android:singleLine="true"
-                            android:textSize="@dimen/tweet_textsize_api" />
+                            android:textSize="@dimen/tweet_textsize_locale"
+                            android:visibility="gone"
+                            app:drawableLeftCompat="@drawable/userlocation"
+                            app:drawableStartCompat="@drawable/userlocation" />
+
+                        <Button
+                            android:id="@+id/tweet_location_coordinate"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/tweet_button_location"
+                            android:layout_marginLeft="@dimen/tweet_button_margin"
+                            android:layout_marginRight="@dimen/tweet_button_margin"
+                            android:background="@drawable/button"
+                            android:paddingLeft="@dimen/tweet_button_padding"
+                            android:paddingRight="@dimen/tweet_button_padding"
+                            android:singleLine="true"
+                            android:textSize="@dimen/tweet_textsize_locale"
+                            android:visibility="gone" />
 
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/used_api"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:linksClickable="false"
+                        android:singleLine="true"
+                        android:textSize="@dimen/tweet_textsize_api" />
 
                 </LinearLayout>
 

@@ -66,12 +66,25 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      */
     public static final String KEY_MEDIA_TYPE = "media_type";
 
-    /// Media Types
-    private static final int MEDIAVIEWER_NONE = 0;  // Not Initialized
-    public static final int MEDIAVIEWER_IMG_S = 1;  // Image from Storage
-    public static final int MEDIAVIEWER_IMAGE = 2;  // Image from Twitter
-    public static final int MEDIAVIEWER_VIDEO = 3;  // Video from Twitter
-    public static final int MEDIAVIEWER_ANGIF = 4;  // GIF from Twitter
+    /**
+     * setup media viewer for images from storage
+     */
+    public static final int MEDIAVIEWER_IMG_S = 1;
+
+    /**
+     * setup media viewer for images from twitter
+     */
+    public static final int MEDIAVIEWER_IMAGE = 2;
+
+    /**
+     * setup media viewer for videos
+     */
+    public static final int MEDIAVIEWER_VIDEO = 3;
+
+    /**
+     * setup media viewer for GIF animation
+     */
+    public static final int MEDIAVIEWER_ANGIF = 4;
 
     /**
      * Quality of the saved jpeg images
@@ -82,7 +95,11 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      * request write permission on API < 29
      */
     private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
-    private static final int REQCODE_SD = 6;
+
+    /**
+     * request code for write permission
+     */
+    private static final int REQUEST_WRITE = 6;
 
     private ImageLoader imageAsync;
     private Thread imageSaveThread;
@@ -97,7 +114,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
     private ZoomView zoomImage;
 
     private String[] mediaLinks;
-    private int type = MEDIAVIEWER_NONE;
+    private int type;
     private int videoPos = 0;
 
 
@@ -121,7 +138,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         Bundle param = getIntent().getExtras();
         if (param != null && param.containsKey(KEY_MEDIA_LINK)) {
             mediaLinks = param.getStringArray(KEY_MEDIA_LINK);
-            type = param.getInt(KEY_MEDIA_TYPE, MEDIAVIEWER_NONE);
+            type = param.getInt(KEY_MEDIA_TYPE);
         }
     }
 
@@ -188,7 +205,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
             if (check == PERMISSION_DENIED) {
-                requestPermissions(REQ_WRITE_SD, REQCODE_SD);
+                requestPermissions(REQ_WRITE_SD, REQUEST_WRITE);
                 accessGranted = false;
             }
         }

@@ -30,36 +30,52 @@
                 android:layout_marginBottom="@dimen/editprofile_layout_margin"
                 android:gravity="center_vertical">
 
-                <Button
-                    android:id="@+id/edit_add_banner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/editprofile_button_height"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/editprofile_button_margin"
-                    android:layout_marginRight="@dimen/editprofile_button_margin"
-                    android:background="@drawable/button"
-                    android:paddingLeft="@dimen/editprofile_button_padding"
-                    android:paddingRight="@dimen/editprofile_button_padding"
-                    android:text="@string/editprofile_add_banner"
-                    android:visibility="invisible" />
-
-                <ImageView
-                    android:id="@+id/edit_banner"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/profile_banner"
-                    android:paddingLeft="@dimen/editprofile_banner_padding"
-                    android:paddingRight="@dimen/editprofile_banner_padding"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/edit_change_banner"
-                    android:layout_width="@dimen/editprofile_add_btn_size"
-                    android:layout_height="@dimen/editprofile_add_btn_size"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/descr_add_profile_image"
-                    app:srcCompat="@drawable/add" />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/profile_banner"
+                        android:paddingLeft="@dimen/editprofile_banner_padding"
+                        android:paddingRight="@dimen/editprofile_banner_padding"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/empty_banner" />
+
+                    <ImageView
+                        android:id="@+id/edit_banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/profile_banner"
+                        android:paddingLeft="@dimen/editprofile_banner_padding"
+                        android:paddingRight="@dimen/editprofile_banner_padding"
+                        android:scaleType="centerCrop" />
+
+                    <Button
+                        android:id="@+id/edit_add_banner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/editprofile_button_height"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/editprofile_button_margin"
+                        android:layout_marginRight="@dimen/editprofile_button_margin"
+                        android:background="@drawable/button"
+                        android:paddingLeft="@dimen/editprofile_button_padding"
+                        android:paddingRight="@dimen/editprofile_button_padding"
+                        android:text="@string/editprofile_add_banner"
+                        android:visibility="invisible" />
+
+                    <ImageView
+                        android:id="@+id/edit_change_banner"
+                        android:layout_width="@dimen/editprofile_add_btn_size"
+                        android:layout_height="@dimen/editprofile_add_btn_size"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/descr_add_profile_image"
+                        app:srcCompat="@drawable/add" />
+
+                </FrameLayout>
 
                 <FrameLayout
                     android:layout_width="@dimen/editprofile_image"

@@ -84,6 +84,7 @@
     <dimen name="tweetitem_profile_small">36sp</dimen>
     <dimen name="tweetitem_layout_padding">5dp</dimen>
     <dimen name="tweetitem_margin_layout">5dp</dimen>
+    <dimen name="tweetitem_textview_margin">10dp</dimen>
     <dimen name="tweetitem_padding_drawable">5dp</dimen>
     <dimen name="tweetitem_textsize_button">12sp</dimen>
     <dimen name="tweetitem_textsize_date">12sp</dimen>

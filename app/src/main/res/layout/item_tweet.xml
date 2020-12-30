@@ -49,17 +49,18 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:layout_weight="8"
+                        android:layout_marginEnd="@dimen/tweetitem_textview_margin"
+                        android:layout_marginRight="@dimen/tweetitem_textview_margin"
+                        android:layout_weight="1"
                         android:drawablePadding="@dimen/tweetitem_padding_drawable"
                         android:gravity="start"
                         android:singleLine="true" />
 
                     <TextView
                         android:id="@+id/time"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:layout_weight="3"
                         android:gravity="end"
                         android:singleLine="true"
                         android:textAlignment="gravity"

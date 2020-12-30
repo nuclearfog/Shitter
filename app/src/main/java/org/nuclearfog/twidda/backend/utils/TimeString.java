@@ -40,6 +40,9 @@ public final class TimeString {
         if (minutes > 0) {
             return minutes + " m";
         }
-        return seconds + " s";
+        if (seconds > 0) {
+            return seconds + " s";
+        }
+        return "0 s";
     }
 }
