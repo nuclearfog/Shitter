@@ -34,10 +34,10 @@ import org.nuclearfog.twidda.backend.UserUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.UserHolder;
 import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -121,7 +121,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         setSupportActionBar(toolbar);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
         Point displaySize = new Point();
         getWindowManager().getDefaultDisplay().getSize(displaySize);

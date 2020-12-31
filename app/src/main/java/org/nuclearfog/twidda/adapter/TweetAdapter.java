@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.graphics.Color;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -22,7 +22,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.FontTool;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -42,9 +42,24 @@ import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
  */
 public class TweetAdapter extends Adapter<ViewHolder> {
 
+    /**
+     * index of {@link #loadingIndex} if no index is defined
+     */
     private static final int NO_INDEX = -1;
+
+    /**
+     * View type for a tweet item
+     */
     private static final int VIEW_TWEET = 0;
+
+    /**
+     * View type for a placeholder item
+     */
     private static final int VIEW_GAP = 1;
+
+    /**
+     * Threshold to set up a placeholder
+     */
     private static final int MIN_COUNT = 2;
 
     private TweetClickListener itemClickListener;
@@ -55,7 +70,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private int loadingIndex;
 
 
-    public TweetAdapter(TweetClickListener itemClickListener, GlobalSettings settings) {
+    public TweetAdapter(GlobalSettings settings, TweetClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         formatter = NumberFormat.getIntegerInstance();
         tweets = new ArrayList<>();
@@ -182,8 +197,10 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TWEET) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-            FontTool.setViewFontAndColor(settings, v);
+            AppStyles.setViewFontAndColor(settings, v);
             final TweetHolder vh = new TweetHolder(v);
+            vh.retweetCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+            vh.favoriteCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -234,26 +251,41 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             TweetHolder vh = (TweetHolder) holder;
             User user = tweet.getUser();
             if (tweet.getEmbeddedTweet() != null) {
-                vh.retweeter.setText(user.getScreenname());
-                vh.retweeter.setVisibility(VISIBLE);
+                vh.retweeterName.setText(user.getScreenname());
+                vh.retweeterName.setVisibility(VISIBLE);
                 tweet = tweet.getEmbeddedTweet();
                 user = tweet.getUser();
             } else {
-                vh.retweeter.setVisibility(INVISIBLE);
+                vh.retweeterName.setVisibility(INVISIBLE);
             }
             Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
             vh.tweet.setText(text);
             vh.username.setText(user.getUsername());
             vh.screenname.setText(user.getScreenname());
-            vh.retweet.setText(formatter.format(tweet.getRetweetCount()));
-            vh.favorite.setText(formatter.format(tweet.getFavorCount()));
+            vh.retweetCount.setText(formatter.format(tweet.getRetweetCount()));
+            vh.favoriteCount.setText(formatter.format(tweet.getFavorCount()));
             vh.time.setText(getTimeString(tweet.getTime()));
 
-            setIcon(vh.retweet, tweet.retweeted() ? R.drawable.retweet_enabled : R.drawable.retweet);
-            setIcon(vh.favorite, tweet.favored() ? R.drawable.favorite_enabled : R.drawable.favorite);
-            setIcon(vh.username, user.isVerified() ? R.drawable.verify : 0);
-            setIcon(vh.screenname, user.isLocked() ? R.drawable.lock : 0);
-
+            if (tweet.retweeted()) {
+                AppStyles.setIconColor(vh.retweetCount, Color.GREEN);
+            } else {
+                AppStyles.setIconColor(vh.retweetCount, Color.WHITE);
+            }
+            if (tweet.favored()) {
+                AppStyles.setIconColor(vh.favoriteCount, Color.YELLOW);
+            } else {
+                AppStyles.setIconColor(vh.favoriteCount, Color.WHITE);
+            }
+            if (user.isVerified()) {
+                vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+            } else {
+                vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
+            if (user.isLocked()) {
+                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            } else {
+                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
             if (settings.getImageLoad()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
@@ -275,21 +307,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * sets an icon for a textview
-     *
-     * @param tv       TextView to add an icon
-     * @param drawable icon
-     */
-    private void setIcon(TextView tv, @DrawableRes int drawable) {
-        tv.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0);
-    }
-
-    /**
      * Holder class for the tweet view
      */
     private final class TweetHolder extends ViewHolder {
-        final TextView username, screenname, tweet, retweet;
-        final TextView favorite, retweeter, time;
+        final TextView username, screenname, tweet, retweetCount;
+        final TextView favoriteCount, retweeterName, time;
         final ImageView profile;
 
         TweetHolder(@NonNull View v) {
@@ -297,9 +319,9 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             username = v.findViewById(R.id.username);
             screenname = v.findViewById(R.id.screenname);
             tweet = v.findViewById(R.id.tweettext);
-            retweet = v.findViewById(R.id.retweet_number);
-            favorite = v.findViewById(R.id.favorite_number);
-            retweeter = v.findViewById(R.id.retweeter);
+            retweetCount = v.findViewById(R.id.retweet_number);
+            favoriteCount = v.findViewById(R.id.favorite_number);
+            retweeterName = v.findViewById(R.id.retweeter);
             time = v.findViewById(R.id.time);
             profile = v.findViewById(R.id.tweetPb);
         }

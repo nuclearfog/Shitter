@@ -24,10 +24,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -109,7 +109,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
 
         leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);

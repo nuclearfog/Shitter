@@ -28,10 +28,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
@@ -166,7 +166,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getPopupColor());
         cancelButton.setVisibility(VISIBLE);
 

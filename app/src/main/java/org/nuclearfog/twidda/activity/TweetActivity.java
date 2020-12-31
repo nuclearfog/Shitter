@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -35,10 +36,11 @@ import org.nuclearfog.twidda.backend.TweetAction;
 import org.nuclearfog.twidda.backend.TweetAction.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -150,7 +152,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         pager.setAdapter(adapter);
 
         settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         root.setBackgroundColor(settings.getBackgroundColor());
@@ -248,18 +250,22 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     public void onClick(View v) {
         // answer to the tweet
         if (v.getId() == R.id.tweet_answer) {
-            String tweetPrefix = tweet.getUser().getScreenname() + " ";
-            Intent tweetPopup = new Intent(this, TweetPopup.class);
-            tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetId);
-            tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
-            startActivity(tweetPopup);
+            if (tweet != null) {
+                String tweetPrefix = tweet.getUser().getScreenname() + " ";
+                Intent tweetPopup = new Intent(this, TweetPopup.class);
+                tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetId);
+                tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
+                startActivity(tweetPopup);
+            }
         }
         // show user retweeting this tweet
         else if (v.getId() == R.id.tweet_retweet) {
-            Intent userList = new Intent(this, UserDetail.class);
-            userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
-            userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
-            startActivity(userList);
+            if (tweet != null) {
+                Intent userList = new Intent(this, UserDetail.class);
+                userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
+                userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
+                startActivity(userList);
+            }
         }
         // open profile of the tweet author
         else if (v.getId() == R.id.profileimage_detail) {
@@ -399,19 +405,32 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public void setTweet(Tweet tweet) {
         this.tweet = tweet;
+        User author = tweet.getUser();
         invalidateOptionsMenu();
 
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
-        int rtwDraw = tweet.retweeted() ? R.drawable.retweet_enabled : R.drawable.retweet;
-        int favDraw = tweet.favored() ? R.drawable.favorite_enabled : R.drawable.favorite;
-        int verDraw = tweet.getUser().isVerified() ? R.drawable.verify : 0;
-        int locDraw = tweet.getUser().isLocked() ? R.drawable.lock : 0;
-        rtwButton.setCompoundDrawablesWithIntrinsicBounds(rtwDraw, 0, 0, 0);
-        favButton.setCompoundDrawablesWithIntrinsicBounds(favDraw, 0, 0, 0);
-        usrName.setCompoundDrawablesWithIntrinsicBounds(verDraw, 0, 0, 0);
-        scrName.setCompoundDrawablesWithIntrinsicBounds(locDraw, 0, 0, 0);
-        usrName.setText(tweet.getUser().getUsername());
-        scrName.setText(tweet.getUser().getScreenname());
+        if (tweet.retweeted()) {
+            AppStyles.setIconColor(rtwButton, Color.GREEN);
+        } else {
+            AppStyles.setIconColor(rtwButton, Color.WHITE);
+        }
+        if (tweet.favored()) {
+            AppStyles.setIconColor(favButton, Color.YELLOW);
+        } else {
+            AppStyles.setIconColor(favButton, Color.WHITE);
+        }
+        if (author.isVerified()) {
+            usrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+        } else {
+            usrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        if (author.isLocked()) {
+            scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+        } else {
+            scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        usrName.setText(author.getUsername());
+        scrName.setText(author.getScreenname());
         tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
         favButton.setText(buttonNumber.format(tweet.getFavorCount()));
         rtwButton.setText(buttonNumber.format(tweet.getRetweetCount()));
@@ -456,8 +475,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 break;
         }
         if (settings.getImageLoad()) {
-            String pbLink = tweet.getUser().getImageLink();
-            if (!tweet.getUser().hasDefaultProfileImage())
+            String pbLink = author.getImageLink();
+            if (!author.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
             Picasso.get().load(pbLink).error(R.drawable.no_image).into(profile_img);
         }

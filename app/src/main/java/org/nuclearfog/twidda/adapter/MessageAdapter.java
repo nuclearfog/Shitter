@@ -22,7 +22,7 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.FontTool;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
         final MessageHolder vh = new MessageHolder(view);
-        FontTool.setViewFontAndColor(settings, view);
+        AppStyles.setViewFontAndColor(settings, view);
 
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.answer.setOnClickListener(new View.OnClickListener() {

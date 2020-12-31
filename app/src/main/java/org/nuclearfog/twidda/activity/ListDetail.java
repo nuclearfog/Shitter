@@ -27,10 +27,10 @@ import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.UserList;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.regex.Pattern;
@@ -140,7 +140,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             subscrTab.setIcon(R.drawable.subscriber);
         }
         setSupportActionBar(toolbar);
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
     }
 
 

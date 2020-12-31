@@ -166,7 +166,7 @@
     <dimen name="imageitem_layout_margin">2dp</dimen>
 
     <!--dimens of item_image_load.xml-->
-    <dimen name="itemimageload_progress_size">48dp</dimen>
+    <dimen name="item_imageload_progress_size">48dp</dimen>
     <dimen name="itemimageload_layout_margin">16dp</dimen>
 
     <!--dimens of page_userlist.xml-->

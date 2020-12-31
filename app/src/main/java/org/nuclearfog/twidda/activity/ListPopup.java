@@ -18,10 +18,10 @@ import org.nuclearfog.twidda.backend.ListUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.items.UserList;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -65,7 +65,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
-        FontTool.setViewFont(settings, root);
+        AppStyles.setViewFont(settings, root);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

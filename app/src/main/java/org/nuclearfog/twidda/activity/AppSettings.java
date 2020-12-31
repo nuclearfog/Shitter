@@ -37,10 +37,10 @@ import org.nuclearfog.twidda.backend.LocationLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -128,7 +128,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSpinner.setAdapter(fontAdapter);
         fontSpinner.setSelection(settings.getFont());
 
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         root.setBackgroundColor(settings.getBackgroundColor());
@@ -307,7 +307,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
                 case FONTCOLOR:
                     settings.setFontColor(color);
-                    FontTool.setViewFontAndColor(settings, root);
+                    AppStyles.setViewFontAndColor(settings, root);
                     colorButton2.setBackgroundColor(color);
                     colorButton2.setTextColor(color ^ INVERTCOLOR);
                     break;
@@ -361,7 +361,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             settings.setTrendLocation(locationAdapter.getItem(position));
         } else if (parent.getAdapter() instanceof FontAdapter) {
             settings.setFont(position);
-            FontTool.setViewFont(settings, root);
+            AppStyles.setViewFont(settings, root);
         }
     }
 

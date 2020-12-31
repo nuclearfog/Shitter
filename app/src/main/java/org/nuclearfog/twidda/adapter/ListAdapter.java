@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.items.UserList;
-import org.nuclearfog.twidda.backend.utils.FontTool;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
@@ -127,7 +127,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
         if (viewType == ITEM_LIST) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
             final ListHolder vh = new ListHolder(v);
-            FontTool.setViewFontAndColor(settings, v);
+            AppStyles.setViewFontAndColor(settings, v);
             vh.pb_image.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

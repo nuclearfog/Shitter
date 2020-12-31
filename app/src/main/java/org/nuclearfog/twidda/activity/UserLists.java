@@ -17,7 +17,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
-import org.nuclearfog.twidda.backend.utils.FontTool;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
@@ -67,7 +67,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         mTab.setupWithViewPager(pager);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
         root.setBackgroundColor(settings.getBackgroundColor());
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);

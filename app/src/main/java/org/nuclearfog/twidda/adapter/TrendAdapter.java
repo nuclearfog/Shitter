@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Trend;
-import org.nuclearfog.twidda.backend.utils.FontTool;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -88,7 +88,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
         final ItemHolder vh = new ItemHolder(v);
-        FontTool.setViewFontAndColor(settings, v);
+        AppStyles.setViewFontAndColor(settings, v);
 
         v.setOnClickListener(new OnClickListener() {
             @Override

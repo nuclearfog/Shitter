@@ -23,8 +23,8 @@ import androidx.appcompat.widget.Toolbar;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.security.NoSuchAlgorithmException;
@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         loginButton.setTypeface(settings.getFontFace());
         pinInput.setTypeface(settings.getFontFace());
         root.setBackgroundColor(settings.getBackgroundColor());
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
     }
 
 

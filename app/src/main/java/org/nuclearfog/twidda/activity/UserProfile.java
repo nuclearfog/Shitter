@@ -37,10 +37,10 @@ import org.nuclearfog.twidda.backend.UserAction;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Relation;
 import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.backend.utils.FontTool;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -168,7 +168,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         setSupportActionBar(tool);
 
         settings = GlobalSettings.getInstance(this);
-        FontTool.setViewFontAndColor(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
         txtUser.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);

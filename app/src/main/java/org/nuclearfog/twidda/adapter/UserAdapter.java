@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.FontTool;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -38,8 +38,19 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  */
 public class UserAdapter extends Adapter<ViewHolder> {
 
+    /**
+     * index of {@link #loadingIndex} if no index is defined
+     */
     private static final int NO_INDEX = -1;
+
+    /**
+     * View type for an user item
+     */
     private static final int ITEM_USER = 0;
+
+    /**
+     * View type for a placeholder item
+     */
     private static final int ITEM_GAP = 1;
 
     private UserClickListener itemClickListener;
@@ -127,7 +138,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_USER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-            FontTool.setViewFontAndColor(settings, v);
+            AppStyles.setViewFontAndColor(settings, v);
             final ItemHolder vh = new ItemHolder(v);
             v.setOnClickListener(new OnClickListener() {
                 @Override

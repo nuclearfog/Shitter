@@ -8,8 +8,9 @@
 
     <ProgressBar
         style="?android:attr/progressBarStyle"
-        android:layout_width="@dimen/itemimageload_progress_size"
-        android:layout_height="@dimen/itemimageload_progress_size"
+        android:layout_width="@dimen/item_imageload_progress_size"
+        android:layout_height="@dimen/item_imageload_progress_size"
         android:layout_marginLeft="@dimen/itemimageload_layout_margin"
         android:layout_marginRight="@dimen/itemimageload_layout_margin" />
+
 </LinearLayout>

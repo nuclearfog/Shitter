@@ -146,7 +146,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
     @Override
     protected TweetAdapter initAdapter() {
-        adapter = new TweetAdapter(this, settings);
+        adapter = new TweetAdapter(settings, this);
         return adapter;
     }
 

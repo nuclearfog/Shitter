@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -7,11 +10,11 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
- * Class for converting all fonts in a view
+ * Class to set up all TetView preferences
  */
-public final class FontTool {
+public final class AppStyles {
 
-    private FontTool() {
+    private AppStyles() {
     }
 
     /**
@@ -53,6 +56,20 @@ public final class FontTool {
                     TextView tv = (TextView) child;
                     tv.setTypeface(settings.getFontFace());
                 }
+            }
+        }
+    }
+
+    /**
+     * set icon drawable color
+     *
+     * @param tv    TextView with a drawable icon on the left side
+     * @param color new color for the drawable
+     */
+    public static void setIconColor(TextView tv, int color) {
+        for (Drawable d : tv.getCompoundDrawables()) {
+            if (d != null) {
+                d.mutate().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
             }
         }
     }

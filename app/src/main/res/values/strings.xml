@@ -198,6 +198,6 @@
 
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
-    <string name="dialog_button_cancel">cancel</string>
+    <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
 </resources>
