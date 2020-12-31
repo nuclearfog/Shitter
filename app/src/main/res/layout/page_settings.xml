@@ -23,439 +23,473 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
-            <View
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider_thickness"
-                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin"
-                android:background="?android:attr/listDivider" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/settings_text_margin"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
-                android:text="@string/settings_color_settings"
-                android:textSize="@dimen/settings_textsize" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
+                android:layout_height="match_parent"
+                style="@style/CardViewStyle">
 
                 <LinearLayout
-                    android:id="@+id/color_background_edge"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/settings_button_color_height"
-                    android:layout_margin="@dimen/settings_button_margin"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_layout_padding">
 
-                    <Button
-                        android:id="@+id/color_background"
-                        style="@style/Widget.AppCompat.Button.Borderless"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:text="@string/settings_color_settings"
+                        android:textSize="@dimen/settings_textsize" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <LinearLayout
+                            android:id="@+id/color_background_edge"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_color_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/color_background"
+                                style="@style/Widget.AppCompat.Button.Borderless"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
+                                android:singleLine="true"
+                                android:text="@string/settings_background" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/color_font"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_color_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:text="@string/settings_font" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <Button
+                            android:id="@+id/color_popup"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_color_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:singleLine="true"
+                            android:text="@string/settings_button_popup" />
+
+                        <Button
+                            android:id="@+id/highlight_color"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_color_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:singleLine="true"
+                            android:text="@string/highlight" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/CardViewStyle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_layout_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:text="@string/settins_font"
+                        android:textSize="@dimen/settings_textsize" />
+
+                    <Spinner
+                        android:id="@+id/spinner_font"
+                        android:layout_width="@dimen/settings_spinner_font_width"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:popupBackground="@color/dropdown_background" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/CardViewStyle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_layout_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:text="@string/data_consumption"
+                        android:textSize="@dimen/settings_textsize" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/toggleImg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/settings_checkbox_height"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_textsize_middle" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/settings_checkbox_margin"
+                            android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                            android:layout_marginEnd="@dimen/settings_checkbox_margin"
+                            android:layout_marginRight="@dimen/settings_checkbox_margin"
+                            android:layout_weight="1"
+                            android:maxLines="2"
+                            android:text="@string/settings_image"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/settings_image_hq"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/settings_checkbox_height"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_textsize_middle" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/settings_checkbox_margin"
+                            android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                            android:layout_marginEnd="@dimen/settings_checkbox_margin"
+                            android:layout_marginRight="@dimen/settings_checkbox_margin"
+                            android:layout_weight="1"
+                            android:maxLines="2"
+                            android:text="@string/settings_enable_hq_img"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/toggleAns"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/settings_checkbox_height"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_textsize_middle" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/settings_checkbox_margin"
+                            android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                            android:layout_marginEnd="@dimen/settings_checkbox_margin"
+                            android:layout_marginRight="@dimen/settings_checkbox_margin"
+                            android:layout_weight="2"
+                            android:text="@string/settings_enable_ans_load"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings_list_size"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                        <SeekBar
+                            android:id="@+id/settings_list_seek"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/settings_seek_margin"
+                            android:layout_weight="1"
+                            android:max="9" />
+
+                        <TextView
+                            android:id="@+id/settings_list_size"
+                            android:layout_width="@dimen/settings_seek_number_width"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_trend_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/CardViewStyle">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_layout_padding">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:text="@string/trend_setting"
+                        android:textSize="@dimen/settings_textsize" />
+
+                    <Spinner
+                        android:id="@+id/spinner_woeid"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                        android:singleLine="true"
-                        android:text="@string/settings_background" />
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:popupBackground="@color/dropdown_background" />
+
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/color_font"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/settings_button_color_height"
-                    android:layout_margin="@dimen/settings_button_margin"
-                    android:layout_weight="1"
-                    android:includeFontPadding="false"
-                    android:singleLine="true"
-                    android:text="@string/settings_font" />
+            </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/settings_data_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
-
-                <Button
-                    android:id="@+id/color_popup"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/settings_button_color_height"
-                    android:layout_margin="@dimen/settings_button_margin"
-                    android:layout_weight="1"
-                    android:singleLine="true"
-                    android:text="@string/settings_button_popup" />
-
-                <Button
-                    android:id="@+id/highlight_color"
-                    style="@style/Widget.AppCompat.Button.Borderless"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/settings_button_color_height"
-                    android:layout_margin="@dimen/settings_button_margin"
-                    android:layout_weight="1"
-                    android:singleLine="true"
-                    android:text="@string/highlight" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider_thickness"
-                android:background="?android:attr/listDivider"
-                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
-                android:text="@string/settins_font"
-                android:textSize="@dimen/settings_textsize" />
-
-            <Spinner
-                android:id="@+id/spinner_font"
-                android:layout_width="@dimen/settings_spinner_font_width"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
-                android:popupBackground="@color/dropdown_background" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider_thickness"
-                android:background="?android:attr/listDivider"
-                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
-                android:text="@string/data_consumption"
-                android:textSize="@dimen/settings_textsize" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/toggleImg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/settings_checkbox_height"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_textsize_middle" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/settings_checkbox_margin"
-                    android:layout_marginLeft="@dimen/settings_checkbox_margin"
-                    android:layout_marginEnd="@dimen/settings_checkbox_margin"
-                    android:layout_marginRight="@dimen/settings_checkbox_margin"
-                    android:layout_weight="1"
-                    android:maxLines="2"
-                    android:text="@string/settings_image"
-                    android:textSize="@dimen/settings_textsize_small" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/settings_image_hq"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/settings_checkbox_height"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_textsize_middle" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/settings_checkbox_margin"
-                    android:layout_marginLeft="@dimen/settings_checkbox_margin"
-                    android:layout_marginEnd="@dimen/settings_checkbox_margin"
-                    android:layout_marginRight="@dimen/settings_checkbox_margin"
-                    android:layout_weight="1"
-                    android:maxLines="2"
-                    android:text="@string/settings_enable_hq_img"
-                    android:textSize="@dimen/settings_textsize_small" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/toggleAns"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/settings_checkbox_height"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_textsize_middle" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/settings_checkbox_margin"
-                    android:layout_marginLeft="@dimen/settings_checkbox_margin"
-                    android:layout_marginEnd="@dimen/settings_checkbox_margin"
-                    android:layout_marginRight="@dimen/settings_checkbox_margin"
-                    android:layout_weight="2"
-                    android:text="@string/settings_enable_ans_load"
-                    android:textSize="@dimen/settings_textsize_small" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_list_size"
-                    android:textSize="@dimen/settings_textsize_small" />
-
-                <SeekBar
-                    android:id="@+id/settings_list_seek"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/settings_seek_margin"
-                    android:layout_weight="1"
-                    android:max="9" />
-
-                <TextView
-                    android:id="@+id/settings_list_size"
-                    android:layout_width="@dimen/settings_seek_number_width"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_textsize_small" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider_thickness"
-                android:background="?android:attr/listDivider"
-                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin" />
-
-            <LinearLayout
-                android:id="@+id/Login_options"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/settings_text_margin"
-                    android:paddingLeft="@dimen/settings_layout_padding"
-                    android:paddingRight="@dimen/settings_layout_padding"
-                    android:text="@string/trend_setting"
-                    android:textSize="@dimen/settings_textsize" />
-
-                <Spinner
-                    android:id="@+id/spinner_woeid"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingLeft="@dimen/settings_layout_padding"
-                    android:paddingRight="@dimen/settings_layout_padding"
-                    android:popupBackground="@color/dropdown_background" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_divider_thickness"
-                    android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                    android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin"
-                    android:background="?android:attr/listDivider" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/settings_text_margin"
-                    android:paddingLeft="@dimen/settings_layout_padding"
-                    android:paddingRight="@dimen/settings_layout_padding"
-                    android:text="@string/user_data"
-                    android:textSize="@dimen/settings_textsize" />
+                style="@style/CardViewStyle">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal"
-                    android:paddingLeft="@dimen/settings_layout_padding"
-                    android:paddingRight="@dimen/settings_layout_padding">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_layout_padding">
 
-                    <Button
-                        android:id="@+id/delete_db"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/settings_button_height"
-                        android:layout_margin="@dimen/settings_button_margin"
-                        android:layout_weight="1"
-                        android:background="@drawable/button"
-                        android:singleLine="true"
-                        android:text="@string/settings_clear_data" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:text="@string/user_data"
+                        android:textSize="@dimen/settings_textsize" />
 
-                    <Button
-                        android:id="@+id/logout"
-                        style="@style/Widget.AppCompat.Button.Borderless"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/settings_button_height"
-                        android:layout_margin="@dimen/settings_button_margin"
-                        android:layout_weight="1"
-                        android:background="@drawable/button"
-                        android:singleLine="true"
-                        android:text="@string/settings_logout" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <Button
+                            android:id="@+id/delete_db"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:background="@drawable/button"
+                            android:singleLine="true"
+                            android:text="@string/settings_clear_data" />
+
+                        <Button
+                            android:id="@+id/logout"
+                            style="@style/Widget.AppCompat.Button.Borderless"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:background="@drawable/button"
+                            android:singleLine="true"
+                            android:text="@string/settings_logout" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <View
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/CardViewStyle">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/settings_divider_thickness"
-                    android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                    android:layout_marginBottom="@dimen/settings_divider_top_bottom_margin"
-                    android:background="?android:attr/listDivider" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/settings_text_margin"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
-                android:text="@string/proxy_settings"
-                android:textSize="@dimen/settings_textsize" />
-
-            <CheckBox
-                android:id="@+id/settings_enable_proxy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/settings_checkbox_margin"
-                android:layout_marginRight="@dimen/settings_checkbox_margin"
-                android:singleLine="true"
-                android:text="@string/settings_enable_proxy"
-                android:textSize="@dimen/settings_textsize_small" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
-
-                <EditText
-                    android:id="@+id/edit_proxyadress"
-                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="@dimen/settings_edittext_margin"
-                    android:layout_weight="2"
-                    android:background="@color/half_transparent"
-                    android:digits="0123456789."
-                    android:ems="10"
-                    android:hint="@string/settings_hint_proxy_ip"
-                    android:importantForAutofill="no"
-                    android:inputType="number|numberDecimal"
-                    android:maxLength="15"
-                    android:padding="@dimen/settings_edittext_padding"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                    android:orientation="vertical"
+                    android:padding="@dimen/settings_layout_padding">
 
-                <EditText
-                    android:id="@+id/edit_proxyport"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/settings_edittext_margin"
-                    android:layout_weight="1"
-                    android:background="@color/half_transparent"
-                    android:ems="10"
-                    android:hint="@string/proxy_port"
-                    android:importantForAutofill="no"
-                    android:inputType="number"
-                    android:maxLength="5"
-                    android:padding="@dimen/settings_edittext_padding"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:text="@string/proxy_settings"
+                        android:textSize="@dimen/settings_textsize" />
 
-            </LinearLayout>
+                    <CheckBox
+                        android:id="@+id/settings_enable_proxy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                        android:layout_marginRight="@dimen/settings_checkbox_margin"
+                        android:singleLine="true"
+                        android:text="@string/settings_enable_proxy"
+                        android:textSize="@dimen/settings_textsize_small" />
 
-            <CheckBox
-                android:id="@+id/settings_enable_auth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/settings_checkbox_margin"
-                android:layout_marginRight="@dimen/settings_checkbox_margin"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding"
-                android:singleLine="true"
-                android:text="@string/settings_enable_proxy_auth"
-                android:textSize="@dimen/settings_textsize_small" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="@dimen/settings_layout_padding"
-                android:paddingRight="@dimen/settings_layout_padding">
+                        <EditText
+                            android:id="@+id/edit_proxyadress"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_edittext_margin"
+                            android:layout_weight="2"
+                            android:background="@color/half_transparent"
+                            android:digits="0123456789."
+                            android:ems="10"
+                            android:hint="@string/settings_hint_proxy_ip"
+                            android:importantForAutofill="no"
+                            android:inputType="number|numberDecimal"
+                            android:maxLength="15"
+                            android:padding="@dimen/settings_edittext_padding"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_edittext_textsize" />
 
-                <EditText
-                    android:id="@+id/edit_proxyuser"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/settings_edittext_margin"
-                    android:layout_weight="3"
-                    android:autofillHints="username"
-                    android:background="@color/half_transparent"
-                    android:ems="10"
-                    android:hint="@string/edit_proxyuser"
-                    android:inputType="textPersonName"
-                    android:padding="@dimen/settings_edittext_padding"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                        <EditText
+                            android:id="@+id/edit_proxyport"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_edittext_margin"
+                            android:layout_weight="1"
+                            android:background="@color/half_transparent"
+                            android:ems="10"
+                            android:hint="@string/proxy_port"
+                            android:importantForAutofill="no"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:padding="@dimen/settings_edittext_padding"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_edittext_textsize" />
 
-                <EditText
-                    android:id="@+id/edit_proxypass"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/settings_edittext_margin"
-                    android:layout_weight="2"
-                    android:autofillHints="password"
-                    android:background="@color/half_transparent"
-                    android:ems="10"
-                    android:hint="@string/proxy_password"
-                    android:inputType="textPassword"
-                    android:padding="@dimen/settings_edittext_padding"
-                    android:singleLine="true"
-                    android:textSize="@dimen/settings_edittext_textsize" />
+                    </LinearLayout>
 
-            </LinearLayout>
+                    <CheckBox
+                        android:id="@+id/settings_enable_auth"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/settings_checkbox_margin"
+                        android:layout_marginRight="@dimen/settings_checkbox_margin"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding"
+                        android:singleLine="true"
+                        android:text="@string/settings_enable_proxy_auth"
+                        android:textSize="@dimen/settings_textsize_small" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/settings_divider_thickness"
-                android:layout_marginTop="@dimen/settings_divider_top_bottom_margin"
-                android:background="?android:attr/listDivider" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/settings_layout_padding"
+                        android:paddingRight="@dimen/settings_layout_padding">
+
+                        <EditText
+                            android:id="@+id/edit_proxyuser"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_edittext_margin"
+                            android:layout_weight="3"
+                            android:autofillHints="username"
+                            android:background="@color/half_transparent"
+                            android:ems="10"
+                            android:hint="@string/edit_proxyuser"
+                            android:inputType="textPersonName"
+                            android:padding="@dimen/settings_edittext_padding"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_edittext_textsize" />
+
+                        <EditText
+                            android:id="@+id/edit_proxypass"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_edittext_margin"
+                            android:layout_weight="2"
+                            android:autofillHints="password"
+                            android:background="@color/half_transparent"
+                            android:ems="10"
+                            android:hint="@string/proxy_password"
+                            android:inputType="textPassword"
+                            android:padding="@dimen/settings_edittext_padding"
+                            android:singleLine="true"
+                            android:textSize="@dimen/settings_edittext_textsize" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 

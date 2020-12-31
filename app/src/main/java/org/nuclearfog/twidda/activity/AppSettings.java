@@ -91,7 +91,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Button delButton = findViewById(R.id.delete_db);
         Button logout = findViewById(R.id.logout);
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
-        View login_layout = findViewById(R.id.Login_options);
+        View trend_card = findViewById(R.id.settings_trend_card);
+        View user_card = findViewById(R.id.settings_data_card);
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
@@ -117,7 +118,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
         settings = GlobalSettings.getInstance(this);
         if (!settings.getLogin()) {
-            login_layout.setVisibility(GONE);
+            trend_card.setVisibility(GONE);
+            user_card.setVisibility(GONE);
         }
         locationAdapter = new LocationAdapter(settings);
         locationAdapter.addTop(settings.getTrendLocation());
