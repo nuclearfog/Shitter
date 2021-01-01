@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorAccent">@android:color/white</item>
         <item name="android:colorBackground">@android:color/black</item>
         <item name="android:windowAnimationStyle">@style/TransactionPending</item>
@@ -40,6 +39,30 @@
     <style name="TransactionPending" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <!-- Color button style -->
+    <style name="ColorButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- Global Style for Buttons -->
+    <style name="FeedbackButton" parent="ColorButton">
+        <item name="android:background">@drawable/button</item>
+    </style>
+
+    <!-- Global Style for Buttons -->
+    <style name="RoundButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/button</item>
+    </style>
+
+    <!-- Global Style for EditText -->
+    <style name="TextInput" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@color/half_transparent</item>
+        <item name="android:padding">@dimen/edittext_background_padding</item>
+        <item name="android:layout_margin">@dimen/edittext_margin</item>
+        <item name="android:textSize">@dimen/edittext_textsize</item>
     </style>
 
     <style name="CardViewStyle" parent="CardView">

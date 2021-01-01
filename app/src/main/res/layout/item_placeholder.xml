@@ -21,8 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/placeholderitem_margin"
-            android:background="@drawable/button"
-            android:text="@string/item_load_more" />
+            android:text="@string/item_load_more"
+            style="@style/FeedbackButton" />
 
     </FrameLayout>
 

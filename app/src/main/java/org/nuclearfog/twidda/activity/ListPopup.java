@@ -65,7 +65,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         root.setBackgroundColor(settings.getPopupColor());
-        AppStyles.setViewFont(settings, root);
+        AppStyles.setViewFontAndColor(settings, root);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

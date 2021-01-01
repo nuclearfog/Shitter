@@ -33,6 +33,11 @@ android {
             versionNameSuffix '.DEBUG'
         }
     }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -45,6 +50,7 @@ dependencies {
 
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.kyleduo.switchbutton:library:2.0.3'
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
     implementation 'com.github.nuclearfog:ZoomView:1.0.2'
     implementation 'com.github.nuclearfog:Tagger:2.2'

@@ -22,10 +22,10 @@
             android:layout_height="@dimen/imageitem_button_size"
             android:layout_gravity="top|end"
             android:layout_margin="@dimen/imageitem_button_margin"
-            android:background="@drawable/button"
             android:contentDescription="@string/item_image_save"
             android:visibility="gone"
-            app:srcCompat="@drawable/save_img" />
+            app:srcCompat="@drawable/save_img"
+            style="@style/RoundButton" />
 
     </FrameLayout>
 

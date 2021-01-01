@@ -40,14 +40,13 @@
 
             <Button
                 android:id="@+id/login_get_link"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/loginpage_button_height"
-                android:background="@drawable/button"
                 android:paddingLeft="@dimen/loginpage_button_padding"
                 android:paddingRight="@dimen/loginpage_button_padding"
                 android:text="@string/register_link"
-                android:textSize="@dimen/loginpage_textsize_button" />
+                android:textSize="@dimen/loginpage_textsize_button"
+                style="@style/FeedbackButton" />
         </LinearLayout>
 
         <View
@@ -107,14 +106,14 @@
 
             <Button
                 android:id="@+id/login_verifier"
-                style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/loginpage_button_height"
-                android:background="@drawable/button"
                 android:paddingLeft="@dimen/loginpage_button_padding"
                 android:paddingRight="@dimen/loginpage_button_padding"
                 android:text="@string/login_verifier"
-                android:textSize="@dimen/loginpage_textsize_button" />
+                android:textSize="@dimen/loginpage_textsize_button"
+                style="@style/FeedbackButton" />
+
         </LinearLayout>
 
         <View

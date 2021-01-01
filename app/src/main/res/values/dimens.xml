@@ -2,23 +2,21 @@
 <resources>
     <!--global dimens-->
     <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="edittext_background_padding">5dp</dimen>
+    <dimen name="edittext_textsize">16sp</dimen>
+    <dimen name="edittext_margin">2dp</dimen>
 
     <!--dimens of page_settings.xml-->
     <dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
-    <dimen name="settings_checkbox_margin">@dimen/settings_layout_padding</dimen>
     <dimen name="settings_textsize_small">12sp</dimen>
     <dimen name="settings_info_appname_font">18sp</dimen>
-    <dimen name="settings_layout_padding">10dp</dimen>
+    <dimen name="settings_layout_padding">16dp</dimen>
     <dimen name="settings_textsize">20sp</dimen>
-    <dimen name="settings_textsize_middle">14sp</dimen>
     <dimen name="settings_button_color_height">40sp</dimen>
     <dimen name="settings_button_height">30sp</dimen>
     <dimen name="settings_button_color_edge_thickness">1dp</dimen>
     <dimen name="settings_button_margin">5dp</dimen>
-    <dimen name="settings_checkbox_height">40dp</dimen>
-    <dimen name="settings_edittext_padding">5dp</dimen>
-    <dimen name="settings_edittext_margin">1dp</dimen>
-    <dimen name="settings_edittext_textsize">14sp</dimen>
+    <dimen name="settings_switch_margin">5dp</dimen>
     <dimen name="settings_spinner_font_width">200sp</dimen>
     <dimen name="settings_seek_number_width">30sp</dimen>
     <dimen name="settings_seek_margin">10dp</dimen>
@@ -70,7 +68,6 @@
     <dimen name="editprofile_button_margin">5dp</dimen>
     <dimen name="editprofile_button_padding">5dp</dimen>
     <dimen name="editprofile_edittext_padding">5dp</dimen>
-    <dimen name="editprofile_textsize">18sp</dimen>
     <dimen name="editprofile_bio_maxheight">150dp</dimen>
     <dimen name="editprofile_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="editprofile_dummy_height">@dimen/profile_button_height</dimen>
@@ -197,7 +194,7 @@
     <!--dimen of dialog_userlist.xml-->
     <dimen name="userlist_descr_height">100dp</dimen>
     <dimen name="userlist_descr_width">300dp</dimen>
-    <dimen name="userlist_switch_padding">5dp</dimen>
+    <dimen name="userlist_switch_text_margin">5dp</dimen>
     <dimen name="userlist_button_height">20dp</dimen>
     <dimen name="userlist_layout_margin">10dp</dimen>
     <dimen name="userlist_button_padding">5dp</dimen>

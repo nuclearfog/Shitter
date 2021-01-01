@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -7,12 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.kyleduo.switchbutton.SwitchButton;
+
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * Class to set up all TetView preferences
  */
 public final class AppStyles {
+
+    private static final int[][] SWITCH_STATES = {{0}};
 
     private AppStyles() {
     }
@@ -28,9 +33,14 @@ public final class AppStyles {
             ViewGroup group = (ViewGroup) v;
             for (int pos = 0; pos < group.getChildCount(); pos++) {
                 View child = group.getChildAt(pos);
-                if (child instanceof ViewGroup)
+                if (child instanceof ViewGroup) {
                     setViewFontAndColor(settings, child);
-                else if (child instanceof TextView) {
+                } else if (child instanceof SwitchButton) {
+                    SwitchButton sw = (SwitchButton) child;
+                    int[] color = {settings.getFontColor()};
+                    sw.setTintColor(settings.getHighlightColor());
+                    sw.setThumbColor(new ColorStateList(SWITCH_STATES, color));
+                } else if (child instanceof TextView) {
                     TextView tv = (TextView) child;
                     tv.setTypeface(settings.getFontFace());
                     tv.setTextColor(settings.getFontColor());

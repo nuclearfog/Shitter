@@ -84,10 +84,10 @@
             android:id="@+id/useritem_del_user"
             android:layout_width="@dimen/useritem_button_size"
             android:layout_height="@dimen/useritem_button_size"
-            android:background="@drawable/button"
             android:contentDescription="@string/descr_remove_user"
             android:visibility="invisible"
-            app:srcCompat="@drawable/cross" />
+            app:srcCompat="@drawable/cross"
+            style="@style/RoundButton" />
 
     </LinearLayout>
 

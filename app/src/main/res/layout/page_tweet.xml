@@ -89,15 +89,13 @@
 
                     <Button
                         android:id="@+id/answer_reference_detail"
-                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/tweet_button_answer_height"
-                        android:background="@drawable/button"
                         android:paddingLeft="@dimen/tweet_button_padding"
                         android:paddingRight="@dimen/tweet_button_padding"
-                        android:singleLine="true"
                         android:textSize="@dimen/tweet_textsize_api"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        style="@style/FeedbackButton" />
 
                     <TextView
                         android:id="@+id/tweet_detailed"
@@ -118,9 +116,9 @@
                         android:layout_height="@dimen/tweet_button_media_height"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/tweet_media_button_margin"
-                        android:background="@drawable/button"
                         android:contentDescription="@string/image_preview"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        style="@style/RoundButton" />
 
                     <TextView
                         android:id="@+id/tweet_sensitive"
@@ -154,17 +152,15 @@
 
                         <Button
                             android:id="@+id/tweet_location_coordinate"
-                            style="@style/Widget.AppCompat.Button.Borderless"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/tweet_button_location"
                             android:layout_marginLeft="@dimen/tweet_button_margin"
                             android:layout_marginRight="@dimen/tweet_button_margin"
-                            android:background="@drawable/button"
                             android:paddingLeft="@dimen/tweet_button_padding"
                             android:paddingRight="@dimen/tweet_button_padding"
-                            android:singleLine="true"
                             android:textSize="@dimen/tweet_textsize_locale"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            style="@style/FeedbackButton" />
 
                     </LinearLayout>
 
@@ -204,51 +200,45 @@
 
                     <Button
                         android:id="@+id/tweet_answer"
-                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/tweet_button_height"
                         android:layout_marginLeft="@dimen/tweet_button_margin"
                         android:layout_marginRight="@dimen/tweet_button_margin"
                         android:layout_weight="1"
-                        android:background="@drawable/button"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:paddingLeft="@dimen/tweet_button_padding"
                         android:paddingRight="@dimen/tweet_button_padding"
-                        android:singleLine="true"
                         app:drawableLeftCompat="@drawable/answer"
-                        app:drawableStartCompat="@drawable/answer" />
+                        app:drawableStartCompat="@drawable/answer"
+                        style="@style/FeedbackButton" />
 
                     <Button
                         android:id="@+id/tweet_retweet"
-                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/tweet_button_height"
                         android:layout_marginLeft="@dimen/tweet_button_margin"
                         android:layout_marginRight="@dimen/tweet_button_margin"
                         android:layout_weight="1"
-                        android:background="@drawable/button"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:paddingLeft="@dimen/tweet_button_padding"
                         android:paddingRight="@dimen/tweet_button_padding"
-                        android:singleLine="true"
                         app:drawableLeftCompat="@drawable/retweet"
-                        app:drawableStartCompat="@drawable/retweet" />
+                        app:drawableStartCompat="@drawable/retweet"
+                        style="@style/FeedbackButton" />
 
                     <Button
                         android:id="@+id/tweet_favorit"
-                        style="@style/Widget.AppCompat.Button.Borderless"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/tweet_button_height"
                         android:layout_marginLeft="@dimen/tweet_button_margin"
                         android:layout_marginRight="@dimen/tweet_button_margin"
                         android:layout_weight="1"
-                        android:background="@drawable/button"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:paddingLeft="@dimen/tweet_button_padding"
                         android:paddingRight="@dimen/tweet_button_padding"
-                        android:singleLine="true"
                         app:drawableLeftCompat="@drawable/favorite"
-                        app:drawableStartCompat="@drawable/favorite" />
+                        app:drawableStartCompat="@drawable/favorite"
+                        style="@style/FeedbackButton" />
 
                 </LinearLayout>
 

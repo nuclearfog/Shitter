@@ -37,9 +37,9 @@
                 android:layout_height="@dimen/dmpopup_button_size"
                 android:layout_marginStart="@dimen/dmpopup_button_margin"
                 android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:background="@drawable/button"
                 android:contentDescription="@string/tweet_add_image"
-                app:srcCompat="@drawable/image_add" />
+                app:srcCompat="@drawable/image_add"
+                style="@style/RoundButton" />
 
             <ImageButton
                 android:id="@+id/dm_send"
@@ -47,9 +47,9 @@
                 android:layout_height="@dimen/dmpopup_button_size"
                 android:layout_marginStart="@dimen/dmpopup_button_margin"
                 android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:background="@drawable/button"
                 android:contentDescription="@string/close_dm"
-                app:srcCompat="@drawable/right" />
+                app:srcCompat="@drawable/right"
+                style="@style/RoundButton" />
 
         </LinearLayout>
 

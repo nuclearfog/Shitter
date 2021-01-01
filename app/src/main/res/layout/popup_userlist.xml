@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/PopupCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    style="@style/PopupCardView">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -65,25 +64,35 @@
                 android:gravity="end"
                 android:orientation="horizontal">
 
-                <CheckBox
-                    android:id="@+id/list_edit_public_sw"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:singleLine="true"
-                    android:text="@string/userlist_public_sel"
-                    app:switchPadding="@dimen/userlist_switch_padding" />
+                    android:layout_weight="1">
+
+                    <com.kyleduo.switchbutton.SwitchButton
+                        android:id="@+id/list_edit_public_sw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/userlist_switch_text_margin"
+                        android:layout_marginStart="@dimen/userlist_switch_text_margin"
+                        android:text="@string/userlist_public_sel"
+                        android:singleLine="true" />
+
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/userlist_create_list"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/userlist_button_height"
                     android:layout_weight="1"
-                    android:background="@drawable/button"
                     android:paddingLeft="@dimen/userlist_button_padding"
                     android:paddingRight="@dimen/userlist_button_padding"
-                    android:singleLine="true"
-                    android:text="@string/userlist_create" />
+                    android:text="@string/userlist_create"
+                    style="@style/FeedbackButton" />
 
             </LinearLayout>
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/page_edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -61,11 +62,11 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/editprofile_button_margin"
                         android:layout_marginRight="@dimen/editprofile_button_margin"
-                        android:background="@drawable/button"
                         android:paddingLeft="@dimen/editprofile_button_padding"
                         android:paddingRight="@dimen/editprofile_button_padding"
                         android:text="@string/editprofile_add_banner"
-                        android:visibility="invisible" />
+                        android:visibility="invisible"
+                        style="@style/FeedbackButton" />
 
                     <ImageView
                         android:id="@+id/edit_change_banner"
@@ -105,96 +106,79 @@
 
             </FrameLayout>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/editprofile_layout_padding"
                 android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:text="@string/username" />
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/edit_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:background="@color/half_transparent"
-                android:hint="@string/enter_username"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:maxLength="@integer/editprofile_username_max_length"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/editprofile_edittext_padding"
+                    android:text="@string/username" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:text="@string/profile_location" />
+                <EditText
+                    android:id="@+id/edit_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_username"
+                    android:inputType="text"
+                    android:maxLength="@integer/editprofile_username_max_length"
+                    android:singleLine="true"
+                    tools:ignore="Autofill"
+                    style="@style/TextInput" />
 
-            <EditText
-                android:id="@+id/edit_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:background="@color/half_transparent"
-                android:ems="10"
-                android:hint="@string/edit_location_hint"
-                android:inputType="text"
-                android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize"
-                android:importantForAutofill="no" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/editprofile_edittext_padding"
+                    android:text="@string/profile_location" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:text="@string/profile_link" />
+                <EditText
+                    android:id="@+id/edit_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/edit_location_hint"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    tools:ignore="Autofill"
+                    style="@style/TextInput" />
 
-            <EditText
-                android:id="@+id/edit_link"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:background="@color/half_transparent"
-                android:ems="10"
-                android:hint="@string/edit_hint_link"
-                android:inputType="text"
-                android:singleLine="true"
-                android:textSize="@dimen/editprofile_textsize"
-                android:importantForAutofill="no" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/editprofile_edittext_padding"
+                    android:text="@string/profile_link" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:text="@string/profile_bio" />
+                <EditText
+                    android:id="@+id/edit_link"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/edit_hint_link"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    tools:ignore="Autofill"
+                    style="@style/TextInput" />
 
-            <EditText
-                android:id="@+id/edit_bio"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/editprofile_bio_maxheight"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:padding="@dimen/editprofile_edittext_padding"
-                android:background="@color/half_transparent"
-                android:ems="10"
-                android:gravity="top"
-                android:hint="@string/edit_hint_enter_descr"
-                android:inputType="textMultiLine"
-                android:textSize="@dimen/editprofile_textsize"
-                android:importantForAutofill="no" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/editprofile_edittext_padding"
+                    android:text="@string/profile_bio" />
+
+                <EditText
+                    android:id="@+id/edit_bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/editprofile_bio_maxheight"
+                    android:gravity="top"
+                    android:hint="@string/edit_hint_enter_descr"
+                    android:inputType="textMultiLine"
+                    tools:ignore="Autofill"
+                    style="@style/TextInput" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

@@ -48,7 +48,7 @@
     <string name="user_data">User data</string>
     <string name="follows_you">follows you</string>
     <string name="settings_enable_ans_load">load Tweet replies automatically</string>
-    <string name="proxy_settings">proxy settings</string>
+    <string name="proxy_settings">Proxy settings</string>
     <string name="settings_hint_proxy_ip">enter IP address</string>
     <string name="proxy_port">Port</string>
     <string name="edit_proxyuser">Username</string>

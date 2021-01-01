@@ -122,33 +122,29 @@
 
                                     <Button
                                         android:id="@+id/following"
-                                        style="@style/Widget.AppCompat.Button.Borderless"
                                         android:layout_width="0dp"
                                         android:layout_height="@dimen/profile_button_height"
                                         android:layout_marginLeft="@dimen/profile_button_margin"
                                         android:layout_marginRight="@dimen/profile_button_margin"
                                         android:layout_weight="1"
-                                        android:background="@drawable/button"
                                         android:paddingLeft="@dimen/profile_button_padding"
                                         android:paddingRight="@dimen/profile_button_padding"
-                                        android:singleLine="true"
                                         app:drawableLeftCompat="@drawable/following"
-                                        app:drawableStartCompat="@drawable/following" />
+                                        app:drawableStartCompat="@drawable/following"
+                                        style="@style/FeedbackButton" />
 
                                     <Button
                                         android:id="@+id/follower"
-                                        style="@style/Widget.AppCompat.Button.Borderless"
                                         android:layout_width="0dp"
                                         android:layout_height="@dimen/profile_button_height"
                                         android:layout_marginLeft="@dimen/profile_button_margin"
                                         android:layout_marginRight="@dimen/profile_button_margin"
                                         android:layout_weight="1"
-                                        android:background="@drawable/button"
                                         android:paddingLeft="@dimen/profile_button_padding"
                                         android:paddingRight="@dimen/profile_button_padding"
-                                        android:singleLine="true"
                                         app:drawableLeftCompat="@drawable/follower"
-                                        app:drawableStartCompat="@drawable/follower" />
+                                        app:drawableStartCompat="@drawable/follower"
+                                        style="@style/FeedbackButton" />
 
                                 </LinearLayout>
 
