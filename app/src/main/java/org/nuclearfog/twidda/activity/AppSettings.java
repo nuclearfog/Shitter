@@ -77,6 +77,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private CompoundButton enableProxy, enableAuth, hqImage;
+    private SeekBar listSizeSelector;
     private Spinner locationSpinner;
     private TextView list_size;
     private View root, colorButton1_edge;
@@ -96,7 +97,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
-        SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
+        listSizeSelector = findViewById(R.id.settings_list_seek);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
@@ -129,6 +130,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSpinner.setSelection(settings.getFont());
 
         AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setSeekBarColor(settings, listSizeSelector);
+
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         root.setBackgroundColor(settings.getBackgroundColor());
@@ -308,6 +311,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 case FONTCOLOR:
                     settings.setFontColor(color);
                     AppStyles.setViewFontAndColor(settings, root);
+                    AppStyles.setSeekBarColor(settings, listSizeSelector);
                     colorButton2.setBackgroundColor(color);
                     colorButton2.setTextColor(color ^ INVERTCOLOR);
                     break;
@@ -320,6 +324,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
                 case HIGHLIGHT:
                     settings.setHighlightColor(color);
+                    AppStyles.setViewFontAndColor(settings, root);
+                    AppStyles.setSeekBarColor(settings, listSizeSelector);
+                    colorButton2.setTextColor(settings.getFontColor() ^ INVERTCOLOR);
                     colorButton4.setBackgroundColor(color);
                     colorButton4.setTextColor(color ^ INVERTCOLOR);
                     break;

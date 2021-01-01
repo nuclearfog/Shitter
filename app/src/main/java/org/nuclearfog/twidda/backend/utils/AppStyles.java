@@ -1,16 +1,18 @@
 package org.nuclearfog.twidda.backend.utils;
 
 import android.content.res.ColorStateList;
-import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 
 /**
  * Class to set up all TetView preferences
@@ -79,8 +81,19 @@ public final class AppStyles {
     public static void setIconColor(TextView tv, int color) {
         for (Drawable d : tv.getCompoundDrawables()) {
             if (d != null) {
-                d.mutate().setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP));
+                d.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
             }
         }
+    }
+
+    /**
+     * set up seek bar color
+     *
+     * @param settings global settings instance
+     * @param seekBar  seek bar to color
+     */
+    public static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
+        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
+        seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getFontColor(), SRC_ATOP));
     }
 }

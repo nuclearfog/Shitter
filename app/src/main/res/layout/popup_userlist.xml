@@ -61,34 +61,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/userlist_layout_margin"
-                android:gravity="end"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/list_edit_public_sw"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical" />
+
+                <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/list_edit_public_sw"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/userlist_switch_text_margin"
-                        android:layout_marginStart="@dimen/userlist_switch_text_margin"
-                        android:text="@string/userlist_public_sel"
-                        android:singleLine="true" />
-
-                </LinearLayout>
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/userlist_switch_text_margin"
+                    android:layout_marginLeft="@dimen/userlist_switch_text_margin"
+                    android:layout_weight="2"
+                    android:singleLine="true"
+                    android:text="@string/userlist_public_sel" />
 
                 <Button
                     android:id="@+id/userlist_create_list"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/userlist_button_height"
-                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="3"
                     android:paddingLeft="@dimen/userlist_button_padding"
                     android:paddingRight="@dimen/userlist_button_padding"
                     android:text="@string/userlist_create"
