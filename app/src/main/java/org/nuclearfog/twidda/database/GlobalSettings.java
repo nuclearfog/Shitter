@@ -94,8 +94,8 @@ public class GlobalSettings {
     private static final int DEFAULT_HIGHLIGHT_COLOR = 0xffff00ff;
     private static final int DEFAULT_FONT_COLOR = 0xffffffff;
     private static final int DEFAULT_POPUP_COLOR = 0xff19aae8;
-    private static final int DEFAULT_CARD_COLOR = 0x40ffffff;
-    private static final int DEFAULT_ICON_COLOR = Color.GREEN;
+    private static final int DEFAULT_CARD_COLOR = 0x40000000;
+    private static final int DEFAULT_ICON_COLOR = Color.WHITE;
     private static final int DEFAULT_LOCATION_WOEID = 1;
     private static final String DEFAULT_LOCATION_NAME = "Worldwide";
     private static final boolean DEFAULT_DATA_USAGE = true;

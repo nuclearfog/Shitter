@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
             case REQUEST_APP_SETTINGS:
                 AppStyles.setTheme(settings, root);
+                AppStyles.setTabIcons(tablayout, settings, R.array.home_tab_icons);
                 if (returnCode == RETURN_APP_LOGOUT) {
                     adapter.clear();
                     pager.setAdapter(adapter);
