@@ -76,8 +76,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         linkButton.setTypeface(settings.getFontFace());
         loginButton.setTypeface(settings.getFontFace());
         pinInput.setTypeface(settings.getFontFace());
-        root.setBackgroundColor(settings.getBackgroundColor());
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
     }
 
 
@@ -99,6 +98,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.login, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

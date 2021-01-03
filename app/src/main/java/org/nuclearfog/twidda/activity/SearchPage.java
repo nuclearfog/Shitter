@@ -20,6 +20,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
@@ -35,6 +36,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     public static final String KEY_SEARCH_QUERY = "search_query";
 
     private FragmentAdapter adapter;
+    private GlobalSettings settings;
     private TabLayout tabLayout;
     private ViewPager pager;
 
@@ -52,11 +54,10 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         tool.setTitle("");
         setSupportActionBar(tool);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getBackgroundColor());
+        settings = GlobalSettings.getInstance(this);
+        AppStyles.setTheme(settings, root);
 
         adapter = new FragmentAdapter(getSupportFragmentManager());
-        tabLayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tabLayout.setupWithViewPager(pager);
         tabLayout.addOnTabSelectedListener(this);
         pager.setAdapter(adapter);
@@ -65,12 +66,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         if (param != null && param.containsKey(KEY_SEARCH_QUERY)) {
             search = param.getString(KEY_SEARCH_QUERY);
             adapter.setupSearchPage(search);
-            Tab twtSearch = tabLayout.getTabAt(0);
-            Tab usrSearch = tabLayout.getTabAt(1);
-            if (twtSearch != null && usrSearch != null) {
-                twtSearch.setIcon(R.drawable.search);
-                usrSearch.setIcon(R.drawable.user);
-            }
+            AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
         }
     }
 
@@ -88,6 +84,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.search, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         MenuItem searchItem = m.findItem(R.id.new_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setQueryHint(search);

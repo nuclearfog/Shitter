@@ -1,6 +1,9 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -29,6 +33,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
@@ -63,19 +68,24 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private static final int MIN_COUNT = 2;
 
     private TweetClickListener itemClickListener;
-    private NumberFormat formatter;
     private GlobalSettings settings;
+    private Drawable[] icons;
 
-    private List<Tweet> tweets;
-    private int loadingIndex;
+    private final List<Tweet> tweets = new ArrayList<>();
+    private NumberFormat formatter = NumberFormat.getIntegerInstance();
+    private int loadingIndex = NO_INDEX;
 
 
-    public TweetAdapter(GlobalSettings settings, TweetClickListener itemClickListener) {
+    public TweetAdapter(Context context, TweetClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        formatter = NumberFormat.getIntegerInstance();
-        tweets = new ArrayList<>();
-        this.settings = settings;
-        loadingIndex = NO_INDEX;
+        settings = GlobalSettings.getInstance(context);
+
+        TypedArray tArray = context.getResources().obtainTypedArray(R.array.tweet_item_icons);
+        icons = new Drawable[tArray.length()];
+        for (int index = 0; index < icons.length; index++)
+            icons[index] = tArray.getDrawable(index);
+        tArray.recycle();
+        setIconColors();
     }
 
     /**
@@ -146,6 +156,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     @MainThread
     public void clear() {
         tweets.clear();
+        setIconColors();
         notifyDataSetChanged();
     }
 
@@ -197,10 +208,8 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TWEET) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-            AppStyles.setViewFontAndColor(settings, v);
             final TweetHolder vh = new TweetHolder(v);
-            vh.retweetCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-            vh.favoriteCount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
+            AppStyles.setTheme(settings, v);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -215,8 +224,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
             final PlaceHolder vh = new PlaceHolder(v);
-            vh.loadBtn.setTypeface(settings.getFontFace());
-            vh.loadBtn.setTextColor(settings.getFontColor());
+            AppStyles.setTheme(settings, v);
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -267,24 +275,24 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             vh.time.setText(getTimeString(tweet.getTime()));
 
             if (tweet.retweeted()) {
-                AppStyles.setIconColor(vh.retweetCount, Color.GREEN);
+                setIcon(vh.retweetCount, icons[3]);
             } else {
-                AppStyles.setIconColor(vh.retweetCount, Color.WHITE);
+                setIcon(vh.retweetCount, icons[2]);
             }
             if (tweet.favored()) {
-                AppStyles.setIconColor(vh.favoriteCount, Color.YELLOW);
+                setIcon(vh.favoriteCount, icons[5]);
             } else {
-                AppStyles.setIconColor(vh.favoriteCount, Color.WHITE);
+                setIcon(vh.favoriteCount, icons[4]);
             }
             if (user.isVerified()) {
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+                setIcon(vh.username, icons[0]);
             } else {
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                setIcon(vh.username, null);
             }
             if (user.isLocked()) {
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+                setIcon(vh.screenname, icons[1]);
             } else {
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                setIcon(vh.screenname, null);
             }
             if (settings.getImageLoad()) {
                 String pbLink = user.getImageLink();
@@ -304,6 +312,30 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                 vh.loadBtn.setVisibility(VISIBLE);
             }
         }
+    }
+
+    /**
+     * set color filter for icons
+     */
+    private void setIconColors() {
+        icons[0].setColorFilter(settings.getIconColor(), SRC_ATOP);
+        icons[1].setColorFilter(settings.getIconColor(), SRC_ATOP);
+        icons[2].setColorFilter(settings.getIconColor(), SRC_ATOP);
+        icons[3].setColorFilter(Color.GREEN, SRC_ATOP);
+        icons[4].setColorFilter(settings.getIconColor(), SRC_ATOP);
+        icons[5].setColorFilter(Color.YELLOW, SRC_ATOP);
+    }
+
+    /**
+     * set TextView icon on the left
+     *
+     * @param tv   TextView to set/remove icon
+     * @param icon icon drawable
+     */
+    private void setIcon(TextView tv, @Nullable Drawable icon) {
+        if (icon != null)
+            icon = icon.mutate();
+        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
     }
 
     /**

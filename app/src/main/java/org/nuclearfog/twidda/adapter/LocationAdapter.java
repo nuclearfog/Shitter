@@ -27,12 +27,12 @@ public class LocationAdapter extends BaseAdapter {
     private static final float TEXT_SIZE = 16.0f;
 
     private GlobalSettings settings;
-    private List<TrendLocation> data;
+
+    private List<TrendLocation> data = new ArrayList<>();
 
 
     public LocationAdapter(GlobalSettings settings) {
         this.settings = settings;
-        data = new ArrayList<>();
     }
 
 

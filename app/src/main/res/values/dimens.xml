@@ -191,7 +191,7 @@
     <dimen name="loginpopup_text_padding">20dp</dimen>
     <dimen name="loginpopup_text_margin">5dp</dimen>
 
-    <!--dimen of dialog_userlist.xml-->
+    <!--dimens of dialog_userlist.xml-->
     <dimen name="userlist_descr_height">100dp</dimen>
     <dimen name="userlist_descr_width">300dp</dimen>
     <dimen name="userlist_switch_text_margin">10dp</dimen>
@@ -200,5 +200,9 @@
     <dimen name="userlist_button_padding">5dp</dimen>
     <dimen name="userlist_edittext_margin">5dp</dimen>
     <dimen name="userlist_title_textsize">20sp</dimen>
+
+    <!--dimens of icon_profile_tab.xml-->
+    <dimen name="icon_profile_size">20dp</dimen>
+    <dimen name="icon_profile_textsize">11sp</dimen>
 
 </resources>

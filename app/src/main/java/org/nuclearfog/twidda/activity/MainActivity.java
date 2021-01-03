@@ -25,6 +25,7 @@ import com.google.android.material.tabs.TabLayout.Tab;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.LinkLoader;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.view.Window.FEATURE_NO_TITLE;
@@ -83,8 +84,6 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         View load = View.inflate(this, R.layout.item_load, null);
 
         settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getBackgroundColor());
-        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.setupWithViewPager(pager);
         pager.setOffscreenPageLimit(3);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
@@ -92,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         loadingCircle.setCanceledOnTouchOutside(false);
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
+        AppStyles.setTheme(settings, root);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -107,14 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
         } else if (adapter.isEmpty()) {
             adapter.setupForHomePage();
-            Tab tlTab = tablayout.getTabAt(0);
-            Tab trTab = tablayout.getTabAt(1);
-            Tab mnTab = tablayout.getTabAt(2);
-            if (tlTab != null && trTab != null && mnTab != null) {
-                tlTab.setIcon(R.drawable.home);
-                trTab.setIcon(R.drawable.hash);
-                mnTab.setIcon(R.drawable.mention);
-            }
+            AppStyles.setTabIcons(tablayout, settings, R.array.home_tab_icons);
             if (getIntent().getData() != null) {
                 LinkLoader linkLoader = new LinkLoader(this);
                 linkLoader.execute(getIntent().getData());
@@ -127,22 +120,20 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         switch (reqCode) {
             case REQUEST_APP_LOGIN:
+                AppStyles.setTheme(settings, root);
                 if (returnCode == RESULT_CANCELED) {
                     finish();
                 } else {
-                    root.setBackgroundColor(settings.getBackgroundColor());
-                    tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
                     adapter.notifySettingsChanged();
                 }
                 break;
 
             case REQUEST_APP_SETTINGS:
+                AppStyles.setTheme(settings, root);
                 if (returnCode == RETURN_APP_LOGOUT) {
                     adapter.clear();
                     pager.setAdapter(adapter);
                 } else {
-                    root.setBackgroundColor(settings.getBackgroundColor());
-                    tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
                     adapter.notifySettingsChanged();
                 }
                 break;
@@ -154,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.home, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         MenuItem search = m.findItem(R.id.action_search);
         SearchView searchQuery = (SearchView) search.getActionView();
         searchQuery.setOnQueryTextListener(this);

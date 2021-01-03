@@ -107,9 +107,7 @@
                                         android:padding="@dimen/profile_tv_padding"
                                         android:singleLine="true"
                                         android:text="@string/follows_you"
-                                        android:visibility="invisible"
-                                        app:drawableLeftCompat="@drawable/followback"
-                                        app:drawableStartCompat="@drawable/followback" />
+                                        android:visibility="invisible" />
 
                                 </LinearLayout>
 
@@ -129,8 +127,6 @@
                                         android:layout_weight="1"
                                         android:paddingLeft="@dimen/profile_button_padding"
                                         android:paddingRight="@dimen/profile_button_padding"
-                                        app:drawableLeftCompat="@drawable/following"
-                                        app:drawableStartCompat="@drawable/following"
                                         style="@style/FeedbackButton" />
 
                                     <Button
@@ -142,8 +138,6 @@
                                         android:layout_weight="1"
                                         android:paddingLeft="@dimen/profile_button_padding"
                                         android:paddingRight="@dimen/profile_button_padding"
-                                        app:drawableLeftCompat="@drawable/follower"
-                                        app:drawableStartCompat="@drawable/follower"
                                         style="@style/FeedbackButton" />
 
                                 </LinearLayout>
@@ -179,9 +173,7 @@
                             android:layout_weight="1"
                             android:drawablePadding="@dimen/profile_padding_drawable"
                             android:singleLine="true"
-                            android:textSize="@dimen/profile_textsize_small"
-                            app:drawableLeftCompat="@drawable/userlocation"
-                            app:drawableStartCompat="@drawable/userlocation" />
+                            android:textSize="@dimen/profile_textsize_small" />
 
                         <TextView
                             android:id="@+id/links"
@@ -193,9 +185,7 @@
                             android:drawablePadding="@dimen/profile_padding_drawable"
                             android:linksClickable="true"
                             android:singleLine="true"
-                            android:textSize="@dimen/profile_textsize_small"
-                            app:drawableLeftCompat="@drawable/link"
-                            app:drawableStartCompat="@drawable/link" />
+                            android:textSize="@dimen/profile_textsize_small" />
                     </LinearLayout>
 
                     <TextView
@@ -206,9 +196,7 @@
                         android:layout_marginRight="@dimen/profile_tv_margin"
                         android:drawablePadding="@dimen/profile_padding_drawable"
                         android:singleLine="true"
-                        android:textSize="@dimen/profile_textsize_small"
-                        app:drawableLeftCompat="@drawable/calendar"
-                        app:drawableStartCompat="@drawable/calendar" />
+                        android:textSize="@dimen/profile_textsize_small" />
 
                 </LinearLayout>
 

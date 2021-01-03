@@ -200,4 +200,6 @@
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
+    <string name="settings_color_card">Card color</string>
+    <string name="settings_icon_color">Icon color</string>
 </resources>

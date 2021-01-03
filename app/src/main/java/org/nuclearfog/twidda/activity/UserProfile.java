@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,7 +48,6 @@ import java.text.SimpleDateFormat;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.Gravity.CENTER;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -121,7 +120,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private GlobalSettings settings;
     private UserAction profileAsync;
 
-    private TextView tweetTabTxt, favorTabTxt, txtUser, txtScrName;
+    private TextView[] tabTweetCount;
+    private TextView txtUser, txtScrName;
     private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
     private Button following, follower;
     private ImageView profileImage, bannerImage;
@@ -145,7 +145,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         super.onCreate(b);
         setContentView(R.layout.page_profile);
         Toolbar tool = findViewById(R.id.profile_toolbar);
-        ViewGroup root = findViewById(R.id.user_view);
+        View root = findViewById(R.id.user_view);
         tabLayout = findViewById(R.id.profile_tab);
         bioTxt = findViewById(R.id.bio);
         following = findViewById(R.id.following);
@@ -161,35 +161,23 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         txtCreated = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
-        tweetTabTxt = new TextView(this);
-        favorTabTxt = new TextView(this);
 
         tool.setTitle("");
         setSupportActionBar(tool);
-
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setViewFontAndColor(settings, root);
+
+        following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
+        follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
+        txtCreated.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
+        txtLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
+        lnkTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
         txtUser.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         bioTxt.setMovementMethod(LinkAndScrollMovement.getInstance());
-        tabLayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-        bioTxt.setLinkTextColor(settings.getHighlightColor());
         lnkTxt.setTextColor(settings.getHighlightColor());
-        root.setBackgroundColor(settings.getBackgroundColor());
-
-        tweetTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.home_profile, 0, 0);
-        favorTabTxt.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.favorite_profile, 0, 0);
-        tweetTabTxt.setGravity(CENTER);
-        favorTabTxt.setGravity(CENTER);
-        tweetTabTxt.setSingleLine();
-        favorTabTxt.setSingleLine();
-        tweetTabTxt.setTextSize(10);
-        favorTabTxt.setTextSize(10);
-        tweetTabTxt.setTypeface(settings.getFontFace());
-        favorTabTxt.setTypeface(settings.getFontFace());
-        tweetTabTxt.setTextColor(settings.getFontColor());
-        favorTabTxt.setTextColor(settings.getFontColor());
+        bioTxt.setLinkTextColor(settings.getHighlightColor());
+        AppStyles.setTheme(settings, root);
 
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -211,13 +199,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 username = param.getString(KEY_PROFILE_NAME, "");
             }
             adapter.setupProfilePage(userId, username);
+            tabTweetCount = AppStyles.createTabIcon(tabLayout, settings, R.array.profile_tab_icons);
             isHomeProfile = userId == settings.getCurrentUserId();
-        }
-        Tab tweetTab = tabLayout.getTabAt(0);
-        Tab favorTab = tabLayout.getTabAt(1);
-        if (tweetTab != null && favorTab != null) {
-            tweetTab.setCustomView(tweetTabTxt);
-            favorTab.setCustomView(favorTabTxt);
         }
 
         tabLayout.addOnTabSelectedListener(this);
@@ -265,6 +248,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 
@@ -274,7 +258,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (user != null) {
             if (user.followRequested()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
-                followIcon.setIcon(R.drawable.follow_requested);
+                AppStyles.setMenuItemColor(followIcon, Color.YELLOW);
                 followIcon.setTitle(R.string.menu_follow_requested);
             }
             if (user.isLocked() && !isHomeProfile) {
@@ -286,7 +270,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             if (relation.isFriend()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem listItem = m.findItem(R.id.profile_lists);
-                followIcon.setIcon(R.drawable.follow_enabled);
+                AppStyles.setMenuItemColor(followIcon, Color.CYAN);
                 followIcon.setTitle(R.string.menu_user_unfollow);
                 listItem.setVisible(true);
             }
@@ -549,13 +533,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         this.user = user;
         NumberFormat formatter = NumberFormat.getIntegerInstance();
         Spanned bio = Tagger.makeTextWithLinks(user.getBio(), settings.getHighlightColor(), this);
-        int verify = user.isVerified() ? R.drawable.verify : 0;
-        int locked = user.isLocked() ? R.drawable.lock : 0;
 
-        txtUser.setCompoundDrawablesWithIntrinsicBounds(verify, 0, 0, 0);
-        txtScrName.setCompoundDrawablesWithIntrinsicBounds(locked, 0, 0, 0);
-        tweetTabTxt.setText(formatter.format(user.getTweetCount()));
-        favorTabTxt.setText(formatter.format(user.getFavorCount()));
+        tabTweetCount[0].setText(formatter.format(user.getTweetCount()));
+        tabTweetCount[1].setText(formatter.format(user.getFavorCount()));
         following.setText(formatter.format(user.getFollowing()));
         follower.setText(formatter.format(user.getFollower()));
         txtUser.setText(user.getUsername());
@@ -565,6 +545,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             profile_head.setVisibility(VISIBLE);
             String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
             txtCreated.setText(date);
+        }
+        if (user.isVerified()) {
+            txtUser.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+            AppStyles.setIconColor(txtUser, settings.getIconColor());
+        } else {
+            txtUser.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        if (user.isLocked()) {
+            txtScrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            AppStyles.setIconColor(txtScrName, settings.getIconColor());
+        } else {
+            txtScrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (!user.getLocation().isEmpty()) {
             txtLocation.setText(user.getLocation());

@@ -45,10 +45,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
 
                         <LinearLayout
-                            android:id="@+id/color_background_edge"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/settings_button_color_height"
                             android:layout_margin="@dimen/settings_button_margin"
@@ -65,14 +65,65 @@
 
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/color_font"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="@dimen/settings_button_color_height"
                             android:layout_margin="@dimen/settings_button_margin"
                             android:layout_weight="1"
-                            android:text="@string/settings_font"
-                            style="@style/ColorButton" />
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/color_font"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
+                                android:text="@string/settings_font"
+                                style="@style/ColorButton" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_color_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/color_popup"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
+                                android:text="@string/settings_button_popup"
+                                style="@style/ColorButton" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/settings_button_color_height"
+                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/highlight_color"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
+                                android:text="@string/highlight"
+                                style="@style/ColorButton" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -82,23 +133,39 @@
                         android:gravity="center_horizontal"
                         android:orientation="horizontal">
 
-                        <Button
-                            android:id="@+id/color_popup"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="@dimen/settings_button_color_height"
                             android:layout_margin="@dimen/settings_button_margin"
                             android:layout_weight="1"
-                            android:text="@string/settings_button_popup"
-                            style="@style/ColorButton" />
+                            android:orientation="vertical">
 
-                        <Button
-                            android:id="@+id/highlight_color"
+                            <Button
+                                android:id="@+id/color_card"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
+                                android:text="@string/settings_color_card"
+                                style="@style/ColorButton" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="@dimen/settings_button_color_height"
                             android:layout_margin="@dimen/settings_button_margin"
                             android:layout_weight="1"
-                            android:text="@string/highlight"
-                            style="@style/ColorButton" />
+                            android:orientation="vertical">
+
+                            <Button
+                                android:id="@+id/color_icon"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
+                                android:text="@string/settings_icon_color"
+                                style="@style/ColorButton" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 

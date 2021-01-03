@@ -34,16 +34,14 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 
     private TrendClickListener itemClickListener;
     private GlobalSettings settings;
-    private NumberFormat formatter;
 
-    private List<Trend> trends;
+    private NumberFormat formatter = NumberFormat.getIntegerInstance();
+    private List<Trend> trends = new ArrayList<>();
 
 
     public TrendAdapter(TrendClickListener itemClickListener, GlobalSettings settings) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
-        formatter = NumberFormat.getIntegerInstance();
-        trends = new ArrayList<>();
     }
 
     /**
@@ -88,7 +86,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
         final ItemHolder vh = new ItemHolder(v);
-        AppStyles.setViewFontAndColor(settings, v);
+        AppStyles.setTheme(settings, v);
 
         v.setOnClickListener(new OnClickListener() {
             @Override

@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -26,6 +30,7 @@ import org.nuclearfog.twidda.fragment.UserListFragment;
 
 import java.text.NumberFormat;
 
+import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -39,23 +44,40 @@ import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
  */
 public class ListAdapter extends Adapter<ViewHolder> {
 
+    /**
+     * indicator if there is no footer
+     */
     private static final int NO_LOADING = -1;
+
+    /**
+     * View type for a footer
+     */
     private static final int ITEM_FOOTER = 0;
+
+    /**
+     * View type for an userlist item
+     */
     private static final int ITEM_LIST = 1;
 
     private ListClickListener listener;
-    private NumberFormat formatter;
     private GlobalSettings settings;
+    private Drawable[] icons;
 
-    private UserListList data;
-    private int loadingIndex;
+    private NumberFormat formatter = NumberFormat.getIntegerInstance();
+    private UserListList data = new UserListList();
+    private int loadingIndex = NO_LOADING;
 
 
-    public ListAdapter(ListClickListener listener, GlobalSettings settings) {
+    public ListAdapter(Context context, ListClickListener listener) {
         this.listener = listener;
-        this.settings = settings;
-        formatter = NumberFormat.getIntegerInstance();
-        data = new UserListList();
+        this.settings = GlobalSettings.getInstance(context);
+
+        TypedArray drawables = context.getResources().obtainTypedArray(R.array.list_item_icons);
+        icons = new Drawable[drawables.length()];
+        for (int index = 0; index < drawables.length(); index++)
+            icons[index] = drawables.getDrawable(index);
+        drawables.recycle();
+        colorIcons();
     }
 
     /**
@@ -127,7 +149,12 @@ public class ListAdapter extends Adapter<ViewHolder> {
         if (viewType == ITEM_LIST) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
             final ListHolder vh = new ListHolder(v);
-            AppStyles.setViewFontAndColor(settings, v);
+            AppStyles.setTheme(settings, v);
+
+            setIcon(vh.createdAt, icons[3]);
+            setIcon(vh.followIndicator, icons[4]);
+            vh.memberIcon.setImageDrawable(icons[5]);
+            vh.subscrIcon.setImageDrawable(icons[6]);
             vh.pb_image.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -196,20 +223,20 @@ public class ListAdapter extends Adapter<ViewHolder> {
             } else {
                 vh.followIndicator.setVisibility(GONE);
             }
-            if (item.isPrivate()) {
-                vh.title.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-            } else {
-                vh.title.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }
             if (owner.isVerified()) {
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+                setIcon(vh.username, icons[0]);
             } else {
-                vh.username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                setIcon(vh.username, null);
             }
             if (owner.isLocked()) {
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+                setIcon(vh.screenname, icons[1]);
             } else {
-                vh.screenname.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                setIcon(vh.screenname, null);
+            }
+            if (item.isPrivate()) {
+                setIcon(vh.title, icons[2]);
+            } else {
+                setIcon(vh.title, null);
             }
         } else if (holder instanceof PlaceHolder) {
             PlaceHolder placeHolder = (PlaceHolder) holder;
@@ -235,16 +262,36 @@ public class ListAdapter extends Adapter<ViewHolder> {
     }
 
     /**
+     * sets the TextView icons
+     *
+     * @param tv   TextView to add an icon
+     * @param icon icon drawable
+     */
+    private void setIcon(TextView tv, @Nullable Drawable icon) {
+        if (icon != null)
+            icon = icon.mutate();
+        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+    }
+
+    private void colorIcons() {
+        for (Drawable icon : icons) {
+            icon.setColorFilter(settings.getIconColor(), SRC_ATOP);
+        }
+    }
+
+    /**
      * view holder class for an user list item
      */
     private final class ListHolder extends ViewHolder {
-        final ImageView pb_image;
+        final ImageView pb_image, subscrIcon, memberIcon;
         final TextView title, username, screenname, description, createdAt;
         final TextView memberCount, subscriberCount, followIndicator;
 
         ListHolder(View v) {
             super(v);
             pb_image = v.findViewById(R.id.list_owner_profile);
+            memberIcon = v.findViewById(R.id.list_member_icon);
+            subscrIcon = v.findViewById(R.id.list_subscriber_icon);
             followIndicator = v.findViewById(R.id.list_action);
             title = v.findViewById(R.id.list_title);
             username = v.findViewById(R.id.list_ownername);

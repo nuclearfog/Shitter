@@ -1,5 +1,8 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -9,9 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -28,6 +31,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
 
@@ -40,14 +44,21 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
     private OnItemSelected itemClickListener;
     private GlobalSettings settings;
+    private Drawable[] icons;
 
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
 
 
-    public MessageAdapter(OnItemSelected itemClickListener, GlobalSettings settings) {
+    public MessageAdapter(Context context, OnItemSelected itemClickListener) {
         this.itemClickListener = itemClickListener;
-        this.settings = settings;
-        messages = new ArrayList<>();
+        settings = GlobalSettings.getInstance(context);
+
+        TypedArray drawables = context.getResources().obtainTypedArray(R.array.dm_item_icons);
+        icons = new Drawable[drawables.length()];
+        for (int index = 0; index < drawables.length(); index++)
+            icons[index] = drawables.getDrawable(index);
+        drawables.recycle();
+        setIconColor();
     }
 
     /**
@@ -99,8 +110,8 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
         final MessageHolder vh = new MessageHolder(view);
-        AppStyles.setViewFontAndColor(settings, view);
-
+        AppStyles.setTheme(settings, view);
+        setIcon(vh.receivername, icons[2]);
         vh.message.setMovementMethod(LinkMovementMethod.getInstance());
         vh.answer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,9 +158,16 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         holder.createdAt.setText(getTimeString(message.getTime()));
         holder.receivername.setText(message.getReceiver().getScreenname());
 
-        setIcon(holder.username, sender.isVerified() ? R.drawable.verify : 0);
-        setIcon(holder.screenname, sender.isLocked() ? R.drawable.lock : 0);
-
+        if (sender.isVerified()) {
+            setIcon(holder.username, icons[0]);
+        } else {
+            setIcon(holder.username, null);
+        }
+        if (sender.isLocked()) {
+            setIcon(holder.screenname, icons[1]);
+        } else {
+            setIcon(holder.screenname, null);
+        }
         if (settings.getImageLoad()) {
             String pbLink = sender.getImageLink();
             if (!sender.hasDefaultProfileImage()) {
@@ -160,13 +178,24 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * sets an icon to a extview
+     * sets an icon to a TextView
      *
-     * @param tv   textview
+     * @param tv   TextView to set an icon
      * @param icon icon drawable
      */
-    private void setIcon(TextView tv, @DrawableRes int icon) {
-        tv.setCompoundDrawablesWithIntrinsicBounds(icon, 0, 0, 0);
+    private void setIcon(TextView tv, @Nullable Drawable icon) {
+        if (icon != null)
+            icon = icon.mutate();
+        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+    }
+
+    /**
+     * set color for all icons
+     */
+    private void setIconColor() {
+        for (Drawable icon : icons) {
+            icon.setColorFilter(settings.getIconColor(), SRC_ATOP);
+        }
     }
 
     /**

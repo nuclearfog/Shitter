@@ -63,8 +63,7 @@
                     android:layout_weight="1"
                     android:drawablePadding="@dimen/useritem_padding_drawable"
                     android:singleLine="true"
-                    android:textSize="@dimen/useritem_textsize_small"
-                    app:drawableStartCompat="@drawable/following" />
+                    android:textSize="@dimen/useritem_textsize_small" />
 
                 <TextView
                     android:id="@+id/item_user_follower"
@@ -73,8 +72,7 @@
                     android:layout_weight="1"
                     android:drawablePadding="@dimen/useritem_padding_drawable"
                     android:singleLine="true"
-                    android:textSize="@dimen/useritem_textsize_small"
-                    app:drawableStartCompat="@drawable/follower" />
+                    android:textSize="@dimen/useritem_textsize_small" />
 
             </LinearLayout>
 

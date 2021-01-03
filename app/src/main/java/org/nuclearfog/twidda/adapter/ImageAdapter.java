@@ -27,12 +27,19 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  */
 public class ImageAdapter extends Adapter<ViewHolder> {
 
+    /**
+     * View type for an image item
+     */
     private static final int PICTURE = 0;
+
+    /**
+     * View type for a circle view
+     */
     private static final int LOADING = 1;
 
     private OnImageClickListener itemClickListener;
 
-    private List<ImageHolder> images;
+    private List<ImageHolder> images = new LinkedList<>();
     private boolean loading = false;
     private boolean saveImg = true;
 
@@ -43,7 +50,6 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      */
     public ImageAdapter(OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        images = new LinkedList<>();
     }
 
     /**

@@ -54,7 +54,6 @@ public class UserDetail extends AppCompatActivity {
         ViewPager pager = findViewById(R.id.user_pager);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getBackgroundColor());
 
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -80,6 +79,6 @@ public class UserDetail extends AppCompatActivity {
             }
         }
         setSupportActionBar(toolbar);
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
     }
 }

@@ -108,8 +108,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         }
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getPopupColor());
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
 
         leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);

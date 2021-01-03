@@ -88,6 +88,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private static final String IMG_MIME = "image/*";
 
     private UserUpdater editorAsync;
+    private GlobalSettings settings;
 
     private ImageView profile_image, profile_banner;
     private EditText name, link, loc, bio;
@@ -120,9 +121,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         toolbar.setTitle(R.string.page_profile_edior);
         setSupportActionBar(toolbar);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setViewFontAndColor(settings, root);
-        root.setBackgroundColor(settings.getBackgroundColor());
+        settings = GlobalSettings.getInstance(this);
+        AppStyles.setTheme(settings, root);
         Point displaySize = new Point();
         getWindowManager().getDefaultDisplay().getSize(displaySize);
         int layoutHeight = displaySize.x / 3;
@@ -181,6 +181,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.edit, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

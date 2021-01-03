@@ -64,8 +64,7 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
         progressCircle = findViewById(R.id.list_popup_loading);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getPopupColor());
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

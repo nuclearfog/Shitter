@@ -152,10 +152,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         pager.setAdapter(adapter);
 
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
-        root.setBackgroundColor(settings.getBackgroundColor());
         deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
 
         replyName.setOnClickListener(this);
@@ -196,6 +195,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

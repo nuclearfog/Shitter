@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
@@ -55,8 +54,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/listitem_padding_drawable"
                     android:singleLine="true"
-                    android:textSize="@dimen/listitem_textsize_date"
-                    app:drawableStartCompat="@drawable/calendar" />
+                    android:textSize="@dimen/listitem_textsize_date" />
 
             </LinearLayout>
 
@@ -78,15 +76,13 @@
 
             <TextView
                 android:id="@+id/list_action"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="3"
                 android:drawablePadding="@dimen/listitem_padding_drawable"
                 android:singleLine="true"
                 android:text="@string/list_following_indicator"
-                android:textSize="@dimen/listitem_textsize_small"
-                app:drawableStartCompat="@drawable/followback" />
+                android:textSize="@dimen/listitem_textsize_small" />
 
         </LinearLayout>
 
@@ -113,9 +109,9 @@
                 android:paddingRight="@dimen/listitem_padding_drawable" />
 
             <ImageView
+                android:id="@+id/list_member_icon"
                 android:layout_width="@dimen/listitem_icon_size"
                 android:layout_height="@dimen/listitem_icon_size"
-                app:srcCompat="@drawable/user"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -132,9 +128,9 @@
                 android:textSize="@dimen/listitem_textsize_small" />
 
             <ImageView
+                android:id="@+id/list_subscriber_icon"
                 android:layout_width="@dimen/listitem_icon_size"
                 android:layout_height="@dimen/listitem_icon_size"
-                app:srcCompat="@drawable/subscriber"
                 tools:ignore="ContentDescription" />
 
             <TextView

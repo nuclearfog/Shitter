@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayout.Tab;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
@@ -46,6 +45,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
 
     private FragmentAdapter adapter;
+    private GlobalSettings settings;
     private ViewPager pager;
     private TabLayout mTab;
 
@@ -66,14 +66,12 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         adapter = new FragmentAdapter(getSupportFragmentManager());
         mTab.setupWithViewPager(pager);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setViewFontAndColor(settings, root);
-        root.setBackgroundColor(settings.getBackgroundColor());
+        settings = GlobalSettings.getInstance(this);
+        AppStyles.setTheme(settings, root);
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         pager.setAdapter(adapter);
         mTab.setupWithViewPager(pager);
-        mTab.setSelectedTabIndicatorColor(settings.getHighlightColor());
         mTab.addOnTabSelectedListener(this);
 
         Bundle param = getIntent().getExtras();
@@ -86,12 +84,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
                 String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);
                 adapter.setupListPage(-1, ownerName);
             }
-            Tab userList = mTab.getTabAt(0);
-            Tab userSub = mTab.getTabAt(1);
-            if (userList != null && userSub != null) {
-                userList.setIcon(R.drawable.list_owner);
-                userSub.setIcon(R.drawable.list_subscribe);
-            }
+            AppStyles.setTabIcons(mTab, settings, R.array.userlist_tab_icons);
         }
     }
 
@@ -119,6 +112,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.lists, m);
         m.findItem(R.id.list_create).setVisible(isHome);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

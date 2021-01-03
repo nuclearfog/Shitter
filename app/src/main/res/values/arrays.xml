@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer-array name="home_tab_icons">
+        <item>@drawable/home</item>
+        <item>@drawable/hash</item>
+        <item>@drawable/mention</item>
+    </integer-array>
+
+    <integer-array name="search_tab_icons">
+        <item>@drawable/search</item>
+        <item>@drawable/user</item>
+    </integer-array>
+
+    <integer-array name="list_tab_icons">
+        <item>@drawable/list</item>
+        <item>@drawable/user</item>
+        <item>@drawable/subscriber</item>
+    </integer-array>
+
+    <integer-array name="profile_tab_icons">
+        <item>@drawable/home</item>
+        <item>@drawable/favorite</item>
+    </integer-array>
+
+    <integer-array name="userlist_tab_icons">
+        <item>@drawable/list_owner</item>
+        <item>@drawable/list_subscribe</item>
+    </integer-array>
+
+    <integer-array name="color_button">
+        <item>@id/color_background</item>
+        <item>@id/color_font</item>
+        <item>@id/color_popup</item>
+        <item>@id/highlight_color</item>
+        <item>@id/color_card</item>
+        <item>@id/color_icon</item>
+    </integer-array>
+
+    <integer-array name="tweet_item_icons">
+        <item>@drawable/verify</item>
+        <item>@drawable/lock</item>
+        <item>@drawable/retweet</item>
+        <item>@drawable/retweet</item>
+        <item>@drawable/favorite</item>
+        <item>@drawable/favorite</item>
+    </integer-array>
+
+    <integer-array name="user_item_icons">
+        <item>@drawable/verify</item>
+        <item>@drawable/lock</item>
+        <item>@drawable/following</item>
+        <item>@drawable/follower</item>
+    </integer-array>
+
+    <integer-array name="dm_item_icons">
+        <item>@drawable/verify</item>
+        <item>@drawable/lock</item>
+        <item>@drawable/rightarrow</item>
+    </integer-array>
+
+    <integer-array name="list_item_icons">
+        <item>@drawable/verify</item>
+        <item>@drawable/lock</item>
+        <item>@drawable/lock</item>
+        <item>@drawable/calendar</item>
+        <item>@drawable/followback</item>
+        <item>@drawable/user</item>
+        <item>@drawable/subscriber</item>
+    </integer-array>
+
+</resources>

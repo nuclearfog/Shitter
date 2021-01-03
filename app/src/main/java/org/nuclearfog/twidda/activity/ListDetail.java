@@ -83,6 +83,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private FragmentAdapter adapter;
     private ListAction listLoaderTask;
     private ListManager userListManager;
+    private GlobalSettings settings;
 
     private TabLayout tablayout;
     private ViewPager pager;
@@ -101,14 +102,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getBackgroundColor());
+        settings = GlobalSettings.getInstance(this);
 
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
-        tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
         tablayout.addOnTabSelectedListener(this);
         deleteDialog = DialogBuilder.create(this, LIST_DELETE, this);
         unfollowDialog = DialogBuilder.create(this, LIST_UNFOLLOW, this);
@@ -130,17 +129,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             }
             adapter.setupListContentPage(listId, currentUserOwnsList);
         }
-
-        Tab tweetTab = tablayout.getTabAt(0);
-        Tab userTab = tablayout.getTabAt(1);
-        Tab subscrTab = tablayout.getTabAt(2);
-        if (tweetTab != null && userTab != null && subscrTab != null) {
-            tweetTab.setIcon(R.drawable.list);
-            userTab.setIcon(R.drawable.user);
-            subscrTab.setIcon(R.drawable.subscriber);
-        }
         setSupportActionBar(toolbar);
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
+        AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
     }
 
 
@@ -165,6 +156,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.userlist, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

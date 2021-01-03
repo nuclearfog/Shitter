@@ -160,7 +160,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
     @Override
     protected ListAdapter initAdapter() {
-        adapter = new ListAdapter(this, settings);
+        adapter = new ListAdapter(requireContext(), this);
         return adapter;
     }
 

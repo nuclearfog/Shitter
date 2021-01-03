@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.Menu;
@@ -59,13 +61,13 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
         OnCheckedChangeListener, OnItemSelectedListener, OnDialogClick, OnColorChangedListener {
 
-    private static final int INVERTCOLOR = 0xffffff;
-
     private enum ColorMode {
         BACKGROUND,
         FONTCOLOR,
         HIGHLIGHT,
         POPUPCOLOR,
+        ICONCOLOR,
+        CARDCOLOR,
         NONE
     }
 
@@ -74,13 +76,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private LocationAdapter locationAdapter;
 
     private Dialog proxyDialog, databaseDialog, logoutDialog, color_dialog_selector;
-    private Button colorButton1, colorButton2, colorButton3, colorButton4;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
     private CompoundButton enableProxy, enableAuth, hqImage;
     private SeekBar listSizeSelector;
     private Spinner locationSpinner;
     private TextView list_size;
-    private View root, colorButton1_edge;
+    private Button[] colorButtons;
+    private View root;
 
     private ColorMode mode = ColorMode.NONE;
     private int color = 0;
@@ -102,17 +104,18 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
         locationSpinner = findViewById(R.id.spinner_woeid);
-        colorButton1_edge = findViewById(R.id.color_background_edge);
-        colorButton1 = findViewById(R.id.color_background);
-        colorButton2 = findViewById(R.id.color_font);
-        colorButton3 = findViewById(R.id.color_popup);
-        colorButton4 = findViewById(R.id.highlight_color);
         proxyAddr = findViewById(R.id.edit_proxyadress);
         proxyPort = findViewById(R.id.edit_proxyport);
         proxyUser = findViewById(R.id.edit_proxyuser);
         proxyPass = findViewById(R.id.edit_proxypass);
         list_size = findViewById(R.id.settings_list_size);
         root = findViewById(R.id.settings_layout);
+
+        TypedArray drawables = getResources().obtainTypedArray(R.array.color_button);
+        colorButtons = new Button[drawables.length()];
+        for (int index = 0; index < drawables.length(); index++)
+            colorButtons[index] = findViewById(drawables.getResourceId(index, 0));
+        drawables.recycle();
 
         toolbar.setTitle(R.string.title_settings);
         setSupportActionBar(toolbar);
@@ -129,21 +132,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSpinner.setAdapter(fontAdapter);
         fontSpinner.setSelection(settings.getFont());
 
-        AppStyles.setViewFontAndColor(settings, root);
+        AppStyles.setTheme(settings, root);
         AppStyles.setSeekBarColor(settings, listSizeSelector);
 
+        setButtonColors();
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
-        root.setBackgroundColor(settings.getBackgroundColor());
-        colorButton1_edge.setBackgroundColor(settings.getBackgroundColor() ^ INVERTCOLOR);
-        colorButton1.setBackgroundColor(settings.getBackgroundColor());
-        colorButton2.setBackgroundColor(settings.getFontColor());
-        colorButton3.setBackgroundColor(settings.getPopupColor());
-        colorButton4.setBackgroundColor(settings.getHighlightColor());
-        colorButton1.setTextColor(settings.getBackgroundColor() ^ INVERTCOLOR);
-        colorButton2.setTextColor(settings.getFontColor() ^ INVERTCOLOR);
-        colorButton3.setTextColor(settings.getPopupColor() ^ INVERTCOLOR);
-        colorButton4.setTextColor(settings.getHighlightColor() ^ INVERTCOLOR);
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -160,12 +154,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
         logoutDialog = DialogBuilder.create(this, LOGOUT_APP, this);
 
+        for (Button btn : colorButtons)
+            btn.setOnClickListener(this);
         logout.setOnClickListener(this);
         delButton.setOnClickListener(this);
-        colorButton1.setOnClickListener(this);
-        colorButton2.setOnClickListener(this);
-        colorButton3.setOnClickListener(this);
-        colorButton4.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
         toggleAns.setOnCheckedChangeListener(this);
         enableProxy.setOnCheckedChangeListener(this);
@@ -211,6 +203,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.settings, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 
@@ -270,28 +263,40 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         }
         // set background color
-        else if (viewId == R.id.color_background) {
+        else if (v == colorButtons[0]) {
             mode = ColorMode.BACKGROUND;
             color = settings.getBackgroundColor();
-            setColor(color);
+            setColor(color, false);
         }
         // set font color
-        else if (viewId == R.id.color_font) {
+        else if (v == colorButtons[1]) {
             mode = ColorMode.FONTCOLOR;
             color = settings.getFontColor();
-            setColor(color);
+            setColor(color, false);
         }
         // set popup color
-        else if (viewId == R.id.color_popup) {
+        else if (v == colorButtons[2]) {
             mode = ColorMode.POPUPCOLOR;
             color = settings.getPopupColor();
-            setColor(color);
+            setColor(color, false);
         }
         // set highlight color
-        else if (viewId == R.id.highlight_color) {
+        else if (v == colorButtons[3]) {
             mode = ColorMode.HIGHLIGHT;
             color = settings.getHighlightColor();
-            setColor(color);
+            setColor(color, false);
+        }
+        // set card color
+        else if (v == colorButtons[4]) {
+            mode = ColorMode.CARDCOLOR;
+            color = settings.getCardColor();
+            setColor(color, true);
+        }
+        // set icon color
+        else if (v == colorButtons[5]) {
+            mode = ColorMode.ICONCOLOR;
+            color = settings.getIconColor();
+            setColor(color, false);
         }
     }
 
@@ -303,34 +308,36 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 case BACKGROUND:
                     root.setBackgroundColor(color);
                     settings.setBackgroundColor(color);
-                    colorButton1.setBackgroundColor(color);
-                    colorButton1_edge.setBackgroundColor(color ^ INVERTCOLOR);
-                    colorButton1.setTextColor(color ^ INVERTCOLOR);
                     break;
 
                 case FONTCOLOR:
                     settings.setFontColor(color);
-                    AppStyles.setViewFontAndColor(settings, root);
+                    AppStyles.setTheme(settings, root);
                     AppStyles.setSeekBarColor(settings, listSizeSelector);
-                    colorButton2.setBackgroundColor(color);
-                    colorButton2.setTextColor(color ^ INVERTCOLOR);
                     break;
 
                 case POPUPCOLOR:
                     settings.setPopupColor(color);
-                    colorButton3.setBackgroundColor(color);
-                    colorButton3.setTextColor(color ^ INVERTCOLOR);
                     break;
 
                 case HIGHLIGHT:
                     settings.setHighlightColor(color);
-                    AppStyles.setViewFontAndColor(settings, root);
+                    AppStyles.setTheme(settings, root);
                     AppStyles.setSeekBarColor(settings, listSizeSelector);
-                    colorButton2.setTextColor(settings.getFontColor() ^ INVERTCOLOR);
-                    colorButton4.setBackgroundColor(color);
-                    colorButton4.setTextColor(color ^ INVERTCOLOR);
+                    setButtonColors();
+                    break;
+
+                case CARDCOLOR:
+                    settings.setCardColor(color);
+                    AppStyles.setTheme(settings, root);
+                    break;
+
+                case ICONCOLOR:
+                    settings.setIconColor(color);
+                    invalidateOptionsMenu();
                     break;
             }
+            setButtonColors();
         }
     }
 
@@ -426,16 +433,33 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     /**
      * show color picker dialog with preselected color
      *
-     * @param preColor preselected color
+     * @param preColor    preselected color
+     * @param enableAlpha true to enable alpha slider
      */
-    private void setColor(int preColor) {
+    private void setColor(int preColor, boolean enableAlpha) {
         if (color_dialog_selector == null || !color_dialog_selector.isShowing()) {
             color_dialog_selector = ColorPickerDialogBuilder.with(this)
-                    .showAlphaSlider(false).initialColor(preColor)
+                    .showAlphaSlider(enableAlpha).initialColor(preColor)
                     .wheelType(ColorPickerView.WHEEL_TYPE.CIRCLE)
                     .setOnColorChangedListener(this).density(15).build();
             color_dialog_selector.setOnDismissListener(this);
             color_dialog_selector.show();
+        }
+    }
+
+    /**
+     * setup all color buttons color
+     */
+    private void setButtonColors() {
+        int[] colors = settings.getAllColors();
+        for (int i = 0; i < colorButtons.length; i++) {
+            // set button color
+            colorButtons[i].setBackgroundColor(colors[i]);
+            // invert font & border color
+            int invertedColor = (colors[i] | Color.BLACK) ^ 0xffffff;
+            colorButtons[i].setTextColor(invertedColor);
+            View border = (View) colorButtons[i].getParent();
+            border.setBackgroundColor(invertedColor);
         }
     }
 

@@ -22,6 +22,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  */
 public class DirectMessage extends AppCompatActivity {
 
+    private GlobalSettings settings;
+
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
@@ -38,15 +40,15 @@ public class DirectMessage extends AppCompatActivity {
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        root.setBackgroundColor(settings.getBackgroundColor());
-        AppStyles.setViewFontAndColor(settings, root);
+        settings = GlobalSettings.getInstance(this);
+        AppStyles.setTheme(settings, root);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.message, m);
+        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

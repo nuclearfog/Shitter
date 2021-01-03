@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.graphics.Typeface;
 
 import androidx.annotation.IntRange;
@@ -61,6 +62,8 @@ public class GlobalSettings {
     private static final String HIGHLIGHT_COLOR = "highlight_color";
     private static final String FONT_COLOR = "font_color";
     private static final String POPUP_COLOR = "tweet_color";
+    private static final String CARD_COLOR = "card_color";
+    private static final String ICON_COLOR = "icon_color";
     private static final String INDEX_FONT = "index_font";
     private static final String LIST_SIZE = "preload";
     private static final String IMAGE_LOAD = "image_load";
@@ -91,6 +94,8 @@ public class GlobalSettings {
     private static final int DEFAULT_HIGHLIGHT_COLOR = 0xffff00ff;
     private static final int DEFAULT_FONT_COLOR = 0xffffffff;
     private static final int DEFAULT_POPUP_COLOR = 0xff19aae8;
+    private static final int DEFAULT_CARD_COLOR = 0x40ffffff;
+    private static final int DEFAULT_ICON_COLOR = Color.GREEN;
     private static final int DEFAULT_LOCATION_WOEID = 1;
     private static final String DEFAULT_LOCATION_NAME = "Worldwide";
     private static final boolean DEFAULT_DATA_USAGE = true;
@@ -110,6 +115,8 @@ public class GlobalSettings {
     private int background_color;
     private int font_color;
     private int highlight_color;
+    private int card_color;
+    private int icon_color;
     private int popup_color;
     private int listSize;
     private long userId;
@@ -220,6 +227,59 @@ public class GlobalSettings {
         Editor edit = settings.edit();
         edit.putInt(POPUP_COLOR, color);
         edit.apply();
+    }
+
+    /**
+     * get CardView color
+     *
+     * @return color
+     */
+    public int getCardColor() {
+        return card_color;
+    }
+
+    /**
+     * set Card View Color
+     *
+     * @param color new color
+     */
+    public void setCardColor(int color) {
+        card_color = color;
+
+        Editor edit = settings.edit();
+        edit.putInt(CARD_COLOR, color);
+        edit.apply();
+    }
+
+    /**
+     * get icon color
+     *
+     * @return color
+     */
+    public int getIconColor() {
+        return icon_color;
+    }
+
+    /**
+     * set icon Color
+     *
+     * @param color new color
+     */
+    public void setIconColor(int color) {
+        icon_color = color;
+
+        Editor edit = settings.edit();
+        edit.putInt(ICON_COLOR, color);
+        edit.apply();
+    }
+
+    /**
+     * return an array of all installed colors
+     *
+     * @return array of colors
+     */
+    public int[] getAllColors() {
+        return new int[]{background_color, font_color, popup_color, highlight_color, card_color, icon_color};
     }
 
     /**
@@ -595,6 +655,8 @@ public class GlobalSettings {
         highlight_color = settings.getInt(HIGHLIGHT_COLOR, DEFAULT_HIGHLIGHT_COLOR);
         font_color = settings.getInt(FONT_COLOR, DEFAULT_FONT_COLOR);
         popup_color = settings.getInt(POPUP_COLOR, DEFAULT_POPUP_COLOR);
+        card_color = settings.getInt(CARD_COLOR, DEFAULT_CARD_COLOR);
+        icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
         indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
         loadImage = settings.getBoolean(IMAGE_LOAD, DEFAULT_DATA_USAGE);

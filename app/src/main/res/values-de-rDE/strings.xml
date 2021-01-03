@@ -184,4 +184,6 @@
     <string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>
     <string name="error_cant_login">App ist nicht eingeloggt, Bitte neu einloggen!</string>
     <string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>
+    <string name="settings_color_card">Kartenfarbe</string>
+    <string name="settings_icon_color">Symbolfarbe</string>
 </resources>
