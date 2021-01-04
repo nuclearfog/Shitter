@@ -200,7 +200,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
-        AppStyles.setMenuIconColor(m, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 
@@ -253,45 +252,37 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onClick(View v) {
-        // answer to the tweet
-        if (v.getId() == R.id.tweet_answer) {
-            if (tweet != null) {
+        if (tweet != null) {
+            // answer to the tweet
+            if (v.getId() == R.id.tweet_answer) {
                 String tweetPrefix = tweet.getUser().getScreenname() + " ";
                 Intent tweetPopup = new Intent(this, TweetPopup.class);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetId);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
                 startActivity(tweetPopup);
             }
-        }
-        // show user retweeting this tweet
-        else if (v.getId() == R.id.tweet_retweet) {
-            if (tweet != null) {
+            // show user retweeting this tweet
+            else if (v.getId() == R.id.tweet_retweet) {
                 Intent userList = new Intent(this, UserDetail.class);
                 userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
                 userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
                 startActivity(userList);
             }
-        }
-        // open profile of the tweet author
-        else if (v.getId() == R.id.profileimage_detail) {
-            if (tweet != null) {
+            // open profile of the tweet author
+            else if (v.getId() == R.id.profileimage_detail) {
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
                 startActivity(profile);
             }
-        }
-        // open replied tweet
-        else if (v.getId() == R.id.answer_reference_detail) {
-            if (tweet != null) {
+            // open replied tweet
+            else if (v.getId() == R.id.answer_reference_detail) {
                 Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
                 answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
                 answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
                 startActivity(answerIntent);
             }
-        }
-        // open tweet location coordinates
-        else if (v.getId() == R.id.tweet_location_coordinate) {
-            if (tweet != null) {
+            // open tweet location coordinates
+            else if (v.getId() == R.id.tweet_location_coordinate) {
                 Intent locationIntent = new Intent(Intent.ACTION_VIEW);
                 locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
                 try {
@@ -300,10 +291,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                     Toast.makeText(getApplicationContext(), R.string.error_no_card_app, LENGTH_SHORT).show();
                 }
             }
-        }
-        // open tweet media
-        else if (v.getId() == R.id.tweet_media_attach) {
-            if (tweet != null) {
+            // open tweet media
+            else if (v.getId() == R.id.tweet_media_attach) {
                 Intent mediaIntent = new Intent(this, MediaViewer.class);
                 mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
                 switch (tweet.getMediaType()) {
@@ -331,21 +320,19 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             statusAsync = new TweetAction(this, tweet);
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
-                if (tweet.retweeted()) {
+                if (tweet.retweeted())
                     statusAsync.execute(Action.UNRETWEET);
-                } else {
+                else
                     statusAsync.execute(Action.RETWEET);
-                }
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                 return true;
             }
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorit) {
-                if (tweet.favored()) {
+                if (tweet.favored())
                     statusAsync.execute(Action.UNFAVORITE);
-                } else {
+                else
                     statusAsync.execute(Action.FAVORITE);
-                }
                 Toast.makeText(this, R.string.info_loading, LENGTH_SHORT).show();
                 return true;
             }
@@ -536,12 +523,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public void onError(@NonNull EngineException error, long tweetId) {
         ErrorHandler.handleFailure(this, error);
-        if (error.resourceNotFound()) {
+        if (tweet == null) {
+            finish();
+        } else if (error.resourceNotFound()) {
             Intent returnData = new Intent();
+            // if tweet is an embedded tweet, get parent tweet ID
+            if (tweet.getParentTweet() != null)
+                tweetId = tweet.getParentTweet().getId();
             returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetId);
             setResult(RETURN_TWEET_CHANGED, returnData);
-            finish();
-        } else if (tweet == null) {
             finish();
         }
     }

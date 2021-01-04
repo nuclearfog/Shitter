@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:ignore="UseCompoundDrawables">
 
     <ImageView
         android:id="@+id/tab_icon"
         android:layout_width="@dimen/icon_profile_size"
-        android:layout_height="@dimen/icon_profile_size"
-        app:srcCompat="@drawable/add" />
+        android:layout_height="@dimen/icon_profile_size" />
 
     <TextView
         android:id="@+id/tab_text"
@@ -19,4 +19,5 @@
         android:gravity="center"
         android:singleLine="true"
         android:textSize="@dimen/icon_profile_textsize" />
+
 </LinearLayout>

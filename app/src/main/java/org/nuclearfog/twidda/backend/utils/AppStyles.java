@@ -203,7 +203,14 @@ public final class AppStyles {
         tArray.recycle();
     }
 
-
+    /**
+     * create tab icons with TextView
+     *
+     * @param tabLayout TabLayout to set the icons
+     * @param settings  settings instance
+     * @param array     Array of drawable resources to set the icons
+     * @return array of TextViews
+     */
     public static TextView[] createTabIcon(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
         Context context = tabLayout.getContext();
         TypedArray tArray = context.getResources().obtainTypedArray(array);

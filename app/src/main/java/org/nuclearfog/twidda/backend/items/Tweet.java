@@ -38,7 +38,7 @@ public class Tweet implements Serializable {
     private String source;
 
     private User user;
-    private Tweet embedded;
+    private Tweet embedded, parent;
 
     private long replyID;
     private long replyUserId;
@@ -111,7 +111,7 @@ public class Tweet implements Serializable {
         else
             replyName = "";
         if (status.getRetweetedStatus() != null)
-            embedded = new Tweet(status.getRetweetedStatus());
+            embedded = new Tweet(status.getRetweetedStatus(), this);
         else
             embedded = null;
 
@@ -145,6 +145,17 @@ public class Tweet implements Serializable {
                     break;
             }
         }
+    }
+
+    /**
+     * create an embedded tweet with reference to its parent
+     *
+     * @param status embedded tweet
+     * @param parent parent tweet retweeting this tweet
+     */
+    private Tweet(Status status, Tweet parent) {
+        this(status);
+        this.parent = parent;
     }
 
     /**
@@ -242,11 +253,21 @@ public class Tweet implements Serializable {
     /**
      * get embedded Tweet
      *
-     * @return tweet
+     * @return tweet retweeted by this tweet
      */
     @Nullable
     public Tweet getEmbeddedTweet() {
         return embedded;
+    }
+
+    /**
+     * get parent Tweet
+     *
+     * @return parent tweet, retweeting this tweet
+     */
+    @Nullable
+    public Tweet getParentTweet() {
+        return parent;
     }
 
     /**

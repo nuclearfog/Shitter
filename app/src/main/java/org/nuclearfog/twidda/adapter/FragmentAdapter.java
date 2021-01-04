@@ -154,7 +154,7 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
      * setup adapter for tweet page to show replies of a tweet
      *
      * @param tweetId   ID of the tweet
-     * @param replyName screen name of the author
+     * @param replyName screen name of the author, needed to search for answers
      */
     public void setupTweetPage(long tweetId, String replyName) {
         Bundle param = new Bundle();
