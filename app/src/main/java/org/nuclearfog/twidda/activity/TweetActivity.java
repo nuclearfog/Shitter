@@ -92,10 +92,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
-    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName;
+    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
-    private View header, footer, sensitive_media;
+    private View header, footer;
     private Dialog deleteDialog;
 
     private GlobalSettings settings;
@@ -152,10 +152,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         pager.setAdapter(adapter);
 
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
+        ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
+        rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
+        favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
+        tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
+        sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
+        AppStyles.setTheme(settings, root);
 
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
@@ -412,20 +417,22 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (tweet.retweeted()) {
             AppStyles.setIconColor(rtwButton, Color.GREEN);
         } else {
-            AppStyles.setIconColor(rtwButton, Color.WHITE);
+            AppStyles.setIconColor(rtwButton, settings.getIconColor());
         }
         if (tweet.favored()) {
             AppStyles.setIconColor(favButton, Color.YELLOW);
         } else {
-            AppStyles.setIconColor(favButton, Color.WHITE);
+            AppStyles.setIconColor(favButton, settings.getIconColor());
         }
         if (author.isVerified()) {
             usrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+            AppStyles.setIconColor(usrName, settings.getIconColor());
         } else {
             usrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (author.isLocked()) {
             scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            AppStyles.setIconColor(scrName, settings.getIconColor());
         } else {
             scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
@@ -453,26 +460,21 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         }
         if (tweet.containsSensitiveMedia()) {
             sensitive_media.setVisibility(VISIBLE);
+
         }
-        switch (tweet.getMediaType()) {
-            case IMAGE:
-                mediaButton.setVisibility(VISIBLE);
-                mediaButton.setImageResource(R.drawable.image);
-                break;
-
-            case VIDEO:
-                mediaButton.setVisibility(VISIBLE);
-                mediaButton.setImageResource(R.drawable.video);
-                break;
-
-            case GIF:
-                mediaButton.setVisibility(VISIBLE);
-                mediaButton.setImageResource(R.drawable.images);
-                break;
-
-            default:
-                mediaButton.setVisibility(GONE);
-                break;
+        if (tweet.getMediaType() == Tweet.MediaType.NONE) {
+            mediaButton.setVisibility(GONE);
+        } else {
+            int iconRes;
+            if (tweet.getMediaType() == Tweet.MediaType.IMAGE) {
+                iconRes = R.drawable.image;
+            } else if (tweet.getMediaType() == Tweet.MediaType.VIDEO) {
+                iconRes = R.drawable.video;
+            } else {
+                iconRes = R.drawable.images;
+            }
+            mediaButton.setImageResource(iconRes);
+            AppStyles.setIconColor(mediaButton, settings.getIconColor());
         }
         if (settings.getImageLoad()) {
             String pbLink = author.getImageLink();

@@ -93,7 +93,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         super.onCreate(b);
         setContentView(R.layout.popup_dm);
         View root = findViewById(R.id.dm_popup);
-        View send = findViewById(R.id.dm_send);
+        ImageButton send = findViewById(R.id.dm_send);
         media = findViewById(R.id.dm_media);
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
@@ -107,14 +107,16 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
             receiver.append(prefix);
         }
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
-
+        send.setImageResource(R.drawable.right);
+        media.setImageResource(R.drawable.image_add);
         leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
         cancelButton.setVisibility(VISIBLE);
+
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        AppStyles.setTheme(settings, root, settings.getPopupColor());
 
         send.setOnClickListener(this);
         media.setOnClickListener(this);

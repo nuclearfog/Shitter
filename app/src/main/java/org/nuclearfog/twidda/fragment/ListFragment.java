@@ -35,8 +35,9 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
 
 
     @Override
-    public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle param) {
+    public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
         settings = GlobalSettings.getInstance(requireContext());
+        onCreate();
 
         list = new RecyclerView(requireContext());
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -47,12 +48,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
         reload.setOnRefreshListener(this);
         reload.addView(list);
         return reload;
-    }
-
-
-    @Override
-    public final void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        onCreated();
     }
 
 
@@ -116,7 +111,7 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     /**
      * called to initialize sub classes
      */
-    protected abstract void onCreated();
+    protected abstract void onCreate();
 
     /**
      * called when swipe refresh is active

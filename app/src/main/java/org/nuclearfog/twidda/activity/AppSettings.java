@@ -111,11 +111,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         list_size = findViewById(R.id.settings_list_size);
         root = findViewById(R.id.settings_layout);
 
-        TypedArray drawables = getResources().obtainTypedArray(R.array.color_button);
-        colorButtons = new Button[drawables.length()];
-        for (int index = 0; index < drawables.length(); index++)
-            colorButtons[index] = findViewById(drawables.getResourceId(index, 0));
-        drawables.recycle();
+        TypedArray buttons = getResources().obtainTypedArray(R.array.color_button);
+        colorButtons = new Button[buttons.length()];
+        for (int index = 0; index < buttons.length(); index++)
+            colorButtons[index] = findViewById(buttons.getResourceId(index, 0));
+        buttons.recycle();
 
         toolbar.setTitle(R.string.title_settings);
         setSupportActionBar(toolbar);

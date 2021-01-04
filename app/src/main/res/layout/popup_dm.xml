@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/PopupCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -33,23 +32,21 @@
 
             <ImageButton
                 android:id="@+id/dm_media"
+                style="@style/RoundButton"
                 android:layout_width="@dimen/dmpopup_button_size"
                 android:layout_height="@dimen/dmpopup_button_size"
                 android:layout_marginStart="@dimen/dmpopup_button_margin"
                 android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:contentDescription="@string/tweet_add_image"
-                app:srcCompat="@drawable/image_add"
-                style="@style/RoundButton" />
+                android:contentDescription="@string/tweet_add_image" />
 
             <ImageButton
                 android:id="@+id/dm_send"
+                style="@style/RoundButton"
                 android:layout_width="@dimen/dmpopup_button_size"
                 android:layout_height="@dimen/dmpopup_button_size"
                 android:layout_marginStart="@dimen/dmpopup_button_margin"
                 android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:contentDescription="@string/close_dm"
-                app:srcCompat="@drawable/right"
-                style="@style/RoundButton" />
+                android:contentDescription="@string/close_dm" />
 
         </LinearLayout>
 

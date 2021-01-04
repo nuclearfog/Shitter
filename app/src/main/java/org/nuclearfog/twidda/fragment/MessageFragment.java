@@ -21,7 +21,6 @@ import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
@@ -49,8 +48,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
 
     @Override
-    protected void onCreated() {
-        settings = GlobalSettings.getInstance(requireContext());
+    protected void onCreate() {
         deleteDialog = DialogBuilder.create(requireContext(), DEL_MESSAGE, this);
     }
 

@@ -19,7 +19,6 @@ import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
@@ -103,7 +102,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    protected void onCreated() {
+    protected void onCreate() {
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_USER_MODE, 0);
@@ -112,7 +111,6 @@ public class UserFragment extends ListFragment implements UserClickListener,
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
         deleteDialog = DialogBuilder.create(requireContext(), DEL_USER_LIST, this);
-        settings = GlobalSettings.getInstance(requireContext());
     }
 
 

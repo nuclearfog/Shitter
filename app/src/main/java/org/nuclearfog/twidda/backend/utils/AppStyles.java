@@ -9,13 +9,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.ArrayRes;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -38,18 +39,31 @@ public final class AppStyles {
     }
 
     /**
+     * sets view theme
+     *
      * @param settings settings instance
-     * @param v        root view
+     * @param v        Root view
      */
     public static void setTheme(GlobalSettings settings, View v) {
+        setTheme(settings, v, settings.getBackgroundColor());
+    }
+
+    /**
+     * sets view theme with background color
+     *
+     * @param settings        settings instance
+     * @param v               Root view
+     * @param backgroundColor custom background color
+     */
+    public static void setTheme(GlobalSettings settings, View v, int backgroundColor) {
         AppStyles instance = new AppStyles(settings);
         if (v instanceof CardView) {
             CardView card = (CardView) v;
-            card.setCardBackgroundColor(settings.getCardColor());
+            card.setCardBackgroundColor(instance.settings.getCardColor());
         } else {
-            v.setBackgroundColor(settings.getBackgroundColor());
+            v.setBackgroundColor(backgroundColor);
         }
-        instance.setTheme(v);
+        instance.setSubViewTheme(v);
     }
 
     /**
@@ -57,7 +71,7 @@ public final class AppStyles {
      *
      * @param v recursive view
      */
-    private void setTheme(View v) {
+    private void setSubViewTheme(View v) {
         if (v instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) v;
             for (int pos = 0; pos < group.getChildCount(); pos++) {
@@ -74,8 +88,7 @@ public final class AppStyles {
                     TextView tv = (TextView) child;
                     tv.setTypeface(settings.getFontFace());
                     tv.setTextColor(settings.getFontColor());
-                    if (!(child instanceof EditText))
-                        setIconColor(tv, settings.getIconColor());
+                    setIconColor(tv, settings.getIconColor());
                 } else if (child instanceof ImageView) {
                     ImageView img = (ImageView) child;
                     setDrawableColor(img.getDrawable(), settings.getIconColor());
@@ -83,8 +96,10 @@ public final class AppStyles {
                     if (child instanceof CardView) {
                         CardView card = (CardView) child;
                         card.setCardBackgroundColor(settings.getCardColor());
+                        setSubViewTheme(child);
+                    } else if (!(child instanceof ViewPager)) {
+                        setSubViewTheme(child);
                     }
-                    setTheme(child);
                 }
             }
         }
@@ -121,6 +136,18 @@ public final class AppStyles {
         for (Drawable d : tv.getCompoundDrawables()) {
             setDrawableColor(d, color);
         }
+    }
+
+
+    /**
+     * set icon drawable color
+     *
+     * @param imgView ImageView with a drawable icon
+     * @param color   new color for the drawable
+     */
+    public static void setIconColor(ImageView imgView, int color) {
+        Drawable d = imgView.getDrawable();
+        setDrawableColor(d, color);
     }
 
     /**
@@ -205,7 +232,7 @@ public final class AppStyles {
      * @param drawable drawables
      * @param color    new drawable color
      */
-    private static void setDrawableColor(Drawable drawable, int color) {
+    private static void setDrawableColor(@Nullable Drawable drawable, int color) {
         if (drawable != null) {
             drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
         }

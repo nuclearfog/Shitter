@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/PopupCardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -33,24 +32,22 @@
 
             <ImageButton
                 android:id="@+id/tweet_prev_media"
+                style="@style/RoundButton"
                 android:layout_width="@dimen/tweetpopup_button_size"
                 android:layout_height="@dimen/tweetpopup_button_size"
                 android:layout_marginStart="@dimen/tweetpopup_button_margin"
                 android:layout_marginLeft="@dimen/tweetpopup_button_margin"
                 android:contentDescription="@string/image_preview"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/image"
-                style="@style/RoundButton" />
+                android:visibility="invisible" />
 
             <ImageButton
                 android:id="@+id/tweet_add_media"
+                style="@style/RoundButton"
                 android:layout_width="@dimen/tweetpopup_button_size"
                 android:layout_height="@dimen/tweetpopup_button_size"
                 android:layout_marginStart="@dimen/tweetpopup_button_margin"
                 android:layout_marginLeft="@dimen/tweetpopup_button_margin"
-                android:contentDescription="@string/tweet_add_image"
-                app:srcCompat="@drawable/image_add"
-                style="@style/RoundButton" />
+                android:contentDescription="@string/tweet_add_image" />
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -68,33 +65,30 @@
 
                 <ImageButton
                     android:id="@+id/tweet_add_location"
+                    style="@style/RoundButton"
                     android:layout_width="@dimen/tweetpopup_button_size"
                     android:layout_height="@dimen/tweetpopup_button_size"
-                    android:contentDescription="@string/send_tweet"
-                    app:srcCompat="@drawable/location"
-                    style="@style/RoundButton" />
+                    android:contentDescription="@string/send_tweet" />
 
             </FrameLayout>
 
             <ImageButton
                 android:id="@+id/tweet_send"
+                style="@style/RoundButton"
                 android:layout_width="@dimen/tweetpopup_button_size"
                 android:layout_height="@dimen/tweetpopup_button_size"
                 android:layout_marginStart="@dimen/tweetpopup_button_margin"
                 android:layout_marginLeft="@dimen/tweetpopup_button_margin"
-                android:contentDescription="@string/send_tweet"
-                app:srcCompat="@drawable/tweet"
-                style="@style/RoundButton" />
+                android:contentDescription="@string/send_tweet" />
 
             <ImageButton
                 android:id="@+id/close"
+                style="@style/RoundButton"
                 android:layout_width="@dimen/tweetpopup_button_size"
                 android:layout_height="@dimen/tweetpopup_button_size"
                 android:layout_marginStart="@dimen/tweetpopup_button_margin"
                 android:layout_marginLeft="@dimen/tweetpopup_button_margin"
-                android:contentDescription="@string/tweet_close"
-                app:srcCompat="@drawable/cross"
-                style="@style/RoundButton" />
+                android:contentDescription="@string/tweet_close" />
 
         </LinearLayout>
 

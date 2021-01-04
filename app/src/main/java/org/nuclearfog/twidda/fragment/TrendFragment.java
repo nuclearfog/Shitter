@@ -9,7 +9,6 @@ import org.nuclearfog.twidda.backend.TrendLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
@@ -21,14 +20,12 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
  */
 public class TrendFragment extends ListFragment implements TrendClickListener {
 
-
     private TrendLoader trendTask;
     private TrendAdapter adapter;
 
 
     @Override
-    protected void onCreated() {
-        settings = GlobalSettings.getInstance(requireContext());
+    protected void onCreate() {
     }
 
 

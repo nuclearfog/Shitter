@@ -15,7 +15,6 @@ import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.items.UserList;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.KEY_LIST_DATA;
@@ -80,14 +79,13 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
     @Override
-    protected void onCreated() {
+    protected void onCreate() {
         Bundle param = getArguments();
         if (param != null) {
             id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
             ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
             type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
         }
-        settings = GlobalSettings.getInstance(requireContext());
     }
 
 

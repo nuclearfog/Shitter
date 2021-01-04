@@ -13,7 +13,6 @@ import org.nuclearfog.twidda.backend.TweetLoader.ListType;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.List;
 
@@ -106,8 +105,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 
     @Override
-    protected void onCreated() {
-        settings = GlobalSettings.getInstance(requireContext());
+    protected void onCreate() {
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);

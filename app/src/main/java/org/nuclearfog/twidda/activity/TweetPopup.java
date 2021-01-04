@@ -122,25 +122,27 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     @Nullable
     private LocationManager mLocation;
     private TweetUpdater uploaderAsync;
-    private Location location;
-    private List<String> mediaPath;
+    private GlobalSettings settings;
+
     private ImageButton mediaBtn, previewBtn, locationBtn;
-    private View locationProg;
     private Dialog loadingCircle, errorDialog, closingDialog;
     private EditText tweetText;
+    private View locationProg;
 
+    private TweetHolder tweet;
+    private Location location;
+    private List<String> mediaPath;
     private MediaType selectedFormat = MediaType.NONE;
     private String prefix = "";
     private long inReplyId = 0;
-    private TweetHolder tweet;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_tweet);
         View root = findViewById(R.id.tweet_popup);
-        View tweetButton = findViewById(R.id.tweet_send);
-        View closeButton = findViewById(R.id.close);
+        ImageButton tweetButton = findViewById(R.id.tweet_send);
+        ImageButton closeButton = findViewById(R.id.close);
         locationBtn = findViewById(R.id.tweet_add_location);
         mediaBtn = findViewById(R.id.tweet_add_media);
         previewBtn = findViewById(R.id.tweet_prev_media);
@@ -151,7 +153,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         View cancelButton = load.findViewById(R.id.kill_button);
 
         mLocation = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         mediaPath = new LinkedList<>();
 
         Bundle param = getIntent().getExtras();
@@ -160,14 +162,18 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             prefix = param.getString(KEY_TWEETPOPUP_TEXT, "");
             tweetText.append(prefix);
         }
-
+        previewBtn.setImageResource(R.drawable.image);
+        mediaBtn.setImageResource(R.drawable.image_add);
+        locationBtn.setImageResource(R.drawable.location);
+        tweetButton.setImageResource(R.drawable.tweet);
+        closeButton.setImageResource(R.drawable.cross);
         errorDialog = DialogBuilder.create(this, TWEETPOPUP_ERROR, this);
         closingDialog = DialogBuilder.create(this, TWEETPOPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
-        AppStyles.setTheme(settings, root);
         cancelButton.setVisibility(VISIBLE);
+        AppStyles.setTheme(settings, root, settings.getPopupColor());
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
@@ -230,6 +236,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                                 if (selectedFormat == MediaType.NONE) {
                                     selectedFormat = MediaType.GIF;
                                     previewBtn.setImageResource(R.drawable.video);
+                                    AppStyles.setIconColor(previewBtn, settings.getIconColor());
                                     previewBtn.setVisibility(VISIBLE);
                                     mediaBtn.setVisibility(GONE);
                                     mediaPath.add(path);
@@ -241,6 +248,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
                                 if (selectedFormat == MediaType.NONE) {
                                     selectedFormat = MediaType.VIDEO;
                                     previewBtn.setImageResource(R.drawable.video);
+                                    AppStyles.setIconColor(previewBtn, settings.getIconColor());
                                     previewBtn.setVisibility(VISIBLE);
                                     mediaBtn.setVisibility(GONE);
                                     mediaPath.add(path);
