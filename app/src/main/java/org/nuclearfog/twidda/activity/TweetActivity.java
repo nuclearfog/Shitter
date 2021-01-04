@@ -460,6 +460,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             } else {
                 iconRes = R.drawable.images;
             }
+            mediaButton.setVisibility(VISIBLE);
             mediaButton.setImageResource(iconRes);
             AppStyles.setIconColor(mediaButton, settings.getIconColor());
         }
