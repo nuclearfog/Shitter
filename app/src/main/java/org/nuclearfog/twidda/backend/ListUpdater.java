@@ -6,6 +6,7 @@ import org.nuclearfog.twidda.activity.ListPopup;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
+import org.nuclearfog.twidda.backend.items.UserList;
 
 import java.lang.ref.WeakReference;
 
@@ -13,7 +14,7 @@ import java.lang.ref.WeakReference;
  * This class creates and updates user lists
  * Backend for {@link ListPopup}
  */
-public class ListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
+public class ListUpdater extends AsyncTask<ListHolder, Void, UserList> {
 
 
     private EngineException err;
@@ -29,23 +30,22 @@ public class ListUpdater extends AsyncTask<ListHolder, Void, Boolean> {
 
 
     @Override
-    protected Boolean doInBackground(ListHolder... listHolders) {
+    protected UserList doInBackground(ListHolder... listHolders) {
         try {
             ListHolder mList = listHolders[0];
-            mTwitter.updateUserList(mList);
-            return true;
+            return mTwitter.updateUserList(mList);
         } catch (EngineException err) {
             this.err = err;
-            return false;
         }
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Boolean success) {
+    protected void onPostExecute(UserList result) {
         if (callback.get() != null) {
-            if (success) {
-                callback.get().onSuccess();
+            if (result != null) {
+                callback.get().onSuccess(result);
             } else {
                 callback.get().onError(err);
             }

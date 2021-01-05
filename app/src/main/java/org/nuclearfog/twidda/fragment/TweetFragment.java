@@ -47,6 +47,11 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
     public static final String INTENT_TWEET_REMOVED_ID = "tweet_removed_id";
 
     /**
+     * Key to return an ID of a removed tweet
+     */
+    public static final String INTENT_TWEET_UPDATE_DATA = "tweet_update_data";
+
+    /**
      * setup list for home timeline
      */
     public static final int TWEET_FRAG_HOME = 1;
@@ -89,7 +94,12 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
     /**
      * return code if a tweet was not found
      */
-    public static final int RETURN_TWEET_CHANGED = 1;
+    public static final int RETURN_TWEET_NOT_FOUND = 1;
+
+    /**
+     * return code if a tweet was not found
+     */
+    public static final int RETURN_TWEET_UPDATE = 2;
 
     /**
      * request code to check for tweet changes
@@ -151,9 +161,17 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-        if (intent != null && reqCode == REQUEST_TWEET_CHANGED && returnCode == RETURN_TWEET_CHANGED) {
-            long removedTweetId = intent.getLongExtra(INTENT_TWEET_REMOVED_ID, 0);
-            adapter.remove(removedTweetId);
+        if (intent != null && reqCode == REQUEST_TWEET_CHANGED) {
+            if (returnCode == RETURN_TWEET_UPDATE) {
+                Object data = intent.getSerializableExtra(INTENT_TWEET_UPDATE_DATA);
+                if (data instanceof Tweet) {
+                    Tweet updateTweet = (Tweet) data;
+                    adapter.updateItem(updateTweet);
+                }
+            } else if (returnCode == RETURN_TWEET_NOT_FOUND) {
+                long removedTweetId = intent.getLongExtra(INTENT_TWEET_REMOVED_ID, 0);
+                adapter.remove(removedTweetId);
+            }
         }
         super.onActivityResult(reqCode, returnCode, intent);
     }
@@ -173,8 +191,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
     @Override
     public void onTweetClick(Tweet tweet) {
         if (!isRefreshing()) {
-            if (tweet.getEmbeddedTweet() != null)
-                tweet = tweet.getEmbeddedTweet();
             Intent tweetIntent = new Intent(requireContext(), TweetActivity.class);
             tweetIntent.putExtra(KEY_TWEET_DATA, tweet);
             startActivityForResult(tweetIntent, REQUEST_TWEET_CHANGED);

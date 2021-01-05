@@ -597,11 +597,12 @@ public class AppDatabase {
         int follower = cursor.getInt(cursor.getColumnIndex("follower"));
         int tCount = cursor.getInt(cursor.getColumnIndex("tweetCount"));
         int fCount = cursor.getInt(cursor.getColumnIndex("favorCount"));
+        boolean isCurrentUser = homeId == userId;
         boolean isVerified = (userRegister & VER_MASK) != 0;
         boolean isLocked = (userRegister & LCK_MASK) != 0;
         boolean isReq = (userRegister & FRQ_MASK) != 0;
         boolean defaultImg = (userRegister & DEF_IMG) != 0;
-        return new User(userId, username, screenname, profileImg, bio, location, isVerified,
+        return new User(userId, username, screenname, profileImg, bio, location, isCurrentUser, isVerified,
                 isLocked, isReq, defaultImg, link, banner, createdAt, following, follower, tCount, fCount);
     }
 
@@ -668,7 +669,6 @@ public class AppDatabase {
             storeStatus(rtStat, 0, db);
             rtId = rtStat.getId();
         }
-
         statusRegister |= getTweetFlags(db, tweet.getId());
         if (tweet.favored()) {
             statusRegister |= FAV_MASK;

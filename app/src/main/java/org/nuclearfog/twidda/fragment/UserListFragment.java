@@ -60,15 +60,25 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public static final int REQUEST_OPEN_LIST = 3;
 
     /**
+     * return code for {@link #REQUEST_OPEN_LIST} when an userlist was deleted
+     */
+    public static final int RETURN_LIST_REMOVED = 4;
+
+    /**
+     * return code for {@link #REQUEST_OPEN_LIST} when an userlist was deleted
+     */
+    public static final int RETURN_LIST_UPDATED = 5;
+
+    /**
      * activity result key to return the ID of a removed list
      * called with {@link #RETURN_LIST_REMOVED}
      */
     public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
 
     /**
-     * return code for {@link #REQUEST_OPEN_LIST} when an userlist was deleted
+     * result key to update an userlist
      */
-    public static final int RETURN_LIST_REMOVED = 4;
+    public static final String RESULT_UPDATE_LIST = "update-userlist";
 
     private ListLoader listTask;
     private ListAdapter adapter;
@@ -117,9 +127,17 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_OPEN_LIST && resultCode == RETURN_LIST_REMOVED && data != null) {
-            long removedListId = data.getLongExtra(RESULT_REMOVED_LIST_ID, 0);
-            adapter.removeItem(removedListId);
+        if (data != null && requestCode == REQUEST_OPEN_LIST) {
+            if (resultCode == RETURN_LIST_REMOVED) {
+                long removedListId = data.getLongExtra(RESULT_REMOVED_LIST_ID, 0);
+                adapter.removeItem(removedListId);
+            } else if (resultCode == RETURN_LIST_UPDATED) {
+                Object result = data.getSerializableExtra(RESULT_UPDATE_LIST);
+                if (result instanceof UserList) {
+                    UserList update = (UserList) result;
+                    adapter.updateItem(update);
+                }
+            }
         }
     }
 

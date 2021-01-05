@@ -9,30 +9,34 @@ import java.io.Serializable;
  */
 public class UserList implements Serializable {
 
-    private final long id;
-    private final long createdAt;
-    private final String title;
-    private final String description;
+    private long id;
+    private long createdAt;
 
-    private final User owner;
-    private final boolean isPrivate;
-    private final boolean isFollowing;
-    private final boolean isOwner;
-    private final int memberCount;
-    private final int subscriberCnt;
+    private User owner;
+    private boolean isPrivate;
+    private boolean isFollowing;
+    private int memberCount;
+    private int subscriberCnt;
 
+    private String title = "";
+    private String description = "";
+
+    /**
+     * @param list        Twitter4J List
+     * @param homeId      ID of the authenticated user
+     * @param isFollowing authenticated user is following list
+     */
     public UserList(twitter4j.UserList list, long homeId, boolean isFollowing) {
-        String description = list.getDescription();
-        String title = list.getName();
         id = list.getId();
         createdAt = list.getCreatedAt().getTime();
-        owner = new User(list.getUser());
+        owner = new User(list.getUser(), homeId);
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
-        isOwner = homeId == owner.getId();
-        this.title = title != null ? title : "";
-        this.description = description != null ? description : "";
+        if (list.getName() != null)
+            title = list.getName();
+        if (list.getDescription() != null)
+            description = list.getDescription();
         this.isFollowing = isFollowing;
     }
 
@@ -127,7 +131,7 @@ public class UserList implements Serializable {
      * @return true if current user is owner
      */
     public boolean isListOwner() {
-        return isOwner;
+        return owner.isCurrentUser();
     }
 
 
@@ -136,6 +140,7 @@ public class UserList implements Serializable {
     public String toString() {
         return title + " " + description;
     }
+
 
     @Override
     public boolean equals(Object o) {

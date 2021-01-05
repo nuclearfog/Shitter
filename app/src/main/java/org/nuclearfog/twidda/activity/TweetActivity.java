@@ -64,7 +64,9 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DELETE_TWEET;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
-import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_CHANGED;
+import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
 
 /**
  * Tweet Activity for tweet and user informations
@@ -177,13 +179,16 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         if (statusAsync == null) {
-            if (tweet == null) {
-                statusAsync = new TweetAction(this, tweetId);
-                statusAsync.execute(Action.LD_DB);
-            } else {
-                statusAsync = new TweetAction(this, tweetId);
+            // print Tweet object and get and update it
+            if (tweet != null) {
+                statusAsync = new TweetAction(this, tweet);
                 statusAsync.execute(Action.LOAD);
                 setTweet(tweet);
+            }
+            // Load Tweet from database first if no tweet is defined
+            else {
+                statusAsync = new TweetAction(this, tweetId);
+                statusAsync.execute(Action.LD_DB);
             }
         }
     }
@@ -198,6 +203,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
     @Override
+    public void onBackPressed() {
+        Intent returnData = new Intent();
+        returnData.putExtra(INTENT_TWEET_UPDATE_DATA, tweet);
+        setResult(RETURN_TWEET_UPDATE, returnData);
+        super.onBackPressed();
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
         return super.onCreateOptionsMenu(m);
@@ -206,8 +220,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public boolean onPrepareOptionsMenu(Menu m) {
-        if (tweet != null && tweet.getUser().getId() == settings.getCurrentUserId())
-            m.findItem(R.id.delete_tweet).setVisible(true);
+        if (tweet != null) {
+            Tweet currentTweet = tweet;
+            if (tweet.getEmbeddedTweet() != null)
+                currentTweet = tweet;
+            if (currentTweet.currentUserIsOwner())
+                m.findItem(R.id.delete_tweet).setVisible(true);
+        }
         return super.onPrepareOptionsMenu(m);
     }
 
@@ -215,6 +234,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (tweet != null) {
+            Tweet clickedTweet = tweet;
+            if (tweet.getEmbeddedTweet() != null)
+                clickedTweet = tweet.getEmbeddedTweet();
+            User author = clickedTweet.getUser();
             // Delete tweet option
             if (item.getItemId() == R.id.delete_tweet) {
                 if (!deleteDialog.isShowing()) {
@@ -223,8 +246,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // get tweet link
             else if (item.getItemId() == R.id.tweet_link) {
-                String username = tweet.getUser().getScreenname().substring(1);
-                String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
+                String username = author.getScreenname().substring(1);
+                String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetLink));
                 try {
                     startActivity(intent);
@@ -234,8 +257,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // copy tweet link to clipboard
             else if (item.getItemId() == R.id.link_copy) {
-                String username = tweet.getUser().getScreenname().substring(1);
-                String tweetLink = "https://twitter.com/" + username + "/status/" + tweet.getId();
+                String username = author.getScreenname().substring(1);
+                String tweetLink = "https://twitter.com/" + username + "/status/" + clickedTweet.getId();
                 ClipboardManager clip = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
                 if (clip != null) {
                     ClipData linkClip = ClipData.newPlainText("tweet link", tweetLink);
@@ -253,38 +276,41 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public void onClick(View v) {
         if (tweet != null) {
+            Tweet clickedTweet = tweet;
+            if (tweet.getEmbeddedTweet() != null)
+                clickedTweet = tweet.getEmbeddedTweet();
             // answer to the tweet
             if (v.getId() == R.id.tweet_answer) {
-                String tweetPrefix = tweet.getUser().getScreenname() + " ";
+                String tweetPrefix = clickedTweet.getUser().getScreenname() + " ";
                 Intent tweetPopup = new Intent(this, TweetPopup.class);
-                tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, tweetId);
+                tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
                 tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
                 startActivity(tweetPopup);
             }
             // show user retweeting this tweet
             else if (v.getId() == R.id.tweet_retweet) {
                 Intent userList = new Intent(this, UserDetail.class);
-                userList.putExtra(KEY_USERDETAIL_ID, tweet.getId());
+                userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
                 userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
                 startActivity(userList);
             }
             // open profile of the tweet author
             else if (v.getId() == R.id.profileimage_detail) {
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
-                profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
+                profile.putExtra(UserProfile.KEY_PROFILE_DATA, clickedTweet.getUser());
                 startActivity(profile);
             }
             // open replied tweet
             else if (v.getId() == R.id.answer_reference_detail) {
                 Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
-                answerIntent.putExtra(KEY_TWEET_ID, tweet.getReplyId());
-                answerIntent.putExtra(KEY_TWEET_NAME, tweet.getReplyName());
+                answerIntent.putExtra(KEY_TWEET_ID, clickedTweet.getReplyId());
+                answerIntent.putExtra(KEY_TWEET_NAME, clickedTweet.getReplyName());
                 startActivity(answerIntent);
             }
             // open tweet location coordinates
             else if (v.getId() == R.id.tweet_location_coordinate) {
                 Intent locationIntent = new Intent(Intent.ACTION_VIEW);
-                locationIntent.setData(Uri.parse("geo:" + tweet.getLocationCoordinates()));
+                locationIntent.setData(Uri.parse("geo:" + clickedTweet.getLocationCoordinates()));
                 try {
                     startActivity(locationIntent);
                 } catch (ActivityNotFoundException err) {
@@ -294,8 +320,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // open tweet media
             else if (v.getId() == R.id.tweet_media_attach) {
                 Intent mediaIntent = new Intent(this, MediaViewer.class);
-                mediaIntent.putExtra(KEY_MEDIA_LINK, tweet.getMediaLinks());
-                switch (tweet.getMediaType()) {
+                mediaIntent.putExtra(KEY_MEDIA_LINK, clickedTweet.getMediaLinks());
+                switch (clickedTweet.getMediaType()) {
                     case IMAGE:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                         break;
@@ -317,10 +343,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
-            statusAsync = new TweetAction(this, tweet);
+            Tweet clickedTweet = tweet;
+            if (tweet.getEmbeddedTweet() != null)
+                clickedTweet = tweet.getEmbeddedTweet();
+            statusAsync = new TweetAction(this, clickedTweet);
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
-                if (tweet.retweeted())
+                if (clickedTweet.retweeted())
                     statusAsync.execute(Action.UNRETWEET);
                 else
                     statusAsync.execute(Action.RETWEET);
@@ -329,7 +358,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorit) {
-                if (tweet.favored())
+                if (clickedTweet.favored())
                     statusAsync.execute(Action.UNFAVORITE);
                 else
                     statusAsync.execute(Action.FAVORITE);
@@ -343,8 +372,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == DELETE_TWEET) {
-            statusAsync = new TweetAction(this, tweetId);
+        if (type == DELETE_TWEET && tweet != null) {
+            long id = tweet.getId();
+            // delete embedded tweet instead of the retweet
+            if (tweet.getEmbeddedTweet() != null)
+                id = tweet.getEmbeddedTweet().getId();
+            statusAsync = new TweetAction(this, id);
             statusAsync.execute(Action.DELETE);
         }
     }
@@ -393,20 +426,23 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     /**
      * load tweet into UI
      *
-     * @param tweet Tweet information
+     * @param tweetUpdate Tweet information
      */
-    public void setTweet(Tweet tweet) {
-        this.tweet = tweet;
-        User author = tweet.getUser();
+    public void setTweet(Tweet tweetUpdate) {
+        tweet = tweetUpdate;
+        // todo add information about the user who retweet this tweet
+        if (tweetUpdate.getEmbeddedTweet() != null)
+            tweetUpdate = tweetUpdate.getEmbeddedTweet();
+        User author = tweetUpdate.getUser();
         invalidateOptionsMenu();
 
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
-        if (tweet.retweeted()) {
+        if (tweetUpdate.retweeted()) {
             AppStyles.setIconColor(rtwButton, Color.GREEN);
         } else {
             AppStyles.setIconColor(rtwButton, settings.getIconColor());
         }
-        if (tweet.favored()) {
+        if (tweetUpdate.favored()) {
             AppStyles.setIconColor(favButton, Color.YELLOW);
         } else {
             AppStyles.setIconColor(favButton, settings.getIconColor());
@@ -425,37 +461,37 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         }
         usrName.setText(author.getUsername());
         scrName.setText(author.getScreenname());
-        tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweet.getTime()));
-        favButton.setText(buttonNumber.format(tweet.getFavorCount()));
-        rtwButton.setText(buttonNumber.format(tweet.getRetweetCount()));
+        tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweetUpdate.getTime()));
+        favButton.setText(buttonNumber.format(tweetUpdate.getFavorCount()));
+        rtwButton.setText(buttonNumber.format(tweetUpdate.getRetweetCount()));
         tweet_api.setText(R.string.tweet_sent_from);
-        tweet_api.append(" " + tweet.getSource());
+        tweet_api.append(" " + tweetUpdate.getSource());
 
         if (header.getVisibility() != VISIBLE) {
             header.setVisibility(VISIBLE);
             footer.setVisibility(VISIBLE);
         }
-        if (!tweet.getTweet().trim().isEmpty()) {
-            Spannable sTweet = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor(), this);
+        if (!tweetUpdate.getTweet().trim().isEmpty()) {
+            Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getTweet(), settings.getHighlightColor(), this);
             tweetText.setVisibility(VISIBLE);
             tweetText.setText(sTweet);
         }
-        if (tweet.getReplyId() > 0) {
+        if (tweetUpdate.getReplyId() > 0) {
             replyName.setText(R.string.tweet_answering);
-            replyName.append(tweet.getReplyName());
+            replyName.append(tweetUpdate.getReplyName());
             replyName.setVisibility(VISIBLE);
         }
-        if (tweet.containsSensitiveMedia()) {
+        if (tweetUpdate.containsSensitiveMedia()) {
             sensitive_media.setVisibility(VISIBLE);
 
         }
-        if (tweet.getMediaType() == Tweet.MediaType.NONE) {
+        if (tweetUpdate.getMediaType() == Tweet.MediaType.NONE) {
             mediaButton.setVisibility(GONE);
         } else {
             int iconRes;
-            if (tweet.getMediaType() == Tweet.MediaType.IMAGE) {
+            if (tweetUpdate.getMediaType() == Tweet.MediaType.IMAGE) {
                 iconRes = R.drawable.image;
-            } else if (tweet.getMediaType() == Tweet.MediaType.VIDEO) {
+            } else if (tweetUpdate.getMediaType() == Tweet.MediaType.VIDEO) {
                 iconRes = R.drawable.video;
             } else {
                 iconRes = R.drawable.images;
@@ -470,12 +506,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 pbLink += settings.getImageSuffix();
             Picasso.get().load(pbLink).error(R.drawable.no_image).into(profile_img);
         }
-        String placeName = tweet.getLocationName();
+        String placeName = tweetUpdate.getLocationName();
         if (placeName != null && !placeName.isEmpty()) {
             tweetLocName.setVisibility(VISIBLE);
             tweetLocName.setText(placeName);
         }
-        String location = tweet.getLocationCoordinates();
+        String location = tweetUpdate.getLocationCoordinates();
         if (location != null && !location.isEmpty()) {
             tweetLocGPS.setVisibility(VISIBLE);
             tweetLocGPS.setText(location);
@@ -510,7 +546,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 Toast.makeText(this, R.string.info_tweet_removed, LENGTH_SHORT).show();
                 Intent returnData = new Intent();
                 returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetId);
-                setResult(RETURN_TWEET_CHANGED, returnData);
+                setResult(RETURN_TWEET_NOT_FOUND, returnData);
                 finish();
                 break;
         }
@@ -519,20 +555,18 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     /**
      * called when an error occurs
      *
-     * @param error   Engine Exception7
+     * @param error   Error information
      * @param tweetId ID of the tweet from which an error occurred
      */
     public void onError(@NonNull EngineException error, long tweetId) {
         ErrorHandler.handleFailure(this, error);
-        if (tweet == null) {
-            finish();
-        } else if (error.resourceNotFound()) {
+        if (error.resourceNotFound()) {
+            // Mark tweet as removed, so it can be removed from the list
             Intent returnData = new Intent();
-            // if tweet is an embedded tweet, get parent tweet ID
-            if (tweet.getParentTweet() != null)
-                tweetId = tweet.getParentTweet().getId();
             returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetId);
-            setResult(RETURN_TWEET_CHANGED, returnData);
+            setResult(RETURN_TWEET_NOT_FOUND, returnData);
+            finish();
+        } else if (tweet == null) {
             finish();
         }
     }

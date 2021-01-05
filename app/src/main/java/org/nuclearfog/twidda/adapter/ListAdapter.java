@@ -112,6 +112,21 @@ public class ListAdapter extends Adapter<ViewHolder> {
         disableLoading();
     }
 
+
+    /**
+     * update a single item
+     *
+     * @param list updated list
+     */
+    @MainThread
+    public void updateItem(UserList list) {
+        int index = data.indexOf(list);
+        if (index >= 0) {
+            data.set(index, list);
+            notifyItemChanged(index);
+        }
+    }
+
     /**
      * remove userlist item from list
      *

@@ -10,7 +10,8 @@
     <ImageView
         android:id="@+id/tab_icon"
         android:layout_width="@dimen/icon_profile_size"
-        android:layout_height="@dimen/icon_profile_size" />
+        android:layout_height="@dimen/icon_profile_size"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tab_text"

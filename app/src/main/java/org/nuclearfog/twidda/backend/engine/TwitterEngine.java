@@ -42,6 +42,7 @@ import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.UploadedMedia;
 import twitter4j.auth.AccessToken;
@@ -56,7 +57,6 @@ public class TwitterEngine {
     private static final TwitterEngine mTwitter = new TwitterEngine();
 
     private Twitter twitter;
-    private long twitterID;
     private boolean isInitialized = false;
     private GlobalSettings settings;
     @Nullable
@@ -107,7 +107,6 @@ public class TwitterEngine {
             if (mTwitter.settings.getLogin()) {
                 String[] keys = mTwitter.settings.getCurrentUserAccessToken();
                 mTwitter.aToken = new AccessToken(keys[0], keys[1]);
-                mTwitter.twitterID = mTwitter.settings.getCurrentUserId();
             }
             mTwitter.initTwitter();
             mTwitter.isInitialized = true;
@@ -157,8 +156,7 @@ public class TwitterEngine {
                 String key2 = accessToken.getTokenSecret();
                 aToken = new AccessToken(key1, key2);
                 initTwitter();
-                twitterID = twitter.getId();
-                settings.setConnection(key1, key2, twitterID);
+                settings.setConnection(key1, key2, twitter.getId());
             } else {
                 throw new EngineException(EngineException.InternalErrorType.TOKENNOTSET);
             }
@@ -418,9 +416,9 @@ public class TwitterEngine {
     public User getUser(long userId, String username) throws EngineException {
         try {
             if (userId > 0) {
-                return new User(twitter.showUser(userId));
+                return new User(twitter.showUser(userId), twitter.getId());
             } else {
-                return new User(twitter.showUser(username));
+                return new User(twitter.showUser(username), twitter.getId());
             }
         } catch (Exception err) {
             throw new EngineException(err);
@@ -436,7 +434,8 @@ public class TwitterEngine {
      */
     public User getCurrentUser() throws EngineException {
         try {
-            return new User(twitter.showUser(twitterID));
+            long currentUserId = twitter.getId();
+            return new User(twitter.showUser(currentUserId), currentUserId);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -454,7 +453,7 @@ public class TwitterEngine {
     public Relation getConnection(long userId, String username) throws EngineException {
         try {
             if (userId > 0) {
-                return new Relation(twitter.showFriendship(twitterID, userId));
+                return new Relation(twitter.showFriendship(twitter.getId(), userId));
             } else {
                 return new Relation(twitter.showFriendship(twitter.getScreenName(), username));
             }
@@ -472,7 +471,7 @@ public class TwitterEngine {
      */
     public User followUser(long userID) throws EngineException {
         try {
-            return new User(twitter.createFriendship(userID));
+            return new User(twitter.createFriendship(userID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -488,7 +487,7 @@ public class TwitterEngine {
      */
     public User unfollowUser(long userID) throws EngineException {
         try {
-            return new User(twitter.destroyFriendship(userID));
+            return new User(twitter.destroyFriendship(userID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -504,7 +503,7 @@ public class TwitterEngine {
      */
     public User blockUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.createBlock(UserID));
+            return new User(twitter.createBlock(UserID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -520,7 +519,7 @@ public class TwitterEngine {
      */
     public User unblockUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.destroyBlock(UserID));
+            return new User(twitter.destroyBlock(UserID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -536,7 +535,7 @@ public class TwitterEngine {
      */
     public User muteUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.createMute(UserID));
+            return new User(twitter.createMute(UserID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -552,7 +551,7 @@ public class TwitterEngine {
      */
     public User unmuteUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.destroyMute(UserID));
+            return new User(twitter.destroyMute(UserID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -646,7 +645,7 @@ public class TwitterEngine {
     public Tweet getStatus(long tweetId) throws EngineException {
         try {
             Status tweet = twitter.showStatus(tweetId);
-            return new Tweet(tweet);
+            return new Tweet(tweet, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -708,7 +707,7 @@ public class TwitterEngine {
                 twitter.unRetweetStatus(tweetId);
                 retweetCount--;
             }
-            return new Tweet(tweet, retweetCount, retweet, tweet.getFavoriteCount(), tweet.isFavorited());
+            return new Tweet(tweet, twitter.getId(), retweetCount, retweet, tweet.getFavoriteCount(), tweet.isFavorited());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -733,7 +732,7 @@ public class TwitterEngine {
                 tweet = twitter.destroyFavorite(tweetId);
                 favoritCount--;
             }
-            return new Tweet(tweet, tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
+            return new Tweet(tweet, twitter.getId(), tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -857,7 +856,7 @@ public class TwitterEngine {
             String user_loc = userHolder.getLocation();
             String user_bio = userHolder.getBio();
             twitter4j.User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
-            return new User(user);
+            return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -883,7 +882,7 @@ public class TwitterEngine {
             long nextCursor = 0;
             UserListList result = new UserListList(prevCursor, nextCursor); // todo add paging system
             for (twitter4j.UserList list : lists)
-                result.add(new UserList(list, twitterID));
+                result.add(new UserList(list, twitter.getId()));
             return result;
         } catch (Exception err) {
             throw new EngineException(err);
@@ -911,7 +910,7 @@ public class TwitterEngine {
             long nextCursor = lists.getNextCursor();
             UserListList result = new UserListList(prevCursor, nextCursor);
             for (twitter4j.UserList list : lists)
-                result.add(new UserList(list, twitterID));
+                result.add(new UserList(list, twitter.getId()));
             return result;
         } catch (Exception err) {
             throw new EngineException(err);
@@ -927,7 +926,7 @@ public class TwitterEngine {
      */
     public UserList loadUserList(long listId) throws EngineException {
         try {
-            return new UserList(twitter.showUserList(listId), twitterID);
+            return new UserList(twitter.showUserList(listId), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -949,7 +948,7 @@ public class TwitterEngine {
             } else {
                 list = twitter.destroyUserListSubscription(listId);
             }
-            return new UserList(list, twitterID, follow);
+            return new UserList(list, twitter.getId(), follow);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -964,7 +963,7 @@ public class TwitterEngine {
      */
     public UserList deleteUserList(long listId) throws EngineException {
         try {
-            return new UserList(twitter.destroyUserList(listId), twitterID);
+            return new UserList(twitter.destroyUserList(listId), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1059,13 +1058,15 @@ public class TwitterEngine {
      * @param list holder for list information
      * @throws EngineException if access is unavailable
      */
-    public void updateUserList(ListHolder list) throws EngineException {
+    public UserList updateUserList(ListHolder list) throws EngineException {
         try {
+            twitter4j.UserList result;
             if (list.exists()) {
-                twitter.updateUserList(list.getId(), list.getTitle(), list.isPublic(), list.getDescription());
+                result = twitter.updateUserList(list.getId(), list.getTitle(), list.isPublic(), list.getDescription());
             } else {
-                twitter.createUserList(list.getTitle(), list.isPublic(), list.getDescription());
+                result = twitter.createUserList(list.getTitle(), list.isPublic(), list.getDescription());
             }
+            return new UserList(result, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1107,10 +1108,10 @@ public class TwitterEngine {
      * @param users Twitter4J user List
      * @return User
      */
-    private List<User> convertUserList(List<twitter4j.User> users) {
+    private List<User> convertUserList(List<twitter4j.User> users) throws TwitterException {
         List<User> result = new LinkedList<>();
         for (twitter4j.User user : users) {
-            User item = new User(user);
+            User item = new User(user, twitter.getId());
             result.add(item);
         }
         return result;
@@ -1123,10 +1124,10 @@ public class TwitterEngine {
      * @param statuses Twitter4J status List
      * @return TwitterStatus
      */
-    private List<Tweet> convertStatusList(List<Status> statuses) {
+    private List<Tweet> convertStatusList(List<Status> statuses) throws TwitterException {
         List<Tweet> result = new LinkedList<>();
         for (Status status : statuses)
-            result.add(new Tweet(status));
+            result.add(new Tweet(status, twitter.getId()));
         return result;
     }
 
@@ -1138,9 +1139,13 @@ public class TwitterEngine {
      */
     private Message getMessage(DirectMessage dm) throws EngineException {
         try {
+            twitter4j.User receiver;
             twitter4j.User sender = twitter.showUser(dm.getSenderId());
-            twitter4j.User receiver = twitter.showUser(dm.getRecipientId());
-            return new Message(dm, sender, receiver);
+            if (dm.getSenderId() != dm.getRecipientId())
+                receiver = twitter.showUser(dm.getRecipientId());
+            else
+                receiver = sender;
+            return new Message(dm, twitter.getId(), sender, receiver);
         } catch (Exception err) {
             throw new EngineException(err);
         }

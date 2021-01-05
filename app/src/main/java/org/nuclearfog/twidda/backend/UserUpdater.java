@@ -25,10 +25,17 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
     private WeakReference<ProfileEditor> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
+    private Action action;
+
+    public enum Action {
+        READ,
+        WRITE
+    }
 
 
-    public UserUpdater(ProfileEditor callback) {
+    public UserUpdater(ProfileEditor callback, Action action) {
         super();
+        this.action = action;
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
@@ -46,11 +53,14 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
     @Override
     protected User doInBackground(UserHolder[] holder) {
         try {
-            if (holder.length == 0) {
-                return mTwitter.getCurrentUser();
-            } else {
-                User user = mTwitter.updateProfile(holder[0]);
-                db.storeUser(user);
+            switch (action) {
+                case READ:
+                    return mTwitter.getCurrentUser();
+
+                case WRITE:
+                    User user = mTwitter.updateProfile(holder[0]);
+                    db.storeUser(user);
+                    return user;
             }
         } catch (EngineException twException) {
             this.twException = twException;
@@ -65,11 +75,13 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
         if (activity != null) {
             activity.setLoading(false);
             if (user != null) {
-                activity.setUser(user);
+                if (action == Action.READ) {
+                    activity.setUser(user);
+                } else {
+                    activity.onSuccess(user);
+                }
             } else if (twException != null) {
-                activity.setError(twException);
-            } else {
-                activity.setSuccess();
+                activity.onError(twException);
             }
         }
     }

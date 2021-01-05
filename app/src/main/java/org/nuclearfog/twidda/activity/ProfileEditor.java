@@ -48,6 +48,7 @@ import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
+import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDIT_LEAVE;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
@@ -148,7 +149,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     protected void onStart() {
         super.onStart();
         if (editorAsync == null) {
-            editorAsync = new UserUpdater(this);
+            editorAsync = new UserUpdater(this, UserUpdater.Action.READ);
             editorAsync.execute();
         }
     }
@@ -202,7 +203,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                     link.setError(errMsg);
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
-                    editorAsync = new UserUpdater(this);
+                    editorAsync = new UserUpdater(this, UserUpdater.Action.WRITE);
                     editorAsync.execute(userHolder);
                 }
             }
@@ -321,9 +322,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     /**
      * called after user profile was updated successfully
      */
-    public void setSuccess() {
+    public void onSuccess(User user) {
+        Intent data = new Intent();
+        data.putExtra(RETURN_PROFILE_DATA, user);
         Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
-        setResult(RETURN_PROFILE_CHANGED);
+        setResult(RETURN_PROFILE_CHANGED, data);
         finish();
     }
 
@@ -332,7 +335,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      *
      * @param err Engine Exception
      */
-    public void setError(EngineException err) {
+    public void onError(EngineException err) {
         ErrorHandler.handleFailure(this, err);
         if (user == null) {
             finish();

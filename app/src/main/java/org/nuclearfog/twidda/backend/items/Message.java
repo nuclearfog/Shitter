@@ -5,13 +5,16 @@ import androidx.annotation.NonNull;
 import twitter4j.DirectMessage;
 import twitter4j.URLEntity;
 
+/**
+ * Container class for a Twitter direct message
+ */
 public class Message {
 
-    private final long messageId;
-    private final long time;
-    private final User sender;
-    private final User receiver;
-    private final String message;
+    private long messageId;
+    private long time;
+    private User sender;
+    private User receiver;
+    private String message = "";
 
     /**
      * construct message object from twitter information
@@ -20,12 +23,12 @@ public class Message {
      * @param sender   sender user
      * @param receiver receiver user
      */
-    public Message(DirectMessage dm, twitter4j.User sender, twitter4j.User receiver) {
-        this.sender = new User(sender);
-        this.receiver = new User(receiver);
+    public Message(DirectMessage dm, long twitterId, twitter4j.User sender, twitter4j.User receiver) {
+        this.sender = new User(sender, twitterId);
+        this.receiver = new User(receiver, twitterId);
         messageId = dm.getId();
         time = dm.getCreatedAt().getTime();
-        message = getText(dm);
+        setMessageText(dm);
     }
 
     /**
@@ -94,9 +97,8 @@ public class Message {
      * Resolve shortened tweet links
      *
      * @param message Tweet
-     * @return Tweet string with resolved URL entities
      */
-    private String getText(DirectMessage message) {
+    private void setMessageText(DirectMessage message) {
         String text = message.getText();
         if (text != null && !text.isEmpty()) {
             URLEntity[] entities = message.getURLEntities();
@@ -105,9 +107,7 @@ public class Message {
                 URLEntity entity = entities[i];
                 messageBuilder.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
             }
-            return messageBuilder.toString();
-        } else {
-            return "";
+            this.message = messageBuilder.toString();
         }
     }
 

@@ -45,7 +45,9 @@ import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_DELETE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_UNFOLLOW;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
+import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_UPDATE_LIST;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_REMOVED;
+import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_UPDATED;
 
 /**
  * Activity to show an user list, members and tweets
@@ -77,6 +79,12 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      * Return code when this list was successfully changed
      */
     public static final int RET_LIST_CHANGED = 2;
+
+    /**
+     * return updated userlist information
+     */
+    public static final String RET_LIST_DATA = "list-data";
+
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
@@ -221,16 +229,28 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         if (tablayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
         } else {
+            Intent result = new Intent();
+            result.putExtra(RESULT_UPDATE_LIST, userList);
+            setResult(RETURN_LIST_UPDATED, result);
             super.onBackPressed();
         }
     }
 
 
     @Override
-    public void onActivityResult(int reqCode, int returnCode, @Nullable Intent data) {
-        if (reqCode == REQ_LIST_CHANGE && returnCode == RET_LIST_CHANGED)
-            loadList();
-        super.onActivityResult(reqCode, returnCode, data);
+    public void onActivityResult(int reqCode, int returnCode, @Nullable Intent result) {
+        if (result != null && reqCode == REQ_LIST_CHANGE) {
+            if (returnCode == RET_LIST_CHANGED) {
+                Object data = result.getSerializableExtra(RET_LIST_DATA);
+                if (data instanceof UserList) {
+                    userList = (UserList) data;
+                    toolbar.setTitle(userList.getTitle());
+                    toolbar.setSubtitle(userList.getDescription());
+                    invalidateOptionsMenu();
+                }
+            }
+        }
+        super.onActivityResult(reqCode, returnCode, result);
     }
 
 
@@ -306,8 +326,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     /**
      * called from {@link ListAction} to update userlist information
      *
-     * @param userList userlist information
-     * @param action   what action was performed
+     * @param userList UserList information
      */
     public void onSuccess(UserList userList, ListAction.Action action) {
         this.userList = userList;
@@ -346,13 +365,13 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      */
     public void onFailure(EngineException err, long listId) {
         ErrorHandler.handleFailure(this, err);
-        if (userList == null) {
-            if (err.resourceNotFound()) {
-                // List does not exist
-                Intent result = new Intent();
-                result.putExtra(RESULT_REMOVED_LIST_ID, listId);
-                setResult(RETURN_LIST_REMOVED, result);
-            }
+        if (err.resourceNotFound()) {
+            // List does not exist
+            Intent result = new Intent();
+            result.putExtra(RESULT_REMOVED_LIST_ID, listId);
+            setResult(RETURN_LIST_REMOVED, result);
+            finish();
+        } else if (userList == null) {
             finish();
         }
     }

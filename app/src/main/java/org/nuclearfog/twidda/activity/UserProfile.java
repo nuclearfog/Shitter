@@ -112,6 +112,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public static final int RETURN_PROFILE_CHANGED = 2;
 
     /**
+     * key when profile data changes
+     */
+    public static final String RETURN_PROFILE_DATA = "profile-update";
+
+    /**
      * background color mask for TextView backgrounds
      */
     private static final int TRANSPARENCY = 0xafffffff;
@@ -237,9 +242,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onActivityResult(int reqCode, int returnCode, @Nullable Intent i) {
-        if (reqCode == REQUEST_PROFILE_CHANGED && returnCode == RETURN_PROFILE_CHANGED) {
-            adapter.notifySettingsChanged();
-            profileAsync = null;
+        if (i != null && reqCode == REQUEST_PROFILE_CHANGED) {
+            if (returnCode == RETURN_PROFILE_CHANGED) {
+                Object data = i.getSerializableExtra(RETURN_PROFILE_DATA);
+                if (data instanceof User) {
+                    setUser((User) data);
+                    adapter.notifySettingsChanged();
+                }
+            }
         }
         super.onActivityResult(reqCode, returnCode, i);
     }

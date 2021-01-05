@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +29,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
+import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
 import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTPOPUP_LEAVE;
 
@@ -134,10 +136,12 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
     /**
      * called when a list was updated successfully
      */
-    public void onSuccess() {
+    public void onSuccess(UserList result) {
         if (userList != null) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
-            setResult(RET_LIST_CHANGED);
+            Intent data = new Intent();
+            data.putExtra(RET_LIST_DATA, result);
+            setResult(RET_LIST_CHANGED, data);
         } else {
             // it's a new list, if no list is defined
             Toast.makeText(this, R.string.info_list_created, Toast.LENGTH_SHORT).show();

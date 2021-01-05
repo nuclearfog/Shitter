@@ -133,7 +133,20 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * t
+     * update a single item
+     *
+     * @param tweet updated tweet
+     */
+    @MainThread
+    public void updateItem(Tweet tweet) {
+        int index = tweets.indexOf(tweet);
+        if (index >= 0) {
+            tweets.set(index, tweet);
+            notifyItemChanged(index);
+        }
+    }
+
+    /**
      * Remove specific tweet from list
      *
      * @param id ID of the tweet

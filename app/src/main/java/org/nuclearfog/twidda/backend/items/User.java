@@ -6,63 +6,73 @@ import java.io.Serializable;
 
 import twitter4j.URLEntity;
 
+/**
+ * Container class for a twitter user
+ */
 public class User implements Serializable {
 
-    private final long userID;
-    private final long created;
+    private long userID;
+    private long created;
 
-    private final String username;
-    private final String screenname;
+    private boolean isCurrentUser;
+    private boolean isVerified;
+    private boolean isLocked;
+    private boolean isFollowReqSent;
+    private boolean hasDefaultImage;
 
-    private final boolean isVerified;
-    private final boolean isLocked;
-    private final boolean isFollowReqSent;
-    private final boolean hasDefaultImage;
+    private int following;
+    private int follower;
 
-    private final int following;
-    private final int follower;
+    private int tweetCount;
+    private int favorCount;
 
-    private final int tweetCount;
-    private final int favorCount;
+    private String username = "";
+    private String screenName = "";
 
-    private final String bio;
-    private final String location;
-    private final String link;
+    private String bio = "";
+    private String location = "";
+    private String link = "";
 
-    private final String profileImg;
-    private final String bannerImg;
+    private String profileImg = "";
+    private String bannerImg = "";
 
-    public User(twitter4j.User user) {
-        String username = user.getName();
-        String screenname = user.getScreenName();
-        String link = user.getURLEntity().getExpandedURL();
-        String location = user.getLocation();
-        String profileImg = user.getOriginalProfileImageURLHttps();
+    /**
+     * @param user      Twitter user
+     * @param twitterId ID of the current user
+     */
+    public User(twitter4j.User user, long twitterId) {
+        this(user, user.getId() == twitterId);
+    }
+
+    /**
+     * @param user          Twitter user
+     * @param isCurrentUser true if user is the authenticated user
+     */
+    public User(twitter4j.User user, boolean isCurrentUser) {
         String bannerLink = user.getProfileBannerURL();
         String bio = user.getDescription();
 
-        this.username = username != null ? username : "";
-        this.screenname = screenname != null ? '@' + user.getScreenName() : "";
-        this.link = link != null ? link : "";
-        this.location = location != null ? location : "";
-        this.profileImg = profileImg != null ? profileImg : "";
-
-        if (bio != null && !bio.isEmpty()) {
-            URLEntity[] entities = user.getDescriptionURLEntities();
-            StringBuilder bioBuilder = new StringBuilder(user.getDescription());
-            for (int i = entities.length - 1; i >= 0; i--) {
-                URLEntity entity = entities[i];
-                bioBuilder.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
-            }
-            this.bio = bioBuilder.toString();
-        } else {
-            this.bio = "";
-        }
+        if (user.getName() != null)
+            this.username = user.getName();
+        if (user.getScreenName() != null)
+            this.screenName = '@' + user.getScreenName();
+        if (user.getOriginalProfileImageURLHttps() != null)
+            this.profileImg = user.getOriginalProfileImageURLHttps();
+        if (user.getURLEntity().getExpandedURL() != null)
+            this.link = user.getURLEntity().getExpandedURL();
+        if (user.getLocation() != null)
+            this.location = user.getLocation();
         if (bannerLink != null && bannerLink.length() > 4)
             bannerImg = bannerLink.substring(0, bannerLink.length() - 4);
-        else
-            bannerImg = "";
-
+        if (bio != null && !bio.isEmpty()) {
+            URLEntity[] entities = user.getDescriptionURLEntities();
+            StringBuilder builder = new StringBuilder(user.getDescription());
+            for (int i = entities.length - 1; i >= 0; i--) {
+                URLEntity entity = entities[i];
+                builder.replace(entity.getStart(), entity.getEnd(), entity.getExpandedURL());
+            }
+            this.bio = builder.toString();
+        }
         userID = user.getId();
         isVerified = user.isVerified();
         isLocked = user.isProtected();
@@ -73,20 +83,49 @@ public class User implements Serializable {
         favorCount = user.getFavouritesCount();
         isFollowReqSent = user.isFollowRequestSent();
         hasDefaultImage = user.isDefaultProfileImage();
+        this.isCurrentUser = isCurrentUser;
     }
 
-    public User(long userID, String username, String screenname, String profileImg, String bio, String location,
+    /**
+     * @param userID          ID of the user
+     * @param username        username
+     * @param screenName      screen name of the user
+     * @param profileImg      profile image link
+     * @param bio             bio of the user
+     * @param location        location name
+     * @param isCurrentUser   true if this user is the authenticated user
+     * @param isVerified      true if user is verified
+     * @param isLocked        true if users profile is locked
+     * @param isFollowReqSent true if authenticated user has sent a follow request
+     * @param hasDefaultImage true if user has not a profile image
+     * @param link            internet link the user has set
+     * @param bannerImg       link to the profile banner image
+     * @param created         time where the profile was created
+     * @param following       user count followed by the user
+     * @param follower        follower count
+     * @param tweetCount      number of tweets of the user
+     * @param favorCount      number of tweets favored by the user
+     */
+    public User(long userID, String username, String screenName, String profileImg, String bio, String location, boolean isCurrentUser,
                 boolean isVerified, boolean isLocked, boolean isFollowReqSent, boolean hasDefaultImage, String link,
                 String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
 
+        if (username != null)
+            this.username = username;
+        if (screenName != null)
+            this.screenName = screenName;
+        if (profileImg != null)
+            this.profileImg = profileImg;
+        if (bio != null)
+            this.bio = bio;
+        if (link != null)
+            this.link = link;
+        if (location != null)
+            this.location = location;
+        if (bannerImg != null)
+            this.bannerImg = bannerImg;
         this.userID = userID;
-        this.username = username != null ? username : "";
-        this.screenname = screenname != null ? screenname : "";
-        this.profileImg = profileImg != null ? profileImg : "";
-        this.bio = bio != null ? bio : "";
-        this.link = link != null ? link : "";
-        this.location = location != null ? location : "";
-        this.bannerImg = bannerImg != null ? bannerImg : "";
+        this.isCurrentUser = isCurrentUser;
         this.isVerified = isVerified;
         this.isLocked = isLocked;
         this.created = created;
@@ -122,7 +161,7 @@ public class User implements Serializable {
      * @return screen name
      */
     public String getScreenname() {
-        return screenname;
+        return screenName;
     }
 
     /**
@@ -177,6 +216,15 @@ public class User implements Serializable {
      */
     public String getLink() {
         return link;
+    }
+
+    /**
+     * check if user is the current user
+     *
+     * @return true if user is the current user logged in to twitter
+     */
+    public boolean isCurrentUser() {
+        return isCurrentUser;
     }
 
     /**
@@ -260,9 +308,20 @@ public class User implements Serializable {
         return !bannerImg.isEmpty();
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof User) {
+            User user = (User) o;
+            return user.userID == userID;
+        }
+        return false;
+    }
+
+
     @NonNull
     @Override
     public String toString() {
-        return username + " " + screenname;
+        return username + " " + screenName;
     }
 }

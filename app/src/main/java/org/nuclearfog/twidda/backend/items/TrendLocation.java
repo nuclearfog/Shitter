@@ -9,8 +9,8 @@ import twitter4j.Location;
  */
 public class TrendLocation {
 
-    private final String placeName;
-    private final int worldId;
+    private String placeName = "";
+    private int worldId;
 
     /**
      * construct location object from online
@@ -21,10 +21,12 @@ public class TrendLocation {
         String country = location.getCountryName();
         String placeName = location.getName();
 
-        if (country == null || country.trim().isEmpty() || country.equals(placeName))
-            this.placeName = "" + placeName;
-        else
-            this.placeName = country + ", " + placeName;
+        if (country != null && placeName != null) {
+            if (!country.isEmpty() && !country.equals(placeName))
+                this.placeName = country + ", " + placeName;
+            else
+                this.placeName = "" + placeName;
+        }
         this.worldId = location.getWoeid();
     }
 
@@ -61,14 +63,14 @@ public class TrendLocation {
     @Override
     @NonNull
     public String toString() {
-        return placeName != null ? placeName : "";
+        return placeName;
     }
 
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof TrendLocation))
-            return false;
-        return ((TrendLocation) obj).getWoeId() == worldId;
+        if (obj instanceof TrendLocation)
+            return ((TrendLocation) obj).worldId == worldId;
+        return false;
     }
 }

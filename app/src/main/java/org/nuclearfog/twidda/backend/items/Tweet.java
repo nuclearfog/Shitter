@@ -33,16 +33,14 @@ public class Tweet implements Serializable {
 
     private long tweetID;
     private long time;
-    private String tweet;
-    private String[] medias;
-    private String source;
 
     private User user;
-    private Tweet embedded, parent;
+    @Nullable
+    private Tweet embedded;
+    private MediaType mediaType;
 
     private long replyID;
     private long replyUserId;
-    private String replyName;
 
     private int retweetCount;
     private int favoriteCount;
@@ -51,18 +49,21 @@ public class Tweet implements Serializable {
     private boolean favored;
     private boolean sensitiveMedia;
 
-    private String locationName;
-    private String locationCoordinates;
+    private String[] medias = {};
+    private String locationName = "";
+    private String locationCoordinates = "";
+    private String replyName = "";
+    private String tweet = "";
+    private String source = "";
 
-    private MediaType mediaType;
 
     /**
      * constructor for tweets from twitter
      *
      * @param status tweet
      */
-    public Tweet(Status status) {
-        this(status, status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());
+    public Tweet(Status status, long twitterId) {
+        this(status, twitterId, status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());
     }
 
     /**
@@ -74,88 +75,31 @@ public class Tweet implements Serializable {
      * @param favoriteCount set favor count
      * @param favored       set if tweet is favored by current user
      */
-    public Tweet(Status status, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
+    public Tweet(Status status, long twitterId, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
+        Place place = status.getPlace();
+        GeoLocation geo = status.getGeoLocation();
+        if (place != null && place.getFullName() != null)
+            locationName = place.getFullName();
+        if (geo != null)
+            locationCoordinates = geo.getLatitude() + "," + geo.getLongitude();
+        if (status.getInReplyToScreenName() != null)
+            replyName = '@' + status.getInReplyToScreenName();
+        if (status.getRetweetedStatus() != null)
+            embedded = new Tweet(status.getRetweetedStatus(), twitterId);
+        if (status.getMediaEntities() != null)
+            getMedia(status.getMediaEntities());
         this.retweetCount = retweetCount;
         this.retweeted = retweeted;
         this.favoriteCount = favoriteCount;
         this.favored = favored;
         tweetID = status.getId();
-        user = new User(status.getUser());
-        tweet = getText(status);
+        user = new User(status.getUser(), status.getUser().getId() == twitterId);
         time = status.getCreatedAt().getTime();
         replyID = status.getInReplyToStatusId();
         myRetweetId = status.getCurrentUserRetweetId();
         replyUserId = status.getInReplyToUserId();
         sensitiveMedia = status.isPossiblySensitive();
-
-        // remove HTML tag
-        String api = "" + status.getSource();
-        int start = api.indexOf('>') + 1;
-        int end = api.lastIndexOf('<');
-        if (start > 0 && end > start)
-            api = api.substring(start, end);
-        source = api;
-
-        Place place = status.getPlace();
-        GeoLocation geo = status.getGeoLocation();
-        if (place != null)
-            locationName = place.getFullName();
-        else
-            locationName = "";
-        if (geo != null)
-            locationCoordinates = geo.getLatitude() + "," + geo.getLongitude();
-        else
-            locationCoordinates = "";
-        if (status.getInReplyToScreenName() != null)
-            replyName = '@' + status.getInReplyToScreenName();
-        else
-            replyName = "";
-        if (status.getRetweetedStatus() != null)
-            embedded = new Tweet(status.getRetweetedStatus(), this);
-        else
-            embedded = null;
-
-        MediaEntity[] mediaEntities = status.getMediaEntities();
-        medias = new String[mediaEntities.length];
-        if (medias.length == 0) {
-            mediaType = MediaType.NONE;
-        } else {
-            switch (mediaEntities[0].getType()) {
-                case PHOTO:
-                    mediaType = MediaType.IMAGE;
-                    for (int i = 0; i < mediaEntities.length; i++)
-                        medias[i] = mediaEntities[i].getMediaURLHttps();
-                    break;
-
-                case VIDEO:
-                    mediaType = MediaType.VIDEO;
-                    for (MediaEntity.Variant type : mediaEntities[0].getVideoVariants()) {
-                        if (type.getContentType().equals(MEDIA_VIDEO))
-                            medias[0] = type.getUrl();
-                    }
-                    break;
-
-                case ANGIF:
-                    mediaType = MediaType.GIF;
-                    medias[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
-                    break;
-
-                default:
-                    mediaType = MediaType.NONE;
-                    break;
-            }
-        }
-    }
-
-    /**
-     * create an embedded tweet with reference to its parent
-     *
-     * @param status embedded tweet
-     * @param parent parent tweet retweeting this tweet
-     */
-    private Tweet(Status status, Tweet parent) {
-        this(status);
-        this.parent = parent;
+        setTextAndAPI(status);
     }
 
     /**
@@ -180,10 +124,20 @@ public class Tweet implements Serializable {
      * @param geo            location gps coordinates
      * @param place          location full place name
      */
-    public Tweet(long tweetID, int retweetCount, int favoriteCount, User user, String tweet, long time,
-                 String replyName, long replyUserId, String[] medias, MediaType mediaType, String source, long replyID,
-                 Tweet embedded, long myRetweetId, boolean retweeted, boolean favored, boolean sensitiveMedia, String place, String geo) {
+    public Tweet(long tweetID, int retweetCount, int favoriteCount, User user, String tweet, long time, String replyName,
+                 long replyUserId, String[] medias, MediaType mediaType, String source, long replyID, @Nullable Tweet embedded,
+                 long myRetweetId, boolean retweeted, boolean favored, boolean sensitiveMedia, String place, String geo) {
 
+        if (tweet != null)
+            this.tweet = tweet;
+        if (source != null)
+            this.source = source;
+        if (replyName != null)
+            this.replyName = replyName;
+        if (place != null)
+            this.locationName = place;
+        if (geo != null)
+            this.locationCoordinates = geo;
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
@@ -198,11 +152,6 @@ public class Tweet implements Serializable {
         this.sensitiveMedia = sensitiveMedia;
         this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
-        this.tweet = tweet != null ? tweet : "";
-        this.source = source != null ? source : "";
-        this.replyName = replyName != null ? replyName : "";
-        this.locationName = place != null ? place : "";
-        this.locationCoordinates = geo != null ? geo : "";
     }
 
     /**
@@ -258,16 +207,6 @@ public class Tweet implements Serializable {
     @Nullable
     public Tweet getEmbeddedTweet() {
         return embedded;
-    }
-
-    /**
-     * get parent Tweet
-     *
-     * @return parent tweet, retweeting this tweet
-     */
-    @Nullable
-    public Tweet getParentTweet() {
-        return parent;
     }
 
     /**
@@ -370,6 +309,15 @@ public class Tweet implements Serializable {
     }
 
     /**
+     * check if Tweet is owned by the current user
+     *
+     * @return true if current user is author of the Tweet
+     */
+    public boolean currentUserIsOwner() {
+        return user.isCurrentUser();
+    }
+
+    /**
      * get location of tweet if any
      *
      * @return full location name
@@ -388,29 +336,89 @@ public class Tweet implements Serializable {
     }
 
     /**
-     * Resolve shortened tweet links
+     * Resolve shortened tweet links and get API source string
      *
      * @param status Tweet
-     * @return Tweet string with resolved URL entities
      */
-    private String getText(Status status) {
-        URLEntity[] urlEntities = status.getURLEntities();
-        MediaEntity[] mediaEntities = status.getMediaEntities();
-        StringBuilder tweet = new StringBuilder("" + status.getText());
-        for (int i = urlEntities.length - 1; i >= 0; i--) { // expand shorten links
-            int start = urlEntities[i].getStart();
-            int end = urlEntities[i].getEnd();
-            String expanded = urlEntities[i].getExpandedURL();
-            tweet = tweet.replace(start, end, expanded);
+    private void setTextAndAPI(Status status) {
+        if (status.getText() != null) {
+            StringBuilder tweet = new StringBuilder(status.getText());
+            // expand shortened links
+            URLEntity[] urlEntities = status.getURLEntities();
+            if (urlEntities != null && urlEntities.length > 0) {
+                for (int i = urlEntities.length - 1; i >= 0; i--) { // expand shorten links
+                    int start = urlEntities[i].getStart();
+                    int end = urlEntities[i].getEnd();
+                    String expanded = urlEntities[i].getExpandedURL();
+                    tweet = tweet.replace(start, end, expanded);
+                }
+            }
+            // remove twitter media link from tweet
+            MediaEntity[] mediaEntities = status.getMediaEntities();
+            if (mediaEntities != null && mediaEntities.length > 0) {
+                int linkPos = tweet.indexOf("https://t.co/");
+                if (linkPos >= 0)
+                    tweet.delete(linkPos, tweet.length());
+            }
+            this.tweet = tweet.toString();
         }
-        if (mediaEntities.length > 0) { // remove twitter media links from tweet
-            int linkpos = tweet.indexOf("https://t.co/");
-            int lastpos = tweet.length();
-            if (linkpos >= 0)
-                tweet.delete(linkpos, lastpos);
+        // remove HTML tag
+        if (status.getSource() != null) {
+            source = "" + status.getSource();
+            int start = source.indexOf('>') + 1;
+            int end = source.lastIndexOf('<');
+            if (start > 0 && end > start)
+                source = source.substring(start, end);
         }
-        return tweet.toString();
     }
+
+    /**
+     * add media information to the Tweet
+     *
+     * @param mediaEntities media information
+     */
+    private void getMedia(MediaEntity[] mediaEntities) {
+        medias = new String[mediaEntities.length];
+        if (medias.length == 0) {
+            mediaType = MediaType.NONE;
+        } else {
+            switch (mediaEntities[0].getType()) {
+                case PHOTO:
+                    mediaType = MediaType.IMAGE;
+                    for (int i = 0; i < mediaEntities.length; i++)
+                        medias[i] = mediaEntities[i].getMediaURLHttps();
+                    break;
+
+                case VIDEO:
+                    mediaType = MediaType.VIDEO;
+                    for (MediaEntity.Variant type : mediaEntities[0].getVideoVariants()) {
+                        if (type.getContentType().equals(MEDIA_VIDEO))
+                            medias[0] = type.getUrl();
+                    }
+                    break;
+
+                case ANGIF:
+                    mediaType = MediaType.GIF;
+                    medias[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
+                    break;
+
+                default:
+                    mediaType = MediaType.NONE;
+                    break;
+            }
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof Tweet) {
+            Tweet tweet = (Tweet) object;
+            return tweet.tweetID == tweetID;
+        }
+        return false;
+    }
+
 
     @NonNull
     @Override

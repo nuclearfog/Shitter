@@ -5,9 +5,9 @@ package org.nuclearfog.twidda.backend.items;
  */
 public class Trend {
 
-    private final int rank;
-    private final String trendName;
-    private final int range;
+    private int rank;
+    private int range;
+    private String trendName = "";
 
     /**
      * Construct trend item from twitter
@@ -16,7 +16,8 @@ public class Trend {
      * @param rank  trend ranking
      */
     public Trend(twitter4j.Trend trend, int rank) {
-        this.trendName = "" + trend.getName();
+        if (trend.getName() != null)
+            this.trendName = trend.getName();
         this.range = trend.getTweetVolume();
         this.rank = rank;
     }
@@ -29,7 +30,8 @@ public class Trend {
      * @param rank      trend ranking
      */
     public Trend(String trendName, int volume, int rank) {
-        this.trendName = trendName;
+        if (trendName != null)
+            this.trendName = trendName;
         this.range = volume;
         this.rank = rank;
     }
@@ -87,7 +89,7 @@ public class Trend {
     public String getSearchString() {
         if (trendName.startsWith("#"))
             return trendName;
-        if (!trendName.startsWith("\"") && !trendName.endsWith("\""))
+        if (!trendName.contains("\""))
             return "\"" + trendName + "\"";
         return trendName;
     }

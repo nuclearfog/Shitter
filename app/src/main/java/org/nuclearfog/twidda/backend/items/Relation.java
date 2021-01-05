@@ -9,12 +9,12 @@ import twitter4j.Relationship;
  */
 public class Relation {
 
-    private final boolean isHome;
-    private final boolean isFriend;
-    private final boolean isFollower;
-    private final boolean isBlocked;
-    private final boolean isMuted;
-    private final boolean canDm;
+    private boolean isHome;
+    private boolean isFriend;
+    private boolean isFollower;
+    private boolean isBlocked;
+    private boolean isMuted;
+    private boolean canDm;
 
     /**
      * Create relationship
