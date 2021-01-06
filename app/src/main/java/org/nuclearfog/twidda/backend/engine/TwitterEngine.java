@@ -696,7 +696,8 @@ public class TwitterEngine {
                 twitter.unRetweetStatus(tweetId);
                 retweetCount--;
             }
-            return new Tweet(tweet, twitter.getId(), retweetCount, retweet, tweet.getFavoriteCount(), tweet.isFavorited());
+            return new Tweet(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(), retweetCount,
+                    retweet, tweet.getFavoriteCount(), tweet.isFavorited());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -721,7 +722,8 @@ public class TwitterEngine {
                 tweet = twitter.destroyFavorite(tweetId);
                 favoritCount--;
             }
-            return new Tweet(tweet, twitter.getId(), tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
+            return new Tweet(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(),
+                    tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -732,9 +734,13 @@ public class TwitterEngine {
      * @param tweetId Tweet ID
      * @throws EngineException if Access is unavailable
      */
-    public void deleteTweet(long tweetId) throws EngineException {
+    public Tweet deleteTweet(long tweetId) throws EngineException {
         try {
+            // Twitter API returns removed tweet with false information
+            // so get the tweet first before delete
+            Tweet tweet = new Tweet(twitter.showStatus(tweetId), twitter.getId());
             twitter.destroyStatus(tweetId);
+            return tweet;
         } catch (Exception err) {
             throw new EngineException(err);
         }

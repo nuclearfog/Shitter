@@ -59,16 +59,8 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     private TwitterEngine mTwitter;
     private WeakReference<TweetActivity> callback;
     private AppDatabase db;
-    private long tweetId, myRetweetId;
+    private long tweetId;
 
-    /**
-     * @param callback Callback to return tweet information
-     * @param tweet    Tweet information
-     */
-    public TweetAction(TweetActivity callback, Tweet tweet) {
-        this(callback, tweet.getId());
-        this.myRetweetId = tweet.getMyRetweetId();
-    }
 
     /**
      * @param callback Callback to return tweet information
@@ -103,8 +95,11 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     break;
 
                 case DELETE:
-                    mTwitter.deleteTweet(tweetId);
+                    tweet = mTwitter.deleteTweet(tweetId);
                     db.removeStatus(tweetId);
+                    if (tweet.getMyRetweetId() > 0) {
+                        db.removeStatus(tweet.getMyRetweetId());
+                    }
                     break;
 
                 case RETWEET:
@@ -118,7 +113,8 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     publishProgress(tweet);
                     db.updateStatus(tweet);
                     // remove status pointing on the retweeted status
-                    db.removeStatus(myRetweetId);
+                    if (tweet.getMyRetweetId() > 0)
+                        db.removeStatus(tweet.getMyRetweetId());
                     break;
 
                 case FAVORITE:

@@ -164,7 +164,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
 
-
         settings = GlobalSettings.getInstance(this);
 
         following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
@@ -176,9 +175,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         bioTxt.setMovementMethod(LinkAndScrollMovement.getInstance());
-        lnkTxt.setTextColor(settings.getHighlightColor());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         AppStyles.setTheme(settings, root);
+        lnkTxt.setTextColor(settings.getHighlightColor());
 
         tool.setTitle("");
         setSupportActionBar(tool);

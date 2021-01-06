@@ -132,13 +132,21 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         sensitive_media = findViewById(R.id.tweet_sensitive);
 
         Object data = getIntent().getSerializableExtra(KEY_TWEET_DATA);
-        long tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
+        long tweetId;
         String username;
         if (data instanceof Tweet) {
             tweet = (Tweet) data;
-            username = tweet.getUser().getScreenname();
+            Tweet embedded = tweet.getEmbeddedTweet();
+            if (embedded != null) {
+                username = embedded.getUser().getScreenname();
+                tweetId = embedded.getId();
+            } else {
+                username = tweet.getUser().getScreenname();
+                tweetId = tweet.getId();
+            }
         } else {
             username = getIntent().getStringExtra(KEY_TWEET_NAME);
+            tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
         }
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         adapter.setupTweetPage(tweetId, username);
@@ -175,7 +183,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (statusAsync == null) {
             // print Tweet object and get and update it
             if (tweet != null) {
-                statusAsync = new TweetAction(this, tweet);
+                statusAsync = new TweetAction(this, tweet.getId());
                 statusAsync.execute(Action.LOAD);
                 setTweet(tweet);
             }
@@ -339,9 +347,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     public boolean onLongClick(View v) {
         if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
             Tweet clickedTweet = tweet;
+            // RT / Fav only embedded tweets if any
             if (tweet.getEmbeddedTweet() != null)
                 clickedTweet = tweet.getEmbeddedTweet();
-            statusAsync = new TweetAction(this, clickedTweet);
+            statusAsync = new TweetAction(this, clickedTweet.getId());
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
                 if (clickedTweet.retweeted())
@@ -368,11 +377,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
         if (type == DELETE_TWEET && tweet != null) {
-            long id = tweet.getId();
-            // delete embedded tweet instead of the retweet
+            long tweetId = tweet.getId();
             if (tweet.getEmbeddedTweet() != null)
-                id = tweet.getEmbeddedTweet().getId();
-            statusAsync = new TweetAction(this, id);
+                tweetId = tweet.getEmbeddedTweet().getId();
+            statusAsync = new TweetAction(this, tweetId);
             statusAsync.execute(Action.DELETE);
         }
     }

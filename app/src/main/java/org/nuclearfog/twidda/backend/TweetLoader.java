@@ -211,7 +211,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
         if (callback.get() != null) {
             if (tweets != null) {
                 callback.get().setData(tweets, pos);
-            } else {
+            } else if (twException != null) {
                 callback.get().onError(twException);
             }
         }

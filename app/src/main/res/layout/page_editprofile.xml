@@ -171,7 +171,8 @@
                 <EditText
                     android:id="@+id/edit_bio"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/editprofile_bio_maxheight"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/editprofile_bio_min_height"
                     android:gravity="top"
                     android:hint="@string/edit_hint_enter_descr"
                     android:inputType="textMultiLine"
