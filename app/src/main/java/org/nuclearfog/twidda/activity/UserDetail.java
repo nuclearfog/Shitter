@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -54,29 +55,26 @@ public class UserDetail extends AppCompatActivity {
         ViewPager pager = findViewById(R.id.user_pager);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-
         FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
 
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_USERDETAIL_ID) && param.containsKey(KEY_USERDETAIL_MODE)) {
-            long id = param.getLong(KEY_USERDETAIL_ID);
-            switch (param.getInt(KEY_USERDETAIL_MODE)) {
-                case USERLIST_FRIENDS:
-                    toolbar.setTitle(R.string.userlist_following);
-                    adapter.setupFriendsPage(id);
-                    break;
+        Intent data = getIntent();
+        long id = data.getLongExtra(KEY_USERDETAIL_ID, -1);
+        switch (data.getIntExtra(KEY_USERDETAIL_MODE, 0)) {
+            case USERLIST_FRIENDS:
+                toolbar.setTitle(R.string.userlist_following);
+                adapter.setupFriendsPage(id);
+                break;
 
-                case USERLIST_FOLLOWER:
-                    toolbar.setTitle(R.string.userlist_follower);
-                    adapter.setupFollowerPage(id);
-                    break;
+            case USERLIST_FOLLOWER:
+                toolbar.setTitle(R.string.userlist_follower);
+                adapter.setupFollowerPage(id);
+                break;
 
-                case USERLIST_RETWEETS:
-                    toolbar.setTitle(R.string.toolbar_userlist_retweet);
-                    adapter.setupRetweeterPage(id);
-                    break;
-            }
+            case USERLIST_RETWEETS:
+                toolbar.setTitle(R.string.toolbar_userlist_retweet);
+                adapter.setupRetweeterPage(id);
+                break;
         }
         setSupportActionBar(toolbar);
         AppStyles.setTheme(settings, root);

@@ -15,6 +15,8 @@ import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.activity.TweetPopup;
 import org.nuclearfog.twidda.activity.UserLists;
 import org.nuclearfog.twidda.activity.UserProfile;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.items.User;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
@@ -24,7 +26,8 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_NAME;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_NAME;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
 
 /**
  * This class handles deep links and starts activities to show the content
@@ -38,10 +41,12 @@ public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
     private static final Pattern LIST_PATH = Pattern.compile("[\\w]+/lists");
 
     private WeakReference<MainActivity> callback;
+    private TwitterEngine mTwitter;
 
     public LinkLoader(MainActivity callback) {
         super();
         this.callback = new WeakReference<>(callback);
+        mTwitter = TwitterEngine.getInstance(callback);
     }
 
     @Override
@@ -99,7 +104,9 @@ public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
                     int end = path.indexOf('/');
                     if (end > 0)
                         path = path.substring(0, end);
-                    data.putString(KEY_PROFILE_NAME, path);
+                    User user = mTwitter.getUser(path);
+                    data.putSerializable(KEY_PROFILE_DATA, user);
+                    data.putBoolean(KEY_PROFILE_DISABLE_RELOAD, true);
                     dataHolder = new DataHolder(data, UserProfile.class);
                 } else if (TWEET_PATH.matcher(path).matches()) {
                     String username = '@' + path.substring(0, path.indexOf('/'));

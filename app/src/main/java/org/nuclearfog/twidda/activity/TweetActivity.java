@@ -105,7 +105,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private TweetAction statusAsync;
     @Nullable
     private Tweet tweet;
-    private long tweetId;
 
 
     @Override
@@ -132,24 +131,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         mediaButton = findViewById(R.id.tweet_media_attach);
         sensitive_media = findViewById(R.id.tweet_sensitive);
 
-        tool.setTitle("");
-        setSupportActionBar(tool);
-        Bundle param = getIntent().getExtras();
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        if (param != null) {
-            String username;
-            Object data = param.getSerializable(KEY_TWEET_DATA);
-            if (data instanceof Tweet) {
-                tweet = (Tweet) data;
-                username = tweet.getUser().getScreenname();
-                tweetId = tweet.getId();
-            } else {
-                tweetId = param.getLong(KEY_TWEET_ID);
-                username = param.getString(KEY_TWEET_NAME, "");
-            }
-            adapter.setupTweetPage(tweetId, username);
+        Object data = getIntent().getSerializableExtra(KEY_TWEET_DATA);
+        long tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
+        String username;
+        if (data instanceof Tweet) {
+            tweet = (Tweet) data;
+            username = tweet.getUser().getScreenname();
+        } else {
+            username = getIntent().getStringExtra(KEY_TWEET_NAME);
         }
-
+        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
+        adapter.setupTweetPage(tweetId, username);
         pager.setOffscreenPageLimit(1);
         pager.setAdapter(adapter);
 
@@ -162,6 +154,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
+        tool.setTitle("");
+        setSupportActionBar(tool);
         AppStyles.setTheme(settings, root);
 
         replyName.setOnClickListener(this);
@@ -187,6 +181,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // Load Tweet from database first if no tweet is defined
             else {
+                long tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
                 statusAsync = new TweetAction(this, tweetId);
                 statusAsync.execute(Action.LD_DB);
             }

@@ -74,18 +74,13 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         mTab.setupWithViewPager(pager);
         mTab.addOnTabSelectedListener(this);
 
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            if (param.containsKey(KEY_USERLIST_OWNER_ID)) {
-                long ownerId = param.getLong(KEY_USERLIST_OWNER_ID);
-                isHome = ownerId == settings.getCurrentUserId();
-                adapter.setupListPage(ownerId, "");
-            } else if (param.containsKey(KEY_USERLIST_OWNER_NAME)) {
-                String ownerName = param.getString(KEY_USERLIST_OWNER_NAME);
-                adapter.setupListPage(-1, ownerName);
-            }
-            AppStyles.setTabIcons(mTab, settings, R.array.userlist_tab_icons);
-        }
+        Intent data = getIntent();
+        long ownerId = data.getLongExtra(KEY_USERLIST_OWNER_ID, -1);
+        String ownerName = data.getStringExtra(KEY_USERLIST_OWNER_NAME);
+        isHome = ownerId == settings.getCurrentUserId();
+        adapter.setupListPage(ownerId, ownerName);
+
+        AppStyles.setTabIcons(mTab, settings, R.array.userlist_tab_icons);
     }
 
 

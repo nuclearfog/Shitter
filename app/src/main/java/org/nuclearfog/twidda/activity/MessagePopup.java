@@ -101,12 +101,10 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         View load = View.inflate(this, R.layout.item_load, null);
         View cancelButton = load.findViewById(R.id.kill_button);
 
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_DM_PREFIX)) {
-            String prefix = param.getString(KEY_DM_PREFIX);
+        String prefix = getIntent().getStringExtra(KEY_DM_PREFIX);
+        if (prefix != null) {
             receiver.append(prefix);
         }
-
         send.setImageResource(R.drawable.right);
         media.setImageResource(R.drawable.image_add);
         leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);

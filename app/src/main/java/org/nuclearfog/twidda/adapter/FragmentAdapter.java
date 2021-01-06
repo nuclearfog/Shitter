@@ -105,28 +105,25 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     }
 
     /**
-     * setup adapter for viewing user tweets and favs
+     * setup adapter for viewing user tweets and favorites
      *
-     * @param userId   ID of the user
-     * @param username screen name of the user
+     * @param userId ID of the user
      */
-    public void setupProfilePage(long userId, String username) {
-        Bundle usr_tweet = new Bundle();
-        Bundle usr_favor = new Bundle();
-        if (userId > 0) {
-            usr_tweet.putLong(KEY_FRAG_TWEET_ID, userId);
-            usr_favor.putLong(KEY_FRAG_TWEET_ID, userId);
-        } else {
-            usr_tweet.putString(KEY_FRAG_TWEET_SEARCH, username);
-            usr_favor.putString(KEY_FRAG_TWEET_SEARCH, username);
-        }
-        usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
-        usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
+    public void setupProfilePage(long userId) {
         fragments = new ListFragment[2];
+
         fragments[0] = new TweetFragment();
-        fragments[1] = new TweetFragment();
+        Bundle usr_tweet = new Bundle();
+        usr_tweet.putLong(KEY_FRAG_TWEET_ID, userId);
+        usr_tweet.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_TWEETS);
         fragments[0].setArguments(usr_tweet);
+
+        fragments[1] = new TweetFragment();
+        Bundle usr_favor = new Bundle();
+        usr_favor.putLong(KEY_FRAG_TWEET_ID, userId);
+        usr_favor.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_FAVORS);
         fragments[1].setArguments(usr_favor);
+
         notifyDataSetChanged();
     }
 
@@ -250,7 +247,8 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     /**
      * setup adapter for a page of tweets and users in an user list
      *
-     * @param listId ID of an user list
+     * @param listId      ID of an user list
+     * @param ownerOfList true if current user owns this list
      */
     public void setupListContentPage(long listId, boolean ownerOfList) {
         Bundle tweetParam = new Bundle();

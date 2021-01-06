@@ -48,7 +48,6 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
     private CompoundButton visibility;
     private View progressCircle;
     private Dialog leaveDialog;
-
     @Nullable
     private UserList userList;
 
@@ -68,17 +67,14 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(settings, root, settings.getPopupColor());
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Object data = extras.getSerializable(KEY_LIST_EDITOR_DATA);
-            if (data instanceof UserList) {
-                userList = (UserList) data;
-                titleInput.setText(userList.getTitle());
-                subTitleInput.setText(userList.getDescription());
-                visibility.setChecked(!userList.isPrivate());
-                popupTitle.setText(R.string.menu_edit_list);
-                updateButton.setText(R.string.update_list);
-            }
+        Object data = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
+        if (data instanceof UserList) {
+            userList = (UserList) data;
+            titleInput.setText(userList.getTitle());
+            subTitleInput.setText(userList.getDescription());
+            visibility.setChecked(!userList.isPrivate());
+            popupTitle.setText(R.string.menu_edit_list);
+            updateButton.setText(R.string.update_list);
         }
         leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
         updateButton.setOnClickListener(this);

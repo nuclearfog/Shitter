@@ -55,19 +55,15 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         setSupportActionBar(tool);
 
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
-
         adapter = new FragmentAdapter(getSupportFragmentManager());
         tabLayout.setupWithViewPager(pager);
         tabLayout.addOnTabSelectedListener(this);
         pager.setAdapter(adapter);
 
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_SEARCH_QUERY)) {
-            search = param.getString(KEY_SEARCH_QUERY);
-            adapter.setupSearchPage(search);
-            AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
-        }
+        search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
+        adapter.setupSearchPage(search);
+        AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
+        AppStyles.setTheme(settings, root);
     }
 
 

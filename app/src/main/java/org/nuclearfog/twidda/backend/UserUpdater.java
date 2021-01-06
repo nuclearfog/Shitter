@@ -25,17 +25,10 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
     private WeakReference<ProfileEditor> callback;
     private TwitterEngine mTwitter;
     private AppDatabase db;
-    private Action action;
-
-    public enum Action {
-        READ,
-        WRITE
-    }
 
 
-    public UserUpdater(ProfileEditor callback, Action action) {
+    public UserUpdater(ProfileEditor callback) {
         super();
-        this.action = action;
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
@@ -53,15 +46,9 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
     @Override
     protected User doInBackground(UserHolder[] holder) {
         try {
-            switch (action) {
-                case READ:
-                    return mTwitter.getCurrentUser();
-
-                case WRITE:
-                    User user = mTwitter.updateProfile(holder[0]);
-                    db.storeUser(user);
-                    return user;
-            }
+            User user = mTwitter.updateProfile(holder[0]);
+            db.storeUser(user);
+            return user;
         } catch (EngineException twException) {
             this.twException = twException;
         }
@@ -75,11 +62,7 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
         if (activity != null) {
             activity.setLoading(false);
             if (user != null) {
-                if (action == Action.READ) {
-                    activity.setUser(user);
-                } else {
-                    activity.onSuccess(user);
-                }
+                activity.onSuccess(user);
             } else if (twException != null) {
                 activity.onError(twException);
             }

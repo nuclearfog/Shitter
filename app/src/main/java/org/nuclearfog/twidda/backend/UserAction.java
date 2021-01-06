@@ -61,28 +61,17 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     private TwitterEngine mTwitter;
     private AppDatabase db;
     private long userId;
-    private String screenName;
 
     /**
      * @param callback Callback to return the result
-     * @param user     twitter user information
+     * @param userId   ID of the twitter user
      */
-    public UserAction(UserProfile callback, User user) {
-        this(callback, user.getId(), user.getScreenname());
-    }
-
-    /**
-     * @param callback   Callback to return the result
-     * @param userId     ID of the twitter user
-     * @param screenName username alternative to User ID
-     */
-    public UserAction(UserProfile callback, long userId, String screenName) {
+    public UserAction(UserProfile callback, long userId) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
         db = new AppDatabase(callback);
         this.userId = userId;
-        this.screenName = screenName;
     }
 
 
@@ -102,11 +91,11 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
                 case PROFILE_lOAD:
                     // load user information from twitter
-                    user = mTwitter.getUser(userId, screenName);
+                    user = mTwitter.getUser(userId);
                     publishProgress(user);
                     db.storeUser(user);
                     // load user relations from twitter
-                    Relation relation = mTwitter.getConnection(userId, screenName);
+                    Relation relation = mTwitter.getConnection(userId);
                     if (!relation.isHome()) {
                         boolean muteUser = relation.isBlocked() || relation.isMuted();
                         db.muteUser(userId, muteUser);
@@ -147,7 +136,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     db.muteUser(userId, false);
                     break;
             }
-            return mTwitter.getConnection(userId, screenName);
+            return mTwitter.getConnection(userId);
         } catch (EngineException twException) {
             this.twException = twException;
             return null;

@@ -133,7 +133,6 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
     private Location location;
     private List<String> mediaPath;
     private MediaType selectedFormat = MediaType.NONE;
-    private String prefix = "";
     private long inReplyId = 0;
 
     @Override
@@ -156,12 +155,12 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
         settings = GlobalSettings.getInstance(this);
         mediaPath = new LinkedList<>();
 
-        Bundle param = getIntent().getExtras();
-        if (param != null) {
-            inReplyId = param.getLong(KEY_TWEETPOPUP_REPLYID, 0);
-            prefix = param.getString(KEY_TWEETPOPUP_TEXT, "");
+        Intent data = getIntent();
+        inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
+        String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
+        if (prefix != null)
             tweetText.append(prefix);
-        }
+
         previewBtn.setImageResource(R.drawable.image);
         mediaBtn.setImageResource(R.drawable.image_add);
         locationBtn.setImageResource(R.drawable.location);
@@ -416,7 +415,7 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      * show confirmation dialog when closing edited tweet
      */
     private void showClosingMsg() {
-        if (!prefix.equals(tweetText.getText().toString()) || !mediaPath.isEmpty()) {
+        if (tweetText.length() > 0 || !mediaPath.isEmpty()) {
             if (!closingDialog.isShowing()) {
                 closingDialog.show();
             }

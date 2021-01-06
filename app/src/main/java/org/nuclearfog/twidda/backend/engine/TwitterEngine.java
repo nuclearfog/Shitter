@@ -406,36 +406,30 @@ public class TwitterEngine {
 
 
     /**
-     * Get User Context
+     * Get User
      *
-     * @param userId   User ID
-     * @param username User screen name, if user ID is defined, username can be empty
+     * @param userId User ID
      * @return User Object
      * @throws EngineException if Access is unavailable
      */
-    public User getUser(long userId, String username) throws EngineException {
+    public User getUser(long userId) throws EngineException {
         try {
-            if (userId > 0) {
-                return new User(twitter.showUser(userId), twitter.getId());
-            } else {
-                return new User(twitter.showUser(username), twitter.getId());
-            }
+            return new User(twitter.showUser(userId), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
     }
 
-
     /**
-     * Get current user
+     * Get User
      *
-     * @return curent user
+     * @param username screen name of the user
+     * @return User Object
      * @throws EngineException if Access is unavailable
      */
-    public User getCurrentUser() throws EngineException {
+    public User getUser(String username) throws EngineException {
         try {
-            long currentUserId = twitter.getId();
-            return new User(twitter.showUser(currentUserId), currentUserId);
+            return new User(twitter.showUser(username), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -445,18 +439,13 @@ public class TwitterEngine {
     /**
      * Efficient Access of Connection Information
      *
-     * @param userId   User ID compared with Home ID
-     * @param username User screen name
+     * @param userId User ID compared with Home ID
      * @return User Properties
      * @throws EngineException if Connection is unavailable
      */
-    public Relation getConnection(long userId, String username) throws EngineException {
+    public Relation getConnection(long userId) throws EngineException {
         try {
-            if (userId > 0) {
-                return new Relation(twitter.showFriendship(twitter.getId(), userId));
-            } else {
-                return new Relation(twitter.showFriendship(twitter.getScreenName(), username));
-            }
+            return new Relation(twitter.showFriendship(twitter.getId(), userId));
         } catch (Exception err) {
             throw new EngineException(err);
         }

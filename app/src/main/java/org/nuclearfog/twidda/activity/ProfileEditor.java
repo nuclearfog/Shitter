@@ -59,6 +59,11 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
 public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick {
 
     /**
+     * key to preload user data
+     */
+    public static final String KEY_USER_DATA = "profile-editor-data";
+
+    /**
      * Permission to read images from external storage
      */
     private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
@@ -137,21 +142,16 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         loadingCircle.setContentView(load);
         cancelButton.setVisibility(VISIBLE);
 
+        Object data = getIntent().getSerializableExtra(KEY_USER_DATA);
+        if (data instanceof User) {
+            user = (User) data;
+            setUser(user);
+        }
         profile_image.setOnClickListener(this);
         profile_banner.setOnClickListener(this);
         addBannerBtn.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         loadingCircle.setOnDismissListener(this);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (editorAsync == null) {
-            editorAsync = new UserUpdater(this, UserUpdater.Action.READ);
-            editorAsync.execute();
-        }
     }
 
 
@@ -203,7 +203,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                     link.setError(errMsg);
                 } else {
                     UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
-                    editorAsync = new UserUpdater(this, UserUpdater.Action.WRITE);
+                    editorAsync = new UserUpdater(this);
                     editorAsync.execute(userHolder);
                 }
             }
@@ -293,11 +293,31 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     }
 
     /**
+     * called after user profile was updated successfully
+     */
+    public void onSuccess(User user) {
+        Intent data = new Intent();
+        data.putExtra(RETURN_PROFILE_DATA, user);
+        Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
+        setResult(RETURN_PROFILE_CHANGED, data);
+        finish();
+    }
+
+    /**
+     * called after an error occurs
+     *
+     * @param err Engine Exception
+     */
+    public void onError(EngineException err) {
+        ErrorHandler.handleFailure(this, err);
+    }
+
+    /**
      * Set current user's information
      *
      * @param user Current user
      */
-    public void setUser(User user) {
+    private void setUser(User user) {
         if (user.hasProfileImage()) {
             String pbLink = user.getImageLink();
             if (!user.hasDefaultProfileImage())
@@ -318,29 +338,6 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         loc.setText(user.getLocation());
         bio.setText(user.getBio());
         this.user = user;
-    }
-
-    /**
-     * called after user profile was updated successfully
-     */
-    public void onSuccess(User user) {
-        Intent data = new Intent();
-        data.putExtra(RETURN_PROFILE_DATA, user);
-        Toast.makeText(this, R.string.info_profile_updated, Toast.LENGTH_SHORT).show();
-        setResult(RETURN_PROFILE_CHANGED, data);
-        finish();
-    }
-
-    /**
-     * called after an error occurs
-     *
-     * @param err Engine Exception
-     */
-    public void onError(EngineException err) {
-        ErrorHandler.handleFailure(this, err);
-        if (user == null) {
-            finish();
-        }
     }
 
     /**
