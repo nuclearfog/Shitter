@@ -298,13 +298,14 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      * @param user Current user
      */
     public void setUser(User user) {
-        String pbLink = user.getImageLink();
-        String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
-
-        if (!user.hasDefaultProfileImage())
-            pbLink += PROFILE_IMG_HIGH_RES;
-        Picasso.get().load(pbLink).into(profile_image);
-        if (user.hasBannerImg()) {
+        if (user.hasProfileImage()) {
+            String pbLink = user.getImageLink();
+            if (!user.hasDefaultProfileImage())
+                pbLink += PROFILE_IMG_HIGH_RES;
+            Picasso.get().load(pbLink).into(profile_image);
+        }
+        if (user.hasBannerImage()) {
+            String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
             Picasso.get().load(bnLink).into(profile_banner);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);

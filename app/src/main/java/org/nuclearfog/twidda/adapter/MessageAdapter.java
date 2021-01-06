@@ -168,11 +168,10 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         } else {
             setIcon(holder.screenname, null);
         }
-        if (settings.getImageLoad()) {
+        if (settings.getImageLoad() && sender.hasProfileImage()) {
             String pbLink = sender.getImageLink();
-            if (!sender.hasDefaultProfileImage()) {
+            if (!sender.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
-            }
             Picasso.get().load(pbLink).error(R.drawable.no_image).into(holder.profile_img);
         }
     }

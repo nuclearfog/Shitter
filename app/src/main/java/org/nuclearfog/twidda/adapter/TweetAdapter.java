@@ -307,7 +307,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             } else {
                 setIcon(vh.screenname, null);
             }
-            if (settings.getImageLoad()) {
+            if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();

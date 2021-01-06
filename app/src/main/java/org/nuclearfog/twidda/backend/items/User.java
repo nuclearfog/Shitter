@@ -300,11 +300,20 @@ public class User implements Serializable {
     }
 
     /**
+     * check if user has a profile image
+     *
+     * @return true if user has a profile image
+     */
+    public boolean hasProfileImage() {
+        return !profileImg.isEmpty();
+    }
+
+    /**
      * check if user has a banner image
      *
      * @return true if user has a banner image set
      */
-    public boolean hasBannerImg() {
+    public boolean hasBannerImage() {
         return !bannerImg.isEmpty();
     }
 

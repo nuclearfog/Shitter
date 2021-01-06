@@ -226,11 +226,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
             vh.createdAt.setText(getTimeString(item.getCreatedAt()));
             vh.memberCount.setText(formatter.format(item.getMemberCount()));
             vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
-            if (settings.getImageLoad()) {
+            if (settings.getImageLoad() && owner.hasProfileImage()) {
                 String pbLink = owner.getImageLink();
-                if (!owner.hasDefaultProfileImage()) {
+                if (!owner.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
-                }
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
             }
             if (!item.isListOwner() && item.isFollowing()) {

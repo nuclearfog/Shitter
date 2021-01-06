@@ -478,7 +478,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         // open profile image
         else if (v.getId() == R.id.profile_img) {
-            if (user != null) {
+            if (user != null && user.hasProfileImage()) {
                 Intent mediaImage = new Intent(this, MediaViewer.class);
                 mediaImage.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
                 mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
@@ -487,7 +487,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         // open banner image
         else if (v.getId() == R.id.profile_banner) {
-            if (user != null) {
+            if (user != null && user.hasBannerImage()) {
                 Intent mediaBanner = new Intent(this, MediaViewer.class);
                 mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + BANNER_IMG_HIGH_RES});
                 mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
@@ -593,7 +593,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             lnkTxt.setVisibility(GONE);
         }
         if (settings.getImageLoad()) {
-            if (user.hasBannerImg()) {
+            if (user.hasBannerImage()) {
                 Point displaySize = new Point();
                 getWindowManager().getDefaultDisplay().getSize(displaySize);
                 int layoutHeight = displaySize.x / 3;
@@ -606,10 +606,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 profile_layer.getLayoutParams().height = WRAP_CONTENT;
             }
             profile_layer.requestLayout();
-            String imgLink = user.getImageLink();
-            if (!user.hasDefaultProfileImage())
-                imgLink += PROFILE_IMG_HIGH_RES;
-            Picasso.get().load(imgLink).error(R.drawable.no_image).into(profileImage);
+            if (user.hasProfileImage()) {
+                String imgLink = user.getImageLink();
+                if (!user.hasDefaultProfileImage())
+                    imgLink += PROFILE_IMG_HIGH_RES;
+                Picasso.get().load(imgLink).error(R.drawable.no_image).into(profileImage);
+            }
         }
     }
 

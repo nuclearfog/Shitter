@@ -500,7 +500,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             mediaButton.setImageResource(iconRes);
             AppStyles.setIconColor(mediaButton, settings.getIconColor());
         }
-        if (settings.getImageLoad()) {
+        if (settings.getImageLoad() && author.hasProfileImage()) {
             String pbLink = author.getImageLink();
             if (!author.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
