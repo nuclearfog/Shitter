@@ -31,6 +31,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import io.michaelrocks.paranoid.Obfuscate;
 import twitter4j.DirectMessage;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
@@ -52,7 +53,11 @@ import twitter4j.conf.ConfigurationBuilder;
 /**
  * Backend for twitter API.
  */
+@Obfuscate
 public class TwitterEngine {
+
+    private static final String CONSUMER_KEY = BuildConfig.API_KEY_1;
+    private static final String CONSUMER_KEY_SECRET = BuildConfig.API_KEY_2;
 
     private static final TwitterEngine mTwitter = new TwitterEngine();
 
@@ -68,14 +73,13 @@ public class TwitterEngine {
     private TwitterEngine() {
     }
 
-
     /**
      * Initialize Twitter4J instance
      */
     private void initTwitter() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(BuildConfig.API_KEY_1);
-        builder.setOAuthConsumerSecret(BuildConfig.API_KEY_2);
+        builder.setOAuthConsumerKey(CONSUMER_KEY);
+        builder.setOAuthConsumerSecret(CONSUMER_KEY_SECRET);
         // Twitter4J has its own proxy settings
         if (settings.isProxyEnabled()) {
             builder.setHttpProxyHost(settings.getProxyHost());

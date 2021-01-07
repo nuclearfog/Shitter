@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.michaelrocks.paranoid'
 
 android {
     buildToolsVersion '30.0.2'
@@ -32,6 +33,10 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix '.DEBUG'
         }
+    }
+    
+    paranoid {
+        enabled true
     }
 }
 
