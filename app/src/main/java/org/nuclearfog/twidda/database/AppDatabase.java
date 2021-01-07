@@ -335,42 +335,10 @@ public class AppDatabase {
      * @param tweet Tweet
      */
     public void updateStatus(Tweet tweet) {
-        String[] tweetIdArg = {Long.toString(tweet.getId())};
-        String[] userIdArg = {Long.toString(tweet.getUser().getId())};
-
         SQLiteDatabase db = getDbWrite();
-        ContentValues statColumn = new ContentValues();
-        ContentValues userColumn = new ContentValues();
-        int flags = getTweetFlags(db, tweet.getId());
-        if (tweet.retweeted())
-            flags |= RTW_MASK;
-        else
-            flags &= ~RTW_MASK;
-        if (tweet.favored())
-            flags |= FAV_MASK;
-        else
-            flags &= ~FAV_MASK;
-        statColumn.put("tweet", tweet.getTweet());
-        statColumn.put("retweet", tweet.getRetweetCount());
-        statColumn.put("favorite", tweet.getFavorCount());
-        statColumn.put("retweeterID", tweet.getMyRetweetId());
-        statColumn.put("replyname", tweet.getReplyName());
-        statColumn.put("statusregister", flags);
-        statColumn.put("media", getMediaLinks(tweet));
-
-        User user = tweet.getUser();
-        userColumn.put("username", user.getUsername());
-        userColumn.put("scrname", user.getScreenname());
-        userColumn.put("pbLink", user.getImageLink());
-        userColumn.put("bio", user.getBio());
-        userColumn.put("link", user.getLink());
-        userColumn.put("location", user.getLocation());
-        userColumn.put("banner", user.getBannerLink());
-        userColumn.put("following", user.getFollowing());
-        userColumn.put("follower", user.getFollower());
-
-        db.update("tweet", statColumn, "tweet.tweetID=?", tweetIdArg);
-        db.update("user", userColumn, "user.userID=?", userIdArg);
+        updateStatus(tweet, db);
+        if (tweet.getEmbeddedTweet() != null)
+            updateStatus(tweet.getEmbeddedTweet(), db);
         commit(db);
     }
 
@@ -719,6 +687,50 @@ public class AppDatabase {
             status.put("replyname", tweet.getReplyName());
         storeUser(user, db, CONFLICT_IGNORE);
         db.insertWithOnConflict("tweet", null, status, CONFLICT_REPLACE);
+    }
+
+    /**
+     * updates existing tweet
+     *
+     * @param tweet update of the tweet
+     * @param db    database instance
+     */
+    private void updateStatus(Tweet tweet, SQLiteDatabase db) {
+        String[] tweetIdArg = {Long.toString(tweet.getId())};
+        String[] userIdArg = {Long.toString(tweet.getUser().getId())};
+
+        ContentValues statColumn = new ContentValues();
+        ContentValues userColumn = new ContentValues();
+        int flags = getTweetFlags(db, tweet.getId());
+        if (tweet.retweeted())
+            flags |= RTW_MASK;
+        else
+            flags &= ~RTW_MASK;
+        if (tweet.favored())
+            flags |= FAV_MASK;
+        else
+            flags &= ~FAV_MASK;
+        statColumn.put("tweet", tweet.getTweet());
+        statColumn.put("retweet", tweet.getRetweetCount());
+        statColumn.put("favorite", tweet.getFavorCount());
+        statColumn.put("retweeterID", tweet.getMyRetweetId());
+        statColumn.put("replyname", tweet.getReplyName());
+        statColumn.put("statusregister", flags);
+        statColumn.put("media", getMediaLinks(tweet));
+
+        User user = tweet.getUser();
+        userColumn.put("username", user.getUsername());
+        userColumn.put("scrname", user.getScreenname());
+        userColumn.put("pbLink", user.getImageLink());
+        userColumn.put("bio", user.getBio());
+        userColumn.put("link", user.getLink());
+        userColumn.put("location", user.getLocation());
+        userColumn.put("banner", user.getBannerLink());
+        userColumn.put("following", user.getFollowing());
+        userColumn.put("follower", user.getFollower());
+
+        db.update("tweet", statColumn, "tweet.tweetID=?", tweetIdArg);
+        db.update("user", userColumn, "user.userID=?", userIdArg);
     }
 
     /**
