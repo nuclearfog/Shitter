@@ -28,12 +28,15 @@ Screenshots:
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
 
 
-Credits:
+Used libraries:
 - <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
 - <a href="https://github.com/square/picasso">picasso 2.71828</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
+- <a href="https://github.com/MichaelRocks/paranoid" title="">String obfuscation</a>
+- <a href="https://github.com/kyleduo/SwitchButton" title="">SwitchButton</a>
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 - <a href="http://www.entypo.com" title="">Entypo icons</a>
-- logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
+
+logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
