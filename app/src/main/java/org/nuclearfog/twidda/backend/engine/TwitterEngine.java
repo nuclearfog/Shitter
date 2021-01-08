@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
@@ -56,18 +55,22 @@ import twitter4j.conf.ConfigurationBuilder;
 @Obfuscate
 public class TwitterEngine {
 
-    private static final String CONSUMER_KEY = BuildConfig.API_KEY_1;
-    private static final String CONSUMER_KEY_SECRET = BuildConfig.API_KEY_2;
+    /**
+     * add your keys here
+     */
+    private static final String TWITTER_CONSUMER_KEY = "";
+    private static final String TWITTER_CONSUMER_SECRET = "";
 
+    private GlobalSettings settings;
     private static final TwitterEngine mTwitter = new TwitterEngine();
 
     private Twitter twitter;
-    private boolean isInitialized = false;
-    private GlobalSettings settings;
     @Nullable
     private RequestToken reqToken;
     @Nullable
     private AccessToken aToken;
+
+    private boolean isInitialized = false;
 
 
     private TwitterEngine() {
@@ -78,8 +81,8 @@ public class TwitterEngine {
      */
     private void initTwitter() {
         ConfigurationBuilder builder = new ConfigurationBuilder();
-        builder.setOAuthConsumerKey(CONSUMER_KEY);
-        builder.setOAuthConsumerSecret(CONSUMER_KEY_SECRET);
+        builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+        builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
         // Twitter4J has its own proxy settings
         if (settings.isProxyEnabled()) {
             builder.setHttpProxyHost(settings.getProxyHost());
