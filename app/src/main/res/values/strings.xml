@@ -48,11 +48,13 @@
     <string name="user_data">User data</string>
     <string name="follows_you">follows you</string>
     <string name="settings_enable_ans_load">load Tweet replies automatically</string>
-    <string name="proxy_settings">Proxy settings</string>
+    <string name="settings_connections">Connection settings</string>
     <string name="settings_hint_proxy_ip">enter IP address</string>
     <string name="proxy_port">Port</string>
     <string name="edit_proxyuser">Username</string>
     <string name="proxy_password">Password</string>
+    <string name="settings_key1_hint">Consumer key</string>
+    <string name="settings_key2_hint">Consumer secret</string>
     <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
     <string name="item_list_pb_desc">Profile of the list owner</string>
@@ -77,7 +79,8 @@
     <string name="item_image_save">save image</string>
     <string name="settings_enable_proxy">enable proxy</string>
     <string name="settings_enable_proxy_auth">enable proxy authentication</string>
-    <string name="confirm_discard_button">discard</string>
+    <string name="settings_setup_custom_keys">setup custom API keys</string>
+    <string name="confirm_back">back</string>
     <string name="tweet_sensitive_media">Potentially sensitive content</string>
     <string name="login_info">3 steps to login</string>
     <string name="login_first_opt" translatable="false">1.</string>
@@ -107,7 +110,7 @@
     <string name="info_login_to_twitter">login to Twitter</string>
     <string name="info_twitter_login_link">Please click the link below to login</string>
     <string name="info_phone_tls_support">Phone does not support TLS 1.2. App will probably not work!</string>
-    <string name="error_wrong_proxy_settings">Wrong proxy settings</string>
+    <string name="error_wrong_connection_settings">Wrong connection settings!</string>
     <string name="info_cant_add_video">can\'t add video</string>
     <string name="info_get_link">get Twitter PIN from browser first. Please press the first button!</string>
     <string name="info_gps_attached">GPS position added</string>
@@ -166,7 +169,7 @@
     <string name="error_list_title_empty">Empty list title!</string>
     <string name="error_username_format">Wrong username format!</string>
     <string name="error_cant_reply_to_tweet">You can\'t reply to this Tweet!</string>
-    <string name="error_cant_login">can\'t login to Twitter, please Re-Login!</string>
+    <string name="error_corrupt_api_key">Error, corrupt API key!</string>
     <string name="error_acc_update">Account update failed! Please check your input!</string>
     <string name="error_not_defined">Not defined Error!</string>
 
@@ -202,4 +205,5 @@
     <string name="dialog_button_ok">OK</string>
     <string name="settings_color_card">Card color</string>
     <string name="settings_icon_color">Icon color</string>
+    <string name="error_api_access_denied">Error, API access denied!</string>
 </resources>

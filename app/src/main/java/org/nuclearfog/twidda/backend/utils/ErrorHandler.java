@@ -97,7 +97,7 @@ public final class ErrorHandler {
                     break;
 
                 case ACCESS_TOKEN_DEAD:
-                    Toast.makeText(context, R.string.error_cant_login, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.error_corrupt_api_key, Toast.LENGTH_SHORT).show();
                     break;
 
                 case TWEET_CANT_REPLY:
@@ -111,6 +111,10 @@ public final class ErrorHandler {
 
                 case ACCOUNT_UPDATE_FAILED:
                     Toast.makeText(context, R.string.error_acc_update, Toast.LENGTH_LONG).show();
+                    break;
+
+                case ERROR_API_ACCESS_DENIED:
+                    Toast.makeText(context, R.string.error_api_access_denied, Toast.LENGTH_LONG).show();
                     break;
             }
         } else {

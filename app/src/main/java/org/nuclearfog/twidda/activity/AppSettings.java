@@ -75,13 +75,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private LocationLoader locationAsync;
     private LocationAdapter locationAdapter;
 
-    private Dialog proxyDialog, databaseDialog, logoutDialog, color_dialog_selector;
-    private EditText proxyAddr, proxyPort, proxyUser, proxyPass;
-    private CompoundButton enableProxy, enableAuth, hqImage;
+    private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector;
+    private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
+    private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
     private SeekBar listSizeSelector;
     private Spinner locationSpinner;
     private TextView list_size;
     private Button[] colorButtons;
+    private View layout_key, layout_proxy, layout_auth_en, layout_auth;
     private View root;
 
     private ColorMode mode = ColorMode.NONE;
@@ -103,12 +104,21 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
+        enableAPI = findViewById(R.id.settings_set_custom_keys);
         locationSpinner = findViewById(R.id.spinner_woeid);
-        proxyAddr = findViewById(R.id.edit_proxyadress);
-        proxyPort = findViewById(R.id.edit_proxyport);
+        proxyAddr = findViewById(R.id.edit_proxy_address);
+        proxyPort = findViewById(R.id.edit_proxy_port);
         proxyUser = findViewById(R.id.edit_proxyuser);
         proxyPass = findViewById(R.id.edit_proxypass);
+        api_key1 = findViewById(R.id.settings_custom_key1);
+        api_key2 = findViewById(R.id.settings_custom_key2);
         list_size = findViewById(R.id.settings_list_size);
+
+        layout_proxy = findViewById(R.id.settings_layout_proxy);
+        layout_auth_en = findViewById(R.id.settings_layout_auth_enable);
+        layout_auth = findViewById(R.id.settings_layout_proxy_auth);
+        layout_key = findViewById(R.id.settings_layout_key);
+
         root = findViewById(R.id.settings_layout);
 
         TypedArray buttons = getResources().obtainTypedArray(R.array.color_button);
@@ -125,6 +135,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             trend_card.setVisibility(GONE);
             user_card.setVisibility(GONE);
         }
+        if (!settings.isProxyEnabled()) {
+            layout_proxy.setVisibility(GONE);
+            layout_auth_en.setVisibility(GONE);
+            layout_auth.setVisibility(GONE);
+        }
+        if (!settings.isCustomApiSet()) {
+            layout_key.setVisibility(GONE);
+        }
         locationAdapter = new LocationAdapter(settings);
         locationAdapter.addTop(settings.getTrendLocation());
         locationSpinner.setAdapter(locationAdapter);
@@ -138,19 +156,21 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         setButtonColors();
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
+        enableAPI.setChecked(settings.isCustomApiSet());
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
         proxyPass.setText(settings.getProxyPass());
+        api_key1.setText(settings.getConsumerKey());
+        api_key2.setText(settings.getConsumerSecret());
         list_size.setText(Integer.toString(settings.getListSize()));
         listSizeSelector.setProgress(settings.getListSize() / 10 - 1);
         enableProxy.setChecked(settings.isProxyEnabled());
         enableAuth.setChecked(settings.isProxyAuthSet());
         hqImage.setEnabled(settings.getImageLoad());
         hqImage.setChecked(settings.getImageQuality());
-        setProxySetupVisibility(settings.isProxyEnabled(), settings.isProxyAuthSet());
 
-        proxyDialog = DialogBuilder.create(this, WRONG_PROXY, this);
+        connectDialog = DialogBuilder.create(this, WRONG_PROXY, this);
         databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
         logoutDialog = DialogBuilder.create(this, LOGOUT_APP, this);
 
@@ -160,6 +180,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         delButton.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
         toggleAns.setOnCheckedChangeListener(this);
+        enableAPI.setOnCheckedChangeListener(this);
         enableProxy.setOnCheckedChangeListener(this);
         enableAuth.setOnCheckedChangeListener(this);
         hqImage.setOnCheckedChangeListener(this);
@@ -181,12 +202,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onBackPressed() {
-        if (saveProxySettings()) {
+        if (saveConnectionSettings()) {
             TwitterEngine.resetTwitter();
             super.onBackPressed();
         } else {
-            if (!proxyDialog.isShowing()) {
-                proxyDialog.show();
+            if (!connectDialog.isShowing()) {
+                connectDialog.show();
             }
         }
     }
@@ -356,15 +377,34 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         }
         // enable proxy settings
         else if (viewId == R.id.settings_enable_proxy) {
-            setProxySetupVisibility(checked, checked & enableAuth.isChecked());
+            if (checked) {
+                layout_proxy.setVisibility(VISIBLE);
+                layout_auth_en.setVisibility(VISIBLE);
+            } else {
+                layout_proxy.setVisibility(GONE);
+                layout_auth_en.setVisibility(GONE);
+                enableAuth.setChecked(false);
+            }
         }
         //enable proxy authentication
         else if (viewId == R.id.settings_enable_auth) {
-            setProxySetupVisibility(true, checked);
+            if (checked) {
+                layout_auth.setVisibility(VISIBLE);
+            } else {
+                layout_auth.setVisibility(GONE);
+            }
         }
         // enable high quality images
         else if (viewId == R.id.settings_image_hq) {
             settings.setHighQualityImage(checked);
+        }
+        // enable custom API setup
+        else if (viewId == R.id.settings_set_custom_keys) {
+            if (checked) {
+                layout_key.setVisibility(VISIBLE);
+            } else {
+                layout_key.setVisibility(GONE);
+            }
         }
     }
 
@@ -464,27 +504,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     }
 
     /**
-     * set visibility of proxy layouts
-     *
-     * @param proxySetup visibility of proxy setup
-     * @param proxyLogin visibility of proxy login
-     */
-    private void setProxySetupVisibility(boolean proxySetup, boolean proxyLogin) {
-        int setupVisibility = proxySetup ? VISIBLE : GONE;
-        int authVisibility = proxyLogin ? VISIBLE : GONE;
-        proxyAddr.setVisibility(setupVisibility);
-        proxyPort.setVisibility(setupVisibility);
-        enableAuth.setVisibility(setupVisibility);
-        proxyUser.setVisibility(authVisibility);
-        proxyPass.setVisibility(authVisibility);
-    }
-
-    /**
      * check proxy settings and save them if they are correct
      *
      * @return true if settings are saved successfully
      */
-    private boolean saveProxySettings() {
+    private boolean saveConnectionSettings() {
         boolean checkPassed = true;
         if (enableProxy.isChecked()) {
             checkPassed = proxyAddr.length() > 0 && proxyPort.length() > 0;
@@ -514,6 +538,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         } else {
             settings.clearProxyServer();
+        }
+        if (enableAPI.isChecked()) {
+            if (api_key1.length() > 0 && api_key2.length() > 0) {
+                String key1 = api_key1.getText().toString();
+                String key2 = api_key2.getText().toString();
+                settings.setCustomAPI(key1, key2);
+            } else {
+                checkPassed = false;
+            }
+        } else {
+            settings.removeCustomAPI();
         }
         return checkPassed;
     }

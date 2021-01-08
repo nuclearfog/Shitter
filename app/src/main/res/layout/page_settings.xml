@@ -399,14 +399,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/proxy_settings"
+                        android:text="@string/settings_connections"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/settings_enable_proxy"
@@ -424,12 +424,14 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/settings_layout_proxy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <EditText
-                            android:id="@+id/edit_proxyadress"
+                            android:id="@+id/edit_proxy_address"
+                            style="@style/TextInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
@@ -438,11 +440,11 @@
                             android:inputType="number|numberDecimal"
                             android:maxLength="15"
                             android:singleLine="true"
-                            tools:ignore="Autofill"
-                            style="@style/TextInput" />
+                            tools:ignore="Autofill" />
 
                         <EditText
-                            android:id="@+id/edit_proxyport"
+                            android:id="@+id/edit_proxy_port"
+                            style="@style/TextInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -450,16 +452,16 @@
                             android:inputType="number"
                             android:maxLength="5"
                             android:singleLine="true"
-                            tools:ignore="Autofill"
-                            style="@style/TextInput" />
+                            tools:ignore="Autofill" />
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/settings_layout_auth_enable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/settings_enable_auth"
@@ -477,31 +479,83 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/settings_layout_proxy_auth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <EditText
                             android:id="@+id/edit_proxyuser"
+                            style="@style/TextInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="3"
                             android:hint="@string/edit_proxyuser"
                             android:inputType="textPersonName"
                             android:singleLine="true"
-                            tools:ignore="Autofill"
-                            style="@style/TextInput" />
+                            tools:ignore="Autofill" />
 
                         <EditText
                             android:id="@+id/edit_proxypass"
+                            style="@style/TextInput"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2"
                             android:hint="@string/proxy_password"
                             android:inputType="textPassword"
                             android:singleLine="true"
-                            tools:ignore="Autofill"
-                            style="@style/TextInput" />
+                            tools:ignore="Autofill" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/settings_set_custom_keys"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/settings_switch_margin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="@string/settings_setup_custom_keys"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_layout_key"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/settings_custom_key1"
+                            style="@style/TextInput"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:hint="@string/settings_key1_hint"
+                            android:inputType="textPassword"
+                            android:singleLine="true"
+                            tools:ignore="Autofill" />
+
+                        <EditText
+                            android:id="@+id/settings_custom_key2"
+                            style="@style/TextInput"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:hint="@string/settings_key2_hint"
+                            android:inputType="textPassword"
+                            android:singleLine="true"
+                            tools:ignore="Autofill" />
 
                     </LinearLayout>
 

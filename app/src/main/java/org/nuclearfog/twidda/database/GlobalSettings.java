@@ -81,6 +81,9 @@ public class GlobalSettings {
     private static final String PROXY_PASS = "proxy_pass";
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
+    private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
+    private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
+    private static final String CUSTOM_CONSUMER_KEY_2 = "api_key2";
 
     // file name of the preferences
     private static final String APP_SETTINGS = "settings";
@@ -104,13 +107,15 @@ public class GlobalSettings {
 
     private SharedPreferences settings;
     private TrendLocation location;
-    private String key1, key2;
+    private String api_key1, api_key2;
+    private String auth_key1, auth_key2;
     private boolean loadImage;
     private boolean hqImages;
     private boolean loadAnswer;
     private boolean loggedIn;
     private boolean isProxyEnabled;
     private boolean isProxyAuthSet;
+    private boolean isCustomAPIkeySet;
     private int indexFont;
     private int background_color;
     private int font_color;
@@ -604,9 +609,27 @@ public class GlobalSettings {
      */
     public String[] getCurrentUserAccessToken() {
         String[] out = new String[2];
-        out[0] = key1;
-        out[1] = key2;
+        out[0] = auth_key1;
+        out[1] = auth_key2;
         return out;
+    }
+
+    /**
+     * get Consumer keys
+     *
+     * @return key string
+     */
+    public String getConsumerKey() {
+        return api_key1;
+    }
+
+    /**
+     * get consumer key secret
+     *
+     * @return key string
+     */
+    public String getConsumerSecret() {
+        return api_key2;
     }
 
     /**
@@ -627,8 +650,8 @@ public class GlobalSettings {
      */
     public void setConnection(String key1, String key2, long userId) {
         loggedIn = true;
-        this.key1 = key1;
-        this.key2 = key2;
+        this.auth_key1 = key1;
+        this.auth_key2 = key2;
         this.userId = userId;
 
         Editor e = settings.edit();
@@ -637,6 +660,48 @@ public class GlobalSettings {
         e.putString(AUTH_KEY1, key1);
         e.putString(AUTH_KEY2, key2);
         e.apply();
+    }
+
+    /**
+     * sets custom API consumer keys
+     *
+     * @param key1 consumer key
+     * @param key2 consumer key secret
+     */
+    public void setCustomAPI(String key1, String key2) {
+        isCustomAPIkeySet = true;
+        this.api_key1 = key1;
+        this.api_key2 = key2;
+
+        Editor e = settings.edit();
+        e.putBoolean(CUSTOM_CONSUMER_KEY_SET, true);
+        e.putString(CUSTOM_CONSUMER_KEY_1, key1);
+        e.putString(CUSTOM_CONSUMER_KEY_2, key2);
+        e.apply();
+    }
+
+    /**
+     * remove all API keys
+     */
+    public void removeCustomAPI() {
+        isCustomAPIkeySet = false;
+        this.api_key1 = "";
+        this.api_key2 = "";
+
+        Editor e = settings.edit();
+        e.remove(CUSTOM_CONSUMER_KEY_SET);
+        e.remove(CUSTOM_CONSUMER_KEY_1);
+        e.remove(CUSTOM_CONSUMER_KEY_2);
+        e.apply();
+    }
+
+    /**
+     * check if custom API consumer keys are set
+     *
+     * @return true if custom API keys are set
+     */
+    public boolean isCustomApiSet() {
+        return isCustomAPIkeySet;
     }
 
     /**
@@ -663,8 +728,11 @@ public class GlobalSettings {
         loadAnswer = settings.getBoolean(ANSWER_LOAD, DEFAULT_DATA_USAGE);
         hqImages = settings.getBoolean(IMAGE_QUALITY, DEFAULT_DATA_USAGE);
         loggedIn = settings.getBoolean(LOGGED_IN, false);
-        key1 = settings.getString(AUTH_KEY1, "");
-        key2 = settings.getString(AUTH_KEY2, "");
+        isCustomAPIkeySet = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
+        api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
+        api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");
+        auth_key1 = settings.getString(AUTH_KEY1, "");
+        auth_key2 = settings.getString(AUTH_KEY2, "");
         userId = settings.getLong(USER_ID, 0);
         isProxyEnabled = settings.getBoolean(PROXY_SET, false);
         isProxyAuthSet = settings.getBoolean(AUTH_SET, false);

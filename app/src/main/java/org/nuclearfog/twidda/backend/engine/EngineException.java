@@ -29,6 +29,7 @@ public class EngineException extends Exception {
         NO_CONNECTION,
         IMAGE_NOT_LOADED,
         ACCOUNT_UPDATE_FAILED,
+        ERROR_API_ACCESS_DENIED,
         ERROR_NOT_DEFINED
     }
 
@@ -102,6 +103,10 @@ public class EngineException extends Exception {
 
                 case 349:
                     errorType = ErrorType.NO_DM_TO_USER;
+                    break;
+
+                case 261:
+                    errorType = ErrorType.ERROR_API_ACCESS_DENIED;
                     break;
 
                 case 354:

@@ -60,9 +60,9 @@ public final class DialogBuilder {
 
             case WRONG_PROXY:
                 title = R.string.info_error;
-                message = R.string.error_wrong_proxy_settings;
-                posButton = R.string.confirm_discard_button;
-                negButton = R.string.dialog_button_cancel;
+                message = R.string.error_wrong_connection_settings;
+                posButton = R.string.dialog_button_cancel;
+                negButton = R.string.confirm_back;
                 break;
 
             case DEL_DATABASE:

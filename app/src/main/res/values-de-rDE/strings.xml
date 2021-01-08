@@ -87,7 +87,7 @@
     <string name="info_tweet_favored">Tweet favorisiert!</string>
     <string name="info_tweet_unfavored">tweet aus den favoriten entfernt!</string>
     <string name="proxy_port">Port</string>
-    <string name="proxy_settings">Proxy Einstellung</string>
+    <string name="settings_connections">Verbindungseinsellungen</string>
     <string name="login_verifier">Login</string>
     <string name="settings_button_popup">Popup</string>
     <string name="login_pin">PIN eingeben</string>
@@ -132,8 +132,7 @@
     <string name="error_cant_load_video">Video kann nicht abgespielt werden!</string>
     <string name="settings_enable_proxy">Proxy aktivieren</string>
     <string name="settings_enable_proxy_auth">Proxy Authentifizierung aktivieren</string>
-    <string name="error_wrong_proxy_settings">Falsche Proxy Einstellungen</string>
-    <string name="confirm_discard_button">verwerfen</string>
+    <string name="error_wrong_connection_settings">Falsche Verbindung angegeben!</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">Sensible Inhalte</string>
     <string name="info_phone_tls_support">TLS 1.2 wird nicht unterstützt. Die App wird möglicherweise nicht funktionieren!</string>
@@ -182,8 +181,13 @@
     <string name="dialog_button_cancel">Abbrechen</string>
     <string name="dialog_button_ok">OK</string>
     <string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>
-    <string name="error_cant_login">App ist nicht eingeloggt, Bitte neu einloggen!</string>
+    <string name="error_corrupt_api_key">Fehler, API Schlüssel ist fehlerhaft!</string>
     <string name="error_acc_update">Account Informationen konnten nicht aktualisiert werden! Bitte Eingaben überprüfen.</string>
     <string name="settings_color_card">Kartenfarbe</string>
     <string name="settings_icon_color">Symbolfarbe</string>
+    <string name="settings_key1_hint">Consumer Key</string>
+    <string name="settings_key2_hint">Consumer Secret</string>
+    <string name="settings_setup_custom_keys">Eigene API Schlüssel verwenden</string>
+    <string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt!</string>
+    <string name="confirm_back">Zurück</string>
 </resources>
