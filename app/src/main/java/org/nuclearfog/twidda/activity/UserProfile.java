@@ -406,7 +406,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onLinkClick(String tag) {
+    public void onLinkClick(final String tag) {
         String shortLink;
         // remove query from link if exists
         int cut = tag.indexOf('?');
@@ -423,11 +423,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             intent.putExtra(KEY_TWEET_ID, id);
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
-        }
-        // open link in browser
-        else {
-            Uri link = Uri.parse(tag);
-            Intent intent = new Intent(Intent.ACTION_VIEW, link);
+        } else {
+            // open link in browser
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(tag));
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException err) {

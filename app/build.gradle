@@ -2,15 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.michaelrocks.paranoid'
 
 android {
-    buildToolsVersion '30.0.2'
+    buildToolsVersion '30.0.3'
     compileSdkVersion 30
 
     defaultConfig {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 31
-        versionName '1.8.7'
+        versionCode 32
+        versionName '1.8.8'
         // limiting language support for smaller APK size
         resConfigs 'en', 'de-rDE'
         vectorDrawables.useSupportLibrary true

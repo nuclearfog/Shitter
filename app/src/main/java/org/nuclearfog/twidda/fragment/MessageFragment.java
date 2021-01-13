@@ -97,7 +97,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
 
     @Override
-    public void onLinkClick(String tag) {
+    public void onLinkClick(final String tag) {
         String shortLink = tag;
         int cut = shortLink.indexOf('?');
         if (cut > 0) {
@@ -111,8 +111,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
         } else {
-            Uri link = Uri.parse(tag);
-            Intent intent = new Intent(Intent.ACTION_VIEW, link);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(tag));
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException err) {
