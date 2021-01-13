@@ -22,6 +22,8 @@ Features:
 - tweet GPS locale
 - Twitter user list
 
+Please check <a href="https://github.com/nuclearfog/Shitter/discussions">discussions</a> for news and current problems
+
 
 Screenshots:
 
