@@ -222,6 +222,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         if (viewType == VIEW_TWEET) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
             final TweetHolder vh = new TweetHolder(v);
+            vh.retweeterName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
             AppStyles.setTheme(settings, v);
             v.setOnClickListener(new OnClickListener() {
                 @Override

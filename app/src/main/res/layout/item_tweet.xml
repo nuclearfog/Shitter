@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -98,8 +97,7 @@
                 android:layout_weight="1"
                 android:drawablePadding="@dimen/tweetitem_padding_drawable"
                 android:singleLine="true"
-                android:textSize="@dimen/tweetitem_textsize_button"
-                app:drawableStartCompat="@drawable/retweet" />
+                android:textSize="@dimen/tweetitem_textsize_button" />
 
             <TextView
                 android:id="@+id/retweet_number"
