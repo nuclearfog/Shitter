@@ -29,7 +29,7 @@ public class Tweet implements Serializable {
     private static final String PHOTO = "photo";
     private static final String VIDEO = "video";
     private static final String ANGIF = "animated_gif";
-    private static final String MEDIA_VIDEO = "application/x-mpegURL";
+    private static final String MEDIA_VIDEO = "video/mp4";
 
     private long tweetID;
     private long time;
