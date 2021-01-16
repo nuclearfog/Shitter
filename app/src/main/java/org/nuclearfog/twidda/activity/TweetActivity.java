@@ -94,7 +94,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
-    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
+    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, retweeter, sensitive_media;
     private Button rtwButton, favButton, replyName, tweetLocGPS;
     private ImageView profile_img, mediaButton;
     private View header, footer;
@@ -130,6 +130,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
         mediaButton = findViewById(R.id.tweet_media_attach);
         sensitive_media = findViewById(R.id.tweet_sensitive);
+        retweeter = findViewById(R.id.tweet_retweeter);
 
         Object data = getIntent().getSerializableExtra(KEY_TWEET_DATA);
         long tweetId;
@@ -159,6 +160,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
         tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
         sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
+        retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
@@ -433,9 +435,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public void setTweet(Tweet tweetUpdate) {
         tweet = tweetUpdate;
-        // todo add information about the user who retweet this tweet
-        if (tweetUpdate.getEmbeddedTweet() != null)
+        if (tweetUpdate.getEmbeddedTweet() != null) {
             tweetUpdate = tweetUpdate.getEmbeddedTweet();
+            retweeter.setText(tweet.getUser().getScreenname());
+            retweeter.setVisibility(VISIBLE);
+        }
         User author = tweetUpdate.getUser();
         invalidateOptionsMenu();
 

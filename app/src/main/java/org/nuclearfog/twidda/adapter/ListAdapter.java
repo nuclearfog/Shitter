@@ -35,7 +35,7 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 
 /**
  * Adapter class for user lists

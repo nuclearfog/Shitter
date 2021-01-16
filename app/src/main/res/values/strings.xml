@@ -12,6 +12,8 @@
     <string name="settings_background">Background</string>
     <string name="settings_font">Font</string>
     <string name="settings_button_popup">Popup</string>
+    <string name="settings_color_card">Card color</string>
+    <string name="settings_icon_color">Icon color</string>
     <string name="highlight">Highlight</string>
     <string name="settings_list_size">List size</string>
     <string name="confirm_retry_button">retry</string>
@@ -99,6 +101,9 @@
     <string name="info_list_followed">Userlist followed</string>
     <string name="info_list_unfollowed">Userlist unfollowed</string>
     <string name="descr_add_profile_image">change profile image</string>
+    <string name="app_info_twitter_link_1" translatable="false">https://support.twitter.com/articles/18311-the-twitter-rules</string>
+    <string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
+    <string name="app_info_twitter_rules" translatable="false">The Twitter rules:</string>
 
     <!-- toast messages to inform user -->
     <string name="info_user_removed">User removed from list</string>
@@ -171,6 +176,8 @@
     <string name="error_cant_reply_to_tweet">You can\'t reply to this Tweet!</string>
     <string name="error_corrupt_api_key">Error, corrupt API key!</string>
     <string name="error_acc_update">Account update failed! Please check your input!</string>
+    <string name="error_api_access_denied">Error, API access denied!</string>
+    <string name="error_mention_exceed">Too much mentions!</string>
     <string name="error_not_defined">Not defined Error!</string>
 
     <!-- menu icon strings -->
@@ -203,7 +210,4 @@
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
-    <string name="settings_color_card">Card color</string>
-    <string name="settings_icon_color">Icon color</string>
-    <string name="error_api_access_denied">Error, API access denied!</string>
 </resources>

@@ -790,7 +790,11 @@ public class TwitterEngine {
             List<DirectMessage> dmList = twitter.getDirectMessages(load);
             List<Message> result = new LinkedList<>();
             for (DirectMessage dm : dmList) {
-                result.add(getMessage(dm));
+                try {
+                    result.add(getMessage(dm));
+                } catch (EngineException err) {
+                    // ignore messages from suspended/deleted users
+                }
             }
             return result;
         } catch (Exception err) {

@@ -171,6 +171,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         txtCreated.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
         txtLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
         lnkTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
+        follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
         txtUser.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);

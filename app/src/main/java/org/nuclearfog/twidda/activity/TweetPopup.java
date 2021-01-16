@@ -32,6 +32,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
@@ -118,6 +119,11 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
      * max amount of images (limited to 4 by twitter)
      */
     private static final int MAX_IMAGES = 4;
+
+    /**
+     * max amount of mentions in a tweet
+     */
+    private static final int MAX_MENTIONS = 8;
 
     @Nullable
     private LocationManager mLocation;
@@ -292,6 +298,10 @@ public class TweetPopup extends AppCompatActivity implements OnClickListener, Lo
             // check if tweet is empty
             if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                 Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
+            }
+            // check if mentions exceed the limit
+            else if (!settings.isCustomApiSet() && StringTools.countMentions(tweetStr) >= MAX_MENTIONS) {
+                Toast.makeText(this, R.string.error_mention_exceed, LENGTH_SHORT).show();
             }
             // check if gps locating is not pending
             else if (locationProg.getVisibility() == INVISIBLE) {

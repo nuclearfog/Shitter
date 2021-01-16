@@ -33,7 +33,7 @@ import java.util.List;
 
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.TimeString.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 
 /**
  * Adapter class for direct messages list

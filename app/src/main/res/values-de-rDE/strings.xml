@@ -190,4 +190,5 @@
     <string name="settings_setup_custom_keys">Eigene API Schlüssel verwenden</string>
     <string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt!</string>
     <string name="confirm_back">Zurück</string>
+    <string name="error_mention_exceed">Zu viele Nutzer Erwähnungen!</string>
 </resources>

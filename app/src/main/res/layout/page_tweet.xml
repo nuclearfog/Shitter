@@ -120,17 +120,32 @@
                         android:visibility="gone"
                         style="@style/RoundButton" />
 
-                    <TextView
-                        android:id="@+id/tweet_sensitive"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/tweet_padding_drawable"
-                        android:paddingLeft="@dimen/tweet_button_padding"
-                        android:paddingRight="@dimen/tweet_button_padding"
-                        android:singleLine="true"
-                        android:text="@string/tweet_sensitive_media"
-                        android:textSize="@dimen/tweet_textsize_api"
-                        android:visibility="gone" />
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tweet_retweeter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawablePadding="@dimen/tweet_padding_drawable"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tweet_sensitive"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawablePadding="@dimen/tweet_padding_drawable"
+                            android:paddingLeft="@dimen/tweet_button_padding"
+                            android:paddingRight="@dimen/tweet_button_padding"
+                            android:singleLine="true"
+                            android:text="@string/tweet_sensitive_media"
+                            android:textSize="@dimen/tweet_textsize_api"
+                            android:visibility="gone" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"

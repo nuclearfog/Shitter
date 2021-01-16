@@ -101,7 +101,6 @@ public class GlobalSettings {
     private static final int DEFAULT_ICON_COLOR = Color.WHITE;
     private static final int DEFAULT_LOCATION_WOEID = 1;
     private static final String DEFAULT_LOCATION_NAME = "Worldwide";
-    private static final boolean DEFAULT_DATA_USAGE = true;
 
     private static final GlobalSettings ourInstance = new GlobalSettings();
 
@@ -724,9 +723,9 @@ public class GlobalSettings {
         icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
         indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
-        loadImage = settings.getBoolean(IMAGE_LOAD, DEFAULT_DATA_USAGE);
-        loadAnswer = settings.getBoolean(ANSWER_LOAD, DEFAULT_DATA_USAGE);
-        hqImages = settings.getBoolean(IMAGE_QUALITY, DEFAULT_DATA_USAGE);
+        loadImage = settings.getBoolean(IMAGE_LOAD, true);
+        loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
+        hqImages = settings.getBoolean(IMAGE_QUALITY, false);
         loggedIn = settings.getBoolean(LOGGED_IN, false);
         isCustomAPIkeySet = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
         api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");

@@ -6,9 +6,9 @@ import java.util.Date;
 /**
  * this class creates time strings
  */
-public final class TimeString {
+public final class StringTools {
 
-    private TimeString() {
+    private StringTools() {
     }
 
     /**
@@ -44,5 +44,24 @@ public final class TimeString {
             return seconds + " s";
         }
         return "0 s";
+    }
+
+    /**
+     * count @usernames in a string
+     *
+     * @param text text
+     * @return username count
+     */
+    public static int countMentions(String text) {
+        int result = 0;
+        for (int i = 0; i < text.length() - 1; i++) {
+            if (text.charAt(i) == '@') {
+                char next = text.charAt(i + 1);
+                if ((next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z') || (next >= '0' && next <= '9')) {
+                    result++;
+                }
+            }
+        }
+        return result;
     }
 }

@@ -35,4 +35,22 @@
         android:padding="@dimen/infopopup_text_padding"
         android:text="@string/settings_info_link" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
+        android:text="@string/app_info_twitter_rules" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
+        android:text="@string/app_info_twitter_link_1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
+        android:text="@string/app_info_twitter_link_2" />
+
 </LinearLayout>
