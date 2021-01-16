@@ -25,7 +25,9 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn twitter4j.**
--keep class twitter4j.** {*;}
+-keep,allowobfuscation class twitter4j.**  {*;}
+-adaptclassstrings twitter4j.**
 
 -dontwarn javax.management.DynamicMBean
--keep class javax.management.DynamicMBean {*;}
+-keep,allowobfuscation class javax.management.DynamicMBean {*;}
+-adaptclassstrings javax.management.DynamicMBean
