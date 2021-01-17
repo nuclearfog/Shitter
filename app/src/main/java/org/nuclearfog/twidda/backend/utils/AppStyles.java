@@ -5,10 +5,13 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -89,9 +92,17 @@ public final class AppStyles {
                     tv.setTypeface(settings.getFontFace());
                     tv.setTextColor(settings.getFontColor());
                     setIconColor(tv, settings.getIconColor());
+                    if (child instanceof Button) {
+                        Button btn = (Button) child;
+                        setButtonColor(btn, settings.getFontColor());
+                    }
                 } else if (child instanceof ImageView) {
                     ImageView img = (ImageView) child;
                     setDrawableColor(img.getDrawable(), settings.getIconColor());
+                    if (child instanceof ImageButton) {
+                        ImageButton btn = (ImageButton) child;
+                        setButtonColor(btn, settings.getFontColor());
+                    }
                 } else if (child instanceof ViewGroup) {
                     if (child instanceof CardView) {
                         CardView card = (CardView) child;
@@ -138,7 +149,6 @@ public final class AppStyles {
         }
     }
 
-
     /**
      * set icon drawable color
      *
@@ -148,6 +158,32 @@ public final class AppStyles {
     public static void setIconColor(ImageView imgView, int color) {
         Drawable d = imgView.getDrawable();
         setDrawableColor(d, color);
+    }
+
+    /**
+     * sets button background color
+     *
+     * @param button Button with background drawable
+     * @param color  background color
+     */
+    public static void setButtonColor(Button button, int color) {
+        Drawable d = button.getBackground();
+        if (d instanceof StateListDrawable) {
+            setDrawableColor(d, color);
+        }
+    }
+
+    /**
+     * sets button background color
+     *
+     * @param button Button with background drawable
+     * @param color  background color
+     */
+    public static void setButtonColor(ImageButton button, int color) {
+        Drawable d = button.getBackground();
+        if (d instanceof StateListDrawable) {
+            setDrawableColor(d, color);
+        }
     }
 
     /**

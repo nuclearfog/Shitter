@@ -76,14 +76,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private LocationAdapter locationAdapter;
 
     private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector;
+    private View root, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
     private SeekBar listSizeSelector;
     private Spinner locationSpinner;
     private TextView list_size;
     private Button[] colorButtons;
-    private View layout_key, layout_proxy, layout_auth_en, layout_auth;
-    private View root;
 
     private ColorMode mode = ColorMode.NONE;
     private int color = 0;
