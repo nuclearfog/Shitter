@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -24,7 +26,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.items.UserList;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
@@ -163,13 +164,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_LIST) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-            final ListHolder vh = new ListHolder(v);
-            AppStyles.setTheme(settings, v);
-
-            setIcon(vh.createdAt, icons[3]);
-            setIcon(vh.followIndicator, icons[4]);
-            vh.memberIcon.setImageDrawable(icons[5]);
-            vh.subscrIcon.setImageDrawable(icons[6]);
+            final ListHolder vh = new ListHolder(v, settings);
             vh.pb_image.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -193,9 +188,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final PlaceHolder ph = new PlaceHolder(v);
-            ph.loadBtn.setTypeface(settings.getFontFace());
-            ph.loadBtn.setTextColor(settings.getFontColor());
+            final PlaceHolder ph = new PlaceHolder(v, settings);
             ph.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -219,13 +212,13 @@ public class ListAdapter extends Adapter<ViewHolder> {
             ListHolder vh = (ListHolder) holder;
             UserList item = data.get(index);
             User owner = item.getListOwner();
-            vh.title.setText(item.getTitle());
-            vh.username.setText(owner.getUsername());
-            vh.screenname.setText(owner.getScreenname());
-            vh.description.setText(item.getDescription());
-            vh.createdAt.setText(getTimeString(item.getCreatedAt()));
-            vh.memberCount.setText(formatter.format(item.getMemberCount()));
-            vh.subscriberCount.setText(formatter.format(item.getSubscriberCount()));
+            vh.textViews[0].setText(item.getTitle());
+            vh.textViews[2].setText(owner.getUsername());
+            vh.textViews[3].setText(owner.getScreenname());
+            vh.textViews[1].setText(item.getDescription());
+            vh.textViews[4].setText(getTimeString(item.getCreatedAt()));
+            vh.textViews[5].setText(formatter.format(item.getMemberCount()));
+            vh.textViews[6].setText(formatter.format(item.getSubscriberCount()));
             if (settings.getImageLoad() && owner.hasProfileImage()) {
                 String pbLink = owner.getImageLink();
                 if (!owner.hasDefaultProfileImage())
@@ -233,24 +226,24 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
             }
             if (!item.isListOwner() && item.isFollowing()) {
-                vh.followIndicator.setVisibility(VISIBLE);
+                vh.textViews[7].setVisibility(VISIBLE);
             } else {
-                vh.followIndicator.setVisibility(GONE);
+                vh.textViews[7].setVisibility(GONE);
             }
             if (owner.isVerified()) {
-                setIcon(vh.username, icons[0]);
+                setIcon(vh.textViews[2], icons[0]);
             } else {
-                setIcon(vh.username, null);
+                setIcon(vh.textViews[2], null);
             }
             if (owner.isLocked()) {
-                setIcon(vh.screenname, icons[1]);
+                setIcon(vh.textViews[3], icons[1]);
             } else {
-                setIcon(vh.screenname, null);
+                setIcon(vh.textViews[3], null);
             }
             if (item.isPrivate()) {
-                setIcon(vh.title, icons[2]);
+                setIcon(vh.textViews[0], icons[2]);
             } else {
-                setIcon(vh.title, null);
+                setIcon(vh.textViews[0], null);
             }
         } else if (holder instanceof PlaceHolder) {
             PlaceHolder placeHolder = (PlaceHolder) holder;
@@ -297,23 +290,34 @@ public class ListAdapter extends Adapter<ViewHolder> {
      * view holder class for an user list item
      */
     private final class ListHolder extends ViewHolder {
-        final ImageView pb_image, subscrIcon, memberIcon;
-        final TextView title, username, screenname, description, createdAt;
-        final TextView memberCount, subscriberCount, followIndicator;
 
-        ListHolder(View v) {
+        final ImageView pb_image, subscrIcon, memberIcon;
+        final TextView[] textViews = new TextView[8];
+
+        ListHolder(View v, GlobalSettings settings) {
             super(v);
+            CardView background = (CardView) v;
             pb_image = v.findViewById(R.id.list_owner_profile);
             memberIcon = v.findViewById(R.id.list_member_icon);
             subscrIcon = v.findViewById(R.id.list_subscriber_icon);
-            followIndicator = v.findViewById(R.id.list_action);
-            title = v.findViewById(R.id.list_title);
-            username = v.findViewById(R.id.list_ownername);
-            screenname = v.findViewById(R.id.list_screenname);
-            description = v.findViewById(R.id.list_description);
-            createdAt = v.findViewById(R.id.list_createdat);
-            memberCount = v.findViewById(R.id.list_member);
-            subscriberCount = v.findViewById(R.id.list_subscriber);
+            textViews[0] = v.findViewById(R.id.list_title);
+            textViews[1] = v.findViewById(R.id.list_description);
+            textViews[2] = v.findViewById(R.id.list_ownername);
+            textViews[3] = v.findViewById(R.id.list_screenname);
+            textViews[4] = v.findViewById(R.id.list_createdat);
+            textViews[5] = v.findViewById(R.id.list_member);
+            textViews[6] = v.findViewById(R.id.list_subscriber);
+            textViews[7] = v.findViewById(R.id.list_action);
+
+            for (TextView tv : textViews) {
+                tv.setTextColor(settings.getFontColor());
+                tv.setTypeface(settings.getFontFace());
+            }
+            background.setCardBackgroundColor(settings.getCardColor());
+            textViews[4].setCompoundDrawablesWithIntrinsicBounds(icons[3], null, null, null);
+            textViews[7].setCompoundDrawablesWithIntrinsicBounds(icons[4], null, null, null);
+            memberIcon.setImageDrawable(icons[5]);
+            subscrIcon.setImageDrawable(icons[6]);
         }
     }
 
@@ -325,10 +329,16 @@ public class ListAdapter extends Adapter<ViewHolder> {
         final ProgressBar loadCircle;
         final Button loadBtn;
 
-        PlaceHolder(@NonNull View v) {
+        PlaceHolder(@NonNull View v, GlobalSettings settings) {
             super(v);
+            CardView background = (CardView) v;
             loadCircle = v.findViewById(R.id.placeholder_loading);
             loadBtn = v.findViewById(R.id.placeholder_button);
+
+            loadBtn.setTypeface(settings.getFontFace());
+            loadBtn.setTextColor(settings.getFontColor());
+            loadCircle.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
+            background.setCardBackgroundColor(settings.getCardColor());
         }
     }
 

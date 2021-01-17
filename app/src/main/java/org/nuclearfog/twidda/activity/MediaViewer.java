@@ -130,7 +130,7 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         videoController = new MediaController(this);
-        adapter = new ImageAdapter(this);
+        adapter = new ImageAdapter(getApplicationContext(), this);
         videoView.setZOrderOnTop(true);
         videoView.setOnPreparedListener(this);
         videoView.setOnErrorListener(this);

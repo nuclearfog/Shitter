@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.adapter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -26,7 +28,6 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -221,9 +222,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TWEET) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-            final TweetHolder vh = new TweetHolder(v);
-            vh.retweeterName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-            AppStyles.setTheme(settings, v);
+            final TweetHolder vh = new TweetHolder(v, settings);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -237,8 +236,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final PlaceHolder vh = new PlaceHolder(v);
-            AppStyles.setTheme(settings, v);
+            final PlaceHolder vh = new PlaceHolder(v, settings);
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -273,40 +271,40 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             TweetHolder vh = (TweetHolder) holder;
             User user = tweet.getUser();
             if (tweet.getEmbeddedTweet() != null) {
-                vh.retweeterName.setText(user.getScreenname());
-                vh.retweeterName.setVisibility(VISIBLE);
+                vh.textViews[5].setText(user.getScreenname());
+                vh.textViews[5].setVisibility(VISIBLE);
                 tweet = tweet.getEmbeddedTweet();
                 user = tweet.getUser();
             } else {
-                vh.retweeterName.setVisibility(INVISIBLE);
+                vh.textViews[5].setVisibility(INVISIBLE);
             }
             Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
-            vh.tweet.setText(text);
-            vh.username.setText(user.getUsername());
-            vh.screenname.setText(user.getScreenname());
-            vh.retweetCount.setText(formatter.format(tweet.getRetweetCount()));
-            vh.favoriteCount.setText(formatter.format(tweet.getFavorCount()));
-            vh.time.setText(getTimeString(tweet.getTime()));
+            vh.textViews[2].setText(text);
+            vh.textViews[0].setText(user.getUsername());
+            vh.textViews[1].setText(user.getScreenname());
+            vh.textViews[3].setText(formatter.format(tweet.getRetweetCount()));
+            vh.textViews[4].setText(formatter.format(tweet.getFavorCount()));
+            vh.textViews[6].setText(getTimeString(tweet.getTime()));
 
             if (tweet.retweeted()) {
-                setIcon(vh.retweetCount, icons[3]);
+                setIcon(vh.textViews[3], icons[3]);
             } else {
-                setIcon(vh.retweetCount, icons[2]);
+                setIcon(vh.textViews[3], icons[2]);
             }
             if (tweet.favored()) {
-                setIcon(vh.favoriteCount, icons[5]);
+                setIcon(vh.textViews[4], icons[5]);
             } else {
-                setIcon(vh.favoriteCount, icons[4]);
+                setIcon(vh.textViews[4], icons[4]);
             }
             if (user.isVerified()) {
-                setIcon(vh.username, icons[0]);
+                setIcon(vh.textViews[0], icons[0]);
             } else {
-                setIcon(vh.username, null);
+                setIcon(vh.textViews[0], null);
             }
             if (user.isLocked()) {
-                setIcon(vh.screenname, icons[1]);
+                setIcon(vh.textViews[1], icons[1]);
             } else {
-                setIcon(vh.screenname, null);
+                setIcon(vh.textViews[1], null);
             }
             if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
@@ -356,20 +354,27 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      * Holder class for the tweet view
      */
     private final class TweetHolder extends ViewHolder {
-        final TextView username, screenname, tweet, retweetCount;
-        final TextView favoriteCount, retweeterName, time;
+        final TextView[] textViews = new TextView[7];
         final ImageView profile;
 
-        TweetHolder(@NonNull View v) {
+        TweetHolder(@NonNull View v, GlobalSettings settings) {
             super(v);
-            username = v.findViewById(R.id.username);
-            screenname = v.findViewById(R.id.screenname);
-            tweet = v.findViewById(R.id.tweettext);
-            retweetCount = v.findViewById(R.id.retweet_number);
-            favoriteCount = v.findViewById(R.id.favorite_number);
-            retweeterName = v.findViewById(R.id.retweeter);
-            time = v.findViewById(R.id.time);
+            CardView background = (CardView) v;
             profile = v.findViewById(R.id.tweetPb);
+            textViews[0] = v.findViewById(R.id.username);
+            textViews[1] = v.findViewById(R.id.screenname);
+            textViews[2] = v.findViewById(R.id.tweettext);
+            textViews[3] = v.findViewById(R.id.retweet_number);
+            textViews[4] = v.findViewById(R.id.favorite_number);
+            textViews[5] = v.findViewById(R.id.retweeter);
+            textViews[6] = v.findViewById(R.id.time);
+
+            for (TextView tv : textViews) {
+                tv.setTextColor(settings.getFontColor());
+                tv.setTypeface(settings.getFontFace());
+            }
+            background.setBackgroundColor(settings.getCardColor());
+            textViews[5].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
         }
     }
 
@@ -380,10 +385,14 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         final Button loadBtn;
         final ProgressBar loadCircle;
 
-        PlaceHolder(@NonNull View v) {
+        PlaceHolder(@NonNull View v, GlobalSettings settings) {
             super(v);
+            CardView background = (CardView) v;
             loadBtn = v.findViewById(R.id.placeholder_button);
             loadCircle = v.findViewById(R.id.placeholder_loading);
+
+            background.setCardBackgroundColor(settings.getCardColor());
+            loadCircle.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
         }
     }
 

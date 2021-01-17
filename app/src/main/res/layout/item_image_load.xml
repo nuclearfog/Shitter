@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <ProgressBar
+        android:id="@+id/imageitem_progress"
         style="?android:attr/progressBarStyle"
         android:layout_width="@dimen/item_imageload_progress_size"
         android:layout_height="@dimen/item_imageload_progress_size"

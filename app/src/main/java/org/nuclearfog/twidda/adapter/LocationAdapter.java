@@ -101,9 +101,9 @@ public class LocationAdapter extends BaseAdapter {
             tv = new TextView(parent.getContext());
             tv.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
             tv.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
+            tv.setTextColor(settings.getFontColor());
+            tv.setTypeface(settings.getFontFace());
         }
-        tv.setTextColor(settings.getFontColor());
-        tv.setTypeface(settings.getFontFace());
         tv.setText(data.get(pos).getName());
         return tv;
     }

@@ -58,10 +58,10 @@ public class FontAdapter extends BaseAdapter {
             tv = new TextView(parent.getContext());
             tv.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
             tv.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
+            tv.setTextColor(settings.getFontColor());
         }
         tv.setText(name);
         tv.setTypeface(font);
-        tv.setTextColor(settings.getFontColor());
         return tv;
     }
 }

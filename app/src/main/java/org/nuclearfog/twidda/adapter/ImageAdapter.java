@@ -1,12 +1,15 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuffColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -15,10 +18,12 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
@@ -38,6 +43,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private static final int LOADING = 1;
 
     private OnImageClickListener itemClickListener;
+    private GlobalSettings settings;
 
     private List<ImageHolder> images = new LinkedList<>();
     private boolean loading = false;
@@ -48,8 +54,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      *
      * @param itemClickListener Click listener for images
      */
-    public ImageAdapter(OnImageClickListener itemClickListener) {
+    public ImageAdapter(Context context, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+        settings = GlobalSettings.getInstance(context);
     }
 
     /**
@@ -142,7 +149,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             return item;
         } else {
             View view = inflater.inflate(R.layout.item_image_load, parent, false);
-            return new LoadItem(view);
+            return new LoadItem(view, settings.getHighlightColor());
         }
     }
 
@@ -175,13 +182,16 @@ public class ImageAdapter extends Adapter<ViewHolder> {
      */
     private final class LoadItem extends ViewHolder {
 
-        LoadItem(View v) {
+        LoadItem(View v, int color) {
             super(v);
+            ProgressBar progress = v.findViewById(R.id.imageitem_progress);
+            progress.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
         }
     }
 
 
     public interface OnImageClickListener {
+
         /**
          * simple click on image_add
          *

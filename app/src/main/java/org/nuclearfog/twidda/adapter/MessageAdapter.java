@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -25,7 +26,6 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -109,11 +109,8 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
-        final MessageHolder vh = new MessageHolder(view);
-        AppStyles.setTheme(settings, view);
-        setIcon(vh.receivername, icons[2]);
-        vh.message.setMovementMethod(LinkMovementMethod.getInstance());
-        vh.answer.setOnClickListener(new View.OnClickListener() {
+        final MessageHolder vh = new MessageHolder(view, settings);
+        vh.buttons[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = vh.getLayoutPosition();
@@ -122,7 +119,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 }
             }
         });
-        vh.delete.setOnClickListener(new View.OnClickListener() {
+        vh.buttons[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = vh.getLayoutPosition();
@@ -152,21 +149,21 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
 
         MessageHolder holder = (MessageHolder) vh;
-        holder.message.setText(text);
-        holder.username.setText(sender.getUsername());
-        holder.screenname.setText(sender.getScreenname());
-        holder.createdAt.setText(getTimeString(message.getTime()));
-        holder.receivername.setText(message.getReceiver().getScreenname());
+        holder.textViews[0].setText(sender.getUsername());
+        holder.textViews[1].setText(sender.getScreenname());
+        holder.textViews[2].setText(message.getReceiver().getScreenname());
+        holder.textViews[3].setText(getTimeString(message.getTime()));
+        holder.textViews[4].setText(text);
 
         if (sender.isVerified()) {
-            setIcon(holder.username, icons[0]);
+            setIcon(holder.textViews[0], icons[0]);
         } else {
-            setIcon(holder.username, null);
+            setIcon(holder.textViews[0], null);
         }
         if (sender.isLocked()) {
-            setIcon(holder.screenname, icons[1]);
+            setIcon(holder.textViews[1], icons[1]);
         } else {
-            setIcon(holder.screenname, null);
+            setIcon(holder.textViews[1], null);
         }
         if (settings.getImageLoad() && sender.hasProfileImage()) {
             String pbLink = sender.getImageLink();
@@ -201,25 +198,34 @@ public class MessageAdapter extends Adapter<ViewHolder> {
      * Holder class for a message view
      */
     private final class MessageHolder extends ViewHolder {
-        final ImageView profile_img;
-        final TextView username;
-        final TextView screenname;
-        final TextView receivername;
-        final TextView createdAt;
-        final TextView message;
-        final Button answer;
-        final Button delete;
 
-        MessageHolder(View v) {
+        final TextView[] textViews = new TextView[5];
+        final Button[] buttons = new Button[2];
+        final ImageView profile_img;
+
+        MessageHolder(View v, GlobalSettings settings) {
             super(v);
+            CardView background = (CardView) v;
             profile_img = v.findViewById(R.id.dm_profileImg);
-            username = v.findViewById(R.id.dm_username);
-            screenname = v.findViewById(R.id.dm_screenname);
-            receivername = v.findViewById(R.id.dm_receiver);
-            createdAt = v.findViewById(R.id.dm_time);
-            message = v.findViewById(R.id.dm_message);
-            answer = v.findViewById(R.id.dm_answer);
-            delete = v.findViewById(R.id.dm_delete);
+            textViews[0] = v.findViewById(R.id.dm_username);
+            textViews[1] = v.findViewById(R.id.dm_screenname);
+            textViews[2] = v.findViewById(R.id.dm_receiver);
+            textViews[3] = v.findViewById(R.id.dm_time);
+            textViews[4] = v.findViewById(R.id.dm_message);
+            buttons[0] = v.findViewById(R.id.dm_answer);
+            buttons[1] = v.findViewById(R.id.dm_delete);
+
+            for (TextView tv : textViews) {
+                tv.setTextColor(settings.getFontColor());
+                tv.setTypeface(settings.getFontFace());
+            }
+            for (Button button : buttons) {
+                button.setTextColor(settings.getFontColor());
+                button.setTypeface(settings.getFontFace());
+            }
+            background.setCardBackgroundColor(settings.getCardColor());
+            textViews[2].setCompoundDrawables(icons[2], null, null, null);
+            textViews[4].setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
 

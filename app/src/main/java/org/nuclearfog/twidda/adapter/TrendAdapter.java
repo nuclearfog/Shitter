@@ -9,12 +9,12 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Trend;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -85,9 +85,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
-        final ItemHolder vh = new ItemHolder(v);
-        AppStyles.setTheme(settings, v);
-
+        final ItemHolder vh = new ItemHolder(v, settings);
         v.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,15 +103,15 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         ItemHolder holder = (ItemHolder) vh;
         Trend trend = trends.get(index);
-        holder.pos.setText(trend.getRankStr());
-        holder.name.setText(trend.getName());
+        holder.textViews[0].setText(trend.getRankStr());
+        holder.textViews[1].setText(trend.getName());
         if (trend.hasRangeInfo()) {
-            Resources resources = holder.vol.getContext().getResources();
+            Resources resources = holder.textViews[2].getContext().getResources();
             String trendVol = formatter.format(trend.getRange()) + " " + resources.getString(R.string.trend_range);
-            holder.vol.setText(trendVol);
-            holder.vol.setVisibility(VISIBLE);
+            holder.textViews[2].setText(trendVol);
+            holder.textViews[2].setVisibility(VISIBLE);
         } else {
-            holder.vol.setVisibility(GONE);
+            holder.textViews[2].setVisibility(GONE);
         }
     }
 
@@ -121,13 +119,20 @@ public class TrendAdapter extends Adapter<ViewHolder> {
      * view holder class for an item view
      */
     private final class ItemHolder extends ViewHolder {
-        final TextView name, pos, vol;
+        final TextView[] textViews = new TextView[3];
 
-        ItemHolder(View v) {
+        ItemHolder(View v, GlobalSettings settings) {
             super(v);
-            pos = v.findViewById(R.id.trendpos);
-            name = v.findViewById(R.id.trendname);
-            vol = v.findViewById(R.id.trendvol);
+            CardView background = (CardView) v;
+            textViews[0] = v.findViewById(R.id.trendpos);
+            textViews[1] = v.findViewById(R.id.trendname);
+            textViews[2] = v.findViewById(R.id.trendvol);
+
+            background.setCardBackgroundColor(settings.getCardColor());
+            for (TextView tv : textViews) {
+                tv.setTextColor(settings.getFontColor());
+                tv.setTypeface(settings.getFontFace());
+            }
         }
     }
 

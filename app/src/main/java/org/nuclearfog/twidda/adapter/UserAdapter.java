@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -24,7 +26,6 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -147,10 +148,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_USER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-            final ItemHolder vh = new ItemHolder(v);
-            AppStyles.setTheme(settings, v);
-            setIcon(vh.following, icons[2]);
-            setIcon(vh.follower, icons[3]);
+            final ItemHolder vh = new ItemHolder(v, settings);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -179,8 +177,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final PlaceHolder vh = new PlaceHolder(v);
-            AppStyles.setTheme(settings, v);
+            final PlaceHolder vh = new PlaceHolder(v, settings);
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -203,19 +200,19 @@ public class UserAdapter extends Adapter<ViewHolder> {
         User user = items.get(index);
         if (holder instanceof ItemHolder && user != null) {
             ItemHolder vh = (ItemHolder) holder;
-            vh.username.setText(user.getUsername());
-            vh.screenname.setText(user.getScreenname());
-            vh.following.setText(formatter.format(user.getFollowing()));
-            vh.follower.setText(formatter.format(user.getFollower()));
+            vh.textViews[0].setText(user.getUsername());
+            vh.textViews[1].setText(user.getScreenname());
+            vh.textViews[2].setText(formatter.format(user.getFollowing()));
+            vh.textViews[3].setText(formatter.format(user.getFollower()));
             if (user.isVerified()) {
-                setIcon(vh.username, icons[0]);
+                setIcon(vh.textViews[0], icons[0]);
             } else {
-                setIcon(vh.username, null);
+                setIcon(vh.textViews[0], null);
             }
             if (user.isLocked()) {
-                setIcon(vh.screenname, icons[1]);
+                setIcon(vh.textViews[1], icons[1]);
             } else {
-                setIcon(vh.screenname, null);
+                setIcon(vh.textViews[1], null);
             }
             if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
@@ -280,18 +277,28 @@ public class UserAdapter extends Adapter<ViewHolder> {
      * Holder for an user view item
      */
     private final class ItemHolder extends ViewHolder {
+
+        final TextView[] textViews = new TextView[4];
         final ImageView profileImg;
-        final TextView username, screenname, following, follower;
         final ImageButton delete;
 
-        ItemHolder(View v) {
+        ItemHolder(View v, GlobalSettings settings) {
             super(v);
-            username = v.findViewById(R.id.username_detail);
-            screenname = v.findViewById(R.id.screenname_detail);
+            CardView background = (CardView) v;
+            textViews[0] = v.findViewById(R.id.username_detail);
+            textViews[1] = v.findViewById(R.id.screenname_detail);
+            textViews[2] = v.findViewById(R.id.item_user_friends);
+            textViews[3] = v.findViewById(R.id.item_user_follower);
             profileImg = v.findViewById(R.id.user_profileimg);
             delete = v.findViewById(R.id.useritem_del_user);
-            following = v.findViewById(R.id.item_user_friends);
-            follower = v.findViewById(R.id.item_user_follower);
+
+            for (TextView tv : textViews) {
+                tv.setTextColor(settings.getFontColor());
+                tv.setTypeface(settings.getFontFace());
+            }
+            background.setCardBackgroundColor(settings.getCardColor());
+            textViews[2].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
+            textViews[3].setCompoundDrawablesWithIntrinsicBounds(icons[3], null, null, null);
         }
     }
 
@@ -302,10 +309,14 @@ public class UserAdapter extends Adapter<ViewHolder> {
         final ProgressBar loadCircle;
         final Button loadBtn;
 
-        PlaceHolder(@NonNull View v) {
+        PlaceHolder(@NonNull View v, GlobalSettings settings) {
             super(v);
+            CardView background = (CardView) v;
             loadCircle = v.findViewById(R.id.placeholder_loading);
             loadBtn = v.findViewById(R.id.placeholder_button);
+
+            background.setCardBackgroundColor(settings.getCardColor());
+            loadCircle.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
         }
     }
 
