@@ -21,11 +21,11 @@ Features:
 - Proxy server feature
 - tweet GPS locale
 - Twitter user list
+- setup own API keys
 
 Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>
 
 check <a href="https://github.com/nuclearfog/Shitter/discussions">discussions</a> for news and current problems.
-You can also setup your own API keys in the app settings.
 
 
 Screenshots:
