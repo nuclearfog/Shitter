@@ -113,7 +113,6 @@
     <string name="info_list_created">Userlist created</string>
     <string name="info_fetching_link">redirecting to Twitter login</string>
     <string name="info_login_to_twitter">login to Twitter</string>
-    <string name="info_twitter_login_link">Please click the link below to login</string>
     <string name="info_phone_tls_support">Phone does not support TLS 1.2. App will probably not work!</string>
     <string name="error_wrong_connection_settings">Wrong connection settings!</string>
     <string name="info_cant_add_video">can\'t add video</string>

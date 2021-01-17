@@ -31,6 +31,16 @@
                 android:singleLine="true" />
 
             <ImageButton
+                android:id="@+id/dm_preview"
+                style="@style/RoundButton"
+                android:layout_width="@dimen/dmpopup_button_size"
+                android:layout_height="@dimen/dmpopup_button_size"
+                android:layout_marginStart="@dimen/dmpopup_button_margin"
+                android:layout_marginLeft="@dimen/dmpopup_button_margin"
+                android:contentDescription="@string/tweet_add_image"
+                android:visibility="gone" />
+
+            <ImageButton
                 android:id="@+id/dm_media"
                 style="@style/RoundButton"
                 android:layout_width="@dimen/dmpopup_button_size"

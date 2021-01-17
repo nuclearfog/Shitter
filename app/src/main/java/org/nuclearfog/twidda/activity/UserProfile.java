@@ -426,8 +426,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             startActivity(intent);
         } else {
             // open link in browser
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(tag));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tag));
             try {
                 startActivity(intent);
             } catch (ActivityNotFoundException err) {

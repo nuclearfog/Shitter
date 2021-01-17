@@ -35,6 +35,7 @@ import static android.content.Intent.ACTION_PICK;
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -81,7 +82,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     private MessageUpdater messageAsync;
 
     private EditText receiver, message;
-    private ImageButton media;
+    private ImageButton media, preview;
     private Dialog loadingCircle, leaveDialog;
 
     @Nullable
@@ -95,6 +96,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         View root = findViewById(R.id.dm_popup);
         ImageButton send = findViewById(R.id.dm_send);
         media = findViewById(R.id.dm_media);
+        preview = findViewById(R.id.dm_preview);
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
         loadingCircle = new Dialog(this, R.style.LoadingDialog);
@@ -107,6 +109,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         }
         send.setImageResource(R.drawable.right);
         media.setImageResource(R.drawable.image_add);
+        preview.setImageResource(R.drawable.image);
         leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
@@ -118,6 +121,7 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
 
         send.setOnClickListener(this);
         media.setOnClickListener(this);
+        preview.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         loadingCircle.setOnDismissListener(this);
     }
@@ -144,17 +148,16 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         super.onActivityResult(reqCode, returnCode, intent);
-        if (reqCode == REQ_MEDIA && returnCode == RESULT_OK) {
-            if (intent != null && intent.getData() != null) {
-                Cursor c = getContentResolver().query(intent.getData(), PICK_IMAGE, null, null, null);
-                if (c != null) {
-                    if (c.moveToFirst()) {
-                        int index = c.getColumnIndex(PICK_IMAGE[0]);
-                        mediaPath = c.getString(index);
-                        media.setImageResource(R.drawable.image);
-                    }
-                    c.close();
+        if (reqCode == REQ_MEDIA && returnCode == RESULT_OK && intent != null && intent.getData() != null) {
+            Cursor c = getContentResolver().query(intent.getData(), PICK_IMAGE, null, null, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    int index = c.getColumnIndex(PICK_IMAGE[0]);
+                    mediaPath = c.getString(index);
+                    media.setVisibility(INVISIBLE);
+                    preview.setVisibility(VISIBLE);
                 }
+                c.close();
             }
         }
     }
@@ -183,16 +186,16 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
                 Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
             }
         }
-        // open media
+        // get media
         else if (viewId == R.id.dm_media) {
-            if (mediaPath == null)
-                getMedia();
-            else {
-                Intent image = new Intent(this, MediaViewer.class);
-                image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
-                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
-                startActivity(image);
-            }
+            getMedia();
+        }
+        // open media
+        else if (viewId == R.id.dm_preview) {
+            Intent image = new Intent(this, MediaViewer.class);
+            image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
+            image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
+            startActivity(image);
         }
         // stop updating
         else if (viewId == R.id.kill_button) {
@@ -200,12 +203,14 @@ public class MessagePopup extends AppCompatActivity implements OnClickListener, 
         }
     }
 
+
     @Override
     public void onDismiss(DialogInterface dialog) {
         if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
             messageAsync.cancel(true);
         }
     }
+
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {

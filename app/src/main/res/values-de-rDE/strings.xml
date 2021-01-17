@@ -139,7 +139,6 @@
     <string name="login_info">3 Schritte zum Login</string>
     <string name="info_fetching_link">öffne Twitter login Seite</string>
     <string name="info_login_to_twitter">Melde in Twitter an</string>
-    <string name="info_twitter_login_link">Zum Anmelden bitte Link anklicken</string>
     <string name="userlist_public_sel">öffentlich</string>
     <string name="userlist_enter_title">Titel eingeben</string>
     <string name="userlist_enter_descr">Beschreibung der Liste eingeben</string>

@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +34,7 @@ import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * Login Activity of the App
@@ -148,13 +147,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         try {
             startActivity(loginIntent);
         } catch (ActivityNotFoundException err) {
-            // If no browser was found, a popup with the login link appears
-            Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
-            dialog.setContentView(R.layout.dialog_login_info);
-            TextView callbackURL = dialog.findViewById(R.id.login_request_link);
-            callbackURL.setLinkTextColor(settings.getHighlightColor());
-            callbackURL.setText(link);
-            dialog.show();
+            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
         }
     }
 
