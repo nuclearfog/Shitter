@@ -13,6 +13,7 @@ import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,9 @@ import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+
+import jp.wasabeef.picasso.transformations.BlurTransformation;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
@@ -96,7 +100,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private UserUpdater editorAsync;
     private GlobalSettings settings;
 
-    private ImageView profile_image, profile_banner;
+    private ImageView profile_image, profile_banner, toolbar_background;
     private EditText name, link, loc, bio;
     private Dialog loadingCircle, closeDialog;
     private Button addBannerBtn;
@@ -111,11 +115,11 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.page_editprofile);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
         View root = findViewById(R.id.page_edit);
-        View header = findViewById(R.id.editprofile_header);
         profile_image = findViewById(R.id.edit_pb);
         profile_banner = findViewById(R.id.edit_banner);
         addBannerBtn = findViewById(R.id.edit_add_banner);
         changeBannerBtn = findViewById(R.id.edit_change_banner);
+        toolbar_background = findViewById(R.id.editprofile_toolbar_background);
         name = findViewById(R.id.edit_name);
         link = findViewById(R.id.edit_link);
         loc = findViewById(R.id.edit_location);
@@ -129,12 +133,6 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
         settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(settings, root);
-        Point displaySize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(displaySize);
-        int layoutHeight = displaySize.x / 3;
-        int buttonHeight = (int) getResources().getDimension(R.dimen.editprofile_dummy_height);
-        header.getLayoutParams().height = layoutHeight + buttonHeight;
-        header.requestLayout();
 
         closeDialog = DialogBuilder.create(this, PROFILE_EDIT_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
@@ -145,7 +143,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         Object data = getIntent().getSerializableExtra(KEY_USER_DATA);
         if (data instanceof User) {
             user = (User) data;
-            setUser(user);
+            setUser();
         }
         profile_image.setOnClickListener(this);
         profile_banner.setOnClickListener(this);
@@ -314,19 +312,22 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
     /**
      * Set current user's information
-     *
-     * @param user Current user
      */
-    private void setUser(User user) {
+    private void setUser() {
         if (user.hasProfileImage()) {
             String pbLink = user.getImageLink();
             if (!user.hasDefaultProfileImage())
                 pbLink += PROFILE_IMG_HIGH_RES;
-            Picasso.get().load(pbLink).into(profile_image);
+            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
         }
         if (user.hasBannerImage()) {
             String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
+            Point displaySize = new Point();
+            getWindowManager().getDefaultDisplay().getSize(displaySize);
+            int toolbarHeight = (int) getResources().getDimension(R.dimen.profile_toolbar_height);
             Picasso.get().load(bnLink).into(profile_banner);
+            Picasso.get().load(bnLink).resize(displaySize.x, toolbarHeight).centerCrop(Gravity.TOP)
+                    .transform(new BlurTransformation(this, 10)).into(toolbar_background);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
         } else {
@@ -337,7 +338,6 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         link.setText(user.getLink());
         loc.setText(user.getLocation());
         bio.setText(user.getBio());
-        this.user = user;
     }
 
     /**

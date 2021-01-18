@@ -17,16 +17,11 @@
             android:layout_marginBottom="@dimen/listitem_margin"
             android:orientation="horizontal">
 
-            <androidx.cardview.widget.CardView
+            <ImageView
+                android:id="@+id/list_owner_profile"
                 android:layout_width="@dimen/listitem_profile"
-                android:layout_height="@dimen/listitem_profile">
-
-                <ImageView
-                    android:id="@+id/list_owner_profile"
-                    android:layout_width="@dimen/listitem_profile"
-                    android:layout_height="@dimen/listitem_profile"
-                    android:contentDescription="@string/item_list_pb_desc" />
-            </androidx.cardview.widget.CardView>
+                android:layout_height="@dimen/listitem_profile"
+                android:contentDescription="@string/item_list_pb_desc" />
 
             <LinearLayout
                 android:layout_width="match_parent"

@@ -34,6 +34,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -310,7 +312,8 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
-                Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.profile);
+                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                        .error(R.drawable.no_image).into(vh.profile);
             } else {
                 vh.profile.setImageResource(0);
             }

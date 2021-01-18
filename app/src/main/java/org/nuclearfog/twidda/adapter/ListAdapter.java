@@ -31,6 +31,8 @@ import org.nuclearfog.twidda.fragment.UserListFragment;
 
 import java.text.NumberFormat;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
@@ -165,7 +167,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
         if (viewType == ITEM_LIST) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
             final ListHolder vh = new ListHolder(v, settings);
-            vh.pb_image.setOnClickListener(new OnClickListener() {
+            vh.profile_img.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
@@ -223,7 +225,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 String pbLink = owner.getImageLink();
                 if (!owner.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
-                Picasso.get().load(pbLink).error(R.drawable.no_image).into(vh.pb_image);
+                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(3, 0))
+                        .error(R.drawable.no_image).into(vh.profile_img);
+            } else {
+                vh.profile_img.setImageResource(0);
             }
             if (!item.isListOwner() && item.isFollowing()) {
                 vh.textViews[7].setVisibility(VISIBLE);
@@ -291,13 +296,13 @@ public class ListAdapter extends Adapter<ViewHolder> {
      */
     private final class ListHolder extends ViewHolder {
 
-        final ImageView pb_image, subscrIcon, memberIcon;
+        final ImageView profile_img, subscrIcon, memberIcon;
         final TextView[] textViews = new TextView[8];
 
         ListHolder(View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
-            pb_image = v.findViewById(R.id.list_owner_profile);
+            profile_img = v.findViewById(R.id.list_owner_profile);
             memberIcon = v.findViewById(R.id.list_member_icon);
             subscrIcon = v.findViewById(R.id.list_subscriber_icon);
             textViews[0] = v.findViewById(R.id.list_title);

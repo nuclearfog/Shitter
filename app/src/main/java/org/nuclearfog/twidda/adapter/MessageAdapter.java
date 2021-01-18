@@ -31,6 +31,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
@@ -169,7 +171,10 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             String pbLink = sender.getImageLink();
             if (!sender.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
-            Picasso.get().load(pbLink).error(R.drawable.no_image).into(holder.profile_img);
+            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                    .error(R.drawable.no_image).into(holder.profile_img);
+        } else {
+            holder.profile_img.setImageResource(0);
         }
     }
 

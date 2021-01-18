@@ -47,6 +47,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -511,7 +513,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             String pbLink = author.getImageLink();
             if (!author.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
-            Picasso.get().load(pbLink).error(R.drawable.no_image).into(profile_img);
+            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(4, 0))
+                    .error(R.drawable.no_image).into(profile_img);
+        } else {
+            profile_img.setImageResource(0);
         }
         String placeName = tweetUpdate.getLocationName();
         if (placeName != null && !placeName.isEmpty()) {

@@ -8,10 +8,89 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/editprofile_toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/editprofile_toolbar_height" />
+        android:layout_height="@dimen/editprofile_image_layer_height"
+        android:layout_marginBottom="@dimen/editprofile_layout_margin"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/edit_banner"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:contentDescription="@string/profile_banner"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="3.0"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/edit_add_banner"
+            style="@style/FeedbackButton"
+            android:layout_width="88dp"
+            android:layout_height="20dp"
+            android:paddingLeft="@dimen/editprofile_button_padding"
+            android:paddingRight="@dimen/editprofile_button_padding"
+            android:text="@string/editprofile_add_banner"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_banner"
+            app:layout_constraintEnd_toEndOf="@+id/edit_banner"
+            app:layout_constraintStart_toStartOf="@+id/edit_banner"
+            app:layout_constraintTop_toBottomOf="@+id/editprofile_toolbar_background" />
+
+        <ImageView
+            android:id="@+id/edit_change_banner"
+            android:layout_width="@dimen/editprofile_add_btn_size"
+            android:layout_height="@dimen/editprofile_add_btn_size"
+            android:contentDescription="@string/descr_add_profile_image"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_add_banner"
+            app:layout_constraintEnd_toEndOf="@+id/edit_add_banner"
+            app:layout_constraintStart_toStartOf="@+id/edit_add_banner"
+            app:layout_constraintTop_toTopOf="@+id/edit_add_banner"
+            app:srcCompat="@drawable/add" />
+
+        <ImageView
+            android:id="@+id/editprofile_toolbar_background"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editprofile_toolbar_height"
+            app:layout_constraintBottom_toBottomOf="@+id/editprofile_toolbar"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/editprofile_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editprofile_toolbar_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/edit_pb"
+            android:layout_width="@dimen/editprofile_image"
+            android:layout_height="@dimen/editprofile_image"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:contentDescription="@string/image_preview"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="@+id/edit_banner"
+            app:layout_constraintTop_toBottomOf="@+id/editprofile_toolbar_background" />
+
+        <ImageView
+            android:layout_width="@dimen/editprofile_add_btn_size"
+            android:layout_height="@dimen/editprofile_add_btn_size"
+            android:contentDescription="@string/descr_add_profile_image"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_pb"
+            app:layout_constraintEnd_toEndOf="@+id/edit_pb"
+            app:layout_constraintStart_toStartOf="@+id/edit_pb"
+            app:layout_constraintTop_toTopOf="@+id/edit_pb"
+            app:srcCompat="@drawable/add" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,169 +99,77 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:layout_marginLeft="@dimen/editprofile_layout_padding"
+            android:layout_marginRight="@dimen/editprofile_layout_padding"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/editprofile_header"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/editprofile_banner_height"
-                android:layout_marginBottom="@dimen/editprofile_layout_margin"
-                android:gravity="center_vertical">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/profile_banner"
-                        android:paddingLeft="@dimen/editprofile_banner_padding"
-                        android:paddingRight="@dimen/editprofile_banner_padding"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/empty_banner" />
-
-                    <ImageView
-                        android:id="@+id/edit_banner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/profile_banner"
-                        android:paddingLeft="@dimen/editprofile_banner_padding"
-                        android:paddingRight="@dimen/editprofile_banner_padding"
-                        android:scaleType="centerCrop" />
-
-                    <Button
-                        android:id="@+id/edit_add_banner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/editprofile_button_height"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/editprofile_button_margin"
-                        android:layout_marginRight="@dimen/editprofile_button_margin"
-                        android:paddingLeft="@dimen/editprofile_button_padding"
-                        android:paddingRight="@dimen/editprofile_button_padding"
-                        android:text="@string/editprofile_add_banner"
-                        android:visibility="invisible"
-                        style="@style/FeedbackButton" />
-
-                    <ImageView
-                        android:id="@+id/edit_change_banner"
-                        android:layout_width="@dimen/editprofile_add_btn_size"
-                        android:layout_height="@dimen/editprofile_add_btn_size"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/descr_add_profile_image"
-                        app:srcCompat="@drawable/add" />
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="@dimen/editprofile_image"
-                    android:layout_height="@dimen/editprofile_image"
-                    android:layout_gravity="bottom"
-                    android:layout_marginStart="@dimen/editprofile_image_margin"
-                    android:layout_marginLeft="@dimen/editprofile_image_margin"
-                    android:layout_marginEnd="@dimen/editprofile_image_margin"
-                    android:layout_marginRight="@dimen/editprofile_image_margin">
-
-                    <ImageView
-                        android:id="@+id/edit_pb"
-                        android:layout_width="@dimen/editprofile_image"
-                        android:layout_height="@dimen/editprofile_image"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/image_preview"
-                        android:scaleType="centerCrop" />
-
-                    <ImageView
-                        android:layout_width="@dimen/editprofile_add_btn_size"
-                        android:layout_height="@dimen/editprofile_add_btn_size"
-                        android:layout_gravity="center"
-                        android:contentDescription="@string/descr_add_profile_image"
-                        app:srcCompat="@drawable/add" />
-
-                </FrameLayout>
-
-            </FrameLayout>
-
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/editprofile_layout_padding"
-                android:layout_marginRight="@dimen/editprofile_layout_padding"
-                android:orientation="vertical">
+                android:padding="@dimen/editprofile_edittext_padding"
+                android:text="@string/username" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/editprofile_edittext_padding"
-                    android:text="@string/username" />
+            <EditText
+                android:id="@+id/edit_name"
+                style="@style/TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_username"
+                android:inputType="text"
+                android:maxLength="@integer/editprofile_username_max_length"
+                android:singleLine="true"
+                tools:ignore="Autofill" />
 
-                <EditText
-                    android:id="@+id/edit_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/enter_username"
-                    android:inputType="text"
-                    android:maxLength="@integer/editprofile_username_max_length"
-                    android:singleLine="true"
-                    tools:ignore="Autofill"
-                    style="@style/TextInput" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/editprofile_edittext_padding"
+                android:text="@string/profile_location" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/editprofile_edittext_padding"
-                    android:text="@string/profile_location" />
+            <EditText
+                android:id="@+id/edit_location"
+                style="@style/TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_location_hint"
+                android:inputType="text"
+                android:singleLine="true"
+                tools:ignore="Autofill" />
 
-                <EditText
-                    android:id="@+id/edit_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/edit_location_hint"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    tools:ignore="Autofill"
-                    style="@style/TextInput" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/editprofile_edittext_padding"
+                android:text="@string/profile_link" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/editprofile_edittext_padding"
-                    android:text="@string/profile_link" />
+            <EditText
+                android:id="@+id/edit_link"
+                style="@style/TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/edit_hint_link"
+                android:inputType="text"
+                android:singleLine="true"
+                tools:ignore="Autofill" />
 
-                <EditText
-                    android:id="@+id/edit_link"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/edit_hint_link"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    tools:ignore="Autofill"
-                    style="@style/TextInput" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/editprofile_edittext_padding"
+                android:text="@string/profile_bio" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/editprofile_edittext_padding"
-                    android:text="@string/profile_bio" />
-
-                <EditText
-                    android:id="@+id/edit_bio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="@dimen/editprofile_bio_min_height"
-                    android:gravity="top"
-                    android:hint="@string/edit_hint_enter_descr"
-                    android:inputType="textMultiLine"
-                    tools:ignore="Autofill"
-                    style="@style/TextInput" />
-
-            </LinearLayout>
+            <EditText
+                android:id="@+id/edit_bio"
+                style="@style/TextInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="@string/edit_hint_enter_descr"
+                android:inputType="textMultiLine"
+                android:minHeight="@dimen/editprofile_bio_min_height"
+                tools:ignore="Autofill" />
 
         </LinearLayout>
-
     </ScrollView>
 
 </LinearLayout>

@@ -41,17 +41,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <androidx.cardview.widget.CardView
+                        <ImageView
+                            android:id="@+id/profileimage_detail"
                             android:layout_width="@dimen/tweet_profile"
-                            android:layout_height="@dimen/tweet_profile">
-
-                            <ImageView
-                                android:id="@+id/profileimage_detail"
-                                android:layout_width="@dimen/tweet_profile"
-                                android:layout_height="@dimen/tweet_profile"
-                                android:contentDescription="@string/profile_image" />
-
-                        </androidx.cardview.widget.CardView>
+                            android:layout_height="@dimen/tweet_profile"
+                            android:contentDescription="@string/profile_image" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
