@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,188 +18,181 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
+                android:id="@+id/profile_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="invisible">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/profile_toolbar"
+                <FrameLayout
+                    android:id="@+id/profile_layer"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_toolbar_height" />
+                    android:layout_height="180dp">
 
-                <LinearLayout
-                    android:id="@+id/profile_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:visibility="invisible">
-
-                    <FrameLayout
-                        android:id="@+id/profile_layer"
+                    <ImageView
+                        android:id="@+id/profile_banner"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@string/profile_banner"
+                        android:scaleType="centerCrop" />
+
+                    <ImageView
+                        android:id="@+id/profile_toolbar_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/profile_toolbar_height"
+                        android:gravity="top"
+                        tools:ignore="ContentDescription" />
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/profile_toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/profile_toolbar_height"
+                        android:gravity="top" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="bottom"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/profile_layout_padding"
+                        android:paddingRight="@dimen/profile_layout_padding">
 
                         <ImageView
-                            android:id="@+id/profile_banner"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:contentDescription="@string/profile_banner"
-                            android:paddingLeft="@dimen/profile_banner_padding"
-                            android:paddingRight="@dimen/profile_banner_padding"
-                            android:adjustViewBounds="true"
-                            android:scaleType="centerCrop" />
+                            android:id="@+id/profile_img"
+                            android:layout_width="@dimen/profile_image"
+                            android:layout_height="@dimen/profile_image"
+                            android:contentDescription="@string/profile_image" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="bottom"
-                            android:orientation="horizontal"
-                            android:paddingLeft="@dimen/profile_layout_padding"
-                            android:paddingRight="@dimen/profile_layout_padding">
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/profile_layout_margin"
+                            android:layout_marginLeft="@dimen/profile_layout_margin"
+                            android:orientation="vertical">
 
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="@dimen/profile_image"
-                                android:layout_height="@dimen/profile_image">
-
-                                <ImageView
-                                    android:id="@+id/profile_img"
-                                    android:layout_width="@dimen/profile_image"
-                                    android:layout_height="@dimen/profile_image"
-                                    android:contentDescription="@string/profile_image" />
-
-                            </androidx.cardview.widget.CardView>
+                            <TextView
+                                android:id="@+id/profile_username"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="@dimen/profile_padding_drawable"
+                                android:padding="@dimen/profile_tv_padding"
+                                android:singleLine="true"
+                                android:textSize="@dimen/profile_textsize_big" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/profile_layout_margin"
-                                android:layout_marginLeft="@dimen/profile_layout_margin"
-                                android:orientation="vertical">
+                                android:orientation="horizontal">
 
                                 <TextView
-                                    android:id="@+id/profile_username"
+                                    android:id="@+id/profile_screenname"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="@dimen/profile_textsize_big"
                                     android:drawablePadding="@dimen/profile_padding_drawable"
                                     android:padding="@dimen/profile_tv_padding"
-                                    android:singleLine="true" />
+                                    android:singleLine="true"
+                                    android:textSize="@dimen/profile_textsize_big" />
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
+                                <TextView
+                                    android:id="@+id/follow_back"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
+                                    android:drawablePadding="@dimen/profile_padding_drawable"
+                                    android:padding="@dimen/profile_tv_padding"
+                                    android:singleLine="true"
+                                    android:text="@string/follows_you"
+                                    android:textSize="@dimen/profile_textsize_big"
+                                    android:visibility="invisible" />
 
-                                    <TextView
-                                        android:id="@+id/profile_screenname"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="@dimen/profile_textsize_big"
-                                        android:drawablePadding="@dimen/profile_padding_drawable"
-                                        android:padding="@dimen/profile_tv_padding"
-                                        android:singleLine="true" />
+                            </LinearLayout>
 
-                                    <TextView
-                                        android:id="@+id/follow_back"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:textSize="@dimen/profile_textsize_big"
-                                        android:drawablePadding="@dimen/profile_padding_drawable"
-                                        android:padding="@dimen/profile_tv_padding"
-                                        android:singleLine="true"
-                                        android:text="@string/follows_you"
-                                        android:visibility="invisible" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/profile_layout_margin"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
 
-                                </LinearLayout>
+                                <Button
+                                    android:id="@+id/following"
+                                    style="@style/FeedbackButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/profile_button_height"
+                                    android:layout_marginLeft="@dimen/profile_button_margin"
+                                    android:layout_marginRight="@dimen/profile_button_margin"
+                                    android:layout_weight="1"
+                                    android:paddingLeft="@dimen/profile_button_padding"
+                                    android:paddingRight="@dimen/profile_button_padding" />
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/profile_layout_margin"
-                                    android:gravity="center_vertical"
-                                    android:orientation="horizontal">
-
-                                    <Button
-                                        android:id="@+id/following"
-                                        android:layout_width="0dp"
-                                        android:layout_height="@dimen/profile_button_height"
-                                        android:layout_marginLeft="@dimen/profile_button_margin"
-                                        android:layout_marginRight="@dimen/profile_button_margin"
-                                        android:layout_weight="1"
-                                        android:paddingLeft="@dimen/profile_button_padding"
-                                        android:paddingRight="@dimen/profile_button_padding"
-                                        style="@style/FeedbackButton" />
-
-                                    <Button
-                                        android:id="@+id/follower"
-                                        android:layout_width="0dp"
-                                        android:layout_height="@dimen/profile_button_height"
-                                        android:layout_marginLeft="@dimen/profile_button_margin"
-                                        android:layout_marginRight="@dimen/profile_button_margin"
-                                        android:layout_weight="1"
-                                        android:paddingLeft="@dimen/profile_button_padding"
-                                        android:paddingRight="@dimen/profile_button_padding"
-                                        style="@style/FeedbackButton" />
-
-                                </LinearLayout>
+                                <Button
+                                    android:id="@+id/follower"
+                                    style="@style/FeedbackButton"
+                                    android:layout_width="0dp"
+                                    android:layout_height="@dimen/profile_button_height"
+                                    android:layout_marginLeft="@dimen/profile_button_margin"
+                                    android:layout_marginRight="@dimen/profile_button_margin"
+                                    android:layout_weight="1"
+                                    android:paddingLeft="@dimen/profile_button_padding"
+                                    android:paddingRight="@dimen/profile_button_padding" />
 
                             </LinearLayout>
 
                         </LinearLayout>
 
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/bio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/profile_tv_margin"
-                        android:layout_marginRight="@dimen/profile_tv_margin"
-                        android:fadeScrollbars="false"
-                        android:linksClickable="true"
-                        android:maxLines="@integer/profile_text_bio_lines"
-                        android:scrollbars="vertical" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/location"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/profile_tv_margin"
-                            android:layout_marginRight="@dimen/profile_tv_margin"
-                            android:layout_weight="1"
-                            android:drawablePadding="@dimen/profile_padding_drawable"
-                            android:singleLine="true"
-                            android:textSize="@dimen/profile_textsize_small" />
-
-                        <TextView
-                            android:id="@+id/links"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/profile_tv_margin"
-                            android:layout_marginRight="@dimen/profile_tv_margin"
-                            android:layout_weight="1"
-                            android:drawablePadding="@dimen/profile_padding_drawable"
-                            android:linksClickable="true"
-                            android:singleLine="true"
-                            android:textSize="@dimen/profile_textsize_small" />
                     </LinearLayout>
 
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/bio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/profile_tv_margin"
+                    android:layout_marginRight="@dimen/profile_tv_margin"
+                    android:fadeScrollbars="false"
+                    android:linksClickable="true"
+                    android:maxLines="@integer/profile_text_bio_lines"
+                    android:scrollbars="vertical" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
                     <TextView
-                        android:id="@+id/profile_date"
-                        android:layout_width="match_parent"
+                        android:id="@+id/location"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/profile_tv_margin"
                         android:layout_marginRight="@dimen/profile_tv_margin"
+                        android:layout_weight="1"
                         android:drawablePadding="@dimen/profile_padding_drawable"
                         android:singleLine="true"
                         android:textSize="@dimen/profile_textsize_small" />
 
+                    <TextView
+                        android:id="@+id/links"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/profile_tv_margin"
+                        android:layout_marginRight="@dimen/profile_tv_margin"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/profile_padding_drawable"
+                        android:linksClickable="true"
+                        android:singleLine="true"
+                        android:textSize="@dimen/profile_textsize_small" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/profile_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/profile_tv_margin"
+                    android:layout_marginRight="@dimen/profile_tv_margin"
+                    android:drawablePadding="@dimen/profile_padding_drawable"
+                    android:singleLine="true"
+                    android:textSize="@dimen/profile_textsize_small" />
 
             </LinearLayout>
 

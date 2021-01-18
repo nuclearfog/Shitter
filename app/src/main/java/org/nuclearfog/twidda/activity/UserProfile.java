@@ -8,6 +8,7 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spanned;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -46,11 +47,13 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
+import jp.wasabeef.picasso.transformations.BlurTransformation;
+import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
+
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static android.widget.LinearLayout.LayoutParams.WRAP_CONTENT;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
@@ -122,6 +125,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      */
     private static final int TRANSPARENCY = 0xafffffff;
 
+    private Point displaySize;
     private FragmentAdapter adapter;
     private GlobalSettings settings;
     private UserAction profileAsync;
@@ -130,8 +134,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private TextView txtUser, txtScrName;
     private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
     private Button following, follower;
-    private ImageView profileImage, bannerImage;
-    private View profile_head, profile_layer;
+    private ImageView profileImage, bannerImage, toolbarBackground;
+    private View profile_head;
     private ViewPager pager;
     private TabLayout tabLayout;
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
@@ -148,6 +152,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         setContentView(R.layout.page_profile);
         Toolbar tool = findViewById(R.id.profile_toolbar);
         View root = findViewById(R.id.user_view);
+        View profile_layer = findViewById(R.id.profile_layer);
         tabLayout = findViewById(R.id.profile_tab);
         bioTxt = findViewById(R.id.bio);
         following = findViewById(R.id.following);
@@ -155,17 +160,24 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         lnkTxt = findViewById(R.id.links);
         profileImage = findViewById(R.id.profile_img);
         bannerImage = findViewById(R.id.profile_banner);
+        toolbarBackground = findViewById(R.id.profile_toolbar_background);
         txtUser = findViewById(R.id.profile_username);
         txtScrName = findViewById(R.id.profile_screenname);
         txtLocation = findViewById(R.id.location);
         profile_head = findViewById(R.id.profile_header);
-        profile_layer = findViewById(R.id.profile_layer);
         txtCreated = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
 
-        settings = GlobalSettings.getInstance(this);
+        displaySize = new Point();
+        getWindowManager().getDefaultDisplay().getSize(displaySize);
+        int layoutHeight = displaySize.x / 3;
+        int buttonHeight = (int) getResources().getDimension(R.dimen.profile_button_height);
+        int layerPadding = (int) getResources().getDimension(R.dimen.profile_layer_padding);
+        profile_layer.getLayoutParams().height = layoutHeight + buttonHeight + layerPadding;
+        profile_layer.requestLayout();
 
+        settings = GlobalSettings.getInstance(this);
         following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
         follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
         txtCreated.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
@@ -590,23 +602,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         if (settings.getImageLoad()) {
             if (user.hasBannerImage()) {
-                Point displaySize = new Point();
-                getWindowManager().getDefaultDisplay().getSize(displaySize);
-                int layoutHeight = displaySize.x / 3;
-                int buttonHeight = (int) getResources().getDimension(R.dimen.profile_button_height);
-                profile_layer.getLayoutParams().height = layoutHeight + buttonHeight;
                 String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
                 Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage);
+                int toolbarHeight = (int) getResources().getDimension(R.dimen.profile_toolbar_height);
+                Picasso.get().load(bannerLink).resize(displaySize.x, toolbarHeight).centerCrop(Gravity.TOP)
+                        .transform(new BlurTransformation(this, 10)).error(R.drawable.no_banner).into(toolbarBackground);
             } else {
                 bannerImage.setImageResource(0);
-                profile_layer.getLayoutParams().height = WRAP_CONTENT;
             }
-            profile_layer.requestLayout();
             if (user.hasProfileImage()) {
                 String imgLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     imgLink += PROFILE_IMG_HIGH_RES;
-                Picasso.get().load(imgLink).error(R.drawable.no_image).into(profileImage);
+                Picasso.get().load(imgLink).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
+            } else {
+                profileImage.setImageResource(0);
             }
         }
     }
