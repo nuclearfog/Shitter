@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -53,8 +55,8 @@
             android:id="@+id/editprofile_toolbar_background"
             android:layout_width="match_parent"
             android:layout_height="@dimen/editprofile_toolbar_height"
-            app:layout_constraintBottom_toBottomOf="@+id/editprofile_toolbar"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/edit_banner"
             tools:ignore="ContentDescription" />
 
 
@@ -71,9 +73,9 @@
             android:id="@+id/edit_pb"
             android:layout_width="@dimen/editprofile_image"
             android:layout_height="@dimen/editprofile_image"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginStart="@dimen/editprofile_profile_image_left_margin"
+            android:layout_marginLeft="@dimen/editprofile_profile_image_left_margin"
+            android:layout_marginTop="@dimen/editprofile_profile_image_top_margin"
             android:contentDescription="@string/image_preview"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="@+id/edit_banner"

@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
@@ -41,7 +42,8 @@ import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import jp.wasabeef.picasso.transformations.BlurTransformation;
+import java.io.File;
+
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -53,6 +55,7 @@ import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
+import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDIT_LEAVE;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
@@ -60,7 +63,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
 /**
  * Activity for Twitter profile editor
  */
-public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick {
+public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick, Callback {
 
     /**
      * key to preload user data
@@ -132,6 +135,8 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
+        toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
+        profile_banner.setDrawingCacheEnabled(true);
         AppStyles.setTheme(settings, root);
 
         closeDialog = DialogBuilder.create(this, PROFILE_EDIT_LEAVE, this);
@@ -218,20 +223,18 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
                 Cursor c = getContentResolver().query(intent.getData(), MEDIA_MODE, null, null, null);
                 if (c != null) {
                     if (c.moveToFirst()) {
-                        int index = c.getColumnIndex(MEDIA_MODE[0]);
-                        String mediaPath = c.getString(index);
-                        Bitmap image = BitmapFactory.decodeFile(mediaPath);
-
+                        String mediaPath = c.getString(0);
                         if (reqCode == REQ_PROFILE_IMG) {
                             // Add image as profile image
+                            Bitmap image = BitmapFactory.decodeFile(mediaPath);
                             profile_image.setImageBitmap(image);
                             profileLink = mediaPath;
                         } else {
                             // Add image as banner image
-                            int bannerHeight = profile_banner.getMeasuredWidth() / 3;
-                            if (bannerHeight > 0)
-                                profile_banner.setMaxHeight(bannerHeight);
-                            profile_banner.setImageBitmap(image);
+                            File img = new File(mediaPath);
+                            Point displaySize = new Point();
+                            getWindowManager().getDefaultDisplay().getSize(displaySize);
+                            Picasso.get().load(img).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
                             addBannerBtn.setVisibility(INVISIBLE);
                             changeBannerBtn.setVisibility(VISIBLE);
                             bannerLink = mediaPath;
@@ -276,6 +279,18 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
             finish();
         }
     }
+
+
+    @Override
+    public void onSuccess() {
+        AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
+    }
+
+
+    @Override
+    public void onError(Exception e) {
+    }
+
 
     /**
      * enable or disable loading dialog
@@ -322,12 +337,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         }
         if (user.hasBannerImage()) {
             String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
-            Point displaySize = new Point();
-            getWindowManager().getDefaultDisplay().getSize(displaySize);
-            int toolbarHeight = (int) getResources().getDimension(R.dimen.profile_toolbar_height);
-            Picasso.get().load(bnLink).into(profile_banner);
-            Picasso.get().load(bnLink).resize(displaySize.x, toolbarHeight).centerCrop(Gravity.TOP)
-                    .transform(new BlurTransformation(this, 10)).into(toolbar_background);
+            Picasso.get().load(bnLink).into(profile_banner, this);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
         } else {

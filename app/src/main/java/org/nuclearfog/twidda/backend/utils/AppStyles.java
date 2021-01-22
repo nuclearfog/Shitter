@@ -1,9 +1,13 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.view.Menu;
@@ -27,6 +31,10 @@ import com.kyleduo.switchbutton.SwitchButton;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
+import jp.wasabeef.picasso.transformations.BlurTransformation;
+import jp.wasabeef.picasso.transformations.CropTransformation;
+
+import static android.graphics.Bitmap.Config.ARGB_8888;
 import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 
 /**
@@ -267,6 +275,21 @@ public final class AppStyles {
         }
         tArray.recycle();
         return tabs;
+    }
+
+
+    public static void setToolbarBackground(Activity activity, ImageView background, ImageView toolbarBackground) {
+        Point displaySize = new Point();
+        activity.getWindowManager().getDefaultDisplay().getSize(displaySize);
+        float toolbarRatio = displaySize.x / activity.getResources().getDimension(R.dimen.profile_toolbar_height);
+        Bitmap image = ((BitmapDrawable) background.getDrawable()).getBitmap();
+
+        BlurTransformation blur = new BlurTransformation(background.getContext(), 20);
+        CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() / toolbarRatio),
+                CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.TOP);
+
+        Bitmap result = blur.transform(crop.transform(image.copy(ARGB_8888, true)));
+        toolbarBackground.setImageBitmap(result);
     }
 
     /**

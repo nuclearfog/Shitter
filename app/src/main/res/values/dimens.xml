@@ -44,17 +44,17 @@
     <!--dimens of page_profile.xml-->
     <dimen name="profile_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="profile_image">80dp</dimen>
+    <dimen name="profile_image_padding_left">10dp</dimen>
+    <dimen name="profile_image_padding_top">30dp</dimen>
     <dimen name="profile_tv_margin">5dp</dimen>
     <dimen name="profile_tv_padding">2dp</dimen>
-    <dimen name="profile_layout_margin">5dp</dimen>
-    <dimen name="profile_layout_padding">10dp</dimen>
+    <dimen name="profile_username_margin">24dp</dimen>
     <dimen name="profile_padding_drawable">5dp</dimen>
     <dimen name="profile_button_height">20sp</dimen>
     <dimen name="profile_button_margin">5dp</dimen>
     <dimen name="profile_button_padding">5dp</dimen>
     <dimen name="profile_textsize_big">14sp</dimen>
     <dimen name="profile_textsize_small">12sp</dimen>
-    <dimen name="profile_layer_padding">5dp</dimen>
     <integer name="profile_text_bio_lines">3</integer>
 
     <!--dimens of page_editprofile.xml-->
@@ -66,6 +66,8 @@
     <dimen name="editprofile_bio_min_height">150dp</dimen>
     <dimen name="editprofile_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="editprofile_add_btn_size">40dp</dimen>
+    <dimen name="editprofile_profile_image_left_margin">10dp</dimen>
+    <dimen name="editprofile_profile_image_top_margin">30dp</dimen>
     <dimen name="editprofile_image_layer_height">180dp</dimen>
     <integer name="editprofile_username_max_length">50</integer>
 

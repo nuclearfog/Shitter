@@ -4,11 +4,9 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spanned;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener;
 import com.google.android.material.tabs.TabLayout.Tab;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
@@ -47,7 +46,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
-import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.content.Intent.ACTION_VIEW;
@@ -123,18 +121,21 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     /**
      * background color mask for TextView backgrounds
      */
-    private static final int TRANSPARENCY = 0xafffffff;
+    private static final int TEXT_TRANSPARENCY = 0xafffffff;
 
-    private Point displaySize;
+    /**
+     * background color mask for toolbar background
+     */
+    public static final int TOOLBAR_TRANSPARENCY = 0x5fffffff;
+
     private FragmentAdapter adapter;
     private GlobalSettings settings;
     private UserAction profileAsync;
 
     private TextView[] tabTweetCount;
-    private TextView txtUser, txtScrName;
-    private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back;
-    private Button following, follower;
+    private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back, txtUser, txtScrName;
     private ImageView profileImage, bannerImage, toolbarBackground;
+    private Button following, follower;
     private View profile_head;
     private ViewPager pager;
     private TabLayout tabLayout;
@@ -152,7 +153,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         setContentView(R.layout.page_profile);
         Toolbar tool = findViewById(R.id.profile_toolbar);
         View root = findViewById(R.id.user_view);
-        View profile_layer = findViewById(R.id.profile_layer);
         tabLayout = findViewById(R.id.profile_tab);
         bioTxt = findViewById(R.id.bio);
         following = findViewById(R.id.following);
@@ -169,14 +169,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
 
-        displaySize = new Point();
-        getWindowManager().getDefaultDisplay().getSize(displaySize);
-        int layoutHeight = displaySize.x / 3;
-        int buttonHeight = (int) getResources().getDimension(R.dimen.profile_button_height);
-        int layerPadding = (int) getResources().getDimension(R.dimen.profile_layer_padding);
-        profile_layer.getLayoutParams().height = layoutHeight + buttonHeight + layerPadding;
-        profile_layer.requestLayout();
-
         settings = GlobalSettings.getInstance(this);
         following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
         follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
@@ -184,9 +176,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         txtLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
         lnkTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
         follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
-        txtUser.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
-        txtScrName.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
-        follow_back.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY);
+        tool.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
+        txtUser.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
+        txtScrName.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
+        follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         bioTxt.setMovementMethod(LinkAndScrollMovement.getInstance());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
         AppStyles.setTheme(settings, root);
@@ -602,11 +595,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         if (settings.getImageLoad()) {
             if (user.hasBannerImage()) {
+                Callback callback = new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                    }
+                };
                 String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
-                Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage);
-                int toolbarHeight = (int) getResources().getDimension(R.dimen.profile_toolbar_height);
-                Picasso.get().load(bannerLink).resize(displaySize.x, toolbarHeight).centerCrop(Gravity.TOP)
-                        .transform(new BlurTransformation(this, 10)).error(R.drawable.no_banner).into(toolbarBackground);
+                Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage, callback);
             } else {
                 bannerImage.setImageResource(0);
             }
