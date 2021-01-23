@@ -282,6 +282,15 @@ public class Tweet implements Serializable {
     }
 
     /**
+     * check if tweet contains text
+     *
+     * @return true if text is set
+     */
+    public boolean containsTweetText() {
+        return !tweet.trim().isEmpty();
+    }
+
+    /**
      * check if tweet contains sensitive media
      *
      * @return true if media has sensitive conent

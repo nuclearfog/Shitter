@@ -96,10 +96,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      */
     public static final Pattern LINK_PATTERN = Pattern.compile("https://twitter.com/\\w+/status/\\d+");
 
-    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, retweeter, sensitive_media;
-    private Button rtwButton, favButton, replyName, tweetLocGPS;
+    private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
+    private Button ansButton, rtwButton, favButton, replyName, tweetLocGPS, retweeter;
     private ImageView profile_img, mediaButton;
-    private View header, footer;
     private Dialog deleteDialog;
 
     private GlobalSettings settings;
@@ -115,10 +114,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         setContentView(R.layout.page_tweet);
         Toolbar tool = findViewById(R.id.tweet_toolbar);
         View root = findViewById(R.id.tweet_layout);
-        Button ansButton = findViewById(R.id.tweet_answer);
         ViewPager pager = findViewById(R.id.tweet_pager);
-        header = findViewById(R.id.tweet_head);
-        footer = findViewById(R.id.tweet_foot);
+        ansButton = findViewById(R.id.tweet_answer);
         rtwButton = findViewById(R.id.tweet_retweet);
         favButton = findViewById(R.id.tweet_favorit);
         usrName = findViewById(R.id.usernamedetail);
@@ -162,6 +159,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
         tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
         sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
+        replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
         retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
@@ -170,6 +168,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         setSupportActionBar(tool);
         AppStyles.setTheme(settings, root);
 
+        retweeter.setOnClickListener(this);
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
@@ -343,6 +342,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 }
                 startActivity(mediaIntent);
             }
+            // go to user retweeting this tweet
+            else if (v.getId() == R.id.tweet_retweeter) {
+                Intent profile = new Intent(getApplicationContext(), UserProfile.class);
+                profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
+                startActivity(profile);
+            }
         }
     }
 
@@ -441,6 +446,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             tweetUpdate = tweetUpdate.getEmbeddedTweet();
             retweeter.setText(tweet.getUser().getScreenname());
             retweeter.setVisibility(VISIBLE);
+        } else {
+            retweeter.setVisibility(GONE);
         }
         User author = tweetUpdate.getUser();
         invalidateOptionsMenu();
@@ -476,23 +483,23 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweet_api.setText(R.string.tweet_sent_from);
         tweet_api.append(" " + tweetUpdate.getSource());
 
-        if (header.getVisibility() != VISIBLE) {
-            header.setVisibility(VISIBLE);
-            footer.setVisibility(VISIBLE);
-        }
-        if (!tweetUpdate.getTweet().trim().isEmpty()) {
+        if (tweetUpdate.containsTweetText()) {
             Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getTweet(), settings.getHighlightColor(), this);
             tweetText.setVisibility(VISIBLE);
             tweetText.setText(sTweet);
+        } else {
+            tweetText.setVisibility(GONE);
         }
         if (tweetUpdate.getReplyId() > 0) {
-            replyName.setText(R.string.tweet_answering);
-            replyName.append(tweetUpdate.getReplyName());
+            replyName.setText(tweetUpdate.getReplyName());
             replyName.setVisibility(VISIBLE);
+        } else {
+            replyName.setVisibility(GONE);
         }
         if (tweetUpdate.containsSensitiveMedia()) {
             sensitive_media.setVisibility(VISIBLE);
-
+        } else {
+            sensitive_media.setVisibility(GONE);
         }
         if (tweetUpdate.getMediaType() == Tweet.MediaType.NONE) {
             mediaButton.setVisibility(GONE);
@@ -522,11 +529,20 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (placeName != null && !placeName.isEmpty()) {
             tweetLocName.setVisibility(VISIBLE);
             tweetLocName.setText(placeName);
+        } else {
+            tweetLocName.setVisibility(GONE);
         }
         String location = tweetUpdate.getLocationCoordinates();
         if (location != null && !location.isEmpty()) {
             tweetLocGPS.setVisibility(VISIBLE);
             tweetLocGPS.setText(location);
+        } else {
+            tweetLocGPS.setVisibility(GONE);
+        }
+        if (rtwButton.getVisibility() != VISIBLE) {
+            rtwButton.setVisibility(VISIBLE);
+            favButton.setVisibility(VISIBLE);
+            ansButton.setVisibility(VISIBLE);
         }
     }
 

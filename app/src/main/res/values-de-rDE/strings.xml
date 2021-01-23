@@ -31,7 +31,6 @@
     <string name="info_user_blocked">geblockt!</string>
     <string name="info_user_unblocked">entblockt!</string>
     <string name="info_tweet_removed">Tweet gelöscht!</string>
-    <string name="tweet_answering">"an "</string>
     <string name="tweet_sent_from">"gesendet von: "</string>
     <string name="menu_mute_user">stummschalten</string>
     <string name="menu_unmute_user">Stummschaltung aufheben</string>

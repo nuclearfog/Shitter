@@ -136,7 +136,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back, txtUser, txtScrName;
     private ImageView profileImage, bannerImage, toolbarBackground;
     private Button following, follower;
-    private View profile_head;
     private ViewPager pager;
     private TabLayout tabLayout;
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
@@ -164,7 +163,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         txtUser = findViewById(R.id.profile_username);
         txtScrName = findViewById(R.id.profile_screenname);
         txtLocation = findViewById(R.id.location);
-        profile_head = findViewById(R.id.profile_header);
         txtCreated = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
         pager = findViewById(R.id.profile_pager);
@@ -563,8 +561,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         txtUser.setText(user.getUsername());
         txtScrName.setText(user.getScreenname());
 
-        if (profile_head.getVisibility() != VISIBLE) {
-            profile_head.setVisibility(VISIBLE);
+        if (txtCreated.length() == 0) {
             String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
             txtCreated.setText(date);
         }
@@ -619,6 +616,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             } else {
                 profileImage.setImageResource(0);
             }
+        }
+        if (following.getVisibility() != VISIBLE) {
+            following.setVisibility(VISIBLE);
+            follower.setVisibility(VISIBLE);
         }
     }
 

@@ -25,7 +25,6 @@
     <string name="settings_clear_data">clear app data</string>
     <string name="confirm_delete_tweet">delete tweet?</string>
     <string name="confirm_delete_database">clear app data?</string>
-    <string name="tweet_answering">"to "</string>
     <string name="tweet_sent_from">"sent from: "</string>
     <string name="directmessage">Directmessage</string>
     <string name="username">Username</string>

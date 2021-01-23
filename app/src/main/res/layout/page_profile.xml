@@ -18,10 +18,8 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/profile_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible">
+                android:layout_height="match_parent">
 
                 <ImageView
                     android:id="@+id/profile_banner"
@@ -63,38 +61,36 @@
 
                 <TextView
                     android:id="@+id/profile_username"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/profile_username_margin"
                     android:layout_marginLeft="@dimen/profile_username_margin"
-                    android:layout_marginEnd="@dimen/profile_tv_margin"
-                    android:layout_marginRight="@dimen/profile_tv_margin"
+                    android:layout_marginEnd="@dimen/profile_username_margin"
+                    android:layout_marginRight="@dimen/profile_username_margin"
                     android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:padding="@dimen/profile_tv_padding"
+                    android:padding="@dimen/profile_tv_background_padding"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_big"
                     app:layout_constrainedWidth="true"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@+id/profile_img"
                     app:layout_constraintBottom_toBottomOf="@+id/profile_banner"
+                    app:layout_constraintStart_toEndOf="@+id/profile_img"
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
                     android:id="@+id/profile_screenname"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/profile_username_margin"
                     android:layout_marginLeft="@dimen/profile_username_margin"
-                    android:layout_marginEnd="@dimen/profile_tv_margin"
-                    android:layout_marginRight="@dimen/profile_tv_margin"
+                    android:layout_marginEnd="@dimen/profile_username_margin"
+                    android:layout_marginRight="@dimen/profile_username_margin"
                     android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:padding="@dimen/profile_tv_padding"
+                    android:padding="@dimen/profile_tv_background_padding"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_big"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintStart_toEndOf="@+id/profile_img"
                     app:layout_constraintTop_toBottomOf="@+id/profile_username" />
-
 
                 <TextView
                     android:id="@+id/follow_back"
@@ -103,16 +99,16 @@
                     android:layout_marginStart="@dimen/profile_tv_margin"
                     android:layout_marginLeft="@dimen/profile_tv_margin"
                     android:drawablePadding="@dimen/profile_padding_drawable"
-                    android:padding="@dimen/profile_tv_padding"
+                    android:padding="@dimen/profile_tv_background_padding"
                     android:singleLine="true"
                     android:text="@string/follows_you"
                     android:textSize="@dimen/profile_textsize_big"
                     android:visibility="invisible"
                     app:layout_constrainedWidth="true"
-                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/profile_screenname"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_username"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_username" />
 
                 <Button
                     android:id="@+id/following"
@@ -123,12 +119,13 @@
                     android:layout_marginLeft="@dimen/profile_button_margin"
                     android:layout_marginEnd="@dimen/profile_button_margin"
                     android:layout_marginRight="@dimen/profile_button_margin"
-                    android:paddingLeft="@dimen/profile_button_padding"
-                    android:paddingRight="@dimen/profile_button_padding"
+                    android:paddingLeft="@dimen/profile_button_background_padding"
+                    android:paddingRight="@dimen/profile_button_background_padding"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toStartOf="@+id/follower"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/profile_img"
-                    app:layout_constraintTop_toBottomOf="@+id/follow_back"
-                    app:layout_constraintEnd_toStartOf="@+id/follower" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_screenname" />
 
                 <Button
                     android:id="@+id/follower"
@@ -139,12 +136,13 @@
                     android:layout_marginLeft="@dimen/profile_button_margin"
                     android:layout_marginEnd="@dimen/profile_button_margin"
                     android:layout_marginRight="@dimen/profile_button_margin"
-                    android:paddingLeft="@dimen/profile_button_padding"
-                    android:paddingRight="@dimen/profile_button_padding"
+                    android:paddingLeft="@dimen/profile_button_background_padding"
+                    android:paddingRight="@dimen/profile_button_background_padding"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/following"
-                    app:layout_constraintTop_toTopOf="@+id/following"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toTopOf="@+id/following" />
 
                 <TextView
                     android:id="@+id/bio"
@@ -158,9 +156,9 @@
                     android:linksClickable="true"
                     android:maxLines="@integer/profile_text_bio_lines"
                     android:scrollbars="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/following"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/following" />
 
 
                 <TextView
@@ -174,10 +172,10 @@
                     android:drawablePadding="@dimen/profile_padding_drawable"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_small"
+                    app:layout_constraintEnd_toStartOf="@+id/links"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bio"
-                    app:layout_constraintEnd_toStartOf="@+id/links" />
+                    app:layout_constraintTop_toBottomOf="@+id/bio" />
 
                 <TextView
                     android:id="@+id/links"
@@ -191,11 +189,17 @@
                     android:linksClickable="true"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_small"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/location"
-                    app:layout_constraintTop_toBottomOf="@+id/bio"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/bio" />
 
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/profile_date_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="bottom"
+                    app:constraint_referenced_ids="links, location" />
 
                 <TextView
                     android:id="@+id/profile_date"
@@ -210,7 +214,7 @@
                     android:textSize="@dimen/profile_textsize_small"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/location" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_date_barrier" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
