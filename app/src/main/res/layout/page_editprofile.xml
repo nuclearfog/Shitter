@@ -75,16 +75,17 @@
             android:layout_height="@dimen/editprofile_image"
             android:layout_marginStart="@dimen/editprofile_profile_image_left_margin"
             android:layout_marginLeft="@dimen/editprofile_profile_image_left_margin"
-            android:layout_marginTop="@dimen/editprofile_profile_image_top_margin"
             android:contentDescription="@string/image_preview"
             android:scaleType="centerCrop"
+            android:translationY="@dimen/editprofile_image_overlap_banner"
             app:layout_constraintStart_toStartOf="@+id/edit_banner"
-            app:layout_constraintTop_toBottomOf="@+id/editprofile_toolbar_background" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_banner" />
 
         <ImageView
             android:layout_width="@dimen/editprofile_add_btn_size"
             android:layout_height="@dimen/editprofile_add_btn_size"
             android:contentDescription="@string/descr_add_profile_image"
+            android:translationY="@dimen/editprofile_image_overlap_banner"
             app:layout_constraintBottom_toBottomOf="@+id/edit_pb"
             app:layout_constraintEnd_toEndOf="@+id/edit_pb"
             app:layout_constraintStart_toStartOf="@+id/edit_pb"

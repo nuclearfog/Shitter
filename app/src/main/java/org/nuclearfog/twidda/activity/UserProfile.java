@@ -86,7 +86,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
  * Activity class for user profile page
  */
 public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener,
-        OnTabSelectedListener, OnDialogClick {
+        OnTabSelectedListener, OnDialogClick, Callback {
 
     /**
      * Key for the user ID
@@ -178,7 +178,6 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
         tool.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
         txtUser.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
-        txtScrName.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         bioTxt.setMovementMethod(LinkAndScrollMovement.getInstance());
         bioTxt.setLinkTextColor(settings.getHighlightColor());
@@ -535,6 +534,18 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     }
 
 
+    @Override
+    public void onSuccess() {
+        // setup toolbar background
+        AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
+    }
+
+
+    @Override
+    public void onError(Exception e) {
+    }
+
+
     /**
      * Set User Information
      *
@@ -595,18 +606,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         if (settings.getImageLoad()) {
             if (user.hasBannerImage()) {
-                Callback callback = new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                    }
-                };
                 String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
-                Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage, callback);
+                Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
             } else {
                 bannerImage.setImageResource(0);
             }

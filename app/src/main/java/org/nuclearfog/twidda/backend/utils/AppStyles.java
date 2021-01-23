@@ -277,14 +277,20 @@ public final class AppStyles {
         return tabs;
     }
 
-
+    /**
+     * setup a transparent blurry toolbar
+     *
+     * @param activity          activity reference to get the measures
+     * @param background        background overlapped by the toolbar at the top
+     * @param toolbarBackground background image of the toolbar
+     */
     public static void setToolbarBackground(Activity activity, ImageView background, ImageView toolbarBackground) {
         Point displaySize = new Point();
         activity.getWindowManager().getDefaultDisplay().getSize(displaySize);
         float toolbarRatio = displaySize.x / activity.getResources().getDimension(R.dimen.profile_toolbar_height);
         Bitmap image = ((BitmapDrawable) background.getDrawable()).getBitmap();
 
-        BlurTransformation blur = new BlurTransformation(background.getContext(), 20);
+        BlurTransformation blur = new BlurTransformation(background.getContext(), 5);
         CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() / toolbarRatio),
                 CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.TOP);
 
