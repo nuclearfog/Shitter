@@ -69,7 +69,10 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private int loadingIndex = NO_INDEX;
     private boolean userRemovable = false;
 
-
+    /**
+     * @param context           application context
+     * @param itemClickListener click listener
+     */
     public UserAdapter(Context context, UserClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
@@ -82,7 +85,11 @@ public class UserAdapter extends Adapter<ViewHolder> {
         setIconColor();
     }
 
-
+    /**
+     * insert an user list depending on cursor to the top or bottom
+     *
+     * @param newData new userlist
+     */
     @MainThread
     public void setData(@NonNull TwitterUserList newData) {
         if (newData.isEmpty()) {
@@ -110,7 +117,25 @@ public class UserAdapter extends Adapter<ViewHolder> {
         disableLoading();
     }
 
+    /**
+     * update user information
+     *
+     * @param user User update
+     */
+    @MainThread
+    public void updateUser(User user) {
+        int index = items.indexOf(user);
+        if (index >= 0) {
+            items.set(index, user);
+            notifyItemChanged(index);
+        }
+    }
 
+    /**
+     * remove user from adapter
+     *
+     * @param username User to remove
+     */
     @MainThread
     public void removeUser(String username) {
         for (int pos = 0; pos < items.size(); pos++) {

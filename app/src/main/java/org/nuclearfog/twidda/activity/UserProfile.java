@@ -81,6 +81,8 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFI
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
+import static org.nuclearfog.twidda.fragment.UserFragment.KEY_USER_UPDATE;
+import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
 
 /**
  * Activity class for user profile page
@@ -395,6 +397,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (tabLayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
         } else {
+            Intent returnData = new Intent();
+            returnData.putExtra(KEY_USER_UPDATE, user);
+            setResult(RETURN_USER_UPDATED, returnData);
             super.onBackPressed();
         }
     }

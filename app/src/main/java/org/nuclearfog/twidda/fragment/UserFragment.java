@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.adapter.UserAdapter;
@@ -52,6 +54,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
      */
     public static final String KEY_FRAG_DEL_USER = "user_en_del";
 
+    public static final String KEY_USER_UPDATE = "user_update";
+
     /**
      * configuration for a list of users following the specified user
      */
@@ -87,6 +91,10 @@ public class UserFragment extends ListFragment implements UserClickListener,
      * configuration for a list of users added to a list
      */
     public static final int USER_FRAG_LISTS = 7;
+
+    private static final int REQ_USER_UPDATE = 1;
+
+    public static final int RETURN_USER_UPDATED = 2;
 
     private UserLoader userTask;
     private ListManager listTask;
@@ -139,6 +147,19 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_USER_UPDATE && resultCode == RETURN_USER_UPDATED && data != null) {
+            Object result = data.getSerializableExtra(KEY_USER_UPDATE);
+            if (result instanceof User) {
+                User update = (User) result;
+                adapter.updateUser(update);
+            }
+        }
+    }
+
+
+    @Override
     protected UserAdapter initAdapter() {
         adapter = new UserAdapter(requireContext(), this);
         adapter.enableDeleteButton(delUser);
@@ -159,7 +180,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
         if (!isRefreshing()) {
             Intent intent = new Intent(requireContext(), UserProfile.class);
             intent.putExtra(KEY_PROFILE_DATA, user);
-            startActivity(intent);
+            startActivityForResult(intent, REQ_USER_UPDATE);
         }
     }
 
