@@ -86,6 +86,8 @@ import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
 
 /**
  * Activity class for user profile page
+ *
+ * @author nuclearfog
  */
 public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener,
         OnTabSelectedListener, OnDialogClick, Callback {
@@ -135,10 +137,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private UserAction profileAsync;
 
     private TextView[] tabTweetCount;
-    private TextView txtLocation, txtCreated, lnkTxt, bioTxt, follow_back, txtUser, txtScrName;
+    private TextView user_location, user_createdAt, user_website, user_bio, follow_back, username, screenName;
     private ImageView profileImage, bannerImage, toolbarBackground;
     private Button following, follower;
-    private ViewPager pager;
+    private ViewPager tabPages;
     private TabLayout tabLayout;
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
@@ -155,41 +157,41 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         Toolbar tool = findViewById(R.id.profile_toolbar);
         View root = findViewById(R.id.user_view);
         tabLayout = findViewById(R.id.profile_tab);
-        bioTxt = findViewById(R.id.bio);
+        user_bio = findViewById(R.id.bio);
         following = findViewById(R.id.following);
         follower = findViewById(R.id.follower);
-        lnkTxt = findViewById(R.id.links);
+        user_website = findViewById(R.id.links);
         profileImage = findViewById(R.id.profile_img);
         bannerImage = findViewById(R.id.profile_banner);
         toolbarBackground = findViewById(R.id.profile_toolbar_background);
-        txtUser = findViewById(R.id.profile_username);
-        txtScrName = findViewById(R.id.profile_screenname);
-        txtLocation = findViewById(R.id.location);
-        txtCreated = findViewById(R.id.profile_date);
+        username = findViewById(R.id.profile_username);
+        screenName = findViewById(R.id.profile_screenname);
+        user_location = findViewById(R.id.location);
+        user_createdAt = findViewById(R.id.profile_date);
         follow_back = findViewById(R.id.follow_back);
-        pager = findViewById(R.id.profile_pager);
+        tabPages = findViewById(R.id.profile_pager);
 
         settings = GlobalSettings.getInstance(this);
         following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
         follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
-        txtCreated.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
-        txtLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
-        lnkTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
+        user_createdAt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
+        user_location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
+        user_website.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
         follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
         tool.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
-        txtUser.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
+        username.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
-        bioTxt.setMovementMethod(LinkAndScrollMovement.getInstance());
-        bioTxt.setLinkTextColor(settings.getHighlightColor());
+        user_bio.setMovementMethod(LinkAndScrollMovement.getInstance());
+        user_bio.setLinkTextColor(settings.getHighlightColor());
         AppStyles.setTheme(settings, root);
-        lnkTxt.setTextColor(settings.getHighlightColor());
+        user_website.setTextColor(settings.getHighlightColor());
 
         tool.setTitle("");
         setSupportActionBar(tool);
         adapter = new FragmentAdapter(getSupportFragmentManager());
-        pager.setAdapter(adapter);
-        pager.setOffscreenPageLimit(2);
-        tabLayout.setupWithViewPager(pager);
+        tabPages.setAdapter(adapter);
+        tabPages.setOffscreenPageLimit(2);
+        tabLayout.setupWithViewPager(tabPages);
         unfollowConfirm = DialogBuilder.create(this, PROFILE_UNFOLLOW, this);
         blockConfirm = DialogBuilder.create(this, PROFILE_BLOCK, this);
         muteConfirm = DialogBuilder.create(this, PROFILE_MUTE, this);
@@ -209,7 +211,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         follower.setOnClickListener(this);
         profileImage.setOnClickListener(this);
         bannerImage.setOnClickListener(this);
-        lnkTxt.setOnClickListener(this);
+        user_website.setOnClickListener(this);
     }
 
 
@@ -395,7 +397,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onBackPressed() {
         if (tabLayout.getSelectedTabPosition() > 0) {
-            pager.setCurrentItem(0);
+            tabPages.setCurrentItem(0);
         } else {
             Intent returnData = new Intent();
             returnData.putExtra(KEY_USER_UPDATE, user);
@@ -563,48 +565,49 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         tabTweetCount[1].setText(formatter.format(user.getFavorCount()));
         following.setText(formatter.format(user.getFollowing()));
         follower.setText(formatter.format(user.getFollower()));
-        txtUser.setText(user.getUsername());
-        txtScrName.setText(user.getScreenname());
+        username.setText(user.getUsername());
+        screenName.setText(user.getScreenname());
 
-        if (txtCreated.length() == 0) {
+        if (user_createdAt.getVisibility() != VISIBLE) {
             String date = SimpleDateFormat.getDateTimeInstance().format(user.getCreatedAt());
-            txtCreated.setText(date);
+            user_createdAt.setVisibility(VISIBLE);
+            user_createdAt.setText(date);
         }
         if (user.isVerified()) {
-            txtUser.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-            AppStyles.setIconColor(txtUser, settings.getIconColor());
+            username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
+            AppStyles.setIconColor(username, settings.getIconColor());
         } else {
-            txtUser.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (user.isLocked()) {
-            txtScrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-            AppStyles.setIconColor(txtScrName, settings.getIconColor());
+            screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
+            AppStyles.setIconColor(screenName, settings.getIconColor());
         } else {
-            txtScrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (!user.getLocation().isEmpty()) {
-            txtLocation.setText(user.getLocation());
-            txtLocation.setVisibility(VISIBLE);
+            user_location.setText(user.getLocation());
+            user_location.setVisibility(VISIBLE);
         } else {
-            txtLocation.setVisibility(GONE);
+            user_location.setVisibility(GONE);
         }
         if (!user.getBio().isEmpty()) {
-            bioTxt.setVisibility(VISIBLE);
-            bioTxt.setText(bio);
+            user_bio.setVisibility(VISIBLE);
+            user_bio.setText(bio);
         } else {
-            bioTxt.setVisibility(GONE);
+            user_bio.setVisibility(GONE);
         }
         if (!user.getLink().isEmpty()) {
             String link = user.getLink();
             if (link.startsWith("http://"))
-                lnkTxt.setText(link.substring(7));
+                user_website.setText(link.substring(7));
             else if (link.startsWith("https://"))
-                lnkTxt.setText(link.substring(8));
+                user_website.setText(link.substring(8));
             else
-                lnkTxt.setText(link);
-            lnkTxt.setVisibility(VISIBLE);
+                user_website.setText(link);
+            user_website.setVisibility(VISIBLE);
         } else {
-            lnkTxt.setVisibility(GONE);
+            user_website.setVisibility(GONE);
         }
         if (settings.getImageLoad()) {
             if (user.hasBannerImage()) {

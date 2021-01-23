@@ -61,7 +61,7 @@
 
                 <TextView
                     android:id="@+id/profile_username"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/profile_username_margin"
                     android:layout_marginLeft="@dimen/profile_username_margin"
@@ -73,8 +73,9 @@
                     android:textSize="@dimen/profile_textsize_big"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="@+id/profile_banner"
-                    app:layout_constraintStart_toEndOf="@+id/profile_img"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toEndOf="@+id/profile_img" />
 
                 <TextView
                     android:id="@+id/profile_screenname"
@@ -172,6 +173,7 @@
                     android:drawablePadding="@dimen/profile_padding_drawable"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_small"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toStartOf="@+id/links"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
@@ -189,6 +191,7 @@
                     android:linksClickable="true"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_small"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/location"
@@ -212,6 +215,7 @@
                     android:drawablePadding="@dimen/profile_padding_drawable"
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_small"
+                    android:visibility="invisible"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/profile_date_barrier" />

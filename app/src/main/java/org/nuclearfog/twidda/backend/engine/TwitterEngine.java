@@ -50,7 +50,9 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
- * Backend for twitter API.
+ * Backend for the Twitter API. All app actions are managed here.
+ *
+ * @author nuclearfog
  */
 @Obfuscate
 public class TwitterEngine {
@@ -654,7 +656,7 @@ public class TwitterEngine {
      * @param tweetId tweet ID
      * @param sinceId ID of the last tweet reply
      * @param maxId   ID of the earliest tweet reply
-     * @return List of Answers
+     * @return List of tweet answers
      * @throws EngineException if Access is unavailable
      */
     public List<Tweet> getAnswers(String name, long tweetId, long sinceId, long maxId) throws EngineException {
@@ -689,6 +691,7 @@ public class TwitterEngine {
      *
      * @param tweetId Tweet ID
      * @param retweet true to retweet this tweet
+     * @return updated tweet
      * @throws EngineException if Access is unavailable
      */
     public Tweet retweet(long tweetId, boolean retweet) throws EngineException {
@@ -711,10 +714,11 @@ public class TwitterEngine {
 
 
     /**
-     * Favorite Type
+     * favorite Tweet
      *
      * @param tweetId  Tweet ID
      * @param favorite true to favorite this tweet
+     * @return updated tweet
      * @throws EngineException if Access is unavailable
      */
     public Tweet favorite(long tweetId, boolean favorite) throws EngineException {
@@ -737,7 +741,10 @@ public class TwitterEngine {
 
 
     /**
+     * delete tweet
+     *
      * @param tweetId Tweet ID
+     * @return removed tweet
      * @throws EngineException if Access is unavailable
      */
     public Tweet deleteTweet(long tweetId) throws EngineException {

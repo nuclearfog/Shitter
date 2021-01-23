@@ -30,6 +30,8 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_U
 
 /**
  * Fragment class for lists a list of users
+ *
+ * @author nuclearfog
  */
 public class UserFragment extends ListFragment implements UserClickListener,
         OnDialogClick, ListManagerCallback {
@@ -54,6 +56,9 @@ public class UserFragment extends ListFragment implements UserClickListener,
      */
     public static final String KEY_FRAG_DEL_USER = "user_en_del";
 
+    /**
+     * key to send updated user data
+     */
     public static final String KEY_USER_UPDATE = "user_update";
 
     /**
@@ -92,8 +97,14 @@ public class UserFragment extends ListFragment implements UserClickListener,
      */
     public static final int USER_FRAG_LISTS = 7;
 
+    /**
+     * Request code to update user information
+     */
     private static final int REQ_USER_UPDATE = 1;
 
+    /**
+     * Return code to update user information
+     */
     public static final int RETURN_USER_UPDATED = 2;
 
     private UserLoader userTask;
