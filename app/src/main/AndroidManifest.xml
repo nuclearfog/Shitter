@@ -60,12 +60,12 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.TweetPopup"
+            android:name=".activity.TweetEditor"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 
         <activity
-            android:name=".activity.MessagePopup"
+            android:name=".activity.MessageEditor"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 

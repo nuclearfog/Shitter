@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.activity.MessagePopup;
+import org.nuclearfog.twidda.activity.MessageEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
@@ -14,12 +14,12 @@ import java.lang.ref.WeakReference;
 /**
  * Background task to send a direct messages to a user
  *
- * @see MessagePopup
+ * @see MessageEditor
  */
 public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
     private EngineException twException;
-    private WeakReference<MessagePopup> callback;
+    private WeakReference<MessageEditor> callback;
     private TwitterEngine mTwitter;
     private MessageHolder message;
 
@@ -29,7 +29,7 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
      * @param callback Activity context
      * @param message  message to send
      */
-    public MessageUpdater(@NonNull MessagePopup callback, MessageHolder message) {
+    public MessageUpdater(@NonNull MessageEditor callback, MessageHolder message) {
         super();
         mTwitter = TwitterEngine.getInstance(callback);
         this.callback = new WeakReference<>(callback);

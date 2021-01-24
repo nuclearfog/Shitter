@@ -59,8 +59,8 @@ import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_REPLYID;
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
@@ -288,7 +288,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             // answer to the tweet
             if (v.getId() == R.id.tweet_answer) {
                 String tweetPrefix = clickedTweet.getUser().getScreenname() + " ";
-                Intent tweetPopup = new Intent(this, TweetPopup.class);
+                Intent tweetPopup = new Intent(this, TweetEditor.class);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
                 tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
                 startActivity(tweetPopup);

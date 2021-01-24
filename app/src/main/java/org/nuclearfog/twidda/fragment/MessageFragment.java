@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.activity.MessagePopup;
+import org.nuclearfog.twidda.activity.MessageEditor;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.activity.UserProfile;
@@ -26,7 +26,7 @@ import java.util.List;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activity.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
@@ -127,7 +127,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
         if (!isRefreshing()) {
             switch (action) {
                 case ANSWER:
-                    Intent sendDm = new Intent(requireContext(), MessagePopup.class);
+                    Intent sendDm = new Intent(requireContext(), MessageEditor.class);
                     sendDm.putExtra(KEY_DM_PREFIX, message.getSender().getScreenname());
                     startActivity(sendDm);
                     break;

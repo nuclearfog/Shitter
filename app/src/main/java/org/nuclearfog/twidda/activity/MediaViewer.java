@@ -1,17 +1,13 @@
 package org.nuclearfog.twidda.activity;
 
-import android.content.ContentValues;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
@@ -19,7 +15,6 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,27 +27,21 @@ import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.zoomview.ZoomView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.os.Environment.DIRECTORY_PICTURES;
-import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 /**
  * Media viewer activity for images and videos
+ *
+ * @author nuclearfog
  */
-public class MediaViewer extends AppCompatActivity implements OnImageClickListener,
+public class MediaViewer extends MediaActivity implements OnImageClickListener,
         OnPreparedListener, OnInfoListener, OnErrorListener {
 
     /**
@@ -86,23 +75,8 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
      */
     public static final int MEDIAVIEWER_ANGIF = 4;
 
-    /**
-     * Quality of the saved jpeg images
-     */
-    private static final int JPEG_QUALITY = 90;
-
-    /**
-     * request write permission on API < 29
-     */
-    private static final String[] REQ_WRITE_SD = {WRITE_EXTERNAL_STORAGE};
-
-    /**
-     * request code for write permission
-     */
-    private static final int REQUEST_WRITE = 6;
-
     private ImageLoader imageAsync;
-    private Thread imageSaveThread;
+
 
     private ProgressBar video_progress;
     private ProgressBar image_progress;
@@ -193,6 +167,16 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
 
     @Override
+    protected void onAttachLocation(@Nullable Location location) {
+    }
+
+
+    @Override
+    protected void onMediaFetched(int resultType, String path) {
+    }
+
+
+    @Override
     public void onImageClick(Bitmap image) {
         zoomImage.reset();
         zoomImage.setImageBitmap(image);
@@ -201,17 +185,9 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
 
     @Override
     public void onImageSave(Bitmap image, int pos) {
-        boolean accessGranted = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            int check = checkSelfPermission(WRITE_EXTERNAL_STORAGE);
-            if (check == PERMISSION_DENIED) {
-                requestPermissions(REQ_WRITE_SD, REQUEST_WRITE);
-                accessGranted = false;
-            }
-        }
-        if (accessGranted) {
-            storeImage(image, mediaLinks[pos]);
-        }
+        String link = mediaLinks[pos];
+        String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
+        storeImage(image, name);
     }
 
 
@@ -285,68 +261,5 @@ public class MediaViewer extends AppCompatActivity implements OnImageClickListen
             image_progress.setVisibility(View.INVISIBLE);
         }
         adapter.addLast(image);
-    }
-
-    /**
-     * called to save an image into storage
-     *
-     * @param image Image file
-     * @param link  image link or path
-     */
-    private void storeImage(final Bitmap image, final String link) {
-        if (imageSaveThread == null || !imageSaveThread.isAlive()) {
-            imageSaveThread = new Thread() {
-                @Override
-                public void run() {
-                    boolean imageSaved = false;
-                    try {
-                        String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            // use scoped storage
-                            ContentValues values = new ContentValues();
-                            values.put(MediaStore.Images.Media.DISPLAY_NAME, name);
-                            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-                            values.put(MediaStore.MediaColumns.RELATIVE_PATH, DIRECTORY_PICTURES);
-                            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                            Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
-                            if (imageUri != null) {
-                                OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
-                                if (fileStream != null) {
-                                    imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
-                                    fileStream.close();
-                                }
-                            }
-                        } else {
-                            // store images directly
-                            File imageFile = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES), name + ".jpg");
-                            OutputStream fileStream = new FileOutputStream(imageFile);
-                            imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
-                            fileStream.close();
-                            // start media scanner to scan for new image
-                            String[] fileName = {imageFile.toString()};
-                            MediaScannerConnection.scanFile(getApplicationContext(), fileName, null, null);
-                        }
-                    } catch (Exception err) {
-                        err.printStackTrace();
-                    }
-                    if (imageSaved) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            };
-            imageSaveThread.start();
-        }
     }
 }

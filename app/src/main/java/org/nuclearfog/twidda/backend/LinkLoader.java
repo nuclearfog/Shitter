@@ -12,7 +12,7 @@ import org.nuclearfog.twidda.activity.DirectMessage;
 import org.nuclearfog.twidda.activity.MainActivity;
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.activity.TweetActivity;
-import org.nuclearfog.twidda.activity.TweetPopup;
+import org.nuclearfog.twidda.activity.TweetEditor;
 import org.nuclearfog.twidda.activity.UserLists;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_NAME;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DISABLE_RELOAD;
@@ -94,7 +94,7 @@ public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
                         if (via != null)
                             tweet += "via @" + via;
                         data.putString(KEY_TWEETPOPUP_TEXT, tweet);
-                        dataHolder = new DataHolder(data, TweetPopup.class);
+                        dataHolder = new DataHolder(data, TweetEditor.class);
                     }
                 } else if (path.startsWith("hashtag/")) {
                     String search = '#' + path.substring(8);

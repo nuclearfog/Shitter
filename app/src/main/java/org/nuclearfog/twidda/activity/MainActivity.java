@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         }
         // open tweet editor
         else if (menuId == R.id.action_tweet) {
-            Intent tweet = new Intent(this, TweetPopup.class);
+            Intent tweet = new Intent(this, TweetEditor.class);
             startActivity(tweet);
         }
         // open app settings

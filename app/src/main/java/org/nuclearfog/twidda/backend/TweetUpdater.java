@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.activity.TweetPopup;
+import org.nuclearfog.twidda.activity.TweetEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
@@ -12,13 +12,13 @@ import java.lang.ref.WeakReference;
 /**
  * Background task for uploading tweet
  *
- * @see TweetPopup
+ * @see TweetEditor
  */
 public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
 
 
     private EngineException twException;
-    private final WeakReference<TweetPopup> callback;
+    private final WeakReference<TweetEditor> callback;
     private final TwitterEngine mTwitter;
 
     /**
@@ -26,7 +26,7 @@ public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
      *
      * @param callback Activity context
      */
-    public TweetUpdater(TweetPopup callback) {
+    public TweetUpdater(TweetEditor callback) {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);

@@ -56,13 +56,13 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MessagePopup.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activity.MessageEditor.KEY_DM_PREFIX;
 import static org.nuclearfog.twidda.activity.ProfileEditor.KEY_USER_DATA;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
@@ -325,7 +325,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (user != null) {
             // write tweet
             if (item.getItemId() == R.id.profile_tweet) {
-                Intent tweet = new Intent(this, TweetPopup.class);
+                Intent tweet = new Intent(this, TweetEditor.class);
                 if (!user.isCurrentUser()) {
                     // add username to tweet
                     String tweetPrefix = user.getScreenname() + " ";
@@ -378,7 +378,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 if (user.isCurrentUser()) {
                     dmPage = new Intent(this, DirectMessage.class);
                 } else {
-                    dmPage = new Intent(this, MessagePopup.class);
+                    dmPage = new Intent(this, MessageEditor.class);
                     dmPage.putExtra(KEY_DM_PREFIX, user.getScreenname());
                 }
                 startActivity(dmPage);

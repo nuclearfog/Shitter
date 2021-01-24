@@ -7,6 +7,8 @@ import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.USE
 
 /**
  * Exception class for {@link TwitterEngine}
+ *
+ * @author nuclearfog
  */
 public class EngineException extends Exception {
 
@@ -40,6 +42,7 @@ public class EngineException extends Exception {
     }
 
     private final ErrorType errorType;
+    private String msg;
     private int retryAfter;
 
 
@@ -128,11 +131,13 @@ public class EngineException extends Exception {
                         errorType = ErrorType.NO_CONNECTION;
                     } else {
                         errorType = ErrorType.ERROR_NOT_DEFINED;
+                        msg = error.getErrorMessage();
                     }
                     break;
             }
         } else {
             errorType = ErrorType.ERROR_NOT_DEFINED;
+            msg = exception.getMessage();
         }
     }
 
@@ -159,6 +164,13 @@ public class EngineException extends Exception {
                 errorType = ErrorType.ERROR_NOT_DEFINED;
                 break;
         }
+    }
+
+    @Override
+    public String getMessage() {
+        if (msg == null || msg.isEmpty())
+            return super.getMessage();
+        return msg;
     }
 
     /**

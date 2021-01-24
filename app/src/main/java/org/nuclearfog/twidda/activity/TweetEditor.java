@@ -1,0 +1,346 @@
+package org.nuclearfog.twidda.activity;
+
+import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
+import android.content.Intent;
+import android.location.Location;
+import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+
+import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.TweetUpdater;
+import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.holder.TweetHolder;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.StringTools;
+import org.nuclearfog.twidda.database.GlobalSettings;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static android.view.Window.FEATURE_NO_TITLE;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEETPOPUP_ERROR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEETPOPUP_LEAVE;
+
+/**
+ * Activity to create a tweet
+ */
+public class TweetEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick {
+
+    private enum MediaType {
+        NONE,
+        GIF,
+        IMAGE,
+        VIDEO
+    }
+
+    /**
+     * key for the replied tweet if any
+     */
+    public static final String KEY_TWEETPOPUP_REPLYID = "tweet_replyID";
+
+    /**
+     * key for the text added to the tweet if any
+     */
+    public static final String KEY_TWEETPOPUP_TEXT = "tweet_text";
+
+    /**
+     * max amount of images (limited to 4 by twitter)
+     */
+    private static final int MAX_IMAGES = 4;
+
+    /**
+     * max amount of mentions in a tweet
+     */
+    private static final int MAX_MENTIONS = 8;
+
+    private TweetUpdater uploaderAsync;
+    private GlobalSettings settings;
+
+    private ImageButton mediaBtn, previewBtn, locationBtn;
+    private Dialog loadingCircle, errorDialog, closingDialog;
+    private EditText tweetText;
+    private View locationProg;
+
+    private TweetHolder tweet;
+    private Location location;
+    private List<String> mediaPath;
+    private MediaType selectedFormat = MediaType.NONE;
+    private long inReplyId = 0;
+
+    @Override
+    protected void onCreate(@Nullable Bundle b) {
+        super.onCreate(b);
+        setContentView(R.layout.popup_tweet);
+        View root = findViewById(R.id.tweet_popup);
+        ImageButton tweetButton = findViewById(R.id.tweet_send);
+        ImageButton closeButton = findViewById(R.id.close);
+        locationBtn = findViewById(R.id.tweet_add_location);
+        mediaBtn = findViewById(R.id.tweet_add_media);
+        previewBtn = findViewById(R.id.tweet_prev_media);
+        tweetText = findViewById(R.id.tweet_input);
+        locationProg = findViewById(R.id.location_progress);
+        loadingCircle = new Dialog(this, R.style.LoadingDialog);
+        View load = View.inflate(this, R.layout.item_load, null);
+        View cancelButton = load.findViewById(R.id.kill_button);
+
+        settings = GlobalSettings.getInstance(this);
+        mediaPath = new LinkedList<>();
+
+        Intent data = getIntent();
+        inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
+        String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
+        if (prefix != null)
+            tweetText.append(prefix);
+
+        previewBtn.setImageResource(R.drawable.image);
+        mediaBtn.setImageResource(R.drawable.image_add);
+        locationBtn.setImageResource(R.drawable.location);
+        tweetButton.setImageResource(R.drawable.tweet);
+        closeButton.setImageResource(R.drawable.cross);
+        errorDialog = DialogBuilder.create(this, TWEETPOPUP_ERROR, this);
+        closingDialog = DialogBuilder.create(this, TWEETPOPUP_LEAVE, this);
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setCancelable(false);
+        loadingCircle.setContentView(load);
+        cancelButton.setVisibility(VISIBLE);
+        AppStyles.setTheme(settings, root, settings.getPopupColor());
+
+        closeButton.setOnClickListener(this);
+        tweetButton.setOnClickListener(this);
+        mediaBtn.setOnClickListener(this);
+        previewBtn.setOnClickListener(this);
+        locationBtn.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        loadingCircle.setOnDismissListener(this);
+    }
+
+
+    @SuppressLint("MissingPermission")
+    @Override
+    protected void onDestroy() {
+        if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
+            uploaderAsync.cancel(true);
+        super.onDestroy();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        showClosingMsg();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        // send tweet
+        if (v.getId() == R.id.tweet_send) {
+            String tweetStr = tweetText.getText().toString();
+            // check if tweet is empty
+            if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
+                Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
+            }
+            // check if mentions exceed the limit
+            else if (!settings.isCustomApiSet() && StringTools.countMentions(tweetStr) >= MAX_MENTIONS) {
+                Toast.makeText(this, R.string.error_mention_exceed, LENGTH_SHORT).show();
+            }
+            // check if gps locating is not pending
+            else if (!isLocatePending()) {
+                tweet = new TweetHolder(tweetStr, inReplyId);
+                // add media
+                if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
+                    tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
+                else if (selectedFormat == MediaType.VIDEO)
+                    tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
+                // add location
+                if (location != null)
+                    tweet.addLocation(location);
+                // send tweet
+                uploaderAsync = new TweetUpdater(this);
+                uploaderAsync.execute(tweet);
+            }
+        }
+        // close tweet editor
+        else if (v.getId() == R.id.close) {
+            showClosingMsg();
+        }
+        // Add media to the tweet
+        else if (v.getId() == R.id.tweet_add_media) {
+            if (selectedFormat == MediaType.IMAGE) {
+                getMedia(REQUEST_IMAGE);
+            } else {
+                getMedia(REQUEST_IMG_VID);
+            }
+        }
+        // open media preview
+        else if (v.getId() == R.id.tweet_prev_media) {
+            Intent image = new Intent(this, MediaViewer.class);
+            image.putExtra(KEY_MEDIA_LINK, mediaPath.toArray(new String[0]));
+            if (selectedFormat == MediaType.VIDEO) {
+                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
+                startActivity(image);
+            } else if (selectedFormat != MediaType.NONE) {
+                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
+                startActivity(image);
+            }
+        }
+        // add location to the tweet
+        else if (v.getId() == R.id.tweet_add_location) {
+            getLocation();
+        }
+        // stop uploading tweet
+        else if (v.getId() == R.id.kill_button) {
+            loadingCircle.dismiss();
+        }
+    }
+
+
+    @Override
+    protected void onAttachLocation(@Nullable Location location) {
+        if (location != null) {
+            Toast.makeText(this, R.string.info_gps_attached, LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
+        }
+        locationProg.setVisibility(INVISIBLE);
+        locationBtn.setVisibility(VISIBLE);
+        this.location = location;
+    }
+
+
+    @Override
+    protected void onMediaFetched(int resultType, String path) {
+        String extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
+        switch (extension) {
+            case "jpg":
+            case "jpeg":
+            case "png":
+                if (selectedFormat == MediaType.NONE)
+                    selectedFormat = MediaType.IMAGE;
+                if (selectedFormat == MediaType.IMAGE) {
+                    if (mediaPath.size() < MAX_IMAGES) {
+                        mediaPath.add(path);
+                        previewBtn.setVisibility(VISIBLE);
+                        if (mediaPath.size() == MAX_IMAGES) {
+                            mediaBtn.setVisibility(GONE);
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
+                }
+                break;
+
+            case "gif":
+                if (selectedFormat == MediaType.NONE) {
+                    selectedFormat = MediaType.GIF;
+                    previewBtn.setImageResource(R.drawable.video);
+                    AppStyles.setIconColor(previewBtn, settings.getIconColor());
+                    previewBtn.setVisibility(VISIBLE);
+                    mediaBtn.setVisibility(GONE);
+                    mediaPath.add(path);
+                }
+                break;
+
+            case "mp4":
+            case "3gp":
+                if (selectedFormat == MediaType.NONE) {
+                    selectedFormat = MediaType.VIDEO;
+                    previewBtn.setImageResource(R.drawable.video);
+                    AppStyles.setIconColor(previewBtn, settings.getIconColor());
+                    previewBtn.setVisibility(VISIBLE);
+                    mediaBtn.setVisibility(GONE);
+                    mediaPath.add(path);
+                }
+                break;
+
+            default:
+                Toast.makeText(this, R.string.error_file_format, LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING) {
+            uploaderAsync.cancel(true);
+        }
+    }
+
+
+    @Override
+    public void onConfirm(DialogBuilder.DialogType type) {
+        if (type == TWEETPOPUP_ERROR) {
+            uploaderAsync = new TweetUpdater(this);
+            uploaderAsync.execute(tweet);
+        } else if (type == TWEETPOPUP_LEAVE) {
+            finish();
+        }
+    }
+
+    /**
+     * enable or disable loading dialog
+     *
+     * @param enable true to enable dialog
+     */
+    public void setLoading(boolean enable) {
+        if (enable) {
+            loadingCircle.show();
+        } else {
+            loadingCircle.dismiss();
+        }
+    }
+
+    /**
+     * called after sending tweet
+     */
+    public void onSuccess() {
+        Toast.makeText(this, R.string.info_tweet_sent, LENGTH_LONG).show();
+        finish();
+    }
+
+    /**
+     * Show confirmation dialog if an error occurs while sending tweet
+     */
+    public void onError(EngineException error) {
+        ErrorHandler.handleFailure(this, error);
+        if (!errorDialog.isShowing()) {
+            errorDialog.show();
+        }
+    }
+
+
+    /**
+     * show confirmation dialog when closing edited tweet
+     */
+    private void showClosingMsg() {
+        if (tweetText.length() > 0 || !mediaPath.isEmpty()) {
+            if (!closingDialog.isShowing()) {
+                closingDialog.show();
+            }
+        } else {
+            finish();
+        }
+    }
+}

@@ -56,7 +56,7 @@ public class DirectMessage extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.message) {
-            Intent sendDm = new Intent(this, MessagePopup.class);
+            Intent sendDm = new Intent(this, MessageEditor.class);
             startActivity(sendDm);
         }
         return super.onOptionsItemSelected(item);

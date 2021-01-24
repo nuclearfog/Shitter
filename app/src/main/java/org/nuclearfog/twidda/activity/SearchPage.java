@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static org.nuclearfog.twidda.activity.TweetPopup.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 
 /**
  * Twitter search Activity
@@ -92,7 +92,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.search_tweet) {
-            Intent intent = new Intent(this, TweetPopup.class);
+            Intent intent = new Intent(this, TweetEditor.class);
             if (search.startsWith("#"))
                 intent.putExtra(KEY_TWEETPOPUP_TEXT, search + " ");
             startActivity(intent);

@@ -1,18 +1,14 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.os.Build;
+import android.location.Location;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.squareup.picasso.Callback;
@@ -46,13 +41,10 @@ import java.io.File;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.content.Intent.ACTION_PICK;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static android.view.Window.FEATURE_NO_TITLE;
-import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
 import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
@@ -63,42 +55,12 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
 /**
  * Activity for Twitter profile editor
  */
-public class ProfileEditor extends AppCompatActivity implements OnClickListener, OnDismissListener, OnDialogClick, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick, Callback {
 
     /**
      * key to preload user data
      */
     public static final String KEY_USER_DATA = "profile-editor-data";
-
-    /**
-     * Permission to read images from external storage
-     */
-    private static final String[] PERM_READ = {READ_EXTERNAL_STORAGE};
-
-    /**
-     * Cursor mode to get the full path to the image
-     */
-    private static final String[] MEDIA_MODE = {MediaStore.Images.Media.DATA};
-
-    /**
-     * Request code for read permissions
-     */
-    private static final int REQ_PERM = 3;
-
-    /**
-     * Request code for loading new profile image
-     */
-    private static final int REQ_PROFILE_IMG = 4;
-
-    /**
-     * Request code for loading new banner image
-     */
-    private static final int REQ_PROFILE_BANNER = 5;
-
-    /**
-     * MIME type for profile and banner images
-     */
-    private static final String IMG_MIME = "image/*";
 
     private UserUpdater editorAsync;
     private GlobalSettings settings;
@@ -109,6 +71,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     private Button addBannerBtn;
     private View changeBannerBtn;
 
+    @Nullable
     private User user;
     private String profileLink, bannerLink;
 
@@ -172,7 +135,7 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
         String userLink = link.getText().toString();
         String userLoc = loc.getText().toString();
         String userBio = bio.getText().toString();
-        if (username.equals(user.getUsername()) && userLink.equals(user.getLink())
+        if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getLink())
                 && userLoc.equals(user.getLocation()) && userBio.equals(user.getBio())
                 && profileLink == null && bannerLink == null) {
             finish();
@@ -216,50 +179,43 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
-        super.onActivityResult(reqCode, returnCode, intent);
-        if (returnCode == RESULT_OK && (reqCode == REQ_PROFILE_IMG || reqCode == REQ_PROFILE_BANNER)) {
-            if (intent != null && intent.getData() != null) {
-                Cursor c = getContentResolver().query(intent.getData(), MEDIA_MODE, null, null, null);
-                if (c != null) {
-                    if (c.moveToFirst()) {
-                        String mediaPath = c.getString(0);
-                        if (reqCode == REQ_PROFILE_IMG) {
-                            // Add image as profile image
-                            Bitmap image = BitmapFactory.decodeFile(mediaPath);
-                            profile_image.setImageBitmap(image);
-                            profileLink = mediaPath;
-                        } else {
-                            // Add image as banner image
-                            File img = new File(mediaPath);
-                            Point displaySize = new Point();
-                            getWindowManager().getDefaultDisplay().getSize(displaySize);
-                            Picasso.get().load(img).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
-                            addBannerBtn.setVisibility(INVISIBLE);
-                            changeBannerBtn.setVisibility(VISIBLE);
-                            bannerLink = mediaPath;
-                        }
-                    }
-                    c.close();
-                }
-            }
+    protected void onAttachLocation(@Nullable Location location) {
+    }
+
+
+    @Override
+    protected void onMediaFetched(int resultType, String path) {
+        // Add image as profile image
+        if (resultType == REQUEST_PROFILE) {
+            Bitmap image = BitmapFactory.decodeFile(path);
+            profile_image.setImageBitmap(image);
+            profileLink = path;
+        }
+        // Add image as banner image
+        else if (resultType == REQUEST_BANNER) {
+            File img = new File(path);
+            Point displaySize = new Point();
+            getWindowManager().getDefaultDisplay().getSize(displaySize);
+            Picasso.get().load(img).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
+            addBannerBtn.setVisibility(INVISIBLE);
+            changeBannerBtn.setVisibility(VISIBLE);
+            bannerLink = path;
         }
     }
 
 
     @Override
     public void onClick(View v) {
-        int viewId = v.getId();
         // select net profile image
-        if (viewId == R.id.edit_pb) {
-            getMedia(REQ_PROFILE_IMG);
+        if (v.getId() == R.id.edit_pb) {
+            getMedia(REQUEST_PROFILE);
         }
         // select new banner image
-        else if (viewId == R.id.edit_add_banner || viewId == R.id.edit_banner) {
-            getMedia(REQ_PROFILE_BANNER);
+        else if (v.getId() == R.id.edit_add_banner || v.getId() == R.id.edit_banner) {
+            getMedia(REQUEST_BANNER);
         }
         // stop update
-        else if (viewId == R.id.kill_button) {
+        else if (v.getId() == R.id.kill_button) {
             loadingCircle.dismiss();
         }
     }
@@ -290,7 +246,6 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
     @Override
     public void onError(Exception e) {
     }
-
 
     /**
      * enable or disable loading dialog
@@ -329,49 +284,26 @@ public class ProfileEditor extends AppCompatActivity implements OnClickListener,
      * Set current user's information
      */
     private void setUser() {
-        if (user.hasProfileImage()) {
-            String pbLink = user.getImageLink();
-            if (!user.hasDefaultProfileImage())
-                pbLink += PROFILE_IMG_HIGH_RES;
-            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
-        }
-        if (user.hasBannerImage()) {
-            String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
-            Picasso.get().load(bnLink).into(profile_banner, this);
-            addBannerBtn.setVisibility(INVISIBLE);
-            changeBannerBtn.setVisibility(VISIBLE);
-        } else {
-            addBannerBtn.setVisibility(VISIBLE);
-            changeBannerBtn.setVisibility(INVISIBLE);
-        }
-        name.setText(user.getUsername());
-        link.setText(user.getLink());
-        loc.setText(user.getLocation());
-        bio.setText(user.getBio());
-    }
-
-    /**
-     * Get images from storage or ask for permission
-     *
-     * @param request image type to load from storage
-     */
-    private void getMedia(int request) {
-        boolean accessGranted = true;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int check = checkSelfPermission(READ_EXTERNAL_STORAGE);
-            if (check == PackageManager.PERMISSION_DENIED) {
-                requestPermissions(PERM_READ, REQ_PERM);
-                accessGranted = false;
+        if (user != null) {
+            if (user.hasProfileImage()) {
+                String pbLink = user.getImageLink();
+                if (!user.hasDefaultProfileImage())
+                    pbLink += PROFILE_IMG_HIGH_RES;
+                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
             }
-        }
-        if (accessGranted) {
-            Intent mediaSelect = new Intent(ACTION_PICK);
-            mediaSelect.setType(IMG_MIME);
-            try {
-                startActivityForResult(mediaSelect, request);
-            } catch (ActivityNotFoundException err) {
-                Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+            if (user.hasBannerImage()) {
+                String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
+                Picasso.get().load(bnLink).into(profile_banner, this);
+                addBannerBtn.setVisibility(INVISIBLE);
+                changeBannerBtn.setVisibility(VISIBLE);
+            } else {
+                addBannerBtn.setVisibility(VISIBLE);
+                changeBannerBtn.setVisibility(INVISIBLE);
             }
+            name.setText(user.getUsername());
+            link.setText(user.getLink());
+            loc.setText(user.getLocation());
+            bio.setText(user.getBio());
         }
     }
 }
