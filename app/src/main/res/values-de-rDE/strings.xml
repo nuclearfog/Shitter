@@ -95,10 +95,8 @@
     <string name="proxy_password">Passwort</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">Nutzer stummschalten?</string>
-    <string name="error_location">Standort konnte nicht ermittelt werden!</string>
     <string name="error_cant_copy_clipboard">Link konnte nicht kopiert werden!</string>
     <string name="info_gps_attached">GPS Position hinzugefügt</string>
-    <string name="info_get_location">starte GPS lokalisierung…</string>
     <string name="error_gps">GPS lokalisierung fehlgeschlagen!</string>
     <string name="info_get_link">PIN muss erst von Twitter abgefragt werden! Bitte den ersten Button drücken!</string>
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
@@ -134,7 +132,6 @@
     <string name="error_wrong_connection_settings">Falsche Verbindung angegeben!</string>
     <string name="error_open_link">Link konnte nicht geöffnet werden!</string>
     <string name="tweet_sensitive_media">Sensible Inhalte</string>
-    <string name="info_phone_tls_support">TLS 1.2 wird nicht unterstützt. Die App wird möglicherweise nicht funktionieren!</string>
     <string name="login_info">3 Schritte zum Login</string>
     <string name="info_fetching_link">öffne Twitter login Seite</string>
     <string name="info_login_to_twitter">Melde in Twitter an</string>

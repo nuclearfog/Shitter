@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.annotation.ArrayRes;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
@@ -231,7 +232,10 @@ public final class AppStyles {
     }
 
     /**
-     * set Tab icons for TabLayout
+     * set tab icons
+     *
+     * @param tabLayout tablayout to set tab icons
+     * @param settings  settings to set color
      */
     public static void setTabIcons(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
         Context context = tabLayout.getContext();
@@ -239,7 +243,8 @@ public final class AppStyles {
         for (int index = 0; index < tArray.length(); index++) {
             TabLayout.Tab mTab = tabLayout.getTabAt(index);
             if (mTab != null) {
-                Drawable icon = tArray.getDrawable(index);
+                int resId = tArray.getResourceId(index, 0);
+                Drawable icon = AppCompatResources.getDrawable(context, resId);
                 setDrawableColor(icon, settings.getIconColor());
                 mTab.setIcon(icon);
             }
@@ -262,7 +267,8 @@ public final class AppStyles {
         for (int index = 0; index < tArray.length(); index++) {
             TabLayout.Tab mTab = tabLayout.getTabAt(index);
             if (mTab != null) {
-                Drawable icon = tArray.getDrawable(index);
+                int resId = tArray.getResourceId(index, 0);
+                Drawable icon = AppCompatResources.getDrawable(context, resId);
                 setDrawableColor(icon, settings.getIconColor());
                 View v = View.inflate(context, R.layout.icon_profile_tab, null);
                 ImageView imageIcon = v.findViewById(R.id.tab_icon);

@@ -30,6 +30,10 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+
 import io.michaelrocks.paranoid.Obfuscate;
 import twitter4j.DirectMessage;
 import twitter4j.GeoLocation;
@@ -76,6 +80,23 @@ public class TwitterEngine {
      * Initialize Twitter4J instance
      */
     private void initTwitter() {
+        // check for TLS 1.2 support and activate it
+        try {
+            boolean tlsEnabled = false;
+            SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
+            String[] protocols = param.getProtocols();
+            for (String protocol : protocols) {
+                if (protocol.equals("TLSv1.2") || protocol.equals("TLSv1.3")) {
+                    tlsEnabled = true;
+                    break;
+                }
+            }
+            if (!tlsEnabled) {
+                HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+            }
+        } catch (Exception err) {
+            err.printStackTrace();
+        }
         ConfigurationBuilder builder = new ConfigurationBuilder();
         if (settings.isCustomApiSet()) {
             builder.setOAuthConsumerKey(settings.getConsumerKey());

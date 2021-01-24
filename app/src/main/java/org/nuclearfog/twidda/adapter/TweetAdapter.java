@@ -18,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -85,8 +86,10 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
         TypedArray tArray = context.getResources().obtainTypedArray(R.array.tweet_item_icons);
         icons = new Drawable[tArray.length()];
-        for (int index = 0; index < icons.length; index++)
-            icons[index] = tArray.getDrawable(index);
+        for (int index = 0; index < icons.length; index++) {
+            int resId = tArray.getResourceId(index, 0);
+            icons[index] = AppCompatResources.getDrawable(context, resId);
+        }
         tArray.recycle();
         setIconColors();
     }

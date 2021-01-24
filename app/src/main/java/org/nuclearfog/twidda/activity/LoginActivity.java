@@ -25,11 +25,6 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import java.security.NoSuchAlgorithmException;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
@@ -65,7 +60,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
 
         linkButton.setOnClickListener(this);
         loginButton.setOnClickListener(this);
-        checkTLSSupport();
     }
 
 
@@ -166,27 +160,5 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
      */
     public void onError(EngineException error) {
         ErrorHandler.handleFailure(this, error);
-    }
-
-    /**
-     * Check if phone supports TLS 1.2 which is required for twitter api
-     */
-    private void checkTLSSupport() {
-        boolean tls12Found = false;
-        try {
-            SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
-            String[] protocols = param.getProtocols();
-            for (String protocol : protocols) {
-                if (protocol.equals("TLSv1.2") || protocol.equals("TLSv1.3")) {
-                    tls12Found = true;
-                    break;
-                }
-            }
-        } catch (NoSuchAlgorithmException er) {
-            // ignore
-        }
-        if (!tls12Found) {
-            Toast.makeText(this, R.string.info_phone_tls_support, LENGTH_LONG).show();
-        }
     }
 }

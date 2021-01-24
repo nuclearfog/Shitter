@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -77,8 +78,10 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
         TypedArray drawables = context.getResources().obtainTypedArray(R.array.list_item_icons);
         icons = new Drawable[drawables.length()];
-        for (int index = 0; index < drawables.length(); index++)
-            icons[index] = drawables.getDrawable(index);
+        for (int index = 0; index < drawables.length(); index++) {
+            int resId = drawables.getResourceId(index, 0);
+            icons[index] = AppCompatResources.getDrawable(context, resId);
+        }
         drawables.recycle();
         colorIcons();
     }

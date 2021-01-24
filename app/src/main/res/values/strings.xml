@@ -112,12 +112,10 @@
     <string name="info_list_created">Userlist created</string>
     <string name="info_fetching_link">redirecting to Twitter login</string>
     <string name="info_login_to_twitter">login to Twitter</string>
-    <string name="info_phone_tls_support">Phone does not support TLS 1.2. App will probably not work!</string>
     <string name="error_wrong_connection_settings">Wrong connection settings!</string>
     <string name="info_cant_add_video">can\'t add video</string>
     <string name="info_get_link">get Twitter PIN from browser first. Please press the first button!</string>
     <string name="info_gps_attached">GPS position added</string>
-    <string name="info_get_location">starting location…</string>
     <string name="info_tweet_retweeted">retweeted</string>
     <string name="info_tweet_unretweeted">Retweet removed</string>
     <string name="info_tweet_favored">Tweet added to favorites</string>
@@ -153,7 +151,6 @@
     <string name="error_no_media_app">No gallery app found!</string>
     <string name="error_connection_failed">Connection failed!</string>
     <string name="error_invalid_link">Invalid link!</string>
-    <string name="error_location">could not fetch location!</string>
     <string name="error_cant_copy_clipboard">can\'t copy link to clipboard!</string>
     <string name="error_gps">could not fetch GPS data!</string>
     <string name="error_token_not_set">Please get link first!</string>
