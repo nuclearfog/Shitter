@@ -67,51 +67,51 @@
     <integer name="editprofile_username_max_length">50</integer>
 
     <!--dimens of item_tweet.xml-->
-    <dimen name="tweetitem_profile_small">36sp</dimen>
+    <dimen name="tweetitem_profile_size">36sp</dimen>
     <dimen name="tweetitem_layout_padding">5dp</dimen>
-    <dimen name="tweetitem_margin_layout">5dp</dimen>
-    <dimen name="tweetitem_textview_margin">10dp</dimen>
+    <dimen name="tweetitem_text_margin">5dp</dimen>
     <dimen name="tweetitem_padding_drawable">5dp</dimen>
     <dimen name="tweetitem_textsize_button">12sp</dimen>
     <dimen name="tweetitem_textsize_date">12sp</dimen>
 
     <!--dimens of item_trend.xml-->
     <dimen name="trenditem_layout_padding">5dp</dimen>
-    <dimen name="trenditem_margin_layout">5dp</dimen>
+    <dimen name="trenditem_text_margin">5dp</dimen>
     <dimen name="trenditem_textsize_trendindex">20sp</dimen>
     <dimen name="trenditem_textsize_trendname">20sp</dimen>
     <dimen name="trenditem_textsize_trendvol">14sp</dimen>
+    <dimen name="trenditem_textsize_trendindex_width">40sp</dimen>
 
     <!--dimens of item_user.xml-->
-    <dimen name="useritem_layout_padding">5dp</dimen>
     <dimen name="useritem_image_size">56sp</dimen>
-    <dimen name="useritem_margin_layout">5dp</dimen>
+    <dimen name="useritem_layout_padding">5dp</dimen>
+    <dimen name="useritem_textview_padding">5dp</dimen>
     <dimen name="useritem_padding_drawable">5dp</dimen>
     <dimen name="useritem_button_size">36dp</dimen>
     <dimen name="useritem_textsize_small">12sp</dimen>
 
     <!--dimens of item_list.xml-->
     <dimen name="listitem_padding">5dp</dimen>
-    <dimen name="listitem_margin">4dp</dimen>
     <dimen name="listitem_icon_size">12sp</dimen>
     <dimen name="listitem_profile">56sp</dimen>
-    <dimen name="listitem_layout_margin">5dp</dimen>
+    <dimen name="listitem_text_margin">5dp</dimen>
     <dimen name="listitem_textsize_date">12sp</dimen>
     <dimen name="listitem_textsize_title">18sp</dimen>
     <dimen name="listitem_textsize_name">14sp</dimen>
     <dimen name="listitem_textsize_small">12sp</dimen>
-    <dimen name="listitem_bar_padding">10dp</dimen>
     <dimen name="listitem_padding_drawable">5dp</dimen>
     <integer name="listitem_description_max_lines">6</integer>
 
     <!--dimens of item_dm.xml-->
     <dimen name="dmitem_profile">40sp</dimen>
-    <dimen name="dmitem_margin_layout">5dp</dimen>
+    <dimen name="dmitem_button_height">20sp</dimen>
     <dimen name="dmitem_padding_drawable">5dp</dimen>
+    <dimen name="dmitem_textsize_button">12sp</dimen>
     <dimen name="dmitem_textsize_name">12sp</dimen>
     <dimen name="dmitem_textsize_date">12sp</dimen>
-    <dimen name="dmitem_button_height">20sp</dimen>
-    <dimen name="dmitem_textsize_button">12sp</dimen>
+    <dimen name="dmitem_text_margin">5dp</dimen>
+    <dimen name="dmitem_button_margin">5dp</dimen>
+    <dimen name="dmitem_margin_layout">5dp</dimen>
 
     <!--dimens of page_login.xml-->
     <dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>

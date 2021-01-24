@@ -1,122 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dmitem_margin_layout"
-        android:orientation="vertical">
+        android:layout_margin="@dimen/dmitem_margin_layout">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/dm_profileImg"
+            android:layout_width="@dimen/dmitem_profile"
+            android:layout_height="@dimen/dmitem_profile"
+            android:contentDescription="@string/profile_image"
+            app:layout_constraintBottom_toTopOf="@+id/dm_screenname"
+            app:layout_constraintEnd_toStartOf="@+id/dm_username"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dm_screenname" />
+
+        <TextView
+            android:id="@+id/dm_username"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="fill_vertical"
-            android:orientation="horizontal">
+            android:layout_marginStart="@dimen/dmitem_text_margin"
+            android:layout_marginLeft="@dimen/dmitem_text_margin"
+            android:layout_marginEnd="@dimen/dmitem_text_margin"
+            android:layout_marginRight="@dimen/dmitem_text_margin"
+            android:drawablePadding="@dimen/dmitem_padding_drawable"
+            android:singleLine="true"
+            android:textSize="@dimen/dmitem_textsize_name"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@id/dm_time"
+            app:layout_constraintStart_toEndOf="@+id/dm_profileImg"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/dm_profileImg"
-                android:layout_width="@dimen/dmitem_profile"
-                android:layout_height="@dimen/dmitem_profile"
-                android:contentDescription="@string/profile_image" />
+        <TextView
+            android:id="@+id/dm_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textAlignment="gravity"
+            android:textSize="@dimen/dmitem_textsize_date"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dm_username"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dmitem_margin_layout"
-                android:layout_marginLeft="@dimen/dmitem_margin_layout"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/dm_screenname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dmitem_text_margin"
+            android:layout_marginLeft="@dimen/dmitem_text_margin"
+            android:layout_marginEnd="@dimen/dmitem_text_margin"
+            android:layout_marginRight="@dimen/dmitem_text_margin"
+            android:singleLine="true"
+            android:textSize="@dimen/dmitem_textsize_name"
+            app:layout_constraintEnd_toStartOf="@+id/dm_receiver"
+            app:layout_constraintStart_toEndOf="@+id/dm_profileImg"
+            app:layout_constraintTop_toBottomOf="@+id/dm_username" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dmitem_margin_layout"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/dm_username"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:drawablePadding="@dimen/dmitem_padding_drawable"
-                        android:singleLine="true"
-                        android:textSize="@dimen/dmitem_textsize_name" />
-
-                    <TextView
-                        android:id="@+id/dm_time"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:singleLine="true"
-                        android:textAlignment="gravity"
-                        android:textSize="@dimen/dmitem_textsize_date" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/dm_screenname"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dmitem_margin_layout"
-                        android:layout_marginEnd="@dimen/dmitem_margin_layout"
-                        android:singleLine="true"
-                        android:textSize="@dimen/dmitem_textsize_name" />
-
-                    <TextView
-                        android:id="@+id/dm_receiver"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="@dimen/dmitem_padding_drawable"
-                        android:singleLine="true"
-                        android:textSize="@dimen/dmitem_textsize_name" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/dm_receiver"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dmitem_text_margin"
+            android:layout_marginLeft="@dimen/dmitem_text_margin"
+            android:layout_marginEnd="@dimen/dmitem_text_margin"
+            android:layout_marginRight="@dimen/dmitem_text_margin"
+            android:drawablePadding="@dimen/dmitem_padding_drawable"
+            android:singleLine="true"
+            android:textSize="@dimen/dmitem_textsize_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dm_screenname"
+            app:layout_constraintTop_toBottomOf="@+id/dm_username" />
 
         <TextView
             android:id="@+id/dm_message"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dmitem_margin_layout"
-            android:layout_marginBottom="@dimen/dmitem_margin_layout"
-            android:linksClickable="true" />
+            android:linksClickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dm_profileImg" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+        <Button
+            android:id="@+id/dm_answer"
+            style="@style/FeedbackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dmitem_button_height"
+            android:layout_marginStart="@dimen/dmitem_button_margin"
+            android:layout_marginLeft="@dimen/dmitem_button_margin"
+            android:layout_marginEnd="@dimen/dmitem_button_margin"
+            android:layout_marginRight="@dimen/dmitem_button_margin"
+            android:text="@string/dm_answer"
+            android:textSize="@dimen/dmitem_textsize_button"
+            android:singleLine="true"
+            app:layout_constraintEnd_toStartOf="@+id/dm_screenname"
+            app:layout_constraintStart_toStartOf="@+id/dm_screenname"
+            app:layout_constraintTop_toBottomOf="@+id/dm_message" />
 
-            <Button
-                android:id="@+id/dm_answer"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dmitem_button_height"
-                android:layout_marginEnd="@dimen/dmitem_margin_layout"
-                android:layout_marginRight="@dimen/dmitem_margin_layout"
-                android:text="@string/dm_answer"
-                android:textSize="@dimen/dmitem_textsize_button"
-                style="@style/FeedbackButton" />
+        <Button
+            android:id="@+id/dm_delete"
+            style="@style/FeedbackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dmitem_button_height"
+            android:layout_marginStart="@dimen/dmitem_button_margin"
+            android:layout_marginLeft="@dimen/dmitem_button_margin"
+            android:text="@string/delete_dm"
+            android:textSize="@dimen/dmitem_textsize_button"
+            android:singleLine="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/dm_answer"
+            app:layout_constraintTop_toBottomOf="@+id/dm_message" />
 
-            <Button
-                android:id="@+id/dm_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dmitem_button_height"
-                android:text="@string/delete_dm"
-                android:textSize="@dimen/dmitem_textsize_button"
-                style="@style/FeedbackButton" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

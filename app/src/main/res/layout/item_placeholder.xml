@@ -4,26 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <FrameLayout
+    <ProgressBar
+        android:id="@+id/placeholder_loading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/placeholder_button"
+        style="@style/FeedbackButton"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ProgressBar
-            android:id="@+id/placeholder_loading"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/placeholder_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/placeholderitem_margin"
-            android:text="@string/item_load_more"
-            style="@style/FeedbackButton" />
-
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/placeholderitem_margin"
+        android:text="@string/item_load_more" />
 
 </androidx.cardview.widget.CardView>

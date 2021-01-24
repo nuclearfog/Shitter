@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.graphics.Bitmap;
+import android.graphics.PorterDuffColorFilter;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
@@ -25,13 +26,16 @@ import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
+import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
 import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
 import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
@@ -77,12 +81,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
 
     private ImageLoader imageAsync;
 
-
-    private ProgressBar video_progress;
-    private ProgressBar image_progress;
+    private ProgressBar media_progress;
     private MediaController videoController;
-    private View imageWindow, videoWindow;
-    private RecyclerView imageList;
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
@@ -96,11 +96,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_media);
-        imageList = findViewById(R.id.image_list);
-        imageWindow = findViewById(R.id.image_window);
-        videoWindow = findViewById(R.id.video_window);
-        image_progress = findViewById(R.id.image_load);
-        video_progress = findViewById(R.id.video_load);
+        RecyclerView imageList = findViewById(R.id.image_list);
+        media_progress = findViewById(R.id.media_progress);
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         videoController = new MediaController(this);
@@ -109,41 +106,34 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         videoView.setOnPreparedListener(this);
         videoView.setOnErrorListener(this);
 
-        Bundle param = getIntent().getExtras();
-        if (param != null && param.containsKey(KEY_MEDIA_LINK)) {
-            mediaLinks = param.getStringArray(KEY_MEDIA_LINK);
-            type = param.getInt(KEY_MEDIA_TYPE);
-        }
-    }
+        GlobalSettings settings = GlobalSettings.getInstance(this);
+        media_progress.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
 
+        mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
+        type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (imageWindow.getVisibility() != VISIBLE && videoWindow.getVisibility() != VISIBLE) {
-            if (mediaLinks != null && mediaLinks.length > 0) {
-                switch (type) {
-                    case MEDIAVIEWER_IMG_S:
-                        adapter.disableSaveButton();
-                    case MEDIAVIEWER_IMAGE:
-                        imageWindow.setVisibility(VISIBLE);
-                        imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
-                        imageList.setAdapter(adapter);
-                        if (imageAsync == null) {
-                            imageAsync = new ImageLoader(this);
-                            imageAsync.execute(mediaLinks);
-                        }
-                        break;
-
-                    case MEDIAVIEWER_VIDEO:
-                        videoView.setMediaController(videoController);
-                    case MEDIAVIEWER_ANGIF:
-                        videoWindow.setVisibility(VISIBLE);
-                        Uri video = Uri.parse(mediaLinks[0]);
-                        videoView.setVideoURI(video);
-                        break;
+        switch (type) {
+            case MEDIAVIEWER_IMG_S:
+                adapter.disableSaveButton();
+            case MEDIAVIEWER_IMAGE:
+                videoView.setVisibility(GONE);
+                imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
+                imageList.setAdapter(adapter);
+                if (imageAsync == null) {
+                    imageAsync = new ImageLoader(this);
+                    imageAsync.execute(mediaLinks);
                 }
-            }
+                break;
+
+            case MEDIAVIEWER_VIDEO:
+                zoomImage.setVisibility(GONE);
+                imageList.setVisibility(GONE);
+                videoView.setMediaController(videoController);
+            case MEDIAVIEWER_ANGIF:
+                zoomImage.setVisibility(GONE);
+                Uri video = Uri.parse(mediaLinks[0]);
+                videoView.setVideoURI(video);
+                break;
         }
     }
 
@@ -211,11 +201,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         switch (what) {
             case MEDIA_INFO_BUFFERING_END:
             case MEDIA_INFO_VIDEO_RENDERING_START:
-                video_progress.setVisibility(INVISIBLE);
+                media_progress.setVisibility(INVISIBLE);
                 return true;
 
             case MEDIA_INFO_BUFFERING_START:
-                video_progress.setVisibility(VISIBLE);
+                media_progress.setVisibility(VISIBLE);
                 return true;
         }
         return false;
@@ -258,7 +248,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         if (adapter.isEmpty()) {
             zoomImage.reset();
             zoomImage.setImageBitmap(image.getMiddleSize());
-            image_progress.setVisibility(View.INVISIBLE);
+            media_progress.setVisibility(View.INVISIBLE);
         }
         adapter.addLast(image);
     }
