@@ -16,6 +16,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * Activity to show a list of twitter users
+ *
+ * @author nuclearfog
  */
 public class UserDetail extends AppCompatActivity {
 

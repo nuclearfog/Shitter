@@ -73,12 +73,6 @@
         <item name="cardElevation">2dp</item>
     </style>
 
-    <style name="PopupCardView" parent="CardView">
-        <item name="cardPreventCornerOverlap">false</item>
-        <item name="cardUseCompatPadding">true</item>
-        <item name="cardCornerRadius">10dp</item>
-    </style>
-
     <style name="NegativeButton" parent="Widget.AppCompat.ButtonBar.AlertDialog">
         <item name="android:textColor">@color/negative_button</item>
     </style>

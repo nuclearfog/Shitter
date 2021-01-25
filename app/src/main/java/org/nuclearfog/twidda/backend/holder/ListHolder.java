@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.holder;
 
 /**
  * This class stores informations about an user list
+ *
+ * @author nuclearfog
  */
 public class ListHolder {
 

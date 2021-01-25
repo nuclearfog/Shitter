@@ -1,99 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    style="@style/PopupCardView">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_popup_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/list_popup_root">
+    <ImageView
+        android:id="@+id/userlist_popup_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.75"
+        tools:ignore="ContentDescription" />
 
-        <ProgressBar
-            android:id="@+id/list_popup_loading"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
+    <TextView
+        android:id="@+id/popup_list_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/popup_userlist_background_margin"
+        android:layout_marginLeft="@dimen/popup_userlist_background_margin"
+        android:layout_marginTop="@dimen/popup_userlist_background_margin"
+        android:layout_marginEnd="@dimen/popup_userlist_background_margin"
+        android:layout_marginRight="@dimen/popup_userlist_background_margin"
+        android:singleLine="true"
+        android:text="@string/userlist_create_new_list"
+        android:textSize="@dimen/userlist_title_textsize"
+        app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"
+        app:layout_constraintStart_toStartOf="@+id/userlist_popup_background"
+        app:layout_constraintTop_toTopOf="@+id/userlist_popup_background" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/tweetpopup_margin_layout">
+    <EditText
+        android:id="@+id/list_edit_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/popup_userlist_background_margin"
+        android:layout_marginLeft="@dimen/popup_userlist_background_margin"
+        android:layout_marginTop="@dimen/popup_userlist_text_margin"
+        android:layout_marginEnd="@dimen/popup_userlist_background_margin"
+        android:layout_marginRight="@dimen/popup_userlist_background_margin"
+        android:autofillHints="@string/userlist_enter_title"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:hint="@string/userlist_enter_title"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        app:layout_constraintBottom_toTopOf="@+id/list_edit_descr"
+        app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"
+        app:layout_constraintStart_toStartOf="@+id/userlist_popup_background"
+        app:layout_constraintTop_toBottomOf="@+id/popup_list_title" />
 
-            <TextView
-                android:id="@+id/popup_list_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/userlist_edittext_margin"
-                android:singleLine="true"
-                android:text="@string/userlist_create_new_list"
-                android:textSize="@dimen/userlist_title_textsize" />
+    <EditText
+        android:id="@+id/list_edit_descr"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/popup_userlist_background_margin"
+        android:layout_marginLeft="@dimen/popup_userlist_background_margin"
+        android:layout_marginTop="@dimen/popup_userlist_text_margin"
+        android:layout_marginEnd="@dimen/popup_userlist_background_margin"
+        android:layout_marginRight="@dimen/popup_userlist_background_margin"
+        android:layout_marginBottom="@dimen/popup_userlist_text_margin"
+        android:autofillHints="@string/userlist_enter_descr"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:gravity="top"
+        android:hint="@string/userlist_enter_descr"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@id/list_edit_public_sw"
+        app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"
+        app:layout_constraintStart_toStartOf="@+id/userlist_popup_background"
+        app:layout_constraintTop_toBottomOf="@+id/list_edit_title" />
 
-            <EditText
-                android:id="@+id/list_edit_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/userlist_edittext_margin"
-                android:autofillHints="@string/userlist_enter_title"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:hint="@string/userlist_enter_title"
-                android:inputType="textPersonName"
-                android:singleLine="true" />
 
-            <EditText
-                android:id="@+id/list_edit_descr"
-                android:layout_width="@dimen/userlist_descr_width"
-                android:layout_height="@dimen/userlist_descr_height"
-                android:layout_margin="@dimen/userlist_edittext_margin"
-                android:autofillHints="@string/userlist_enter_descr"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:gravity="top"
-                android:hint="@string/userlist_enter_descr"
-                android:inputType="textMultiLine" />
+    <com.kyleduo.switchbutton.SwitchButton
+        android:id="@+id/list_edit_public_sw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/popup_userlist_background_margin"
+        android:layout_marginLeft="@dimen/popup_userlist_background_margin"
+        android:layout_marginEnd="@dimen/popup_userlist_layout_margin"
+        android:layout_marginRight="@dimen/popup_userlist_layout_margin"
+        android:layout_marginBottom="@dimen/popup_userlist_background_margin"
+        app:layout_constraintBottom_toBottomOf="@+id/userlist_popup_background"
+        app:layout_constraintEnd_toStartOf="@+id/userlist_switch_text"
+        app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
+        app:layout_constraintTop_toBottomOf="@+id/list_edit_descr" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/userlist_layout_margin"
-                android:orientation="horizontal">
+    <TextView
+        android:id="@+id/userlist_switch_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/popup_userlist_layout_margin"
+        android:layout_marginRight="@dimen/popup_userlist_layout_margin"
+        android:singleLine="true"
+        android:text="@string/userlist_public_sel"
+        app:layout_constraintBottom_toBottomOf="@+id/list_edit_public_sw"
+        app:layout_constraintEnd_toStartOf="@+id/userlist_create_list"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@+id/list_edit_public_sw"
+        app:layout_constraintTop_toTopOf="@+id/list_edit_public_sw" />
 
-                <com.kyleduo.switchbutton.SwitchButton
-                    android:id="@+id/list_edit_public_sw"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical" />
+    <Button
+        android:id="@+id/userlist_create_list"
+        style="@style/FeedbackButton"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/userlist_button_height"
+        android:layout_marginEnd="@dimen/popup_userlist_background_margin"
+        android:layout_marginRight="@dimen/popup_userlist_background_margin"
+        android:paddingLeft="@dimen/userlist_button_padding"
+        android:paddingRight="@dimen/userlist_button_padding"
+        android:text="@string/userlist_create"
+        app:layout_constraintBottom_toBottomOf="@+id/userlist_switch_text"
+        app:layout_constraintEnd_toEndOf="@id/userlist_popup_background"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@+id/userlist_switch_text"
+        app:layout_constraintTop_toTopOf="@+id/userlist_switch_text" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/userlist_switch_text_margin"
-                    android:layout_marginLeft="@dimen/userlist_switch_text_margin"
-                    android:layout_weight="2"
-                    android:singleLine="true"
-                    android:text="@string/userlist_public_sel" />
-
-                <Button
-                    android:id="@+id/userlist_create_list"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/userlist_button_height"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="3"
-                    android:paddingLeft="@dimen/userlist_button_padding"
-                    android:paddingRight="@dimen/userlist_button_padding"
-                    android:text="@string/userlist_create"
-                    style="@style/FeedbackButton" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

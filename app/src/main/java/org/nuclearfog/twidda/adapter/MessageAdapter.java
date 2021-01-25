@@ -41,6 +41,7 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 /**
  * Adapter class for direct messages list
  *
+ * @author nuclearfog
  * @see org.nuclearfog.twidda.fragment.MessageFragment
  */
 public class MessageAdapter extends Adapter<ViewHolder> {

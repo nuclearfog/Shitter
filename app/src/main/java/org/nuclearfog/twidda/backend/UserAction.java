@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 /**
  * This background task loads profile information about a twitter user and take actions
  *
+ * @author nuclearfog
  * @see UserProfile
  */
 public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {

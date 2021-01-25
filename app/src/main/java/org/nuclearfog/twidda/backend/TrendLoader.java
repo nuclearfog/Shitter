@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Background task to load a list of location specific trends
  *
+ * @author nuclearfog
  * @see TrendFragment
  */
 public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {

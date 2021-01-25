@@ -116,7 +116,6 @@
     <!--dimens of page_login.xml-->
     <dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>
     <dimen name="loginpage_button_padding">24dp</dimen>
-    <dimen name="loginpage_button_height">40dp</dimen>
     <dimen name="loginpage_textsize_button">14sp</dimen>
     <dimen name="loginpage_padding_drawable">5dp</dimen>
     <dimen name="loginpage_textsize_login_key">20sp</dimen>
@@ -124,24 +123,23 @@
     <integer name="loginpage_pin_max_chars">10</integer>
 
     <!--dimens of popup_tweet.xml-->
-    <dimen name="tweetpopup_margin_layout">5dp</dimen>
-    <dimen name="tweetpopup_text_width">300dp</dimen>
-    <dimen name="tweetpopup_text_height">200dp</dimen>
+    <dimen name="tweetpopup_margin_layout">10dp</dimen>
     <dimen name="tweetpopup_button_size">40dp</dimen>
     <dimen name="tweetpopup_button_margin">7dp</dimen>
-    <dimen name="tweetpopup_location_progress_size">30dp</dimen>
 
     <!--dimens of popup_dm.xml-->
-    <dimen name="dmpopup_padding_layout">5dp</dimen>
-    <dimen name="dmpopup_margin_layout">5dp</dimen>
+    <dimen name="dmpopup_margin_background">10dp</dimen>
+    <dimen name="dmpopup_text_margin">5dp</dimen>
     <dimen name="dmpopup_button_size">40dp</dimen>
-    <dimen name="dmpopup_text_width">300dp</dimen>
-    <dimen name="dmpopup_text_height">200dp</dimen>
-    <dimen name="dmpopup_button_margin">7dp</dimen>
+    <dimen name="dmpopup_button_margin">5dp</dimen>
+
+    <!--dimen of popup_userlist.xml-->
+    <dimen name="popup_userlist_background_margin">10dp</dimen>
+    <dimen name="popup_userlist_layout_margin">5dp</dimen>
+    <dimen name="popup_userlist_text_margin">5dp</dimen>
 
     <!--dimens of item_load.xml-->
     <dimen name="loaditem_button_size">36sp</dimen>
-
 
     <!--dimens of page_media.xml-->
     <dimen name="mediapage_preview_margin">10dp</dimen>
@@ -182,13 +180,8 @@
     <!--dimens of dialog_login_info.xml-->
 
     <!--dimens of dialog_userlist.xml-->
-    <dimen name="userlist_descr_height">100dp</dimen>
-    <dimen name="userlist_descr_width">300dp</dimen>
-    <dimen name="userlist_switch_text_margin">10dp</dimen>
     <dimen name="userlist_button_height">20dp</dimen>
-    <dimen name="userlist_layout_margin">10dp</dimen>
     <dimen name="userlist_button_padding">5dp</dimen>
-    <dimen name="userlist_edittext_margin">5dp</dimen>
     <dimen name="userlist_title_textsize">20sp</dimen>
 
     <!--dimens of icon_profile_tab.xml-->

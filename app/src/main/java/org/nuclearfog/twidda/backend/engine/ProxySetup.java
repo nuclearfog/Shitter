@@ -15,6 +15,8 @@ import java.util.List;
 
 /**
  * Creates a https proxy connection for all connections
+ *
+ * @author nuclearfog
  */
 class ProxySetup {
 

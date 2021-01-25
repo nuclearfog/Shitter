@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task for uploading tweet
  *
+ * @author nuclearfog
  * @see TweetEditor
  */
 public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {

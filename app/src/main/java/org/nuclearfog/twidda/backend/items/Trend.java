@@ -2,6 +2,8 @@ package org.nuclearfog.twidda.backend.items;
 
 /**
  * Twitter Trend Class
+ *
+ * @author nuclearfog
  */
 public class Trend {
 

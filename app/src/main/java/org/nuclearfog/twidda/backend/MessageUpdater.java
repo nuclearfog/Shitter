@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task to send a direct messages to a user
  *
+ * @author nuclearfog
  * @see MessageEditor
  */
 public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {

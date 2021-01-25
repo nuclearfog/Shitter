@@ -115,7 +115,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.ListPopup"
+            android:name=".activity.ListEditor"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 

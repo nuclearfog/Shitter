@@ -19,6 +19,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * Activity for the direct message page of the current user
+ *
+ * @author nuclearfog
  */
 public class DirectMessage extends AppCompatActivity {
 

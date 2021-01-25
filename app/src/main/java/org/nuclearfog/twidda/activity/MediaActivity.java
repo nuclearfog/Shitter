@@ -127,18 +127,12 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
     @Override
     public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (permissions.length > 0 && grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
-            switch (permissions[0]) {
-                case READ_EXTERNAL_STORAGE:
-                    openMediaPicker(requestCode);
-                    break;
-
-                case ACCESS_FINE_LOCATION:
-                    fetchLocation();
-                    break;
-
-                case WRITE_EXTERNAL_STORAGE:
-                    writeImageToStorage();
-                    break;
+            if (PERMISSIONS[0][0].equals(permissions[0])) {
+                openMediaPicker(requestCode);
+            } else if (PERMISSIONS[1][0].equals(permissions[0])) {
+                fetchLocation();
+            } else if ((PERMISSIONS[2][0].equals(permissions[0]))) {
+                writeImageToStorage();
             }
         }
     }
@@ -152,8 +146,10 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     int index = cursor.getColumnIndex(GET_MEDIA[0]);
-                    String path = cursor.getString(index);
-                    onMediaFetched(reqCode, path);
+                    if (index >= 0) {
+                        String path = cursor.getString(index);
+                        onMediaFetched(reqCode, path);
+                    }
                 }
                 cursor.close();
             }

@@ -54,6 +54,8 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
 
 /**
  * Activity for Twitter profile editor
+ *
+ * @author nuclearfog
  */
 public class ProfileEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick, Callback {
 
@@ -69,7 +71,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
     private EditText name, link, loc, bio;
     private Dialog loadingCircle, closeDialog;
     private Button addBannerBtn;
-    private View changeBannerBtn;
+    private ImageView changeBannerBtn;
 
     @Nullable
     private User user;
@@ -81,6 +83,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
         setContentView(R.layout.page_editprofile);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
         View root = findViewById(R.id.page_edit);
+        ImageView changeImageBtn = findViewById(R.id.profile_change_image_btn);
         profile_image = findViewById(R.id.edit_pb);
         profile_banner = findViewById(R.id.edit_banner);
         addBannerBtn = findViewById(R.id.edit_add_banner);
@@ -99,6 +102,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
 
         settings = GlobalSettings.getInstance(this);
         toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
+        changeBannerBtn.setImageResource(R.drawable.add);
+        changeImageBtn.setImageResource(R.drawable.add);
         profile_banner.setDrawingCacheEnabled(true);
         AppStyles.setTheme(settings, root);
 
@@ -138,6 +143,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
         if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getLink())
                 && userLoc.equals(user.getLocation()) && userBio.equals(user.getBio())
                 && profileLink == null && bannerLink == null) {
+            finish();
+        } else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
             finish();
         } else if (!closeDialog.isShowing()) {
             closeDialog.show();

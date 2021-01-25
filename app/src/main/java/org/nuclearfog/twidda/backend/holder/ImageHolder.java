@@ -6,12 +6,18 @@ import androidx.annotation.NonNull;
 
 /**
  * Container class for Bitmap images and previews
+ *
+ * @author nuclearfog
  */
 public class ImageHolder {
 
     private Bitmap smallImage, middleImage, fullImage;
 
-
+    /**
+     * @param fullImage        Full size image
+     * @param smallImageHeight height of the smallest image preview
+     * @param middleImageWidth width of the image preview
+     */
     public ImageHolder(@NonNull Bitmap fullImage, float smallImageHeight, float middleImageWidth) {
         this.fullImage = fullImage;
 

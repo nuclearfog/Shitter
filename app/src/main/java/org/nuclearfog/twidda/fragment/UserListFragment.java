@@ -25,6 +25,8 @@ import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
 
 /**
  * Fragment class for user lists
+ *
+ * @author nuclearfog
  */
 public class UserListFragment extends ListFragment implements ListClickListener {
 

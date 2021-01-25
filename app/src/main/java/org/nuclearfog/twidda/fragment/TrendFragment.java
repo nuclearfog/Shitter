@@ -17,6 +17,8 @@ import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 
 /**
  * Fragment class for trend lists
+ *
+ * @author nuclearfog
  */
 public class TrendFragment extends ListFragment implements TrendClickListener {
 

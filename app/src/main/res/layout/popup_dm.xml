@@ -1,76 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/PopupCardView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dm_popup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/dm_popup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/dmpopup_padding_layout">
+    <ImageView
+        android:id="@+id/dm_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.75"
+        tools:ignore="ContentDescription" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dmpopup_margin_layout"
-            android:gravity="end|center_vertical"
-            android:orientation="horizontal">
+    <EditText
+        android:id="@+id/dm_receiver"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dmpopup_margin_background"
+        android:layout_marginLeft="@dimen/dmpopup_margin_background"
+        android:layout_marginTop="@dimen/dmpopup_margin_background"
+        android:background="@android:color/transparent"
+        android:hint="@string/username"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="@+id/dm_media"
+        app:layout_constraintEnd_toStartOf="@+id/dm_preview"
+        app:layout_constraintStart_toStartOf="@+id/dm_background"
+        app:layout_constraintTop_toTopOf="@+id/dm_background" />
 
-            <EditText
-                android:id="@+id/dm_receiver"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:hint="@string/username"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:singleLine="true" />
+    <ImageButton
+        android:id="@+id/dm_preview"
+        style="@style/RoundButton"
+        android:layout_width="@dimen/dmpopup_button_size"
+        android:layout_height="@dimen/dmpopup_button_size"
+        android:layout_marginTop="@dimen/dmpopup_button_margin"
+        android:contentDescription="@string/tweet_add_image"
+        app:layout_constraintEnd_toStartOf="@+id/dm_media"
+        app:layout_constraintStart_toEndOf="@id/dm_receiver"
+        app:layout_constraintTop_toTopOf="@+id/dm_background" />
 
-            <ImageButton
-                android:id="@+id/dm_preview"
-                style="@style/RoundButton"
-                android:layout_width="@dimen/dmpopup_button_size"
-                android:layout_height="@dimen/dmpopup_button_size"
-                android:layout_marginStart="@dimen/dmpopup_button_margin"
-                android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:contentDescription="@string/tweet_add_image"
-                android:visibility="gone" />
+    <ImageButton
+        android:id="@+id/dm_media"
+        style="@style/RoundButton"
+        android:layout_width="@dimen/dmpopup_button_size"
+        android:layout_height="@dimen/dmpopup_button_size"
+        android:layout_marginTop="@dimen/dmpopup_button_margin"
+        android:layout_marginEnd="@dimen/dmpopup_button_margin"
+        android:layout_marginRight="@dimen/dmpopup_button_margin"
+        android:contentDescription="@string/tweet_add_image"
+        app:layout_constraintStart_toEndOf="@+id/dm_preview"
+        app:layout_constraintEnd_toStartOf="@+id/dm_send"
+        app:layout_constraintTop_toTopOf="@+id/dm_background" />
 
-            <ImageButton
-                android:id="@+id/dm_media"
-                style="@style/RoundButton"
-                android:layout_width="@dimen/dmpopup_button_size"
-                android:layout_height="@dimen/dmpopup_button_size"
-                android:layout_marginStart="@dimen/dmpopup_button_margin"
-                android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:contentDescription="@string/tweet_add_image" />
+    <ImageButton
+        android:id="@+id/dm_send"
+        style="@style/RoundButton"
+        android:layout_width="@dimen/dmpopup_button_size"
+        android:layout_height="@dimen/dmpopup_button_size"
+        android:layout_marginTop="@dimen/dmpopup_button_margin"
+        android:layout_marginEnd="@dimen/dmpopup_button_margin"
+        android:layout_marginRight="@dimen/dmpopup_button_margin"
+        android:contentDescription="@string/close_dm"
+        app:layout_constraintStart_toEndOf="@id/dm_media"
+        app:layout_constraintEnd_toEndOf="@+id/dm_background"
+        app:layout_constraintTop_toTopOf="@+id/dm_background" />
 
-            <ImageButton
-                android:id="@+id/dm_send"
-                style="@style/RoundButton"
-                android:layout_width="@dimen/dmpopup_button_size"
-                android:layout_height="@dimen/dmpopup_button_size"
-                android:layout_marginStart="@dimen/dmpopup_button_margin"
-                android:layout_marginLeft="@dimen/dmpopup_button_margin"
-                android:contentDescription="@string/close_dm" />
+    <EditText
+        android:id="@+id/dm_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/dmpopup_margin_background"
+        android:layout_marginLeft="@dimen/dmpopup_margin_background"
+        android:layout_marginTop="@dimen/dmpopup_text_margin"
+        android:layout_marginEnd="@dimen/dmpopup_margin_background"
+        android:layout_marginRight="@dimen/dmpopup_margin_background"
+        android:layout_marginBottom="@dimen/dmpopup_margin_background"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        android:hint="@string/dm_message"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toBottomOf="@+id/dm_background"
+        app:layout_constraintEnd_toEndOf="@+id/dm_background"
+        app:layout_constraintStart_toStartOf="@+id/dm_background"
+        app:layout_constraintTop_toBottomOf="@+id/dm_receiver" />
 
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/dm_text"
-            android:layout_width="@dimen/dmpopup_text_width"
-            android:layout_height="@dimen/dmpopup_text_height"
-            android:layout_margin="@dimen/dmpopup_margin_layout"
-            android:background="@android:color/transparent"
-            android:gravity="start"
-            android:hint="@string/dm_message"
-            android:importantForAutofill="no"
-            android:inputType="textMultiLine" />
-
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

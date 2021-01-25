@@ -30,9 +30,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/answer_reference_detail"
-                    app:layout_constraintTop_toTopOf="@+id/answer_reference_detail">
+                    android:layout_height="wrap_content">
 
                     <ImageView
                         android:id="@+id/profileimage_detail"

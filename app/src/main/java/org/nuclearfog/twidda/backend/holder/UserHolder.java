@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 /**
  * User information holder ofr updating user information
+ *
+ * @author nuclearfog
  */
 public class UserHolder {
 

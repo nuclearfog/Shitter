@@ -19,6 +19,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.CLEAR_LIST;
 /**
  * Background task to download a list of tweets from different sources
  *
+ * @author nuclearfog
  * @see TweetFragment
  */
 public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {

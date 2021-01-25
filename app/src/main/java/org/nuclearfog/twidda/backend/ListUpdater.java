@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.activity.ListPopup;
+import org.nuclearfog.twidda.activity.ListEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
@@ -12,17 +12,19 @@ import java.lang.ref.WeakReference;
 
 /**
  * This class creates and updates user lists
- * Backend for {@link ListPopup}
+ * Backend for {@link ListEditor}
+ *
+ * @author nuclearfog
  */
 public class ListUpdater extends AsyncTask<ListHolder, Void, UserList> {
 
 
     private EngineException err;
     private final TwitterEngine mTwitter;
-    private final WeakReference<ListPopup> callback;
+    private final WeakReference<ListEditor> callback;
 
 
-    public ListUpdater(ListPopup activity) {
+    public ListUpdater(ListEditor activity) {
         super();
         callback = new WeakReference<>(activity);
         mTwitter = TwitterEngine.getInstance(activity);

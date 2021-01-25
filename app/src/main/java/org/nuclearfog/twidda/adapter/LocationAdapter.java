@@ -19,6 +19,7 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 /**
  * Adapter class for Location selection spinner
  *
+ * @author nuclearfog
  * @see org.nuclearfog.twidda.activity.AppSettings
  */
 public class LocationAdapter extends BaseAdapter {

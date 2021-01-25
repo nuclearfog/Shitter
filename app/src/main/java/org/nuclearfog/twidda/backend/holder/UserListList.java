@@ -8,6 +8,8 @@ import java.util.LinkedList;
 
 /**
  * Container class for user lists containing extra cursors for paging
+ *
+ * @author nuclearfog
  */
 public class UserListList extends LinkedList<UserList> {
 

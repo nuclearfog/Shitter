@@ -19,6 +19,8 @@ import static android.graphics.Typeface.SERIF;
 
 /**
  * This class manages app settings
+ *
+ * @author nuclearfog
  */
 public class GlobalSettings {
 

@@ -13,6 +13,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task to connect to twitter and initialize keys
  *
+ * @author nuclearfog
  * @see LoginActivity
  */
 public class Registration extends AsyncTask<String, Void, String> {

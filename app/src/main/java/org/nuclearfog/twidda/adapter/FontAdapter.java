@@ -13,6 +13,7 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
 /**
  * Spinner Adapter for font settings
  *
+ * @author nuclearfog
  * @see org.nuclearfog.twidda.activity.AppSettings
  */
 public class FontAdapter extends BaseAdapter {

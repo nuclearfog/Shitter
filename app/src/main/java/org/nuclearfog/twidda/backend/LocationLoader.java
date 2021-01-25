@@ -13,10 +13,10 @@ import java.util.List;
 /**
  * Background task to load location information used by twitter such as location names and world ID's
  *
+ * @author nuclearfog
  * @see AppSettings
  */
 public class LocationLoader extends AsyncTask<Void, Void, List<TrendLocation>> {
-
 
     private EngineException twException;
     private WeakReference<AppSettings> callback;

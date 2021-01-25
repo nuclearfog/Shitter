@@ -34,6 +34,8 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
 /**
  * Main Activity of the App
+ *
+ * @author nuclearfog
  */
 public class MainActivity extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 

@@ -6,6 +6,8 @@ import twitter4j.Location;
 
 /**
  * Trend location holder
+ *
+ * @author nuclearfog
  */
 public class TrendLocation {
 

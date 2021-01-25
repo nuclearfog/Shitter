@@ -21,16 +21,18 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * Activity to show user lists of a twitter user
+ *
+ * @author nuclearfog
  */
 public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     /**
-     * request code for {@link ListPopup} OnTabSelectedListener
+     * request code for {@link ListEditor} OnTabSelectedListener
      */
     public static final int REQ_CREATE_LIST = 1;
 
     /**
-     * return code for {@link ListPopup} if list was created
+     * return code for {@link ListEditor} if list was created
      */
     public static final int RET_LIST_CREATED = 2;
 
@@ -115,7 +117,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.list_create) {
-            Intent createList = new Intent(this, ListPopup.class);
+            Intent createList = new Intent(this, ListEditor.class);
             startActivityForResult(createList, REQ_CREATE_LIST);
         }
         return super.onOptionsItemSelected(item);

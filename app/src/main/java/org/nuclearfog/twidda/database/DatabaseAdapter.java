@@ -11,6 +11,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * This class creates and manages SQLite table versions
+ *
+ * @author nuclearfog
  */
 public class DatabaseAdapter {
 

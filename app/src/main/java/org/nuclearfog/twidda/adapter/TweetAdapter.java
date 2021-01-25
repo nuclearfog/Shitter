@@ -47,6 +47,7 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 /**
  * Adapter class for tweet list
  *
+ * @author nuclearfog
  * @see org.nuclearfog.twidda.fragment.TweetFragment
  */
 public class TweetAdapter extends Adapter<ViewHolder> {

@@ -36,6 +36,8 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_M
 
 /**
  * Fragment class for direct message lists
+ *
+ * @author nuclearfog
  */
 public class MessageFragment extends ListFragment implements OnItemSelected, OnDialogClick {
 

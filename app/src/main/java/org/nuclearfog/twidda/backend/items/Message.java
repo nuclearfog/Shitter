@@ -7,6 +7,8 @@ import twitter4j.URLEntity;
 
 /**
  * Container class for a Twitter direct message
+ *
+ * @author nuclearfog
  */
 public class Message {
 

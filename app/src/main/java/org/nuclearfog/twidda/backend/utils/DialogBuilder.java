@@ -11,6 +11,8 @@ import org.nuclearfog.twidda.R;
 
 /**
  * this class creates alert dialogs with a custom listener
+ *
+ * @author nuclearfog
  */
 public final class DialogBuilder {
 

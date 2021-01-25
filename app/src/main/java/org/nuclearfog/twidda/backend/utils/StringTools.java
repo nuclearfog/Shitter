@@ -5,6 +5,8 @@ import java.util.Date;
 
 /**
  * this class creates time strings
+ *
+ * @author nuclearfog
  */
 public final class StringTools {
 

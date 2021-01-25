@@ -15,6 +15,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task for downloading twitter lists created by a user
  *
+ * @author nuclearfog
  * @see UserListFragment
  */
 public class ListLoader extends AsyncTask<Long, Void, UserListList> {

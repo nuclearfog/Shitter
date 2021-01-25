@@ -21,6 +21,8 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_DATA;
 
 /**
  * #Fragment class for a list of tweets
+ *
+ * @author nuclearfog
  */
 public class TweetFragment extends ListFragment implements TweetClickListener {
 

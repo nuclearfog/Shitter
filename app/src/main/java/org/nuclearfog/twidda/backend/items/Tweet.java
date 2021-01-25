@@ -13,6 +13,8 @@ import twitter4j.URLEntity;
 
 /**
  * Tweet class containing information about a tweet
+ *
+ * @author nuclearfog
  */
 public class Tweet implements Serializable {
 
@@ -60,7 +62,8 @@ public class Tweet implements Serializable {
     /**
      * constructor for tweets from twitter
      *
-     * @param status tweet
+     * @param status    tweet
+     * @param twitterId ID of the current user
      */
     public Tweet(Status status, long twitterId) {
         this(status, twitterId, status.getCurrentUserRetweetId(), status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());

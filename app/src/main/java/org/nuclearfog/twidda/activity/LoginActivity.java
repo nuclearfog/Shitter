@@ -34,13 +34,14 @@ import static android.widget.Toast.LENGTH_SHORT;
 /**
  * Login Activity of the App
  * called from {@link MainActivity} when this app isn't logged in to twitter
+ *
+ * @author nuclearfog
  */
 public class LoginActivity extends AppCompatActivity implements OnClickListener {
 
     private Registration registerAsync;
     private GlobalSettings settings;
 
-    private Button linkButton, loginButton;
     private EditText pinInput;
     private View root;
 
@@ -49,14 +50,15 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         super.onCreate(b);
         setContentView(R.layout.page_login);
         Toolbar toolbar = findViewById(R.id.login_toolbar);
-        linkButton = findViewById(R.id.login_get_link);
-        loginButton = findViewById(R.id.login_verifier);
+        Button linkButton = findViewById(R.id.login_get_link);
+        Button loginButton = findViewById(R.id.login_verifier);
         root = findViewById(R.id.login_root);
         pinInput = findViewById(R.id.login_enter_pin);
 
         settings = GlobalSettings.getInstance(this);
         toolbar.setTitle(R.string.login_info);
         setSupportActionBar(toolbar);
+        pinInput.setCompoundDrawablesWithIntrinsicBounds(R.drawable.key, 0, 0, 0);
 
         linkButton.setOnClickListener(this);
         loginButton.setOnClickListener(this);
@@ -66,9 +68,6 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     protected void onStart() {
         super.onStart();
-        linkButton.setTypeface(settings.getFontFace());
-        loginButton.setTypeface(settings.getFontFace());
-        pinInput.setTypeface(settings.getFontFace());
         AppStyles.setTheme(settings, root);
     }
 

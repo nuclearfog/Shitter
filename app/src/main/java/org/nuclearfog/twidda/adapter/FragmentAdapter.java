@@ -42,6 +42,8 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_SUBSCR_T
 
 /**
  * Fragment adapter for ViewPager
+ *
+ * @author nuclearfog
  */
 public class FragmentAdapter extends FragmentStatePagerAdapter {
 

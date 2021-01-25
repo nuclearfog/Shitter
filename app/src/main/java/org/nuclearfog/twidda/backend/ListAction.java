@@ -11,6 +11,8 @@ import java.lang.ref.WeakReference;
 
 /**
  * async task to load list information and take action to the list
+ *
+ * @author nuclearfog
  */
 public class ListAction extends AsyncTask<Long, Void, UserList> {
 

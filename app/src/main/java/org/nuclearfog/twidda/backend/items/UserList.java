@@ -6,6 +6,8 @@ import java.io.Serializable;
 
 /**
  * Class for Twitter list information
+ *
+ * @author nuclearfog
  */
 public class UserList implements Serializable {
 

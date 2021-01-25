@@ -27,6 +27,8 @@ import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 
 /**
  * Twitter search Activity
+ *
+ * @author nuclearfog
  */
 public class SearchPage extends AppCompatActivity implements OnTabSelectedListener, OnQueryTextListener {
 

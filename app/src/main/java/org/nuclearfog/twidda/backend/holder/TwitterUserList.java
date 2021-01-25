@@ -8,6 +8,8 @@ import java.util.LinkedList;
 
 /**
  * custom twitter user list with cursors included
+ *
+ * @author nuclearfog
  */
 public class TwitterUserList extends LinkedList<User> {
 

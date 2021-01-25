@@ -40,6 +40,8 @@ import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 
 /**
  * Class to set up all TetView preferences
+ *
+ * @author nuclearfog
  */
 public final class AppStyles {
 
@@ -57,25 +59,23 @@ public final class AppStyles {
      * @param v        Root view
      */
     public static void setTheme(GlobalSettings settings, View v) {
-        setTheme(settings, v, settings.getBackgroundColor());
+        AppStyles instance = new AppStyles(settings);
+        v.setBackgroundColor(settings.getBackgroundColor());
+        instance.setSubViewTheme(v);
     }
 
     /**
      * sets view theme with background color
      *
-     * @param settings        settings instance
-     * @param v               Root view
-     * @param backgroundColor custom background color
+     * @param settings   settings instance
+     * @param v          Root view
+     * @param background Background image view
      */
-    public static void setTheme(GlobalSettings settings, View v, int backgroundColor) {
+    public static void setEditorTheme(GlobalSettings settings, View v, ImageView background) {
         AppStyles instance = new AppStyles(settings);
-        if (v instanceof CardView) {
-            CardView card = (CardView) v;
-            card.setCardBackgroundColor(instance.settings.getCardColor());
-        } else {
-            v.setBackgroundColor(backgroundColor);
-        }
         instance.setSubViewTheme(v);
+        background.setImageResource(R.drawable.background);
+        setDrawableColor(background, settings.getPopupColor());
     }
 
     /**
@@ -100,7 +100,7 @@ public final class AppStyles {
                     TextView tv = (TextView) child;
                     tv.setTypeface(settings.getFontFace());
                     tv.setTextColor(settings.getFontColor());
-                    setIconColor(tv, settings.getIconColor());
+                    setDrawableColor(tv, settings.getIconColor());
                     if (child instanceof Button) {
                         Button btn = (Button) child;
                         setButtonColor(btn, settings.getFontColor());
@@ -152,7 +152,7 @@ public final class AppStyles {
      * @param tv    TextView with a drawable icon on the left side
      * @param color new color for the drawable
      */
-    public static void setIconColor(TextView tv, int color) {
+    public static void setDrawableColor(TextView tv, int color) {
         for (Drawable d : tv.getCompoundDrawables()) {
             setDrawableColor(d, color);
         }
@@ -164,7 +164,7 @@ public final class AppStyles {
      * @param imgView ImageView with a drawable icon
      * @param color   new color for the drawable
      */
-    public static void setIconColor(ImageView imgView, int color) {
+    public static void setDrawableColor(ImageView imgView, int color) {
         Drawable d = imgView.getDrawable();
         setDrawableColor(d, color);
     }

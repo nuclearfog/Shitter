@@ -29,6 +29,8 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 /**
  * Adapter class for image previews
+ *
+ * @author nuclearfog
  */
 public class ImageAdapter extends Adapter<ViewHolder> {
 
@@ -185,7 +187,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         LoadItem(View v, int color) {
             super(v);
             ProgressBar progress = v.findViewById(R.id.imageitem_progress);
-            progress.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
+            progress.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
         }
     }
 

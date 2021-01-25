@@ -18,6 +18,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task to load images from twitter and storage
  *
+ * @author nuclearfog
  * @see MediaViewer
  */
 public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {

@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 /**
  * download a list of user such as follower, following or searched users
  *
+ * @author nuclearfog
  * @see UserFragment
  */
 public class UserLoader extends AsyncTask<Long, Void, TwitterUserList> {

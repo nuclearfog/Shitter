@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * task to download a direct message list from twitter and handle message actions
  *
+ * @author nuclearfog
  * @see MessageFragment
  */
 public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {

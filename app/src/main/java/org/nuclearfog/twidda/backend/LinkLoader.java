@@ -32,6 +32,7 @@ import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DISABLE_REL
 /**
  * This class handles deep links and starts activities to show the content
  *
+ * @author nuclearfog
  * @see MainActivity
  */
 public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {

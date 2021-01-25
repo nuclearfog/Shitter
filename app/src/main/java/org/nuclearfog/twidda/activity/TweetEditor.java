@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -45,6 +46,8 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET
 
 /**
  * Activity to create a tweet
+ *
+ * @author nuclearfog
  */
 public class TweetEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick {
 
@@ -94,6 +97,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
         super.onCreate(b);
         setContentView(R.layout.popup_tweet);
         View root = findViewById(R.id.tweet_popup);
+        ImageView background = findViewById(R.id.tweet_popup_background);
         ImageButton tweetButton = findViewById(R.id.tweet_send);
         ImageButton closeButton = findViewById(R.id.close);
         locationBtn = findViewById(R.id.tweet_add_location);
@@ -125,7 +129,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
         loadingCircle.setCancelable(false);
         loadingCircle.setContentView(load);
         cancelButton.setVisibility(VISIBLE);
-        AppStyles.setTheme(settings, root, settings.getPopupColor());
+        AppStyles.setEditorTheme(settings, root, background);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);
@@ -255,7 +259,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
                 if (selectedFormat == MediaType.NONE) {
                     selectedFormat = MediaType.GIF;
                     previewBtn.setImageResource(R.drawable.video);
-                    AppStyles.setIconColor(previewBtn, settings.getIconColor());
+                    AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
                     previewBtn.setVisibility(VISIBLE);
                     mediaBtn.setVisibility(GONE);
                     mediaPath.add(path);
@@ -267,7 +271,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
                 if (selectedFormat == MediaType.NONE) {
                     selectedFormat = MediaType.VIDEO;
                     previewBtn.setImageResource(R.drawable.video);
-                    AppStyles.setIconColor(previewBtn, settings.getIconColor());
+                    AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
                     previewBtn.setVisibility(VISIBLE);
                     mediaBtn.setVisibility(GONE);
                     mediaPath.add(path);

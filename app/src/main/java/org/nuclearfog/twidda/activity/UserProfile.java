@@ -575,13 +575,13 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         if (user.isVerified()) {
             username.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-            AppStyles.setIconColor(username, settings.getIconColor());
+            AppStyles.setDrawableColor(username, settings.getIconColor());
         } else {
             username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (user.isLocked()) {
             screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-            AppStyles.setIconColor(screenName, settings.getIconColor());
+            AppStyles.setDrawableColor(screenName, settings.getIconColor());
         } else {
             screenName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }

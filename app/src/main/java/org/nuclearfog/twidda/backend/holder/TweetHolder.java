@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 /**
  * TweetHolder keeps information about a written tweet such as text, media files and location
+ *
+ * @author nuclearfog
  */
 public class TweetHolder {
 

@@ -58,6 +58,11 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_D
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LOGOUT_APP;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG_PROXY;
 
+/**
+ * Settings Activity class.
+ *
+ * @author nuclearfog
+ */
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
         OnCheckedChangeListener, OnItemSelectedListener, OnDialogClick, OnColorChangedListener {
 

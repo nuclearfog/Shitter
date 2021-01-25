@@ -43,6 +43,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 /**
  * Adapter class for user list
  *
+ * @author nuclearfog
  * @see org.nuclearfog.twidda.fragment.UserFragment
  */
 public class UserAdapter extends Adapter<ViewHolder> {

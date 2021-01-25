@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task for loading and editing profile information
  *
+ * @author nuclearfog
  * @see ProfileEditor
  */
 public class UserUpdater extends AsyncTask<UserHolder, Void, User> {

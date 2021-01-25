@@ -71,7 +71,9 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUN
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
 
 /**
- * Tweet Activity for tweet and user informations
+ * Tweet Activity for tweet and user information
+ *
+ * @author nuclearfog
  */
 public class TweetActivity extends AppCompatActivity implements OnClickListener,
         OnLongClickListener, OnTagClickListener, OnDialogClick {
@@ -102,8 +104,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private Dialog deleteDialog;
 
     private GlobalSettings settings;
-    @Nullable
     private TweetAction statusAsync;
+
     @Nullable
     private Tweet tweet;
 
@@ -454,24 +456,24 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
         if (tweetUpdate.retweeted()) {
-            AppStyles.setIconColor(rtwButton, Color.GREEN);
+            AppStyles.setDrawableColor(rtwButton, Color.GREEN);
         } else {
-            AppStyles.setIconColor(rtwButton, settings.getIconColor());
+            AppStyles.setDrawableColor(rtwButton, settings.getIconColor());
         }
         if (tweetUpdate.favored()) {
-            AppStyles.setIconColor(favButton, Color.YELLOW);
+            AppStyles.setDrawableColor(favButton, Color.YELLOW);
         } else {
-            AppStyles.setIconColor(favButton, settings.getIconColor());
+            AppStyles.setDrawableColor(favButton, settings.getIconColor());
         }
         if (author.isVerified()) {
             usrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.verify, 0, 0, 0);
-            AppStyles.setIconColor(usrName, settings.getIconColor());
+            AppStyles.setDrawableColor(usrName, settings.getIconColor());
         } else {
             usrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
         if (author.isLocked()) {
             scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
-            AppStyles.setIconColor(scrName, settings.getIconColor());
+            AppStyles.setDrawableColor(scrName, settings.getIconColor());
         } else {
             scrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
@@ -514,7 +516,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             mediaButton.setVisibility(VISIBLE);
             mediaButton.setImageResource(iconRes);
-            AppStyles.setIconColor(mediaButton, settings.getIconColor());
+            AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         }
         if (settings.getImageLoad() && author.hasProfileImage()) {
             String pbLink = author.getImageLink();

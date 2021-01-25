@@ -44,6 +44,7 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 /**
  * Adapter class for user lists
  *
+ * @author nuclearfog
  * @see UserListFragment
  */
 public class ListAdapter extends Adapter<ViewHolder> {

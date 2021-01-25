@@ -33,6 +33,8 @@ import static org.nuclearfog.twidda.database.DatabaseAdapter.USER_QUERY;
 /**
  * Connection Class to SQLite Database of the app
  * All tweet, user and message information are stored here
+ *
+ * @author nuclearfog
  */
 public class AppDatabase {
 

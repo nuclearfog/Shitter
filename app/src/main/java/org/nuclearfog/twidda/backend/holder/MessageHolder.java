@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 
 /**
  * Direct message holder class
+ *
+ * @author nuclearfog
  */
 public class MessageHolder {
 

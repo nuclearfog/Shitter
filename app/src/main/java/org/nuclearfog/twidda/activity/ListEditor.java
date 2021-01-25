@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,17 +28,19 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static android.view.Window.FEATURE_NO_TITLE;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
 import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTPOPUP_LEAVE;
 
 /**
- * Popup activity for the list editor
+ * Activity for the list editor
+ *
+ * @author nuclearfog
  */
-public class ListPopup extends AppCompatActivity implements OnClickListener, OnDialogClick {
+public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogClick, DialogInterface.OnDismissListener {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -46,26 +50,27 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
     private ListUpdater updaterAsync;
     private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
-    private View progressCircle;
-    private Dialog leaveDialog;
+    private Dialog leaveDialog, loadingCircle;
     @Nullable
     private UserList userList;
-
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_userlist);
         View root = findViewById(R.id.list_popup_root);
+        ImageView background = findViewById(R.id.userlist_popup_background);
         Button updateButton = findViewById(R.id.userlist_create_list);
         TextView popupTitle = findViewById(R.id.popup_list_title);
         titleInput = findViewById(R.id.list_edit_title);
         subTitleInput = findViewById(R.id.list_edit_descr);
         visibility = findViewById(R.id.list_edit_public_sw);
-        progressCircle = findViewById(R.id.list_popup_loading);
+        View load = View.inflate(this, R.layout.item_load, null);
+        View cancelButton = load.findViewById(R.id.kill_button);
+        loadingCircle = new Dialog(this, R.style.LoadingDialog);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root, settings.getPopupColor());
+        AppStyles.setEditorTheme(settings, root, background);
 
         Object data = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
         if (data instanceof UserList) {
@@ -76,8 +81,14 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
             popupTitle.setText(R.string.menu_edit_list);
             updateButton.setText(R.string.update_list);
         }
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setCancelable(false);
+        loadingCircle.setContentView(load);
+        cancelButton.setVisibility(VISIBLE);
         leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
         updateButton.setOnClickListener(this);
+        cancelButton.setOnClickListener(this);
+        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -118,8 +129,20 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
                 }
                 updaterAsync = new ListUpdater(this);
                 updaterAsync.execute(mHolder);
-                progressCircle.setVisibility(VISIBLE);
+                loadingCircle.show();
             }
+        }
+        // stop updating list
+        else if (view.getId() == R.id.kill_button) {
+            loadingCircle.dismiss();
+        }
+    }
+
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        if (updaterAsync != null && updaterAsync.getStatus() == RUNNING) {
+            updaterAsync.cancel(true);
         }
     }
 
@@ -153,6 +176,6 @@ public class ListPopup extends AppCompatActivity implements OnClickListener, OnD
      */
     public void onError(EngineException err) {
         ErrorHandler.handleFailure(this, err);
-        progressCircle.setVisibility(INVISIBLE);
+        loadingCircle.dismiss();
     }
 }

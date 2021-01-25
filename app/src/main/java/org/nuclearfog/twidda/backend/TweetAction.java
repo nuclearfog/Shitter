@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 /**
  * Background task to download tweet informations and to take actions
  *
+ * @author nuclearfog
  * @see TweetActivity
  */
 public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetAction.Action> {

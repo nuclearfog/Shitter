@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -62,6 +63,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         setContentView(R.layout.popup_dm);
         View root = findViewById(R.id.dm_popup);
         ImageButton send = findViewById(R.id.dm_send);
+        ImageView background = findViewById(R.id.dm_background);
         media = findViewById(R.id.dm_media);
         preview = findViewById(R.id.dm_preview);
         receiver = findViewById(R.id.dm_receiver);
@@ -77,14 +79,16 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         send.setImageResource(R.drawable.right);
         media.setImageResource(R.drawable.image_add);
         preview.setImageResource(R.drawable.image);
+
         leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
         loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
         loadingCircle.setCanceledOnTouchOutside(false);
         loadingCircle.setContentView(load);
+        preview.setVisibility(GONE);
         cancelButton.setVisibility(VISIBLE);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root, settings.getPopupColor());
+        AppStyles.setEditorTheme(settings, root, background);
 
         send.setOnClickListener(this);
         media.setOnClickListener(this);

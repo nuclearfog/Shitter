@@ -6,6 +6,8 @@ import twitter4j.Relationship;
 
 /**
  * Holder for relationship information between the current user and another user
+ *
+ * @author nuclearfog
  */
 public class Relation {
 

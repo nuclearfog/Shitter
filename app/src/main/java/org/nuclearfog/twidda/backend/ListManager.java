@@ -11,6 +11,8 @@ import java.lang.ref.WeakReference;
 /**
  * Backend async task to manage users on lists
  * Twitter users can be added and removed
+ *
+ * @author nuclearfog
  */
 public class ListManager extends AsyncTask<String, Void, String[]> {
 

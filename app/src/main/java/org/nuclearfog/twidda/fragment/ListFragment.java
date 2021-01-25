@@ -19,6 +19,8 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 /**
  * this fragment class hosts a list view inside a swipe view
  * superclass for all list fragments
+ *
+ * @author nuclearfog
  */
 public abstract class ListFragment extends Fragment implements OnRefreshListener {
 
