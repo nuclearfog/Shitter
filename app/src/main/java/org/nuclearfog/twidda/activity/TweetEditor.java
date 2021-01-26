@@ -201,6 +201,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         // add location to the tweet
         else if (v.getId() == R.id.tweet_add_location) {
             getLocation();
+            locationProg.setVisibility(VISIBLE);
+            locationBtn.setVisibility(INVISIBLE);
         }
     }
 

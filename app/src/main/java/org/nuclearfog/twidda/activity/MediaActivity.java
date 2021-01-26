@@ -126,13 +126,18 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
 
     @Override
     public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (permissions.length > 0 && grantResults.length > 0 && grantResults[0] == PERMISSION_GRANTED) {
+        if (permissions.length > 0 && grantResults.length > 0) {
             if (PERMISSIONS[0][0].equals(permissions[0])) {
-                openMediaPicker(requestCode);
+                if (grantResults[0] == PERMISSION_GRANTED)
+                    openMediaPicker(requestCode);
             } else if (PERMISSIONS[1][0].equals(permissions[0])) {
-                fetchLocation();
+                if (grantResults[0] == PERMISSION_GRANTED)
+                    fetchLocation();
+                else
+                    onAttachLocation(null);
             } else if ((PERMISSIONS[2][0].equals(permissions[0]))) {
-                writeImageToStorage();
+                if (grantResults[0] == PERMISSION_GRANTED)
+                    writeImageToStorage();
             }
         }
     }
