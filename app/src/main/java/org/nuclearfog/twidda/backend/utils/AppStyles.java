@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -204,6 +205,14 @@ public final class AppStyles {
     public static void setMenuIconColor(Menu m, int color) {
         for (int index = 0; index < m.size(); index++) {
             setMenuItemColor(m.getItem(index), color);
+        }
+    }
+
+
+    public static void setProgressColor(ProgressBar circle, int color) {
+        Drawable icon = circle.getIndeterminateDrawable();
+        if (icon != null) {
+            icon.setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
         }
     }
 

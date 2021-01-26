@@ -483,7 +483,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         favButton.setText(buttonNumber.format(tweetUpdate.getFavorCount()));
         rtwButton.setText(buttonNumber.format(tweetUpdate.getRetweetCount()));
         tweet_api.setText(R.string.tweet_sent_from);
-        tweet_api.append(" " + tweetUpdate.getSource());
+        tweet_api.append(tweetUpdate.getSource());
 
         if (tweetUpdate.containsTweetText()) {
             Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getTweet(), settings.getHighlightColor(), this);

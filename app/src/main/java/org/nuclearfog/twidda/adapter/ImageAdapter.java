@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.PorterDuffColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,12 +17,12 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
@@ -124,7 +123,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == PICTURE) {
             View view = inflater.inflate(R.layout.item_image, parent, false);
-            final ImageItem item = new ImageItem(view);
+            final ImageItem item = new ImageItem(view, settings);
             item.preview.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -172,10 +171,13 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         final ImageView preview;
         final ImageButton saveButton;
 
-        ImageItem(View view) {
+        ImageItem(View view, GlobalSettings settings) {
             super(view);
             preview = view.findViewById(R.id.item_image_preview);
             saveButton = view.findViewById(R.id.item_image_save);
+            saveButton.setImageResource(R.drawable.save);
+            AppStyles.setButtonColor(saveButton, settings.getFontColor());
+            AppStyles.setDrawableColor(saveButton, settings.getIconColor());
         }
     }
 
@@ -187,7 +189,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
         LoadItem(View v, int color) {
             super(v);
             ProgressBar progress = v.findViewById(R.id.imageitem_progress);
-            progress.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
+            AppStyles.setProgressColor(progress, color);
         }
     }
 

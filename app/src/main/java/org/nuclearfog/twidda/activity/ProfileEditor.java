@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -44,7 +42,6 @@ import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static android.view.Window.FEATURE_NO_TITLE;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
 import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
@@ -57,7 +54,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStop, OnDialogClick, Callback {
 
     /**
      * key to preload user data
@@ -93,9 +90,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
         link = findViewById(R.id.edit_link);
         loc = findViewById(R.id.edit_location);
         bio = findViewById(R.id.edit_bio);
-        loadingCircle = new Dialog(this, R.style.LoadingDialog);
-        View load = View.inflate(this, R.layout.item_load, null);
-        View cancelButton = load.findViewById(R.id.kill_button);
+        loadingCircle = DialogBuilder.createProgress(this, this);
+        closeDialog = DialogBuilder.create(this, PROFILE_EDIT_LEAVE, this);
 
         toolbar.setTitle(R.string.page_profile_edior);
         setSupportActionBar(toolbar);
@@ -107,12 +103,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
         profile_banner.setDrawingCacheEnabled(true);
         AppStyles.setTheme(settings, root);
 
-        closeDialog = DialogBuilder.create(this, PROFILE_EDIT_LEAVE, this);
-        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
-        loadingCircle.setCanceledOnTouchOutside(false);
-        loadingCircle.setContentView(load);
-        cancelButton.setVisibility(VISIBLE);
-
         Object data = getIntent().getSerializableExtra(KEY_USER_DATA);
         if (data instanceof User) {
             user = (User) data;
@@ -121,8 +111,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
         profile_image.setOnClickListener(this);
         profile_banner.setOnClickListener(this);
         addBannerBtn.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -221,15 +209,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnD
         else if (v.getId() == R.id.edit_add_banner || v.getId() == R.id.edit_banner) {
             getMedia(REQUEST_BANNER);
         }
-        // stop update
-        else if (v.getId() == R.id.kill_button) {
-            loadingCircle.dismiss();
-        }
     }
 
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void stopProgress() {
         if (editorAsync != null && editorAsync.getStatus() == RUNNING) {
             editorAsync.cancel(true);
         }

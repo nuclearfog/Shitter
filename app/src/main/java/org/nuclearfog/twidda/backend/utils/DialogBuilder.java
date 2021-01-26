@@ -4,10 +4,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.GlobalSettings;
+
+import static android.view.View.VISIBLE;
+import static android.view.Window.FEATURE_NO_TITLE;
 
 /**
  * this class creates alert dialogs with a custom listener
@@ -141,6 +148,36 @@ public final class DialogBuilder {
     }
 
     /**
+     * creates an animated circle to show a progress
+     *
+     * @param context Activity context
+     * @param l       stop listener
+     * @return dialog instance to show
+     */
+    public static Dialog createProgress(Context context, final OnProgressStop l) {
+        View load = View.inflate(context, R.layout.item_load, null);
+        ImageView cancel = load.findViewById(R.id.kill_button);
+        ProgressBar circle = load.findViewById(R.id.progress_item);
+        cancel.setImageResource(R.drawable.cross);
+        final Dialog loadingCircle = new Dialog(context, R.style.LoadingDialog);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        AppStyles.setProgressColor(circle, settings.getHighlightColor());
+        AppStyles.setDrawableColor(cancel, settings.getIconColor());
+        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
+        loadingCircle.setCancelable(false);
+        loadingCircle.setContentView(load);
+        cancel.setVisibility(VISIBLE);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                l.stopProgress();
+                loadingCircle.dismiss();
+            }
+        });
+        return loadingCircle;
+    }
+
+    /**
      * listener for dialog
      */
     public interface OnDialogClick {
@@ -151,5 +188,13 @@ public final class DialogBuilder {
          * @param type type of dialog
          */
         void onConfirm(DialogType type);
+    }
+
+    /**
+     * listener for progress
+     */
+    public interface OnProgressStop {
+
+        void stopProgress();
     }
 }

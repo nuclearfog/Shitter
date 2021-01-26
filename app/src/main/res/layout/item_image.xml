@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/imageitem_layout_margin"
@@ -24,7 +23,6 @@
             android:layout_margin="@dimen/imageitem_button_margin"
             android:contentDescription="@string/item_image_save"
             android:visibility="gone"
-            app:srcCompat="@drawable/save_img"
             style="@style/RoundButton" />
 
     </FrameLayout>

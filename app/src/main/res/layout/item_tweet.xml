@@ -7,11 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/tweetitem_layout_padding"
-        app:layout_constraintBottom_toBottomOf="@+id/tweetPb"
-        app:layout_constraintTop_toBottomOf="@+id/tweetPb">
+        android:layout_height="match_parent"
+        android:padding="@dimen/tweetitem_layout_padding">
 
         <ImageView
             android:id="@+id/tweetPb"
@@ -34,7 +31,8 @@
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toStartOf="@+id/time"
             app:layout_constraintStart_toEndOf="@+id/tweetPb"
-            app:layout_constraintTop_toTopOf="@id/tweetPb" />
+            app:layout_constraintTop_toTopOf="@id/tweetPb"
+            app:layout_constraintBottom_toTopOf="@id/screenname" />
 
         <TextView
             android:id="@+id/time"
@@ -89,7 +87,8 @@
             android:textSize="@dimen/tweetitem_textsize_button"
             app:layout_constraintEnd_toStartOf="@+id/retweet_number"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tweettext" />
+            app:layout_constraintTop_toBottomOf="@id/tweettext"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:id="@+id/retweet_number"
@@ -104,7 +103,8 @@
             android:textSize="@dimen/tweetitem_textsize_button"
             app:layout_constraintEnd_toStartOf="@+id/favorite_number"
             app:layout_constraintStart_toEndOf="@+id/retweeter"
-            app:layout_constraintTop_toBottomOf="@id/tweettext" />
+            app:layout_constraintTop_toBottomOf="@id/tweettext"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:id="@+id/favorite_number"
@@ -117,7 +117,8 @@
             android:textSize="@dimen/tweetitem_textsize_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/retweet_number"
-            app:layout_constraintTop_toBottomOf="@id/tweettext" />
+            app:layout_constraintTop_toBottomOf="@id/tweettext"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

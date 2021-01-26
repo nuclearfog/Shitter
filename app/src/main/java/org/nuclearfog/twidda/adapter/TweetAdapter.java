@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.adapter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -29,6 +28,7 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -380,7 +380,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                 tv.setTextColor(settings.getFontColor());
                 tv.setTypeface(settings.getFontFace());
             }
-            background.setBackgroundColor(settings.getCardColor());
+            background.setCardBackgroundColor(settings.getCardColor());
             textViews[5].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
         }
     }
@@ -399,7 +399,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             loadCircle = v.findViewById(R.id.placeholder_loading);
 
             background.setCardBackgroundColor(settings.getCardColor());
-            loadCircle.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
+            AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
         }
     }
 

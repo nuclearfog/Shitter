@@ -2,8 +2,6 @@ package org.nuclearfog.twidda.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -34,7 +32,6 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
@@ -49,7 +46,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET
  *
  * @author nuclearfog
  */
-public class TweetEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick {
+public class TweetEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStop, OnDialogClick {
 
     private enum MediaType {
         NONE,
@@ -105,9 +102,9 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
         previewBtn = findViewById(R.id.tweet_prev_media);
         tweetText = findViewById(R.id.tweet_input);
         locationProg = findViewById(R.id.location_progress);
-        loadingCircle = new Dialog(this, R.style.LoadingDialog);
-        View load = View.inflate(this, R.layout.item_load, null);
-        View cancelButton = load.findViewById(R.id.kill_button);
+        loadingCircle = DialogBuilder.createProgress(this, this);
+        errorDialog = DialogBuilder.create(this, TWEETPOPUP_ERROR, this);
+        closingDialog = DialogBuilder.create(this, TWEETPOPUP_LEAVE, this);
 
         settings = GlobalSettings.getInstance(this);
         mediaPath = new LinkedList<>();
@@ -123,12 +120,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
         locationBtn.setImageResource(R.drawable.location);
         tweetButton.setImageResource(R.drawable.tweet);
         closeButton.setImageResource(R.drawable.cross);
-        errorDialog = DialogBuilder.create(this, TWEETPOPUP_ERROR, this);
-        closingDialog = DialogBuilder.create(this, TWEETPOPUP_LEAVE, this);
-        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
-        loadingCircle.setCancelable(false);
-        loadingCircle.setContentView(load);
-        cancelButton.setVisibility(VISIBLE);
         AppStyles.setEditorTheme(settings, root, background);
 
         closeButton.setOnClickListener(this);
@@ -136,8 +127,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
         mediaBtn.setOnClickListener(this);
         previewBtn.setOnClickListener(this);
         locationBtn.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -213,10 +202,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
         else if (v.getId() == R.id.tweet_add_location) {
             getLocation();
         }
-        // stop uploading tweet
-        else if (v.getId() == R.id.kill_button) {
-            loadingCircle.dismiss();
-        }
     }
 
 
@@ -286,7 +271,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnDis
 
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void stopProgress() {
         if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING) {
             uploaderAsync.cancel(true);
         }

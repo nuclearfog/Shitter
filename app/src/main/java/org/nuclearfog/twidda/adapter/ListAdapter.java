@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +26,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.items.UserList;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
@@ -346,7 +346,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
             loadBtn.setTypeface(settings.getFontFace());
             loadBtn.setTextColor(settings.getFontColor());
-            loadCircle.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
+            AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
             background.setCardBackgroundColor(settings.getCardColor());
         }
     }

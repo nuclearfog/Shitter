@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -28,7 +26,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static android.view.Window.FEATURE_NO_TITLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
@@ -40,7 +37,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MSG_P
  *
  * @author nuclearfog
  */
-public class MessageEditor extends MediaActivity implements OnClickListener, OnDismissListener, OnDialogClick {
+public class MessageEditor extends MediaActivity implements OnClickListener, OnDialogClick, DialogBuilder.OnProgressStop {
 
     /**
      * key for the screen name if any
@@ -68,9 +65,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         preview = findViewById(R.id.dm_preview);
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
-        loadingCircle = new Dialog(this, R.style.LoadingDialog);
-        View load = View.inflate(this, R.layout.item_load, null);
-        View cancelButton = load.findViewById(R.id.kill_button);
+        loadingCircle = DialogBuilder.createProgress(this, this);
+        leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
 
         String prefix = getIntent().getStringExtra(KEY_DM_PREFIX);
         if (prefix != null) {
@@ -79,22 +75,13 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         send.setImageResource(R.drawable.right);
         media.setImageResource(R.drawable.image_add);
         preview.setImageResource(R.drawable.image);
-
-        leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
-        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
-        loadingCircle.setCanceledOnTouchOutside(false);
-        loadingCircle.setContentView(load);
         preview.setVisibility(GONE);
-        cancelButton.setVisibility(VISIBLE);
-
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setEditorTheme(settings, root, background);
 
         send.setOnClickListener(this);
         media.setOnClickListener(this);
         preview.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -156,15 +143,11 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
             image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
             startActivity(image);
         }
-        // stop updating
-        else if (v.getId() == R.id.kill_button) {
-            loadingCircle.dismiss();
-        }
     }
 
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void stopProgress() {
         if (messageAsync != null && messageAsync.getStatus() == RUNNING) {
             messageAsync.cancel(true);
         }

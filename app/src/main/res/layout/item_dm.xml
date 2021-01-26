@@ -50,7 +50,7 @@
 
         <TextView
             android:id="@+id/dm_screenname"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dmitem_text_margin"
             android:layout_marginLeft="@dimen/dmitem_text_margin"

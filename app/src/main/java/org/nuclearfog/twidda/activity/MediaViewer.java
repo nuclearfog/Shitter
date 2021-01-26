@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.graphics.Bitmap;
-import android.graphics.PorterDuffColorFilter;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
@@ -25,11 +24,11 @@ import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
-import static android.graphics.PorterDuff.Mode.SRC_ATOP;
 import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
@@ -107,7 +106,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         videoView.setOnErrorListener(this);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        media_progress.getIndeterminateDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
+        AppStyles.setProgressColor(media_progress, settings.getHighlightColor());
 
         mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
         type = getIntent().getIntExtra(KEY_MEDIA_TYPE, 0);

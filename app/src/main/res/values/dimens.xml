@@ -63,7 +63,6 @@
     <dimen name="editprofile_image_overlap_banner">@dimen/profile_image_overlap_banner</dimen>
     <dimen name="editprofile_add_btn_size">40dp</dimen>
     <dimen name="editprofile_profile_image_left_margin">10dp</dimen>
-    <dimen name="editprofile_image_layer_height">180dp</dimen>
     <integer name="editprofile_username_max_length">50</integer>
 
     <!--dimens of item_tweet.xml-->

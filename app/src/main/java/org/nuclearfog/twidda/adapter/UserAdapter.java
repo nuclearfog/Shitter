@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -352,7 +352,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             loadBtn = v.findViewById(R.id.placeholder_button);
 
             background.setCardBackgroundColor(settings.getCardColor());
-            loadCircle.getIndeterminateDrawable().mutate().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
+            AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
         }
     }
 

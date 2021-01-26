@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical">
 
     <ProgressBar
+        android:id="@+id/progress_item"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,9 +17,7 @@
         android:layout_width="@dimen/loaditem_button_size"
         android:layout_height="@dimen/loaditem_button_size"
         android:layout_gravity="center"
-        android:visibility="invisible"
         android:background="@android:color/transparent"
-        android:contentDescription="@android:string/cancel"
-        app:srcCompat="@drawable/cross" />
+        android:contentDescription="@android:string/cancel" />
 
 </FrameLayout>

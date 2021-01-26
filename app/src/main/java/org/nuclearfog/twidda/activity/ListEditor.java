@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -28,8 +27,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.VISIBLE;
-import static android.view.Window.FEATURE_NO_TITLE;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
 import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
@@ -40,7 +37,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTP
  *
  * @author nuclearfog
  */
-public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogClick, DialogInterface.OnDismissListener {
+public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogClick, DialogBuilder.OnProgressStop {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -65,9 +62,8 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         titleInput = findViewById(R.id.list_edit_title);
         subTitleInput = findViewById(R.id.list_edit_descr);
         visibility = findViewById(R.id.list_edit_public_sw);
-        View load = View.inflate(this, R.layout.item_load, null);
-        View cancelButton = load.findViewById(R.id.kill_button);
-        loadingCircle = new Dialog(this, R.style.LoadingDialog);
+        loadingCircle = DialogBuilder.createProgress(this, this);
+        leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setEditorTheme(settings, root, background);
@@ -81,14 +77,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
             popupTitle.setText(R.string.menu_edit_list);
             updateButton.setText(R.string.update_list);
         }
-        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
-        loadingCircle.setCancelable(false);
-        loadingCircle.setContentView(load);
-        cancelButton.setVisibility(VISIBLE);
-        leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
         updateButton.setOnClickListener(this);
-        cancelButton.setOnClickListener(this);
-        loadingCircle.setOnDismissListener(this);
     }
 
 
@@ -132,15 +121,11 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
                 loadingCircle.show();
             }
         }
-        // stop updating list
-        else if (view.getId() == R.id.kill_button) {
-            loadingCircle.dismiss();
-        }
     }
 
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void stopProgress() {
         if (updaterAsync != null && updaterAsync.getStatus() == RUNNING) {
             updaterAsync.cancel(true);
         }

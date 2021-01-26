@@ -62,9 +62,11 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         for (int index = 0; index < drawables.length(); index++) {
             int resId = drawables.getResourceId(index, 0);
             icons[index] = AppCompatResources.getDrawable(context, resId);
+            if (icons[index] != null) {
+                icons[index].setColorFilter(settings.getIconColor(), SRC_ATOP);
+            }
         }
         drawables.recycle();
-        setIconColor();
     }
 
     /**
@@ -195,15 +197,6 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * set color for all icons
-     */
-    private void setIconColor() {
-        for (Drawable icon : icons) {
-            icon.setColorFilter(settings.getIconColor(), SRC_ATOP);
-        }
-    }
-
-    /**
      * Holder class for a message view
      */
     private final class MessageHolder extends ViewHolder {
@@ -233,7 +226,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 button.setTypeface(settings.getFontFace());
             }
             background.setCardBackgroundColor(settings.getCardColor());
-            textViews[2].setCompoundDrawables(icons[2], null, null, null);
+            textViews[2].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
             textViews[4].setMovementMethod(LinkMovementMethod.getInstance());
         }
     }
