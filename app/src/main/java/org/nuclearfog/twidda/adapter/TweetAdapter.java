@@ -289,7 +289,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             vh.textViews[0].setText(user.getUsername());
             vh.textViews[1].setText(user.getScreenname());
             vh.textViews[3].setText(formatter.format(tweet.getRetweetCount()));
-            vh.textViews[4].setText(formatter.format(tweet.getFavorCount()));
+            vh.textViews[4].setText(formatter.format(tweet.getFavoriteCount()));
             vh.textViews[6].setText(getTimeString(tweet.getTime()));
 
             if (tweet.retweeted()) {

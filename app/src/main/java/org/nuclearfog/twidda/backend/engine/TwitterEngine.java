@@ -718,16 +718,24 @@ public class TwitterEngine {
     public Tweet retweet(long tweetId, boolean retweet) throws EngineException {
         try {
             Status tweet = twitter.showStatus(tweetId);
+            Status embedded = tweet.getRetweetedStatus();
             int retweetCount = tweet.getRetweetCount();
+            int favoriteCount = tweet.getFavoriteCount();
+            if (embedded != null) {
+                tweetId = embedded.getId();
+                retweetCount = embedded.getRetweetCount();
+                favoriteCount = embedded.getFavoriteCount();
+            }
             if (retweet) {
-                twitter.retweetStatus(tweetId).getRetweetedStatus();
+                twitter.retweetStatus(tweetId);
                 retweetCount++;
             } else {
                 twitter.unRetweetStatus(tweetId);
-                retweetCount--;
+                if (retweetCount > 0)
+                    retweetCount--;
             }
             return new Tweet(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(), retweetCount,
-                    retweet, tweet.getFavoriteCount(), tweet.isFavorited());
+                    retweet, favoriteCount, tweet.isFavorited());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -745,16 +753,24 @@ public class TwitterEngine {
     public Tweet favorite(long tweetId, boolean favorite) throws EngineException {
         try {
             Status tweet = twitter.showStatus(tweetId);
-            int favoritCount = tweet.getFavoriteCount();
+            Status embedded = tweet.getRetweetedStatus();
+            int retweetCount = tweet.getRetweetCount();
+            int favoriteCount = tweet.getFavoriteCount();
+            if (embedded != null) {
+                tweetId = embedded.getId();
+                retweetCount = embedded.getRetweetCount();
+                favoriteCount = embedded.getFavoriteCount();
+            }
             if (favorite) {
-                tweet = twitter.createFavorite(tweetId);
-                favoritCount++;
+                twitter.createFavorite(tweetId);
+                favoriteCount++;
             } else {
-                tweet = twitter.destroyFavorite(tweetId);
-                favoritCount--;
+                twitter.destroyFavorite(tweetId);
+                if (favoriteCount > 0)
+                    favoriteCount--;
             }
             return new Tweet(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(),
-                    tweet.getRetweetCount(), tweet.isRetweeted(), favoritCount, favorite);
+                    retweetCount, tweet.isRetweeted(), favoriteCount, favorite);
         } catch (Exception err) {
             throw new EngineException(err);
         }

@@ -357,14 +357,10 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onLongClick(View v) {
         if (tweet != null && (statusAsync == null || statusAsync.getStatus() != RUNNING)) {
-            Tweet clickedTweet = tweet;
-            // RT / Fav only embedded tweets if any
-            if (tweet.getEmbeddedTweet() != null)
-                clickedTweet = tweet.getEmbeddedTweet();
-            statusAsync = new TweetAction(this, clickedTweet.getId());
+            statusAsync = new TweetAction(this, tweet.getId());
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
-                if (clickedTweet.retweeted())
+                if (tweet.retweeted())
                     statusAsync.execute(Action.UNRETWEET);
                 else
                     statusAsync.execute(Action.RETWEET);
@@ -373,7 +369,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorit) {
-                if (clickedTweet.favored())
+                if (tweet.favored())
                     statusAsync.execute(Action.UNFAVORITE);
                 else
                     statusAsync.execute(Action.FAVORITE);
@@ -480,7 +476,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         usrName.setText(author.getUsername());
         scrName.setText(author.getScreenname());
         tweetDate.setText(SimpleDateFormat.getDateTimeInstance().format(tweetUpdate.getTime()));
-        favButton.setText(buttonNumber.format(tweetUpdate.getFavorCount()));
+        favButton.setText(buttonNumber.format(tweetUpdate.getFavoriteCount()));
         rtwButton.setText(buttonNumber.format(tweetUpdate.getRetweetCount()));
         tweet_api.setText(R.string.tweet_sent_from);
         tweet_api.append(tweetUpdate.getSource());

@@ -5,9 +5,7 @@ import androidx.annotation.Nullable;
 
 import java.io.Serializable;
 
-import twitter4j.GeoLocation;
 import twitter4j.MediaEntity;
-import twitter4j.Place;
 import twitter4j.Status;
 import twitter4j.URLEntity;
 
@@ -48,7 +46,7 @@ public class Tweet implements Serializable {
     private int favoriteCount;
     private long myRetweetId;
     private boolean retweeted;
-    private boolean favored;
+    private boolean favorited;
     private boolean sensitiveMedia;
 
     private String[] medias = {};
@@ -58,20 +56,27 @@ public class Tweet implements Serializable {
     private String tweet = "";
     private String source = "";
 
-
     /**
-     * constructor for tweets from twitter
-     *
      * @param status    tweet
      * @param twitterId ID of the current user
      */
     public Tweet(Status status, long twitterId) {
-        this(status, twitterId, status.getCurrentUserRetweetId(), status.getRetweetCount(), status.isRetweeted(), status.getFavoriteCount(), status.isFavorited());
+        if (status.getRetweetedStatus() != null) {
+            Status retweet = status.getRetweetedStatus();
+            embedded = new Tweet(retweet, twitterId);
+            this.retweetCount = retweet.getRetweetCount();
+            this.favoriteCount = retweet.getFavoriteCount();
+        } else {
+            this.retweetCount = status.getRetweetCount();
+            this.favoriteCount = status.getFavoriteCount();
+        }
+        retweeted = status.isRetweeted();
+        favorited = status.isFavorited();
+        myRetweetId = status.getCurrentUserRetweetId();
+        setTweet(status, twitterId);
     }
 
     /**
-     * Tweet constructor
-     *
      * @param status        twitter4j status
      * @param retweetCount  set retweet count
      * @param retweeted     set if tweet is retweeted by current user
@@ -79,30 +84,16 @@ public class Tweet implements Serializable {
      * @param favored       set if tweet is favored by current user
      */
     public Tweet(Status status, long twitterId, long myRetweetId, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
-        Place place = status.getPlace();
-        GeoLocation geo = status.getGeoLocation();
-        if (place != null && place.getFullName() != null)
-            locationName = place.getFullName();
-        if (geo != null)
-            locationCoordinates = geo.getLatitude() + "," + geo.getLongitude();
-        if (status.getInReplyToScreenName() != null)
-            replyName = '@' + status.getInReplyToScreenName();
-        if (status.getRetweetedStatus() != null)
-            embedded = new Tweet(status.getRetweetedStatus(), twitterId);
-        if (status.getMediaEntities() != null)
-            getMedia(status.getMediaEntities());
-        this.myRetweetId = myRetweetId;
+        if (status.getRetweetedStatus() != null) {
+            Status retweet = status.getRetweetedStatus();
+            embedded = new Tweet(retweet, twitterId, myRetweetId, retweetCount, retweeted, favoriteCount, favored);
+        }
         this.retweetCount = retweetCount;
-        this.retweeted = retweeted;
         this.favoriteCount = favoriteCount;
-        this.favored = favored;
-        tweetID = status.getId();
-        user = new User(status.getUser(), status.getUser().getId() == twitterId);
-        time = status.getCreatedAt().getTime();
-        replyID = status.getInReplyToStatusId();
-        replyUserId = status.getInReplyToUserId();
-        sensitiveMedia = status.isPossiblySensitive();
-        setTextAndAPI(status);
+        this.myRetweetId = myRetweetId;
+        this.retweeted = retweeted;
+        this.favorited = favored;
+        setTweet(status, tweetID);
     }
 
     /**
@@ -151,7 +142,7 @@ public class Tweet implements Serializable {
         this.medias = medias;
         this.mediaType = mediaType;
         this.retweeted = retweeted;
-        this.favored = favored;
+        this.favorited = favored;
         this.sensitiveMedia = sensitiveMedia;
         this.myRetweetId = myRetweetId;
         this.replyUserId = replyUserId;
@@ -262,7 +253,7 @@ public class Tweet implements Serializable {
      *
      * @return favor count
      */
-    public int getFavorCount() {
+    public int getFavoriteCount() {
         return favoriteCount;
     }
 
@@ -317,7 +308,7 @@ public class Tweet implements Serializable {
      * @return if status is favored
      */
     public boolean favored() {
-        return favored;
+        return favorited;
     }
 
     /**
@@ -348,11 +339,26 @@ public class Tweet implements Serializable {
     }
 
     /**
-     * Resolve shortened tweet links and get API source string
+     * set tweet information
      *
      * @param status Tweet
      */
-    private void setTextAndAPI(Status status) {
+    private void setTweet(Status status, long twitterId) {
+        tweetID = status.getId();
+        time = status.getCreatedAt().getTime();
+        user = new User(status.getUser(), status.getUser().getId() == twitterId);
+        replyID = status.getInReplyToStatusId();
+        replyUserId = status.getInReplyToUserId();
+        sensitiveMedia = status.isPossiblySensitive();
+
+        if (status.getInReplyToScreenName() != null)
+            replyName = '@' + status.getInReplyToScreenName();
+        if (status.getMediaEntities() != null)
+            getMedia(status.getMediaEntities());
+        if (status.getPlace() != null && status.getPlace().getFullName() != null)
+            locationName = status.getPlace().getFullName();
+        if (status.getGeoLocation() != null)
+            locationCoordinates = status.getGeoLocation().getLatitude() + "," + status.getGeoLocation().getLongitude();
         if (status.getText() != null) {
             StringBuilder tweet = new StringBuilder(status.getText());
             // expand shortened links

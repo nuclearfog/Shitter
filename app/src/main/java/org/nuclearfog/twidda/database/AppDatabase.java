@@ -679,7 +679,7 @@ public class AppDatabase {
         status.put("source", tweet.getSource());
         status.put("replyID", tweet.getReplyId());
         status.put("retweet", tweet.getRetweetCount());
-        status.put("favorite", tweet.getFavorCount());
+        status.put("favorite", tweet.getFavoriteCount());
         status.put("retweeterID", tweet.getMyRetweetId());
         status.put("replyUserID", tweet.getReplyUserId());
         status.put("place", tweet.getLocationName());
@@ -714,7 +714,7 @@ public class AppDatabase {
             flags &= ~FAV_MASK;
         statColumn.put("tweet", tweet.getTweet());
         statColumn.put("retweet", tweet.getRetweetCount());
-        statColumn.put("favorite", tweet.getFavorCount());
+        statColumn.put("favorite", tweet.getFavoriteCount());
         statColumn.put("retweeterID", tweet.getMyRetweetId());
         statColumn.put("replyname", tweet.getReplyName());
         statColumn.put("statusregister", flags);
