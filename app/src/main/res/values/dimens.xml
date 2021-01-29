@@ -38,8 +38,7 @@
 
     <!--dimens of page_profile.xml-->
     <dimen name="profile_toolbar_height">48dp</dimen>
-    <dimen name="profile_image_size">86sp</dimen>
-    <dimen name="profile_image_overlap_banner">-43sp</dimen>
+    <dimen name="profile_image_size">86dp</dimen>
     <dimen name="profile_image_padding_left">10dp</dimen>
     <dimen name="profile_tv_background_padding">2dp</dimen>
     <dimen name="profile_tv_margin">5dp</dimen>
@@ -60,9 +59,9 @@
     <dimen name="editprofile_bio_min_height">150dp</dimen>
     <dimen name="editprofile_image">@dimen/profile_image_size</dimen>
     <dimen name="editprofile_toolbar_height">@dimen/profile_toolbar_height</dimen>
-    <dimen name="editprofile_image_overlap_banner">@dimen/profile_image_overlap_banner</dimen>
     <dimen name="editprofile_add_btn_size">40dp</dimen>
     <dimen name="editprofile_profile_image_left_margin">10dp</dimen>
+    <dimen name="editprofile_scrollview_margin">10dp</dimen>
     <integer name="editprofile_username_max_length">50</integer>
 
     <!--dimens of item_tweet.xml-->

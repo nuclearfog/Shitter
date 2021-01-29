@@ -183,7 +183,8 @@
     <string name="settings_key1_hint">Consumer Key</string>
     <string name="settings_key2_hint">Consumer Secret</string>
     <string name="settings_setup_custom_keys">Eigene API Schlüssel verwenden</string>
-    <string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt!</string>
+    <string name="error_api_access_denied">Fehler, API Zugang wurde abgelehnt! Bitte API Schlüssel überprüfen!</string>
     <string name="confirm_back">Zurück</string>
     <string name="error_mention_exceed">Zu viele Nutzer Erwähnungen!</string>
+    <string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
 </resources>

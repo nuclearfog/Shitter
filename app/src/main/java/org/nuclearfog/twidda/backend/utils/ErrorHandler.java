@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * This class handles {@link EngineException} from {@link org.nuclearfog.twidda.backend.engine.TwitterEngine}
@@ -116,7 +117,12 @@ public final class ErrorHandler {
                     break;
 
                 case ERROR_API_ACCESS_DENIED:
-                    Toast.makeText(context, R.string.error_api_access_denied, Toast.LENGTH_LONG).show();
+                    GlobalSettings settings = GlobalSettings.getInstance(context);
+                    if (settings.isCustomApiSet()) {
+                        Toast.makeText(context, R.string.error_api_access_denied, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, R.string.error_api_key_expired, Toast.LENGTH_LONG).show();
+                    }
                     break;
             }
         } else {
