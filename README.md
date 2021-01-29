@@ -1,6 +1,7 @@
 <p align="center"><img src="/logo/logotype-horizontal.png"></p>
 
-Alternative Twitter App for Android 
+Alternative Twitter App for Android 16+
+
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](https://github.com/nuclearfog/Shitter/releases/latest/download/SH1TT3R.apk)
 ![](https://img.shields.io/github/downloads/nuclearfog/Shitter/total)
 
@@ -37,11 +38,13 @@ Used libraries:
 - <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
 - <a href="https://github.com/square/picasso">picasso 2.71828</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
-- <a href="https://github.com/MichaelRocks/paranoid" title="">String obfuscation</a>
-- <a href="https://github.com/kyleduo/SwitchButton" title="">SwitchButton</a>
+- <a href="https://github.com/MichaelRocks/paranoid">String obfuscation</a>
+- <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
+- <a href="https://github.com/open-android/Picasso-transformations">Picasso Transformations</a>
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
-- <a href="http://www.entypo.com" title="">Entypo icons</a>
 
-logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
+Graphics:
+- <a href="http://www.entypo.com" title="">Entypo icons</a>
+- logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
