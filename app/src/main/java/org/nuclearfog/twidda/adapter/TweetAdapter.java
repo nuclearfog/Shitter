@@ -37,7 +37,7 @@ import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import static android.graphics.PorterDuff.Mode.SRC_ATOP;
+import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
@@ -337,12 +337,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      * set color filter for icons
      */
     private void setIconColors() {
-        icons[0].setColorFilter(settings.getIconColor(), SRC_ATOP);
-        icons[1].setColorFilter(settings.getIconColor(), SRC_ATOP);
-        icons[2].setColorFilter(settings.getIconColor(), SRC_ATOP);
-        icons[3].setColorFilter(Color.GREEN, SRC_ATOP);
-        icons[4].setColorFilter(settings.getIconColor(), SRC_ATOP);
-        icons[5].setColorFilter(Color.YELLOW, SRC_ATOP);
+        icons[0].setColorFilter(settings.getIconColor(), SRC_IN);
+        icons[1].setColorFilter(settings.getIconColor(), SRC_IN);
+        icons[2].setColorFilter(settings.getIconColor(), SRC_IN);
+        icons[3].setColorFilter(Color.GREEN, SRC_IN);
+        icons[4].setColorFilter(settings.getIconColor(), SRC_IN);
+        icons[5].setColorFilter(Color.YELLOW, SRC_IN);
     }
 
     /**

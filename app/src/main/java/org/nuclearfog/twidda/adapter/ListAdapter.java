@@ -34,7 +34,7 @@ import java.text.NumberFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import static android.graphics.PorterDuff.Mode.SRC_ATOP;
+import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -291,7 +291,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
     private void colorIcons() {
         for (Drawable icon : icons) {
-            icon.setColorFilter(settings.getIconColor(), SRC_ATOP);
+            icon.setColorFilter(settings.getIconColor(), SRC_IN);
         }
     }
 

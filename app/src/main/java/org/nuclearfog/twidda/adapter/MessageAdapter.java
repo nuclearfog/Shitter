@@ -34,7 +34,7 @@ import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import static android.graphics.PorterDuff.Mode.SRC_ATOP;
+import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 
@@ -63,7 +63,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             int resId = drawables.getResourceId(index, 0);
             icons[index] = AppCompatResources.getDrawable(context, resId);
             if (icons[index] != null) {
-                icons[index].setColorFilter(settings.getIconColor(), SRC_ATOP);
+                icons[index].setColorFilter(settings.getIconColor(), SRC_IN);
             }
         }
         drawables.recycle();

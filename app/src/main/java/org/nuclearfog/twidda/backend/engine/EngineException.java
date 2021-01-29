@@ -108,6 +108,7 @@ public class EngineException extends Exception {
                     errorType = ErrorType.NO_DM_TO_USER;
                     break;
 
+                case 215: // Invalid API keys
                 case 261:
                     errorType = ErrorType.ERROR_API_ACCESS_DENIED;
                     break;

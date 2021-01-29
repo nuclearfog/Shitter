@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,10 +69,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private ViewPager pager;
     private View root;
 
-
     static {
         // Enable vector drawable support for API 16 to 21
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        }
     }
 
     @Override

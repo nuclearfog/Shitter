@@ -37,7 +37,9 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
 import jp.wasabeef.picasso.transformations.CropTransformation;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
-import static android.graphics.PorterDuff.Mode.SRC_ATOP;
+import static android.graphics.PorterDuff.Mode.SRC_IN;
+import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHorizontal.CENTER;
+import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
 
 /**
  * Class to set up all TetView preferences
@@ -212,7 +214,7 @@ public final class AppStyles {
     public static void setProgressColor(ProgressBar circle, int color) {
         Drawable icon = circle.getIndeterminateDrawable();
         if (icon != null) {
-            icon.setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
+            icon.setColorFilter(new PorterDuffColorFilter(color, SRC_IN));
         }
     }
 
@@ -236,8 +238,8 @@ public final class AppStyles {
      * @param seekBar  seek bar to color
      */
     public static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
-        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_ATOP));
-        seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_ATOP));
+        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
+        seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
     }
 
     /**
@@ -306,8 +308,7 @@ public final class AppStyles {
         Bitmap image = ((BitmapDrawable) background.getDrawable()).getBitmap();
 
         BlurTransformation blur = new BlurTransformation(background.getContext(), 5);
-        CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() / toolbarRatio),
-                CropTransformation.GravityHorizontal.CENTER, CropTransformation.GravityVertical.TOP);
+        CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() / toolbarRatio), CENTER, TOP);
 
         Bitmap result = blur.transform(crop.transform(image.copy(ARGB_8888, true)));
         toolbarBackground.setImageBitmap(result);
@@ -321,7 +322,7 @@ public final class AppStyles {
      */
     private static void setDrawableColor(@Nullable Drawable drawable, int color) {
         if (drawable != null) {
-            drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_ATOP));
+            drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_IN));
         }
     }
 }

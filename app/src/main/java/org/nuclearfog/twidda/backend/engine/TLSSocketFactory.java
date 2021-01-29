@@ -11,6 +11,8 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
+ * Enable Experimental TLS 1.2 support for devices lower than android 21
+ *
  * @author fkrauthan
  * @see <a href="https://gist.githubusercontent.com/fkrauthan/ac8624466a4dee4fd02f/raw/309efc30e31c96a932ab9d19bf4d73b286b00573/TLSSocketFactory.java"/>
  */

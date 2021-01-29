@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Creates a https proxy connection for all connections
+ * Creates a https proxy connection for all connections except Twitter4J
  *
  * @author nuclearfog
  */
@@ -31,7 +31,6 @@ class ProxySetup {
     static void setConnection(GlobalSettings settings) {
         ProxyConnection proxyConnection;
         ProxyAuthenticator proxyLogin;
-
 
         if (settings.isProxyEnabled()) {
             proxyConnection = new ProxyConnection(settings);
