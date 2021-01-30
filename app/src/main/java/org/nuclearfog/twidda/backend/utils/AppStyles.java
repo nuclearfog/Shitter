@@ -38,6 +38,7 @@ import jp.wasabeef.picasso.transformations.CropTransformation;
 
 import static android.graphics.Bitmap.Config.ARGB_8888;
 import static android.graphics.PorterDuff.Mode.SRC_IN;
+import static android.view.View.GONE;
 import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHorizontal.CENTER;
 import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
 
@@ -245,22 +246,15 @@ public final class AppStyles {
     /**
      * set tab icons
      *
-     * @param tabLayout tablayout to set tab icons
+     * @param tabLayout Tab layout with tab icons
      * @param settings  settings to set color
+     * @param array     set of icons
      */
     public static void setTabIcons(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
-        Context context = tabLayout.getContext();
-        TypedArray tArray = context.getResources().obtainTypedArray(array);
-        for (int index = 0; index < tArray.length(); index++) {
-            TabLayout.Tab mTab = tabLayout.getTabAt(index);
-            if (mTab != null) {
-                int resId = tArray.getResourceId(index, 0);
-                Drawable icon = AppCompatResources.getDrawable(context, resId);
-                setDrawableColor(icon, settings.getIconColor());
-                mTab.setIcon(icon);
-            }
+        TextView[] tv = setTabIconsWithText(tabLayout, settings, array);
+        for (TextView textView : tv) {
+            textView.setVisibility(GONE);
         }
-        tArray.recycle();
     }
 
     /**
@@ -271,7 +265,7 @@ public final class AppStyles {
      * @param array     Array of drawable resources to set the icons
      * @return array of TextViews
      */
-    public static TextView[] createTabIcon(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
+    public static TextView[] setTabIconsWithText(TabLayout tabLayout, GlobalSettings settings, @ArrayRes int array) {
         Context context = tabLayout.getContext();
         TypedArray tArray = context.getResources().obtainTypedArray(array);
         TextView[] tabs = new TextView[tArray.length()];
@@ -281,7 +275,7 @@ public final class AppStyles {
                 int resId = tArray.getResourceId(index, 0);
                 Drawable icon = AppCompatResources.getDrawable(context, resId);
                 setDrawableColor(icon, settings.getIconColor());
-                View v = View.inflate(context, R.layout.icon_profile_tab, null);
+                View v = View.inflate(context, R.layout.tabitem, null);
                 ImageView imageIcon = v.findViewById(R.id.tab_icon);
                 tabs[index] = v.findViewById(R.id.tab_text);
                 tabs[index].setTextColor(settings.getFontColor());

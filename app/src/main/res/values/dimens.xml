@@ -182,8 +182,8 @@
     <dimen name="userlist_button_padding">5dp</dimen>
     <dimen name="userlist_title_textsize">20sp</dimen>
 
-    <!--dimens of icon_profile_tab.xml-->
-    <dimen name="icon_profile_size">20dp</dimen>
-    <dimen name="icon_profile_textsize">11sp</dimen>
+    <!--dimens of tabitem.xml-->
+    <dimen name="tabitem_icon_size">22dp</dimen>
+    <dimen name="tabitem_textsize">11sp</dimen>
 
 </resources>

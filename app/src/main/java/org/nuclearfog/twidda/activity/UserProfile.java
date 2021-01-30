@@ -204,7 +204,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
             adapter.setupProfilePage(userId);
         }
-        tabTweetCount = AppStyles.createTabIcon(tabLayout, settings, R.array.profile_tab_icons);
+        tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
 
         tabLayout.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
