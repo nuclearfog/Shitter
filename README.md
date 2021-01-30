@@ -46,5 +46,5 @@ Used libraries:
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
 
 Graphics:
-- <a href="http://www.entypo.com" title="">Entypo icons</a>
+- SVG Icons from <a href="http://www.entypo.com">Entypo</a> & <a href="https://www.svgrepo.com">SVG Repo</a>
 - logo and app icon design by <a href="https://github.com/Tobaloidee" title="">@Tobaloidee</a>
