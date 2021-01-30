@@ -53,11 +53,11 @@
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:singleLine="true"
-                        app:layout_constrainedWidth="true"
                         app:layout_constraintBottom_toTopOf="@+id/scrnamedetail"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/profileimage_detail"
-                        app:layout_constraintTop_toTopOf="@+id/profileimage_detail" />
+                        app:layout_constraintTop_toTopOf="@+id/profileimage_detail"
+                        app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
                         android:id="@+id/scrnamedetail"
@@ -69,10 +69,11 @@
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:singleLine="true"
-                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toTopOf="@+id/timedetail"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/profileimage_detail"
-                        app:layout_constraintTop_toBottomOf="@+id/usernamedetail" />
+                        app:layout_constraintTop_toBottomOf="@+id/usernamedetail"
+                        app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
                         android:id="@+id/timedetail"
@@ -84,10 +85,11 @@
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:singleLine="true"
                         android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constrainedWidth="true"
+                        app:layout_constraintBottom_toBottomOf="@+id/profileimage_detail"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/profileimage_detail"
-                        app:layout_constraintTop_toBottomOf="@+id/scrnamedetail" />
+                        app:layout_constraintTop_toBottomOf="@+id/scrnamedetail"
+                        app:layout_constraintVertical_chainStyle="packed" />
 
                     <androidx.constraintlayout.widget.Barrier
                         android:id="@+id/tweet_profile_barrier"
@@ -221,7 +223,8 @@
                         android:visibility="invisible"
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toEndOf="@+id/tweet_location_name"
-                        app:layout_constraintTop_toBottomOf="@+id/tweet_sensitive"
+                        app:layout_constraintTop_toTopOf="@+id/tweet_location_name"
+                        app:layout_constraintBottom_toBottomOf="@+id/tweet_location_name"
                         app:layout_constraintEnd_toEndOf="parent" />
 
                     <androidx.constraintlayout.widget.Barrier
