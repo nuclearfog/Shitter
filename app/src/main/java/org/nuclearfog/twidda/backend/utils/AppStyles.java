@@ -272,16 +272,22 @@ public final class AppStyles {
         for (int index = 0; index < tArray.length(); index++) {
             TabLayout.Tab mTab = tabLayout.getTabAt(index);
             if (mTab != null) {
+                View tabView;
                 int resId = tArray.getResourceId(index, 0);
                 Drawable icon = AppCompatResources.getDrawable(context, resId);
                 setDrawableColor(icon, settings.getIconColor());
-                View v = View.inflate(context, R.layout.tabitem, null);
-                ImageView imageIcon = v.findViewById(R.id.tab_icon);
-                tabs[index] = v.findViewById(R.id.tab_text);
+                if (mTab.getCustomView() == null) {
+                    tabView = View.inflate(context, R.layout.tabitem, null);
+                    mTab.setCustomView(tabView);
+                } else {
+                    // Update existing view
+                    tabView = mTab.getCustomView();
+                }
+                ImageView imageIcon = tabView.findViewById(R.id.tab_icon);
+                tabs[index] = tabView.findViewById(R.id.tab_text);
                 tabs[index].setTextColor(settings.getFontColor());
                 tabs[index].setTypeface(settings.getFontFace());
                 imageIcon.setImageDrawable(icon);
-                mTab.setCustomView(v);
             }
         }
         tArray.recycle();

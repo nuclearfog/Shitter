@@ -208,7 +208,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         MessageHolder(View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
-            profile_img = v.findViewById(R.id.dm_profileImg);
+            profile_img = v.findViewById(R.id.dm_profile_img);
             textViews[0] = v.findViewById(R.id.dm_username);
             textViews[1] = v.findViewById(R.id.dm_screenname);
             textViews[2] = v.findViewById(R.id.dm_receiver);

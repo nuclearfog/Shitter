@@ -39,6 +39,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/settings_color_settings"
+                        android:singleLine="true"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout
@@ -189,6 +190,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/settins_font"
+                        android:singleLine="true"
                         android:textSize="@dimen/settings_textsize" />
 
                     <Spinner
@@ -216,6 +218,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/data_consumption"
+                        android:singleLine="true"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout
@@ -271,6 +274,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:text="@string/settings_enable_ans_load"
+                            android:singleLine="true"
                             android:textSize="@dimen/settings_textsize_small" />
 
                     </LinearLayout>
@@ -286,6 +290,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/settings_list_size"
+                            android:singleLine="true"
                             android:textSize="@dimen/settings_textsize_small" />
 
                         <SeekBar
@@ -325,6 +330,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/trend_setting"
+                        android:singleLine="true"
                         android:textSize="@dimen/settings_textsize" />
 
                     <Spinner
@@ -353,6 +359,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/user_data"
+                        android:singleLine="true"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout
@@ -400,6 +407,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/settings_connections"
+                        android:singleLine="true"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout

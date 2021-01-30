@@ -219,9 +219,9 @@ public class ListAdapter extends Adapter<ViewHolder> {
             UserList item = data.get(index);
             User owner = item.getListOwner();
             vh.textViews[0].setText(item.getTitle());
+            vh.textViews[1].setText(item.getDescription());
             vh.textViews[2].setText(owner.getUsername());
             vh.textViews[3].setText(owner.getScreenname());
-            vh.textViews[1].setText(item.getDescription());
             vh.textViews[4].setText(getTimeString(item.getCreatedAt()));
             vh.textViews[5].setText(formatter.format(item.getMemberCount()));
             vh.textViews[6].setText(formatter.format(item.getSubscriberCount()));

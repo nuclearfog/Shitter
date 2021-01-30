@@ -29,10 +29,11 @@
             android:drawablePadding="@dimen/tweetitem_padding_drawable"
             android:singleLine="true"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toTopOf="@id/screenname"
             app:layout_constraintEnd_toStartOf="@+id/time"
             app:layout_constraintStart_toEndOf="@+id/tweetPb"
             app:layout_constraintTop_toTopOf="@id/tweetPb"
-            app:layout_constraintBottom_toTopOf="@id/screenname" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
             android:id="@+id/time"
@@ -56,10 +57,11 @@
             android:drawablePadding="@dimen/tweetitem_padding_drawable"
             android:singleLine="true"
             app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@id/tweetPb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tweetPb"
             app:layout_constraintTop_toBottomOf="@id/username"
-            app:layout_constraintBottom_toBottomOf="@id/tweetPb" />
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/tweet_text_barrier"

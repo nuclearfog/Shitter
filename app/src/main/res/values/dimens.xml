@@ -101,7 +101,7 @@
     <integer name="listitem_description_max_lines">6</integer>
 
     <!--dimens of item_dm.xml-->
-    <dimen name="dmitem_profile">40sp</dimen>
+    <dimen name="dmitem_profile">42sp</dimen>
     <dimen name="dmitem_button_height">20sp</dimen>
     <dimen name="dmitem_padding_drawable">5dp</dimen>
     <dimen name="dmitem_textsize_button">12sp</dimen>
