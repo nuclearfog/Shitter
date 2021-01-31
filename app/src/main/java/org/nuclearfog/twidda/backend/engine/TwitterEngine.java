@@ -10,7 +10,6 @@ import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.holder.TwitterUserList;
-import org.nuclearfog.twidda.backend.holder.UserHolder;
 import org.nuclearfog.twidda.backend.holder.UserListList;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Relation;
@@ -886,25 +885,21 @@ public class TwitterEngine {
     /**
      * Update user profile
      *
-     * @param userHolder User data
+     * @param userParam User data
      * @return updated user profile
      * @throws EngineException if Access is unavailable
      */
-    public User updateProfile(UserHolder userHolder) throws EngineException {
+    public User updateProfile(String[] userParam) throws EngineException {
         try {
-            if (userHolder.hasProfileImage()) {
-                File profileImage = new File(userHolder.getProfileImage());
+            if (userParam[4] != null && userParam[4].isEmpty()) {
+                File profileImage = new File(userParam[4]);
                 twitter.updateProfileImage(profileImage);
             }
-            if (userHolder.hasProfileBanner()) {
-                File profileBanner = new File(userHolder.getProfileBanner());
+            if (userParam[5] != null && userParam[5].isEmpty()) {
+                File profileBanner = new File(userParam[5]);
                 twitter.updateProfileBanner(profileBanner);
             }
-            String username = userHolder.getName();
-            String user_link = userHolder.getLink();
-            String user_loc = userHolder.getLocation();
-            String user_bio = userHolder.getBio();
-            twitter4j.User user = twitter.updateProfile(username, user_link, user_loc, user_bio);
+            twitter4j.User user = twitter.updateProfile(userParam[0], userParam[1], userParam[2], userParam[3]);
             return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);

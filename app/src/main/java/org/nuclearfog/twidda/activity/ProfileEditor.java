@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 import com.squareup.picasso.Callback;
@@ -27,11 +28,11 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.holder.UserHolder;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStop;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -45,7 +46,8 @@ import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
 import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDIT_LEAVE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDITOR_ERROR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDITOR_LEAVE;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
@@ -54,7 +56,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStop, OnDialogClick, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnProgressStop, OnDialogClick, Callback {
 
     /**
      * key to preload user data
@@ -64,11 +66,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Dia
     private UserUpdater editorAsync;
     private GlobalSettings settings;
 
-    private ImageView profile_image, profile_banner, toolbar_background;
+    private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
     private EditText name, link, loc, bio;
-    private Dialog loadingCircle, closeDialog;
     private Button addBannerBtn;
-    private ImageView changeBannerBtn;
+    private Dialog loadingCircle, closeDialog;
+    private AlertDialog errorDialog;
 
     @Nullable
     private User user;
@@ -91,7 +93,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Dia
         loc = findViewById(R.id.edit_location);
         bio = findViewById(R.id.edit_bio);
         loadingCircle = DialogBuilder.createProgress(this, this);
-        closeDialog = DialogBuilder.create(this, PROFILE_EDIT_LEAVE, this);
+        closeDialog = DialogBuilder.create(this, PROFILE_EDITOR_LEAVE, this);
+        errorDialog = DialogBuilder.create(this, PROFILE_EDITOR_ERROR, this);
 
         toolbar.setTitle(R.string.page_profile_edior);
         setSupportActionBar(toolbar);
@@ -151,23 +154,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Dia
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
-                String username = name.getText().toString();
-                String userLink = link.getText().toString();
-                String userLoc = loc.getText().toString();
-                String userBio = bio.getText().toString();
-                if (username.trim().isEmpty()) {
-                    String errMsg = getString(R.string.error_empty_name);
-                    name.setError(errMsg);
-                } else if (!userLink.isEmpty() && userLink.contains(" ")) {
-                    String errMsg = getString(R.string.error_invalid_link);
-                    link.setError(errMsg);
-                } else {
-                    UserHolder userHolder = new UserHolder(username, userLink, userLoc, userBio, profileLink, bannerLink);
-                    editorAsync = new UserUpdater(this);
-                    editorAsync.execute(userHolder);
-                }
-            }
+            updateUser();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -222,8 +209,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Dia
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == PROFILE_EDIT_LEAVE) {
+        if (type == PROFILE_EDITOR_LEAVE) {
             finish();
+        } else if (type == PROFILE_EDITOR_ERROR) {
+            updateUser();
         }
     }
 
@@ -236,19 +225,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Dia
 
     @Override
     public void onError(Exception e) {
-    }
-
-    /**
-     * enable or disable loading dialog
-     *
-     * @param enable true to enable dialog
-     */
-    public void setLoading(boolean enable) {
-        if (enable) {
-            loadingCircle.show();
-        } else {
-            loadingCircle.dismiss();
-        }
     }
 
     /**
@@ -268,7 +244,39 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, Dia
      * @param err Engine Exception
      */
     public void onError(EngineException err) {
-        ErrorHandler.handleFailure(this, err);
+        if (!errorDialog.isShowing()) {
+            String message = ErrorHandler.getErrorMessage(this, err);
+            errorDialog.setMessage(message);
+            errorDialog.show();
+        }
+        if (loadingCircle.isShowing()) {
+            loadingCircle.dismiss();
+        }
+    }
+
+    /**
+     * update user information
+     */
+    private void updateUser() {
+        if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
+            String username = name.getText().toString();
+            String userLink = link.getText().toString();
+            String userLoc = loc.getText().toString();
+            String userBio = bio.getText().toString();
+            if (username.trim().isEmpty()) {
+                String errMsg = getString(R.string.error_empty_name);
+                name.setError(errMsg);
+            } else if (!userLink.isEmpty() && userLink.contains(" ")) {
+                String errMsg = getString(R.string.error_invalid_link);
+                link.setError(errMsg);
+            } else if (editorAsync == null || editorAsync.getStatus() != RUNNING) {
+                editorAsync = new UserUpdater(this);
+                editorAsync.execute(username, userLink, userLoc, userBio, profileLink, bannerLink);
+                if (!loadingCircle.isShowing()) {
+                    loadingCircle.show();
+                }
+            }
+        }
     }
 
     /**

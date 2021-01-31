@@ -35,14 +35,6 @@ public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
 
 
     @Override
-    protected void onPreExecute() {
-        if (callback.get() != null) {
-            callback.get().setLoading(true);
-        }
-    }
-
-
-    @Override
     protected Boolean doInBackground(TweetHolder[] param) {
         try {
             TweetHolder tweet = param[0];
@@ -58,7 +50,6 @@ public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if (callback.get() != null) {
-            callback.get().setLoading(false);
             if (success) {
                 callback.get().onSuccess();
             } else {

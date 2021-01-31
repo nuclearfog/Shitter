@@ -28,105 +28,95 @@ public final class ErrorHandler {
      * @param error   Error exception thrown by TwitterEngine
      */
     public static void handleFailure(@NonNull Context context, @Nullable EngineException error) {
+        String message = getErrorMessage(context, error);
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * get error message string
+     *
+     * @param context application context
+     * @param error   Twitter error
+     * @return message string
+     */
+    public static String getErrorMessage(Context context, @Nullable EngineException error) {
         if (error != null) {
             switch (error.getErrorType()) {
                 case RATE_LIMIT_EX:
-                    int timeToWait = error.getTimeToWait();
-                    if (timeToWait > 0) {
-                        String errMsg = context.getString(R.string.error_limit_exceeded) + " ";
-                        if (timeToWait >= 60)
-                            errMsg += timeToWait / 60 + "m ";
-                        errMsg += timeToWait % 60 + "s";
-                        Toast.makeText(context, errMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, R.string.error_rate_limit, Toast.LENGTH_SHORT).show();
+                    if (error.getTimeToWait() > 0) {
+                        String errMsg = context.getString(R.string.error_limit_exceeded);
+                        if (error.getTimeToWait() >= 60)
+                            errMsg += " " + error.getTimeToWait() / 60 + "m";
+                        errMsg += " " + error.getTimeToWait() % 60 + "s";
+                        return errMsg;
                     }
-                    break;
+                    return context.getString(R.string.error_rate_limit);
 
                 case USER_NOT_FOUND:
-                    Toast.makeText(context, R.string.error_user_not_found, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_user_not_found);
 
                 case APP_SUSPENDED:
-                    Toast.makeText(context, R.string.error_request_token, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_request_token);
 
                 case RESOURCE_NOT_FOUND:
-                    Toast.makeText(context, R.string.error_not_found, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_not_found);
 
                 case CANT_SEND_DM:
-                    Toast.makeText(context, R.string.error_send_dm_to_user, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_send_dm_to_user);
 
                 case NOT_AUTHORIZED:
-                    Toast.makeText(context, R.string.error_not_authorized, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_not_authorized);
 
                 case TWEET_TOO_LONG:
-                    Toast.makeText(context, R.string.error_status_length, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_status_length);
 
                 case DUPLICATE_TWEET:
-                    Toast.makeText(context, R.string.error_duplicate_status, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_duplicate_status);
 
                 case NO_DM_TO_USER:
-                    Toast.makeText(context, R.string.error_dm_send, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_dm_send);
 
                 case DM_TOO_LONG:
-                    Toast.makeText(context, R.string.error_dm_length, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_dm_length);
 
                 case TOKEN_EXPIRED:
-                    Toast.makeText(context, R.string.error_accesstoken, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_accesstoken);
 
                 case NO_MEDIA_FOUND:
-                    Toast.makeText(context, R.string.error_file_not_found, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_file_not_found);
 
                 case NO_LINK_DEFINED:
-                    Toast.makeText(context, R.string.error_token_not_set, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_token_not_set);
 
                 case NO_CONNECTION:
-                    Toast.makeText(context, R.string.error_connection_failed, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_connection_failed);
 
                 case IMAGE_NOT_LOADED:
-                    Toast.makeText(context, R.string.error_image_loading, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_image_loading);
 
                 case ACCESS_TOKEN_DEAD:
-                    Toast.makeText(context, R.string.error_corrupt_api_key, Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_corrupt_api_key);
 
                 case TWEET_CANT_REPLY:
-                    Toast.makeText(context, R.string.error_cant_reply_to_tweet, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case ERROR_NOT_DEFINED:
-                    if (error.getMessage() != null)
-                        Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    break;
+                    return context.getString(R.string.error_cant_reply_to_tweet);
 
                 case ACCOUNT_UPDATE_FAILED:
-                    Toast.makeText(context, R.string.error_acc_update, Toast.LENGTH_LONG).show();
-                    break;
+                    return context.getString(R.string.error_acc_update);
 
                 case ERROR_API_ACCESS_DENIED:
                     GlobalSettings settings = GlobalSettings.getInstance(context);
-                    if (settings.isCustomApiSet()) {
-                        Toast.makeText(context, R.string.error_api_access_denied, Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(context, R.string.error_api_key_expired, Toast.LENGTH_LONG).show();
-                    }
-                    break;
+                    if (settings.isCustomApiSet())
+                        return context.getString(R.string.error_api_access_denied);
+                    return context.getString(R.string.error_api_key_expired);
+
+                case ERROR_NOT_DEFINED:
+                    return error.getMessage();
+
+                default:
+                    return context.getString(R.string.error_not_defined);
             }
         } else {
-            Toast.makeText(context, R.string.error_not_defined, Toast.LENGTH_SHORT).show();
+            return context.getString(R.string.error_not_defined);
         }
     }
 }

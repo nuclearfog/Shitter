@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.activity;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -13,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUpdater;
@@ -38,8 +38,8 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEETPOPUP_ERROR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEETPOPUP_LEAVE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_ERROR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_LEAVE;
 
 /**
  * Activity to create a tweet
@@ -48,6 +48,9 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET
  */
 public class TweetEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStop, OnDialogClick {
 
+    /**
+     * type of media attached to the tweet
+     */
     private enum MediaType {
         NONE,
         GIF,
@@ -79,14 +82,15 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
     private GlobalSettings settings;
 
     private ImageButton mediaBtn, previewBtn, locationBtn;
-    private Dialog loadingCircle, errorDialog, closingDialog;
+    private AlertDialog errorDialog;
+    private Dialog loadingCircle, closingDialog;
     private EditText tweetText;
     private View locationProg;
 
-    private TweetHolder tweet;
     private Location location;
-    private List<String> mediaPath;
+    private List<String> mediaPath = new LinkedList<>();
     private MediaType selectedFormat = MediaType.NONE;
+    private String tweetStr = "";
     private long inReplyId = 0;
 
     @Override
@@ -103,11 +107,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         tweetText = findViewById(R.id.tweet_input);
         locationProg = findViewById(R.id.location_progress);
         loadingCircle = DialogBuilder.createProgress(this, this);
-        errorDialog = DialogBuilder.create(this, TWEETPOPUP_ERROR, this);
-        closingDialog = DialogBuilder.create(this, TWEETPOPUP_LEAVE, this);
+        errorDialog = DialogBuilder.create(this, TWEET_EDITOR_ERROR, this);
+        closingDialog = DialogBuilder.create(this, TWEET_EDITOR_LEAVE, this);
 
         settings = GlobalSettings.getInstance(this);
-        mediaPath = new LinkedList<>();
 
         Intent data = getIntent();
         inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
@@ -130,7 +133,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
     }
 
 
-    @SuppressLint("MissingPermission")
     @Override
     protected void onDestroy() {
         if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
@@ -149,29 +151,22 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
     public void onClick(View v) {
         // send tweet
         if (v.getId() == R.id.tweet_send) {
-            String tweetStr = tweetText.getText().toString();
+            tweetStr = tweetText.getText().toString();
             // check if tweet is empty
             if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                 Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
             }
             // check if mentions exceed the limit
-            else if (!settings.isCustomApiSet() && StringTools.countMentions(tweetStr) >= MAX_MENTIONS) {
+            else if (!settings.isCustomApiSet() && StringTools.countMentions(tweetStr) > MAX_MENTIONS) {
                 Toast.makeText(this, R.string.error_mention_exceed, LENGTH_SHORT).show();
             }
+            // check if GPS location is pending
+            else if (isLocating()) {
+                Toast.makeText(this, R.string.info_location_pending, LENGTH_SHORT).show();
+            }
             // check if gps locating is not pending
-            else if (!isLocatePending()) {
-                tweet = new TweetHolder(tweetStr, inReplyId);
-                // add media
-                if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
-                    tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
-                else if (selectedFormat == MediaType.VIDEO)
-                    tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
-                // add location
-                if (location != null)
-                    tweet.addLocation(location);
-                // send tweet
-                uploaderAsync = new TweetUpdater(this);
-                uploaderAsync.execute(tweet);
+            else if (uploaderAsync == null || uploaderAsync.getStatus() != RUNNING) {
+                updateTweet();
             }
         }
         // close tweet editor
@@ -200,9 +195,9 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         }
         // add location to the tweet
         else if (v.getId() == R.id.tweet_add_location) {
-            getLocation();
             locationProg.setVisibility(VISIBLE);
             locationBtn.setVisibility(INVISIBLE);
+            getLocation();
         }
     }
 
@@ -282,24 +277,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == TWEETPOPUP_ERROR) {
-            uploaderAsync = new TweetUpdater(this);
-            uploaderAsync.execute(tweet);
-        } else if (type == TWEETPOPUP_LEAVE) {
+        if (type == TWEET_EDITOR_ERROR) {
+            updateTweet();
+        } else if (type == TWEET_EDITOR_LEAVE) {
             finish();
-        }
-    }
-
-    /**
-     * enable or disable loading dialog
-     *
-     * @param enable true to enable dialog
-     */
-    public void setLoading(boolean enable) {
-        if (enable) {
-            loadingCircle.show();
-        } else {
-            loadingCircle.dismiss();
         }
     }
 
@@ -315,12 +296,15 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
      * Show confirmation dialog if an error occurs while sending tweet
      */
     public void onError(EngineException error) {
-        ErrorHandler.handleFailure(this, error);
         if (!errorDialog.isShowing()) {
+            String message = ErrorHandler.getErrorMessage(this, error);
+            errorDialog.setMessage(message);
             errorDialog.show();
         }
+        if (loadingCircle.isShowing()) {
+            loadingCircle.dismiss();
+        }
     }
-
 
     /**
      * show confirmation dialog when closing edited tweet
@@ -332,6 +316,27 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
             }
         } else {
             finish();
+        }
+    }
+
+    /**
+     * update tweet information
+     */
+    private void updateTweet() {
+        TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
+        // add media
+        if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)
+            tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.IMAGE);
+        else if (selectedFormat == MediaType.VIDEO)
+            tweet.addMedia(mediaPath.toArray(new String[0]), TweetHolder.MediaType.VIDEO);
+        // add location
+        if (location != null)
+            tweet.addLocation(location);
+        // send tweet
+        uploaderAsync = new TweetUpdater(this);
+        uploaderAsync.execute(tweet);
+        if (!loadingCircle.isShowing()) {
+            loadingCircle.show();
         }
     }
 }

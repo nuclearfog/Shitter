@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
@@ -20,6 +21,7 @@ import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStop;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -30,14 +32,15 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MSG_POPUP_LEAVE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_EDITOR_ERROR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_EDITOR_LEAVE;
 
 /**
  * Direct message popup activity
  *
  * @author nuclearfog
  */
-public class MessageEditor extends MediaActivity implements OnClickListener, OnDialogClick, DialogBuilder.OnProgressStop {
+public class MessageEditor extends MediaActivity implements OnClickListener, OnDialogClick, OnProgressStop {
 
     /**
      * key for the screen name if any
@@ -49,7 +52,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
     private EditText receiver, message;
     private ImageButton media, preview;
     private Dialog loadingCircle, leaveDialog;
-
+    private AlertDialog errorDialog;
     @Nullable
     private String mediaPath;
 
@@ -66,7 +69,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
         loadingCircle = DialogBuilder.createProgress(this, this);
-        leaveDialog = DialogBuilder.create(this, MSG_POPUP_LEAVE, this);
+        leaveDialog = DialogBuilder.create(this, MESSAGE_EDITOR_LEAVE, this);
+        errorDialog = DialogBuilder.create(this, MESSAGE_EDITOR_ERROR, this);
 
         String prefix = getIntent().getStringExtra(KEY_DM_PREFIX);
         if (prefix != null) {
@@ -122,14 +126,19 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
     public void onClick(View v) {
         // send direct message
         if (v.getId() == R.id.dm_send) {
-            String username = receiver.getText().toString();
-            String message = this.message.getText().toString();
-            if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
-                MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-                messageAsync = new MessageUpdater(this, messageHolder);
-                messageAsync.execute();
-            } else {
-                Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
+            if (messageAsync == null || messageAsync.getStatus() != RUNNING) {
+                String username = receiver.getText().toString();
+                String message = this.message.getText().toString();
+                if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
+                    MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
+                    messageAsync = new MessageUpdater(this, messageHolder);
+                    messageAsync.execute();
+                    if (!loadingCircle.isShowing()) {
+                        loadingCircle.show();
+                    }
+                } else {
+                    Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
+                }
             }
         }
         // get media
@@ -156,21 +165,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == MSG_POPUP_LEAVE) {
+        if (type == MESSAGE_EDITOR_LEAVE || type == MESSAGE_EDITOR_ERROR) {
             finish();
-        }
-    }
-
-    /**
-     * enable or disable loading dialog
-     *
-     * @param enable true to enable dialog
-     */
-    public void setLoading(boolean enable) {
-        if (enable) {
-            loadingCircle.show();
-        } else {
-            loadingCircle.dismiss();
         }
     }
 
@@ -188,6 +184,13 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
      * @param error Engine Exception
      */
     public void onError(EngineException error) {
-        ErrorHandler.handleFailure(this, error);
+        if (!errorDialog.isShowing()) {
+            String message = ErrorHandler.getErrorMessage(this, error);
+            errorDialog.setMessage(message);
+            errorDialog.show();
+        }
+        if (loadingCircle.isShowing()) {
+            loadingCircle.dismiss();
+        }
     }
 }

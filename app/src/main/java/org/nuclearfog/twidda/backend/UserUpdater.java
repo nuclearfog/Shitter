@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.ProfileEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.holder.UserHolder;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 
@@ -19,7 +18,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see ProfileEditor
  */
-public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
+public class UserUpdater extends AsyncTask<String, Void, User> {
 
     @Nullable
     private EngineException twException;
@@ -37,17 +36,9 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
 
 
     @Override
-    protected void onPreExecute() {
-        if (callback.get() != null) {
-            callback.get().setLoading(true);
-        }
-    }
-
-
-    @Override
-    protected User doInBackground(UserHolder[] holder) {
+    protected User doInBackground(String[] param) {
         try {
-            User user = mTwitter.updateProfile(holder[0]);
+            User user = mTwitter.updateProfile(param);
             db.storeUser(user);
             return user;
         } catch (EngineException twException) {
@@ -61,7 +52,6 @@ public class UserUpdater extends AsyncTask<UserHolder, Void, User> {
     protected void onPostExecute(@Nullable User user) {
         ProfileEditor activity = callback.get();
         if (activity != null) {
-            activity.setLoading(false);
             if (user != null) {
                 activity.onSuccess(user);
             } else if (twException != null) {

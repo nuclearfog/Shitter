@@ -31,11 +31,14 @@ public final class DialogBuilder {
         WRONG_PROXY,
         DEL_DATABASE,
         LOGOUT_APP,
-        LISTPOPUP_LEAVE,
-        TWEETPOPUP_LEAVE,
-        TWEETPOPUP_ERROR,
-        MSG_POPUP_LEAVE,
-        PROFILE_EDIT_LEAVE,
+        LIST_EDITOR_LEAVE,
+        LIST_EDITOR_ERROR,
+        TWEET_EDITOR_LEAVE,
+        TWEET_EDITOR_ERROR,
+        MESSAGE_EDITOR_LEAVE,
+        MESSAGE_EDITOR_ERROR,
+        PROFILE_EDITOR_LEAVE,
+        PROFILE_EDITOR_ERROR,
         DELETE_TWEET,
         PROFILE_UNFOLLOW,
         PROFILE_BLOCK,
@@ -56,7 +59,7 @@ public final class DialogBuilder {
      * @param listener listener for positive button
      * @return dialog instance
      */
-    public static Dialog create(Context context, final DialogType type, final OnDialogClick listener) {
+    public static AlertDialog create(Context context, final DialogType type, final OnDialogClick listener) {
         int posButton = R.string.dialog_button_yes;
         int negButton = R.string.dialog_button_no;
         int title = 0;
@@ -82,23 +85,25 @@ public final class DialogBuilder {
                 message = R.string.confirm_log_lout;
                 break;
 
-            case LISTPOPUP_LEAVE:
-            case PROFILE_EDIT_LEAVE:
+            case LIST_EDITOR_LEAVE:
+            case PROFILE_EDITOR_LEAVE:
                 message = R.string.confirm_discard;
                 break;
 
-            case TWEETPOPUP_LEAVE:
+            case TWEET_EDITOR_LEAVE:
                 message = R.string.confirm_cancel_tweet;
                 break;
 
-            case TWEETPOPUP_ERROR:
+            case LIST_EDITOR_ERROR:
+            case MESSAGE_EDITOR_ERROR:
+            case TWEET_EDITOR_ERROR:
+            case PROFILE_EDITOR_ERROR:
                 title = R.string.info_error;
-                message = R.string.error_sending_tweet;
                 posButton = R.string.confirm_retry_button;
                 negButton = R.string.dialog_button_cancel;
                 break;
 
-            case MSG_POPUP_LEAVE:
+            case MESSAGE_EDITOR_LEAVE:
                 message = R.string.confirm_cancel_message;
                 break;
 
@@ -136,7 +141,8 @@ public final class DialogBuilder {
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.ConfirmDialog);
         if (title != 0)
             builder.setTitle(title);
-        builder.setMessage(message);
+        if (message != 0)
+            builder.setMessage(message);
         builder.setNegativeButton(negButton, null);
         builder.setPositiveButton(posButton, new OnClickListener() {
             @Override

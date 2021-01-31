@@ -39,14 +39,6 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
 
 
     @Override
-    protected void onPreExecute() {
-        if (callback.get() != null) {
-            callback.get().setLoading(true);
-        }
-    }
-
-
-    @Override
     protected Boolean doInBackground(Void[] v) {
         try {
             mTwitter.sendMessage(message);
@@ -61,7 +53,6 @@ public class MessageUpdater extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if (callback.get() != null) {
-            callback.get().setLoading(false);
             if (success) {
                 callback.get().onSuccess();
             } else {

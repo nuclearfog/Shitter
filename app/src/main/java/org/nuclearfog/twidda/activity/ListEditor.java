@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
@@ -30,7 +31,8 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
 import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LISTPOPUP_LEAVE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_EDITOR_ERROR;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_EDITOR_LEAVE;
 
 /**
  * Activity for the list editor
@@ -48,6 +50,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
     private Dialog leaveDialog, loadingCircle;
+    private AlertDialog errorDialog;
     @Nullable
     private UserList userList;
 
@@ -63,7 +66,8 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         subTitleInput = findViewById(R.id.list_edit_descr);
         visibility = findViewById(R.id.list_edit_public_sw);
         loadingCircle = DialogBuilder.createProgress(this, this);
-        leaveDialog = DialogBuilder.create(this, LISTPOPUP_LEAVE, this);
+        leaveDialog = DialogBuilder.create(this, LIST_EDITOR_LEAVE, this);
+        errorDialog = DialogBuilder.create(this, LIST_EDITOR_ERROR, this);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setEditorTheme(settings, root, background);
@@ -134,7 +138,9 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        finish();
+        if (type == LIST_EDITOR_ERROR || type == LIST_EDITOR_LEAVE) {
+            finish();
+        }
     }
 
     /**
@@ -160,7 +166,13 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
      * @param err twitter exception
      */
     public void onError(EngineException err) {
-        ErrorHandler.handleFailure(this, err);
-        loadingCircle.dismiss();
+        if (!errorDialog.isShowing()) {
+            String message = ErrorHandler.getErrorMessage(this, err);
+            errorDialog.setMessage(message);
+            errorDialog.show();
+        }
+        if (loadingCircle.isShowing()) {
+            loadingCircle.dismiss();
+        }
     }
 }

@@ -281,7 +281,7 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
      *
      * @return true if GPS access if finished
      */
-    protected boolean isLocatePending() {
+    protected boolean isLocating() {
         return locationPending;
     }
 

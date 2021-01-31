@@ -187,4 +187,5 @@
     <string name="confirm_back">Zurück</string>
     <string name="error_mention_exceed">Zu viele Nutzer Erwähnungen!</string>
     <string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
+    <string name="info_location_pending">Ortung läuft, bitte warten.</string>
 </resources>

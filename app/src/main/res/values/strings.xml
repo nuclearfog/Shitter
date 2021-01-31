@@ -133,6 +133,7 @@
     <string name="info_user_unblocked">unblocked</string>
     <string name="info_tweet_removed">Tweet removed</string>
     <string name="info_tweet_sent">Tweet sent</string>
+    <string name="info_location_pending">Location is pending, please wait.</string>
     <string name="info_error">Error</string>
 
     <!-- toast messages for error information -->
