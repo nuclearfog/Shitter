@@ -37,15 +37,6 @@
         <item>@id/color_icon</item>
     </integer-array>
 
-    <integer-array name="tweet_item_icons">
-        <item>@drawable/verify</item>
-        <item>@drawable/lock</item>
-        <item>@drawable/retweet</item>
-        <item>@drawable/retweet</item>
-        <item>@drawable/favorite</item>
-        <item>@drawable/favorite</item>
-    </integer-array>
-
     <integer-array name="user_item_icons">
         <item>@drawable/verify</item>
         <item>@drawable/lock</item>
@@ -56,17 +47,7 @@
     <integer-array name="dm_item_icons">
         <item>@drawable/verify</item>
         <item>@drawable/lock</item>
-        <item>@drawable/rightarrow</item>
-    </integer-array>
-
-    <integer-array name="list_item_icons">
-        <item>@drawable/verify</item>
-        <item>@drawable/lock</item>
-        <item>@drawable/lock</item>
-        <item>@drawable/calendar</item>
-        <item>@drawable/followback</item>
-        <item>@drawable/user</item>
-        <item>@drawable/subscriber</item>
+        <item>@drawable/right</item>
     </integer-array>
 
 </resources>

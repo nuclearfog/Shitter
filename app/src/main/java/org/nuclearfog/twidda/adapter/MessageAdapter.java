@@ -203,12 +203,13 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
         final TextView[] textViews = new TextView[5];
         final Button[] buttons = new Button[2];
-        final ImageView profile_img;
+        final ImageView profile_img, receiver_icon;
 
         MessageHolder(View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
             profile_img = v.findViewById(R.id.dm_profile_img);
+            receiver_icon = v.findViewById(R.id.dm_receiver_icon);
             textViews[0] = v.findViewById(R.id.dm_username);
             textViews[1] = v.findViewById(R.id.dm_screenname);
             textViews[2] = v.findViewById(R.id.dm_receiver);
@@ -225,8 +226,8 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 button.setTextColor(settings.getFontColor());
                 button.setTypeface(settings.getFontFace());
             }
+            receiver_icon.setImageDrawable(icons[2]);
             background.setCardBackgroundColor(settings.getCardColor());
-            textViews[2].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
             textViews[4].setMovementMethod(LinkMovementMethod.getInstance());
         }
     }

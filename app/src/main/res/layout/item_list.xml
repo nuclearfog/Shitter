@@ -20,20 +20,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/list_user_verified"
+            android:layout_width="@dimen/listitem_icon_size"
+            android:layout_height="@dimen/listitem_icon_size"
+            android:layout_marginStart="@dimen/listitem_padding_drawable"
+            android:layout_marginLeft="@dimen/listitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/list_ownername"
+            app:layout_constraintEnd_toStartOf="@+id/list_ownername"
+            app:layout_constraintStart_toEndOf="@id/list_owner_profile"
+            app:layout_constraintTop_toTopOf="@+id/list_ownername"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/list_ownername"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/listitem_text_margin"
             android:layout_marginLeft="@dimen/listitem_text_margin"
-            android:drawablePadding="@dimen/listitem_padding_drawable"
             android:singleLine="true"
             android:textSize="@dimen/listitem_textsize_name"
             app:layout_constraintBottom_toTopOf="@id/list_screenname"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/list_owner_profile"
+            app:layout_constraintStart_toEndOf="@id/list_user_verified"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
+
+        <ImageView
+            android:id="@+id/list_user_locked"
+            android:layout_width="@dimen/listitem_icon_size"
+            android:layout_height="@dimen/listitem_icon_size"
+            android:layout_marginStart="@dimen/listitem_padding_drawable"
+            android:layout_marginLeft="@dimen/listitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/list_screenname"
+            app:layout_constraintEnd_toStartOf="@id/list_screenname"
+            app:layout_constraintStart_toEndOf="@id/list_owner_profile"
+            app:layout_constraintTop_toTopOf="@id/list_screenname"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/list_screenname"
@@ -41,14 +64,25 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/listitem_text_margin"
             android:layout_marginLeft="@dimen/listitem_text_margin"
-            android:drawablePadding="@dimen/listitem_padding_drawable"
             android:singleLine="true"
             android:textSize="@dimen/listitem_textsize_name"
             app:layout_constraintBottom_toTopOf="@id/list_createdat"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/list_owner_profile"
+            app:layout_constraintStart_toEndOf="@id/list_user_locked"
             app:layout_constraintTop_toBottomOf="@id/list_ownername"
             app:layout_constraintVertical_chainStyle="packed" />
+
+        <ImageView
+            android:id="@+id/list_date_icon"
+            android:layout_width="@dimen/listitem_icon_size"
+            android:layout_height="@dimen/listitem_icon_size"
+            android:layout_marginStart="@dimen/listitem_padding_drawable"
+            android:layout_marginLeft="@dimen/listitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/list_createdat"
+            app:layout_constraintEnd_toStartOf="@id/list_createdat"
+            app:layout_constraintStart_toEndOf="@id/list_owner_profile"
+            app:layout_constraintTop_toTopOf="@id/list_createdat"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/list_createdat"
@@ -61,7 +95,7 @@
             android:textSize="@dimen/listitem_textsize_date"
             app:layout_constraintBottom_toBottomOf="@+id/list_owner_profile"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/list_owner_profile"
+            app:layout_constraintStart_toEndOf="@id/list_date_icon"
             app:layout_constraintTop_toBottomOf="@id/list_screenname"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -72,6 +106,20 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="list_createdat,list_owner_profile" />
 
+        <ImageView
+            android:id="@id/list_private"
+            android:layout_width="@dimen/listitem_icon_size_big"
+            android:layout_height="@dimen/listitem_icon_size_big"
+            android:layout_marginEnd="@dimen/listitem_padding_drawable"
+            android:layout_marginRight="@dimen/listitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/list_title"
+            app:layout_constraintEnd_toStartOf="@id/list_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/list_title"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/list_title"
             android:layout_width="wrap_content"
@@ -79,27 +127,41 @@
             android:drawablePadding="@dimen/listitem_padding_drawable"
             android:singleLine="true"
             android:textSize="@dimen/listitem_textsize_title"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/list_private"
+            app:layout_constraintTop_toBottomOf="@id/list_profile_barrier"
+            app:layout_constraintEnd_toStartOf="@id/list_follow_icon" />
+
+        <ImageView
+            android:id="@+id/list_follow_icon"
+            android:layout_width="@dimen/listitem_icon_size_big"
+            android:layout_height="@dimen/listitem_icon_size_big"
+            android:layout_marginStart="@dimen/listitem_padding_drawable"
+            android:layout_marginLeft="@dimen/listitem_padding_drawable"
+            android:layout_marginEnd="@dimen/listitem_padding_drawable"
+            android:layout_marginRight="@dimen/listitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/list_action"
             app:layout_constraintEnd_toStartOf="@id/list_action"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/list_profile_barrier" />
+            app:layout_constraintStart_toEndOf="@+id/list_title"
+            app:layout_constraintTop_toTopOf="@id/list_action"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/list_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/listitem_text_margin"
-            android:layout_marginLeft="@dimen/listitem_text_margin"
             android:drawablePadding="@dimen/listitem_padding_drawable"
             android:singleLine="true"
             android:text="@string/list_following_indicator"
             android:textSize="@dimen/listitem_textsize_small"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/list_title"
-            app:layout_constraintTop_toBottomOf="@+id/list_profile_barrier"
             app:layout_constraintBottom_toBottomOf="@+id/list_title"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/list_follow_icon"
+            app:layout_constraintTop_toBottomOf="@+id/list_profile_barrier" />
 
         <TextView
             android:id="@+id/list_description"
@@ -123,11 +185,15 @@
             android:id="@+id/list_member_icon"
             android:layout_width="@dimen/listitem_icon_size"
             android:layout_height="@dimen/listitem_icon_size"
+            android:layout_marginStart="@dimen/listitem_padding_drawable"
+            android:layout_marginLeft="@dimen/listitem_padding_drawable"
+            android:layout_marginEnd="@dimen/listitem_padding_drawable"
+            android:layout_marginRight="@dimen/listitem_padding_drawable"
             app:layout_constraintBottom_toBottomOf="@id/list_member"
             app:layout_constraintEnd_toStartOf="@id/list_member"
             app:layout_constraintStart_toEndOf="@id/listitem_placeholder"
-            app:layout_constraintTop_toTopOf="@id/list_member"
             app:layout_constraintTop_toBottomOf="@+id/list_description"
+            app:layout_constraintTop_toTopOf="@id/list_member"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -136,8 +202,6 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="@dimen/listitem_textsize_small"
-            android:layout_marginStart="@dimen/listitem_text_margin"
-            android:layout_marginLeft="@dimen/listitem_text_margin"
             app:layout_constraintEnd_toStartOf="@id/list_subscriber_icon"
             app:layout_constraintStart_toEndOf="@id/list_member_icon"
             app:layout_constraintTop_toBottomOf="@id/list_description" />
@@ -146,10 +210,14 @@
             android:id="@+id/list_subscriber_icon"
             android:layout_width="@dimen/listitem_icon_size"
             android:layout_height="@dimen/listitem_icon_size"
+            android:layout_marginStart="@dimen/listitem_padding_drawable"
+            android:layout_marginLeft="@dimen/listitem_padding_drawable"
+            android:layout_marginEnd="@dimen/listitem_padding_drawable"
+            android:layout_marginRight="@dimen/listitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/list_subscriber"
             app:layout_constraintEnd_toStartOf="@id/list_subscriber"
             app:layout_constraintStart_toEndOf="@id/list_member"
             app:layout_constraintTop_toTopOf="@id/list_subscriber"
-            app:layout_constraintBottom_toBottomOf="@id/list_subscriber"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -158,8 +226,6 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="@dimen/listitem_textsize_small"
-            android:layout_marginStart="@dimen/listitem_text_margin"
-            android:layout_marginLeft="@dimen/listitem_text_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/list_subscriber_icon"
             app:layout_constraintTop_toBottomOf="@id/list_description" />

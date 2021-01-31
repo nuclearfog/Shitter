@@ -142,7 +142,6 @@
     <string name="error_not_found">Not found!</string>
     <string name="error_enter_pin">enter PIN!</string>
     <string name="error_limit_exceeded">"Rate limit exceeded! Retry after:"</string>
-    <string name="error_sending_tweet">Error while sending</string>
     <string name="error_open_link">could not open link!</string>
     <string name="error_cant_load_video">could not play video!</string>
     <string name="error_image_loading">could not load image!</string>

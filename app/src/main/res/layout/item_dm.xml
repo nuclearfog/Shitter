@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -63,22 +64,36 @@
             app:layout_constraintBottom_toBottomOf="@id/dm_profile_img"
             app:layout_constraintEnd_toStartOf="@+id/dm_receiver" />
 
+        <ImageView
+            android:id="@+id/dm_receiver_icon"
+            android:layout_width="@dimen/dmitem_icon_size"
+            android:layout_height="@dimen/dmitem_icon_size"
+            android:layout_marginStart="@dimen/dmitem_padding_drawable"
+            android:layout_marginLeft="@dimen/dmitem_padding_drawable"
+            android:layout_marginEnd="@dimen/dmitem_padding_drawable"
+            android:layout_marginRight="@dimen/dmitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/dm_screenname"
+            app:layout_constraintEnd_toStartOf="@id/dm_receiver"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@id/dm_screenname"
+            app:layout_constraintTop_toTopOf="@id/dm_screenname"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/dm_receiver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dmitem_text_margin"
-            android:layout_marginLeft="@dimen/dmitem_text_margin"
             android:layout_marginEnd="@dimen/dmitem_text_margin"
             android:layout_marginRight="@dimen/dmitem_text_margin"
             android:drawablePadding="@dimen/dmitem_padding_drawable"
             android:singleLine="true"
             android:textSize="@dimen/dmitem_textsize_name"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/dm_screenname"
-            app:layout_constraintTop_toTopOf="@+id/dm_screenname"
             app:layout_constraintBottom_toBottomOf="@id/dm_screenname"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/dm_receiver_icon"
+            app:layout_constraintTop_toTopOf="@+id/dm_screenname" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/dm_profile_barrier"

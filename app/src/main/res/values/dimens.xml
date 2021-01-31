@@ -71,6 +71,7 @@
     <dimen name="tweetitem_padding_drawable">5dp</dimen>
     <dimen name="tweetitem_textsize_button">12sp</dimen>
     <dimen name="tweetitem_textsize_date">12sp</dimen>
+    <dimen name="tweetitem_icon_size">16sp</dimen>
 
     <!--dimens of item_trend.xml-->
     <dimen name="trenditem_layout_padding">5dp</dimen>
@@ -91,6 +92,7 @@
     <!--dimens of item_list.xml-->
     <dimen name="listitem_padding">5dp</dimen>
     <dimen name="listitem_icon_size">12sp</dimen>
+    <dimen name="listitem_icon_size_big">16sp</dimen>
     <dimen name="listitem_profile">56sp</dimen>
     <dimen name="listitem_text_margin">5dp</dimen>
     <dimen name="listitem_textsize_date">12sp</dimen>
@@ -110,6 +112,7 @@
     <dimen name="dmitem_text_margin">5dp</dimen>
     <dimen name="dmitem_button_margin">5dp</dimen>
     <dimen name="dmitem_margin_layout">5dp</dimen>
+    <dimen name="dmitem_icon_size">16sp</dimen>
 
     <!--dimens of page_login.xml-->
     <dimen name="loginpage_toolbar_height">@dimen/toolbar_height</dimen>

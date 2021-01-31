@@ -1,9 +1,7 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -38,6 +34,7 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.graphics.PorterDuff.Mode.SRC_IN;
+import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
@@ -74,7 +71,6 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     private TweetClickListener itemClickListener;
     private GlobalSettings settings;
-    private Drawable[] icons;
 
     private final List<Tweet> tweets = new ArrayList<>();
     private NumberFormat formatter = NumberFormat.getIntegerInstance();
@@ -84,15 +80,6 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     public TweetAdapter(Context context, TweetClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
-
-        TypedArray tArray = context.getResources().obtainTypedArray(R.array.tweet_item_icons);
-        icons = new Drawable[tArray.length()];
-        for (int index = 0; index < icons.length; index++) {
-            int resId = tArray.getResourceId(index, 0);
-            icons[index] = AppCompatResources.getDrawable(context, resId);
-        }
-        tArray.recycle();
-        setIconColors();
     }
 
     /**
@@ -176,7 +163,6 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     @MainThread
     public void clear() {
         tweets.clear();
-        setIconColors();
         notifyDataSetChanged();
     }
 
@@ -279,10 +265,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             if (tweet.getEmbeddedTweet() != null) {
                 vh.textViews[5].setText(user.getScreenname());
                 vh.textViews[5].setVisibility(VISIBLE);
+                vh.rtUser.setVisibility(VISIBLE);
                 tweet = tweet.getEmbeddedTweet();
                 user = tweet.getUser();
             } else {
                 vh.textViews[5].setVisibility(INVISIBLE);
+                vh.rtUser.setVisibility(INVISIBLE);
             }
             Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
             vh.textViews[2].setText(text);
@@ -293,24 +281,24 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             vh.textViews[6].setText(getTimeString(tweet.getTime()));
 
             if (tweet.retweeted()) {
-                setIcon(vh.textViews[3], icons[3]);
+                vh.rtIcon.setColorFilter(Color.GREEN, SRC_IN);
             } else {
-                setIcon(vh.textViews[3], icons[2]);
+                vh.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }
             if (tweet.favored()) {
-                setIcon(vh.textViews[4], icons[5]);
+                vh.favIcon.setColorFilter(Color.YELLOW, SRC_IN);
             } else {
-                setIcon(vh.textViews[4], icons[4]);
+                vh.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }
             if (user.isVerified()) {
-                setIcon(vh.textViews[0], icons[0]);
+                vh.verifiedIcon.setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[0], null);
+                vh.verifiedIcon.setVisibility(GONE);
             }
             if (user.isLocked()) {
-                setIcon(vh.textViews[1], icons[1]);
+                vh.lockedIcon.setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[1], null);
+                vh.lockedIcon.setVisibility(GONE);
             }
             if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
@@ -334,40 +322,21 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * set color filter for icons
-     */
-    private void setIconColors() {
-        icons[0].setColorFilter(settings.getIconColor(), SRC_IN);
-        icons[1].setColorFilter(settings.getIconColor(), SRC_IN);
-        icons[2].setColorFilter(settings.getIconColor(), SRC_IN);
-        icons[3].setColorFilter(Color.GREEN, SRC_IN);
-        icons[4].setColorFilter(settings.getIconColor(), SRC_IN);
-        icons[5].setColorFilter(Color.YELLOW, SRC_IN);
-    }
-
-    /**
-     * set TextView icon on the left
-     *
-     * @param tv   TextView to set/remove icon
-     * @param icon icon drawable
-     */
-    private void setIcon(TextView tv, @Nullable Drawable icon) {
-        if (icon != null)
-            icon = icon.mutate();
-        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-    }
-
-    /**
      * Holder class for the tweet view
      */
     private final class TweetHolder extends ViewHolder {
         final TextView[] textViews = new TextView[7];
-        final ImageView profile;
+        final ImageView profile, rtUser, verifiedIcon, lockedIcon, rtIcon, favIcon;
 
         TweetHolder(@NonNull View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
             profile = v.findViewById(R.id.tweetPb);
+            verifiedIcon = v.findViewById(R.id.verified_icon);
+            lockedIcon = v.findViewById(R.id.locked_icon);
+            rtUser = v.findViewById(R.id.rt_user_icon);
+            rtIcon = v.findViewById(R.id.rt_icon);
+            favIcon = v.findViewById(R.id.fav_icon);
             textViews[0] = v.findViewById(R.id.username);
             textViews[1] = v.findViewById(R.id.screenname);
             textViews[2] = v.findViewById(R.id.tweettext);
@@ -380,8 +349,15 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                 tv.setTextColor(settings.getFontColor());
                 tv.setTypeface(settings.getFontFace());
             }
+            verifiedIcon.setImageResource(R.drawable.verify);
+            lockedIcon.setImageResource(R.drawable.lock);
+            rtUser.setImageResource(R.drawable.retweet);
+            rtIcon.setImageResource(R.drawable.retweet);
+            favIcon.setImageResource(R.drawable.favorite);
+            verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            rtUser.setColorFilter(settings.getIconColor(), SRC_IN);
             background.setCardBackgroundColor(settings.getCardColor());
-            textViews[5].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
         }
     }
 

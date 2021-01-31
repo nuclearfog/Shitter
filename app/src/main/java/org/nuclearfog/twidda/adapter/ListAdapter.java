@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,8 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -66,7 +62,6 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
     private ListClickListener listener;
     private GlobalSettings settings;
-    private Drawable[] icons;
 
     private NumberFormat formatter = NumberFormat.getIntegerInstance();
     private UserListList data = new UserListList();
@@ -76,15 +71,6 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public ListAdapter(Context context, ListClickListener listener) {
         this.listener = listener;
         this.settings = GlobalSettings.getInstance(context);
-
-        TypedArray drawables = context.getResources().obtainTypedArray(R.array.list_item_icons);
-        icons = new Drawable[drawables.length()];
-        for (int index = 0; index < drawables.length(); index++) {
-            int resId = drawables.getResourceId(index, 0);
-            icons[index] = AppCompatResources.getDrawable(context, resId);
-        }
-        drawables.recycle();
-        colorIcons();
     }
 
     /**
@@ -235,24 +221,26 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.profile_img.setImageResource(0);
             }
             if (!item.isListOwner() && item.isFollowing()) {
+                vh.icons[6].setVisibility(VISIBLE);
                 vh.textViews[7].setVisibility(VISIBLE);
             } else {
+                vh.icons[6].setVisibility(GONE);
                 vh.textViews[7].setVisibility(GONE);
             }
             if (owner.isVerified()) {
-                setIcon(vh.textViews[2], icons[0]);
+                vh.icons[0].setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[2], null);
+                vh.icons[0].setVisibility(GONE);
             }
             if (owner.isLocked()) {
-                setIcon(vh.textViews[3], icons[1]);
+                vh.icons[1].setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[3], null);
+                vh.icons[1].setVisibility(GONE);
             }
             if (item.isPrivate()) {
-                setIcon(vh.textViews[0], icons[2]);
+                vh.icons[5].setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[0], null);
+                vh.icons[5].setVisibility(GONE);
             }
         } else if (holder instanceof PlaceHolder) {
             PlaceHolder placeHolder = (PlaceHolder) holder;
@@ -278,37 +266,25 @@ public class ListAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * sets the TextView icons
-     *
-     * @param tv   TextView to add an icon
-     * @param icon icon drawable
-     */
-    private void setIcon(TextView tv, @Nullable Drawable icon) {
-        if (icon != null)
-            icon = icon.mutate();
-        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-    }
-
-    private void colorIcons() {
-        for (Drawable icon : icons) {
-            icon.setColorFilter(settings.getIconColor(), SRC_IN);
-        }
-    }
-
-    /**
      * view holder class for an user list item
      */
     private final class ListHolder extends ViewHolder {
 
-        final ImageView profile_img, subscrIcon, memberIcon;
+        final ImageView[] icons = new ImageView[7];
         final TextView[] textViews = new TextView[8];
+        final ImageView profile_img;
 
         ListHolder(View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
             profile_img = v.findViewById(R.id.list_owner_profile);
-            memberIcon = v.findViewById(R.id.list_member_icon);
-            subscrIcon = v.findViewById(R.id.list_subscriber_icon);
+            icons[0] = v.findViewById(R.id.list_user_verified);
+            icons[1] = v.findViewById(R.id.list_user_locked);
+            icons[2] = v.findViewById(R.id.list_member_icon);
+            icons[3] = v.findViewById(R.id.list_subscriber_icon);
+            icons[4] = v.findViewById(R.id.list_date_icon);
+            icons[5] = v.findViewById(R.id.list_private);
+            icons[6] = v.findViewById(R.id.list_follow_icon);
             textViews[0] = v.findViewById(R.id.list_title);
             textViews[1] = v.findViewById(R.id.list_description);
             textViews[2] = v.findViewById(R.id.list_ownername);
@@ -318,15 +294,22 @@ public class ListAdapter extends Adapter<ViewHolder> {
             textViews[6] = v.findViewById(R.id.list_subscriber);
             textViews[7] = v.findViewById(R.id.list_action);
 
+            icons[0].setImageResource(R.drawable.verify);
+            icons[1].setImageResource(R.drawable.lock);
+            icons[2].setImageResource(R.drawable.user);
+            icons[3].setImageResource(R.drawable.subscriber);
+            icons[4].setImageResource(R.drawable.calendar);
+            icons[5].setImageResource(R.drawable.lock);
+            icons[6].setImageResource(R.drawable.followback);
+
             for (TextView tv : textViews) {
                 tv.setTextColor(settings.getFontColor());
                 tv.setTypeface(settings.getFontFace());
             }
+            for (ImageView icon : icons) {
+                icon.setColorFilter(settings.getIconColor(), SRC_IN);
+            }
             background.setCardBackgroundColor(settings.getCardColor());
-            textViews[4].setCompoundDrawablesWithIntrinsicBounds(icons[3], null, null, null);
-            textViews[7].setCompoundDrawablesWithIntrinsicBounds(icons[4], null, null, null);
-            memberIcon.setImageDrawable(icons[5]);
-            subscrIcon.setImageDrawable(icons[6]);
         }
     }
 

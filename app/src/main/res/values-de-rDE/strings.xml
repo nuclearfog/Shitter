@@ -18,7 +18,6 @@
     <string name="error_enter_pin">PIN eingeben!</string>
     <string name="confirm_delete_database">App Daten Löschen?</string>
     <string name="error_limit_exceeded">"Anfragelimit erreicht! Entsperrung nach:"</string>
-    <string name="error_sending_tweet">Fehler beim Senden!</string>
     <string name="info_tweet_sent">Tweet gesendet</string>
     <string name="info_error">Fehler!</string>
     <string name="menu_tweet_delete">Tweet löschen</string>
