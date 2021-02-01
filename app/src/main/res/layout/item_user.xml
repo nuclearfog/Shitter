@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/CardViewStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -20,17 +21,44 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
+        <ImageView
+            android:id="@+id/useritem_verified"
+            android:layout_width="@dimen/useritem_icon_size"
+            android:layout_height="@dimen/useritem_icon_size"
+            android:layout_marginStart="@dimen/useritem_drawable_margin"
+            android:layout_marginLeft="@dimen/useritem_drawable_margin"
+            app:layout_constraintStart_toEndOf="@id/user_profileimg"
+            app:layout_constraintTop_toTopOf="@id/username_detail"
+            app:layout_constraintBottom_toBottomOf="@id/username_detail"
+            app:layout_constraintEnd_toStartOf="@id/username_detail"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/username_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/useritem_textview_padding"
             android:layout_marginLeft="@dimen/useritem_textview_padding"
-            android:drawablePadding="@dimen/useritem_padding_drawable"
+            android:layout_marginEnd="@dimen/useritem_textview_padding"
+            android:layout_marginRight="@dimen/useritem_textview_padding"
+            android:drawablePadding="@dimen/useritem_drawable_margin"
             android:singleLine="true"
-            app:layout_constraintStart_toEndOf="@+id/user_profileimg"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/useritem_del_user" />
+            app:layout_constraintEnd_toStartOf="@id/useritem_del_user"
+            app:layout_constraintStart_toEndOf="@+id/useritem_verified"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/useritem_locked"
+            android:layout_width="@dimen/useritem_icon_size"
+            android:layout_height="@dimen/useritem_icon_size"
+            android:layout_marginStart="@dimen/useritem_drawable_margin"
+            android:layout_marginLeft="@dimen/useritem_drawable_margin"
+            app:layout_constraintStart_toEndOf="@id/user_profileimg"
+            app:layout_constraintTop_toTopOf="@id/screenname_detail"
+            app:layout_constraintBottom_toBottomOf="@id/screenname_detail"
+            app:layout_constraintEnd_toEndOf="@id/screenname_detail"
+            app:layout_constraintHorizontal_bias="0.0"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/screenname_detail"
@@ -38,37 +66,67 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/useritem_textview_padding"
             android:layout_marginLeft="@dimen/useritem_textview_padding"
-            android:drawablePadding="@dimen/useritem_padding_drawable"
+            android:layout_marginEnd="@dimen/useritem_textview_padding"
+            android:layout_marginRight="@dimen/useritem_textview_padding"
+            android:drawablePadding="@dimen/useritem_drawable_margin"
             android:singleLine="true"
             app:layout_constraintEnd_toStartOf="@id/useritem_del_user"
-            app:layout_constraintStart_toEndOf="@id/user_profileimg"
+            app:layout_constraintStart_toEndOf="@id/useritem_locked"
             app:layout_constraintTop_toBottomOf="@+id/username_detail" />
+
+        <ImageView
+            android:id="@+id/following_icon"
+            android:layout_width="@dimen/useritem_icon_size"
+            android:layout_height="@dimen/useritem_icon_size"
+            android:layout_marginStart="@dimen/useritem_drawable_margin"
+            android:layout_marginLeft="@dimen/useritem_drawable_margin"
+            android:layout_marginEnd="@dimen/useritem_drawable_margin"
+            android:layout_marginRight="@dimen/useritem_drawable_margin"
+            app:layout_constraintStart_toEndOf="@+id/user_profileimg"
+            app:layout_constraintTop_toBottomOf="@id/screenname_detail"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_user_friends"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/item_user_friends"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/useritem_textview_padding"
-            android:layout_marginLeft="@dimen/useritem_textview_padding"
-            android:drawablePadding="@dimen/useritem_padding_drawable"
+            android:drawablePadding="@dimen/useritem_drawable_margin"
             android:singleLine="true"
             android:textSize="@dimen/useritem_textsize_small"
-            app:layout_constraintEnd_toStartOf="@+id/item_user_follower"
-            app:layout_constraintStart_toEndOf="@+id/user_profileimg"
-            app:layout_constraintTop_toBottomOf="@+id/screenname_detail" />
+            app:layout_constraintStart_toEndOf="@+id/following_icon"
+            app:layout_constraintTop_toTopOf="@+id/following_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/following_icon"
+            app:layout_constraintEnd_toStartOf="@+id/follower_icon" />
+
+        <ImageView
+            android:id="@+id/follower_icon"
+            android:layout_width="@dimen/useritem_icon_size"
+            android:layout_height="@dimen/useritem_icon_size"
+            android:layout_marginStart="@dimen/useritem_drawable_margin"
+            android:layout_marginLeft="@dimen/useritem_drawable_margin"
+            android:layout_marginEnd="@dimen/useritem_drawable_margin"
+            android:layout_marginRight="@dimen/useritem_drawable_margin"
+            app:layout_constraintStart_toEndOf="@id/item_user_friends"
+            app:layout_constraintTop_toBottomOf="@id/screenname_detail"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_user_follower"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/item_user_follower"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/useritem_textview_padding"
-            android:layout_marginLeft="@dimen/useritem_textview_padding"
-            android:drawablePadding="@dimen/useritem_padding_drawable"
+            android:layout_marginEnd="@dimen/useritem_textview_padding"
+            android:layout_marginRight="@dimen/useritem_textview_padding"
+            android:drawablePadding="@dimen/useritem_drawable_margin"
             android:singleLine="true"
             android:textSize="@dimen/useritem_textsize_small"
+            app:layout_constraintBottom_toBottomOf="@+id/follower_icon"
             app:layout_constraintEnd_toStartOf="@id/useritem_del_user"
-            app:layout_constraintStart_toEndOf="@+id/item_user_friends"
-            app:layout_constraintTop_toBottomOf="@+id/screenname_detail" />
+            app:layout_constraintStart_toEndOf="@+id/follower_icon"
+            app:layout_constraintTop_toTopOf="@id/follower_icon" />
 
         <ImageButton
             android:id="@+id/useritem_del_user"

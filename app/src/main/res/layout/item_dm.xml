@@ -19,21 +19,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ImageView
+            android:id="@+id/dm_user_verified"
+            android:layout_width="@dimen/dmitem_icon_size"
+            android:layout_height="@dimen/dmitem_icon_size"
+            android:layout_marginStart="@dimen/dmitem_padding_drawable"
+            android:layout_marginLeft="@dimen/dmitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/dm_username"
+            app:layout_constraintEnd_toStartOf="@id/dm_username"
+            app:layout_constraintStart_toEndOf="@+id/dm_profile_img"
+            app:layout_constraintTop_toTopOf="@id/dm_username"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/dm_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dmitem_text_margin"
             android:layout_marginLeft="@dimen/dmitem_text_margin"
-            android:layout_marginEnd="@dimen/dmitem_text_margin"
-            android:layout_marginRight="@dimen/dmitem_text_margin"
             android:drawablePadding="@dimen/dmitem_padding_drawable"
             android:singleLine="true"
             android:textSize="@dimen/dmitem_textsize_name"
+            app:layout_constraintBottom_toTopOf="@+id/dm_screenname"
             app:layout_constraintEnd_toStartOf="@id/dm_time"
-            app:layout_constraintStart_toEndOf="@+id/dm_profile_img"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/dm_screenname" />
+            app:layout_constraintStart_toEndOf="@+id/dm_user_verified"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/dm_time"
@@ -47,6 +57,21 @@
             app:layout_constraintTop_toTopOf="@+id/dm_username"
             app:layout_constraintBottom_toBottomOf="@+id/dm_username" />
 
+        <ImageView
+            android:id="@+id/dm_user_locked"
+            android:layout_width="@dimen/dmitem_icon_size"
+            android:layout_height="@dimen/dmitem_icon_size"
+            android:layout_marginStart="@dimen/dmitem_padding_drawable"
+            android:layout_marginLeft="@dimen/dmitem_padding_drawable"
+            app:layout_constraintBottom_toBottomOf="@id/dm_screenname"
+            app:layout_constraintEnd_toStartOf="@id/dm_screenname"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toEndOf="@+id/dm_profile_img"
+            app:layout_constraintTop_toTopOf="@id/dm_screenname"
+            app:layout_constraintVertical_bias="1.0"
+            tools:ignore="ContentDescription" />
+
         <TextView
             android:id="@+id/dm_screenname"
             android:layout_width="wrap_content"
@@ -59,10 +84,10 @@
             android:textSize="@dimen/dmitem_textsize_name"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/dm_profile_img"
+            app:layout_constraintStart_toEndOf="@+id/dm_user_locked"
             app:layout_constraintTop_toBottomOf="@+id/dm_username"
             app:layout_constraintBottom_toBottomOf="@id/dm_profile_img"
-            app:layout_constraintEnd_toStartOf="@+id/dm_receiver" />
+            app:layout_constraintEnd_toStartOf="@+id/dm_receiver_icon" />
 
         <ImageView
             android:id="@+id/dm_receiver_icon"
@@ -82,10 +107,8 @@
 
         <TextView
             android:id="@+id/dm_receiver"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dmitem_text_margin"
-            android:layout_marginRight="@dimen/dmitem_text_margin"
             android:drawablePadding="@dimen/dmitem_padding_drawable"
             android:singleLine="true"
             android:textSize="@dimen/dmitem_textsize_name"
@@ -106,6 +129,7 @@
             android:id="@+id/dm_message"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dmitem_text_margin"
             android:linksClickable="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -118,17 +142,17 @@
             android:layout_height="@dimen/dmitem_button_height"
             android:layout_marginStart="@dimen/dmitem_button_margin"
             android:layout_marginLeft="@dimen/dmitem_button_margin"
+            android:layout_marginTop="@dimen/dmitem_button_margin"
             android:layout_marginEnd="@dimen/dmitem_button_margin"
             android:layout_marginRight="@dimen/dmitem_button_margin"
             android:singleLine="true"
             android:text="@string/dm_answer"
             android:textSize="@dimen/dmitem_textsize_button"
-
+            app:layout_constraintEnd_toStartOf="@+id/dm_delete"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/dm_message"
-            app:layout_constraintEnd_toStartOf="@+id/dm_delete" />
+            app:layout_constraintTop_toBottomOf="@+id/dm_message" />
 
         <Button
             android:id="@+id/dm_delete"
@@ -137,6 +161,7 @@
             android:layout_height="@dimen/dmitem_button_height"
             android:layout_marginStart="@dimen/dmitem_button_margin"
             android:layout_marginLeft="@dimen/dmitem_button_margin"
+            android:layout_marginTop="@dimen/dmitem_button_margin"
             android:singleLine="true"
             android:text="@string/delete_dm"
             android:textSize="@dimen/dmitem_textsize_button"

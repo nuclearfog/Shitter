@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,8 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -65,7 +61,6 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     private UserClickListener itemClickListener;
     private GlobalSettings settings;
-    private Drawable[] icons;
 
     private TwitterUserList items = new TwitterUserList();
     private NumberFormat formatter = NumberFormat.getIntegerInstance();
@@ -79,15 +74,6 @@ public class UserAdapter extends Adapter<ViewHolder> {
     public UserAdapter(Context context, UserClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
-
-        TypedArray drawables = context.getResources().obtainTypedArray(R.array.user_item_icons);
-        icons = new Drawable[drawables.length()];
-        for (int index = 0; index < drawables.length(); index++) {
-            int resId = drawables.getResourceId(index, 0);
-            icons[index] = AppCompatResources.getDrawable(context, resId);
-        }
-        drawables.recycle();
-        setIconColor();
     }
 
     /**
@@ -232,19 +218,19 @@ public class UserAdapter extends Adapter<ViewHolder> {
         User user = items.get(index);
         if (holder instanceof ItemHolder && user != null) {
             ItemHolder vh = (ItemHolder) holder;
-            vh.textViews[0].setText(user.getUsername());
-            vh.textViews[1].setText(user.getScreenname());
-            vh.textViews[2].setText(formatter.format(user.getFollowing()));
-            vh.textViews[3].setText(formatter.format(user.getFollower()));
+            vh.username.setText(user.getUsername());
+            vh.screenname.setText(user.getScreenname());
+            vh.following.setText(formatter.format(user.getFollowing()));
+            vh.follower.setText(formatter.format(user.getFollower()));
             if (user.isVerified()) {
-                setIcon(vh.textViews[0], icons[0]);
+                vh.verifyIcon.setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[0], null);
+                vh.verifyIcon.setVisibility(GONE);
             }
             if (user.isLocked()) {
-                setIcon(vh.textViews[1], icons[1]);
+                vh.lockedIcon.setVisibility(VISIBLE);
             } else {
-                setIcon(vh.textViews[1], null);
+                vh.lockedIcon.setVisibility(GONE);
             }
             if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
@@ -288,53 +274,48 @@ public class UserAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * sets the TextView icons
-     *
-     * @param tv   TextView to add an icon
-     * @param icon icon drawable
-     */
-    private void setIcon(TextView tv, @Nullable Drawable icon) {
-        if (icon != null)
-            icon = icon.mutate();
-        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-    }
-
-    /**
-     * color icon drawables
-     */
-    private void setIconColor() {
-        for (Drawable icon : icons) {
-            icon.setColorFilter(settings.getIconColor(), SRC_IN);
-        }
-    }
-
-    /**
      * Holder for an user view item
      */
     private final class ItemHolder extends ViewHolder {
 
-        final TextView[] textViews = new TextView[4];
-        final ImageView profileImg;
+        final TextView username, screenname, following, follower;
+        final ImageView profileImg, verifyIcon, lockedIcon;
         final ImageButton delete;
 
         ItemHolder(View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
-            textViews[0] = v.findViewById(R.id.username_detail);
-            textViews[1] = v.findViewById(R.id.screenname_detail);
-            textViews[2] = v.findViewById(R.id.item_user_friends);
-            textViews[3] = v.findViewById(R.id.item_user_follower);
+            ImageView followingIcon = v.findViewById(R.id.following_icon);
+            ImageView followerIcon = v.findViewById(R.id.follower_icon);
+            username = v.findViewById(R.id.username_detail);
+            screenname = v.findViewById(R.id.screenname_detail);
+            following = v.findViewById(R.id.item_user_friends);
+            follower = v.findViewById(R.id.item_user_follower);
             profileImg = v.findViewById(R.id.user_profileimg);
+            verifyIcon = v.findViewById(R.id.useritem_verified);
+            lockedIcon = v.findViewById(R.id.useritem_locked);
             delete = v.findViewById(R.id.useritem_del_user);
 
-            for (TextView tv : textViews) {
-                tv.setTextColor(settings.getFontColor());
-                tv.setTypeface(settings.getFontFace());
-            }
-            background.setCardBackgroundColor(settings.getCardColor());
-            textViews[2].setCompoundDrawablesWithIntrinsicBounds(icons[2], null, null, null);
-            textViews[3].setCompoundDrawablesWithIntrinsicBounds(icons[3], null, null, null);
+            followerIcon.setImageResource(R.drawable.follower);
+            followingIcon.setImageResource(R.drawable.following);
+            verifyIcon.setImageResource(R.drawable.verify);
+            lockedIcon.setImageResource(R.drawable.lock);
             delete.setImageResource(R.drawable.cross);
+
+            background.setCardBackgroundColor(settings.getCardColor());
+            followerIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            followingIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            verifyIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            delete.setColorFilter(settings.getIconColor(), SRC_IN);
+            username.setTextColor(settings.getFontColor());
+            username.setTypeface(settings.getFontFace());
+            screenname.setTextColor(settings.getFontColor());
+            screenname.setTypeface(settings.getFontFace());
+            following.setTextColor(settings.getFontColor());
+            following.setTypeface(settings.getFontFace());
+            follower.setTextColor(settings.getFontColor());
+            follower.setTypeface(settings.getFontFace());
         }
     }
 

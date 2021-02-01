@@ -1,8 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -14,8 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -35,6 +31,8 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.graphics.PorterDuff.Mode.SRC_IN;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
 
@@ -48,7 +46,6 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
     private OnItemSelected itemClickListener;
     private GlobalSettings settings;
-    private Drawable[] icons;
 
     private List<Message> messages = new ArrayList<>();
 
@@ -56,17 +53,6 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     public MessageAdapter(Context context, OnItemSelected itemClickListener) {
         this.itemClickListener = itemClickListener;
         settings = GlobalSettings.getInstance(context);
-
-        TypedArray drawables = context.getResources().obtainTypedArray(R.array.dm_item_icons);
-        icons = new Drawable[drawables.length()];
-        for (int index = 0; index < drawables.length(); index++) {
-            int resId = drawables.getResourceId(index, 0);
-            icons[index] = AppCompatResources.getDrawable(context, resId);
-            if (icons[index] != null) {
-                icons[index].setColorFilter(settings.getIconColor(), SRC_IN);
-            }
-        }
-        drawables.recycle();
     }
 
     /**
@@ -162,16 +148,15 @@ public class MessageAdapter extends Adapter<ViewHolder> {
         holder.textViews[2].setText(message.getReceiver().getScreenname());
         holder.textViews[3].setText(getTimeString(message.getTime()));
         holder.textViews[4].setText(text);
-
         if (sender.isVerified()) {
-            setIcon(holder.textViews[0], icons[0]);
+            holder.verifiedIcon.setVisibility(VISIBLE);
         } else {
-            setIcon(holder.textViews[0], null);
+            holder.verifiedIcon.setVisibility(GONE);
         }
         if (sender.isLocked()) {
-            setIcon(holder.textViews[1], icons[1]);
+            holder.lockedIcon.setVisibility(VISIBLE);
         } else {
-            setIcon(holder.textViews[1], null);
+            holder.lockedIcon.setVisibility(GONE);
         }
         if (settings.getImageLoad() && sender.hasProfileImage()) {
             String pbLink = sender.getImageLink();
@@ -185,31 +170,21 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * sets an icon to a TextView
-     *
-     * @param tv   TextView to set an icon
-     * @param icon icon drawable
-     */
-    private void setIcon(TextView tv, @Nullable Drawable icon) {
-        if (icon != null)
-            icon = icon.mutate();
-        tv.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-    }
-
-    /**
      * Holder class for a message view
      */
     private final class MessageHolder extends ViewHolder {
 
         final TextView[] textViews = new TextView[5];
         final Button[] buttons = new Button[2];
-        final ImageView profile_img, receiver_icon;
+        final ImageView profile_img, verifiedIcon, lockedIcon;
 
         MessageHolder(View v, GlobalSettings settings) {
             super(v);
             CardView background = (CardView) v;
+            ImageView receiver_icon = v.findViewById(R.id.dm_receiver_icon);
             profile_img = v.findViewById(R.id.dm_profile_img);
-            receiver_icon = v.findViewById(R.id.dm_receiver_icon);
+            verifiedIcon = v.findViewById(R.id.dm_user_verified);
+            lockedIcon = v.findViewById(R.id.dm_user_locked);
             textViews[0] = v.findViewById(R.id.dm_username);
             textViews[1] = v.findViewById(R.id.dm_screenname);
             textViews[2] = v.findViewById(R.id.dm_receiver);
@@ -226,7 +201,12 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 button.setTextColor(settings.getFontColor());
                 button.setTypeface(settings.getFontFace());
             }
-            receiver_icon.setImageDrawable(icons[2]);
+            receiver_icon.setImageResource(R.drawable.right);
+            verifiedIcon.setImageResource(R.drawable.verify);
+            lockedIcon.setImageResource(R.drawable.lock);
+            verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+            receiver_icon.setColorFilter(settings.getIconColor(), SRC_IN);
             background.setCardBackgroundColor(settings.getCardColor());
             textViews[4].setMovementMethod(LinkMovementMethod.getInstance());
         }

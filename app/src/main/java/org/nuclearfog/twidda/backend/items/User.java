@@ -8,6 +8,8 @@ import twitter4j.URLEntity;
 
 /**
  * Container class for a twitter user
+ *
+ * @author nuclearfog
  */
 public class User implements Serializable {
 

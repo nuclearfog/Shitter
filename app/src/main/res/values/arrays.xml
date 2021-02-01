@@ -37,17 +37,4 @@
         <item>@id/color_icon</item>
     </integer-array>
 
-    <integer-array name="user_item_icons">
-        <item>@drawable/verify</item>
-        <item>@drawable/lock</item>
-        <item>@drawable/following</item>
-        <item>@drawable/follower</item>
-    </integer-array>
-
-    <integer-array name="dm_item_icons">
-        <item>@drawable/verify</item>
-        <item>@drawable/lock</item>
-        <item>@drawable/right</item>
-    </integer-array>
-
 </resources>
