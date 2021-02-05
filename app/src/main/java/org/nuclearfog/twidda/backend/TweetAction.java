@@ -127,7 +127,7 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                 case UNFAVORITE:
                     tweet = mTwitter.favorite(tweetId, false);
                     publishProgress(tweet);
-                    db.removeFavorite(tweetId);
+                    db.removeFavorite(tweet);
                     break;
             }
         } catch (EngineException twException) {

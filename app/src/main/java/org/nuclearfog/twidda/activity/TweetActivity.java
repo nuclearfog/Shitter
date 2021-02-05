@@ -502,16 +502,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (tweetUpdate.getMediaType() == Tweet.MediaType.NONE) {
             mediaButton.setVisibility(GONE);
         } else {
-            int iconRes;
-            if (tweetUpdate.getMediaType() == Tweet.MediaType.IMAGE) {
-                iconRes = R.drawable.image;
-            } else if (tweetUpdate.getMediaType() == Tweet.MediaType.VIDEO) {
-                iconRes = R.drawable.video;
-            } else {
-                iconRes = R.drawable.images;
-            }
             mediaButton.setVisibility(VISIBLE);
-            mediaButton.setImageResource(iconRes);
+            if (tweetUpdate.getMediaType() == Tweet.MediaType.IMAGE) {
+                mediaButton.setImageResource(R.drawable.image);
+            } else if (tweetUpdate.getMediaType() == Tweet.MediaType.VIDEO) {
+                mediaButton.setImageResource(R.drawable.video);
+            } else {
+                mediaButton.setImageResource(R.drawable.gif);
+            }
             AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         }
         if (settings.getImageLoad() && author.hasProfileImage()) {

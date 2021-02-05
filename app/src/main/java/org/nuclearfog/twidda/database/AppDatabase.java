@@ -153,9 +153,9 @@ public class AppDatabase {
      * @param woeId  Yahoo World ID
      */
     public void storeTrends(List<Trend> trends, int woeId) {
-        final String[] ARGS = new String[]{Integer.toString(woeId)};
+        String[] args = new String[]{Integer.toString(woeId)};
         SQLiteDatabase db = getDbWrite();
-        db.delete("trend", "woeid=?", ARGS);
+        db.delete("trend", "woeid=?", args);
         for (Trend trend : trends) {
             ContentValues trendColumn = new ContentValues();
             trendColumn.put("woeID", woeId);
@@ -173,6 +173,8 @@ public class AppDatabase {
      * @param tweet favored tweet
      */
     public void storeFavorite(Tweet tweet) {
+        if (tweet.getEmbeddedTweet() != null)
+            tweet = tweet.getEmbeddedTweet();
         SQLiteDatabase db = getDbWrite();
         storeStatus(tweet, 0, db);
         storeFavorite(tweet.getId(), homeId, db);
@@ -350,7 +352,7 @@ public class AppDatabase {
      * @param tweetId Tweet ID
      */
     public void removeStatus(long tweetId) {
-        final String[] args = {Long.toString(tweetId)};
+        String[] args = {Long.toString(tweetId)};
 
         SQLiteDatabase db = getDbWrite();
         db.delete("tweet", "tweetID=?", args);
@@ -361,11 +363,14 @@ public class AppDatabase {
     /**
      * remove status from favorites
      *
-     * @param tweetId tweet ID
+     * @param tweet Tweet to remove from the favorites
      */
-    public void removeFavorite(long tweetId) {
-        final String[] delArgs = {Long.toString(tweetId), Long.toString(homeId)};
-        final String[] updateArgs = {Long.toString(tweetId)};
+    public void removeFavorite(Tweet tweet) {
+        long tweetId = tweet.getId();
+        if (tweet.getEmbeddedTweet() != null)
+            tweetId = tweet.getEmbeddedTweet().getId();
+        String[] delArgs = {Long.toString(tweetId), Long.toString(homeId)};
+        String[] updateArgs = {Long.toString(tweetId)};
 
         SQLiteDatabase db = getDbWrite();
         int flags = getTweetFlags(db, tweetId);
@@ -383,7 +388,7 @@ public class AppDatabase {
      * @param id Direct Message ID
      */
     public void deleteMessage(long id) {
-        final String[] messageId = {Long.toString(id)};
+        String[] messageId = {Long.toString(id)};
 
         SQLiteDatabase db = getDbWrite();
         db.delete("message", "messageID=?", messageId);
@@ -470,7 +475,7 @@ public class AppDatabase {
      * @param mute true remove user tweets from mention results
      */
     public void muteUser(long id, boolean mute) {
-        final String[] ARGS = new String[]{Long.toString(id)};
+        String[] args = new String[]{Long.toString(id)};
 
         SQLiteDatabase db = getDbWrite();
         int flags = getUserFlags(db, id);
@@ -481,7 +486,7 @@ public class AppDatabase {
 
         ContentValues userColumn = new ContentValues();
         userColumn.put("userregister", flags);
-        db.update("user", userColumn, "user.userID=?", ARGS);
+        db.update("user", userColumn, "user.userID=?", args);
         commit(db);
     }
 
@@ -756,7 +761,7 @@ public class AppDatabase {
      * @param userId ID of the favorite list owner
      */
     private void removeOldFavorites(SQLiteDatabase db, long userId) {
-        final String[] delArgs = {Long.toString(userId)};
+        String[] delArgs = {Long.toString(userId)};
         db.delete("favorit", "ownerID=?", delArgs);
     }
 

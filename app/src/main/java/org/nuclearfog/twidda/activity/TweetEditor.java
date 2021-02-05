@@ -240,7 +240,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
             case "gif":
                 if (selectedFormat == MediaType.NONE) {
                     selectedFormat = MediaType.GIF;
-                    previewBtn.setImageResource(R.drawable.images);
+                    previewBtn.setImageResource(R.drawable.gif);
                     AppStyles.setDrawableColor(previewBtn, settings.getIconColor());
                     previewBtn.setVisibility(VISIBLE);
                     mediaBtn.setVisibility(GONE);
