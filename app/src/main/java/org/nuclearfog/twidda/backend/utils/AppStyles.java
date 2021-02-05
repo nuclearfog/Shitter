@@ -100,6 +100,9 @@ public final class AppStyles {
                     int[] color = {settings.getIconColor()};
                     sw.setTintColor(settings.getHighlightColor());
                     sw.setThumbColor(new ColorStateList(SWITCH_STATES, color));
+                } else if (child instanceof SeekBar) {
+                    SeekBar seekBar = (SeekBar) child;
+                    setSeekBarColor(settings, seekBar);
                 } else if (child instanceof TextView) {
                     TextView tv = (TextView) child;
                     tv.setTypeface(settings.getFontFace());
@@ -233,17 +236,6 @@ public final class AppStyles {
     }
 
     /**
-     * set up seek bar color
-     *
-     * @param settings global settings instance
-     * @param seekBar  seek bar to color
-     */
-    public static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
-        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
-        seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
-    }
-
-    /**
      * set tab icons
      *
      * @param tabLayout Tab layout with tab icons
@@ -313,6 +305,18 @@ public final class AppStyles {
         Bitmap result = blur.transform(crop.transform(image.copy(ARGB_8888, true)));
         toolbarBackground.setImageBitmap(result);
     }
+
+    /**
+     * set up seek bar color
+     *
+     * @param settings global settings instance
+     * @param seekBar  seek bar to color
+     */
+    private static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
+        seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
+        seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
+    }
+
 
     /**
      * color drawable

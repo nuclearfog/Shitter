@@ -84,7 +84,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private View root, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
-    private SeekBar listSizeSelector;
     private Spinner locationSpinner;
     private TextView list_size;
     private Button[] colorButtons;
@@ -104,7 +103,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
-        listSizeSelector = findViewById(R.id.settings_list_seek);
+        SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
@@ -155,7 +154,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSpinner.setSelection(settings.getFont());
 
         AppStyles.setTheme(settings, root);
-        AppStyles.setSeekBarColor(settings, listSizeSelector);
 
         setButtonColors();
         toggleImg.setChecked(settings.getImageLoad());
@@ -274,15 +272,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onClick(View v) {
-        int viewId = v.getId();
         // delete database
-        if (viewId == R.id.delete_db) {
+        if (v.getId() == R.id.delete_db) {
             if (!databaseDialog.isShowing()) {
                 databaseDialog.show();
             }
         }
         // logout from twitter
-        else if (viewId == R.id.logout) {
+        else if (v.getId() == R.id.logout) {
             if (!logoutDialog.isShowing()) {
                 logoutDialog.show();
             }
@@ -332,13 +329,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             switch (mode) {
                 case BACKGROUND:
                     root.setBackgroundColor(color);
-                    settings.setBackgroundColor(color);
                     break;
 
                 case FONTCOLOR:
                     settings.setFontColor(color);
-                    AppStyles.setTheme(settings, root);
-                    AppStyles.setSeekBarColor(settings, listSizeSelector);
                     break;
 
                 case POPUPCOLOR:
@@ -347,14 +341,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
                 case HIGHLIGHT:
                     settings.setHighlightColor(color);
-                    AppStyles.setTheme(settings, root);
-                    AppStyles.setSeekBarColor(settings, listSizeSelector);
-                    setButtonColors();
                     break;
 
                 case CARDCOLOR:
                     settings.setCardColor(color);
-                    AppStyles.setTheme(settings, root);
                     break;
 
                 case ICONCOLOR:
@@ -362,6 +352,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                     invalidateOptionsMenu();
                     break;
             }
+            AppStyles.setTheme(settings, root);
             setButtonColors();
         }
     }
