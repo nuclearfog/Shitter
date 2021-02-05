@@ -49,10 +49,10 @@ public class FontAdapter extends BaseAdapter {
 
 
     @Override
-    public View getView(final int pos, View view, ViewGroup parent) {
+    public View getView(int pos, View view, ViewGroup parent) {
         TextView tv;
         String name = names[pos];
-        final Typeface font = fonts[pos];
+        Typeface font = fonts[pos];
         if (view instanceof TextView)
             tv = (TextView) view;
         else {

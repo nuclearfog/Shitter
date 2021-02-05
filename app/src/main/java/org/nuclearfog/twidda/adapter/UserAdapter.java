@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,12 +67,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private boolean userRemovable = false;
 
     /**
-     * @param context           application context
+     * @param settings          app settings
      * @param itemClickListener click listener
      */
-    public UserAdapter(Context context, UserClickListener itemClickListener) {
+    public UserAdapter(GlobalSettings settings, UserClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        settings = GlobalSettings.getInstance(context);
+        this.settings = settings;
     }
 
     /**

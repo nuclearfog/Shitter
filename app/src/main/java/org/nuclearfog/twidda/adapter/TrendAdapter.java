@@ -40,7 +40,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     private List<Trend> trends = new ArrayList<>();
 
 
-    public TrendAdapter(TrendClickListener itemClickListener, GlobalSettings settings) {
+    public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
     }

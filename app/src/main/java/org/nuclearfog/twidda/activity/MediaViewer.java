@@ -100,12 +100,12 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         videoController = new MediaController(this);
-        adapter = new ImageAdapter(getApplicationContext(), this);
         videoView.setZOrderOnTop(true);
         videoView.setOnPreparedListener(this);
         videoView.setOnErrorListener(this);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
+        adapter = new ImageAdapter(settings, this);
         AppStyles.setProgressColor(media_progress, settings.getHighlightColor());
 
         mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);

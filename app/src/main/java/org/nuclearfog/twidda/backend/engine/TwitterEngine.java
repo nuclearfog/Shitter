@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.engine;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 
 import androidx.annotation.Nullable;
 
@@ -79,22 +80,24 @@ public class TwitterEngine {
      * Initialize Twitter4J instance
      */
     private void initTwitter() {
-        // check for TLS 1.2 support and activate it
-        try {
-            boolean tlsEnabled = false;
-            SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
-            String[] protocols = param.getProtocols();
-            for (String protocol : protocols) {
-                if (protocol.equals("TLSv1.2") || protocol.equals("TLSv1.3")) {
-                    tlsEnabled = true;
-                    break;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // check for TLS 1.2 support and activate it
+            try {
+                boolean tlsEnabled = false;
+                SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
+                String[] protocols = param.getProtocols();
+                for (String protocol : protocols) {
+                    if (protocol.equals("TLSv1.2") || protocol.equals("TLSv1.3")) {
+                        tlsEnabled = true;
+                        break;
+                    }
                 }
+                if (!tlsEnabled) {
+                    HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+                }
+            } catch (Exception err) {
+                err.printStackTrace();
             }
-            if (!tlsEnabled) {
-                HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
-            }
-        } catch (Exception err) {
-            err.printStackTrace();
         }
         ConfigurationBuilder builder = new ConfigurationBuilder();
         if (settings.isCustomApiSet()) {

@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,14 +49,10 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private boolean loading = false;
     private boolean saveImg = true;
 
-    /**
-     * Create an adapter for image previews
-     *
-     * @param itemClickListener Click listener for images
-     */
-    public ImageAdapter(Context context, OnImageClickListener itemClickListener) {
+
+    public ImageAdapter(GlobalSettings settings, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        settings = GlobalSettings.getInstance(context);
+        this.settings = settings;
     }
 
     /**

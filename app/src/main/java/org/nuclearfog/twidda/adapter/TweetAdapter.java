@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.text.Spanned;
 import android.view.LayoutInflater;
@@ -65,7 +64,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private static final int VIEW_GAP = 1;
 
     /**
-     * Threshold to set up a placeholder
+     * Minimum count of new Tweets to insert a placeholder.
      */
     private static final int MIN_COUNT = 2;
 
@@ -77,9 +76,9 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     private int loadingIndex = NO_INDEX;
 
 
-    public TweetAdapter(Context context, TweetClickListener itemClickListener) {
+    public TweetAdapter(GlobalSettings settings, TweetClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        settings = GlobalSettings.getInstance(context);
+        this.settings = settings;
     }
 
     /**

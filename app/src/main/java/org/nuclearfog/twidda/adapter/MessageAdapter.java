@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.content.Context;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -50,9 +49,9 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     private List<Message> messages = new ArrayList<>();
 
 
-    public MessageAdapter(Context context, OnItemSelected itemClickListener) {
+    public MessageAdapter(GlobalSettings settings, OnItemSelected itemClickListener) {
         this.itemClickListener = itemClickListener;
-        settings = GlobalSettings.getInstance(context);
+        this.settings = settings;
     }
 
     /**

@@ -179,7 +179,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
     @Override
     protected MessageAdapter initAdapter() {
-        adapter = new MessageAdapter(requireContext(), this);
+        adapter = new MessageAdapter(settings, this);
         return adapter;
     }
 

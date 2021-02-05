@@ -172,7 +172,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
     @Override
     protected UserAdapter initAdapter() {
-        adapter = new UserAdapter(requireContext(), this);
+        adapter = new UserAdapter(settings, this);
         adapter.enableDeleteButton(delUser);
         return adapter;
     }

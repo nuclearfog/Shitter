@@ -9,8 +9,8 @@ android {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 34
-        versionName '1.8.10'
+        versionCode 35
+        versionName '1.8.11'
         // limiting language support for smaller APK size
         resConfigs 'en', 'de-rDE'
         vectorDrawables.useSupportLibrary true

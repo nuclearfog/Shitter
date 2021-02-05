@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,9 +67,9 @@ public class ListAdapter extends Adapter<ViewHolder> {
     private int loadingIndex = NO_LOADING;
 
 
-    public ListAdapter(Context context, ListClickListener listener) {
+    public ListAdapter(GlobalSettings settings, ListClickListener listener) {
         this.listener = listener;
-        this.settings = GlobalSettings.getInstance(context);
+        this.settings = settings;
     }
 
     /**
