@@ -328,7 +328,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (d == color_dialog_selector) {
             switch (mode) {
                 case BACKGROUND:
-                    root.setBackgroundColor(color);
+                    settings.setBackgroundColor(color);
                     break;
 
                 case FONTCOLOR:
