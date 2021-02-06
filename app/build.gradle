@@ -12,7 +12,7 @@ android {
         versionCode 35
         versionName '1.8.11'
         // limiting language support for smaller APK size
-        resConfigs 'en', 'de-rDE'
+        resConfigs 'en', 'de-rDE', 'zh-rCN'
         vectorDrawables.useSupportLibrary true
     }
 
