@@ -1,6 +1,7 @@
-package org.nuclearfog.twidda.backend.holder;
+package org.nuclearfog.twidda.backend.lists;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.items.User;
 
@@ -11,12 +12,12 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class TwitterUserList extends LinkedList<User> {
+public class UserList extends LinkedList<User> {
 
     private long prevCursor = 0;
     private long nextCursor = 0;
 
-    public TwitterUserList() {
+    public UserList() {
         super();
     }
 
@@ -26,10 +27,33 @@ public class TwitterUserList extends LinkedList<User> {
      * @param prevCursor previous cursor of the list
      * @param nextCursor next cursor of the list
      */
-    public TwitterUserList(long prevCursor, long nextCursor) {
+    public UserList(long prevCursor, long nextCursor) {
         super();
         this.prevCursor = prevCursor;
         this.nextCursor = nextCursor;
+    }
+
+    @Nullable
+    @Override
+    public User get(int index) {
+        return super.get(index);
+    }
+
+    /**
+     * remove user item from list matching screen name
+     *
+     * @param name screen name of the user
+     * @return index of the user item or -1 if not found
+     */
+    public int removeItem(String name) {
+        for (int index = 0; index < size(); index++) {
+            User item = get(index);
+            if (item != null && item.getScreenname().equals(name)) {
+                remove(index);
+                return index;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -60,41 +84,26 @@ public class TwitterUserList extends LinkedList<User> {
     }
 
     /**
-     * get previous cursor
-     *
-     * @return previous cursor
-     */
-    public long getPrev() {
-        return prevCursor;
-    }
-
-    /**
      * replace whole list including cursors
      *
      * @param list new list
      */
-    public void replace(TwitterUserList list) {
+    public void replace(UserList list) {
         super.clear();
         super.addAll(list);
-        prevCursor = list.getPrev();
-        nextCursor = list.getNext();
+        prevCursor = list.prevCursor;
+        nextCursor = list.nextCursor;
     }
 
     /**
      * add a sublist at the bottom of this list including next cursor
      *
-     * @param list new sublist
+     * @param list  new sublist
+     * @param index index of the sub list
      */
-    public void addListAt(TwitterUserList list, int index) {
+    public void addAt(UserList list, int index) {
         super.addAll(index, list);
-        nextCursor = list.getNext();
-    }
-
-    @Override
-    public void clear() {
-        prevCursor = 0;
-        nextCursor = 0;
-        super.clear();
+        nextCursor = list.nextCursor;
     }
 
     @Override

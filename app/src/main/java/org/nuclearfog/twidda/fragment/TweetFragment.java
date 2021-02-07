@@ -201,10 +201,12 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 
     @Override
-    public void onHolderClick(long sinceId, long maxId, int pos) {
+    public boolean onHolderClick(long sinceId, long maxId, int pos) {
         if (tweetTask != null && tweetTask.getStatus() != RUNNING) {
             load(sinceId, maxId, pos);
+            return true;
         }
+        return false;
     }
 
     /**

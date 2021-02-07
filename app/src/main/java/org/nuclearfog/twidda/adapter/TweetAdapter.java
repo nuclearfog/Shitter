@@ -6,14 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -21,9 +16,10 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -227,11 +223,11 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final PlaceHolder vh = new PlaceHolder(v, settings);
-            vh.loadBtn.setOnClickListener(new OnClickListener() {
+            final Footer footer = new Footer(v, settings);
+            footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = footer.getLayoutPosition();
                     if (position != NO_POSITION) {
                         long sinceId = 0;
                         long maxId = 0;
@@ -243,14 +239,16 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                             sinceId = tweets.get(position + 1).getId();
                             maxId = tweets.get(position - 1).getId();
                         }
-                        itemClickListener.onHolderClick(sinceId, maxId, position);
-                        vh.loadCircle.setVisibility(VISIBLE);
-                        vh.loadBtn.setVisibility(INVISIBLE);
-                        loadingIndex = position;
+                        boolean success = itemClickListener.onHolderClick(sinceId, maxId, position);
+                        if (success) {
+                            footer.loadCircle.setVisibility(VISIBLE);
+                            footer.loadBtn.setVisibility(INVISIBLE);
+                            loadingIndex = position;
+                        }
                     }
                 }
             });
-            return vh;
+            return footer;
         }
     }
 
@@ -259,122 +257,64 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
         Tweet tweet = tweets.get(index);
         if (holder instanceof TweetHolder && tweet != null) {
-            TweetHolder vh = (TweetHolder) holder;
+            TweetHolder tweetItem = (TweetHolder) holder;
             User user = tweet.getUser();
             if (tweet.getEmbeddedTweet() != null) {
-                vh.textViews[5].setText(user.getScreenname());
-                vh.textViews[5].setVisibility(VISIBLE);
-                vh.rtUser.setVisibility(VISIBLE);
+                tweetItem.textViews[5].setText(user.getScreenname());
+                tweetItem.textViews[5].setVisibility(VISIBLE);
+                tweetItem.rtUser.setVisibility(VISIBLE);
                 tweet = tweet.getEmbeddedTweet();
                 user = tweet.getUser();
             } else {
-                vh.textViews[5].setVisibility(INVISIBLE);
-                vh.rtUser.setVisibility(INVISIBLE);
+                tweetItem.textViews[5].setVisibility(INVISIBLE);
+                tweetItem.rtUser.setVisibility(INVISIBLE);
             }
             Spanned text = Tagger.makeTextWithLinks(tweet.getTweet(), settings.getHighlightColor());
-            vh.textViews[2].setText(text);
-            vh.textViews[0].setText(user.getUsername());
-            vh.textViews[1].setText(user.getScreenname());
-            vh.textViews[3].setText(formatter.format(tweet.getRetweetCount()));
-            vh.textViews[4].setText(formatter.format(tweet.getFavoriteCount()));
-            vh.textViews[6].setText(getTimeString(tweet.getTime()));
+            tweetItem.textViews[2].setText(text);
+            tweetItem.textViews[0].setText(user.getUsername());
+            tweetItem.textViews[1].setText(user.getScreenname());
+            tweetItem.textViews[3].setText(formatter.format(tweet.getRetweetCount()));
+            tweetItem.textViews[4].setText(formatter.format(tweet.getFavoriteCount()));
+            tweetItem.textViews[6].setText(getTimeString(tweet.getTime()));
 
             if (tweet.retweeted()) {
-                vh.rtIcon.setColorFilter(Color.GREEN, SRC_IN);
+                tweetItem.rtIcon.setColorFilter(Color.GREEN, SRC_IN);
             } else {
-                vh.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+                tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }
             if (tweet.favored()) {
-                vh.favIcon.setColorFilter(Color.YELLOW, SRC_IN);
+                tweetItem.favIcon.setColorFilter(Color.YELLOW, SRC_IN);
             } else {
-                vh.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
+                tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }
             if (user.isVerified()) {
-                vh.verifiedIcon.setVisibility(VISIBLE);
+                tweetItem.verifiedIcon.setVisibility(VISIBLE);
             } else {
-                vh.verifiedIcon.setVisibility(GONE);
+                tweetItem.verifiedIcon.setVisibility(GONE);
             }
             if (user.isLocked()) {
-                vh.lockedIcon.setVisibility(VISIBLE);
+                tweetItem.lockedIcon.setVisibility(VISIBLE);
             } else {
-                vh.lockedIcon.setVisibility(GONE);
+                tweetItem.lockedIcon.setVisibility(GONE);
             }
             if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
                 Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
-                        .error(R.drawable.no_image).into(vh.profile);
+                        .error(R.drawable.no_image).into(tweetItem.profile);
             } else {
-                vh.profile.setImageResource(0);
+                tweetItem.profile.setImageResource(0);
             }
-        } else if (holder instanceof PlaceHolder) {
-            PlaceHolder vh = (PlaceHolder) holder;
+        } else if (holder instanceof Footer) {
+            Footer footer = (Footer) holder;
             if (loadingIndex != NO_INDEX) {
-                vh.loadCircle.setVisibility(VISIBLE);
-                vh.loadBtn.setVisibility(INVISIBLE);
+                footer.loadCircle.setVisibility(VISIBLE);
+                footer.loadBtn.setVisibility(INVISIBLE);
             } else {
-                vh.loadCircle.setVisibility(INVISIBLE);
-                vh.loadBtn.setVisibility(VISIBLE);
+                footer.loadCircle.setVisibility(INVISIBLE);
+                footer.loadBtn.setVisibility(VISIBLE);
             }
-        }
-    }
-
-    /**
-     * Holder class for the tweet view
-     */
-    private final class TweetHolder extends ViewHolder {
-        final TextView[] textViews = new TextView[7];
-        final ImageView profile, rtUser, verifiedIcon, lockedIcon, rtIcon, favIcon;
-
-        TweetHolder(@NonNull View v, GlobalSettings settings) {
-            super(v);
-            CardView background = (CardView) v;
-            profile = v.findViewById(R.id.tweetPb);
-            verifiedIcon = v.findViewById(R.id.verified_icon);
-            lockedIcon = v.findViewById(R.id.locked_icon);
-            rtUser = v.findViewById(R.id.rt_user_icon);
-            rtIcon = v.findViewById(R.id.rt_icon);
-            favIcon = v.findViewById(R.id.fav_icon);
-            textViews[0] = v.findViewById(R.id.username);
-            textViews[1] = v.findViewById(R.id.screenname);
-            textViews[2] = v.findViewById(R.id.tweettext);
-            textViews[3] = v.findViewById(R.id.retweet_number);
-            textViews[4] = v.findViewById(R.id.favorite_number);
-            textViews[5] = v.findViewById(R.id.retweeter);
-            textViews[6] = v.findViewById(R.id.time);
-
-            for (TextView tv : textViews) {
-                tv.setTextColor(settings.getFontColor());
-                tv.setTypeface(settings.getFontFace());
-            }
-            verifiedIcon.setImageResource(R.drawable.verify);
-            lockedIcon.setImageResource(R.drawable.lock);
-            rtUser.setImageResource(R.drawable.retweet);
-            rtIcon.setImageResource(R.drawable.retweet);
-            favIcon.setImageResource(R.drawable.favorite);
-            verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            rtUser.setColorFilter(settings.getIconColor(), SRC_IN);
-            background.setCardBackgroundColor(settings.getCardColor());
-        }
-    }
-
-    /**
-     * Holder class for the placeholder view
-     */
-    private final class PlaceHolder extends ViewHolder {
-        final Button loadBtn;
-        final ProgressBar loadCircle;
-
-        PlaceHolder(@NonNull View v, GlobalSettings settings) {
-            super(v);
-            CardView background = (CardView) v;
-            loadBtn = v.findViewById(R.id.placeholder_button);
-            loadCircle = v.findViewById(R.id.placeholder_loading);
-
-            background.setCardBackgroundColor(settings.getCardColor());
-            AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
         }
     }
 
@@ -396,7 +336,8 @@ public class TweetAdapter extends Adapter<ViewHolder> {
          * @param sinceId the tweet ID of the tweet below the holder
          * @param maxId   the tweet ID of the tweet over the holder
          * @param pos     position of the holder
+         * @return true if click was handled
          */
-        void onHolderClick(long sinceId, long maxId, int pos);
+        boolean onHolderClick(long sinceId, long maxId, int pos);
     }
 }

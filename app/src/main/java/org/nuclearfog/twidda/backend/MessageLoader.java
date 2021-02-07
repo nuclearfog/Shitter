@@ -6,12 +6,11 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.lists.MessageList;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.MessageFragment;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 
 /**
@@ -20,7 +19,7 @@ import java.util.List;
  * @author nuclearfog
  * @see MessageFragment
  */
-public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
+public class MessageLoader extends AsyncTask<Long, Void, MessageList> {
 
     /**
      * action to perform
@@ -47,38 +46,40 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
     private final AppDatabase db;
     private final Action action;
 
+    private String cursor;
     private long removeMsgId = -1;
 
     /**
      * @param callback Callback to update data
      * @param action   what action should be performed
      */
-    public MessageLoader(MessageFragment callback, Action action) {
+    public MessageLoader(MessageFragment callback, Action action, String cursor) {
         super();
         this.callback = new WeakReference<>(callback);
         db = new AppDatabase(callback.getContext());
         mTwitter = TwitterEngine.getInstance(callback.getContext());
         this.action = action;
+        this.cursor = cursor;
     }
 
 
     @Override
-    protected List<Message> doInBackground(Long[] param) {
+    protected MessageList doInBackground(Long[] param) {
         long messageId = 0;
         try {
             switch (action) {
                 case DB:
-                    List<Message> messages = db.getMessages();
+                    // TODO store cursor in the preferences
+                    MessageList messages = db.getMessages();
                     if (messages.isEmpty()) {
-                        messages = mTwitter.getMessages();
+                        messages = mTwitter.getMessages(null);
                         db.storeMessage(messages);
                     }
                     return messages;
 
                 case LOAD:
-                    messages = mTwitter.getMessages();
+                    messages = mTwitter.getMessages(cursor);
                     db.storeMessage(messages);
-                    messages = db.getMessages();
                     return messages;
 
                 case DEL:
@@ -100,7 +101,7 @@ public class MessageLoader extends AsyncTask<Long, Void, List<Message>> {
 
 
     @Override
-    protected void onPostExecute(@Nullable List<Message> messages) {
+    protected void onPostExecute(@Nullable MessageList messages) {
         if (callback.get() != null) {
             if (messages != null) {
                 callback.get().setData(messages);

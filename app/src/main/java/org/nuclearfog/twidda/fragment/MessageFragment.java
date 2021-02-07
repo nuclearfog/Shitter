@@ -18,11 +18,10 @@ import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
+import org.nuclearfog.twidda.backend.lists.MessageList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-
-import java.util.List;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -59,7 +58,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
     public void onStart() {
         super.onStart();
         if (messageTask == null) {
-            load(MessageLoader.Action.DB);
+            load(MessageLoader.Action.DB, null);
             setRefresh(true);
         }
     }
@@ -67,7 +66,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
     @Override
     protected void onReset() {
-        load(MessageLoader.Action.DB);
+        load(MessageLoader.Action.DB, null);
         setRefresh(true);
     }
 
@@ -83,7 +82,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
     @Override
     protected void onReload() {
         if (messageTask != null && messageTask.getStatus() != RUNNING) {
-            load(MessageLoader.Action.LOAD);
+            load(MessageLoader.Action.LOAD, null);
         }
     }
 
@@ -152,8 +151,18 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
 
     @Override
+    public boolean onFooterClick(String cursor) {
+        if (messageTask != null && messageTask.getStatus() != RUNNING) {
+            load(MessageLoader.Action.LOAD, cursor);
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        messageTask = new MessageLoader(this, MessageLoader.Action.DEL);
+        messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
         messageTask.execute(deleteId);
     }
 
@@ -162,8 +171,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
      *
      * @param data list of direct messages
      */
-    public void setData(List<Message> data) {
-        adapter.replaceAll(data);
+    public void setData(MessageList data) {
+        adapter.setData(data);
         setRefresh(false);
     }
 
@@ -198,8 +207,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
      *
      * @param action mode for loading or removing messages
      */
-    private void load(MessageLoader.Action action) {
-        messageTask = new MessageLoader(this, action);
+    private void load(MessageLoader.Action action, String cursor) {
+        messageTask = new MessageLoader(this, action, cursor);
         messageTask.execute();
     }
 }

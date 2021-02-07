@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.holder.UserListList;
+import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
 import java.lang.ref.WeakReference;
@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see UserListFragment
  */
-public class ListLoader extends AsyncTask<Long, Void, UserListList> {
+public class ListLoader extends AsyncTask<Long, Void, UserLists> {
 
     public static final long NO_CURSOR = -1;
 
@@ -62,7 +62,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserListList> {
 
 
     @Override
-    protected UserListList doInBackground(Long[] param) {
+    protected UserLists doInBackground(Long[] param) {
         try {
             switch (listType) {
                 case LOAD_USERLISTS:
@@ -79,7 +79,7 @@ public class ListLoader extends AsyncTask<Long, Void, UserListList> {
 
 
     @Override
-    protected void onPostExecute(UserListList result) {
+    protected void onPostExecute(UserLists result) {
         if (callback.get() != null) {
             if (result != null) {
                 callback.get().setData(result);

@@ -9,7 +9,7 @@ import java.io.Serializable;
  *
  * @author nuclearfog
  */
-public class UserList implements Serializable {
+public class TwitterList implements Serializable {
 
     private long id;
     private long createdAt;
@@ -28,7 +28,7 @@ public class UserList implements Serializable {
      * @param homeId      ID of the authenticated user
      * @param isFollowing authenticated user is following list
      */
-    public UserList(twitter4j.UserList list, long homeId, boolean isFollowing) {
+    public TwitterList(twitter4j.UserList list, long homeId, boolean isFollowing) {
         id = list.getId();
         createdAt = list.getCreatedAt().getTime();
         owner = new User(list.getUser(), homeId);
@@ -42,7 +42,7 @@ public class UserList implements Serializable {
         this.isFollowing = isFollowing;
     }
 
-    public UserList(twitter4j.UserList list, long homeId) {
+    public TwitterList(twitter4j.UserList list, long homeId) {
         this(list, homeId, list.isFollowing());
     }
 
@@ -146,8 +146,8 @@ public class UserList implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof UserList)
-            return ((UserList) o).id == id;
+        if (o instanceof TwitterList)
+            return ((TwitterList) o).id == id;
         return false;
     }
 }

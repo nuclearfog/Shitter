@@ -5,9 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -15,8 +12,9 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.ImageItem;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
@@ -49,7 +47,10 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private boolean loading = false;
     private boolean saveImg = true;
 
-
+    /**
+     * @param settings          App settings to set theme
+     * @param itemClickListener click listener
+     */
     public ImageAdapter(GlobalSettings settings, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
@@ -145,7 +146,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             return item;
         } else {
             View view = inflater.inflate(R.layout.item_image_load, parent, false);
-            return new LoadItem(view, settings.getHighlightColor());
+            Footer footer = new Footer(view, settings);
+            footer.loadBtn.setVisibility(View.INVISIBLE);
+            return footer;
         }
     }
 
@@ -160,35 +163,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * Holder for image
+     * click listener for image items
      */
-    private final class ImageItem extends ViewHolder {
-        final ImageView preview;
-        final ImageButton saveButton;
-
-        ImageItem(View view, GlobalSettings settings) {
-            super(view);
-            preview = view.findViewById(R.id.item_image_preview);
-            saveButton = view.findViewById(R.id.item_image_save);
-            saveButton.setImageResource(R.drawable.save);
-            AppStyles.setButtonColor(saveButton, settings.getFontColor());
-            AppStyles.setDrawableColor(saveButton, settings.getIconColor());
-        }
-    }
-
-    /**
-     * Holder for progress circle
-     */
-    private final class LoadItem extends ViewHolder {
-
-        LoadItem(View v, int color) {
-            super(v);
-            ProgressBar progress = v.findViewById(R.id.imageitem_progress);
-            AppStyles.setProgressColor(progress, color);
-        }
-    }
-
-
     public interface OnImageClickListener {
 
         /**

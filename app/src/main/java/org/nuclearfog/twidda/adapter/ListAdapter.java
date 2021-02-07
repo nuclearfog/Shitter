@@ -4,24 +4,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.holder.UserListList;
+import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.ListHolder;
+import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.items.UserList;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
@@ -29,7 +25,6 @@ import java.text.NumberFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -63,7 +58,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
     private GlobalSettings settings;
 
     private NumberFormat formatter = NumberFormat.getIntegerInstance();
-    private UserListList data = new UserListList();
+    private UserLists data = new UserLists();
     private int loadingIndex = NO_LOADING;
 
 
@@ -78,11 +73,13 @@ public class ListAdapter extends Adapter<ViewHolder> {
      * @param newData new list to add
      */
     @MainThread
-    public void setData(UserListList newData) {
+    public void setData(UserLists newData) {
         if (newData.isEmpty()) {
             if (!data.isEmpty() && data.peekLast() == null) {
                 // remove footer
-                data.pollLast();
+                int end = data.size() - 1;
+                data.remove(end);
+                notifyItemRemoved(end);
             }
         } else if (data.isEmpty() || !newData.hasPrevious()) {
             data.replace(newData);
@@ -98,7 +95,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 data.remove(end);
                 notifyItemRemoved(end);
             }
-            data.addListAt(newData, end);
+            data.addAt(newData, end);
             notifyItemRangeInserted(end, newData.size());
         }
         disableLoading();
@@ -111,7 +108,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
      * @param list updated list
      */
     @MainThread
-    public void updateItem(UserList list) {
+    public void updateItem(TwitterList list) {
         int index = data.indexOf(list);
         if (index >= 0) {
             data.set(index, list);
@@ -120,18 +117,15 @@ public class ListAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * remove userlist item from list
+     * remove user list item from list
      *
-     * @param itemId userlist id to remove
+     * @param itemId user list id to remove
      */
     @MainThread
     public void removeItem(long itemId) {
-        for (int index = 0; index < data.size(); index++) {
-            if (data.get(index).getId() == itemId) {
-                data.remove(index);
-                notifyItemRemoved(index);
-                break;
-            }
+        int index = data.removeItem(itemId);
+        if (index >= 0) {
+            notifyItemRemoved(index);
         }
     }
 
@@ -155,44 +149,46 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_LIST) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-            final ListHolder vh = new ListHolder(v, settings);
-            vh.profile_img.setOnClickListener(new OnClickListener() {
+            final ListHolder itemHolder = new ListHolder(v, settings);
+            itemHolder.profile_img.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = itemHolder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        User user = data.get(position).getListOwner();
-                        listener.onProfileClick(user);
+                        TwitterList item = data.get(position);
+                        if (item != null) {
+                            listener.onProfileClick(item.getListOwner());
+                        }
                     }
                 }
             });
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = itemHolder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        UserList list = data.get(position);
+                        TwitterList list = data.get(position);
                         listener.onListClick(list);
                     }
                 }
             });
-            return vh;
+            return itemHolder;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final PlaceHolder ph = new PlaceHolder(v, settings);
-            ph.loadBtn.setOnClickListener(new OnClickListener() {
+            final Footer footer = new Footer(v, settings);
+            footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = ph.getLayoutPosition();
+                    int position = footer.getLayoutPosition();
                     if (position != NO_POSITION) {
                         listener.onFooterClick(data.getNext());
-                        ph.loadCircle.setVisibility(VISIBLE);
-                        ph.loadBtn.setVisibility(INVISIBLE);
+                        footer.loadCircle.setVisibility(VISIBLE);
+                        footer.loadBtn.setVisibility(INVISIBLE);
                         loadingIndex = position;
                     }
                 }
             });
-            return ph;
+            return footer;
         }
     }
 
@@ -201,54 +197,56 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
         if (holder instanceof ListHolder) {
             ListHolder vh = (ListHolder) holder;
-            UserList item = data.get(index);
-            User owner = item.getListOwner();
-            vh.textViews[0].setText(item.getTitle());
-            vh.textViews[1].setText(item.getDescription());
-            vh.textViews[2].setText(owner.getUsername());
-            vh.textViews[3].setText(owner.getScreenname());
-            vh.textViews[4].setText(getTimeString(item.getCreatedAt()));
-            vh.textViews[5].setText(formatter.format(item.getMemberCount()));
-            vh.textViews[6].setText(formatter.format(item.getSubscriberCount()));
-            if (settings.getImageLoad() && owner.hasProfileImage()) {
-                String pbLink = owner.getImageLink();
-                if (!owner.hasDefaultProfileImage())
-                    pbLink += settings.getImageSuffix();
-                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(3, 0))
-                        .error(R.drawable.no_image).into(vh.profile_img);
-            } else {
-                vh.profile_img.setImageResource(0);
+            TwitterList item = data.get(index);
+            if (item != null) {
+                User owner = item.getListOwner();
+                vh.textViews[0].setText(item.getTitle());
+                vh.textViews[1].setText(item.getDescription());
+                vh.textViews[2].setText(owner.getUsername());
+                vh.textViews[3].setText(owner.getScreenname());
+                vh.textViews[4].setText(getTimeString(item.getCreatedAt()));
+                vh.textViews[5].setText(formatter.format(item.getMemberCount()));
+                vh.textViews[6].setText(formatter.format(item.getSubscriberCount()));
+                if (settings.getImageLoad() && owner.hasProfileImage()) {
+                    String pbLink = owner.getImageLink();
+                    if (!owner.hasDefaultProfileImage())
+                        pbLink += settings.getImageSuffix();
+                    Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(3, 0))
+                            .error(R.drawable.no_image).into(vh.profile_img);
+                } else {
+                    vh.profile_img.setImageResource(0);
+                }
+                if (!item.isListOwner() && item.isFollowing()) {
+                    vh.icons[6].setVisibility(VISIBLE);
+                    vh.textViews[7].setVisibility(VISIBLE);
+                } else {
+                    vh.icons[6].setVisibility(GONE);
+                    vh.textViews[7].setVisibility(GONE);
+                }
+                if (owner.isVerified()) {
+                    vh.icons[0].setVisibility(VISIBLE);
+                } else {
+                    vh.icons[0].setVisibility(GONE);
+                }
+                if (owner.isLocked()) {
+                    vh.icons[1].setVisibility(VISIBLE);
+                } else {
+                    vh.icons[1].setVisibility(GONE);
+                }
+                if (item.isPrivate()) {
+                    vh.icons[5].setVisibility(VISIBLE);
+                } else {
+                    vh.icons[5].setVisibility(GONE);
+                }
             }
-            if (!item.isListOwner() && item.isFollowing()) {
-                vh.icons[6].setVisibility(VISIBLE);
-                vh.textViews[7].setVisibility(VISIBLE);
-            } else {
-                vh.icons[6].setVisibility(GONE);
-                vh.textViews[7].setVisibility(GONE);
-            }
-            if (owner.isVerified()) {
-                vh.icons[0].setVisibility(VISIBLE);
-            } else {
-                vh.icons[0].setVisibility(GONE);
-            }
-            if (owner.isLocked()) {
-                vh.icons[1].setVisibility(VISIBLE);
-            } else {
-                vh.icons[1].setVisibility(GONE);
-            }
-            if (item.isPrivate()) {
-                vh.icons[5].setVisibility(VISIBLE);
-            } else {
-                vh.icons[5].setVisibility(GONE);
-            }
-        } else if (holder instanceof PlaceHolder) {
-            PlaceHolder placeHolder = (PlaceHolder) holder;
+        } else if (holder instanceof Footer) {
+            Footer footer = (Footer) holder;
             if (loadingIndex != NO_LOADING) {
-                placeHolder.loadCircle.setVisibility(VISIBLE);
-                placeHolder.loadBtn.setVisibility(INVISIBLE);
+                footer.loadCircle.setVisibility(VISIBLE);
+                footer.loadBtn.setVisibility(INVISIBLE);
             } else {
-                placeHolder.loadCircle.setVisibility(INVISIBLE);
-                placeHolder.loadBtn.setVisibility(VISIBLE);
+                footer.loadCircle.setVisibility(INVISIBLE);
+                footer.loadBtn.setVisibility(VISIBLE);
             }
         }
     }
@@ -265,75 +263,6 @@ public class ListAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * view holder class for an user list item
-     */
-    private final class ListHolder extends ViewHolder {
-
-        final ImageView[] icons = new ImageView[7];
-        final TextView[] textViews = new TextView[8];
-        final ImageView profile_img;
-
-        ListHolder(View v, GlobalSettings settings) {
-            super(v);
-            CardView background = (CardView) v;
-            profile_img = v.findViewById(R.id.list_owner_profile);
-            icons[0] = v.findViewById(R.id.list_user_verified);
-            icons[1] = v.findViewById(R.id.list_user_locked);
-            icons[2] = v.findViewById(R.id.list_member_icon);
-            icons[3] = v.findViewById(R.id.list_subscriber_icon);
-            icons[4] = v.findViewById(R.id.list_date_icon);
-            icons[5] = v.findViewById(R.id.list_private);
-            icons[6] = v.findViewById(R.id.list_follow_icon);
-            textViews[0] = v.findViewById(R.id.list_title);
-            textViews[1] = v.findViewById(R.id.list_description);
-            textViews[2] = v.findViewById(R.id.list_ownername);
-            textViews[3] = v.findViewById(R.id.list_screenname);
-            textViews[4] = v.findViewById(R.id.list_createdat);
-            textViews[5] = v.findViewById(R.id.list_member);
-            textViews[6] = v.findViewById(R.id.list_subscriber);
-            textViews[7] = v.findViewById(R.id.list_action);
-
-            icons[0].setImageResource(R.drawable.verify);
-            icons[1].setImageResource(R.drawable.lock);
-            icons[2].setImageResource(R.drawable.user);
-            icons[3].setImageResource(R.drawable.subscriber);
-            icons[4].setImageResource(R.drawable.calendar);
-            icons[5].setImageResource(R.drawable.lock);
-            icons[6].setImageResource(R.drawable.followback);
-
-            for (TextView tv : textViews) {
-                tv.setTextColor(settings.getFontColor());
-                tv.setTypeface(settings.getFontFace());
-            }
-            for (ImageView icon : icons) {
-                icon.setColorFilter(settings.getIconColor(), SRC_IN);
-            }
-            background.setCardBackgroundColor(settings.getCardColor());
-        }
-    }
-
-    /**
-     * view holder class for a footer view
-     */
-    private final class PlaceHolder extends ViewHolder {
-
-        final ProgressBar loadCircle;
-        final Button loadBtn;
-
-        PlaceHolder(@NonNull View v, GlobalSettings settings) {
-            super(v);
-            CardView background = (CardView) v;
-            loadCircle = v.findViewById(R.id.placeholder_loading);
-            loadBtn = v.findViewById(R.id.placeholder_button);
-
-            loadBtn.setTypeface(settings.getFontFace());
-            loadBtn.setTextColor(settings.getFontColor());
-            AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
-            background.setCardBackgroundColor(settings.getCardColor());
-        }
-    }
-
-    /**
      * Listener for an item
      */
     public interface ListClickListener {
@@ -343,7 +272,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
          *
          * @param listItem Item data and information
          */
-        void onListClick(UserList listItem);
+        void onListClick(TwitterList listItem);
 
         /**
          * called when the profile image of the owner was clicked

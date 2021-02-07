@@ -1,8 +1,9 @@
-package org.nuclearfog.twidda.backend.holder;
+package org.nuclearfog.twidda.backend.lists;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.items.UserList;
+import org.nuclearfog.twidda.backend.items.TwitterList;
 
 import java.util.LinkedList;
 
@@ -11,24 +12,32 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class UserListList extends LinkedList<UserList> {
+public class UserLists extends LinkedList<TwitterList> {
 
-    private long prevCursor = 0;
-    private long nextCursor = 0;
+    private long prevCursor, nextCursor;
 
-    public UserListList() {
-        super();
+    /**
+     * create an empty list
+     */
+    public UserLists() {
+        this(0, 0);
     }
-
 
     /**
      * @param prevCursor previous list cursor or 0 if list starts
      * @param nextCursor next cursor or 0 if list ends
      */
-    public UserListList(long prevCursor, long nextCursor) {
+    public UserLists(long prevCursor, long nextCursor) {
         super();
         this.prevCursor = prevCursor;
         this.nextCursor = nextCursor;
+    }
+
+
+    @Nullable
+    @Override
+    public TwitterList get(int index) {
+        return super.get(index);
     }
 
     /**
@@ -50,15 +59,6 @@ public class UserListList extends LinkedList<UserList> {
     }
 
     /**
-     * get prev link to a list
-     *
-     * @return cursor
-     */
-    public long getPrev() {
-        return prevCursor;
-    }
-
-    /**
      * get next link to a list
      *
      * @return cursor
@@ -72,30 +72,39 @@ public class UserListList extends LinkedList<UserList> {
      *
      * @param list new list
      */
-    public void replace(UserListList list) {
+    public void replace(UserLists list) {
         super.clear();
         super.addAll(list);
-        prevCursor = list.getPrev();
-        nextCursor = list.getNext();
+        prevCursor = list.prevCursor;
+        nextCursor = list.nextCursor;
+    }
+
+    /**
+     * remove an item from list
+     *
+     * @param id ID of the item
+     * @return index of the removed item
+     */
+    public int removeItem(long id) {
+        for (int index = 0; index < size(); index++) {
+            TwitterList item = get(index);
+            if (item != null && item.getId() == id) {
+                remove(index);
+                return index;
+            }
+        }
+        return -1;
     }
 
     /**
      * add a sublist at the bottom of this list including next cursor
      *
      * @param list  new sublist
-     * @param index position where to insert at
+     * @param index Index of the sub list
      */
-    public void addListAt(UserListList list, int index) {
+    public void addAt(UserLists list, int index) {
         super.addAll(index, list);
-        nextCursor = list.getNext();
-    }
-
-    @Override
-    public void clear() {
-        // resetting cursors
-        prevCursor = 0;
-        nextCursor = 0;
-        super.clear();
+        nextCursor = list.nextCursor;
     }
 
     @Override

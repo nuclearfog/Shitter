@@ -11,6 +11,7 @@ import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Trend;
 import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.lists.MessageList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -427,10 +428,10 @@ public class AppDatabase {
      *
      * @return list of direct messages
      */
-    public List<Message> getMessages() {
+    public MessageList getMessages() {
         String[] args = {Integer.toString(limit)};
-
-        List<Message> result = new LinkedList<>();
+        // TODO get next cursor from database
+        MessageList result = new MessageList(null, null);
         SQLiteDatabase db = getDbRead();
         Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
         if (cursor.moveToFirst()) {

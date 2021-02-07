@@ -137,7 +137,7 @@
     <string name="userlist_public_sel">öffentlich</string>
     <string name="userlist_enter_title">Titel eingeben</string>
     <string name="userlist_enter_descr">Beschreibung der Liste eingeben</string>
-    <string name="userlist_create">Liste erstellen</string>
+    <string name="userlist_create">erstellen</string>
     <string name="error_list_title_empty">Titel ist leer!</string>
     <string name="info_list_updated">Liste wurde aktualisiert</string>
     <string name="info_list_created">Liste wurde erstellt</string>
@@ -145,7 +145,7 @@
     <string name="info_adding_user_to_list">Füge Nutzer zur Liste hinzu</string>
     <string name="userlist_create_new_list">Neue Liste erstellen</string>
     <string name="menu_edit_list">Liste bearbeiten</string>
-    <string name="update_list">Liste aktualisieren</string>
+    <string name="update_list">aktualisieren</string>
     <string name="confirm_remove_user_from_list">Nutzer von der Liste entfernen?</string>
     <string name="info_user_removed">Nutzer von der Liste entfernt!</string>
     <string name="descr_remove_user">Nutzer von der Liste entfernen</string>

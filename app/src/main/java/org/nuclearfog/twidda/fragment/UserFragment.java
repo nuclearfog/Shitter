@@ -16,8 +16,8 @@ import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Type;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.holder.TwitterUserList;
 import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.lists.UserList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -197,10 +197,12 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onFooterClick(long cursor) {
+    public boolean onFooterClick(long cursor) {
         if (userTask != null && userTask.getStatus() != RUNNING) {
             load(cursor);
+            return true;
         }
+        return false;
     }
 
 
@@ -241,7 +243,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
      *
      * @param data list of twitter users
      */
-    public void setData(TwitterUserList data) {
+    public void setData(UserList data) {
         adapter.setData(data);
         setRefresh(false);
     }

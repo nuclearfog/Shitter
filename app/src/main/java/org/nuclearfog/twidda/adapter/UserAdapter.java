@@ -4,31 +4,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.holder.TwitterUserList;
+import org.nuclearfog.twidda.adapter.holder.Footer;
+import org.nuclearfog.twidda.adapter.holder.UserHolder;
 import org.nuclearfog.twidda.backend.items.User;
-import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.lists.UserList;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
-import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -58,11 +52,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
      */
     private static final int ITEM_GAP = 1;
 
+    private static final NumberFormat FORMATTER = NumberFormat.getIntegerInstance();
+
     private UserClickListener itemClickListener;
     private GlobalSettings settings;
 
-    private TwitterUserList items = new TwitterUserList();
-    private NumberFormat formatter = NumberFormat.getIntegerInstance();
+    private UserList data = new UserList();
     private int loadingIndex = NO_INDEX;
     private boolean userRemovable = false;
 
@@ -81,27 +76,29 @@ public class UserAdapter extends Adapter<ViewHolder> {
      * @param newData new userlist
      */
     @MainThread
-    public void setData(@NonNull TwitterUserList newData) {
+    public void setData(@NonNull UserList newData) {
         if (newData.isEmpty()) {
-            if (!items.isEmpty() && items.peekLast() == null) {
+            if (!data.isEmpty() && data.peekLast() == null) {
                 // remove footer
-                items.pollLast();
+                int end = data.size() - 1;
+                data.remove(end);
+                notifyItemRemoved(end);
             }
-        } else if (items.isEmpty() || !newData.hasPrevious()) {
-            items.replace(newData);
+        } else if (data.isEmpty() || !newData.hasPrevious()) {
+            data.replace(newData);
             if (newData.hasNext()) {
                 // add footer
-                items.add(null);
+                data.add(null);
             }
             notifyDataSetChanged();
         } else {
-            int end = items.size() - 1;
+            int end = data.size() - 1;
             if (!newData.hasNext()) {
                 // remove footer
-                items.remove(end);
+                data.remove(end);
                 notifyItemRemoved(end);
             }
-            items.addListAt(newData, end);
+            data.addAt(newData, end);
             notifyItemRangeInserted(end, newData.size());
         }
         disableLoading();
@@ -114,9 +111,9 @@ public class UserAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void updateUser(User user) {
-        int index = items.indexOf(user);
+        int index = data.indexOf(user);
         if (index >= 0) {
-            items.set(index, user);
+            data.set(index, user);
             notifyItemChanged(index);
         }
     }
@@ -124,37 +121,36 @@ public class UserAdapter extends Adapter<ViewHolder> {
     /**
      * remove user from adapter
      *
-     * @param username User to remove
+     * @param screenname User to remove
      */
     @MainThread
-    public void removeUser(String username) {
-        for (int pos = 0; pos < items.size(); pos++) {
-            if (items.get(pos).getScreenname().equals(username)) {
-                items.remove(pos);
-                notifyItemRemoved(pos);
-                break;
-            }
+    public void removeUser(String screenname) {
+        int pos = data.removeItem(screenname);
+        if (pos >= 0) {
+            data.remove(pos);
+            notifyItemRemoved(pos);
         }
     }
 
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return data.size();
     }
 
 
     @Override
     public long getItemId(int index) {
-        if (items.get(index) != null)
-            return items.get(index).getId();
+        User user = data.get(index);
+        if (user != null)
+            return user.getId();
         return NO_ID;
     }
 
 
     @Override
     public int getItemViewType(int index) {
-        if (items.get(index) == null)
+        if (data.get(index) == null)
             return ITEM_GAP;
         return ITEM_USER;
     }
@@ -165,12 +161,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_USER) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-            final ItemHolder vh = new ItemHolder(v, settings);
+            final UserHolder vh = new UserHolder(v, settings);
             v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
-                    User user = items.get(position);
+                    User user = data.get(position);
                     if (position != NO_POSITION && user != null) {
                         itemClickListener.onUserClick(user);
                     }
@@ -182,7 +178,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         int position = vh.getLayoutPosition();
-                        User user = items.get(position);
+                        User user = data.get(position);
                         if (position != NO_POSITION && user != null) {
                             itemClickListener.onDelete(user.getScreenname());
                         }
@@ -194,16 +190,18 @@ public class UserAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final PlaceHolder vh = new PlaceHolder(v, settings);
+            final Footer vh = new Footer(v, settings);
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        itemClickListener.onFooterClick(items.getNext());
-                        vh.loadCircle.setVisibility(VISIBLE);
-                        vh.loadBtn.setVisibility(INVISIBLE);
-                        loadingIndex = position;
+                        boolean success = itemClickListener.onFooterClick(data.getNext());
+                        if (success) {
+                            vh.loadCircle.setVisibility(VISIBLE);
+                            vh.loadBtn.setVisibility(INVISIBLE);
+                            loadingIndex = position;
+                        }
                     }
                 }
             });
@@ -214,34 +212,34 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
-        User user = items.get(index);
-        if (holder instanceof ItemHolder && user != null) {
-            ItemHolder vh = (ItemHolder) holder;
-            vh.username.setText(user.getUsername());
-            vh.screenname.setText(user.getScreenname());
-            vh.following.setText(formatter.format(user.getFollowing()));
-            vh.follower.setText(formatter.format(user.getFollower()));
+        User user = data.get(index);
+        if (holder instanceof UserHolder && user != null) {
+            UserHolder userholder = (UserHolder) holder;
+            userholder.textViews[0].setText(user.getUsername());
+            userholder.textViews[1].setText(user.getScreenname());
+            userholder.textViews[2].setText(FORMATTER.format(user.getFollowing()));
+            userholder.textViews[3].setText(FORMATTER.format(user.getFollower()));
             if (user.isVerified()) {
-                vh.verifyIcon.setVisibility(VISIBLE);
+                userholder.verifyIcon.setVisibility(VISIBLE);
             } else {
-                vh.verifyIcon.setVisibility(GONE);
+                userholder.verifyIcon.setVisibility(GONE);
             }
             if (user.isLocked()) {
-                vh.lockedIcon.setVisibility(VISIBLE);
+                userholder.lockedIcon.setVisibility(VISIBLE);
             } else {
-                vh.lockedIcon.setVisibility(GONE);
+                userholder.lockedIcon.setVisibility(GONE);
             }
             if (settings.getImageLoad() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
                 Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
-                        .error(R.drawable.no_image).into(vh.profileImg);
+                        .error(R.drawable.no_image).into(userholder.profileImg);
             } else {
-                vh.profileImg.setImageResource(0);
+                userholder.profileImg.setImageResource(0);
             }
-        } else if (holder instanceof PlaceHolder) {
-            PlaceHolder vh = (PlaceHolder) holder;
+        } else if (holder instanceof Footer) {
+            Footer vh = (Footer) holder;
             if (loadingIndex != NO_INDEX) {
                 vh.loadCircle.setVisibility(VISIBLE);
                 vh.loadBtn.setVisibility(INVISIBLE);
@@ -273,71 +271,6 @@ public class UserAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * Holder for an user view item
-     */
-    private final class ItemHolder extends ViewHolder {
-
-        final TextView username, screenname, following, follower;
-        final ImageView profileImg, verifyIcon, lockedIcon;
-        final ImageButton delete;
-
-        ItemHolder(View v, GlobalSettings settings) {
-            super(v);
-            CardView background = (CardView) v;
-            ImageView followingIcon = v.findViewById(R.id.following_icon);
-            ImageView followerIcon = v.findViewById(R.id.follower_icon);
-            username = v.findViewById(R.id.username_detail);
-            screenname = v.findViewById(R.id.screenname_detail);
-            following = v.findViewById(R.id.item_user_friends);
-            follower = v.findViewById(R.id.item_user_follower);
-            profileImg = v.findViewById(R.id.user_profileimg);
-            verifyIcon = v.findViewById(R.id.useritem_verified);
-            lockedIcon = v.findViewById(R.id.useritem_locked);
-            delete = v.findViewById(R.id.useritem_del_user);
-
-            followerIcon.setImageResource(R.drawable.follower);
-            followingIcon.setImageResource(R.drawable.following);
-            verifyIcon.setImageResource(R.drawable.verify);
-            lockedIcon.setImageResource(R.drawable.lock);
-            delete.setImageResource(R.drawable.cross);
-
-            background.setCardBackgroundColor(settings.getCardColor());
-            followerIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            followingIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            verifyIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
-            delete.setColorFilter(settings.getIconColor(), SRC_IN);
-            username.setTextColor(settings.getFontColor());
-            username.setTypeface(settings.getFontFace());
-            screenname.setTextColor(settings.getFontColor());
-            screenname.setTypeface(settings.getFontFace());
-            following.setTextColor(settings.getFontColor());
-            following.setTypeface(settings.getFontFace());
-            follower.setTextColor(settings.getFontColor());
-            follower.setTypeface(settings.getFontFace());
-        }
-    }
-
-    /**
-     * Holder for a footer view
-     */
-    private final class PlaceHolder extends ViewHolder {
-        final ProgressBar loadCircle;
-        final Button loadBtn;
-
-        PlaceHolder(@NonNull View v, GlobalSettings settings) {
-            super(v);
-            CardView background = (CardView) v;
-            loadCircle = v.findViewById(R.id.placeholder_loading);
-            loadBtn = v.findViewById(R.id.placeholder_button);
-
-            background.setCardBackgroundColor(settings.getCardColor());
-            AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
-        }
-    }
-
-
-    /**
      * Listener for list click
      */
     public interface UserClickListener {
@@ -353,8 +286,9 @@ public class UserAdapter extends Adapter<ViewHolder> {
          * handle footer click
          *
          * @param cursor next cursor of the list
+         * @return true if click was handled
          */
-        void onFooterClick(long cursor);
+        boolean onFooterClick(long cursor);
 
         /**
          * remove user from a list
