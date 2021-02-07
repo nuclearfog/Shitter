@@ -101,6 +101,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private TextView tweet_api, tweetDate, tweetText, scrName, usrName, tweetLocName, sensitive_media;
     private Button ansButton, rtwButton, favButton, replyName, tweetLocGPS, retweeter;
     private ImageView profile_img, mediaButton;
+    private Toolbar toolbar;
     private Dialog deleteDialog;
 
     private GlobalSettings settings;
@@ -114,9 +115,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
-        Toolbar tool = findViewById(R.id.tweet_toolbar);
         View root = findViewById(R.id.tweet_layout);
         ViewPager pager = findViewById(R.id.tweet_pager);
+        toolbar = findViewById(R.id.tweet_toolbar);
         ansButton = findViewById(R.id.tweet_answer);
         rtwButton = findViewById(R.id.tweet_retweet);
         favButton = findViewById(R.id.tweet_favorit);
@@ -166,8 +167,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
         deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
-        tool.setTitle("");
-        setSupportActionBar(tool);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         AppStyles.setTheme(settings, root);
 
         retweeter.setOnClickListener(this);
@@ -222,6 +223,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Override
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.tweet, m);
+        AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

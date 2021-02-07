@@ -24,7 +24,9 @@ import android.widget.TextView;
 import androidx.annotation.ArrayRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -214,7 +216,24 @@ public final class AppStyles {
         }
     }
 
+    /**
+     * set Toolbar overflow icon color
+     *
+     * @param toolbar Toolbar with overflow icon
+     * @param color   icon color
+     */
+    public static void setOverflowIcon(Toolbar toolbar, int color) {
+        Drawable groupIcon = ResourcesCompat.getDrawable(toolbar.getResources(), R.drawable.group, null);
+        setDrawableColor(groupIcon, color);
+        toolbar.setOverflowIcon(groupIcon);
+    }
 
+    /**
+     * sets progress circle color
+     *
+     * @param circle progress circle
+     * @param color  highlight color
+     */
     public static void setProgressColor(ProgressBar circle, int color) {
         Drawable icon = circle.getIndeterminateDrawable();
         if (icon != null) {

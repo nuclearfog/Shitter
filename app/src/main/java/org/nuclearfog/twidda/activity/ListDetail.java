@@ -150,6 +150,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.userlist, m);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
+        AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

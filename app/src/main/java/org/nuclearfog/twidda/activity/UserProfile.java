@@ -142,6 +142,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private Button following, follower;
     private ViewPager tabPages;
     private TabLayout tabLayout;
+    private Toolbar toolbar;
     private Dialog unfollowConfirm, blockConfirm, muteConfirm;
 
     @Nullable
@@ -154,7 +155,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
-        Toolbar tool = findViewById(R.id.profile_toolbar);
+        toolbar = findViewById(R.id.profile_toolbar);
         View root = findViewById(R.id.user_view);
         tabLayout = findViewById(R.id.profile_tab);
         user_bio = findViewById(R.id.bio);
@@ -178,7 +179,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         user_location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
         user_website.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
         follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
-        tool.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
+        toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
         username.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         user_bio.setMovementMethod(LinkAndScrollMovement.getInstance());
@@ -186,8 +187,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         AppStyles.setTheme(settings, root);
         user_website.setTextColor(settings.getHighlightColor());
 
-        tool.setTitle("");
-        setSupportActionBar(tool);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         adapter = new FragmentAdapter(getSupportFragmentManager());
         tabPages.setAdapter(adapter);
         tabPages.setOffscreenPageLimit(2);
@@ -262,6 +263,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.profile, m);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
+        AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 
