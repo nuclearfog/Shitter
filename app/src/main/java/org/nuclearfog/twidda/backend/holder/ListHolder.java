@@ -1,7 +1,7 @@
 package org.nuclearfog.twidda.backend.holder;
 
 /**
- * This class stores informations about an user list
+ * This class stores information about an user list
  *
  * @author nuclearfog
  */
@@ -75,7 +75,7 @@ public class ListHolder {
     }
 
     /**
-     * check if list exists, so only the informations will be updated
+     * check if list exists, so only the information will be updated
      *
      * @return true if list exists
      */

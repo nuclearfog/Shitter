@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -51,6 +52,7 @@ import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVert
  */
 public final class AppStyles {
 
+    private static final int HINT_TRANSPARENCY = 0x6fffffff;
     private static final int[][] SWITCH_STATES = {{0}};
     private GlobalSettings settings;
 
@@ -113,6 +115,9 @@ public final class AppStyles {
                     if (child instanceof Button) {
                         Button btn = (Button) child;
                         setButtonColor(btn, settings.getFontColor());
+                    } else if (child instanceof EditText) {
+                        EditText edit = (EditText) child;
+                        edit.setHintTextColor(settings.getFontColor() & HINT_TRANSPARENCY);
                     }
                 } else if (child instanceof ImageView) {
                     ImageView img = (ImageView) child;

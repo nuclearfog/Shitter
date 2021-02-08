@@ -168,7 +168,6 @@
     <dimen name="mainpage_toolbar_height">@dimen/toolbar_height</dimen>
 
     <!--dimens of page_listdetail.xml-->
-    <dimen name="listdetail_toolbar_height">@dimen/toolbar_height</dimen>
 
     <!--dimens of page_list.xml-->
     <dimen name="listpage_toolbar_height">@dimen/toolbar_height</dimen>

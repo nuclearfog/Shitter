@@ -141,6 +141,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (!settings.isProxyEnabled()) {
             layout_proxy.setVisibility(GONE);
             layout_auth_en.setVisibility(GONE);
+        }
+        if (!settings.isProxyAuthSet()) {
             layout_auth.setVisibility(GONE);
         }
         if (!settings.isCustomApiSet()) {
