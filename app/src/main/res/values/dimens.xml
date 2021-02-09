@@ -17,7 +17,7 @@
     <dimen name="settings_button_color_edge_thickness">1dp</dimen>
     <dimen name="settings_button_margin">5dp</dimen>
     <dimen name="settings_switch_margin">5dp</dimen>
-    <dimen name="settings_spinner_font_width">200sp</dimen>
+    <dimen name="settings_spinner_font_width">250sp</dimen>
     <dimen name="settings_seek_number_width">30sp</dimen>
     <dimen name="settings_seek_margin">10dp</dimen>
 

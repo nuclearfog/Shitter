@@ -24,11 +24,22 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
  */
 public class LocationAdapter extends BaseAdapter {
 
+    /**
+     * item text padding
+     */
     private static final int TEXT_PADDING = 20;
+
+    /**
+     * text size of the items
+     */
     private static final float TEXT_SIZE = 16.0f;
 
-    private GlobalSettings settings;
+    /**
+     * Background color transparency mask
+     */
+    private static final int TRANSPARENCY_MASK = 0xbfffffff;
 
+    private GlobalSettings settings;
     private List<TrendLocation> data = new ArrayList<>();
 
 
@@ -95,17 +106,18 @@ public class LocationAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int pos, View view, ViewGroup parent) {
-        TextView tv;
+        TextView textItem;
         if (view instanceof TextView) {
-            tv = (TextView) view;
+            textItem = (TextView) view;
         } else {
-            tv = new TextView(parent.getContext());
-            tv.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
-            tv.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
-            tv.setTextColor(settings.getFontColor());
-            tv.setTypeface(settings.getFontFace());
+            textItem = new TextView(parent.getContext());
+            textItem.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
+            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
         }
-        tv.setText(data.get(pos).getName());
-        return tv;
+        textItem.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY_MASK);
+        textItem.setTextColor(settings.getFontColor());
+        textItem.setTypeface(settings.getTypeFace());
+        textItem.setText(data.get(pos).getName());
+        return textItem;
     }
 }

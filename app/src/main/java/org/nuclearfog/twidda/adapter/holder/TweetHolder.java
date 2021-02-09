@@ -52,7 +52,7 @@ public class TweetHolder extends RecyclerView.ViewHolder {
 
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
-            tv.setTypeface(settings.getFontFace());
+            tv.setTypeface(settings.getTypeFace());
         }
     }
 }

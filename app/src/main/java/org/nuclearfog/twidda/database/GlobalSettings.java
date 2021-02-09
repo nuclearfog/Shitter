@@ -426,7 +426,7 @@ public class GlobalSettings {
      *
      * @return font family
      */
-    public Typeface getFontFace() {
+    public Typeface getTypeFace() {
         return FONTS[indexFont];
     }
 
@@ -435,7 +435,7 @@ public class GlobalSettings {
      *
      * @return font index
      */
-    public int getFont() {
+    public int getFontIndex() {
         return indexFont;
     }
 
@@ -444,7 +444,7 @@ public class GlobalSettings {
      *
      * @param indexFont index of font type in array
      */
-    public void setFont(int indexFont) {
+    public void setFontIndex(int indexFont) {
         this.indexFont = indexFont;
 
         Editor edit = settings.edit();

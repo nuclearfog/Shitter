@@ -29,7 +29,7 @@ public class TrendHolder extends RecyclerView.ViewHolder {
         background.setCardBackgroundColor(settings.getCardColor());
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
-            tv.setTypeface(settings.getFontFace());
+            tv.setTypeface(settings.getTypeFace());
         }
     }
 }

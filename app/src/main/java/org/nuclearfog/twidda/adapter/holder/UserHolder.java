@@ -56,7 +56,7 @@ public class UserHolder extends RecyclerView.ViewHolder {
         AppStyles.setButtonColor(delete, settings.getFontColor());
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
-            tv.setTypeface(settings.getFontFace());
+            tv.setTypeface(settings.getTypeFace());
         }
     }
 }

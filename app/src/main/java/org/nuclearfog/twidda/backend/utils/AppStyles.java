@@ -109,7 +109,7 @@ public final class AppStyles {
                     setSeekBarColor(settings, seekBar);
                 } else if (child instanceof TextView) {
                     TextView tv = (TextView) child;
-                    tv.setTypeface(settings.getFontFace());
+                    tv.setTypeface(settings.getTypeFace());
                     tv.setTextColor(settings.getFontColor());
                     setDrawableColor(tv, settings.getIconColor());
                     if (child instanceof Button) {
@@ -154,7 +154,7 @@ public final class AppStyles {
                     setViewFont(settings, child);
                 else if (child instanceof TextView) {
                     TextView tv = (TextView) child;
-                    tv.setTypeface(settings.getFontFace());
+                    tv.setTypeface(settings.getTypeFace());
                 }
             }
         }
@@ -302,7 +302,7 @@ public final class AppStyles {
                 ImageView imageIcon = tabView.findViewById(R.id.tab_icon);
                 tabs[index] = tabView.findViewById(R.id.tab_text);
                 tabs[index].setTextColor(settings.getFontColor());
-                tabs[index].setTypeface(settings.getFontFace());
+                tabs[index].setTypeface(settings.getTypeFace());
                 imageIcon.setImageDrawable(icon);
             }
         }

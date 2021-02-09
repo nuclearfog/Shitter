@@ -44,11 +44,11 @@ public class MessageHolder extends RecyclerView.ViewHolder {
 
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
-            tv.setTypeface(settings.getFontFace());
+            tv.setTypeface(settings.getTypeFace());
         }
         for (Button button : buttons) {
             button.setTextColor(settings.getFontColor());
-            button.setTypeface(settings.getFontFace());
+            button.setTypeface(settings.getTypeFace());
             AppStyles.setButtonColor(button, settings.getFontColor());
         }
         receiver_icon.setImageResource(R.drawable.right);

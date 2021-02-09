@@ -55,7 +55,7 @@ public class ListHolder extends RecyclerView.ViewHolder {
 
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
-            tv.setTypeface(settings.getFontFace());
+            tv.setTypeface(settings.getTypeFace());
         }
         for (ImageView icon : icons) {
             icon.setColorFilter(settings.getIconColor(), SRC_IN);

@@ -30,7 +30,7 @@ public class Footer extends RecyclerView.ViewHolder {
 
         background.setCardBackgroundColor(settings.getCardColor());
         loadBtn.setTextColor(settings.getFontColor());
-        loadBtn.setTypeface(settings.getFontFace());
+        loadBtn.setTypeface(settings.getTypeFace());
         AppStyles.setButtonColor(loadBtn, settings.getFontColor());
         AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
     }

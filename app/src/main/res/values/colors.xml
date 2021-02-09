@@ -4,5 +4,4 @@
     <color name="bright_transparent">#afffffff</color>
     <color name="positive_button">#ffff4000</color>
     <color name="negative_button">#ff0040ff</color>
-    <color name="dropdown_background">#a0000000</color>
 </resources>

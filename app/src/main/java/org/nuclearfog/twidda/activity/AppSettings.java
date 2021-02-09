@@ -153,7 +153,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         locationSpinner.setAdapter(locationAdapter);
         FontAdapter fontAdapter = new FontAdapter(settings);
         fontSpinner.setAdapter(fontAdapter);
-        fontSpinner.setSelection(settings.getFont());
+        fontSpinner.setSelection(settings.getFontIndex());
 
         AppStyles.setTheme(settings, root);
 
@@ -411,7 +411,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (parent.getAdapter() instanceof LocationAdapter) {
             settings.setTrendLocation(locationAdapter.getItem(position));
         } else if (parent.getAdapter() instanceof FontAdapter) {
-            settings.setFont(position);
+            settings.setFontIndex(position);
             AppStyles.setViewFont(settings, root);
         }
     }

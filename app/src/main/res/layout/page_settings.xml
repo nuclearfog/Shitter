@@ -197,7 +197,7 @@
                         android:id="@+id/spinner_font"
                         android:layout_width="@dimen/settings_spinner_font_width"
                         android:layout_height="match_parent"
-                        android:popupBackground="@color/dropdown_background" />
+                        android:popupBackground="@android:color/transparent" />
 
                 </LinearLayout>
 
@@ -337,7 +337,7 @@
                         android:id="@+id/spinner_woeid"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:popupBackground="@color/dropdown_background" />
+                        android:popupBackground="@android:color/transparent" />
 
                 </LinearLayout>
 

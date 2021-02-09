@@ -18,12 +18,33 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
  */
 public class FontAdapter extends BaseAdapter {
 
+    /**
+     * text padding of an item
+     */
     private static final int TEXT_PADDING = 20;
+
+    /**
+     * font size of an item
+     */
     private static final float FONT_SIZE = 24.0f;
+
+    /**
+     * Background color transparency mask
+     */
+    private static final int TRANSPARENCY_MASK = 0xbfffffff;
+
+    /**
+     * android system fonts
+     */
     private static final Typeface[] fonts = GlobalSettings.FONTS;
+
+    /**
+     * font names of the system fonts
+     */
     private static final String[] names = GlobalSettings.FONT_NAMES;
 
     private GlobalSettings settings;
+
 
     public FontAdapter(GlobalSettings settings) {
         this.settings = settings;
@@ -50,19 +71,20 @@ public class FontAdapter extends BaseAdapter {
 
     @Override
     public View getView(int pos, View view, ViewGroup parent) {
-        TextView tv;
+        TextView textItem;
         String name = names[pos];
         Typeface font = fonts[pos];
         if (view instanceof TextView)
-            tv = (TextView) view;
+            textItem = (TextView) view;
         else {
-            tv = new TextView(parent.getContext());
-            tv.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
-            tv.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
-            tv.setTextColor(settings.getFontColor());
+            textItem = new TextView(parent.getContext());
+            textItem.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
+            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
+            textItem.setTextColor(settings.getFontColor());
         }
-        tv.setText(name);
-        tv.setTypeface(font);
-        return tv;
+        textItem.setText(name);
+        textItem.setTypeface(font);
+        textItem.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY_MASK);
+        return textItem;
     }
 }
