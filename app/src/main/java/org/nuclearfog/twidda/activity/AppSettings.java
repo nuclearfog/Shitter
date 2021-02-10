@@ -41,7 +41,7 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -64,7 +64,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG
  * @author nuclearfog
  */
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
-        OnCheckedChangeListener, OnItemSelectedListener, OnDialogClick, OnColorChangedListener {
+        OnCheckedChangeListener, OnItemSelectedListener, OnDialogConfirmListener, OnColorChangedListener {
 
     private enum ColorMode {
         BACKGROUND,

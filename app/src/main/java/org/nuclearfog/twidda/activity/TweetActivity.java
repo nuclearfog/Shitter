@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.backend.items.Tweet;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -76,7 +76,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
  * @author nuclearfog
  */
 public class TweetActivity extends AppCompatActivity implements OnClickListener,
-        OnLongClickListener, OnTagClickListener, OnDialogClick {
+        OnLongClickListener, OnTagClickListener, OnDialogConfirmListener {
 
     /**
      * ID of the tweet to open. required

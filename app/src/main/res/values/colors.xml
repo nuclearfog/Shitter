@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="half_transparent">#40000000</color>
+    <color name="background">#80000000</color>
     <color name="bright_transparent">#afffffff</color>
     <color name="positive_button">#ffff4000</color>
     <color name="negative_button">#ff0040ff</color>

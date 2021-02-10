@@ -29,7 +29,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -55,7 +55,7 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_UPDATE
  * @author nuclearfog
  */
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener,
-        OnQueryTextListener, ListManagerCallback, OnDialogClick {
+        OnQueryTextListener, ListManagerCallback, OnDialogConfirmListener {
 
     /**
      * Key to get user list object

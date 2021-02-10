@@ -24,6 +24,11 @@ public class FontAdapter extends BaseAdapter {
     private static final int TEXT_PADDING = 20;
 
     /**
+     * item text padding to the next text item
+     */
+    private static final int TEXT_PADDING_BOTTOM = 5;
+
+    /**
      * font size of an item
      */
     private static final float FONT_SIZE = 24.0f;
@@ -79,7 +84,7 @@ public class FontAdapter extends BaseAdapter {
         else {
             textItem = new TextView(parent.getContext());
             textItem.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
-            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
+            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, TEXT_PADDING_BOTTOM);
             textItem.setTextColor(settings.getFontColor());
         }
         textItem.setText(name);

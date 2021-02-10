@@ -19,7 +19,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.UserList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -34,7 +34,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_U
  * @author nuclearfog
  */
 public class UserFragment extends ListFragment implements UserClickListener,
-        OnDialogClick, ListManagerCallback {
+        OnDialogConfirmListener, ListManagerCallback {
 
     /**
      * key to set the type of user list to show

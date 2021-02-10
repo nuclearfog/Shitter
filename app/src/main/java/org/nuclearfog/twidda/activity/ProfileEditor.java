@@ -31,8 +31,8 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStop;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -56,7 +56,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, OnProgressStop, OnDialogClick, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnDialogConfirmListener, Callback {
 
     /**
      * key to preload user data

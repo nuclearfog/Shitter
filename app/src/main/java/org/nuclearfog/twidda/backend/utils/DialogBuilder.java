@@ -59,7 +59,7 @@ public final class DialogBuilder {
      * @param listener listener for positive button
      * @return dialog instance
      */
-    public static AlertDialog create(Context context, final DialogType type, final OnDialogClick listener) {
+    public static AlertDialog create(Context context, final DialogType type, final OnDialogConfirmListener listener) {
         int posButton = R.string.dialog_button_yes;
         int negButton = R.string.dialog_button_no;
         int title = 0;
@@ -160,7 +160,7 @@ public final class DialogBuilder {
      * @param l       stop listener
      * @return dialog instance to show
      */
-    public static Dialog createProgress(Context context, final OnProgressStop l) {
+    public static Dialog createProgress(Context context, final OnProgressStopListener l) {
         View load = View.inflate(context, R.layout.item_load, null);
         ImageView cancel = load.findViewById(R.id.kill_button);
         ProgressBar circle = load.findViewById(R.id.progress_item);
@@ -184,9 +184,9 @@ public final class DialogBuilder {
     }
 
     /**
-     * listener for dialog
+     * Alert dialog listener
      */
-    public interface OnDialogClick {
+    public interface OnDialogConfirmListener {
 
         /**
          * called when the positive button was clicked
@@ -199,7 +199,7 @@ public final class DialogBuilder {
     /**
      * listener for progress
      */
-    public interface OnProgressStop {
+    public interface OnProgressStopListener {
 
         void stopProgress();
     }

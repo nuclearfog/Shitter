@@ -39,7 +39,7 @@ import org.nuclearfog.twidda.backend.items.Relation;
 import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -90,7 +90,7 @@ import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
  * @author nuclearfog
  */
 public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener,
-        OnTabSelectedListener, OnDialogClick, Callback {
+        OnTabSelectedListener, OnDialogConfirmListener, Callback {
 
     /**
      * Key for the user ID

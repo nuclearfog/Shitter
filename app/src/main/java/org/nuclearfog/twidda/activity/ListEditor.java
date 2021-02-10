@@ -23,7 +23,7 @@ import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -39,7 +39,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_
  *
  * @author nuclearfog
  */
-public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogClick, DialogBuilder.OnProgressStop {
+public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogConfirmListener, DialogBuilder.OnProgressStopListener {
 
     /**
      * Key for the list ID of the list if an existing list should be updated

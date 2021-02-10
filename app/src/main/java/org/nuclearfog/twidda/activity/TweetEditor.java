@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -46,7 +46,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET
  *
  * @author nuclearfog
  */
-public class TweetEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStop, OnDialogClick {
+public class TweetEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStopListener, OnDialogConfirmListener {
 
     /**
      * type of media attached to the tweet

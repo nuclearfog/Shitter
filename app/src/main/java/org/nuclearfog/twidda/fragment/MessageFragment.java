@@ -20,7 +20,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.lists.MessageList;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import static android.os.AsyncTask.Status.RUNNING;
@@ -38,7 +38,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_M
  *
  * @author nuclearfog
  */
-public class MessageFragment extends ListFragment implements OnItemSelected, OnDialogClick {
+public class MessageFragment extends ListFragment implements OnItemSelected, OnDialogConfirmListener {
 
 
     private MessageLoader messageTask;

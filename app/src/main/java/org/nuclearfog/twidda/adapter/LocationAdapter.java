@@ -30,6 +30,11 @@ public class LocationAdapter extends BaseAdapter {
     private static final int TEXT_PADDING = 20;
 
     /**
+     * item text padding to the next text item
+     */
+    private static final int TEXT_PADDING_BOTTOM = 5;
+
+    /**
      * text size of the items
      */
     private static final float TEXT_SIZE = 16.0f;
@@ -112,7 +117,7 @@ public class LocationAdapter extends BaseAdapter {
         } else {
             textItem = new TextView(parent.getContext());
             textItem.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
-            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, 0);
+            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, TEXT_PADDING_BOTTOM);
         }
         textItem.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY_MASK);
         textItem.setTextColor(settings.getFontColor());

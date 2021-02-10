@@ -20,8 +20,8 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogClick;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStop;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -40,7 +40,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSA
  *
  * @author nuclearfog
  */
-public class MessageEditor extends MediaActivity implements OnClickListener, OnDialogClick, OnProgressStop {
+public class MessageEditor extends MediaActivity implements OnClickListener, OnDialogConfirmListener, OnProgressStopListener {
 
     /**
      * key for the screen name if any
