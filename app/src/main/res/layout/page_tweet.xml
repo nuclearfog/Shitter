@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tweet_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,8 +14,7 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -33,7 +31,7 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/profileimage_detail"
+                        android:id="@+id/tweet_profile"
                         android:layout_width="@dimen/tweet_profile"
                         android:layout_height="@dimen/tweet_profile"
                         android:layout_marginStart="@dimen/tweet_profileimage_margin"
@@ -44,7 +42,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/usernamedetail"
+                        android:id="@+id/tweet_username"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tweet_textview_margin"
@@ -53,14 +51,14 @@
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:singleLine="true"
-                        app:layout_constraintBottom_toTopOf="@+id/scrnamedetail"
+                        app:layout_constraintBottom_toTopOf="@+id/tweet_screenname"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/profileimage_detail"
-                        app:layout_constraintTop_toTopOf="@+id/profileimage_detail"
+                        app:layout_constraintStart_toEndOf="@+id/tweet_profile"
+                        app:layout_constraintTop_toTopOf="@+id/tweet_profile"
                         app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
-                        android:id="@+id/scrnamedetail"
+                        android:id="@+id/tweet_screenname"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tweet_textview_margin"
@@ -69,14 +67,14 @@
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:drawablePadding="@dimen/tweet_padding_drawable"
                         android:singleLine="true"
-                        app:layout_constraintBottom_toTopOf="@+id/timedetail"
+                        app:layout_constraintBottom_toTopOf="@+id/tweet_date"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/profileimage_detail"
-                        app:layout_constraintTop_toBottomOf="@+id/usernamedetail"
+                        app:layout_constraintStart_toEndOf="@+id/tweet_profile"
+                        app:layout_constraintTop_toBottomOf="@+id/tweet_username"
                         app:layout_constraintVertical_chainStyle="packed" />
 
                     <TextView
-                        android:id="@+id/timedetail"
+                        android:id="@+id/tweet_date"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tweet_textview_margin"
@@ -85,10 +83,10 @@
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:singleLine="true"
                         android:textSize="@dimen/tweet_textsize_small"
-                        app:layout_constraintBottom_toBottomOf="@+id/profileimage_detail"
+                        app:layout_constraintBottom_toBottomOf="@+id/tweet_profile"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/profileimage_detail"
-                        app:layout_constraintTop_toBottomOf="@+id/scrnamedetail"
+                        app:layout_constraintStart_toEndOf="@+id/tweet_profile"
+                        app:layout_constraintTop_toBottomOf="@+id/tweet_screenname"
                         app:layout_constraintVertical_chainStyle="packed" />
 
                     <androidx.constraintlayout.widget.Barrier
@@ -96,11 +94,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:barrierDirection="bottom"
-                        app:constraint_referenced_ids="profileimage_detail, timedetail"
-                        tools:layout_editor_absoluteY="219dp" />
+                        app:constraint_referenced_ids="tweet_profile, tweet_date" />
 
                     <Button
-                        android:id="@+id/answer_reference_detail"
+                        android:id="@+id/tweet_answer_reference"
                         style="@style/FeedbackButton"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/tweet_button_height"
@@ -116,10 +113,10 @@
                         app:layout_constraintHorizontal_chainStyle="packed"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tweet_profile_barrier"
-                        app:layout_constraintEnd_toStartOf="@id/tweet_retweeter" />
+                        app:layout_constraintEnd_toStartOf="@id/tweet_retweeter_reference" />
 
                     <Button
-                        android:id="@+id/tweet_retweeter"
+                        android:id="@+id/tweet_retweeter_reference"
                         style="@style/FeedbackButton"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/tweet_button_height"
@@ -132,7 +129,7 @@
                         android:textSize="@dimen/tweet_textsize_small"
                         android:visibility="invisible"
                         app:layout_constraintHorizontal_chainStyle="packed"
-                        app:layout_constraintStart_toEndOf="@id/answer_reference_detail"
+                        app:layout_constraintStart_toEndOf="@id/tweet_answer_reference"
                         app:layout_constraintTop_toBottomOf="@+id/tweet_profile_barrier"
                         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -141,7 +138,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:barrierDirection="bottom"
-                        app:constraint_referenced_ids="tweet_retweeter, answer_reference_detail" />
+                        app:constraint_referenced_ids="tweet_retweeter_reference, tweet_answer_reference" />
 
                     <TextView
                         android:id="@+id/tweet_detailed"
@@ -168,8 +165,8 @@
                         android:layout_marginTop="@dimen/tweet_button_margin"
                         android:contentDescription="@string/image_preview"
                         android:visibility="invisible"
-                        app:layout_constraintEnd_toEndOf="@+id/used_api"
-                        app:layout_constraintStart_toStartOf="@+id/used_api"
+                        app:layout_constraintEnd_toEndOf="@+id/tweet_api"
+                        app:layout_constraintStart_toStartOf="@+id/tweet_api"
                         app:layout_constraintTop_toBottomOf="@+id/tweet_detailed" />
 
                     <TextView
@@ -232,11 +229,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:barrierDirection="bottom"
-                        app:constraint_referenced_ids="tweet_location_coordinate, tweet_location_name"
-                        tools:layout_editor_absoluteY="206dp" />
+                        app:constraint_referenced_ids="tweet_location_coordinate, tweet_location_name" />
 
                     <TextView
-                        android:id="@+id/used_api"
+                        android:id="@+id/tweet_api"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tweet_textview_margin"
@@ -293,14 +289,14 @@
                     android:paddingLeft="@dimen/tweet_button_margin"
                     android:paddingRight="@dimen/tweet_button_margin"
                     android:visibility="invisible"
-                    app:layout_constraintEnd_toStartOf="@+id/tweet_favorit"
+                    app:layout_constraintEnd_toStartOf="@+id/tweet_favorite"
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/tweet_answer"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toTopOf="@id/tweet_pager" />
 
                 <Button
-                    android:id="@+id/tweet_favorit"
+                    android:id="@+id/tweet_favorite"
                     style="@style/FeedbackButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/tweet_button_height"
@@ -322,9 +318,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tweet_favorit">
-
-                </androidx.viewpager.widget.ViewPager>
+                    app:layout_constraintTop_toBottomOf="@+id/tweet_favorite" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

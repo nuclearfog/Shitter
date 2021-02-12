@@ -120,19 +120,19 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         toolbar = findViewById(R.id.tweet_toolbar);
         ansButton = findViewById(R.id.tweet_answer);
         rtwButton = findViewById(R.id.tweet_retweet);
-        favButton = findViewById(R.id.tweet_favorit);
-        usrName = findViewById(R.id.usernamedetail);
-        scrName = findViewById(R.id.scrnamedetail);
-        profile_img = findViewById(R.id.profileimage_detail);
-        replyName = findViewById(R.id.answer_reference_detail);
+        favButton = findViewById(R.id.tweet_favorite);
+        usrName = findViewById(R.id.tweet_username);
+        scrName = findViewById(R.id.tweet_screenname);
+        profile_img = findViewById(R.id.tweet_profile);
+        replyName = findViewById(R.id.tweet_answer_reference);
         tweetText = findViewById(R.id.tweet_detailed);
-        tweetDate = findViewById(R.id.timedetail);
-        tweet_api = findViewById(R.id.used_api);
+        tweetDate = findViewById(R.id.tweet_date);
+        tweet_api = findViewById(R.id.tweet_api);
         tweetLocName = findViewById(R.id.tweet_location_name);
         tweetLocGPS = findViewById(R.id.tweet_location_coordinate);
         mediaButton = findViewById(R.id.tweet_media_attach);
         sensitive_media = findViewById(R.id.tweet_sensitive);
-        retweeter = findViewById(R.id.tweet_retweeter);
+        retweeter = findViewById(R.id.tweet_retweeter_reference);
 
         Object data = getIntent().getSerializableExtra(KEY_TWEET_DATA);
         long tweetId;
@@ -305,13 +305,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 startActivity(userList);
             }
             // open profile of the tweet author
-            else if (v.getId() == R.id.profileimage_detail) {
+            else if (v.getId() == R.id.tweet_profile) {
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 profile.putExtra(UserProfile.KEY_PROFILE_DATA, clickedTweet.getUser());
                 startActivity(profile);
             }
             // open replied tweet
-            else if (v.getId() == R.id.answer_reference_detail) {
+            else if (v.getId() == R.id.tweet_answer_reference) {
                 Intent answerIntent = new Intent(getApplicationContext(), TweetActivity.class);
                 answerIntent.putExtra(KEY_TWEET_ID, clickedTweet.getReplyId());
                 answerIntent.putExtra(KEY_TWEET_NAME, clickedTweet.getReplyName());
@@ -347,7 +347,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 startActivity(mediaIntent);
             }
             // go to user retweeting this tweet
-            else if (v.getId() == R.id.tweet_retweeter) {
+            else if (v.getId() == R.id.tweet_retweeter_reference) {
                 Intent profile = new Intent(getApplicationContext(), UserProfile.class);
                 profile.putExtra(UserProfile.KEY_PROFILE_DATA, tweet.getUser());
                 startActivity(profile);
@@ -370,7 +370,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 return true;
             }
             // favorite the tweet
-            else if (v.getId() == R.id.tweet_favorit) {
+            else if (v.getId() == R.id.tweet_favorite) {
                 if (tweet.favored())
                     statusAsync.execute(Action.UNFAVORITE);
                 else
