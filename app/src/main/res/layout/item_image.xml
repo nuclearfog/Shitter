@@ -17,13 +17,14 @@
 
         <ImageButton
             android:id="@+id/item_image_save"
+            style="@style/RoundButton"
             android:layout_width="@dimen/imageitem_button_size"
             android:layout_height="@dimen/imageitem_button_size"
             android:layout_gravity="top|end"
             android:layout_margin="@dimen/imageitem_button_margin"
             android:contentDescription="@string/item_image_save"
-            android:visibility="gone"
-            style="@style/RoundButton" />
+            android:padding="@dimen/imageitem_drawable_padding"
+            android:visibility="gone" />
 
     </FrameLayout>
 

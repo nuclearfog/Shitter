@@ -146,6 +146,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/tweet_textview_margin"
                         android:layout_marginLeft="@dimen/tweet_textview_margin"
+                        android:layout_marginTop="@dimen/tweet_textview_margin"
                         android:layout_marginEnd="@dimen/tweet_textview_margin"
                         android:layout_marginRight="@dimen/tweet_textview_margin"
                         android:fadeScrollbars="false"

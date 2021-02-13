@@ -145,10 +145,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             }
             return item;
         } else {
-            View view = inflater.inflate(R.layout.item_image_load, parent, false);
-            Footer footer = new Footer(view, settings);
-            footer.loadBtn.setVisibility(View.INVISIBLE);
-            return footer;
+            View view = inflater.inflate(R.layout.item_placeholder, parent, false);
+            return new Footer(view, settings, true);
         }
     }
 

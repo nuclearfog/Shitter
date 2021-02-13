@@ -175,7 +175,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
             return itemHolder;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final Footer footer = new Footer(v, settings);
+            final Footer footer = new Footer(v, settings, false);
             footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

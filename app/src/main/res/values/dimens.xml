@@ -151,12 +151,11 @@
 
     <!--dimens of item_image.xml-->
     <dimen name="imageitem_button_margin">5dp</dimen>
+    <dimen name="imageitem_drawable_padding">5dp</dimen>
     <dimen name="imageitem_button_size">30dp</dimen>
     <dimen name="imageitem_layout_margin">2dp</dimen>
 
     <!--dimens of item_image_load.xml-->
-    <dimen name="item_imageload_progress_size">48dp</dimen>
-    <dimen name="itemimageload_layout_margin">16dp</dimen>
 
     <!--dimens of page_userlist.xml-->
     <dimen name="userlistpage_toolbar_height">@dimen/toolbar_height</dimen>

@@ -190,7 +190,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final Footer vh = new Footer(v, settings);
+            final Footer vh = new Footer(v, settings, false);
             vh.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

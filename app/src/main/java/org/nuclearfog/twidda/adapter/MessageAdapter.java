@@ -163,7 +163,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             return vh;
         } else {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final Footer footer = new Footer(v, settings);
+            final Footer footer = new Footer(v, settings, false);
             footer.loadBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
