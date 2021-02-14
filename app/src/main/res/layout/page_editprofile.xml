@@ -21,8 +21,8 @@
     <Button
         android:id="@+id/edit_add_banner"
         style="@style/FeedbackButton"
-        android:layout_width="88dp"
-        android:layout_height="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/editprofile_button_height"
         android:paddingLeft="@dimen/editprofile_button_padding"
         android:paddingRight="@dimen/editprofile_button_padding"
         android:text="@string/editprofile_add_banner"

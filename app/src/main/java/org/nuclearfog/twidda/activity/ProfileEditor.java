@@ -72,7 +72,6 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     private Dialog loadingCircle, closeDialog;
     private AlertDialog errorDialog;
 
-    @Nullable
     private User user;
     private String profileLink, bannerLink;
 
@@ -283,26 +282,24 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
      * Set current user's information
      */
     private void setUser() {
-        if (user != null) {
-            if (user.hasProfileImage()) {
-                String pbLink = user.getImageLink();
-                if (!user.hasDefaultProfileImage())
-                    pbLink += PROFILE_IMG_HIGH_RES;
-                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
-            }
-            if (user.hasBannerImage()) {
-                String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
-                Picasso.get().load(bnLink).into(profile_banner, this);
-                addBannerBtn.setVisibility(INVISIBLE);
-                changeBannerBtn.setVisibility(VISIBLE);
-            } else {
-                addBannerBtn.setVisibility(VISIBLE);
-                changeBannerBtn.setVisibility(INVISIBLE);
-            }
-            name.setText(user.getUsername());
-            link.setText(user.getLink());
-            loc.setText(user.getLocation());
-            bio.setText(user.getBio());
+        if (user.hasProfileImage()) {
+            String pbLink = user.getImageLink();
+            if (!user.hasDefaultProfileImage())
+                pbLink += PROFILE_IMG_HIGH_RES;
+            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
         }
+        if (user.hasBannerImage()) {
+            String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
+            Picasso.get().load(bnLink).into(profile_banner, this);
+            addBannerBtn.setVisibility(INVISIBLE);
+            changeBannerBtn.setVisibility(VISIBLE);
+        } else {
+            addBannerBtn.setVisibility(VISIBLE);
+            changeBannerBtn.setVisibility(INVISIBLE);
+        }
+        name.setText(user.getUsername());
+        link.setText(user.getLink());
+        loc.setText(user.getLocation());
+        bio.setText(user.getBio());
     }
 }

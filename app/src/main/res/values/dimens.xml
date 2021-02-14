@@ -56,6 +56,8 @@
     <dimen name="editprofile_layout_margin">5dp</dimen>
     <dimen name="editprofile_layout_padding">20dp</dimen>
     <dimen name="editprofile_button_padding">5dp</dimen>
+    <dimen name="editprofile_button_height">20sp</dimen>
+    <dimen name="editprofile_button_width">120sp</dimen>
     <dimen name="editprofile_edittext_padding">5dp</dimen>
     <dimen name="editprofile_bio_min_height">150dp</dimen>
     <dimen name="editprofile_image">@dimen/profile_image_size</dimen>
