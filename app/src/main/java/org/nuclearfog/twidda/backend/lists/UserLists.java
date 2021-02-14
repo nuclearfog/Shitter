@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.backend.items.TwitterList;
 import java.util.LinkedList;
 
 /**
- * Container class for user lists containing extra cursors for paging
+ * Container class for user lists containing cursor information
  *
  * @author nuclearfog
  */

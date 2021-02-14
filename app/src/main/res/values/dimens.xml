@@ -27,6 +27,7 @@
     <dimen name="tweet_profileimage_margin">5dp</dimen>
     <dimen name="tweet_textview_margin">5dp</dimen>
     <dimen name="tweet_button_margin">5dp</dimen>
+    <dimen name="tweet_button_padding">5dp</dimen>
     <dimen name="tweet_button_height">20sp</dimen>
     <dimen name="tweet_padding_drawable">5dp</dimen>
     <dimen name="tweet_button_media_width">64dp</dimen>

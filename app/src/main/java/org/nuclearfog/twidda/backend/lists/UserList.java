@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.backend.items.User;
 import java.util.LinkedList;
 
 /**
- * custom twitter user list with cursors included
+ * custom twitter user list containing cursor information
  *
  * @author nuclearfog
  */

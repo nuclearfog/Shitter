@@ -31,7 +31,6 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
@@ -80,7 +79,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private LocationLoader locationAsync;
     private LocationAdapter locationAdapter;
 
-    private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector;
+    private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo;
     private View root, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
@@ -177,6 +176,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         connectDialog = DialogBuilder.create(this, WRONG_PROXY, this);
         databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
         logoutDialog = DialogBuilder.create(this, LOGOUT_APP, this);
+        appInfo = DialogBuilder.createInfoDialog(this);
 
         for (Button btn : colorButtons)
             btn.setOnClickListener(this);
@@ -236,13 +236,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.settings_info) {
-            Dialog dialog = new Dialog(this, R.style.AppInfoDialog);
-            dialog.setContentView(R.layout.dialog_app_info);
-            String versionName = " V" + BuildConfig.VERSION_NAME;
-            TextView appInfo = dialog.findViewById(R.id.settings_app_info);
-            appInfo.setLinkTextColor(settings.getHighlightColor());
-            appInfo.append(versionName);
-            dialog.show();
+            if (!appInfo.isShowing()) {
+                appInfo.show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

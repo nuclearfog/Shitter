@@ -7,9 +7,12 @@ import android.content.DialogInterface.OnClickListener;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
+import org.nuclearfog.twidda.BuildConfig;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -181,6 +184,22 @@ public final class DialogBuilder {
             }
         });
         return loadingCircle;
+    }
+
+    /**
+     * create dialog window with app information and links
+     *
+     * @param context context to create dialog
+     * @return dialog instance
+     */
+    @NonNull
+    public static Dialog createInfoDialog(Context context) {
+        Dialog dialog = new Dialog(context, R.style.AppInfoDialog);
+        dialog.setContentView(R.layout.dialog_app_info);
+        String versionName = " V" + BuildConfig.VERSION_NAME;
+        TextView appInfo = dialog.findViewById(R.id.settings_app_info);
+        appInfo.append(versionName);
+        return dialog;
     }
 
     /**
