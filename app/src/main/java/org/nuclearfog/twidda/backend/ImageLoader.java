@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.backend;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
 import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
@@ -23,13 +22,10 @@ import java.lang.ref.WeakReference;
  */
 public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
 
-    private static final float PREV_HEIGHT_RATIO = 5.0f;
-
     @Nullable
     private EngineException err;
     private TwitterEngine mTwitter;
     private WeakReference<MediaViewer> callback;
-    private float previewHeight, zoomPreview;
 
 
     /**
@@ -41,10 +37,6 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
-        Point displaySize = new Point();
-        callback.getWindowManager().getDefaultDisplay().getSize(displaySize);
-        zoomPreview = displaySize.x;
-        previewHeight = displaySize.y / PREV_HEIGHT_RATIO;
     }
 
 
@@ -59,7 +51,7 @@ public class ImageLoader extends AsyncTask<String, ImageHolder, Boolean> {
                     image = BitmapFactory.decodeFile(link);
                 }
                 if (image != null) {
-                    ImageHolder images = new ImageHolder(image, previewHeight, zoomPreview);
+                    ImageHolder images = new ImageHolder(image);
                     publishProgress(images);
                 }
             }

@@ -125,7 +125,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int pos = item.getAdapterPosition();
                     if (pos != NO_POSITION) {
-                        Bitmap img = images.get(pos).getMiddleSize();
+                        Bitmap img = images.get(pos).reducedImage;
                         itemClickListener.onImageClick(img);
                     }
                 }
@@ -137,7 +137,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                     public void onClick(View v) {
                         int pos = item.getAdapterPosition();
                         if (pos != NO_POSITION) {
-                            Bitmap img = images.get(pos).getOriginalImage();
+                            Bitmap img = images.get(pos).fullImage;
                             itemClickListener.onImageSave(img, pos);
                         }
                     }
@@ -155,7 +155,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         if (vh instanceof ImageItem) {
             ImageItem item = (ImageItem) vh;
-            Bitmap image = images.get(index).getSmallSize();
+            Bitmap image = images.get(index).preview;
             item.preview.setImageBitmap(image);
         }
     }

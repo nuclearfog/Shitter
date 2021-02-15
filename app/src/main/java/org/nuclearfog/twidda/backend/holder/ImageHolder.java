@@ -11,53 +11,53 @@ import androidx.annotation.NonNull;
  */
 public class ImageHolder {
 
-    private Bitmap smallImage, middleImage, fullImage;
+    /**
+     * maximum height of the smallest preview in pixels
+     */
+    private static final float previewHeight = 320.0f;
 
     /**
-     * @param fullImage        Full size image
-     * @param smallImageHeight height of the smallest image preview
-     * @param middleImageWidth width of the image preview
+     * maximum height of the image preview in pixels
      */
-    public ImageHolder(@NonNull Bitmap fullImage, float smallImageHeight, float middleImageWidth) {
+    private static final float reducedHeight = 1200.0f;
+
+    /**
+     * preview image bitmap
+     */
+    public final Bitmap preview;
+
+    /**
+     * downscaled image bitmap
+     */
+    public final Bitmap reducedImage;
+
+    /**
+     * full image bitmap
+     */
+    public final Bitmap fullImage;
+
+    /**
+     * @param fullImage Full size image
+     */
+    public ImageHolder(@NonNull Bitmap fullImage) {
         this.fullImage = fullImage;
 
-        float ratio = fullImage.getHeight() / smallImageHeight;
-        int destWidth = (int) (fullImage.getWidth() / ratio);
-        smallImage = Bitmap.createScaledBitmap(fullImage, destWidth, (int) smallImageHeight, false);
+        float reducedRatio = fullImage.getHeight() / reducedHeight;
+        float previewRatio = fullImage.getHeight() / previewHeight;
 
-        if (middleImageWidth > 0 && fullImage.getWidth() > middleImageWidth) {
-            ratio = fullImage.getWidth() / middleImageWidth;
-            int destHeight = (int) (fullImage.getHeight() / ratio);
-            middleImage = Bitmap.createScaledBitmap(fullImage, (int) middleImageWidth, destHeight, false);
+        if (reducedRatio > 1.0f) {
+            int height = (int) reducedHeight;
+            int width = (int) (fullImage.getWidth() / reducedRatio);
+            reducedImage = Bitmap.createScaledBitmap(fullImage, width, height, false);
         } else {
-            middleImage = fullImage;
+            reducedImage = fullImage;
         }
-    }
-
-    /**
-     * get small sized image
-     *
-     * @return Image Bitmap
-     */
-    public Bitmap getSmallSize() {
-        return smallImage;
-    }
-
-    /**
-     * get Middle sized image
-     *
-     * @return Image Bitmap
-     */
-    public Bitmap getMiddleSize() {
-        return middleImage;
-    }
-
-    /**
-     * get Original Image
-     *
-     * @return Image Bitmap
-     */
-    public Bitmap getOriginalImage() {
-        return fullImage;
+        if (previewRatio > 1.0f) {
+            int height = (int) previewHeight;
+            int width = (int) (fullImage.getWidth() / previewRatio);
+            preview = Bitmap.createScaledBitmap(fullImage, width, height, false);
+        } else {
+            preview = fullImage;
+        }
     }
 }

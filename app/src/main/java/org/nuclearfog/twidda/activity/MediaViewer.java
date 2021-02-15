@@ -8,7 +8,6 @@ import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -79,9 +78,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
     public static final int MEDIAVIEWER_ANGIF = 4;
 
     private ImageLoader imageAsync;
+    private GlobalSettings settings;
 
     private ProgressBar media_progress;
-    private MediaController videoController;
+    private MediaController controlPanel;
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
@@ -99,12 +99,12 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         media_progress = findViewById(R.id.media_progress);
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
-        videoController = new MediaController(this);
+        controlPanel = new MediaController(this);
         videoView.setZOrderOnTop(true);
         videoView.setOnPreparedListener(this);
         videoView.setOnErrorListener(this);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
+        settings = GlobalSettings.getInstance(this);
         adapter = new ImageAdapter(settings, this);
         AppStyles.setProgressColor(media_progress, settings.getHighlightColor());
 
@@ -115,7 +115,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
             case MEDIAVIEWER_IMG_S:
                 adapter.disableSaveButton();
             case MEDIAVIEWER_IMAGE:
-                videoView.setVisibility(GONE);
+                zoomImage.setVisibility(VISIBLE);
+                imageList.setVisibility(VISIBLE);
                 imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
                 imageList.setAdapter(adapter);
                 if (imageAsync == null) {
@@ -125,9 +126,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
                 break;
 
             case MEDIAVIEWER_VIDEO:
-                zoomImage.setVisibility(GONE);
-                imageList.setVisibility(GONE);
-                videoView.setMediaController(videoController);
+                videoView.setVisibility(VISIBLE);
+                videoView.setMediaController(controlPanel);
             case MEDIAVIEWER_ANGIF:
                 zoomImage.setVisibility(GONE);
                 Uri video = Uri.parse(mediaLinks[0]);
@@ -185,7 +185,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
         if (type == MEDIAVIEWER_ANGIF) {
             mp.setLooping(true);
         } else {
-            videoController.show(0);
+            controlPanel.show(Integer.MAX_VALUE);
+            AppStyles.setTheme(settings, controlPanel);
             if (videoPos > 0) {
                 mp.seekTo(videoPos);
             }
@@ -246,8 +247,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener,
     public void setImage(ImageHolder image) {
         if (adapter.isEmpty()) {
             zoomImage.reset();
-            zoomImage.setImageBitmap(image.getMiddleSize());
-            media_progress.setVisibility(View.INVISIBLE);
+            zoomImage.setImageBitmap(image.reducedImage);
+            media_progress.setVisibility(INVISIBLE);
         }
         adapter.addLast(image);
     }
