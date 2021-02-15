@@ -206,4 +206,8 @@
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
+    <string name="button_backward">Rewind</string>
+    <string name="button_forward">Fast forward</string>
+    <string name="button_play_pause">Pause/Play</string>
+    <string name="button_share">share link</string>
 </resources>

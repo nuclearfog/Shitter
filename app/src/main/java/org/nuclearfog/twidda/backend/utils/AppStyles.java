@@ -336,7 +336,7 @@ public final class AppStyles {
      * @param settings global settings instance
      * @param seekBar  seek bar to color
      */
-    private static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
+    public static void setSeekBarColor(GlobalSettings settings, SeekBar seekBar) {
         seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
         seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
     }

@@ -148,6 +148,7 @@
     <!--dimens of page_media.xml-->
     <dimen name="mediapage_preview_margin">10dp</dimen>
     <dimen name="mediapage_circle_size">64dp</dimen>
+    <dimen name="mediapage_controller_bottom_margin">20dp</dimen>
 
     <!--dimens of item_placeholder.xml-->
     <dimen name="placeholderitem_margin">8dp</dimen>
@@ -190,5 +191,11 @@
     <!--dimens of tabitem.xml-->
     <dimen name="tabitem_icon_size">22dp</dimen>
     <dimen name="tabitem_textsize">11sp</dimen>
+
+    <!--dimens of controlpanel-->
+    <dimen name="controller_seekbar_margin">10dp</dimen>
+    <dimen name="controller_text_margin">5dp</dimen>
+    <dimen name="controller_button_size">48dp</dimen>
+    <dimen name="controller_text_width">60sp</dimen>
 
 </resources>
