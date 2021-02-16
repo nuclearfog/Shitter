@@ -23,9 +23,9 @@
         android:layout_marginTop="@dimen/controller_seekbar_margin"
         android:contentDescription="@string/button_play_pause"
         android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@id/controller_forward"
         app:layout_constraintStart_toEndOf="@id/controller_backward"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/controller_forward" />
 
     <ImageButton
         android:id="@+id/controller_pause"
@@ -68,7 +68,6 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="controller_backward,controller_forward,controller_play" />
 
-
     <TextView
         android:id="@+id/controller_position"
         android:layout_width="@dimen/controller_text_width"
@@ -77,16 +76,17 @@
         android:layout_marginLeft="@dimen/controller_text_margin"
         android:singleLine="true"
         android:textSize="@dimen/controller_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/controller_progress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/controller_barrier" />
+        app:layout_constraintTop_toTopOf="@id/controller_progress"
+        app:layout_constraintBottom_toBottomOf="@+id/controller_progress"
+        app:layout_constraintEnd_toStartOf="@id/controller_progress" />
 
     <SeekBar
         android:id="@+id/controller_progress"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/controller_seekbar_margin"
+        android:layout_marginTop="@dimen/controller_seekbar_margin"
+        android:layout_marginBottom="@dimen/controller_seekbar_margin"
         android:contentDescription="@string/button_backward"
         app:layout_constraintStart_toEndOf="@id/controller_position"
         app:layout_constraintTop_toBottomOf="@id/controller_barrier"
@@ -101,9 +101,9 @@
         android:layout_marginRight="@dimen/controller_text_margin"
         android:singleLine="true"
         android:textSize="@dimen/controller_text_size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/controller_progress"
-        app:layout_constraintTop_toBottomOf="@id/controller_barrier" />
+        app:layout_constraintTop_toTopOf="@id/controller_progress"
+        app:layout_constraintBottom_toBottomOf="@+id/controller_progress"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

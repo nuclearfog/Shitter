@@ -163,7 +163,7 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
 
 
     @Override
-    public void run() {
+    public final void run() {
         boolean imageSaved = false;
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
