@@ -34,7 +34,7 @@ import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 /**
  * Adapter class for tweet list
@@ -275,7 +275,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             tweetItem.textViews[1].setText(user.getScreenname());
             tweetItem.textViews[3].setText(formatter.format(tweet.getRetweetCount()));
             tweetItem.textViews[4].setText(formatter.format(tweet.getFavoriteCount()));
-            tweetItem.textViews[6].setText(getTimeString(tweet.getTime()));
+            tweetItem.textViews[6].setText(formatCreationTime(tweet.getTime()));
 
             if (tweet.retweeted()) {
                 tweetItem.rtIcon.setColorFilter(Color.GREEN, SRC_IN);

@@ -36,15 +36,14 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
-import java.text.NumberFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static android.graphics.PorterDuff.Mode.SRC_IN;
 import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
@@ -97,10 +96,15 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
      */
     public static final int MEDIAVIEWER_ANGIF = 4;
 
-    private static final int PROGRESS_DELAY = 500;
-    private static final int SPEED_FACTOR = 6;
+    /**
+     * refresh time for video progress update
+     */
+    private static final int PROGRESS_UPDATE = 1000;
 
-    private static final NumberFormat formatter = NumberFormat.getIntegerInstance();
+    /**
+     * speed factor for fast forward or backward
+     */
+    private static final int SPEED_FACTOR = 6;
 
     private enum PlayStat {
         PLAY,
@@ -115,7 +119,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     private TextView duration, position;
     private ProgressBar loadingCircle;
     private SeekBar video_progress;
-    private ImageButton playPause;
+    private ImageButton play, pause;
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
@@ -138,29 +142,24 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         zoomImage = findViewById(R.id.image_full);
         videoView = findViewById(R.id.video_view);
         video_progress = controlPanel.findViewById(R.id.controller_progress);
-        playPause = controlPanel.findViewById(R.id.controller_playpause);
+        play = controlPanel.findViewById(R.id.controller_play);
+        pause = controlPanel.findViewById(R.id.controller_pause);
         duration = controlPanel.findViewById(R.id.controller_duration);
         position = controlPanel.findViewById(R.id.controller_position);
         ImageButton forward = controlPanel.findViewById(R.id.controller_forward);
         ImageButton backward = controlPanel.findViewById(R.id.controller_backward);
         ImageButton share = controlPanel.findViewById(R.id.controller_share);
 
-        videoView.setZOrderOnTop(true);
         GlobalSettings settings = GlobalSettings.getInstance(this);
         adapter = new ImageAdapter(settings, this);
         share.setImageResource(R.drawable.share);
         forward.setImageResource(R.drawable.forward);
         backward.setImageResource(R.drawable.backward);
-        playPause.setImageResource(R.drawable.pause);
+        play.setImageResource(R.drawable.play);
+        pause.setImageResource(R.drawable.pause);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
         controlPanel.setBackgroundColor(settings.getCardColor());
-        AppStyles.setSeekBarColor(settings, video_progress);
-        share.setColorFilter(settings.getIconColor(), SRC_IN);
-        forward.setColorFilter(settings.getIconColor(), SRC_IN);
-        backward.setColorFilter(settings.getIconColor(), SRC_IN);
-        playPause.setColorFilter(settings.getIconColor(), SRC_IN);
-        duration.setTextColor(settings.getFontColor());
-        position.setTextColor(settings.getFontColor());
+        AppStyles.setTheme(settings, controlPanel);
 
         // get intent data and type
         mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
@@ -193,7 +192,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                                 }
                             });
                         }
-                    }, PROGRESS_DELAY, PROGRESS_DELAY, TimeUnit.MILLISECONDS);
+                    }, PROGRESS_UPDATE, PROGRESS_UPDATE, TimeUnit.MILLISECONDS);
                 case MEDIAVIEWER_ANGIF:
                     zoomImage.setVisibility(GONE);
                     Uri video = Uri.parse(mediaLinks[0]);
@@ -202,7 +201,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             }
         }
         share.setOnClickListener(this);
-        playPause.setOnClickListener(this);
+        play.setOnClickListener(this);
+        pause.setOnClickListener(this);
         videoView.setOnTouchListener(this);
         backward.setOnTouchListener(this);
         forward.setOnTouchListener(this);
@@ -234,16 +234,22 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onClick(View v) {
-        // play/pause video
-        if (v.getId() == R.id.controller_playpause) {
-            if (videoView.isPlaying()) {
-                videoView.pause();
-                playPause.setImageResource(R.drawable.play);
-                playStat = PlayStat.PAUSE;
-            } else {
+        // play video
+        if (v.getId() == R.id.controller_play) {
+            if (!videoView.isPlaying()) {
+                play.setVisibility(INVISIBLE);
+                pause.setVisibility(VISIBLE);
                 videoView.resume();
-                playPause.setImageResource(R.drawable.pause);
                 playStat = PlayStat.PLAY;
+            }
+        }
+        // pause video
+        if (v.getId() == R.id.controller_pause) {
+            if (videoView.isPlaying()) {
+                pause.setVisibility(INVISIBLE);
+                play.setVisibility(VISIBLE);
+                videoView.pause();
+                playStat = PlayStat.PAUSE;
             }
         }
         // open link with another app
@@ -258,6 +264,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             }
         }
     }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -322,11 +329,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         } else {
             playStat = PlayStat.PLAY;
             video_progress.setMax(mp.getDuration());
-            duration.setText(formatter.format(mp.getDuration()));
+            duration.setText(StringTools.formatMediaTime(mp.getDuration()));
             if (videoPos > 0) {
                 mp.seekTo(videoPos);
             }
-            position.setText(formatter.format(mp.getCurrentPosition()));
+            position.setText(StringTools.formatMediaTime(mp.getCurrentPosition()));
             mp.setOnSeekCompleteListener(this);
         }
         mp.setOnInfoListener(this);
@@ -365,9 +372,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onSeekComplete(MediaPlayer mp) {
-        position.setText(formatter.format(mp.getCurrentPosition()));
+        position.setText(StringTools.formatMediaTime(mp.getCurrentPosition()));
         if (playStat == PlayStat.PLAY) {
-            playPause.setImageResource(R.drawable.pause);
             mp.start();
         }
     }
@@ -375,7 +381,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        playPause.setImageResource(R.drawable.play);
+        pause.setVisibility(INVISIBLE);
+        play.setVisibility(VISIBLE);
         playStat = PlayStat.PAUSE;
         videoPos = 0;
     }
@@ -383,6 +390,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        position.setText(StringTools.formatMediaTime(progress));
     }
 
 
@@ -437,11 +445,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             case PLAY:
                 video_progress.setProgress(videoPos);
                 videoPos = videoView.getCurrentPosition();
-                position.setText(formatter.format(videoPos));
                 break;
 
             case FORWARD:
-                videoPos += 2 * PROGRESS_DELAY * SPEED_FACTOR;
+                videoPos += 2 * PROGRESS_UPDATE * SPEED_FACTOR;
                 if (videoPos > videoView.getDuration())
                     videoPos = videoView.getDuration();
                 videoView.pause();
@@ -449,7 +456,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                 break;
 
             case BACKWARD:
-                videoPos -= 2 * PROGRESS_DELAY * SPEED_FACTOR;
+                videoPos -= 2 * PROGRESS_UPDATE * SPEED_FACTOR;
                 if (videoPos < 0)
                     videoPos = 0;
                 videoView.pause();

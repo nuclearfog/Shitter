@@ -29,7 +29,7 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 /**
  * Adapter class for user lists
@@ -204,7 +204,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[1].setText(item.getDescription());
                 vh.textViews[2].setText(owner.getUsername());
                 vh.textViews[3].setText(owner.getScreenname());
-                vh.textViews[4].setText(getTimeString(item.getCreatedAt()));
+                vh.textViews[4].setText(formatCreationTime(item.getCreatedAt()));
                 vh.textViews[5].setText(formatter.format(item.getMemberCount()));
                 vh.textViews[6].setText(formatter.format(item.getSubscriberCount()));
                 if (settings.getImageLoad() && owner.hasProfileImage()) {

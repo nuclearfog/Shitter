@@ -195,7 +195,9 @@
     <!--dimens of controlpanel-->
     <dimen name="controller_seekbar_margin">10dp</dimen>
     <dimen name="controller_text_margin">5dp</dimen>
-    <dimen name="controller_button_size">48dp</dimen>
+    <dimen name="controller_text_size">12sp</dimen>
+    <dimen name="controller_button_width">64dp</dimen>
+    <dimen name="controller_button_height">32dp</dimen>
     <dimen name="controller_text_width">60sp</dimen>
 
 </resources>

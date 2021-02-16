@@ -62,12 +62,12 @@
         <activity
             android:name=".activity.TweetEditor"
             android:screenOrientation="portrait"
-            android:theme="@style/Transparency" />
+            android:theme="@style/TransparencyDim" />
 
         <activity
             android:name=".activity.MessageEditor"
             android:screenOrientation="portrait"
-            android:theme="@style/Transparency" />
+            android:theme="@style/TransparencyDim" />
 
         <activity
             android:name=".activity.AppSettings"
@@ -118,7 +118,7 @@
         <activity
             android:name=".activity.ListEditor"
             android:screenOrientation="portrait"
-            android:theme="@style/Transparency" />
+            android:theme="@style/TransparencyDim" />
 
     </application>
 

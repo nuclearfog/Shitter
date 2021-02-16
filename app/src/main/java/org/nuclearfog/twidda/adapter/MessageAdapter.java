@@ -28,7 +28,7 @@ import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
-import static org.nuclearfog.twidda.backend.utils.StringTools.getTimeString;
+import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
 
 /**
  * Adapter class for direct messages list
@@ -195,7 +195,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 holder.textViews[0].setText(sender.getUsername());
                 holder.textViews[1].setText(sender.getScreenname());
                 holder.textViews[2].setText(message.getReceiver().getScreenname());
-                holder.textViews[3].setText(getTimeString(message.getTime()));
+                holder.textViews[3].setText(formatCreationTime(message.getTime()));
                 holder.textViews[4].setText(text);
                 if (sender.isVerified()) {
                     holder.verifiedIcon.setVisibility(VISIBLE);

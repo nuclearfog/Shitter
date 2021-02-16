@@ -19,7 +19,7 @@ public final class StringTools {
      * @param time time value from which to create a difference
      * @return time string showing the time difference
      */
-    public static String getTimeString(long time) {
+    public static String formatCreationTime(long time) {
         long diff = new Date().getTime() - time;
         long seconds = diff / 1000;
         long minutes = seconds / 60;
@@ -49,7 +49,29 @@ public final class StringTools {
     }
 
     /**
-     * count @usernames in a string
+     * format media time to string
+     *
+     * @param time duration/current position in ms
+     * @return time string
+     */
+    public static String formatMediaTime(int time) {
+        String result = "";
+        int seconds = (time / 1000) % 60;
+        int minutes = (time / 60000) % 60;
+
+        if (minutes < 10)
+            result += "0";
+        result += minutes + ":";
+
+        if (seconds < 10)
+            result += "0";
+        result += seconds;
+
+        return result;
+    }
+
+    /**
+     * count @username mentions in a string
      *
      * @param text text
      * @return username count
@@ -59,7 +81,7 @@ public final class StringTools {
         for (int i = 0; i < text.length() - 1; i++) {
             if (text.charAt(i) == '@') {
                 char next = text.charAt(i + 1);
-                if ((next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z') || (next >= '0' && next <= '9')) {
+                if ((next >= 'a' && next <= 'z') || (next >= 'A' && next <= 'Z') || (next >= '0' && next <= '9') || next == '_') {
                     result++;
                 }
             }
