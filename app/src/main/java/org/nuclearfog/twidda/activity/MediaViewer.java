@@ -98,6 +98,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     public static final int MEDIAVIEWER_ANGIF = 4;
 
     /**
+     * transparency color mask for control panel
+     */
+    private static final int PANEL_TRANSPARENCY = 0x7fffffff;
+
+    /**
      * refresh time for video progress update
      */
     private static final int PROGRESS_UPDATE = 1000;
@@ -166,7 +171,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         pause.setImageResource(R.drawable.pause);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
         controlPanel.setBackgroundColor(settings.getCardColor());
-        AppStyles.setTheme(settings, controlPanel);
+        AppStyles.setTheme(settings, controlPanel, settings.getBackgroundColor() & PANEL_TRANSPARENCY);
 
         // get intent data and type
         mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);
@@ -229,8 +234,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         if (type == MEDIAVIEWER_VIDEO) {
             playStat = PlayStat.PAUSE;
             setPlayPauseButton();
-            videoPos = videoView.getCurrentPosition();
             videoView.pause();
+            videoPos = videoView.getCurrentPosition();
         }
     }
 
@@ -279,7 +284,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        // fast backward
         if (v.getId() == R.id.controller_backward) {
+            if (playStat == PlayStat.PAUSE)
+                return false;
             if (event.getAction() == ACTION_DOWN) {
                 playStat = PlayStat.BACKWARD;
                 videoView.pause();
@@ -290,7 +298,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                 videoView.resume();
                 return true;
             }
-        } else if (v.getId() == R.id.controller_forward) {
+        }
+        // fast forward
+        else if (v.getId() == R.id.controller_forward) {
+            if (playStat == PlayStat.PAUSE)
+                return false;
             if (event.getAction() == ACTION_DOWN) {
                 playStat = PlayStat.FORWARD;
                 videoView.pause();
@@ -301,7 +313,9 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                 videoView.resume();
                 return true;
             }
-        } else if (v.getId() == R.id.video_view) {
+        }
+        // show/hide control panel
+        else if (v.getId() == R.id.video_view) {
             if (event.getAction() == ACTION_DOWN) {
                 if (controlPanel.getVisibility() == VISIBLE) {
                     controlPanel.setVisibility(INVISIBLE);
@@ -334,9 +348,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onImageSave(Bitmap image, int pos) {
-        String link = mediaLinks[pos];
-        String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
-        storeImage(image, name);
+        if (mediaLinks != null && pos < mediaLinks.length && mediaLinks[pos] != null) {
+            String link = mediaLinks[pos];
+            String name = "shitter_" + link.substring(link.lastIndexOf('/') + 1);
+            storeImage(image, name);
+        }
     }
 
 
@@ -345,13 +361,14 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         if (type == MEDIAVIEWER_ANGIF) {
             mp.setLooping(true);
         } else {
-            if (playStat == PlayStat.IDLE)
+            if (playStat == PlayStat.IDLE) {
                 playStat = PlayStat.PLAY;
-            video_progress.setMax(mp.getDuration());
-            duration.setText(StringTools.formatMediaTime(mp.getDuration()));
+            }
             if (videoPos > 0) {
                 mp.seekTo(videoPos);
             }
+            video_progress.setMax(mp.getDuration());
+            duration.setText(StringTools.formatMediaTime(mp.getDuration()));
             position.setText(StringTools.formatMediaTime(mp.getCurrentPosition()));
             mp.setOnSeekCompleteListener(this);
         }

@@ -746,7 +746,7 @@ public class AppDatabase {
      *
      * @param tweetId ID of the favored tweet
      * @param ownerId ID of the favorite list owner
-     * @param db      SQLITE DB
+     * @param db      database instance
      */
     private void storeFavorite(long tweetId, long ownerId, SQLiteDatabase db) {
         ContentValues favTable = new ContentValues();
@@ -758,7 +758,7 @@ public class AppDatabase {
     /**
      * clear old favorites from table
      *
-     * @param db     SQLITE DB
+     * @param db     database instance
      * @param userId ID of the favorite list owner
      */
     private void removeOldFavorites(SQLiteDatabase db, long userId) {
@@ -770,7 +770,7 @@ public class AppDatabase {
      * store direct message
      *
      * @param message direct message information
-     * @param db      SQLITE DB
+     * @param db      database instance
      */
     private void storeMessage(Message message, SQLiteDatabase db) {
         ContentValues messageColumn = new ContentValues();
@@ -787,7 +787,7 @@ public class AppDatabase {
     /**
      * get statusregister of a tweet or "0" if tweet was not found
      *
-     * @param db      SQLITE DB
+     * @param db      database instance
      * @param tweetID ID of the tweet
      * @return tweet flags
      */
@@ -807,7 +807,7 @@ public class AppDatabase {
     /**
      * get flags of a twitter user or "0" if user was not found
      *
-     * @param db     SQLITE DB
+     * @param db     database instance
      * @param userID ID of the user
      * @return user flags
      */
@@ -828,7 +828,7 @@ public class AppDatabase {
      * check if tweet exists in database
      *
      * @param id Tweet ID
-     * @param db opened database
+     * @param db database instance
      * @return true if found
      */
     private boolean containStatus(long id, SQLiteDatabase db) {
@@ -863,7 +863,7 @@ public class AppDatabase {
     /**
      * Commit changes and close Database
      *
-     * @param db SQLite database
+     * @param db database instance
      */
     private synchronized void commit(SQLiteDatabase db) {
         db.setTransactionSuccessful();

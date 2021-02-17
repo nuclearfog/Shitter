@@ -98,9 +98,9 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                 case DELETE:
                     tweet = mTwitter.deleteTweet(tweetId);
                     db.removeStatus(tweetId);
-                    if (tweet.getMyRetweetId() > 0) {
+                    // removing retweet reference to this tweet
+                    if (tweet.getMyRetweetId() > 0)
                         db.removeStatus(tweet.getMyRetweetId());
-                    }
                     break;
 
                 case RETWEET:
@@ -113,7 +113,7 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     tweet = mTwitter.retweet(tweetId, false);
                     publishProgress(tweet);
                     db.updateStatus(tweet);
-                    // remove status pointing on the retweeted status
+                    // removing retweet reference to this tweet
                     if (tweet.getMyRetweetId() > 0)
                         db.removeStatus(tweet.getMyRetweetId());
                     break;

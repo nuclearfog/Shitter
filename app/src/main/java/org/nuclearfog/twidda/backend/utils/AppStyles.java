@@ -67,8 +67,19 @@ public final class AppStyles {
      * @param v        Root view
      */
     public static void setTheme(GlobalSettings settings, View v) {
+        setTheme(settings, v, settings.getBackgroundColor());
+    }
+
+    /**
+     * sets view theme with custom background color
+     *
+     * @param settings   settings instance
+     * @param v          Root view
+     * @param background custom background color
+     */
+    public static void setTheme(GlobalSettings settings, View v, int background) {
         AppStyles instance = new AppStyles(settings);
-        v.setBackgroundColor(settings.getBackgroundColor());
+        v.setBackgroundColor(background);
         instance.setSubViewTheme(v);
     }
 
@@ -340,7 +351,6 @@ public final class AppStyles {
         seekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(settings.getHighlightColor(), SRC_IN));
         seekBar.getThumb().setColorFilter(new PorterDuffColorFilter(settings.getIconColor(), SRC_IN));
     }
-
 
     /**
      * color drawable
