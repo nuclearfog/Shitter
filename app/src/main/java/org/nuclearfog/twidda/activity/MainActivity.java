@@ -152,8 +152,8 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         getMenuInflater().inflate(R.menu.home, m);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
         MenuItem search = m.findItem(R.id.action_search);
-        SearchView searchQuery = (SearchView) search.getActionView();
-        searchQuery.setOnQueryTextListener(this);
+        SearchView searchView = (SearchView) search.getActionView();
+        searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(m);
     }
 
@@ -195,22 +195,26 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int menuId = item.getItemId();
         // open home profile
-        if (menuId == R.id.action_profile) {
+        if (item.getItemId() == R.id.action_profile) {
             Intent user = new Intent(this, UserProfile.class);
             user.putExtra(KEY_PROFILE_ID, settings.getCurrentUserId());
             startActivity(user);
         }
         // open tweet editor
-        else if (menuId == R.id.action_tweet) {
+        else if (item.getItemId() == R.id.action_tweet) {
             Intent tweet = new Intent(this, TweetEditor.class);
             startActivity(tweet);
         }
         // open app settings
-        else if (menuId == R.id.action_settings) {
+        else if (item.getItemId() == R.id.action_settings) {
             Intent settings = new Intent(this, AppSettings.class);
             startActivityForResult(settings, REQUEST_APP_SETTINGS);
+        }
+        // theme expanded search view
+        else if (item.getItemId() == R.id.action_search) {
+            SearchView searchView = (SearchView) item.getActionView();
+            AppStyles.setTheme(settings, searchView);
         }
         return super.onOptionsItemSelected(item);
     }

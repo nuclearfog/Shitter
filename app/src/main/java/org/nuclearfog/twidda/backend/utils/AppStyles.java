@@ -52,6 +52,9 @@ import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVert
  */
 public final class AppStyles {
 
+    /**
+     * transparency mask for hint text color
+     */
     private static final int HINT_TRANSPARENCY = 0x6fffffff;
     private static final int[][] SWITCH_STATES = {{0}};
     private GlobalSettings settings;

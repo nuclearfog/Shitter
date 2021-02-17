@@ -77,7 +77,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      */
     public static final String RET_LIST_DATA = "list-data";
 
-
+    /**
+     * regex pattern to validate username
+     */
     private static final Pattern USERNAME_PATTERN = Pattern.compile("@?\\w{1,15}");
 
     private FragmentAdapter adapter;
@@ -162,7 +164,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         MenuItem followList = m.findItem(R.id.menu_follow_list);
         MenuItem search = m.findItem(R.id.menu_list_add_user);
         SearchView searchUser = (SearchView) search.getActionView();
-        search.collapseActionView();
+        AppStyles.setTheme(settings, searchUser);
         if (userList != null) {
             if (userList.isListOwner()) {
                 searchUser.setQueryHint(getString(R.string.menu_add_user));
@@ -186,16 +188,20 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (userList != null && (listLoaderTask == null || listLoaderTask.getStatus() != RUNNING)) {
-            int itemId = item.getItemId();
-            if (itemId == R.id.menu_list_edit) {
+            // open user list editor
+            if (item.getItemId() == R.id.menu_list_edit) {
                 Intent editList = new Intent(this, ListEditor.class);
                 editList.putExtra(KEY_LIST_EDITOR_DATA, userList);
                 startActivityForResult(editList, REQ_LIST_CHANGE);
-            } else if (itemId == R.id.menu_delete_list) {
+            }
+            // delete user list
+            else if (item.getItemId() == R.id.menu_delete_list) {
                 if (!deleteDialog.isShowing()) {
                     deleteDialog.show();
                 }
-            } else if (itemId == R.id.menu_follow_list) {
+            }
+            // follow user list
+            else if (item.getItemId() == R.id.menu_follow_list) {
                 if (userList.isFollowing()) {
                     if (!unfollowDialog.isShowing()) {
                         unfollowDialog.show();
@@ -204,6 +210,11 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
                     listLoaderTask = new ListAction(this, FOLLOW);
                     listLoaderTask.execute(userList.getId());
                 }
+            }
+            // theme expanded search view
+            else if (item.getItemId() == R.id.menu_list_add_user) {
+                SearchView searchView = (SearchView) item.getActionView();
+                AppStyles.setTheme(settings, searchView);
             }
         }
         return super.onOptionsItemSelected(item);

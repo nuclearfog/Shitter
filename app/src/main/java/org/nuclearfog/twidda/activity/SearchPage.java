@@ -85,6 +85,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         AppStyles.setMenuIconColor(m, settings.getIconColor());
         MenuItem searchItem = m.findItem(R.id.new_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        AppStyles.setTheme(settings, searchView);
         searchView.setQueryHint(search);
         searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(m);
@@ -93,11 +94,17 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // write new tweet
         if (item.getItemId() == R.id.search_tweet) {
             Intent intent = new Intent(this, TweetEditor.class);
             if (search.startsWith("#"))
                 intent.putExtra(KEY_TWEETPOPUP_TEXT, search + " ");
             startActivity(intent);
+        }
+        // theme expanded search view
+        else if (item.getItemId() == R.id.new_search) {
+            SearchView searchView = (SearchView) item.getActionView();
+            AppStyles.setTheme(settings, searchView);
         }
         return super.onOptionsItemSelected(item);
     }
