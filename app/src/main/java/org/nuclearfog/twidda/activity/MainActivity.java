@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         // theme expanded search view
         else if (item.getItemId() == R.id.action_search) {
             SearchView searchView = (SearchView) item.getActionView();
-            AppStyles.setTheme(settings, searchView);
+            AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
         }
         return super.onOptionsItemSelected(item);
     }

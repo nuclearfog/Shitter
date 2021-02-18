@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -107,7 +108,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         // theme expanded search view
         else if (item.getItemId() == R.id.new_search) {
             SearchView searchView = (SearchView) item.getActionView();
-            AppStyles.setTheme(settings, searchView);
+            AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
         }
         return super.onOptionsItemSelected(item);
     }
