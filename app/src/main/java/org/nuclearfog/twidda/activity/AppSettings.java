@@ -83,7 +83,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private View root, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
-    private Spinner locationSpinner;
+    private Spinner locationSpinner, fontSpinner;
     private TextView list_size;
     private Button[] colorButtons;
 
@@ -101,8 +101,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         View user_card = findViewById(R.id.settings_data_card);
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
-        Spinner fontSpinner = findViewById(R.id.spinner_font);
         SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
+        fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
@@ -133,7 +133,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
-        if (!settings.getLogin()) {
+        if (!settings.isLoggedIn()) {
             trend_card.setVisibility(GONE);
             user_card.setVisibility(GONE);
         }
@@ -197,7 +197,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     @Override
     protected void onStart() {
         super.onStart();
-        if (settings.getLogin() && locationAsync == null) {
+        if (settings.isLoggedIn() && locationAsync == null) {
             locationAsync = new LocationLoader(this);
             locationAsync.execute();
         }
@@ -327,6 +327,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             switch (mode) {
                 case BACKGROUND:
                     settings.setBackgroundColor(color);
+                    fontSpinner.setAdapter(fontSpinner.getAdapter());
+                    if (settings.isLoggedIn()) {
+                        locationSpinner.setAdapter(fontSpinner.getAdapter());
+                    }
                     break;
 
                 case FONTCOLOR:

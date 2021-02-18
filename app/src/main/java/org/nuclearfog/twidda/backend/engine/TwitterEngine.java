@@ -137,7 +137,7 @@ public class TwitterEngine {
     public static TwitterEngine getInstance(Context context) {
         if (!mTwitter.isInitialized) {
             mTwitter.settings = GlobalSettings.getInstance(context);
-            if (mTwitter.settings.getLogin()) {
+            if (mTwitter.settings.isLoggedIn()) {
                 String[] keys = mTwitter.settings.getCurrentUserAccessToken();
                 mTwitter.aToken = new AccessToken(keys[0], keys[1]);
             }
@@ -675,7 +675,7 @@ public class TwitterEngine {
 
 
     /**
-     * Get Answer Tweets
+     * Get replies to a specific tweet
      *
      * @param name    screen name of receiver
      * @param tweetId tweet ID
@@ -684,16 +684,16 @@ public class TwitterEngine {
      * @return List of tweet answers
      * @throws EngineException if Access is unavailable
      */
-    public List<Tweet> getAnswers(String name, long tweetId, long sinceId, long maxId) throws EngineException {
+    public List<Tweet> getReplies(String name, long tweetId, long sinceId, long maxId) throws EngineException {
         try {
             int load = settings.getListSize();
             List<Status> answers = new LinkedList<>();
             Query query = new Query("to:" + name + " +exclude:retweets");
             query.setCount(load);
             if (sinceId > 0)
-                query.setSinceId(sinceId);
+                query.setSinceId(sinceId);  //
             else
-                query.setSinceId(tweetId);
+                query.setSinceId(tweetId);  // only search for Tweets created after this Tweet
             if (maxId > 1)
                 query.setMaxId(maxId - 1);
             query.setResultType(Query.RECENT);

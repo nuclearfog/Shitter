@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     @Override
     protected void onStart() {
         super.onStart();
-        if (!settings.getLogin()) {
+        if (!settings.isLoggedIn()) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
         } else if (adapter.isEmpty()) {
@@ -232,9 +232,13 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        Intent search = new Intent(this, SearchPage.class);
-        search.putExtra(KEY_SEARCH_QUERY, s);
-        startActivity(search);
+        if (s.length() <= SearchPage.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
+            Intent search = new Intent(this, SearchPage.class);
+            search.putExtra(KEY_SEARCH_QUERY, s);
+            startActivity(search);
+        } else {
+            Toast.makeText(this, R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+        }
         return false;
     }
 

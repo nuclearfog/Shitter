@@ -188,4 +188,5 @@
     <string name="error_api_key_expired">Fehler, API Schlüssel veraltet, bitte App aktualisieren!</string>
     <string name="info_location_pending">Ortung läuft, bitte warten.</string>
     <string name="app_info_twitter_rules">Twitter Regeln:</string>
+    <string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,8 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
      * Key for the search query, required
      */
     public static final String KEY_SEARCH_QUERY = "search_query";
+
+    public static final int SEARCH_STR_MAX_LEN = 128;
 
     private FragmentAdapter adapter;
     private GlobalSettings settings;
@@ -112,9 +115,13 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        Intent intent = new Intent(this, SearchPage.class);
-        intent.putExtra(KEY_SEARCH_QUERY, s);
-        startActivity(intent);
+        if (s.length() <= SearchPage.SEARCH_STR_MAX_LEN && !s.contains(":") && !s.contains("$")) {
+            Intent search = new Intent(this, SearchPage.class);
+            search.putExtra(KEY_SEARCH_QUERY, s);
+            startActivity(search);
+        } else {
+            Toast.makeText(this, R.string.error_twitter_search, Toast.LENGTH_SHORT).show();
+        }
         return true;
     }
 

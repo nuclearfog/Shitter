@@ -599,7 +599,7 @@ public class GlobalSettings {
      *
      * @return true if current user is logged in
      */
-    public boolean getLogin() {
+    public boolean isLoggedIn() {
         return loggedIn;
     }
 

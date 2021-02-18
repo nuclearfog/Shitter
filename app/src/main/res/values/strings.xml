@@ -103,6 +103,10 @@
     <string name="app_info_twitter_link_1" translatable="false">https://support.twitter.com/articles/18311-the-twitter-rules</string>
     <string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
     <string name="app_info_twitter_rules">The Twitter rules:</string>
+    <string name="button_backward">Rewind</string>
+    <string name="button_forward">Fast forward</string>
+    <string name="button_play_pause">Pause/Play</string>
+    <string name="button_share">share link</string>
 
     <!-- toast messages to inform user -->
     <string name="info_user_removed">User removed from list</string>
@@ -174,6 +178,7 @@
     <string name="error_api_access_denied">Error, API access denied! Please check your API Keys.</string>
     <string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
     <string name="error_mention_exceed">Too much mentions!</string>
+    <string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
     <string name="error_not_defined">Not defined Error!</string>
 
     <!-- menu icon strings -->
@@ -206,8 +211,4 @@
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
-    <string name="button_backward">Rewind</string>
-    <string name="button_forward">Fast forward</string>
-    <string name="button_play_pause">Pause/Play</string>
-    <string name="button_share">share link</string>
 </resources>
