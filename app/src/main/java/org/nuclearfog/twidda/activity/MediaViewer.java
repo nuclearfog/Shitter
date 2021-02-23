@@ -10,7 +10,6 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
-import android.media.MediaPlayer.OnSeekCompleteListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -64,7 +63,7 @@ import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
  * @author nuclearfog
  */
 public class MediaViewer extends MediaActivity implements OnImageClickListener, OnSeekBarChangeListener, OnCompletionListener,
-        OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener, OnSeekCompleteListener {
+        OnPreparedListener, OnInfoListener, OnErrorListener, OnClickListener, OnTouchListener {
 
     /**
      * Key for the media URL, local or online, required
@@ -73,15 +72,9 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     /**
      * Key for the media type, required
-     * {@link #MEDIAVIEWER_IMG_S}, {@link #MEDIAVIEWER_IMAGE}, {@link #MEDIAVIEWER_VIDEO} or {@link #MEDIAVIEWER_ANGIF}
+     * {@link #MEDIAVIEWER_IMAGE}, {@link #MEDIAVIEWER_VIDEO} or {@link #MEDIAVIEWER_ANGIF}
      */
     public static final String KEY_MEDIA_TYPE = "media_type";
-
-    /**
-     * setup media viewer for images from storage
-     */
-    public static final int MEDIAVIEWER_IMG_S = 1;
-
     /**
      * setup media viewer for images from twitter
      */
@@ -141,7 +134,6 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     private int type;
 
     private PlayStat playStat = PlayStat.IDLE;
-    private int videoPos = 0;
 
 
     @Override
@@ -179,11 +171,11 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
         if (mediaLinks != null && mediaLinks.length > 0) {
             switch (type) {
-                case MEDIAVIEWER_IMG_S:
-                    adapter.disableSaveButton();
                 case MEDIAVIEWER_IMAGE:
                     zoomImage.setVisibility(VISIBLE);
                     imageList.setVisibility(VISIBLE);
+                    if (!mediaLinks[0].startsWith("http"))
+                        adapter.disableSaveButton();
                     imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));
                     imageList.setAdapter(adapter);
                     imageAsync = new ImageLoader(this);
@@ -191,11 +183,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                     break;
 
                 case MEDIAVIEWER_VIDEO:
-                    videoView.setVisibility(VISIBLE);
                     controlPanel.setVisibility(VISIBLE);
-                    // disable black background
-                    videoView.setZOrderMediaOverlay(true);
-                    videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
                     if (!mediaLinks[0].startsWith("http"))
                         share.setVisibility(GONE); // local image
                     progressUpdate = Executors.newScheduledThreadPool(1);
@@ -209,9 +197,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                         }
                     }, PROGRESS_UPDATE, PROGRESS_UPDATE, TimeUnit.MILLISECONDS);
                 case MEDIAVIEWER_ANGIF:
-                    zoomImage.setVisibility(GONE);
-                    Uri video = Uri.parse(mediaLinks[0]);
-                    videoView.setVideoURI(video);
+                    videoView.setVisibility(VISIBLE);
+                    videoView.setZOrderMediaOverlay(true); // disable black background
+                    videoView.getHolder().setFormat(PixelFormat.TRANSPARENT);
+                    videoView.setVideoURI(Uri.parse(mediaLinks[0]));
                     break;
             }
         }
@@ -235,7 +224,6 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             playStat = PlayStat.PAUSE;
             setPlayPauseButton();
             videoView.pause();
-            videoPos = videoView.getCurrentPosition();
         }
     }
 
@@ -254,19 +242,17 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     public void onClick(View v) {
         // play video
         if (v.getId() == R.id.controller_play) {
-            if (!videoView.isPlaying()) {
+            if (!videoView.isPlaying())
                 videoView.resume();
-                playStat = PlayStat.PLAY;
-                setPlayPauseButton();
-            }
+            playStat = PlayStat.PLAY;
+            setPlayPauseButton();
         }
         // pause video
         if (v.getId() == R.id.controller_pause) {
-            if (videoView.isPlaying()) {
+            if (videoView.isPlaying())
                 videoView.pause();
-                playStat = PlayStat.PAUSE;
-                setPlayPauseButton();
-            }
+            playStat = PlayStat.PAUSE;
+            setPlayPauseButton();
         }
         // open link with another app
         else if (v.getId() == R.id.controller_share) {
@@ -317,12 +303,14 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         // show/hide control panel
         else if (v.getId() == R.id.video_view) {
             if (event.getAction() == ACTION_DOWN) {
-                if (controlPanel.getVisibility() == VISIBLE) {
-                    controlPanel.setVisibility(INVISIBLE);
-                } else {
-                    controlPanel.setVisibility(VISIBLE);
+                if (type == MEDIAVIEWER_VIDEO) {
+                    if (controlPanel.getVisibility() == VISIBLE) {
+                        controlPanel.setVisibility(INVISIBLE);
+                    } else {
+                        controlPanel.setVisibility(VISIBLE);
+                    }
+                    return true;
                 }
-                return true;
             }
         }
         return false;
@@ -358,23 +346,24 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        // configure to play GIF
         if (type == MEDIAVIEWER_ANGIF) {
             mp.setLooping(true);
-        } else {
+            mp.start();
+        }
+        // configure to play video
+        else if (type == MEDIAVIEWER_VIDEO) {
             if (playStat == PlayStat.IDLE) {
                 playStat = PlayStat.PLAY;
+                video_progress.setMax(mp.getDuration());
+                duration.setText(StringTools.formatMediaTime(mp.getDuration()));
+                mp.setOnInfoListener(this);
             }
-            if (videoPos > 0) {
+            if (playStat == PlayStat.PLAY) {
+                int videoPos = video_progress.getProgress();
                 mp.seekTo(videoPos);
+                mp.start();
             }
-            video_progress.setMax(mp.getDuration());
-            duration.setText(StringTools.formatMediaTime(mp.getDuration()));
-            position.setText(StringTools.formatMediaTime(mp.getCurrentPosition()));
-            mp.setOnSeekCompleteListener(this);
-        }
-        mp.setOnInfoListener(this);
-        if (playStat == PlayStat.PLAY) {
-            mp.start();
         }
     }
 
@@ -407,19 +396,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
 
     @Override
-    public void onSeekComplete(MediaPlayer mp) {
-        position.setText(StringTools.formatMediaTime(mp.getCurrentPosition()));
-        if (playStat == PlayStat.PLAY) {
-            mp.start();
-        }
-    }
-
-
-    @Override
     public void onCompletion(MediaPlayer mp) {
         playStat = PlayStat.PAUSE;
         setPlayPauseButton();
-        videoPos = 0;
+        video_progress.setProgress(0);
     }
 
 
@@ -437,8 +417,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        videoPos = seekBar.getProgress();
-        videoView.seekTo(videoPos);
+        videoView.seekTo(seekBar.getProgress());
+        videoView.resume();
     }
 
     /**
@@ -489,18 +469,16 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
      * updates controller panel SeekBar
      */
     private void updateSeekBar() {
+        int videoPos = video_progress.getProgress();
         switch (playStat) {
             case PLAY:
-                videoPos = videoView.getCurrentPosition();
-                video_progress.setProgress(videoPos);
-                video_progress.setProgress(videoPos);
+                video_progress.setProgress(videoView.getCurrentPosition());
                 break;
 
             case FORWARD:
                 videoPos += 2 * PROGRESS_UPDATE * SPEED_FACTOR;
                 if (videoPos > videoView.getDuration())
                     videoPos = videoView.getDuration();
-                videoView.pause();
                 videoView.seekTo(videoPos);
                 video_progress.setProgress(videoPos);
                 break;
@@ -509,7 +487,6 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                 videoPos -= 2 * PROGRESS_UPDATE * SPEED_FACTOR;
                 if (videoPos < 0)
                     videoPos = 0;
-                videoView.pause();
                 videoView.seekTo(videoPos);
                 video_progress.setProgress(videoPos);
                 break;

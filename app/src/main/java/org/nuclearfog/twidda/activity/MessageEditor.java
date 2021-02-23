@@ -31,7 +31,7 @@ import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_EDITOR_ERROR;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_EDITOR_LEAVE;
 
@@ -149,7 +149,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         else if (v.getId() == R.id.dm_preview) {
             Intent image = new Intent(this, MediaViewer.class);
             image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
-            image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
+            image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
             startActivity(image);
         }
     }

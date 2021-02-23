@@ -36,7 +36,7 @@ import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMG_S;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_ERROR;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_LEAVE;
@@ -189,7 +189,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
                 image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                 startActivity(image);
             } else if (selectedFormat != MediaType.NONE) {
-                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMG_S);
+                image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                 startActivity(image);
             }
         }
