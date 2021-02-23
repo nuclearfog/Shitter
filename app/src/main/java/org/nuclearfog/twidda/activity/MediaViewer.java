@@ -40,6 +40,7 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -116,6 +117,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         IDLE
     }
 
+    private WeakReference<MediaViewer> updateEvent = new WeakReference<>(this);
     @Nullable
     private ScheduledExecutorService progressUpdate;
     @Nullable
@@ -186,14 +188,19 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
                     controlPanel.setVisibility(VISIBLE);
                     if (!mediaLinks[0].startsWith("http"))
                         share.setVisibility(GONE); // local image
+                    final Runnable seekUpdate = new Runnable() {
+                        public void run() {
+                            if (updateEvent.get() != null) {
+                                updateEvent.get().updateSeekBar();
+                            }
+                        }
+                    };
                     progressUpdate = Executors.newScheduledThreadPool(1);
                     progressUpdate.scheduleWithFixedDelay(new Runnable() {
                         public void run() {
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    updateSeekBar();
-                                }
-                            });
+                            if (updateEvent.get() != null) {
+                                updateEvent.get().runOnUiThread(seekUpdate);
+                            }
                         }
                     }, PROGRESS_UPDATE, PROGRESS_UPDATE, TimeUnit.MILLISECONDS);
                 case MEDIAVIEWER_ANGIF:

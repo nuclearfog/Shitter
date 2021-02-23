@@ -23,8 +23,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.ImageSaver;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 
@@ -34,6 +36,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
 import static android.os.Environment.DIRECTORY_PICTURES;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -43,7 +46,7 @@ import static android.widget.Toast.LENGTH_SHORT;
  *
  * @author nuclearfog
  */
-abstract class MediaActivity extends AppCompatActivity implements LocationListener, Runnable {
+public abstract class MediaActivity extends AppCompatActivity implements LocationListener {
 
     /**
      * permission set
@@ -96,14 +99,8 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
      */
     protected static final int REQUEST_STORE_IMG = 9;
 
-    /**
-     * Quality of the saved jpeg images
-     */
-    private static final int JPEG_QUALITY = 90;
-
     @Nullable
-    private LocationManager locationManager;
-    private Thread imageSaveThread;
+    private ImageSaver imageTask;
     private Bitmap image;
     private String filename;
     private boolean locationPending = false;
@@ -112,14 +109,20 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     }
 
 
     @Override
     protected void onDestroy() {
-        if (locationManager != null)
-            locationManager.removeUpdates(this);
+        if (locationPending) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager != null) {
+                locationManager.removeUpdates(this);
+            }
+        }
+        if (imageTask != null && imageTask.getStatus() == RUNNING) {
+            imageTask.cancel(true);
+        }
         super.onDestroy();
     }
 
@@ -136,8 +139,9 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
                 else
                     onAttachLocation(null);
             } else if ((PERMISSIONS[2][0].equals(permissions[0]))) {
-                if (grantResults[0] == PERMISSION_GRANTED)
-                    writeImageToStorage();
+                if (grantResults[0] == PERMISSION_GRANTED) {
+                    saveImage();
+                }
             }
         }
     }
@@ -161,53 +165,35 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
         }
     }
 
-
-    @Override
-    public final void run() {
-        boolean imageSaved = false;
+    /**
+     * save image to external storage
+     */
+    private void saveImage() {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // use scoped storage
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
-                values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-                values.put(MediaStore.MediaColumns.RELATIVE_PATH, DIRECTORY_PICTURES);
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
-                if (imageUri != null) {
-                    OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
-                    if (fileStream != null) {
-                        imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
-                        fileStream.close();
+            if (imageTask == null || imageTask.getStatus() != RUNNING) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    // store images directly
+                    File imageFile = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES), filename);
+                    OutputStream fileStream = new FileOutputStream(imageFile);
+                    imageTask = new ImageSaver(this);
+                    imageTask.execute(image, fileStream);
+                } else {
+                    // use scoped storage
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
+                    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+                    values.put(MediaStore.MediaColumns.RELATIVE_PATH, DIRECTORY_PICTURES);
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                    Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
+                    if (imageUri != null) {
+                        OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
+                        imageTask = new ImageSaver(this);
+                        imageTask.execute(image, fileStream);
                     }
                 }
-            } else {
-                // store images directly
-                File imageFile = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES), filename + ".jpg");
-                OutputStream fileStream = new FileOutputStream(imageFile);
-                imageSaved = image.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, fileStream);
-                fileStream.close();
-                // start media scanner to scan for new image
-                String[] fileName = {imageFile.toString()};
-                MediaScannerConnection.scanFile(getApplicationContext(), fileName, null, null);
             }
-        } catch (Exception err) {
+        } catch (FileNotFoundException err) {
             err.printStackTrace();
-        }
-        if (imageSaved) {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_LONG).show();
-                }
-            });
-        } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
-                }
-            });
         }
     }
 
@@ -233,6 +219,25 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
 
     @Override
     public final void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    /**
+     * called when an image was successfully saved to external storage
+     */
+    public void onImageSaved() {
+        Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_LONG).show();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            // start media scanner to scan for new image
+            String[] fileName = {filename};
+            MediaScannerConnection.scanFile(getApplicationContext(), fileName, null, null);
+        }
+    }
+
+    /**
+     * called when an error occurs while storing image
+     */
+    public void onError() {
+        Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -268,9 +273,12 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
     protected void storeImage(Bitmap image, String filename) {
         this.image = image;
         this.filename = filename;
+        if (!filename.endsWith(".jpg")) {
+            this.filename += ".jpg";
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-                && checkSelfPermission(PERMISSIONS[2][0]) == PERMISSION_GRANTED) {
-            writeImageToStorage();
+                || checkSelfPermission(PERMISSIONS[2][0]) == PERMISSION_GRANTED) {
+            saveImage();
         } else {
             requestPermissions(PERMISSIONS[2], REQUEST_STORE_IMG);
         }
@@ -290,6 +298,7 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
      */
     @SuppressLint("MissingPermission") // suppressing because of an android studio bug
     private void fetchLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
             locationPending = true;
@@ -328,16 +337,6 @@ abstract class MediaActivity extends AppCompatActivity implements LocationListen
             startActivityForResult(mediaSelect, requestCode);
         } catch (ActivityNotFoundException err) {
             Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     * start background thread to save image
-     */
-    private void writeImageToStorage() {
-        if (imageSaveThread == null || !imageSaveThread.isAlive()) {
-            imageSaveThread = new Thread(this);
-            imageSaveThread.start();
         }
     }
 
