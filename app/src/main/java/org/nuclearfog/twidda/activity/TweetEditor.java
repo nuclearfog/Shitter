@@ -245,6 +245,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
                     previewBtn.setVisibility(VISIBLE);
                     mediaBtn.setVisibility(GONE);
                     mediaPath.add(path);
+                } else {
+                    Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
                 }
                 break;
 

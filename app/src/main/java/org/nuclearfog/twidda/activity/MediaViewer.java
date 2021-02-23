@@ -348,6 +348,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     public void onPrepared(MediaPlayer mp) {
         // configure to play GIF
         if (type == MEDIAVIEWER_ANGIF) {
+            loadingCircle.setVisibility(INVISIBLE);
             mp.setLooping(true);
             mp.start();
         }
