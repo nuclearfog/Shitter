@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.backend.items.TwitterList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -39,7 +40,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_
  *
  * @author nuclearfog
  */
-public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogConfirmListener, DialogBuilder.OnProgressStopListener {
+public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogConfirmListener, OnProgressStopListener {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -53,6 +54,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     private AlertDialog errorDialog;
     @Nullable
     private TwitterList userList;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -106,23 +108,8 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.userlist_create_list) {
-            String titleStr = titleInput.getText().toString();
-            String descrStr = subTitleInput.getText().toString();
-            boolean isPublic = visibility.isChecked();
-            if (titleStr.trim().isEmpty()) {
-                Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
-            } else if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
-                ListHolder mHolder;
-                if (userList != null) {
-                    // update existing list
-                    mHolder = new ListHolder(titleStr, descrStr, isPublic, userList.getId());
-                } else {
-                    // create new one
-                    mHolder = new ListHolder(titleStr, descrStr, isPublic);
-                }
-                updaterAsync = new ListUpdater(this);
-                updaterAsync.execute(mHolder);
-                loadingCircle.show();
+            if (updaterAsync == null || updaterAsync.getStatus() != RUNNING) {
+                updateList();
             }
         }
     }
@@ -138,7 +125,12 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == LIST_EDITOR_ERROR || type == LIST_EDITOR_LEAVE) {
+        // retry updating list
+        if (type == LIST_EDITOR_ERROR) {
+            updateList();
+        }
+        // leave editor
+        else if (type == LIST_EDITOR_LEAVE) {
             finish();
         }
     }
@@ -173,6 +165,30 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         }
         if (loadingCircle.isShowing()) {
             loadingCircle.dismiss();
+        }
+    }
+
+    /**
+     * check input and create/update list
+     */
+    private void updateList() {
+        String titleStr = titleInput.getText().toString();
+        String descrStr = subTitleInput.getText().toString();
+        boolean isPublic = visibility.isChecked();
+        if (titleStr.trim().isEmpty()) {
+            Toast.makeText(this, R.string.error_list_title_empty, Toast.LENGTH_SHORT).show();
+        } else {
+            ListHolder mHolder;
+            if (userList != null) {
+                // update existing list
+                mHolder = new ListHolder(titleStr, descrStr, isPublic, userList.getId());
+            } else {
+                // create new one
+                mHolder = new ListHolder(titleStr, descrStr, isPublic);
+            }
+            updaterAsync = new ListUpdater(this);
+            updaterAsync.execute(mHolder);
+            loadingCircle.show();
         }
     }
 }

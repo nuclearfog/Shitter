@@ -107,12 +107,6 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
 
     @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
-    }
-
-
-    @Override
     protected void onDestroy() {
         if (locationPending) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

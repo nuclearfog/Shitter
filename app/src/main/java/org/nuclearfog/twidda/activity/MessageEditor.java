@@ -127,18 +127,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         // send direct message
         if (v.getId() == R.id.dm_send) {
             if (messageAsync == null || messageAsync.getStatus() != RUNNING) {
-                String username = receiver.getText().toString();
-                String message = this.message.getText().toString();
-                if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
-                    MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-                    messageAsync = new MessageUpdater(this, messageHolder);
-                    messageAsync.execute();
-                    if (!loadingCircle.isShowing()) {
-                        loadingCircle.show();
-                    }
-                } else {
-                    Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
-                }
+                sendMessage();
             }
         }
         // get media
@@ -165,7 +154,12 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == MESSAGE_EDITOR_LEAVE || type == MESSAGE_EDITOR_ERROR) {
+        // retry sending message
+        if (type == MESSAGE_EDITOR_ERROR) {
+            sendMessage();
+        }
+        // leave message editor
+        else if (type == MESSAGE_EDITOR_LEAVE) {
             finish();
         }
     }
@@ -191,6 +185,24 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         }
         if (loadingCircle.isShowing()) {
             loadingCircle.dismiss();
+        }
+    }
+
+    /**
+     * check inputs and send message
+     */
+    private void sendMessage() {
+        String username = receiver.getText().toString();
+        String message = this.message.getText().toString();
+        if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
+            MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
+            messageAsync = new MessageUpdater(this, messageHolder);
+            messageAsync.execute();
+            if (!loadingCircle.isShowing()) {
+                loadingCircle.show();
+            }
+        } else {
+            Toast.makeText(this, R.string.error_dm, LENGTH_SHORT).show();
         }
     }
 }

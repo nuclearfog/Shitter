@@ -93,7 +93,7 @@
     <string name="app_info_twitter_rules">Twitter 用户守则：</string>
     <string name="button_backward">后退</string>
     <string name="button_forward">快进</string>
-		<string name="button_play_pause">暂停/播放</string>
+    <string name="button_play_pause">暂停/播放</string>
     <string name="button_share">分享链接</string>
 
     <!-- toast messages to inform user -->
