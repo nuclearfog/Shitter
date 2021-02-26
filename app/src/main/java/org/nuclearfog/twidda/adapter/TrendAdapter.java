@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.content.res.Resources;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
 import org.nuclearfog.twidda.backend.items.Trend;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -33,15 +31,13 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 public class TrendAdapter extends Adapter<ViewHolder> {
 
     private TrendClickListener itemClickListener;
-    private GlobalSettings settings;
 
     private NumberFormat formatter = NumberFormat.getIntegerInstance();
     private List<Trend> trends = new ArrayList<>();
 
 
-    public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
+    public TrendAdapter(TrendClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        this.settings = settings;
     }
 
     /**
@@ -84,9 +80,8 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false);
-        final TrendHolder vh = new TrendHolder(v, settings);
-        v.setOnClickListener(new OnClickListener() {
+        final TrendHolder vh = new TrendHolder(parent);
+        vh.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = vh.getLayoutPosition();

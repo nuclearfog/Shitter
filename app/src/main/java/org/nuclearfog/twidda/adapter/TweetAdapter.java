@@ -2,7 +2,6 @@ package org.nuclearfog.twidda.adapter;
 
 import android.graphics.Color;
 import android.text.Spanned;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -208,9 +207,8 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TWEET) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tweet, parent, false);
-            final TweetHolder vh = new TweetHolder(v, settings);
-            v.setOnClickListener(new OnClickListener() {
+            final TweetHolder vh = new TweetHolder(parent);
+            vh.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = vh.getLayoutPosition();
@@ -222,8 +220,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             });
             return vh;
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final Footer footer = new Footer(v, settings, false);
+            final Footer footer = new Footer(parent, false);
             footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

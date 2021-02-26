@@ -1,12 +1,12 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -22,22 +22,22 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  *
  * @author nuclearfog
  */
-public class Footer extends RecyclerView.ViewHolder {
+public class Footer extends ViewHolder {
 
     public final ProgressBar loadCircle;
     public final Button loadBtn;
 
     /**
-     * @param v          inflated view R.layout.item_placeholder
-     * @param settings   settings for theme
-     * @param horizontal true if footer is in a horizontal list
+     * @param parent     Parent view from adapter
+     * @param horizontal true if footer orientation is horizontal
      */
-    public Footer(@NonNull View v, GlobalSettings settings, boolean horizontal) {
-        super(v);
-        CardView background = (CardView) v;
-        loadCircle = v.findViewById(R.id.placeholder_loading);
-        loadBtn = v.findViewById(R.id.placeholder_button);
+    public Footer(ViewGroup parent, boolean horizontal) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
+        CardView background = (CardView) itemView;
+        loadCircle = itemView.findViewById(R.id.placeholder_loading);
+        loadBtn = itemView.findViewById(R.id.placeholder_button);
 
+        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
         background.setCardBackgroundColor(settings.getCardColor());
         loadBtn.setTextColor(settings.getFontColor());
         loadBtn.setTypeface(settings.getTypeFace());

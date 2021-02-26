@@ -141,7 +141,7 @@ public class GlobalSettings {
      */
     public static GlobalSettings getInstance(@NonNull Context context) {
         if (ourInstance.settings == null) {
-            ourInstance.settings = context.getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
+            ourInstance.settings = context.getApplicationContext().getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
             ourInstance.initialize();
         }
         return ourInstance;

@@ -1,11 +1,12 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -18,32 +19,34 @@ import static android.graphics.PorterDuff.Mode.SRC_IN;
  * @author nuclearfog
  * @see android.widget.ListAdapter
  */
-public class ListHolder extends RecyclerView.ViewHolder {
+public class ListHolder extends ViewHolder {
 
     public final ImageView[] icons = new ImageView[7];
     public final TextView[] textViews = new TextView[8];
     public final ImageView profile_img;
 
-
-    public ListHolder(View v, GlobalSettings settings) {
-        super(v);
-        CardView background = (CardView) v;
-        profile_img = v.findViewById(R.id.list_owner_profile);
-        icons[0] = v.findViewById(R.id.list_user_verified);
-        icons[1] = v.findViewById(R.id.list_user_locked);
-        icons[2] = v.findViewById(R.id.list_member_icon);
-        icons[3] = v.findViewById(R.id.list_subscriber_icon);
-        icons[4] = v.findViewById(R.id.list_date_icon);
-        icons[5] = v.findViewById(R.id.list_private);
-        icons[6] = v.findViewById(R.id.list_follow_icon);
-        textViews[0] = v.findViewById(R.id.list_title);
-        textViews[1] = v.findViewById(R.id.list_description);
-        textViews[2] = v.findViewById(R.id.list_ownername);
-        textViews[3] = v.findViewById(R.id.list_screenname);
-        textViews[4] = v.findViewById(R.id.list_createdat);
-        textViews[5] = v.findViewById(R.id.list_member);
-        textViews[6] = v.findViewById(R.id.list_subscriber);
-        textViews[7] = v.findViewById(R.id.list_action);
+    /**
+     * @param parent Parent view from adapter
+     */
+    public ListHolder(ViewGroup parent) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
+        CardView background = (CardView) itemView;
+        profile_img = itemView.findViewById(R.id.list_owner_profile);
+        icons[0] = itemView.findViewById(R.id.list_user_verified);
+        icons[1] = itemView.findViewById(R.id.list_user_locked);
+        icons[2] = itemView.findViewById(R.id.list_member_icon);
+        icons[3] = itemView.findViewById(R.id.list_subscriber_icon);
+        icons[4] = itemView.findViewById(R.id.list_date_icon);
+        icons[5] = itemView.findViewById(R.id.list_private);
+        icons[6] = itemView.findViewById(R.id.list_follow_icon);
+        textViews[0] = itemView.findViewById(R.id.list_title);
+        textViews[1] = itemView.findViewById(R.id.list_description);
+        textViews[2] = itemView.findViewById(R.id.list_ownername);
+        textViews[3] = itemView.findViewById(R.id.list_screenname);
+        textViews[4] = itemView.findViewById(R.id.list_createdat);
+        textViews[5] = itemView.findViewById(R.id.list_member);
+        textViews[6] = itemView.findViewById(R.id.list_subscriber);
+        textViews[7] = itemView.findViewById(R.id.list_action);
 
         icons[0].setImageResource(R.drawable.verify);
         icons[1].setImageResource(R.drawable.lock);
@@ -53,6 +56,7 @@ public class ListHolder extends RecyclerView.ViewHolder {
         icons[5].setImageResource(R.drawable.lock);
         icons[6].setImageResource(R.drawable.followback);
 
+        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
             tv.setTypeface(settings.getTypeFace());

@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -148,8 +147,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_LIST) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-            final ListHolder itemHolder = new ListHolder(v, settings);
+            final ListHolder itemHolder = new ListHolder(parent);
             itemHolder.profile_img.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -162,7 +160,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     }
                 }
             });
-            v.setOnClickListener(new OnClickListener() {
+            itemHolder.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = itemHolder.getLayoutPosition();
@@ -174,8 +172,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
             });
             return itemHolder;
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final Footer footer = new Footer(v, settings, false);
+            final Footer footer = new Footer(parent, false);
             footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -92,11 +92,6 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     public static final int MEDIAVIEWER_ANGIF = 4;
 
     /**
-     * transparency color mask for control panel
-     */
-    private static final int PANEL_TRANSPARENCY = 0x7fffffff;
-
-    /**
      * refresh time for video progress update
      */
     private static final int PROGRESS_UPDATE = 1000;
@@ -155,17 +150,17 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         ImageButton forward = controlPanel.findViewById(R.id.controller_forward);
         ImageButton backward = controlPanel.findViewById(R.id.controller_backward);
         ImageButton share = controlPanel.findViewById(R.id.controller_share);
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        adapter = new ImageAdapter(settings, this);
 
         share.setImageResource(R.drawable.share);
         forward.setImageResource(R.drawable.forward);
         backward.setImageResource(R.drawable.backward);
         play.setImageResource(R.drawable.play);
         pause.setImageResource(R.drawable.pause);
+
+        adapter = new ImageAdapter(this);
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
-        controlPanel.setBackgroundColor(settings.getCardColor());
-        AppStyles.setTheme(settings, controlPanel, settings.getBackgroundColor() & PANEL_TRANSPARENCY);
+        AppStyles.setTheme(settings, controlPanel, settings.getCardColor());
 
         // get intent data and type
         mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);

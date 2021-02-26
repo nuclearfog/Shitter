@@ -1,10 +1,11 @@
 package org.nuclearfog.twidda.adapter.holder;
 
-import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -15,17 +16,21 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  * @author nuclearfog
  * @see org.nuclearfog.twidda.adapter.TrendAdapter
  */
-public class TrendHolder extends RecyclerView.ViewHolder {
+public class TrendHolder extends ViewHolder {
 
     public final TextView[] textViews = new TextView[3];
 
-    public TrendHolder(View v, GlobalSettings settings) {
-        super(v);
-        CardView background = (CardView) v;
-        textViews[0] = v.findViewById(R.id.trendpos);
-        textViews[1] = v.findViewById(R.id.trendname);
-        textViews[2] = v.findViewById(R.id.trendvol);
+    /**
+     * @param parent Parent view from adapter
+     */
+    public TrendHolder(ViewGroup parent) {
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_trend, parent, false));
+        CardView background = (CardView) itemView;
+        textViews[0] = itemView.findViewById(R.id.trendpos);
+        textViews[1] = itemView.findViewById(R.id.trendname);
+        textViews[2] = itemView.findViewById(R.id.trendvol);
 
+        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
         background.setCardBackgroundColor(settings.getCardColor());
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());

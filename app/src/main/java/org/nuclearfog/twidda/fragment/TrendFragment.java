@@ -59,7 +59,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
     @Override
     protected TrendAdapter initAdapter() {
-        adapter = new TrendAdapter(settings, this);
+        adapter = new TrendAdapter(this);
         return adapter;
     }
 

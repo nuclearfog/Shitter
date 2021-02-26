@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.graphics.Bitmap;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -11,11 +10,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ImageItem;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
-import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,19 +38,16 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     private static final int LOADING = 1;
 
     private OnImageClickListener itemClickListener;
-    private GlobalSettings settings;
 
     private List<ImageHolder> images = new LinkedList<>();
     private boolean loading = false;
     private boolean saveImg = true;
 
     /**
-     * @param settings          App settings to set theme
      * @param itemClickListener click listener
      */
-    public ImageAdapter(GlobalSettings settings, OnImageClickListener itemClickListener) {
+    public ImageAdapter(OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        this.settings = settings;
     }
 
     /**
@@ -116,10 +110,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == PICTURE) {
-            View view = inflater.inflate(R.layout.item_image, parent, false);
-            final ImageItem item = new ImageItem(view, settings);
+            final ImageItem item = new ImageItem(parent);
             item.preview.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,8 +137,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             }
             return item;
         } else {
-            View view = inflater.inflate(R.layout.item_placeholder, parent, false);
-            return new Footer(view, settings, true);
+            return new Footer(parent, true);
         }
     }
 

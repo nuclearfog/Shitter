@@ -1,7 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.text.Spanned;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -131,8 +130,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_MESSAGE) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false);
-            final MessageHolder vh = new MessageHolder(view, settings);
+            final MessageHolder vh = new MessageHolder(parent);
             vh.buttons[0].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -162,8 +160,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             });
             return vh;
         } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false);
-            final Footer footer = new Footer(v, settings, false);
+            final Footer footer = new Footer(parent, false);
             footer.loadBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
