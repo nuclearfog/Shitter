@@ -64,7 +64,7 @@ import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DELETE_TWEET;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_DELETE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
@@ -166,7 +166,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
-        deleteDialog = DialogBuilder.create(this, DELETE_TWEET, this);
+        deleteDialog = DialogBuilder.create(this, TWEET_DELETE, this);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         AppStyles.setTheme(settings, root);
@@ -385,12 +385,14 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == DELETE_TWEET && tweet != null) {
-            long tweetId = tweet.getId();
-            if (tweet.getEmbeddedTweet() != null)
-                tweetId = tweet.getEmbeddedTweet().getId();
-            statusAsync = new TweetAction(this, tweetId);
-            statusAsync.execute(Action.DELETE);
+        if (type == TWEET_DELETE) {
+            if (tweet != null) {
+                long tweetId = tweet.getId();
+                if (tweet.getEmbeddedTweet() != null)
+                    tweetId = tweet.getEmbeddedTweet().getId();
+                statusAsync = new TweetAction(this, tweetId);
+                statusAsync.execute(Action.DELETE);
+            }
         }
     }
 

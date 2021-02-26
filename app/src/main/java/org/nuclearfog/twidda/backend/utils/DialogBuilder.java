@@ -30,25 +30,25 @@ public final class DialogBuilder {
      * types of dialogs, every dialog has its own message and title
      */
     public enum DialogType {
-        DEL_MESSAGE,
         WRONG_PROXY,
         DEL_DATABASE,
-        LOGOUT_APP,
-        LIST_EDITOR_LEAVE,
-        LIST_EDITOR_ERROR,
+        APP_LOG_OUT,
+        TWEET_DELETE,
         TWEET_EDITOR_LEAVE,
         TWEET_EDITOR_ERROR,
+        MESSAGE_DELETE,
         MESSAGE_EDITOR_LEAVE,
         MESSAGE_EDITOR_ERROR,
         PROFILE_EDITOR_LEAVE,
         PROFILE_EDITOR_ERROR,
-        DELETE_TWEET,
         PROFILE_UNFOLLOW,
         PROFILE_BLOCK,
         PROFILE_MUTE,
-        DEL_USER_LIST,
+        LIST_REMOVE_USER,
         LIST_UNFOLLOW,
-        LIST_DELETE
+        LIST_DELETE,
+        LIST_EDITOR_LEAVE,
+        LIST_EDITOR_ERROR
     }
 
     private DialogBuilder() {
@@ -69,7 +69,7 @@ public final class DialogBuilder {
         int message = 0;
 
         switch (type) {
-            case DEL_MESSAGE:
+            case MESSAGE_DELETE:
                 message = R.string.confirm_delete_message;
                 break;
 
@@ -84,7 +84,7 @@ public final class DialogBuilder {
                 message = R.string.confirm_delete_database;
                 break;
 
-            case LOGOUT_APP:
+            case APP_LOG_OUT:
                 message = R.string.confirm_log_lout;
                 break;
 
@@ -110,7 +110,7 @@ public final class DialogBuilder {
                 message = R.string.confirm_cancel_message;
                 break;
 
-            case DELETE_TWEET:
+            case TWEET_DELETE:
                 message = R.string.confirm_delete_tweet;
                 break;
 
@@ -126,7 +126,7 @@ public final class DialogBuilder {
                 message = R.string.confirm_mute;
                 break;
 
-            case DEL_USER_LIST:
+            case LIST_REMOVE_USER:
                 message = R.string.confirm_remove_user_from_list;
                 posButton = R.string.dialog_button_ok;
                 negButton = R.string.dialog_button_cancel;
@@ -220,6 +220,9 @@ public final class DialogBuilder {
      */
     public interface OnProgressStopListener {
 
+        /**
+         * called when the progress stop button was clicked
+         */
         void stopProgress();
     }
 }

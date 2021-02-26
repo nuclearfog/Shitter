@@ -26,7 +26,7 @@ import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_USER_LIST;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_REMOVE_USER;
 
 /**
  * Fragment class for lists a list of users
@@ -129,7 +129,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
             search = param.getString(KEY_FRAG_USER_SEARCH, "");
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
-        deleteDialog = DialogBuilder.create(requireContext(), DEL_USER_LIST, this);
+        deleteDialog = DialogBuilder.create(requireContext(), LIST_REMOVE_USER, this);
     }
 
 
@@ -217,7 +217,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == DEL_USER_LIST) {
+        if (type == LIST_REMOVE_USER) {
             if (listTask == null || listTask.getStatus() != RUNNING) {
                 listTask = new ListManager(id, DEL_USER, requireContext(), this);
                 listTask.execute(deleteUserName);

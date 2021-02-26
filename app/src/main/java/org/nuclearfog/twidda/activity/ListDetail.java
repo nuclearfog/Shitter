@@ -254,16 +254,15 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        switch (type) {
-            case LIST_DELETE:
-                listLoaderTask = new ListAction(this, DELETE);
-                listLoaderTask.execute(listId);
-                break;
-
-            case LIST_UNFOLLOW:
-                listLoaderTask = new ListAction(this, UNFOLLOW);
-                listLoaderTask.execute(listId);
-                break;
+        // delete user list
+        if (type == LIST_DELETE) {
+            listLoaderTask = new ListAction(this, DELETE);
+            listLoaderTask.execute(listId);
+        }
+        // unfollow user list
+        else if (type == LIST_UNFOLLOW) {
+            listLoaderTask = new ListAction(this, UNFOLLOW);
+            listLoaderTask.execute(listId);
         }
     }
 

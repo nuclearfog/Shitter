@@ -31,7 +31,7 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_MESSAGE;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_DELETE;
 
 /**
  * Fragment class for direct message lists
@@ -50,7 +50,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
     @Override
     protected void onCreate() {
-        deleteDialog = DialogBuilder.create(requireContext(), DEL_MESSAGE, this);
+        deleteDialog = DialogBuilder.create(requireContext(), MESSAGE_DELETE, this);
     }
 
 
@@ -162,8 +162,10 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
-        messageTask.execute(deleteId);
+        if (type == MESSAGE_DELETE) {
+            messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
+            messageTask.execute(deleteId);
+        }
     }
 
     /**

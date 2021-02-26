@@ -53,8 +53,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
+import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.APP_LOG_OUT;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_DATABASE;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LOGOUT_APP;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG_PROXY;
 
 /**
@@ -175,7 +175,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
         connectDialog = DialogBuilder.create(this, WRONG_PROXY, this);
         databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
-        logoutDialog = DialogBuilder.create(this, LOGOUT_APP, this);
+        logoutDialog = DialogBuilder.create(this, APP_LOG_OUT, this);
         appInfo = DialogBuilder.createInfoDialog(this);
 
         for (Button btn : colorButtons)
@@ -246,24 +246,23 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onConfirm(DialogBuilder.DialogType type) {
-        switch (type) {
-            case LOGOUT_APP:
-                settings.logout();
-                TwitterEngine.resetTwitter();
-                DatabaseAdapter.deleteDatabase(getApplicationContext());
-                setResult(RETURN_APP_LOGOUT);
-                finish();
-                break;
-
-            case DEL_DATABASE:
-                DatabaseAdapter.deleteDatabase(getApplicationContext());
-                setResult(RETURN_DB_CLEARED);
-                break;
-
-            case WRONG_PROXY:
-                // exit without saving proxy settings
-                finish();
-                break;
+        // confirm log out
+        if (type == APP_LOG_OUT) {
+            settings.logout();
+            TwitterEngine.resetTwitter();
+            DatabaseAdapter.deleteDatabase(getApplicationContext());
+            setResult(RETURN_APP_LOGOUT);
+            finish();
+        }
+        // confirm delete database
+        else if (type == DEL_DATABASE) {
+            DatabaseAdapter.deleteDatabase(getApplicationContext());
+            setResult(RETURN_DB_CLEARED);
+        }
+        // confirm leaving without saving proxy changes
+        else if (type == WRONG_PROXY) {
+            // exit without saving proxy settings
+            finish();
         }
     }
 
