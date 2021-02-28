@@ -120,13 +120,12 @@ public class UserAdapter extends Adapter<ViewHolder> {
     /**
      * remove user from adapter
      *
-     * @param screenname User to remove
+     * @param name screen name of the user to remove
      */
     @MainThread
-    public void removeUser(String screenname) {
-        int pos = data.removeItem(screenname);
+    public void removeUser(String name) {
+        int pos = data.removeItem(name);
         if (pos >= 0) {
-            data.remove(pos);
             notifyItemRemoved(pos);
         }
     }

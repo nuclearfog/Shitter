@@ -46,7 +46,7 @@ import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHori
 import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
 
 /**
- * Class to set up all TetView preferences
+ * Theme class to set all view styles such as text or drawable color
  *
  * @author nuclearfog
  */

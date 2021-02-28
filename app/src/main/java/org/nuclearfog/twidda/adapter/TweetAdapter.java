@@ -141,12 +141,15 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void remove(long id) {
-        for (int pos = 0; pos < tweets.size(); pos++) {
+        for (int pos = tweets.size() - 1; pos >= 0; pos--) {
             Tweet tweet = tweets.get(pos);
-            if (tweet != null && tweet.getId() == id) {
-                tweets.remove(pos);
-                notifyItemRemoved(pos);
-                break;
+            if (tweet != null) {
+                Tweet embedded = tweet.getEmbeddedTweet();
+                // remove tweet and any retweet of it
+                if (tweet.getId() == id || (embedded != null && embedded.getId() == id)) {
+                    tweets.remove(pos);
+                    notifyItemRemoved(pos);
+                }
             }
         }
     }
