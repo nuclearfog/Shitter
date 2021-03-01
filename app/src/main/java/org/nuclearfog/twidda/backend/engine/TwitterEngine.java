@@ -893,23 +893,24 @@ public class TwitterEngine {
 
 
     /**
-     * Update user profile
+     * update current users profile
      *
-     * @param userParam User data
-     * @return updated user profile
-     * @throws EngineException if Access is unavailable
+     * @param name       new username
+     * @param url        new profile link or empty if none
+     * @param loc        new location name or empty if none
+     * @param bio        new bio description or empty if none
+     * @param profileImg local path to the profile image or null
+     * @param bannerImg  local path to the banner image or null
+     * @return updated user information
+     * @throws EngineException if access is unavailable
      */
-    public User updateProfile(String[] userParam) throws EngineException {
+    public User updateProfile(String name, String url, String loc, String bio, String profileImg, String bannerImg) throws EngineException {
         try {
-            if (userParam[4] != null && userParam[4].isEmpty()) {
-                File profileImage = new File(userParam[4]);
-                twitter.updateProfileImage(profileImage);
-            }
-            if (userParam[5] != null && userParam[5].isEmpty()) {
-                File profileBanner = new File(userParam[5]);
-                twitter.updateProfileBanner(profileBanner);
-            }
-            twitter4j.User user = twitter.updateProfile(userParam[0], userParam[1], userParam[2], userParam[3]);
+            if (profileImg != null && !profileImg.isEmpty())
+                twitter.updateProfileImage(new File(profileImg));
+            if (bannerImg != null && !bannerImg.isEmpty())
+                twitter.updateProfileBanner(new File(bannerImg));
+            twitter4j.User user = twitter.updateProfile(name, url, loc, bio);
             return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);

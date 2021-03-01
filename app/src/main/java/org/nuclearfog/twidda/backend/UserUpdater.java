@@ -38,7 +38,13 @@ public class UserUpdater extends AsyncTask<String, Void, User> {
     @Override
     protected User doInBackground(String[] param) {
         try {
-            User user = mTwitter.updateProfile(param);
+            String name = param[0];
+            String link = param[1];
+            String location = param[2];
+            String bio = param[3];
+            String profileImg = param[4];
+            String bannerImg = param[5];
+            User user = mTwitter.updateProfile(name, link, location, bio, profileImg, bannerImg);
             db.storeUser(user);
             return user;
         } catch (EngineException twException) {

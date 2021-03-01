@@ -250,6 +250,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             if (returnCode == RETURN_PROFILE_CHANGED) {
                 Object data = i.getSerializableExtra(RETURN_PROFILE_DATA);
                 if (data instanceof User) {
+                    // remove blur background
+                    toolbarBackground.setImageResource(0);
+                    // re initialize updated user
                     setUser((User) data);
                     adapter.notifySettingsChanged();
                 }
