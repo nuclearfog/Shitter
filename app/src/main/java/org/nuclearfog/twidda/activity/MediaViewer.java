@@ -245,7 +245,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         // play video
         if (v.getId() == R.id.controller_play) {
             if (!videoView.isPlaying())
-                videoView.resume();
+                videoView.start();
             playStat = PlayStat.PLAY;
             setPlayPauseButton();
         }
@@ -283,7 +283,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             }
             if (event.getAction() == ACTION_UP) {
                 playStat = PlayStat.PLAY;
-                videoView.resume();
+                videoView.start();
                 return true;
             }
         }
@@ -298,7 +298,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             }
             if (event.getAction() == ACTION_UP) {
                 playStat = PlayStat.PLAY;
-                videoView.resume();
+                videoView.start();
                 return true;
             }
         }
@@ -421,7 +421,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         videoView.seekTo(seekBar.getProgress());
-        videoView.resume();
+        videoView.start();
     }
 
     /**
