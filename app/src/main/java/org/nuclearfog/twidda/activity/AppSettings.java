@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -78,14 +77,15 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private GlobalSettings settings;
     private LocationLoader locationAsync;
     private LocationAdapter locationAdapter;
+    private FontAdapter fontAdapter;
 
     private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo;
     private View root, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
+    private Button background, fontColor, popupColor, highlight, cardColor, iconColor;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
-    private Spinner locationSpinner, fontSpinner;
+    private Spinner locationSpinner;
     private TextView list_size;
-    private Button[] colorButtons;
 
     private ColorMode mode = ColorMode.NONE;
     private int color = 0;
@@ -102,12 +102,18 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
         SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
-        fontSpinner = findViewById(R.id.spinner_font);
+        Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
         hqImage = findViewById(R.id.settings_image_hq);
         enableAPI = findViewById(R.id.settings_set_custom_keys);
         locationSpinner = findViewById(R.id.spinner_woeid);
+        background = findViewById(R.id.color_background);
+        fontColor = findViewById(R.id.color_font);
+        popupColor = findViewById(R.id.color_popup);
+        highlight = findViewById(R.id.highlight_color);
+        cardColor = findViewById(R.id.color_card);
+        iconColor = findViewById(R.id.color_icon);
         proxyAddr = findViewById(R.id.edit_proxy_address);
         proxyPort = findViewById(R.id.edit_proxy_port);
         proxyUser = findViewById(R.id.edit_proxyuser);
@@ -115,19 +121,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         api_key1 = findViewById(R.id.settings_custom_key1);
         api_key2 = findViewById(R.id.settings_custom_key2);
         list_size = findViewById(R.id.settings_list_size);
-
         layout_proxy = findViewById(R.id.settings_layout_proxy);
         layout_auth_en = findViewById(R.id.settings_layout_auth_enable);
         layout_auth = findViewById(R.id.settings_layout_proxy_auth);
         layout_key = findViewById(R.id.settings_layout_key);
-
         root = findViewById(R.id.settings_layout);
-
-        TypedArray buttons = getResources().obtainTypedArray(R.array.color_button);
-        colorButtons = new Button[buttons.length()];
-        for (int index = 0; index < buttons.length(); index++)
-            colorButtons[index] = findViewById(buttons.getResourceId(index, 0));
-        buttons.recycle();
 
         toolbar.setTitle(R.string.title_settings);
         setSupportActionBar(toolbar);
@@ -150,13 +148,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         locationAdapter = new LocationAdapter(settings);
         locationAdapter.addTop(settings.getTrendLocation());
         locationSpinner.setAdapter(locationAdapter);
-        FontAdapter fontAdapter = new FontAdapter(settings);
+        locationSpinner.setSelected(false);
+        fontAdapter = new FontAdapter(settings);
         fontSpinner.setAdapter(fontAdapter);
-        fontSpinner.setSelection(settings.getFontIndex());
+        fontSpinner.setSelection(settings.getFontIndex(), false);
+        fontSpinner.setSelected(false);
 
         AppStyles.setTheme(settings, root);
 
-        setButtonColors();
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         enableAPI.setChecked(settings.isCustomApiSet());
@@ -172,14 +171,19 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enableAuth.setChecked(settings.isProxyAuthSet());
         hqImage.setEnabled(settings.getImageLoad());
         hqImage.setChecked(settings.getImageQuality());
+        setButtonColors();
 
         connectDialog = DialogBuilder.create(this, WRONG_PROXY, this);
         databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
         logoutDialog = DialogBuilder.create(this, APP_LOG_OUT, this);
         appInfo = DialogBuilder.createInfoDialog(this);
 
-        for (Button btn : colorButtons)
-            btn.setOnClickListener(this);
+        background.setOnClickListener(this);
+        fontColor.setOnClickListener(this);
+        popupColor.setOnClickListener(this);
+        highlight.setOnClickListener(this);
+        cardColor.setOnClickListener(this);
+        iconColor.setOnClickListener(this);
         logout.setOnClickListener(this);
         delButton.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
@@ -189,7 +193,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enableAuth.setOnCheckedChangeListener(this);
         hqImage.setOnCheckedChangeListener(this);
         fontSpinner.setOnItemSelectedListener(this);
-        locationSpinner.setOnItemSelectedListener(this);
         listSizeSelector.setOnSeekBarChangeListener(this);
     }
 
@@ -282,37 +285,37 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         }
         // set background color
-        else if (v == colorButtons[0]) {
+        else if (v.getId() == R.id.color_background) {
             mode = ColorMode.BACKGROUND;
             color = settings.getBackgroundColor();
             setColor(color, false);
         }
         // set font color
-        else if (v == colorButtons[1]) {
+        else if (v.getId() == R.id.color_font) {
             mode = ColorMode.FONTCOLOR;
             color = settings.getFontColor();
             setColor(color, false);
         }
         // set popup color
-        else if (v == colorButtons[2]) {
+        else if (v.getId() == R.id.color_popup) {
             mode = ColorMode.POPUPCOLOR;
             color = settings.getPopupColor();
             setColor(color, false);
         }
         // set highlight color
-        else if (v == colorButtons[3]) {
+        else if (v.getId() == R.id.highlight_color) {
             mode = ColorMode.HIGHLIGHT;
             color = settings.getHighlightColor();
             setColor(color, false);
         }
         // set card color
-        else if (v == colorButtons[4]) {
+        else if (v.getId() == R.id.color_card) {
             mode = ColorMode.CARDCOLOR;
             color = settings.getCardColor();
             setColor(color, true);
         }
         // set icon color
-        else if (v == colorButtons[5]) {
+        else if (v.getId() == R.id.color_icon) {
             mode = ColorMode.ICONCOLOR;
             color = settings.getIconColor();
             setColor(color, false);
@@ -326,14 +329,18 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             switch (mode) {
                 case BACKGROUND:
                     settings.setBackgroundColor(color);
-                    fontSpinner.setAdapter(fontSpinner.getAdapter());
+                    fontAdapter.notifyDataSetChanged();
                     if (settings.isLoggedIn()) {
-                        locationSpinner.setAdapter(fontSpinner.getAdapter());
+                        locationAdapter.notifyDataSetChanged();
                     }
                     break;
 
                 case FONTCOLOR:
                     settings.setFontColor(color);
+                    fontAdapter.notifyDataSetChanged();
+                    if (settings.isLoggedIn()) {
+                        locationAdapter.notifyDataSetChanged();
+                    }
                     break;
 
                 case POPUPCOLOR:
@@ -361,18 +368,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onCheckedChanged(CompoundButton c, boolean checked) {
-        int viewId = c.getId();
         // toggle image loading
-        if (viewId == R.id.toggleImg) {
+        if (c.getId() == R.id.toggleImg) {
             settings.setImageLoad(checked);
             hqImage.setEnabled(checked);
         }
         // toggle automatic answer load
-        else if (viewId == R.id.toggleAns) {
+        else if (c.getId() == R.id.toggleAns) {
             settings.setAnswerLoad(checked);
         }
         // enable proxy settings
-        else if (viewId == R.id.settings_enable_proxy) {
+        else if (c.getId() == R.id.settings_enable_proxy) {
             if (checked) {
                 layout_proxy.setVisibility(VISIBLE);
                 layout_auth_en.setVisibility(VISIBLE);
@@ -383,7 +389,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         }
         //enable proxy authentication
-        else if (viewId == R.id.settings_enable_auth) {
+        else if (c.getId() == R.id.settings_enable_auth) {
             if (checked) {
                 layout_auth.setVisibility(VISIBLE);
             } else {
@@ -391,11 +397,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             }
         }
         // enable high quality images
-        else if (viewId == R.id.settings_image_hq) {
+        else if (c.getId() == R.id.settings_image_hq) {
             settings.setHighQualityImage(checked);
         }
         // enable custom API setup
-        else if (viewId == R.id.settings_set_custom_keys) {
+        else if (c.getId() == R.id.settings_set_custom_keys) {
             if (checked) {
                 layout_key.setVisibility(VISIBLE);
             } else {
@@ -407,11 +413,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if (parent.getAdapter() instanceof LocationAdapter) {
+        // Trend location spinner
+        if (parent.getId() == R.id.spinner_woeid) {
             settings.setTrendLocation(locationAdapter.getItem(position));
-        } else if (parent.getAdapter() instanceof FontAdapter) {
+        }
+        // Font type spinner
+        else if (parent.getId() == R.id.spinner_font) {
             settings.setFontIndex(position);
             AppStyles.setViewFont(settings, root);
+            if (settings.isLoggedIn()) {
+                locationAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -453,8 +465,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         locationAdapter.setData(data);
         int position = locationAdapter.getPosition(settings.getTrendLocation());
         if (position > 0) {
-            locationSpinner.setSelection(position);
+            locationSpinner.setSelection(position, false);
         }
+        locationSpinner.setOnItemSelectedListener(this);
     }
 
     /**
@@ -487,6 +500,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      * setup all color buttons color
      */
     private void setButtonColors() {
+        Button[] colorButtons = {background, fontColor, popupColor, highlight, cardColor, iconColor};
         int[] colors = settings.getAllColors();
         for (int i = 0; i < colorButtons.length; i++) {
             // set button color

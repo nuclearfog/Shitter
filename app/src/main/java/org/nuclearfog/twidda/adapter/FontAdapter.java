@@ -85,10 +85,10 @@ public class FontAdapter extends BaseAdapter {
             textItem = new TextView(parent.getContext());
             textItem.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
             textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, TEXT_PADDING_BOTTOM);
-            textItem.setTextColor(settings.getFontColor());
         }
         textItem.setText(name);
         textItem.setTypeface(font);
+        textItem.setTextColor(settings.getFontColor());
         textItem.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY_MASK);
         return textItem;
     }

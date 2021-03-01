@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.ArrayRes;
@@ -121,6 +122,9 @@ public final class AppStyles {
                 } else if (child instanceof SeekBar) {
                     SeekBar seekBar = (SeekBar) child;
                     setSeekBarColor(settings, seekBar);
+                } else if (child instanceof Spinner) {
+                    Spinner dropdown = (Spinner) child;
+                    setDrawableColor(dropdown.getBackground(), settings.getIconColor());
                 } else if (child instanceof TextView) {
                     TextView tv = (TextView) child;
                     tv.setTypeface(settings.getTypeFace());

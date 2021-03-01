@@ -28,13 +28,4 @@
         <item>@drawable/follower</item>
     </integer-array>
 
-    <integer-array name="color_button">
-        <item>@id/color_background</item>
-        <item>@id/color_font</item>
-        <item>@id/color_popup</item>
-        <item>@id/highlight_color</item>
-        <item>@id/color_card</item>
-        <item>@id/color_icon</item>
-    </integer-array>
-
 </resources>
