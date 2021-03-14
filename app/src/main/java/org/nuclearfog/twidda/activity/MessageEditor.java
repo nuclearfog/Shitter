@@ -17,7 +17,6 @@ import androidx.appcompat.app.AlertDialog;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
@@ -195,9 +194,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         String username = receiver.getText().toString();
         String message = this.message.getText().toString();
         if (!username.trim().isEmpty() && (!message.trim().isEmpty() || mediaPath != null)) {
-            MessageHolder messageHolder = new MessageHolder(username, message, mediaPath);
-            messageAsync = new MessageUpdater(this, messageHolder);
-            messageAsync.execute();
+            messageAsync = new MessageUpdater(this);
+            messageAsync.execute(username, message, mediaPath);
             if (!loadingCircle.isShowing()) {
                 loadingCircle.show();
             }

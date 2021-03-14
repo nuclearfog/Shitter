@@ -8,7 +8,6 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.holder.ListHolder;
-import org.nuclearfog.twidda.backend.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.items.Relation;
@@ -855,27 +854,27 @@ public class TwitterEngine {
         }
     }
 
-
     /**
-     * Send direct message
+     * send direct message to an user
      *
-     * @param messageHolder message informations
+     * @param username screen name of the user
+     * @param message message text
+     * @param mediaPath path to the image or null
      * @throws EngineException if access is unavailable
      */
-    public void sendMessage(MessageHolder messageHolder) throws EngineException {
+    public void sendMessage(String username, String message, String mediaPath) throws EngineException {
         try {
-            long id = twitter.showUser(messageHolder.getUsername()).getId();
-            if (messageHolder.hasMedia()) {
-                long[] mediaId = uploadImages(messageHolder.getMediaPath());
-                twitter.sendDirectMessage(id, messageHolder.getMessage(), mediaId[0]);
+            if (mediaPath != null && !mediaPath.isEmpty()) {
+                long[] mediaId = uploadImages(new String[]{mediaPath});
+                long userId = twitter.showUser(username).getId();
+                twitter.sendDirectMessage(userId, message, mediaId[0]);
             } else {
-                twitter.sendDirectMessage(id, messageHolder.getMessage());
+                twitter.sendDirectMessage(username, message);
             }
         } catch (Exception err) {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Delete Direct Message
@@ -890,7 +889,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * update current users profile
@@ -916,7 +914,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * get user list
