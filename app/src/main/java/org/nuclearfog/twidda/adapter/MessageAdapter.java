@@ -24,7 +24,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
@@ -37,7 +36,7 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime
  */
 public class MessageAdapter extends Adapter<ViewHolder> {
 
-    private static final int NO_INDEX = -1;
+    private static final int NO_LOADING = -1;
     private static final int TYPE_MESSAGE = 0;
     private static final int TYPE_FOOTER = 1;
 
@@ -45,7 +44,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     private GlobalSettings settings;
 
     private MessageList data = new MessageList(null, null);
-    private int loadingIndex = NO_INDEX;
+    private int loadingIndex = NO_LOADING;
 
     /**
      * @param settings          App settings for theme
@@ -168,8 +167,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                     if (position != NO_POSITION) {
                         boolean success = itemClickListener.onFooterClick(data.getNextCursor());
                         if (success) {
-                            footer.loadCircle.setVisibility(VISIBLE);
-                            footer.loadBtn.setVisibility(INVISIBLE);
+                            footer.setLoading(true);
                             loadingIndex = position;
                         }
                     }
@@ -216,13 +214,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             }
         } else if (vh instanceof Footer) {
             Footer footer = (Footer) vh;
-            if (loadingIndex != NO_INDEX) {
-                footer.loadCircle.setVisibility(VISIBLE);
-                footer.loadBtn.setVisibility(INVISIBLE);
-            } else {
-                footer.loadCircle.setVisibility(INVISIBLE);
-                footer.loadBtn.setVisibility(VISIBLE);
-            }
+            footer.setLoading(loadingIndex != NO_LOADING);
         }
     }
 
@@ -230,9 +222,9 @@ public class MessageAdapter extends Adapter<ViewHolder> {
      * disable loading animation in footer
      */
     public void disableLoading() {
-        if (loadingIndex != NO_INDEX) {
+        if (loadingIndex != NO_LOADING) {
             int oldIndex = loadingIndex;
-            loadingIndex = NO_INDEX;
+            loadingIndex = NO_LOADING;
             notifyItemChanged(oldIndex);
         }
     }

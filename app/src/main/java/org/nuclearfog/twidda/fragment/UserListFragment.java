@@ -169,10 +169,12 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
     @Override
-    public void onFooterClick(long cursor) {
+    public boolean onFooterClick(long cursor) {
         if (listTask != null && listTask.getStatus() != RUNNING) {
             load(cursor);
+            return true;
         }
+        return false;
     }
 
 

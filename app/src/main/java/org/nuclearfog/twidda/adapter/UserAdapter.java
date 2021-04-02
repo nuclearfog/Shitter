@@ -23,7 +23,6 @@ import java.text.NumberFormat;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_ID;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
@@ -39,7 +38,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     /**
      * index of {@link #loadingIndex} if no index is defined
      */
-    private static final int NO_INDEX = -1;
+    private static final int NO_LOADING = -1;
 
     /**
      * View type for an user item
@@ -51,21 +50,24 @@ public class UserAdapter extends Adapter<ViewHolder> {
      */
     private static final int ITEM_GAP = 1;
 
+    /**
+     * Number formatter
+     */
     private static final NumberFormat FORMATTER = NumberFormat.getIntegerInstance();
 
-    private UserClickListener itemClickListener;
+    private UserClickListener listener;
     private GlobalSettings settings;
 
     private UserList data = new UserList();
-    private int loadingIndex = NO_INDEX;
+    private int loadingIndex = NO_LOADING;
     private boolean userRemovable = false;
 
     /**
-     * @param settings          app settings
-     * @param itemClickListener click listener
+     * @param settings  app settings
+     * @param l         click listener
      */
-    public UserAdapter(GlobalSettings settings, UserClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public UserAdapter(GlobalSettings settings, UserClickListener l) {
+        this.listener = l;
         this.settings = settings;
     }
 
@@ -165,7 +167,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                     int position = vh.getLayoutPosition();
                     User user = data.get(position);
                     if (position != NO_POSITION && user != null) {
-                        itemClickListener.onUserClick(user);
+                        listener.onUserClick(user);
                     }
                 }
             });
@@ -177,7 +179,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                         int position = vh.getLayoutPosition();
                         User user = data.get(position);
                         if (position != NO_POSITION && user != null) {
-                            itemClickListener.onDelete(user.getScreenname());
+                            listener.onDelete(user.getScreenname());
                         }
                     }
                 });
@@ -186,22 +188,21 @@ public class UserAdapter extends Adapter<ViewHolder> {
             }
             return vh;
         } else {
-            final Footer vh = new Footer(parent, false);
-            vh.loadBtn.setOnClickListener(new OnClickListener() {
+            final Footer footer = new Footer(parent, false);
+            footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = vh.getLayoutPosition();
+                    int position = footer.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        boolean success = itemClickListener.onFooterClick(data.getNext());
-                        if (success) {
-                            vh.loadCircle.setVisibility(VISIBLE);
-                            vh.loadBtn.setVisibility(INVISIBLE);
+                        boolean actionPerformed = listener.onFooterClick(data.getNext());
+                        if (actionPerformed) {
+                            footer.setLoading(true);
                             loadingIndex = position;
                         }
                     }
                 }
             });
-            return vh;
+            return footer;
         }
     }
 
@@ -235,14 +236,8 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 userholder.profileImg.setImageResource(0);
             }
         } else if (holder instanceof Footer) {
-            Footer vh = (Footer) holder;
-            if (loadingIndex != NO_INDEX) {
-                vh.loadCircle.setVisibility(VISIBLE);
-                vh.loadBtn.setVisibility(INVISIBLE);
-            } else {
-                vh.loadCircle.setVisibility(INVISIBLE);
-                vh.loadBtn.setVisibility(VISIBLE);
-            }
+            Footer footer = (Footer) holder;
+            footer.setLoading(loadingIndex != NO_LOADING);
         }
     }
 
@@ -250,9 +245,9 @@ public class UserAdapter extends Adapter<ViewHolder> {
      * disable loading animation in footer
      */
     public void disableLoading() {
-        if (loadingIndex != NO_INDEX) {
+        if (loadingIndex != NO_LOADING) {
             int oldIndex = loadingIndex;
-            loadingIndex = NO_INDEX;
+            loadingIndex = NO_LOADING;
             notifyItemChanged(oldIndex);
         }
     }

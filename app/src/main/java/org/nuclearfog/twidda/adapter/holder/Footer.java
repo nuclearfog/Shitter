@@ -51,4 +51,14 @@ public class Footer extends ViewHolder {
             background.getLayoutParams().width = WRAP_CONTENT;
         }
     }
+
+    public void setLoading(boolean enable) {
+        if (enable) {
+            loadCircle.setVisibility(VISIBLE);
+            loadBtn.setVisibility(INVISIBLE);
+        } else {
+            loadCircle.setVisibility(INVISIBLE);
+            loadBtn.setVisibility(VISIBLE);
+        }
+    }
 }

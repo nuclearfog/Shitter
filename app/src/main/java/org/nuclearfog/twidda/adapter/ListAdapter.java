@@ -25,7 +25,6 @@ import java.text.NumberFormat;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime;
@@ -178,10 +177,11 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = footer.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        listener.onFooterClick(data.getNext());
-                        footer.loadCircle.setVisibility(VISIBLE);
-                        footer.loadBtn.setVisibility(INVISIBLE);
-                        loadingIndex = position;
+                        boolean actionPerformed = listener.onFooterClick(data.getNext());
+                        if (actionPerformed) {
+                            footer.setLoading(true);
+                            loadingIndex = position;
+                        }
                     }
                 }
             });
@@ -238,13 +238,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
             }
         } else if (holder instanceof Footer) {
             Footer footer = (Footer) holder;
-            if (loadingIndex != NO_LOADING) {
-                footer.loadCircle.setVisibility(VISIBLE);
-                footer.loadBtn.setVisibility(INVISIBLE);
-            } else {
-                footer.loadCircle.setVisibility(INVISIBLE);
-                footer.loadBtn.setVisibility(VISIBLE);
-            }
+            footer.setLoading(loadingIndex != NO_LOADING);
         }
     }
 
@@ -283,6 +277,6 @@ public class ListAdapter extends Adapter<ViewHolder> {
          *
          * @param cursor next cursor of the list
          */
-        void onFooterClick(long cursor);
+        boolean onFooterClick(long cursor);
     }
 }

@@ -46,7 +46,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     /**
      * index of {@link #loadingIndex} if no index is defined
      */
-    private static final int NO_INDEX = -1;
+    private static final int NO_LOADING = -1;
 
     /**
      * View type for a tweet item
@@ -68,7 +68,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     private final List<Tweet> tweets = new ArrayList<>();
     private NumberFormat formatter = NumberFormat.getIntegerInstance();
-    private int loadingIndex = NO_INDEX;
+    private int loadingIndex = NO_LOADING;
 
 
     public TweetAdapter(GlobalSettings settings, TweetClickListener itemClickListener) {
@@ -116,7 +116,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
         if (data.size() > MIN_COUNT) {
             tweets.add(null);
         }
-        loadingIndex = NO_INDEX;
+        loadingIndex = NO_LOADING;
         notifyDataSetChanged();
     }
 
@@ -176,9 +176,9 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      * disable placeholder load animation
      */
     public void disableLoading() {
-        if (loadingIndex != NO_INDEX) {
+        if (loadingIndex != NO_LOADING) {
             int oldIndex = loadingIndex;
-            loadingIndex = NO_INDEX;
+            loadingIndex = NO_LOADING;
             notifyItemChanged(oldIndex);
         }
     }
@@ -241,8 +241,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                         }
                         boolean success = itemClickListener.onHolderClick(sinceId, maxId, position);
                         if (success) {
-                            footer.loadCircle.setVisibility(VISIBLE);
-                            footer.loadBtn.setVisibility(INVISIBLE);
+                            footer.setLoading(true);
                             loadingIndex = position;
                         }
                     }
@@ -308,13 +307,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             }
         } else if (holder instanceof Footer) {
             Footer footer = (Footer) holder;
-            if (loadingIndex != NO_INDEX) {
-                footer.loadCircle.setVisibility(VISIBLE);
-                footer.loadBtn.setVisibility(INVISIBLE);
-            } else {
-                footer.loadCircle.setVisibility(INVISIBLE);
-                footer.loadBtn.setVisibility(VISIBLE);
-            }
+            footer.setLoading(loadingIndex != NO_LOADING);
         }
     }
 
