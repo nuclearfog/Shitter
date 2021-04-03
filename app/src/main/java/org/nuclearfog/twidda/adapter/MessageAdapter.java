@@ -62,6 +62,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void setData(MessageList newData) {
+        disableLoading();
         if (newData.isEmpty()) {
             if (!data.isEmpty() && data.peekLast() == null) {
                 int end = data.size() - 1;
@@ -85,7 +86,6 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             data.addAt(newData, end);
             notifyItemRangeInserted(end, newData.size());
         }
-        disableLoading();
     }
 
     /**
@@ -219,7 +219,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     }
 
     /**
-     * disable loading animation in footer
+     * disable footer loading animation
      */
     public void disableLoading() {
         if (loadingIndex != NO_LOADING) {
@@ -234,6 +234,9 @@ public class MessageAdapter extends Adapter<ViewHolder> {
      */
     public interface OnItemSelected extends OnTagClickListener {
 
+        /**
+         * Actions performed by clicking the buttons
+         */
         enum Action {
             ANSWER,
             DELETE,

@@ -21,6 +21,7 @@ import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder;
 import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
+import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -42,11 +43,11 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_LEAVE;
 
 /**
- * Activity to create a tweet
+ * Tweet editor activity. Media files and location can be attached to a tweet.
  *
  * @author nuclearfog
  */
-public class TweetEditor extends MediaActivity implements OnClickListener, DialogBuilder.OnProgressStopListener, OnDialogConfirmListener {
+public class TweetEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnDialogConfirmListener {
 
     /**
      * type of media attached to the tweet
@@ -85,13 +86,11 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
     private AlertDialog errorDialog;
     private Dialog loadingCircle, closingDialog;
     private EditText tweetText;
-    private View locationProg;
+    private View locationPending;
 
     private Location location;
     private List<String> mediaPath = new LinkedList<>();
     private MediaType selectedFormat = MediaType.NONE;
-    private String tweetStr = "";
-    private long inReplyId = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -105,7 +104,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         mediaBtn = findViewById(R.id.tweet_add_media);
         previewBtn = findViewById(R.id.tweet_prev_media);
         tweetText = findViewById(R.id.tweet_input);
-        locationProg = findViewById(R.id.location_progress);
+        locationPending = findViewById(R.id.location_progress);
         loadingCircle = DialogBuilder.createProgress(this, this);
         errorDialog = DialogBuilder.create(this, TWEET_EDITOR_ERROR, this);
         closingDialog = DialogBuilder.create(this, TWEET_EDITOR_LEAVE, this);
@@ -113,7 +112,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         settings = GlobalSettings.getInstance(this);
 
         Intent data = getIntent();
-        inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
         String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
         if (prefix != null)
             tweetText.append(prefix);
@@ -151,7 +149,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
     public void onClick(View v) {
         // send tweet
         if (v.getId() == R.id.tweet_send) {
-            tweetStr = tweetText.getText().toString();
+            String tweetStr = tweetText.getText().toString();
             // check if tweet is empty
             if (tweetStr.trim().isEmpty() && mediaPath.isEmpty()) {
                 Toast.makeText(this, R.string.error_empty_tweet, LENGTH_SHORT).show();
@@ -195,7 +193,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         }
         // add location to the tweet
         else if (v.getId() == R.id.tweet_add_location) {
-            locationProg.setVisibility(VISIBLE);
+            locationPending.setVisibility(VISIBLE);
             locationBtn.setVisibility(INVISIBLE);
             getLocation();
         }
@@ -209,7 +207,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         } else {
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         }
-        locationProg.setVisibility(INVISIBLE);
+        locationPending.setVisibility(INVISIBLE);
         locationBtn.setVisibility(VISIBLE);
         this.location = location;
     }
@@ -234,7 +232,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
                         }
                     }
                 } else {
-                    Toast.makeText(this, R.string.info_cant_add_video, LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.info_cant_add_gif, LENGTH_SHORT).show();
                 }
                 break;
 
@@ -326,6 +324,9 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
      * update tweet information
      */
     private void updateTweet() {
+        Intent data = getIntent();
+        long inReplyId = data.getLongExtra(KEY_TWEETPOPUP_REPLYID, 0);
+        String tweetStr = tweetText.getText().toString();
         TweetHolder tweet = new TweetHolder(tweetStr, inReplyId);
         // add media
         if (selectedFormat == MediaType.IMAGE || selectedFormat == MediaType.GIF)

@@ -189,4 +189,9 @@
     <string name="info_location_pending">Ortung läuft, bitte warten.</string>
     <string name="app_info_twitter_rules">Twitter Regeln:</string>
     <string name="error_twitter_search">Suchbegriff ist entweder zu lang oder enthält nicht erlaubte Zeichen!</string>
+    <string name="button_backward">Zurückspulen</string>
+    <string name="button_forward">Vorspulen</string>
+    <string name="button_play_pause">Pause/Abspielen</string>
+    <string name="button_share">Videolink teilen</string>
+    <string name="info_cant_add_gif">GIF konnte nicht hinzugefügt werden!</string>
 </resources>

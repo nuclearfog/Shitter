@@ -118,6 +118,7 @@
     <string name="info_login_to_twitter">login to Twitter</string>
     <string name="error_wrong_connection_settings">Wrong connection settings!</string>
     <string name="info_cant_add_video">can\'t add video</string>
+    <string name="info_cant_add_gif">can\'t add GIF</string>
     <string name="info_get_link">get Twitter PIN from browser first. Please press the first button!</string>
     <string name="info_gps_attached">GPS position added</string>
     <string name="info_tweet_retweeted">retweeted</string>

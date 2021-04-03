@@ -78,6 +78,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
      */
     @MainThread
     public void setData(@NonNull UserList newData) {
+        disableLoading();
         if (newData.isEmpty()) {
             if (!data.isEmpty() && data.peekLast() == null) {
                 // remove footer
@@ -102,7 +103,6 @@ public class UserAdapter extends Adapter<ViewHolder> {
             data.addAt(newData, end);
             notifyItemRangeInserted(end, newData.size());
         }
-        disableLoading();
     }
 
     /**
