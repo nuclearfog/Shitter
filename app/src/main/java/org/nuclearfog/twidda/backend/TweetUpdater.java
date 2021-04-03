@@ -37,8 +37,25 @@ public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
     @Override
     protected Boolean doInBackground(TweetHolder[] param) {
         try {
+            long[] mediaIds;
             TweetHolder tweet = param[0];
-            mTwitter.uploadStatus(tweet);
+            if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
+                String[] mediaLinks = tweet.getMediaPaths();
+                mediaIds = new long[mediaLinks.length];
+                for (int i = 0; i < mediaLinks.length; i++) {
+                    mediaIds[i] = mTwitter.uploadImage(mediaLinks[i]);
+                    if (isCancelled()) {
+                        break;
+                    }
+                }
+            } else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
+                mediaIds = new long[]{mTwitter.uploadVideo(tweet.getMediaPath())};
+            } else {
+                mediaIds = new long[0];
+            }
+            if (!isCancelled()) {
+                mTwitter.uploadStatus(tweet, mediaIds);
+            }
             return true;
         } catch (EngineException twException) {
             this.twException = twException;

@@ -126,7 +126,6 @@ public class TwitterEngine {
         ProxySetup.setConnection(settings);
     }
 
-
     /**
      * get singleton instance
      *
@@ -146,7 +145,6 @@ public class TwitterEngine {
         return mTwitter;
     }
 
-
     /**
      * reset Twitter state
      */
@@ -155,7 +153,6 @@ public class TwitterEngine {
         mTwitter.reqToken = null;   // Destroy connections
         mTwitter.aToken = null;     //
     }
-
 
     /**
      * Request Registration Website
@@ -172,7 +169,6 @@ public class TwitterEngine {
         }
         return reqToken.getAuthenticationURL();
     }
-
 
     /**
      * Get Access-Token, store and initialize Twitter
@@ -197,7 +193,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Get Home Timeline
      *
@@ -221,7 +216,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Get Mention Tweets
      *
@@ -244,7 +238,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get Tweet search result
@@ -273,7 +266,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Get Trending Hashtags
      *
@@ -294,7 +286,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * get available locations
      *
@@ -312,7 +303,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get User search result
@@ -339,7 +329,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Get User Tweets
      *
@@ -362,7 +351,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get User Tweets
@@ -387,7 +375,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Get User Favs
      *
@@ -410,7 +397,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get User Favs
@@ -435,7 +421,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get User
@@ -467,7 +452,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Efficient Access of Connection Information
      *
@@ -498,7 +482,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Unfollow Twitter user
      *
@@ -513,7 +496,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Block Twitter user
@@ -530,7 +512,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * Unblock Twitter user
      *
@@ -545,7 +526,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Mute Twitter user
@@ -562,9 +542,8 @@ public class TwitterEngine {
         }
     }
 
-
     /**
-     * Unmute Twitter user
+     * Un-mute Twitter user
      *
      * @param UserID User ID
      * @return Twitter User
@@ -577,7 +556,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * get Following User List
@@ -603,7 +581,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * get Follower
      *
@@ -628,33 +605,26 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * send tweet
      *
      * @param tweet Tweet holder
-     * @throws EngineException if twitter service is unavailable or media was not found
+     * @throws EngineException if twitter service is unavailable
      */
-    public void uploadStatus(TweetHolder tweet) throws EngineException {
+    public void uploadStatus(TweetHolder tweet, long[] mediaIds) throws EngineException {
         try {
             StatusUpdate mStatus = new StatusUpdate(tweet.getText());
             if (tweet.isReply())
                 mStatus.setInReplyToStatusId(tweet.getReplyId());
             if (tweet.hasLocation())
                 mStatus.setLocation(new GeoLocation(tweet.getLatitude(), tweet.getLongitude()));
-            if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
-                long[] ids = uploadImages(tweet.getMediaPaths());
-                mStatus.setMediaIds(ids);
-            } else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
-                long id = uploadVideo(tweet.getMediaPath());
-                mStatus.setMediaIds(id);
-            }
+            if (mediaIds.length > 0)
+                mStatus.setMediaIds(mediaIds);
             twitter.updateStatus(mStatus);
         } catch (Exception err) {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get Tweet
@@ -671,7 +641,6 @@ public class TwitterEngine {
             throw new EngineException(err);
         }
     }
-
 
     /**
      * Get replies to a specific tweet
@@ -858,16 +827,15 @@ public class TwitterEngine {
      * send direct message to an user
      *
      * @param username screen name of the user
-     * @param message message text
-     * @param mediaPath path to the image or null
+     * @param message  message text
+     * @param mediaId  media ID referenced by Twitter
      * @throws EngineException if access is unavailable
      */
-    public void sendMessage(String username, String message, String mediaPath) throws EngineException {
+    public void sendDirectMessage(String username, String message, long mediaId) throws EngineException {
         try {
-            if (mediaPath != null && !mediaPath.isEmpty()) {
-                long[] mediaId = uploadImages(new String[]{mediaPath});
+            if (mediaId > 0) {
                 long userId = twitter.showUser(username).getId();
-                twitter.sendDirectMessage(userId, message, mediaId[0]);
+                twitter.sendDirectMessage(userId, message, mediaId);
             } else {
                 twitter.sendDirectMessage(username, message);
             }
@@ -1061,7 +1029,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * get tweets of a lists
      *
@@ -1085,7 +1052,6 @@ public class TwitterEngine {
         }
     }
 
-
     /**
      * download image from Twitter
      *
@@ -1101,6 +1067,44 @@ public class TwitterEngine {
             return BitmapFactory.decodeStream(stream);
         } catch (IOException err) {
             throw new EngineException(EngineException.InternalErrorType.BITMAP_FAILURE);
+        }
+    }
+
+    /**
+     * upload image to twitter and return unique media ID
+     *
+     * @param path path to the media file
+     * @return media ID
+     * @throws EngineException if twitter service is unavailable or media not found
+     */
+    public long uploadImage(String path) throws EngineException {
+        try {
+            File file = new File(path);
+            UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
+            return media.getMediaId();
+        } catch (FileNotFoundException err) {
+            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
+        } catch (Exception err) {
+            throw new EngineException(err);
+        }
+    }
+
+    /**
+     * Upload video to twitter and return unique media ID
+     *
+     * @param path path to the media file
+     * @return media ID
+     * @throws EngineException if twitter service is unavailable or media not found
+     */
+    public long uploadVideo(String path) throws EngineException {
+        try {
+            File file = new File(path);
+            UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
+            return media.getMediaId();
+        } catch (FileNotFoundException err) {
+            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
+        } catch (Exception err) {
+            throw new EngineException(err);
         }
     }
 
@@ -1169,7 +1173,6 @@ public class TwitterEngine {
         return result;
     }
 
-
     /**
      * convert #twitter4j.Status to Tweet List
      *
@@ -1183,9 +1186,8 @@ public class TwitterEngine {
         return result;
     }
 
-
     /**
-     * @param dm Twitter4J directmessage
+     * @param dm Twitter4J direct message
      * @return dm item
      * @throws EngineException if Access is unavailable
      */
@@ -1198,51 +1200,6 @@ public class TwitterEngine {
             else
                 receiver = sender;
             return new Message(dm, twitter.getId(), sender, receiver);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * Upload image to twitter and return unique media IDs
-     *
-     * @param paths Image Paths
-     * @return Media ID array
-     * @throws EngineException if twitter service is unavailable or media not found
-     */
-    private long[] uploadImages(String[] paths) throws EngineException {
-        try {
-            long[] ids = new long[paths.length];
-            int i = 0;
-            for (String path : paths) {
-                File file = new File(path);
-                UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
-                ids[i++] = media.getMediaId();
-            }
-            return ids;
-        } catch (FileNotFoundException err) {
-            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
-        } catch (Exception err) {
-            throw new EngineException(err);
-        }
-    }
-
-
-    /**
-     * Upload video or gif to twitter and return unique media ID
-     *
-     * @param path path of video or gif
-     * @return media ID
-     * @throws EngineException if twitter service is unavailable or media not found
-     */
-    private long uploadVideo(String path) throws EngineException {
-        try {
-            File file = new File(path);
-            UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
-            return media.getMediaId();
-        } catch (FileNotFoundException err) {
-            throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
         } catch (Exception err) {
             throw new EngineException(err);
         }

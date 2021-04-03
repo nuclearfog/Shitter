@@ -37,7 +37,9 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String[] param) {
         try {
-            mTwitter.sendMessage(param[0], param[1], param[2]);
+            long mediaId = mTwitter.uploadImage(param[2]);
+            if (!isCancelled())
+                mTwitter.sendDirectMessage(param[0], param[1], mediaId);
             return true;
         } catch (EngineException twException) {
             this.twException = twException;

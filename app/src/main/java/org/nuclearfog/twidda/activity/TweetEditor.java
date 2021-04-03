@@ -221,6 +221,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, Dialo
         switch (extension) {
             case "jpg":
             case "jpeg":
+            case "webp":
             case "png":
                 if (selectedFormat == MediaType.NONE)
                     selectedFormat = MediaType.IMAGE;
