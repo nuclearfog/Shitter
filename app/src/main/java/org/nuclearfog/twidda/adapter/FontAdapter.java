@@ -50,7 +50,9 @@ public class FontAdapter extends BaseAdapter {
 
     private GlobalSettings settings;
 
-
+    /**
+     * @param settings app settings for background and font color
+     */
     public FontAdapter(GlobalSettings settings) {
         this.settings = settings;
     }

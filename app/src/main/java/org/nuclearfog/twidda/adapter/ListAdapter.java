@@ -52,14 +52,21 @@ public class ListAdapter extends Adapter<ViewHolder> {
      */
     private static final int ITEM_LIST = 1;
 
+    /**
+     * locale specific number format
+     */
+    private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
+
     private ListClickListener listener;
     private GlobalSettings settings;
 
-    private NumberFormat formatter = NumberFormat.getIntegerInstance();
     private UserLists data = new UserLists();
     private int loadingIndex = NO_LOADING;
 
-
+    /**
+     * @param settings app settings for theme
+     * @param listener item click listener
+     */
     public ListAdapter(GlobalSettings settings, ListClickListener listener) {
         this.listener = listener;
         this.settings = settings;
@@ -202,8 +209,8 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[2].setText(owner.getUsername());
                 vh.textViews[3].setText(owner.getScreenname());
                 vh.textViews[4].setText(formatCreationTime(item.getCreatedAt()));
-                vh.textViews[5].setText(formatter.format(item.getMemberCount()));
-                vh.textViews[6].setText(formatter.format(item.getSubscriberCount()));
+                vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
+                vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
                 if (settings.getImageLoad() && owner.hasProfileImage()) {
                     String pbLink = owner.getImageLink();
                     if (!owner.hasDefaultProfileImage())

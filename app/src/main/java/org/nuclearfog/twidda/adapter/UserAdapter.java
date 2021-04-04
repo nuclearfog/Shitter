@@ -51,9 +51,9 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private static final int ITEM_GAP = 1;
 
     /**
-     * Number formatter
+     * locale specific number formatter
      */
-    private static final NumberFormat FORMATTER = NumberFormat.getIntegerInstance();
+    private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
 
     private UserClickListener listener;
     private GlobalSettings settings;
@@ -214,8 +214,8 @@ public class UserAdapter extends Adapter<ViewHolder> {
             UserHolder userholder = (UserHolder) holder;
             userholder.textViews[0].setText(user.getUsername());
             userholder.textViews[1].setText(user.getScreenname());
-            userholder.textViews[2].setText(FORMATTER.format(user.getFollowing()));
-            userholder.textViews[3].setText(FORMATTER.format(user.getFollower()));
+            userholder.textViews[2].setText(NUM_FORMAT.format(user.getFollowing()));
+            userholder.textViews[3].setText(NUM_FORMAT.format(user.getFollower()));
             if (user.isVerified()) {
                 userholder.verifyIcon.setVisibility(VISIBLE);
             } else {

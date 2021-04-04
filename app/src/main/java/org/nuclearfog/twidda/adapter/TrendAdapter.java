@@ -30,12 +30,23 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  */
 public class TrendAdapter extends Adapter<ViewHolder> {
 
+    /**
+     * Max trend count Twitter API returns
+     */
+    private static final int INIT_COUNT = 50;
+
+    /**
+     * Locale specific number format
+     */
+    private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
+
+
     private TrendClickListener itemClickListener;
+    private List<Trend> trends = new ArrayList<>(INIT_COUNT);
 
-    private NumberFormat formatter = NumberFormat.getIntegerInstance();
-    private List<Trend> trends = new ArrayList<>();
-
-
+    /**
+     * @param itemClickListener Listener for item click
+     */
     public TrendAdapter(TrendClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
@@ -102,7 +113,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
         holder.textViews[1].setText(trend.getName());
         if (trend.hasRangeInfo()) {
             Resources resources = holder.textViews[2].getContext().getResources();
-            String trendVol = formatter.format(trend.getRange()) + " " + resources.getString(R.string.trend_range);
+            String trendVol = NUM_FORMAT.format(trend.getRange()) + " " + resources.getString(R.string.trend_range);
             holder.textViews[2].setText(trendVol);
             holder.textViews[2].setVisibility(VISIBLE);
         } else {

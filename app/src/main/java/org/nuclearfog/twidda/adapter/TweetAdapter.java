@@ -22,7 +22,7 @@ import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -63,14 +63,22 @@ public class TweetAdapter extends Adapter<ViewHolder> {
      */
     private static final int MIN_COUNT = 2;
 
+    /**
+     * Locale specific number format
+     */
+    private static final NumberFormat NUM_FORMAT = NumberFormat.getIntegerInstance();
+
+
     private TweetClickListener itemClickListener;
     private GlobalSettings settings;
 
-    private final List<Tweet> tweets = new ArrayList<>();
-    private NumberFormat formatter = NumberFormat.getIntegerInstance();
+    private final List<Tweet> tweets = new LinkedList<>();
     private int loadingIndex = NO_LOADING;
 
-
+    /**
+     * @param settings          App settings for theme
+     * @param itemClickListener listener for item click
+     */
     public TweetAdapter(GlobalSettings settings, TweetClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         this.settings = settings;
@@ -272,8 +280,8 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             tweetItem.textViews[2].setText(text);
             tweetItem.textViews[0].setText(user.getUsername());
             tweetItem.textViews[1].setText(user.getScreenname());
-            tweetItem.textViews[3].setText(formatter.format(tweet.getRetweetCount()));
-            tweetItem.textViews[4].setText(formatter.format(tweet.getFavoriteCount()));
+            tweetItem.textViews[3].setText(NUM_FORMAT.format(tweet.getRetweetCount()));
+            tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
             tweetItem.textViews[6].setText(formatCreationTime(tweet.getTime()));
 
             if (tweet.retweeted()) {
