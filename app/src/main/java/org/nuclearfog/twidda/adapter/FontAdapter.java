@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.adapter;
 
 import android.graphics.Typeface;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.util.TypedValue.COMPLEX_UNIT_SP;
@@ -19,24 +21,9 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
 public class FontAdapter extends BaseAdapter {
 
     /**
-     * text padding of an item
-     */
-    private static final int TEXT_PADDING = 20;
-
-    /**
-     * item text padding to the next text item
-     */
-    private static final int TEXT_PADDING_BOTTOM = 5;
-
-    /**
      * font size of an item
      */
     private static final float FONT_SIZE = 24.0f;
-
-    /**
-     * Background color transparency mask
-     */
-    private static final int TRANSPARENCY_MASK = 0xbfffffff;
 
     /**
      * android system fonts
@@ -79,19 +66,17 @@ public class FontAdapter extends BaseAdapter {
     @Override
     public View getView(int pos, View view, ViewGroup parent) {
         TextView textItem;
-        String name = names[pos];
-        Typeface font = fonts[pos];
-        if (view instanceof TextView)
-            textItem = (TextView) view;
-        else {
-            textItem = new TextView(parent.getContext());
-            textItem.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
-            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, TEXT_PADDING_BOTTOM);
+        if (view == null) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            view = inflater.inflate(R.layout.item_dropdown, parent, false);
         }
-        textItem.setText(name);
-        textItem.setTypeface(font);
+        textItem = view.findViewById(R.id.dropdown_textitem);
+        textItem.setText(names[pos]);
+        textItem.setTypeface(fonts[pos]);
+        textItem.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
         textItem.setTextColor(settings.getFontColor());
-        textItem.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY_MASK);
-        return textItem;
+        textItem.setBackgroundColor(settings.getCardColor());
+        view.setBackgroundColor(settings.getBackgroundColor());
+        return view;
     }
 }

@@ -353,6 +353,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
                 case CARDCOLOR:
                     settings.setCardColor(color);
+                    fontAdapter.notifyDataSetChanged();
+                    if (settings.isLoggedIn()) {
+                        locationAdapter.notifyDataSetChanged();
+                    }
                     break;
 
                 case ICONCOLOR:

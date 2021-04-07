@@ -145,6 +145,9 @@
     <!--dimens of item_load.xml-->
     <dimen name="loaditem_button_size">36sp</dimen>
 
+    <!-- dimens of item_dropdown-->
+    <dimen name="dropdown_padding">2dp</dimen>
+
     <!--dimens of page_media.xml-->
     <dimen name="mediapage_preview_margin">10dp</dimen>
     <dimen name="mediapage_circle_size">64dp</dimen>

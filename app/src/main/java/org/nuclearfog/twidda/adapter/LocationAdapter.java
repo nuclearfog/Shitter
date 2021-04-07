@@ -1,6 +1,7 @@
 package org.nuclearfog.twidda.adapter;
 
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.MainThread;
 
+import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.items.TrendLocation;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -25,24 +27,9 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 public class LocationAdapter extends BaseAdapter {
 
     /**
-     * item text padding
-     */
-    private static final int TEXT_PADDING = 20;
-
-    /**
-     * item text padding to the next text item
-     */
-    private static final int TEXT_PADDING_BOTTOM = 5;
-
-    /**
      * text size of the items
      */
     private static final float TEXT_SIZE = 16.0f;
-
-    /**
-     * Background color transparency mask
-     */
-    private static final int TRANSPARENCY_MASK = 0xbfffffff;
 
     private GlobalSettings settings;
     private List<TrendLocation> data = new ArrayList<>();
@@ -110,19 +97,19 @@ public class LocationAdapter extends BaseAdapter {
 
 
     @Override
-    public View getView(final int pos, View view, ViewGroup parent) {
+    public View getView(int pos, View view, ViewGroup parent) {
         TextView textItem;
-        if (view instanceof TextView) {
-            textItem = (TextView) view;
-        } else {
-            textItem = new TextView(parent.getContext());
-            textItem.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
-            textItem.setPadding(TEXT_PADDING, 0, TEXT_PADDING, TEXT_PADDING_BOTTOM);
+        if (view == null) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            view = inflater.inflate(R.layout.item_dropdown, parent, false);
         }
-        textItem.setBackgroundColor(settings.getBackgroundColor() & TRANSPARENCY_MASK);
+        textItem = view.findViewById(R.id.dropdown_textitem);
+        textItem.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
+        textItem.setBackgroundColor(settings.getCardColor());
         textItem.setTextColor(settings.getFontColor());
         textItem.setTypeface(settings.getTypeFace());
         textItem.setText(data.get(pos).getName());
-        return textItem;
+        view.setBackgroundColor(settings.getBackgroundColor());
+        return view;
     }
 }
