@@ -82,6 +82,7 @@
         app:layout_constraintTop_toTopOf="@+id/edit_pb" />
 
     <ScrollView
+        android:id="@+id/editprofile_scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/editprofile_scrollview_margin"
