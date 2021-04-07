@@ -16,8 +16,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
-
 /**
  * Adapter class for Location selection spinner
  *
@@ -25,11 +23,6 @@ import static android.util.TypedValue.COMPLEX_UNIT_DIP;
  * @see org.nuclearfog.twidda.activity.AppSettings
  */
 public class LocationAdapter extends BaseAdapter {
-
-    /**
-     * text size of the items
-     */
-    private static final float TEXT_SIZE = 16.0f;
 
     private GlobalSettings settings;
     private List<TrendLocation> data = new ArrayList<>();
@@ -104,7 +97,6 @@ public class LocationAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.item_dropdown, parent, false);
         }
         textItem = view.findViewById(R.id.dropdown_textitem);
-        textItem.setTextSize(COMPLEX_UNIT_DIP, TEXT_SIZE);
         textItem.setBackgroundColor(settings.getCardColor());
         textItem.setTextColor(settings.getFontColor());
         textItem.setTypeface(settings.getTypeFace());

@@ -18,6 +18,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profile_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 

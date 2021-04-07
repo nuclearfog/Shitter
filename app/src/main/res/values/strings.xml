@@ -212,4 +212,6 @@
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
+    <string name="settings_enable_toolbar_overlap">overlap profile banner</string>
+    <string name="settings_look">Look</string>
 </resources>

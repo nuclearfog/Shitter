@@ -187,17 +187,58 @@
                     android:padding="@dimen/settings_layout_padding">
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/settins_font"
                         android:singleLine="true"
+                        android:text="@string/settings_look"
                         android:textSize="@dimen/settings_textsize" />
 
-                    <Spinner
-                        android:id="@+id/spinner_font"
-                        android:layout_width="@dimen/settings_spinner_font_width"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="@string/settins_font"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                        <Spinner
+                            android:id="@+id/spinner_font"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/settings_spinner_margin"
+                            android:layout_marginLeft="@dimen/settings_spinner_margin"
+                            android:layout_weight="1"
+                            android:popupBackground="@android:color/transparent" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:popupBackground="@android:color/transparent" />
+                        android:orientation="horizontal">
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/settings_toolbar_ov"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="@string/settings_enable_toolbar_overlap"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -217,13 +258,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/data_consumption"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:singleLine="true"
+                        android:text="@string/data_consumption"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -231,7 +274,8 @@
                             android:id="@+id/toggleImg"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/settings_switch_margin" />
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -245,7 +289,10 @@
                             android:id="@+id/settings_image_hq"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/settings_switch_margin" />
+                            android:layout_marginStart="@dimen/settings_switch_margin"
+                            android:layout_marginLeft="@dimen/settings_switch_margin"
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -260,6 +307,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -267,14 +315,14 @@
                             android:id="@+id/toggleAns"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/settings_switch_margin" />
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="@string/settings_enable_ans_load"
                             android:singleLine="true"
+                            android:text="@string/settings_enable_ans_load"
                             android:textSize="@dimen/settings_textsize_small" />
 
                     </LinearLayout>
@@ -406,13 +454,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/settings_connections"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:singleLine="true"
+                        android:text="@string/settings_connections"
                         android:textSize="@dimen/settings_textsize" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -420,7 +470,8 @@
                             android:id="@+id/settings_enable_proxy"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/settings_switch_margin" />
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -435,6 +486,7 @@
                         android:id="@+id/settings_layout_proxy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:orientation="horizontal">
 
                         <EditText
@@ -468,6 +520,7 @@
                         android:id="@+id/settings_layout_auth_enable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -475,7 +528,8 @@
                             android:id="@+id/settings_enable_auth"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/settings_switch_margin" />
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -490,6 +544,7 @@
                         android:id="@+id/settings_layout_proxy_auth"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:orientation="horizontal">
 
                         <EditText
@@ -519,6 +574,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -526,7 +582,8 @@
                             android:id="@+id/settings_set_custom_keys"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/settings_switch_margin" />
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
 
                         <TextView
                             android:layout_width="wrap_content"

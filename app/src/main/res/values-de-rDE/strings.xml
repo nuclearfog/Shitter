@@ -194,4 +194,6 @@
     <string name="button_play_pause">Pause/Abspielen</string>
     <string name="button_share">Videolink teilen</string>
     <string name="info_cant_add_gif">GIF konnte nicht hinzugefügt werden!</string>
+    <string name="settings_look">Aussehen</string>
+    <string name="settings_enable_toolbar_overlap">Überlappe Profilbanner</string>
 </resources>

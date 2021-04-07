@@ -20,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -155,24 +157,31 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
-        toolbar = findViewById(R.id.profile_toolbar);
         View root = findViewById(R.id.user_view);
+        ConstraintLayout profileView = findViewById(R.id.profile_content);
+        toolbar = profileView.findViewById(R.id.profile_toolbar);
+        user_bio = profileView.findViewById(R.id.bio);
+        following = profileView.findViewById(R.id.following);
+        follower = profileView.findViewById(R.id.follower);
+        user_website = profileView.findViewById(R.id.links);
+        profileImage = profileView.findViewById(R.id.profile_img);
+        bannerImage = profileView.findViewById(R.id.profile_banner);
+        toolbarBackground = profileView.findViewById(R.id.profile_toolbar_background);
+        username = profileView.findViewById(R.id.profile_username);
+        screenName = profileView.findViewById(R.id.profile_screenname);
+        user_location = profileView.findViewById(R.id.location);
+        user_createdAt = profileView.findViewById(R.id.profile_date);
+        follow_back = profileView.findViewById(R.id.follow_back);
         tabLayout = findViewById(R.id.profile_tab);
-        user_bio = findViewById(R.id.bio);
-        following = findViewById(R.id.following);
-        follower = findViewById(R.id.follower);
-        user_website = findViewById(R.id.links);
-        profileImage = findViewById(R.id.profile_img);
-        bannerImage = findViewById(R.id.profile_banner);
-        toolbarBackground = findViewById(R.id.profile_toolbar_background);
-        username = findViewById(R.id.profile_username);
-        screenName = findViewById(R.id.profile_screenname);
-        user_location = findViewById(R.id.location);
-        user_createdAt = findViewById(R.id.profile_date);
-        follow_back = findViewById(R.id.follow_back);
         tabPages = findViewById(R.id.profile_pager);
 
         settings = GlobalSettings.getInstance(this);
+        if (!settings.getToolbarOverlap()) {
+            ConstraintSet constraints = new ConstraintSet();
+            constraints.clone(profileView);
+            constraints.connect(R.id.profile_banner, ConstraintSet.TOP, R.id.profile_toolbar, ConstraintSet.BOTTOM);
+            constraints.applyTo(profileView);
+        }
         following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
         follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
         user_createdAt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
@@ -547,7 +556,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onSuccess() {
         // setup toolbar background
-        AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
+        if (settings.getToolbarOverlap()) {
+            AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
+        }
     }
 
 

@@ -10,8 +10,6 @@ import android.widget.TextView;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
-import static android.util.TypedValue.COMPLEX_UNIT_SP;
-
 /**
  * Spinner Adapter for font settings
  *
@@ -19,11 +17,6 @@ import static android.util.TypedValue.COMPLEX_UNIT_SP;
  * @see org.nuclearfog.twidda.activity.AppSettings
  */
 public class FontAdapter extends BaseAdapter {
-
-    /**
-     * font size of an item
-     */
-    private static final float FONT_SIZE = 24.0f;
 
     /**
      * android system fonts
@@ -73,7 +66,6 @@ public class FontAdapter extends BaseAdapter {
         textItem = view.findViewById(R.id.dropdown_textitem);
         textItem.setText(names[pos]);
         textItem.setTypeface(fonts[pos]);
-        textItem.setTextSize(COMPLEX_UNIT_SP, FONT_SIZE);
         textItem.setTextColor(settings.getFontColor());
         textItem.setBackgroundColor(settings.getCardColor());
         view.setBackgroundColor(settings.getBackgroundColor());

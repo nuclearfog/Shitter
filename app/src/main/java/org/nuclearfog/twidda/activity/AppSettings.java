@@ -101,6 +101,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         View user_card = findViewById(R.id.settings_data_card);
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
+        CompoundButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
         SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
@@ -159,6 +160,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         toggleImg.setChecked(settings.getImageLoad());
         toggleAns.setChecked(settings.getAnswerLoad());
         enableAPI.setChecked(settings.isCustomApiSet());
+        toolbarOverlap.setChecked(settings.getToolbarOverlap());
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -192,6 +194,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         enableProxy.setOnCheckedChangeListener(this);
         enableAuth.setOnCheckedChangeListener(this);
         hqImage.setOnCheckedChangeListener(this);
+        toolbarOverlap.setOnCheckedChangeListener(this);
         fontSpinner.setOnItemSelectedListener(this);
         listSizeSelector.setOnSeekBarChangeListener(this);
     }
@@ -381,6 +384,14 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         else if (c.getId() == R.id.toggleAns) {
             settings.setAnswerLoad(checked);
         }
+        // enable high quality images
+        else if (c.getId() == R.id.settings_image_hq) {
+            settings.setHighQualityImage(checked);
+        }
+        // enable toolbar overlap
+        else if (c.getId() == R.id.settings_toolbar_ov) {
+            settings.setToolbarOverlap(checked);
+        }
         // enable proxy settings
         else if (c.getId() == R.id.settings_enable_proxy) {
             if (checked) {
@@ -399,10 +410,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             } else {
                 layout_auth.setVisibility(GONE);
             }
-        }
-        // enable high quality images
-        else if (c.getId() == R.id.settings_image_hq) {
-            settings.setHighQualityImage(checked);
         }
         // enable custom API setup
         else if (c.getId() == R.id.settings_set_custom_keys) {

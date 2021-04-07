@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -80,7 +82,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_editprofile);
         Toolbar toolbar = findViewById(R.id.editprofile_toolbar);
-        View root = findViewById(R.id.page_edit);
+        ConstraintLayout root = findViewById(R.id.page_edit);
         ImageView changeImageBtn = findViewById(R.id.profile_change_image_btn);
         profile_image = findViewById(R.id.edit_pb);
         profile_banner = findViewById(R.id.edit_banner);
@@ -91,14 +93,21 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         link = findViewById(R.id.edit_link);
         loc = findViewById(R.id.edit_location);
         bio = findViewById(R.id.edit_bio);
+
         loadingCircle = DialogBuilder.createProgress(this, this);
         closeDialog = DialogBuilder.create(this, PROFILE_EDITOR_LEAVE, this);
         errorDialog = DialogBuilder.create(this, PROFILE_EDITOR_ERROR, this);
-
         toolbar.setTitle(R.string.page_profile_edior);
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
+        if (!settings.getToolbarOverlap()) {
+            ConstraintSet constraints = new ConstraintSet();
+            constraints.clone(root);
+            constraints.connect(R.id.edit_banner, ConstraintSet.TOP, R.id.editprofile_toolbar, ConstraintSet.BOTTOM);
+            constraints.connect(R.id.edit_add_banner, ConstraintSet.TOP, R.id.edit_banner, ConstraintSet.TOP);
+            constraints.applyTo(root);
+        }
         toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
         changeBannerBtn.setImageResource(R.drawable.add);
         changeImageBtn.setImageResource(R.drawable.add);
@@ -218,7 +227,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
     @Override
     public void onSuccess() {
-        AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
+        // set toolbar background
+        if (settings.getToolbarOverlap()) {
+            AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
+        }
     }
 
 

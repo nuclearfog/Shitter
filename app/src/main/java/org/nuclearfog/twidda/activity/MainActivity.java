@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_main);
-        Toolbar toolbar = findViewById(R.id.profile_toolbar);
+        Toolbar toolbar = findViewById(R.id.home_toolbar);
         pager = findViewById(R.id.home_pager);
         tablayout = findViewById(R.id.home_tab);
         root = findViewById(R.id.main_layout);

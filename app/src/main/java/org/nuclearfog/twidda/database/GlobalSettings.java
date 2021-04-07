@@ -71,6 +71,7 @@ public class GlobalSettings {
     private static final String IMAGE_LOAD = "image_load";
     private static final String IMAGE_QUALITY = "image_hq";
     private static final String ANSWER_LOAD = "answer_load";
+    private static final String PROFILE_OVERLAP = "profile_toolbar_overlap";
     private static final String LOGGED_IN = "login";
     private static final String AUTH_KEY1 = "key1";
     private static final String AUTH_KEY2 = "key2";
@@ -116,7 +117,8 @@ public class GlobalSettings {
     private boolean loggedIn;
     private boolean isProxyEnabled;
     private boolean isProxyAuthSet;
-    private boolean isCustomAPIkeySet;
+    private boolean customAPIKey;
+    private boolean toolbarOverlap;
     private int indexFont;
     private int background_color;
     private int font_color;
@@ -307,6 +309,28 @@ public class GlobalSettings {
 
         Editor edit = settings.edit();
         edit.putBoolean(IMAGE_LOAD, enable);
+        edit.apply();
+    }
+
+    /**
+     * is profile toolbar overlap enabled
+     *
+     * @return true if enabled
+     */
+    public boolean getToolbarOverlap() {
+        return toolbarOverlap;
+    }
+
+    /**
+     * set profile toolbar overlap
+     *
+     * @param enable true if toolbar should overlap profile banner
+     */
+    public void setToolbarOverlap(boolean enable) {
+        toolbarOverlap = enable;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(PROFILE_OVERLAP, enable);
         edit.apply();
     }
 
@@ -670,7 +694,7 @@ public class GlobalSettings {
      * @param key2 consumer key secret
      */
     public void setCustomAPI(String key1, String key2) {
-        isCustomAPIkeySet = true;
+        customAPIKey = true;
         this.api_key1 = key1;
         this.api_key2 = key2;
 
@@ -685,7 +709,7 @@ public class GlobalSettings {
      * remove all API keys
      */
     public void removeCustomAPI() {
-        isCustomAPIkeySet = false;
+        customAPIKey = false;
         this.api_key1 = "";
         this.api_key2 = "";
 
@@ -702,7 +726,7 @@ public class GlobalSettings {
      * @return true if custom API keys are set
      */
     public boolean isCustomApiSet() {
-        return isCustomAPIkeySet;
+        return customAPIKey;
     }
 
     /**
@@ -725,22 +749,23 @@ public class GlobalSettings {
         icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
         indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
+        isProxyEnabled = settings.getBoolean(PROXY_SET, false);
+        isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
+        loggedIn = settings.getBoolean(LOGGED_IN, false);
         loadImage = settings.getBoolean(IMAGE_LOAD, true);
         loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
         hqImages = settings.getBoolean(IMAGE_QUALITY, false);
-        loggedIn = settings.getBoolean(LOGGED_IN, false);
-        isCustomAPIkeySet = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
+        toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
+        customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
         api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
         api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");
         auth_key1 = settings.getString(AUTH_KEY1, "");
         auth_key2 = settings.getString(AUTH_KEY2, "");
-        userId = settings.getLong(USER_ID, 0);
-        isProxyEnabled = settings.getBoolean(PROXY_SET, false);
-        isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
         proxyHost = settings.getString(PROXY_ADDR, "");
         proxyPort = settings.getString(PROXY_PORT, "");
         proxyUser = settings.getString(PROXY_USER, "");
         proxyPass = settings.getString(PROXY_PASS, "");
+        userId = settings.getLong(USER_ID, 0);
         String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
         int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_WOEID);
         location = new TrendLocation(place, woeId);
