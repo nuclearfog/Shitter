@@ -97,15 +97,6 @@ public class TweetHolder {
     }
 
     /**
-     * get first media path
-     *
-     * @return path string
-     */
-    public String getMediaPath() {
-        return mediaPaths[0];
-    }
-
-    /**
      * get longitude of the location
      *
      * @return longitude

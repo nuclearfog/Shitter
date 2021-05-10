@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -325,7 +326,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
 
     @Override
-    protected void onMediaFetched(int resultType, String path) {
+    protected void onMediaFetched(int resultType, @NonNull String path) {
     }
 
 

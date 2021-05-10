@@ -15,44 +15,51 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see TweetEditor
  */
-public class TweetUpdater extends AsyncTask<TweetHolder, Void, Boolean> {
+public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
 
 
     private EngineException twException;
-    private final WeakReference<TweetEditor> callback;
     private final TwitterEngine mTwitter;
+
+    private final WeakReference<TweetEditor> callback;
+    private TweetHolder tweet;
 
     /**
      * initialize task
      *
      * @param callback Activity context
      */
-    public TweetUpdater(TweetEditor callback) {
+    public TweetUpdater(TweetEditor callback, TweetHolder tweet) {
         super();
-        this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
+        this.callback = new WeakReference<>(callback);
+        this.tweet = tweet;
     }
 
 
     @Override
-    protected Boolean doInBackground(TweetHolder[] param) {
+    protected Boolean doInBackground(Void[] v) {
         try {
-            long[] mediaIds;
-            TweetHolder tweet = param[0];
-            if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
-                String[] mediaLinks = tweet.getMediaPaths();
+            long[] mediaIds = {};
+            String[] mediaLinks = tweet.getMediaPaths();
+            if (mediaLinks != null && mediaLinks.length > 0) {
                 mediaIds = new long[mediaLinks.length];
-                for (int i = 0; i < mediaLinks.length; i++) {
-                    mediaIds[i] = mTwitter.uploadImage(mediaLinks[i]);
-                    if (isCancelled()) {
-                        break;
+
+                // upload image
+                if (tweet.getMediaType() == TweetHolder.MediaType.IMAGE) {
+                    for (int i = 0; i < mediaLinks.length; i++) {
+                        mediaIds[i] = mTwitter.uploadImage(mediaLinks[i]);
+                        if (isCancelled()) {
+                            break;
+                        }
                     }
                 }
-            } else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
-                mediaIds = new long[]{mTwitter.uploadVideo(tweet.getMediaPath())};
-            } else {
-                mediaIds = new long[0];
+                // upload video file
+                else if (tweet.getMediaType() == TweetHolder.MediaType.VIDEO) {
+                    mediaIds[0] = mTwitter.uploadVideo(mediaLinks[0]);
+                }
             }
+            // upload tweet
             if (!isCancelled()) {
                 mTwitter.uploadStatus(tweet, mediaIds);
             }

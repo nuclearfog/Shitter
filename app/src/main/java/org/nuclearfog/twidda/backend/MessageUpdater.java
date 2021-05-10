@@ -37,14 +37,21 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String[] param) {
         try {
-            long mediaId = mTwitter.uploadImage(param[2]);
-            if (!isCancelled())
+            // upload media first if any
+            long mediaId = -1;
+            String mediaPath = param[2];
+            if (mediaPath != null && !mediaPath.isEmpty()) {
+                mediaId = mTwitter.uploadImage(param[2]);
+            }
+            // upload message and media ID if defined
+            if (!isCancelled()) {
                 mTwitter.sendDirectMessage(param[0], param[1], mediaId);
-            return true;
+            }
         } catch (EngineException twException) {
             this.twException = twException;
+            return false;
         }
-        return false;
+        return true;
     }
 
 

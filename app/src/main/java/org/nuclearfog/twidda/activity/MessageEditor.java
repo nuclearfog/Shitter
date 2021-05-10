@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
@@ -112,7 +113,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
 
 
     @Override
-    protected void onMediaFetched(int resultType, String path) {
+    protected void onMediaFetched(int resultType, @NonNull String path) {
         if (resultType == REQUEST_IMAGE) {
             preview.setVisibility(VISIBLE);
             media.setVisibility(GONE);

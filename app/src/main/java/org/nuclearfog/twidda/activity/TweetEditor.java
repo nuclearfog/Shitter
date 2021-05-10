@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
@@ -214,7 +215,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 
     @Override
-    protected void onMediaFetched(int resultType, String path) {
+    protected void onMediaFetched(int resultType, @NonNull String path) {
         String extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
         switch (extension) {
             case "jpg":
@@ -337,8 +338,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         if (location != null)
             tweet.addLocation(location);
         // send tweet
-        uploaderAsync = new TweetUpdater(this);
-        uploaderAsync.execute(tweet);
+        uploaderAsync = new TweetUpdater(this, tweet);
+        uploaderAsync.execute();
         if (!loadingCircle.isShowing()) {
             loadingCircle.show();
         }

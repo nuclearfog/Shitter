@@ -90,27 +90,27 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     /**
      * request code to pick an image
      */
-    protected static final int REQUEST_IMAGE = 0x0AA0383C;
+    protected static final int REQUEST_IMAGE = 0x383C;
 
     /**
      * request code to pick image or video
      */
-    protected static final int REQUEST_IMG_VID = 0x191B6B1A;
+    protected static final int REQUEST_IMG_VID = 0x6B1A;
 
     /**
      * request code to pick an image for a profile picture
      */
-    protected static final int REQUEST_PROFILE = 0x5E03D636;
+    protected static final int REQUEST_PROFILE = 0xD636;
 
     /**
      * request code to pick an image for a profile banner
      */
-    protected static final int REQUEST_BANNER = 0x4349E7E3;
+    protected static final int REQUEST_BANNER = 0xE7E3;
 
     /**
      * request code to store image into storage
      */
-    protected static final int REQUEST_STORE_IMG = 0x1B0558D3;
+    protected static final int REQUEST_STORE_IMG = 0x58D3;
 
     @Nullable
     private ImageSaver imageTask;
@@ -164,7 +164,10 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                     int index = cursor.getColumnIndex(GET_MEDIA[0]);
                     if (index >= 0) {
                         String path = cursor.getString(index);
-                        onMediaFetched(reqCode, path);
+                        if (path != null) {
+                            onMediaFetched(reqCode, path);
+                            // todo add error handling if no media returned
+                        }
                     }
                 }
                 cursor.close();
@@ -360,5 +363,5 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      * @param resultType type of media call
      * @param path       local path to the media file
      */
-    protected abstract void onMediaFetched(int resultType, String path);
+    protected abstract void onMediaFetched(int resultType, @NonNull String path);
 }

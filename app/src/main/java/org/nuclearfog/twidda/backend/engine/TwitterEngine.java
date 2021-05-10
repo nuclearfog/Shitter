@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.holder.ListHolder;
@@ -1077,7 +1078,7 @@ public class TwitterEngine {
      * @return media ID
      * @throws EngineException if twitter service is unavailable or media not found
      */
-    public long uploadImage(String path) throws EngineException {
+    public long uploadImage(@NonNull String path) throws EngineException {
         try {
             File file = new File(path);
             UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
@@ -1096,7 +1097,7 @@ public class TwitterEngine {
      * @return media ID
      * @throws EngineException if twitter service is unavailable or media not found
      */
-    public long uploadVideo(String path) throws EngineException {
+    public long uploadVideo(@NonNull String path) throws EngineException {
         try {
             File file = new File(path);
             UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));

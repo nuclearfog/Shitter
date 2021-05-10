@@ -174,7 +174,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 
     @Override
-    protected void onMediaFetched(int resultType, String path) {
+    protected void onMediaFetched(int resultType, @NonNull String path) {
         // Add image as profile image
         if (resultType == REQUEST_PROFILE) {
             Bitmap image = BitmapFactory.decodeFile(path);
