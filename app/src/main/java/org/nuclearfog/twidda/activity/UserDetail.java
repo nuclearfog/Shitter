@@ -35,17 +35,17 @@ public class UserDetail extends AppCompatActivity {
     /**
      * friends of an user, requires user ID
      */
-    public static final int USERLIST_FRIENDS = 1;
+    public static final int USERLIST_FRIENDS = 0xDF893242;
 
     /**
      * follower of an user, requires user ID
      */
-    public static final int USERLIST_FOLLOWER = 2;
+    public static final int USERLIST_FOLLOWER = 0xA89F5968;
 
     /**
      * user retweeting a tweet, requires tweet ID
      */
-    public static final int USERLIST_RETWEETS = 3;
+    public static final int USERLIST_RETWEETS = 0x19F582E;
 
 
     @Override

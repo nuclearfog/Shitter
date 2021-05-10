@@ -47,29 +47,29 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public static final String KEY_FRAG_LIST_LIST_TYPE = "list_type";
 
     /**
-     * setup the list to show all userlists owned by a specified user
+     * setup the list to show all user lists owned by a specified user
      */
-    public static final int LIST_USER_OWNS = 1;
+    public static final int LIST_USER_OWNS = 0x5F36F90D;
 
     /**
-     * setup the list to show all userlists the specified user is added to
+     * setup the list to show all user lists the specified user is added to
      */
-    public static final int LIST_USER_SUBSCR_TO = 2;
+    public static final int LIST_USER_SUBSCR_TO = 0xAA7386AA;
 
     /**
      * request code to open an user list to check for changes
      */
-    public static final int REQUEST_OPEN_LIST = 3;
+    public static final int REQUEST_OPEN_LIST = 0x9541;
 
     /**
-     * return code for {@link #REQUEST_OPEN_LIST} when an userlist was deleted
+     * return code for {@link #REQUEST_OPEN_LIST} when an user list was deleted
      */
-    public static final int RETURN_LIST_REMOVED = 4;
+    public static final int RETURN_LIST_REMOVED = 0xDAD518B4;
 
     /**
-     * return code for {@link #REQUEST_OPEN_LIST} when an userlist was deleted
+     * return code for {@link #REQUEST_OPEN_LIST} when an user list was deleted
      */
-    public static final int RETURN_LIST_UPDATED = 5;
+    public static final int RETURN_LIST_UPDATED = 0x5D0F5E8D;
 
     /**
      * activity result key to return the ID of a removed list
@@ -78,9 +78,9 @@ public class UserListFragment extends ListFragment implements ListClickListener 
     public static final String RESULT_REMOVED_LIST_ID = "removed-list-id";
 
     /**
-     * result key to update an userlist
+     * result key to update an user list
      */
-    public static final String RESULT_UPDATE_LIST = "update-userlist";
+    public static final String RESULT_UPDATE_LIST = "update-user-list";
 
     private ListLoader listTask;
     private ListAdapter adapter;

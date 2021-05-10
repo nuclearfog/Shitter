@@ -27,16 +27,6 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     /**
-     * request code for {@link ListEditor} OnTabSelectedListener
-     */
-    public static final int REQ_CREATE_LIST = 1;
-
-    /**
-     * return code for {@link ListEditor} if list was created
-     */
-    public static final int RET_LIST_CREATED = 2;
-
-    /**
      * Key for the ID the list owner
      */
     public static final String KEY_USERLIST_OWNER_ID = "userlist-owner-id";
@@ -45,6 +35,16 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
      * alternative key for the screen name of the owner
      */
     public static final String KEY_USERLIST_OWNER_NAME = "userlist-owner-name";
+
+    /**
+     * request code for {@link ListEditor} OnTabSelectedListener
+     */
+    private static final int REQ_CREATE_LIST = 0x9D8E;
+
+    /**
+     * return code for {@link ListEditor} if list was created
+     */
+    public static final int RET_LIST_CREATED = 0xE8715442;
 
     private FragmentAdapter adapter;
     private GlobalSettings settings;

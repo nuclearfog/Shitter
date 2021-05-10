@@ -154,7 +154,7 @@ public class AppDatabase {
      * @param woeId  Yahoo World ID
      */
     public void storeTrends(List<Trend> trends, int woeId) {
-        String[] args = new String[]{Integer.toString(woeId)};
+        String[] args = {Integer.toString(woeId)};
         SQLiteDatabase db = getDbWrite();
         db.delete("trend", "woeid=?", args);
         for (Trend trend : trends) {
@@ -476,7 +476,7 @@ public class AppDatabase {
      * @param mute true remove user tweets from mention results
      */
     public void muteUser(long id, boolean mute) {
-        String[] args = new String[]{Long.toString(id)};
+        String[] args = {Long.toString(id)};
 
         SQLiteDatabase db = getDbWrite();
         int flags = getUserFlags(db, id);

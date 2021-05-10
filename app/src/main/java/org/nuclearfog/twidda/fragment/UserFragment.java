@@ -64,48 +64,48 @@ public class UserFragment extends ListFragment implements UserClickListener,
     /**
      * configuration for a list of users following the specified user
      */
-    public static final int USER_FRAG_FOLLOWS = 1;
+    public static final int USER_FRAG_FOLLOWS = 0xE45DD2;
 
     /**
      * configuration for a list of users followed by the specified user
      */
-    public static final int USER_FRAG_FRIENDS = 2;
+    public static final int USER_FRAG_FRIENDS = 0x64D432EB;
 
     /**
      * configuration to get a list of users retweeting a tweet
      */
-    public static final int USER_FRAG_RETWEET = 3;
+    public static final int USER_FRAG_RETWEET = 0x2AC31E6B;
 
     /**
-     * configuration to get a list of users favoriting a tweet
+     * configuration to get a list of users favoring a tweet
      * todo implement this function if there is an API for it
      */
-    public static final int USER_FRAG_FAVORIT = 4;
+    public static final int USER_FRAG_FAVORIT = 0xA7FB2BB4;
 
     /**
      * configuration for a list of searched users
      */
-    public static final int USER_FRAG_SEARCH = 5;
+    public static final int USER_FRAG_SEARCH = 0x162C3599;
 
     /**
      * configuration for a list of userlist subscriber
      */
-    public static final int USER_FRAG_SUBSCR = 6;
+    public static final int USER_FRAG_SUBSCR = 0x21DCF91C;
 
     /**
      * configuration for a list of users added to a list
      */
-    public static final int USER_FRAG_LISTS = 7;
+    public static final int USER_FRAG_LISTS = 0x9A00B3A5;
 
     /**
      * Request code to update user information
      */
-    private static final int REQ_USER_UPDATE = 1;
+    private static final int REQ_USER_UPDATE = 0x3F29;
 
     /**
      * Return code to update user information
      */
-    public static final int RETURN_USER_UPDATED = 2;
+    public static final int RETURN_USER_UPDATED = 0x9996498C;
 
     private UserLoader userTask;
     private ListManager listTask;

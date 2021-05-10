@@ -18,6 +18,11 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class TLSSocketFactory extends SSLSocketFactory {
 
+    /**
+     * protocols required by Twitter API
+     */
+    private static final String[] PROTOCOLS = {"TLSv1.1", "TLSv1.2"};
+
     private SSLSocketFactory internalSSLSocketFactory;
 
     public TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
@@ -77,7 +82,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
 
     private Socket enableTLSOnSocket(Socket socket) {
         if (socket instanceof SSLSocket) {
-            ((SSLSocket) socket).setEnabledProtocols(new String[]{"TLSv1.1", "TLSv1.2"});
+            ((SSLSocket) socket).setEnabledProtocols(PROTOCOLS);
         }
         return socket;
     }

@@ -81,7 +81,6 @@ import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
 import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
-import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_USER_UPDATE;
 import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
@@ -110,19 +109,19 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public static final String KEY_PROFILE_DISABLE_RELOAD = "profile_no_reload";
 
     /**
+     * key when profile data changes
+     */
+    public static final String RETURN_PROFILE_DATA = "profile-update";
+
+    /**
      * request code for {@link ProfileEditor}
      */
-    public static final int REQUEST_PROFILE_CHANGED = 1;
+    public static final int REQUEST_PROFILE_CHANGED = 0x322F;
 
     /**
      * return code if {@link ProfileEditor} changed profile information
      */
-    public static final int RETURN_PROFILE_CHANGED = 2;
-
-    /**
-     * key when profile data changes
-     */
-    public static final String RETURN_PROFILE_DATA = "profile-update";
+    public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
 
     /**
      * background color mask for TextView backgrounds
@@ -498,8 +497,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         // open profile image
         else if (v.getId() == R.id.profile_img) {
             if (user != null && user.hasProfileImage()) {
+                String[] link = {user.getImageLink()};
                 Intent mediaImage = new Intent(this, MediaViewer.class);
-                mediaImage.putExtra(KEY_MEDIA_LINK, new String[]{user.getImageLink()});
+                mediaImage.putExtra(KEY_MEDIA_LINK, link);
                 mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                 startActivity(mediaImage);
             }
@@ -507,8 +507,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         // open banner image
         else if (v.getId() == R.id.profile_banner) {
             if (user != null && user.hasBannerImage()) {
+                String[] link = {user.getBannerLink()};
                 Intent mediaBanner = new Intent(this, MediaViewer.class);
-                mediaBanner.putExtra(KEY_MEDIA_LINK, new String[]{user.getBannerLink() + BANNER_IMG_HIGH_RES});
+                mediaBanner.putExtra(KEY_MEDIA_LINK, link);
                 mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                 startActivity(mediaBanner);
             }

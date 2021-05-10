@@ -64,19 +64,19 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public static final String KEY_LIST_DATA = "list_data";
 
     /**
+     * return updated userlist information
+     */
+    public static final String RET_LIST_DATA = "list-data";
+
+    /**
      * Request code for list editing
      */
-    public static final int REQ_LIST_CHANGE = 1;
+    private static final int REQ_LIST_CHANGE = 0x7518;
 
     /**
      * Return code when this list was successfully changed
      */
-    public static final int RET_LIST_CHANGED = 2;
-
-    /**
-     * return updated userlist information
-     */
-    public static final String RET_LIST_DATA = "list-data";
+    public static final int RET_LIST_CHANGED = 0x1A5518E1;
 
     /**
      * regex pattern to validate username

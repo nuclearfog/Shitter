@@ -56,37 +56,37 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
     /**
      * setup list for home timeline
      */
-    public static final int TWEET_FRAG_HOME = 1;
+    public static final int TWEET_FRAG_HOME = 0xE7028B60;
 
     /**
      * setup list for mention timeline
      */
-    public static final int TWEET_FRAG_MENT = 2;
+    public static final int TWEET_FRAG_MENT = 0x9EC8274D;
 
     /**
      * setup list for user tweets
      */
-    public static final int TWEET_FRAG_TWEETS = 3;
+    public static final int TWEET_FRAG_TWEETS = 0x4DBEF6CD;
 
     /**
      * setup list for user favorites
      */
-    public static final int TWEET_FRAG_FAVORS = 4;
+    public static final int TWEET_FRAG_FAVORS = 0x8DE749EC;
 
     /**
      * setup list for tweet replies
      */
-    public static final int TWEET_FRAG_ANSWER = 5;
+    public static final int TWEET_FRAG_ANSWER = 0xAFB5F1C0;
 
     /**
      * setup list for search
      */
-    public static final int TWEET_FRAG_SEARCH = 6;
+    public static final int TWEET_FRAG_SEARCH = 0x91A71117;
 
     /**
      * setup list for user list tweets
      */
-    public static final int TWEET_FRAG_LIST = 7;
+    public static final int TWEET_FRAG_LIST = 0x43F518F7;
 
     /**
      * replace all items from list
@@ -96,17 +96,17 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
     /**
      * return code if a tweet was not found
      */
-    public static final int RETURN_TWEET_NOT_FOUND = 1;
+    public static final int RETURN_TWEET_NOT_FOUND = 0x8B03DB84;
 
     /**
      * return code if a tweet was not found
      */
-    public static final int RETURN_TWEET_UPDATE = 2;
+    public static final int RETURN_TWEET_UPDATE = 0x789CD38B;
 
     /**
      * request code to check for tweet changes
      */
-    private static final int REQUEST_TWEET_CHANGED = 2;
+    private static final int REQUEST_TWEET_CHANGED = 0xB90D;
 
     private TweetLoader tweetTask;
     private TweetAdapter adapter;

@@ -34,11 +34,16 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Intent.ACTION_PICK;
+import static android.content.Intent.EXTRA_MIME_TYPES;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.os.Environment.DIRECTORY_PICTURES;
+import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
+import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.provider.MediaStore.Images.Media.MIME_TYPE;
+import static android.provider.MediaStore.Images.Media.RELATIVE_PATH;
 import static android.widget.Toast.LENGTH_SHORT;
 
 /**
@@ -51,13 +56,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     /**
      * permission set
      */
-    private static final String[][] PERMISSIONS = {{READ_EXTERNAL_STORAGE}, {ACCESS_FINE_LOCATION}, {WRITE_EXTERNAL_STORAGE}};
-
-    /**
-     * Cursor mode to get the full path to the image
-     */
-    private static final String[] GET_MEDIA = {MediaStore.Images.Media.DATA};
-
+    private static final String[][] PERMISSIONS = {
+            {READ_EXTERNAL_STORAGE},
+            {ACCESS_FINE_LOCATION},
+            {WRITE_EXTERNAL_STORAGE}
+    };
 
     /**
      * mime type for image files with undefined extensions
@@ -70,34 +73,44 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     private static final String TYPE_VIDEO = "video/*";
 
     /**
+     * mime types for videos and images
+     */
+    private static final String[] TYPE_ALL = {TYPE_IMAGE, TYPE_VIDEO};
+
+    /**
+     * Cursor mode to get the full path to the image
+     */
+    private static final String[] GET_MEDIA = {MediaStore.MediaColumns.DATA};
+
+    /**
      * request code to check permissions
      */
-    private static final int REQ_CHECK_PERM = 4;
+    private static final int REQ_CHECK_PERM = 0xF233;
 
     /**
      * request code to pick an image
      */
-    protected static final int REQUEST_IMAGE = 5;
+    protected static final int REQUEST_IMAGE = 0x0AA0383C;
 
     /**
      * request code to pick image or video
      */
-    protected static final int REQUEST_IMG_VID = 6;
+    protected static final int REQUEST_IMG_VID = 0x191B6B1A;
 
     /**
      * request code to pick an image for a profile picture
      */
-    protected static final int REQUEST_PROFILE = 7;
+    protected static final int REQUEST_PROFILE = 0x5E03D636;
 
     /**
      * request code to pick an image for a profile banner
      */
-    protected static final int REQUEST_BANNER = 8;
+    protected static final int REQUEST_BANNER = 0x4349E7E3;
 
     /**
      * request code to store image into storage
      */
-    protected static final int REQUEST_STORE_IMG = 9;
+    protected static final int REQUEST_STORE_IMG = 0x1B0558D3;
 
     @Nullable
     private ImageSaver imageTask;
@@ -159,38 +172,6 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
         }
     }
 
-    /**
-     * save image to external storage
-     */
-    private void saveImage() {
-        try {
-            if (imageTask == null || imageTask.getStatus() != RUNNING) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    // store images directly
-                    File imageFile = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES), filename);
-                    OutputStream fileStream = new FileOutputStream(imageFile);
-                    imageTask = new ImageSaver(this);
-                    imageTask.execute(image, fileStream);
-                } else {
-                    // use scoped storage
-                    ContentValues values = new ContentValues();
-                    values.put(MediaStore.Images.Media.DISPLAY_NAME, filename);
-                    values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-                    values.put(MediaStore.MediaColumns.RELATIVE_PATH, DIRECTORY_PICTURES);
-                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                    Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
-                    if (imageUri != null) {
-                        OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
-                        imageTask = new ImageSaver(this);
-                        imageTask.execute(image, fileStream);
-                    }
-                }
-            }
-        } catch (FileNotFoundException err) {
-            err.printStackTrace();
-        }
-    }
-
 
     @Override
     public final void onLocationChanged(@NonNull Location location) {
@@ -213,6 +194,39 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     @Override
     public final void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    /**
+     * save image to external storage
+     */
+    private void saveImage() {
+        try {
+            if (imageTask == null || imageTask.getStatus() != RUNNING) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    // store images directly
+                    File imageFolder = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
+                    File imageFile = new File(imageFolder, filename);
+                    OutputStream fileStream = new FileOutputStream(imageFile);
+                    imageTask = new ImageSaver(this);
+                    imageTask.execute(image, fileStream);
+                } else {
+                    // use scoped storage
+                    ContentValues values = new ContentValues();
+                    values.put(DISPLAY_NAME, filename);
+                    values.put(DATE_TAKEN, System.currentTimeMillis());
+                    values.put(RELATIVE_PATH, DIRECTORY_PICTURES);
+                    values.put(MIME_TYPE, "image/jpeg");
+                    Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
+                    if (imageUri != null) {
+                        OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
+                        imageTask = new ImageSaver(this);
+                        imageTask.execute(image, fileStream);
+                    }
+                }
+            }
+        } catch (FileNotFoundException err) {
+            err.printStackTrace();
+        }
     }
 
     /**
@@ -314,8 +328,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                 case REQUEST_IMG_VID:
                     // pick image or video
                     mediaSelect.setType("*/*");
-                    String[] mimeTypes = new String[]{TYPE_IMAGE, TYPE_VIDEO};
-                    mediaSelect.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+                    mediaSelect.putExtra(EXTRA_MIME_TYPES, TYPE_ALL);
                     break;
 
                 case REQUEST_IMAGE:

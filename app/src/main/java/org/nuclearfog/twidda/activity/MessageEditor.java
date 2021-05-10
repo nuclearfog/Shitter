@@ -135,8 +135,9 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         }
         // open media
         else if (v.getId() == R.id.dm_preview) {
+            String[] link = {mediaPath};
             Intent image = new Intent(this, MediaViewer.class);
-            image.putExtra(KEY_MEDIA_LINK, new String[]{mediaPath});
+            image.putExtra(KEY_MEDIA_LINK, link);
             image.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
             startActivity(image);
         }

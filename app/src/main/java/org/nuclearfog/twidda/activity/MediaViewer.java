@@ -79,17 +79,17 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     /**
      * setup media viewer for images from twitter
      */
-    public static final int MEDIAVIEWER_IMAGE = 2;
+    public static final int MEDIAVIEWER_IMAGE = 0x997BCDCE;
 
     /**
      * setup media viewer for videos
      */
-    public static final int MEDIAVIEWER_VIDEO = 3;
+    public static final int MEDIAVIEWER_VIDEO = 0x500C9A42;
 
     /**
      * setup media viewer for GIF animation
      */
-    public static final int MEDIAVIEWER_ANGIF = 4;
+    public static final int MEDIAVIEWER_ANGIF = 0x6500EDB0;
 
     /**
      * refresh time for video progress update

@@ -44,22 +44,22 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     /**
      * Code returned from {@link AppSettings} when user clears the database
      */
-    public static final int RETURN_DB_CLEARED = 1;
+    public static final int RETURN_DB_CLEARED = 0x95BEA792;
 
     /**
      * Code returned from {@link AppSettings} when user logs out from Twitter
      */
-    public static final int RETURN_APP_LOGOUT = 2;
+    public static final int RETURN_APP_LOGOUT = 0x4029DFEE;
 
     /**
      * Request code for {@link LoginActivity}
      */
-    private static final int REQUEST_APP_LOGIN = 1;
+    private static final int REQUEST_APP_LOGIN = 0x6A89;
 
     /**
      * Request code for {@link AppSettings}
      */
-    private static final int REQUEST_APP_SETTINGS = 2;
+    private static final int REQUEST_APP_SETTINGS = 0x54AD;
 
     private FragmentAdapter adapter;
     private GlobalSettings settings;
