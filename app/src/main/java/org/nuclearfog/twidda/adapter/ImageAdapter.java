@@ -115,7 +115,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             item.preview.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = item.getAdapterPosition();
+                    int pos = item.getLayoutPosition();
                     if (pos != NO_POSITION) {
                         Bitmap img = images.get(pos).reducedImage;
                         itemClickListener.onImageClick(img);
@@ -127,7 +127,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
                 item.saveButton.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int pos = item.getAdapterPosition();
+                        int pos = item.getLayoutPosition();
                         if (pos != NO_POSITION) {
                             Bitmap img = images.get(pos).fullImage;
                             itemClickListener.onImageSave(img, pos);

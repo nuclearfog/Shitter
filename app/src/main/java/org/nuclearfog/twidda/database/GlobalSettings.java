@@ -45,11 +45,6 @@ public class GlobalSettings {
     public static final String BANNER_IMG_MID_RES = "/600x200";
 
     /**
-     * link suffix for high resolution banner images
-     */
-    public static final String BANNER_IMG_HIGH_RES = "/1500x500";
-
-    /**
      * custom font families from android system
      */
     public static final Typeface[] FONTS = {DEFAULT, MONOSPACE, SERIF, Typeface.create("sans-serif-thin", NORMAL)};

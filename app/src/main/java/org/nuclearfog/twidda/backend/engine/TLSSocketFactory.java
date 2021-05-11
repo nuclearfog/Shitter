@@ -1,12 +1,16 @@
 package org.nuclearfog.twidda.backend.engine;
 
+import android.os.Build;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
@@ -18,14 +22,46 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class TLSSocketFactory extends SSLSocketFactory {
 
+    private static final String TLS_1_1 = "TLSv1.1";
+    private static final String TLS_1_2 = "TLSv1.2";
+    private static final String TLS_1_3 = "TLSv1.3";
+
     /**
      * protocols required by Twitter API
      */
-    private static final String[] PROTOCOLS = {"TLSv1.1", "TLSv1.2"};
+    private static final String[] PROTOCOLS = {TLS_1_1, TLS_1_2};
 
     private SSLSocketFactory internalSSLSocketFactory;
 
-    public TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
+    /**
+     * check if TLS 1.2 is enabled and enable experimental TLS 1.2 support on Pre-Lollipop devices
+     */
+    public static void getSupportTLSifNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // check for TLS 1.2 support and activate it
+            try {
+                boolean tlsEnabled = false;
+                SSLParameters param = SSLContext.getDefault().getDefaultSSLParameters();
+                String[] protocols = param.getProtocols();
+                for (String protocol : protocols) {
+                    if (protocol.equals(TLS_1_2) || protocol.equals(TLS_1_3)) {
+                        tlsEnabled = true;
+                        break;
+                    }
+                }
+                if (!tlsEnabled) {
+                    HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+                }
+            } catch (Exception err) {
+                err.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
         SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, null, null);
         internalSSLSocketFactory = context.getSocketFactory();
