@@ -161,7 +161,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
             Cursor cursor = getContentResolver().query(intent.getData(), GET_MEDIA, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(GET_MEDIA[0]);
+                    int index = cursor.getColumnIndexOrThrow(GET_MEDIA[0]);
                     if (index >= 0) {
                         String path = cursor.getString(index);
                         if (path != null) {

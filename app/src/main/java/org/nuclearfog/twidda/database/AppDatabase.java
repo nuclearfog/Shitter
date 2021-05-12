@@ -410,11 +410,11 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(TREND_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                int index = cursor.getColumnIndex("trendname");
+                int index = cursor.getColumnIndexOrThrow("trendname");
                 String trendName = cursor.getString(index);
-                index = cursor.getColumnIndex("vol");
+                index = cursor.getColumnIndexOrThrow("vol");
                 int vol = cursor.getInt(index);
-                index = cursor.getColumnIndex("trendpos");
+                index = cursor.getColumnIndexOrThrow("trendpos");
                 int pos = cursor.getInt(index);
                 trends.add(new Trend(trendName, vol, pos));
             } while (cursor.moveToNext());
@@ -436,15 +436,15 @@ public class AppDatabase {
         Cursor cursor = db.rawQuery(MESSAGE_QUERY, args);
         if (cursor.moveToFirst()) {
             do {
-                int index = cursor.getColumnIndex("senderID");
+                int index = cursor.getColumnIndexOrThrow("senderID");
                 long senderID = cursor.getLong(index);
-                index = cursor.getColumnIndex("receiverID");
+                index = cursor.getColumnIndexOrThrow("receiverID");
                 long receiverID = cursor.getLong(index);
-                index = cursor.getColumnIndex("message");
+                index = cursor.getColumnIndexOrThrow("message");
                 String message = cursor.getString(index);
-                index = cursor.getColumnIndex("time");
+                index = cursor.getColumnIndexOrThrow("time");
                 long time = cursor.getLong(index);
-                index = cursor.getColumnIndex("messageID");
+                index = cursor.getColumnIndexOrThrow("messageID");
                 long messageId = cursor.getLong(index);
 
                 User sender = getUser(senderID, db);
@@ -498,21 +498,21 @@ public class AppDatabase {
      * @return tweet instance
      */
     private Tweet getStatus(Cursor cursor) {
-        long time = cursor.getLong(cursor.getColumnIndex("time"));
-        String tweettext = cursor.getString(cursor.getColumnIndex("tweet"));
-        int retweet = cursor.getInt(cursor.getColumnIndex("retweet"));
-        int favorit = cursor.getInt(cursor.getColumnIndex("favorite"));
-        long tweetId = cursor.getLong(cursor.getColumnIndex("tweetID"));
-        long retweetId = cursor.getLong(cursor.getColumnIndex("retweetID"));
-        String replyname = cursor.getString(cursor.getColumnIndex("replyname"));
-        long replyStatusId = cursor.getLong(cursor.getColumnIndex("replyID"));
-        long retweeterId = cursor.getLong(cursor.getColumnIndex("retweeterID"));
-        String source = cursor.getString(cursor.getColumnIndex("source"));
-        String medialinks = cursor.getString(cursor.getColumnIndex("media"));
-        String place = cursor.getString(cursor.getColumnIndex("place"));
-        String geo = cursor.getString(cursor.getColumnIndex("geo"));
-        long replyUserId = cursor.getLong(cursor.getColumnIndex("replyUserID"));
-        int statusregister = cursor.getInt(cursor.getColumnIndex("statusregister"));
+        long time = cursor.getLong(cursor.getColumnIndexOrThrow("time"));
+        String tweettext = cursor.getString(cursor.getColumnIndexOrThrow("tweet"));
+        int retweet = cursor.getInt(cursor.getColumnIndexOrThrow("retweet"));
+        int favorit = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
+        long tweetId = cursor.getLong(cursor.getColumnIndexOrThrow("tweetID"));
+        long retweetId = cursor.getLong(cursor.getColumnIndexOrThrow("retweetID"));
+        String replyname = cursor.getString(cursor.getColumnIndexOrThrow("replyname"));
+        long replyStatusId = cursor.getLong(cursor.getColumnIndexOrThrow("replyID"));
+        long retweeterId = cursor.getLong(cursor.getColumnIndexOrThrow("retweeterID"));
+        String source = cursor.getString(cursor.getColumnIndexOrThrow("source"));
+        String medialinks = cursor.getString(cursor.getColumnIndexOrThrow("media"));
+        String place = cursor.getString(cursor.getColumnIndexOrThrow("place"));
+        String geo = cursor.getString(cursor.getColumnIndexOrThrow("geo"));
+        long replyUserId = cursor.getLong(cursor.getColumnIndexOrThrow("replyUserID"));
+        int statusregister = cursor.getInt(cursor.getColumnIndexOrThrow("statusregister"));
         boolean favorited = (statusregister & FAV_MASK) != 0;
         boolean retweeted = (statusregister & RTW_MASK) != 0;
         boolean sensitive = (statusregister & MEDIA_SENS_MASK) != 0;
@@ -559,20 +559,20 @@ public class AppDatabase {
      * @return user instance
      */
     private User getUser(Cursor cursor) {
-        long userId = cursor.getLong(cursor.getColumnIndex("userID"));
-        String username = cursor.getString(cursor.getColumnIndex("username"));
-        String screenname = cursor.getString(cursor.getColumnIndex("scrname"));
-        int userRegister = cursor.getInt(cursor.getColumnIndex("userregister"));
-        String profileImg = cursor.getString(cursor.getColumnIndex("pbLink"));
-        String bio = cursor.getString(cursor.getColumnIndex("bio"));
-        String link = cursor.getString(cursor.getColumnIndex("link"));
-        String location = cursor.getString(cursor.getColumnIndex("location"));
-        String banner = cursor.getString(cursor.getColumnIndex("banner"));
-        long createdAt = cursor.getLong(cursor.getColumnIndex("createdAt"));
-        int following = cursor.getInt(cursor.getColumnIndex("following"));
-        int follower = cursor.getInt(cursor.getColumnIndex("follower"));
-        int tCount = cursor.getInt(cursor.getColumnIndex("tweetCount"));
-        int fCount = cursor.getInt(cursor.getColumnIndex("favorCount"));
+        long userId = cursor.getLong(cursor.getColumnIndexOrThrow("userID"));
+        String username = cursor.getString(cursor.getColumnIndexOrThrow("username"));
+        String screenname = cursor.getString(cursor.getColumnIndexOrThrow("scrname"));
+        int userRegister = cursor.getInt(cursor.getColumnIndexOrThrow("userregister"));
+        String profileImg = cursor.getString(cursor.getColumnIndexOrThrow("pbLink"));
+        String bio = cursor.getString(cursor.getColumnIndexOrThrow("bio"));
+        String link = cursor.getString(cursor.getColumnIndexOrThrow("link"));
+        String location = cursor.getString(cursor.getColumnIndexOrThrow("location"));
+        String banner = cursor.getString(cursor.getColumnIndexOrThrow("banner"));
+        long createdAt = cursor.getLong(cursor.getColumnIndexOrThrow("createdAt"));
+        int following = cursor.getInt(cursor.getColumnIndexOrThrow("following"));
+        int follower = cursor.getInt(cursor.getColumnIndexOrThrow("follower"));
+        int tCount = cursor.getInt(cursor.getColumnIndexOrThrow("tweetCount"));
+        int fCount = cursor.getInt(cursor.getColumnIndexOrThrow("favorCount"));
         boolean isCurrentUser = homeId == userId;
         boolean isVerified = (userRegister & VER_MASK) != 0;
         boolean isLocked = (userRegister & LCK_MASK) != 0;
@@ -797,7 +797,7 @@ public class AppDatabase {
         Cursor c = db.rawQuery(TWEETFLAG_QUERY, args);
         int result = 0;
         if (c.moveToFirst()) {
-            int pos = c.getColumnIndex("statusregister");
+            int pos = c.getColumnIndexOrThrow("statusregister");
             result = c.getInt(pos);
         }
         c.close();
@@ -817,7 +817,7 @@ public class AppDatabase {
         Cursor c = db.rawQuery(USERFLAG_QUERY, args);
         int result = 0;
         if (c.moveToFirst()) {
-            int pos = c.getColumnIndex("userregister");
+            int pos = c.getColumnIndexOrThrow("userregister");
             result = c.getInt(pos);
         }
         c.close();
