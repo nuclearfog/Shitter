@@ -22,129 +22,229 @@ public class DatabaseAdapter {
     /**
      * SQL query to create a table for user information
      */
-    private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS user (" +
-            "userID INTEGER PRIMARY KEY,username TEXT,scrname TEXT," +
-            "pbLink TEXT,banner TEXT,bio TEXT,location TEXT,link TEXT,userregister INTEGER," +
-            "createdAt INTEGER,following INTEGER,follower INTEGER,tweetCount INTEGER,favorCount INTEGER);";
+    private static final String TABLE_USER = "CREATE TABLE IF NOT EXISTS "
+            + UserTable.TABLE + "("
+            + UserTable.ID + " INTEGER PRIMARY KEY,"
+            + UserTable.USERNAME + " TEXT,"
+            + UserTable.SCREENNAME + " TEXT,"
+            + UserTable.IMAGE + " TEXT,"
+            + UserTable.BANNER + " TEXT,"
+            + UserTable.DESCRIPTION + " TEXT,"
+            + UserTable.LOCATION + " TEXT,"
+            + UserTable.LINK + " TEXT,"
+            + UserTable.REGISTER + " INTEGER,"
+            + UserTable.SINCE + " INTEGER,"
+            + UserTable.FRIENDS + " INTEGER,"
+            + UserTable.FOLLOWER + " INTEGER,"
+            + UserTable.TWEETS + " INTEGER,"
+            + UserTable.FAVORS + " INTEGER);";
 
     /**
      * SQL query to create a table for tweet information
      */
-    private static final String TABLE_TWEET = "CREATE TABLE IF NOT EXISTS tweet (" +
-            "tweetID INTEGER PRIMARY KEY,userID INTEGER,retweetID INTEGER,replyID INTEGER,retweeterID INTEGER," +
-            "replyname TEXT,replyUserID INTEGER,time INTEGER,tweet TEXT,media TEXT,retweet INTEGER,favorite INTEGER," +
-            "statusregister INTEGER,source TEXT,place TEXT,geo TEXT,FOREIGN KEY (userID) REFERENCES user(userID));";
+    private static final String TABLE_TWEET = "CREATE TABLE IF NOT EXISTS "
+            + TweetTable.TABLE + "("
+            + TweetTable.ID + " INTEGER PRIMARY KEY,"
+            + TweetTable.USER + " INTEGER,"
+            + TweetTable.RETWEETID + " INTEGER,"
+            + TweetTable.REPLYTWEET + " INTEGER,"
+            + TweetTable.RETWEETUSER + " INTEGER,"
+            + TweetTable.REPLYNAME + " TEXT,"
+            + TweetTable.REPLYUSER + " INTEGER,"
+            + TweetTable.SINCE + " INTEGER,"
+            + TweetTable.TWEET + " TEXT,"
+            + TweetTable.MEDIA + " TEXT,"
+            + TweetTable.RETWEET + " INTEGER,"
+            + TweetTable.FAVORITE + " INTEGER,"
+            + TweetTable.REGISTER + " INTEGER,"
+            + TweetTable.SOURCE + " TEXT,"
+            + TweetTable.PLACE + " TEXT,"
+            + TweetTable.COORDINATE + " TEXT,"
+            + "FOREIGN KEY(" + TweetTable.USER + ")"
+            + "REFERENCES " + UserTable.TABLE + "(" + UserTable.ID + "));";
 
     /**
      * SQL query to create a table for favorite tweets
      */
-    private static final String TABLE_FAVORS = "CREATE TABLE IF NOT EXISTS favorit (" +
-            "ownerID INTEGER,tweetID INTEGER," +
-            "FOREIGN KEY (ownerID) REFERENCES user(userID)," +
-            "FOREIGN KEY (tweetID) REFERENCES tweet(tweetID));";
+    private static final String TABLE_FAVORS = "CREATE TABLE IF NOT EXISTS "
+            + FavoriteTable.TABLE + "("
+            + FavoriteTable.FAVORITEDBY + " INTEGER,"
+            + FavoriteTable.TWEETID + " INTEGER,"
+            + "FOREIGN KEY(" + FavoriteTable.FAVORITEDBY + ")"
+            + "REFERENCES " + UserTable.TABLE + "(" + UserTable.ID + "),"
+            + "FOREIGN KEY(" + FavoriteTable.TWEETID + ")"
+            + "REFERENCES " + TweetTable.TABLE + "(" + TweetTable.ID + "));";
 
     /**
      * SQL query to create a table for trend information
      */
-    private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS trend (" +
-            "woeID INTEGER,trendpos INTEGER,vol INTEGER,trendname TEXT);";
+    private static final String TABLE_TRENDS = "CREATE TABLE IF NOT EXISTS "
+            + TrendTable.TABLE + "("
+            + TrendTable.ID + " INTEGER,"
+            + TrendTable.INDEX + " INTEGER,"
+            + TrendTable.VOL + " INTEGER,"
+            + TrendTable.TREND + " TEXT);";
 
     /**
      * SQL query to create a table for message information
      */
-    private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS message (" +
-            "messageID INTEGER PRIMARY KEY,time INTEGER,senderID INTEGER,receiverID INTEGER," +
-            "message TEXT);";
+    private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS "
+            + MessageTable.TABLE + "("
+            + MessageTable.ID + " INTEGER PRIMARY KEY,"
+            + MessageTable.SINCE + " INTEGER,"
+            + MessageTable.SENDER + " INTEGER,"
+            + MessageTable.RECEIVER + " INTEGER,"
+            + MessageTable.MESSAGE + " TEXT);";
 
     /**
      * index for tweet table
      */
-    private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet ON tweet(userID,statusregister);";
+    private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet"
+            + " ON " + TweetTable.TABLE + "(" + TweetTable.USER + "," + TweetTable.REGISTER + ");";
 
     /**
      * index for favorite table
      */
-    private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor ON favorit(ownerID,tweetID);";
+    private static final String INDX_FAVOR = "CREATE INDEX IF NOT EXISTS idx_favor"
+            + " ON " + FavoriteTable.TABLE + "(" + FavoriteTable.FAVORITEDBY + "," + FavoriteTable.TWEETID + ");";
 
     /**
      * index for trend table
      */
-    private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend ON trend(woeID);";
+    private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend"
+            + " ON " + TrendTable.TABLE + "(" + TrendTable.ID + ");";
 
-    //update for trend table
-    private static final String TABLE_TWEET_ADD_PLACE = "ALTER TABLE tweet ADD COLUMN place TEXT";
-    private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE tweet ADD COLUMN geo TEXT";
-    private static final String TABLE_TREND_ADD_VOL = "ALTER TABLE trend ADD COLUMN vol INTEGER";
+    /**
+     * update for the tweet table
+     */
+    private static final String TABLE_TWEET_ADD_PLACE = "ALTER TABLE " + TweetTable.TABLE
+            + " ADD COLUMN " + TweetTable.PLACE + " TEXT";
+
+    /**
+     * update for the tweet table
+     */
+    private static final String TABLE_TWEET_ADD_GEO = "ALTER TABLE " + TweetTable.TABLE
+            + " ADD COLUMN " + TweetTable.COORDINATE + " TEXT";
+
+    /**
+     * update for the trend table
+     */
+    private static final String TABLE_TREND_ADD_VOL = "ALTER TABLE " + TrendTable.TABLE
+            + " ADD COLUMN " + TrendTable.VOL + " INTEGER";
+
+    /**
+     *
+     */
+    private static final String USERTWEET_TABLE = TweetTable.TABLE
+            + " INNER JOIN " + UserTable.TABLE
+            + " ON " + TweetTable.TABLE + "." + TweetTable.USER + "=" + UserTable.TABLE + "." + UserTable.ID;
 
     /**
      * SQL query to get home timeline tweets
      */
-    static final String HOMETL_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
-            "WHERE statusregister&? IS NOT 0 ORDER BY tweetID DESC LIMIT ?";
+    static final String HOME_QUERY = "SELECT * FROM " + USERTWEET_TABLE
+            + " WHERE " + TweetTable.REGISTER + "&? IS NOT 0"
+            + " ORDER BY " + TweetTable.ID
+            + " DESC LIMIT ?";
 
     /**
      * SQL query to get mention timeline
      */
-    static final String MENTION_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
-            "WHERE statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
+    static final String MENTION_QUERY = "SELECT * FROM " + USERTWEET_TABLE
+            + " WHERE " + TweetTable.REGISTER + "&? IS NOT 0"
+            + " AND " + UserTable.REGISTER + "&? IS 0"
+            + " ORDER BY " + TweetTable.ID
+            + " DESC LIMIT ?";
 
     /**
      * SQL query to get tweets of an user
      */
-    static final String USERTWEET_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
-            "WHERE statusregister&? IS NOT 0 AND user.userID=? ORDER BY tweetID DESC LIMIT ?";
+    static final String USERTWEET_QUERY = "SELECT * FROM " + USERTWEET_TABLE
+            + " WHERE " + TweetTable.REGISTER + "&? IS NOT 0"
+            + " AND " + TweetTable.TABLE + "." + TweetTable.USER + "=?"
+            + " ORDER BY " + TweetTable.ID
+            + " DESC LIMIT ?";
 
     /**
-     * SQL query to get tweets favorited by an user
+     * SQL query to get tweets favored by an user
      */
-    static final String USERFAVORIT_QUERY = "SELECT * FROM tweet INNER JOIN favorit on tweet.tweetID=favorit.tweetID " +
-            "INNER JOIN user ON tweet.userID=user.userID WHERE favorit.ownerID=? ORDER BY tweetID DESC LIMIT ?";
+    static final String USERFAVORIT_QUERY = "SELECT * FROM " + USERTWEET_TABLE
+            + " INNER JOIN " + FavoriteTable.TABLE
+            + " ON " + TweetTable.TABLE + "." + TweetTable.ID + "=" + FavoriteTable.TABLE + "." + FavoriteTable.TWEETID
+            + " WHERE " + FavoriteTable.FAVORITEDBY + "=?"
+            + " ORDER BY " + TweetTable.ID
+            + " DESC LIMIT ?";
 
     /**
      * SQL query to get a single tweet specified by an ID
      */
-    static final String SINGLE_TWEET_QUERY = "SELECT * FROM tweet INNER JOIN user ON user.userID = tweet.userID WHERE tweet.tweetID=? LIMIT 1";
+    static final String SINGLE_TWEET_QUERY = "SELECT * FROM " + USERTWEET_TABLE
+            + " WHERE " + TweetTable.TABLE + "." + TweetTable.ID + "=? LIMIT 1";
 
     /**
      * SQL query to get replies of a tweet specified by a reply ID
      */
-    static final String ANSWER_QUERY = "SELECT * FROM tweet INNER JOIN user ON tweet.userID=user.userID " +
-            "WHERE tweet.replyID=? AND statusregister&? IS NOT 0 AND userregister&? IS 0 ORDER BY tweetID DESC LIMIT ?";
+    static final String ANSWER_QUERY = "SELECT * FROM " + USERTWEET_TABLE
+            + " WHERE " + TweetTable.TABLE + "." + TweetTable.REPLYTWEET + "=?"
+            + " AND " + TweetTable.REGISTER + "&? IS NOT 0"
+            + " AND " + UserTable.REGISTER + "&? IS 0"
+            + " ORDER BY " + TweetTable.ID + " DESC LIMIT ?";
 
     /**
      * SQL query to get locale based trends
      */
-    static final String TREND_QUERY = "SELECT * FROM trend WHERE woeID=? ORDER BY trendpos ASC";
+    static final String TREND_QUERY = "SELECT * FROM " + TrendTable.TABLE
+            + " WHERE " + TrendTable.ID + "=?"
+            + " ORDER BY " + TrendTable.INDEX + " ASC";
 
     /**
      * SQL query to get direct messages
      */
-    static final String MESSAGE_QUERY = "SELECT * FROM message ORDER BY messageID DESC LIMIT ?";
+    static final String MESSAGE_QUERY = "SELECT * FROM " + MessageTable.TABLE
+            + " ORDER BY " + MessageTable.ID + " DESC "
+            + "LIMIT ?";
 
     /**
      * SQL query to get user information
      */
-    static final String USER_QUERY = "SELECT * FROM user WHERE userID=? LIMIT 1";
+    static final String USER_QUERY = "SELECT * FROM " + UserTable.TABLE
+            + " WHERE " + UserTable.ID + "=?"
+            + " LIMIT 1";
 
     /**
      * SQL query to get a status register for a tweet
      */
-    static final String TWEETFLAG_QUERY = "SELECT statusregister FROM tweet WHERE tweetID=? LIMIT 1;";
+    static final String TWEETFLAG_QUERY = "SELECT " + TweetTable.REGISTER + " FROM " + TweetTable.TABLE
+            + " WHERE " + TweetTable.ID + "=?"
+            + " LIMIT 1;";
 
     /**
      * SQL query to get a status register of an user
      */
-    static final String USERFLAG_QUERY = "SELECT userregister FROM user WHERE userID=? LIMIT 1;";
+    static final String USERFLAG_QUERY = "SELECT " + UserTable.REGISTER + " FROM " + UserTable.TABLE
+            + " WHERE " + UserTable.ID + "=?"
+            + " LIMIT 1;";
 
     /**
      * SQL query to check if a status exists in database
      */
-    static final String STATUS_EXIST_QUERY = "SELECT tweetID FROM tweet WHERE tweetID=? LIMIT 1;";
+    static final String STATUS_EXIST_QUERY = "SELECT * FROM " + TweetTable.TABLE
+            + " WHERE " + TweetTable.ID + "=?"
+            + " LIMIT 1;";
 
+    /**
+     * singleton instance
+     */
     private static DatabaseAdapter instance;
 
+    /**
+     * path to the database file
+     */
     private final File databasePath;
 
+    /**
+     * database
+     */
     private SQLiteDatabase db;
 
 
@@ -175,7 +275,7 @@ public class DatabaseAdapter {
      */
     public static DatabaseAdapter getInstance(@NonNull Context context) {
         if (instance == null)
-            instance = new DatabaseAdapter(context);
+            instance = new DatabaseAdapter(context.getApplicationContext());
         return instance;
     }
 
@@ -220,5 +320,99 @@ public class DatabaseAdapter {
         if (db.getVersion() == 0) {
             db.setVersion(LATEST_VERSION);
         }
+    }
+
+    /**
+     * table for user information
+     */
+    public interface UserTable {
+        // table name
+        String TABLE = "user";
+        // user information
+        String ID = "userID";
+        String USERNAME = "username";
+        String SCREENNAME = "scrname";
+        String DESCRIPTION = "bio";
+        String LOCATION = "location";
+        String LINK = "link";
+        String SINCE = "createdAt";
+        // image links
+        String IMAGE = "pbLink";
+        String BANNER = "banner";
+        // connections
+        String FRIENDS = "following";
+        String FOLLOWER = "follower";
+        // tweet count of the user
+        String TWEETS = "tweetCount";
+        String FAVORS = "favorCount";
+        // integer register containing status bits
+        String REGISTER = "userregister";
+    }
+
+    /**
+     * table for all tweets
+     */
+    public interface TweetTable {
+        // table name
+        String TABLE = "tweet";
+        // tweet information
+        String ID = "tweetID";
+        String USER = "userID";
+        String TWEET = "tweet";
+        String MEDIA = "media";
+        String RETWEET = "retweet";
+        String FAVORITE = "favorite";
+        String SINCE = "time";
+        String SOURCE = "source";
+        // tweet location
+        String PLACE = "place";
+        String COORDINATE = "geo";
+        // information about the replied tweet
+        String REPLYTWEET = "replyID";
+        String REPLYUSER = "replyUserID";
+        String REPLYNAME = "replyname";
+        // information about the retweeter
+        String RETWEETID = "retweetID";
+        String RETWEETUSER = "retweeterID";
+        // register containing status bits
+        String REGISTER = "statusregister";
+    }
+
+    /**
+     * table for favored tweets of an user
+     */
+    public interface FavoriteTable {
+        // table name
+        String TABLE = "favorit";
+        //
+        String TWEETID = "tweetID";
+        String FAVORITEDBY = "ownerID";
+    }
+
+    /**
+     * table for twitter trends
+     */
+    public interface TrendTable {
+        // tale name
+        String TABLE = "trend";
+        // trend information
+        String ID = "woeID";
+        String INDEX = "trendpos";
+        String VOL = "vol";
+        String TREND = "trendname";
+    }
+
+    /**
+     * Table for direct messages
+     */
+    public interface MessageTable {
+        // table name
+        String TABLE = "message";
+        // message information
+        String ID = "messageID";
+        String SINCE = "time";
+        String SENDER = "senderID";
+        String RECEIVER = "receiverID";
+        String MESSAGE = "message";
     }
 }

@@ -136,6 +136,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     @Override
     public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissions.length > 0 && grantResults.length > 0) {
             if (PERMISSIONS[0][0].equals(permissions[0])) {
                 if (grantResults[0] == PERMISSION_GRANTED)

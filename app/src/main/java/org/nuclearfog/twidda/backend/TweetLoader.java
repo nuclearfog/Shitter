@@ -152,7 +152,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
                 case USR_FAVORS:
                     if (id > 0) {
                         if (sinceId == 0 && maxId == 0) {
-                            tweets = db.getUserFavs(id);
+                            tweets = db.getUserFavorites(id);
                             if (tweets.isEmpty()) {
                                 tweets = mTwitter.getUserFavs(id, 0, maxId);
                                 db.storeUserFavs(tweets, id);

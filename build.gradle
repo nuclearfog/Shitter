@@ -3,11 +3,14 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
         google()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath 'io.michaelrocks:paranoid-gradle-plugin:0.3.3'
+        classpath 'gradle.plugin.ru.cleverpumpkin.proguard-dictionaries-generator:plugin:1.0.8'
     }
 }
 

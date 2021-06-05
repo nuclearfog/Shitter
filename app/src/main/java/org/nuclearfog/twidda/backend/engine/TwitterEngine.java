@@ -635,7 +635,7 @@ public class TwitterEngine {
             int load = settings.getListSize();
             List<Status> answers = new LinkedList<>();
             Query query = new Query("to:" + name + " +exclude:retweets");
-            query.setCount(load);
+            query.setCount(100); // get max count of replies
             if (sinceId > 0)
                 query.setSinceId(sinceId);  //
             else
@@ -645,7 +645,8 @@ public class TwitterEngine {
             query.setResultType(Query.RECENT);
             QueryResult result = twitter.search(query);
             List<Status> stats = result.getTweets();
-            for (Status reply : stats) {
+            for (int i = 0; i < stats.size() && i < load; i++) {
+                Status reply = stats.get(i);
                 if (reply.getInReplyToStatusId() == tweetId) {
                     answers.add(reply);
                 }

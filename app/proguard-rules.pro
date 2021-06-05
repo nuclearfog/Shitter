@@ -24,10 +24,15 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+# keep these libraries but allow obfuscating
 -dontwarn twitter4j.**
 -keep,allowobfuscation class twitter4j.**  {*;}
 -adaptclassstrings twitter4j.**
-
 -dontwarn javax.management.DynamicMBean
 -keep,allowobfuscation class javax.management.DynamicMBean {*;}
 -adaptclassstrings javax.management.DynamicMBean
+
+# use dictionaries to create random package names
+-obfuscationdictionary build/obfuscation-dictionary.txt
+-classobfuscationdictionary build/class-dictionary.txt
+-packageobfuscationdictionary build/package-dictionary.txt
