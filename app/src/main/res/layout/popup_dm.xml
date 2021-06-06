@@ -10,12 +10,12 @@
         android:id="@+id/dm_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.85"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
     <EditText
@@ -30,53 +30,67 @@
         android:importantForAutofill="no"
         android:inputType="text"
         android:singleLine="true"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
-        app:layout_constraintEnd_toStartOf="@+id/dm_preview"
         app:layout_constraintStart_toStartOf="@+id/dm_background"
-        app:layout_constraintTop_toTopOf="@+id/dm_background" />
+        app:layout_constraintTop_toTopOf="@+id/dm_background"
+        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
+        app:layout_constraintEnd_toStartOf="@+id/dm_preview" />
 
     <ImageButton
         android:id="@+id/dm_preview"
         style="@style/RoundButton"
-        android:layout_width="@dimen/dmpopup_button_size"
-        android:layout_height="@dimen/dmpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/dmpopup_button_margin"
         android:layout_marginLeft="@dimen/dmpopup_button_margin"
         android:layout_marginTop="@dimen/dmpopup_margin_background"
         android:layout_marginEnd="@dimen/dmpopup_button_margin"
         android:layout_marginRight="@dimen/dmpopup_button_margin"
         android:contentDescription="@string/tweet_add_image"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
-        app:layout_constraintEnd_toStartOf="@+id/dm_media"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/dm_receiver"
-        app:layout_constraintTop_toTopOf="@+id/dm_background" />
+        app:layout_constraintTop_toTopOf="@+id/dm_background"
+        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
+        app:layout_constraintEnd_toStartOf="@+id/dm_media" />
 
     <ImageButton
         android:id="@+id/dm_media"
         style="@style/RoundButton"
-        android:layout_width="@dimen/dmpopup_button_size"
-        android:layout_height="@dimen/dmpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dmpopup_margin_background"
         android:layout_marginEnd="@dimen/dmpopup_button_margin"
         android:layout_marginRight="@dimen/dmpopup_button_margin"
         android:contentDescription="@string/tweet_add_image"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
-        app:layout_constraintEnd_toStartOf="@+id/dm_send"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintStart_toEndOf="@+id/dm_preview"
-        app:layout_constraintTop_toTopOf="@+id/dm_background" />
+        app:layout_constraintTop_toTopOf="@+id/dm_background"
+        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
+        app:layout_constraintEnd_toStartOf="@+id/dm_send" />
 
     <ImageButton
         android:id="@+id/dm_send"
         style="@style/RoundButton"
-        android:layout_width="@dimen/dmpopup_button_size"
-        android:layout_height="@dimen/dmpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dmpopup_margin_background"
         android:layout_marginEnd="@dimen/dmpopup_margin_background"
         android:layout_marginRight="@dimen/dmpopup_margin_background"
         android:contentDescription="@string/close_dm"
-        app:layout_constraintEnd_toEndOf="@+id/dm_background"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintStart_toEndOf="@id/dm_media"
-        app:layout_constraintTop_toTopOf="@+id/dm_background" />
+        app:layout_constraintTop_toTopOf="@+id/dm_background"
+        app:layout_constraintEnd_toEndOf="@+id/dm_background" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/dm_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="dm_send,dm_media,dm_preview,dm_receiver" />
 
     <EditText
         android:id="@+id/dm_text"
@@ -93,11 +107,11 @@
         android:hint="@string/dm_message"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_background"
-        app:layout_constraintEnd_toEndOf="@+id/dm_background"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/dm_background"
-        app:layout_constraintTop_toBottomOf="@+id/dm_send"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/dm_barrier"
+        app:layout_constraintBottom_toBottomOf="@+id/dm_background"
+        app:layout_constraintEnd_toEndOf="@+id/dm_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

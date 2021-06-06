@@ -13,8 +13,7 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintWidth_percent="0.3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/link_preview_title"
@@ -47,13 +46,12 @@
     <TextView
         android:id="@+id/link_preview_description"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:textSize="@dimen/dialog_linkpreview_textsize_description"
         android:maxLines="8"
         android:layout_margin="@dimen/dialog_linkpreview_margin"
         app:layout_constraintStart_toEndOf="@id/link_preview_image"
         app:layout_constraintTop_toBottomOf="@id/link_preview_title_barrier"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar

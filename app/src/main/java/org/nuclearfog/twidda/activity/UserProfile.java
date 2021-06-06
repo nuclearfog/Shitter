@@ -439,20 +439,25 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         // link points to a tweet
         if (LINK_PATTERN.matcher(shortLink).matches()) {
-            String name = shortLink.substring(20, shortLink.indexOf('/', 20));
-            long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-            Intent intent = new Intent(this, TweetActivity.class);
-            intent.putExtra(KEY_TWEET_ID, id);
-            intent.putExtra(KEY_TWEET_NAME, name);
-            startActivity(intent);
-        } else {
-            // open link in browser
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tag));
             try {
+                String name = shortLink.substring(20, shortLink.indexOf('/', 20));
+                long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
+                Intent intent = new Intent(this, TweetActivity.class);
+                intent.putExtra(KEY_TWEET_ID, id);
+                intent.putExtra(KEY_TWEET_NAME, name);
                 startActivity(intent);
-            } catch (ActivityNotFoundException err) {
-                Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+                return;
+            } catch (Exception err) {
+                err.printStackTrace();
+                // open link in browser if an error occurs
             }
+        }
+        // open link in browser
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tag));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException err) {
+            Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
         }
     }
 

@@ -10,12 +10,12 @@
         android:id="@+id/tweet_popup_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.85"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
     <EditText
@@ -32,104 +32,109 @@
         android:hint="@string/popup_tweet_hint"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/tweet_placeholder"
-        app:layout_constraintEnd_toEndOf="@+id/tweet_popup_background"
         app:layout_constraintStart_toStartOf="@+id/tweet_popup_background"
-        app:layout_constraintTop_toTopOf="@+id/tweet_popup_background" />
+        app:layout_constraintTop_toTopOf="@+id/tweet_popup_background"
+        app:layout_constraintBottom_toTopOf="@+id/tweet_placeholder"
+        app:layout_constraintEnd_toEndOf="@+id/tweet_popup_background" />
 
-    <View
+    <androidx.constraintlayout.widget.Barrier
         android:id="@+id/tweet_placeholder"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/tweetpopup_button_size"
-        android:layout_marginStart="@dimen/tweetpopup_margin_layout"
-        android:layout_marginLeft="@dimen/tweetpopup_margin_layout"
-        android:layout_marginBottom="@dimen/tweetpopup_margin_layout"
-        app:layout_constraintBottom_toBottomOf="@id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@id/tweet_prev_media"
-        app:layout_constraintStart_toStartOf="@id/tweet_popup_background"
-        app:layout_constraintTop_toBottomOf="@id/tweet_input" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="tweet_prev_media,tweet_add_media,tweet_add_location,tweet_send,close" />
 
     <ImageButton
         android:id="@+id/tweet_prev_media"
         style="@style/RoundButton"
-        android:layout_width="@dimen/tweetpopup_button_size"
-        android:layout_height="@dimen/tweetpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="@dimen/tweetpopup_button_margin"
         android:layout_marginRight="@dimen/tweetpopup_button_margin"
         android:layout_marginBottom="@dimen/tweetpopup_margin_layout"
         android:contentDescription="@string/image_preview"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/tweet_add_media"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@id/tweet_placeholder" />
+        app:layout_constraintStart_toStartOf="@+id/tweet_popup_background"
+        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@+id/tweet_add_media" />
 
     <ImageButton
         android:id="@+id/tweet_add_media"
         style="@style/RoundButton"
-        android:layout_width="@dimen/tweetpopup_button_size"
-        android:layout_height="@dimen/tweetpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="@dimen/tweetpopup_button_margin"
         android:layout_marginRight="@dimen/tweetpopup_button_margin"
         android:layout_marginBottom="@dimen/tweetpopup_margin_layout"
         android:contentDescription="@string/tweet_add_image"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/tweet_add_location"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_prev_media" />
-
+        app:layout_constraintStart_toEndOf="@+id/tweet_prev_media"
+        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@+id/tweet_add_location" />
 
     <ProgressBar
         android:id="@+id/location_progress"
         style="?android:attr/progressBarStyle"
-        android:layout_width="@dimen/tweetpopup_button_size"
-        android:layout_height="@dimen/tweetpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_add_location"
-        app:layout_constraintEnd_toEndOf="@+id/tweet_add_location"
         app:layout_constraintStart_toStartOf="@+id/tweet_add_location"
-        app:layout_constraintTop_toTopOf="@+id/tweet_add_location" />
+        app:layout_constraintTop_toTopOf="@+id/tweet_add_location"
+        app:layout_constraintBottom_toBottomOf="@+id/tweet_add_location"
+        app:layout_constraintEnd_toEndOf="@+id/tweet_add_location" />
 
     <ImageButton
         android:id="@+id/tweet_add_location"
         style="@style/RoundButton"
-        android:layout_width="@dimen/tweetpopup_button_size"
-        android:layout_height="@dimen/tweetpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="@dimen/tweetpopup_button_margin"
         android:layout_marginRight="@dimen/tweetpopup_button_margin"
         android:layout_marginBottom="@dimen/tweetpopup_margin_layout"
         android:contentDescription="@string/send_tweet"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/tweet_send"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_add_media" />
+        app:layout_constraintStart_toEndOf="@+id/tweet_add_media"
+        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@+id/tweet_send" />
 
     <ImageButton
         android:id="@+id/tweet_send"
         style="@style/RoundButton"
-        android:layout_width="@dimen/tweetpopup_button_size"
-        android:layout_height="@dimen/tweetpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="@dimen/tweetpopup_button_margin"
         android:layout_marginRight="@dimen/tweetpopup_button_margin"
         android:layout_marginBottom="@dimen/tweetpopup_margin_layout"
         android:contentDescription="@string/send_tweet"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/close"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_add_location" />
+        app:layout_constraintStart_toEndOf="@+id/tweet_add_location"
+        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@+id/close" />
 
     <ImageButton
         android:id="@+id/close"
         style="@style/RoundButton"
-        android:layout_width="@dimen/tweetpopup_button_size"
-        android:layout_height="@dimen/tweetpopup_button_size"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginEnd="@dimen/tweetpopup_margin_layout"
         android:layout_marginRight="@dimen/tweetpopup_margin_layout"
         android:layout_marginBottom="@dimen/tweetpopup_margin_layout"
         android:contentDescription="@string/tweet_close"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toEndOf="@+id/tweet_popup_background"
+        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_send" />
+        app:layout_constraintStart_toEndOf="@+id/tweet_send"
+        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
+        app:layout_constraintEnd_toEndOf="@+id/tweet_popup_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

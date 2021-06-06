@@ -129,13 +129,11 @@
 
     <!--dimens of popup_tweet.xml-->
     <dimen name="tweetpopup_margin_layout">10dp</dimen>
-    <dimen name="tweetpopup_button_size">40dp</dimen>
     <dimen name="tweetpopup_button_margin">7dp</dimen>
 
     <!--dimens of popup_dm.xml-->
     <dimen name="dmpopup_margin_background">10dp</dimen>
     <dimen name="dmpopup_text_margin">5dp</dimen>
-    <dimen name="dmpopup_button_size">40dp</dimen>
     <dimen name="dmpopup_button_margin">5dp</dimen>
 
     <!--dimen of popup_userlist.xml-->

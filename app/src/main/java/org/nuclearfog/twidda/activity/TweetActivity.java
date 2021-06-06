@@ -422,24 +422,30 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         }
         // check if the link if from a tweet
         if (LINK_PATTERN.matcher(shortLink).matches()) {
-            String name = shortLink.substring(20, shortLink.indexOf('/', 20));
-            long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
-            Intent intent = new Intent(this, TweetActivity.class);
-            intent.putExtra(KEY_TWEET_ID, id);
-            intent.putExtra(KEY_TWEET_NAME, name);
-            startActivity(intent);
+            try {
+                String name = shortLink.substring(20, shortLink.indexOf('/', 20));
+                long id = Long.parseLong(shortLink.substring(shortLink.lastIndexOf('/') + 1));
+                Intent intent = new Intent(this, TweetActivity.class);
+                intent.putExtra(KEY_TWEET_ID, id);
+                intent.putExtra(KEY_TWEET_NAME, name);
+                startActivity(intent);
+                return;
+            } catch (Exception err) {
+                err.printStackTrace();
+                // if an error occurs, open link in browser
+            }
+        }
+        // open link in browser or preview
+        if (settings.linkPreviewEnabled()) {
+            linkPreview.show(tag);
         } else {
-            if (settings.linkPreviewEnabled()) {
-                linkPreview.show(tag);
-            } else {
-                // open link in a browser
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(tag));
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException err) {
-                    Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
-                }
+            // open link in a browser
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(tag));
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException err) {
+                Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
             }
         }
     }
