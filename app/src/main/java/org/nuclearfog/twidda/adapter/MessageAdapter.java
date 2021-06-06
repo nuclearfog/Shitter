@@ -16,9 +16,9 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
-import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.MessageList;
+import org.nuclearfog.twidda.backend.model.Message;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -202,7 +202,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 } else {
                     holder.lockedIcon.setVisibility(GONE);
                 }
-                if (settings.getImageLoad() && sender.hasProfileImage()) {
+                if (settings.imagesEnabled() && sender.hasProfileImage()) {
                     String pbLink = sender.getImageLink();
                     if (!sender.hasDefaultProfileImage())
                         pbLink += settings.getImageSuffix();

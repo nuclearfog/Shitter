@@ -329,6 +329,29 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/settings_column_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/settings_enable_prev"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/settings_switch_margin"
+                            android:layout_marginRight="@dimen/settings_switch_margin" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="@string/settings_toggle_link_preview"
+                            android:textSize="@dimen/settings_textsize_small" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:gravity="center_vertical"

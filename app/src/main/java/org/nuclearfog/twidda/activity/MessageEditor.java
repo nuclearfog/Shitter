@@ -19,11 +19,13 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.dialog.ProgressDialog;
+import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
@@ -32,15 +34,13 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_EDITOR_ERROR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_EDITOR_LEAVE;
 
 /**
  * Direct message popup activity
  *
  * @author nuclearfog
  */
-public class MessageEditor extends MediaActivity implements OnClickListener, OnDialogConfirmListener, OnProgressStopListener {
+public class MessageEditor extends MediaActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
 
     /**
      * key for the screen name if any
@@ -68,9 +68,10 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
         preview = findViewById(R.id.dm_preview);
         receiver = findViewById(R.id.dm_receiver);
         message = findViewById(R.id.dm_text);
-        loadingCircle = DialogBuilder.createProgress(this, this);
-        leaveDialog = DialogBuilder.create(this, MESSAGE_EDITOR_LEAVE, this);
-        errorDialog = DialogBuilder.create(this, MESSAGE_EDITOR_ERROR, this);
+
+        loadingCircle = new ProgressDialog(this, this);
+        leaveDialog = new ConfirmDialog(this, DialogType.MESSAGE_EDITOR_LEAVE, this);
+        errorDialog = new ConfirmDialog(this, DialogType.MESSAGE_EDITOR_ERROR, this);
 
         String prefix = getIntent().getStringExtra(KEY_DM_PREFIX);
         if (prefix != null) {
@@ -154,13 +155,13 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
+    public void onConfirm(DialogType type) {
         // retry sending message
-        if (type == MESSAGE_EDITOR_ERROR) {
+        if (type == DialogType.MESSAGE_EDITOR_ERROR) {
             sendMessage();
         }
         // leave message editor
-        else if (type == MESSAGE_EDITOR_LEAVE) {
+        else if (type == DialogType.MESSAGE_EDITOR_LEAVE) {
             finish();
         }
     }
@@ -178,7 +179,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnD
      *
      * @param error Engine Exception
      */
-    public void onError(EngineException error) {
+    public void onError(@Nullable EngineException error) {
         if (!errorDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, error);
             errorDialog.setMessage(message);

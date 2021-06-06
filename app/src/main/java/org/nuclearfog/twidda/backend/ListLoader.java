@@ -64,15 +64,16 @@ public class ListLoader extends AsyncTask<Long, Void, UserLists> {
     @Override
     protected UserLists doInBackground(Long[] param) {
         try {
-            switch (listType) {
-                case LOAD_USERLISTS:
-                    return mTwitter.getUserList(userId, ownerName, param[0]);
-
-                case LOAD_MEMBERSHIPS:
-                    return mTwitter.getUserListMemberships(userId, ownerName, param[0]);
+            if (listType == Type.LOAD_USERLISTS) {
+                return mTwitter.getUserList(userId, ownerName, param[0]);
+            }
+            if (listType == Type.LOAD_MEMBERSHIPS) {
+                return mTwitter.getUserListMemberships(userId, ownerName, param[0]);
             }
         } catch (EngineException twException) {
             this.twException = twException;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
         return null;
     }

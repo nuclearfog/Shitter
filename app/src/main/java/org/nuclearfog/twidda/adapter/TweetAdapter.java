@@ -17,8 +17,8 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.TweetHolder;
-import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.Tweet;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -304,7 +304,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             } else {
                 tweetItem.lockedIcon.setVisibility(GONE);
             }
-            if (settings.getImageLoad() && user.hasProfileImage()) {
+            if (settings.imagesEnabled() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();

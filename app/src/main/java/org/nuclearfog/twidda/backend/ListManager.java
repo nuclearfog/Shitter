@@ -3,6 +3,8 @@ package org.nuclearfog.twidda.backend;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 
@@ -64,12 +66,13 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
                     mTwitter.delUserFromList(listId, strings[0]);
                     break;
             }
-
+            return strings;
         } catch (EngineException err) {
             this.err = err;
-            return null;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
-        return strings;
+        return null;
     }
 
 
@@ -101,6 +104,6 @@ public class ListManager extends AsyncTask<String, Void, String[]> {
          *
          * @param err Engine exception thrown by backend
          */
-        void onFailure(EngineException err);
+        void onFailure(@Nullable EngineException err);
     }
 }

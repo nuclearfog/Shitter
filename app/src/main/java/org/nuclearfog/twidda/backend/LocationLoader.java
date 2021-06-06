@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import org.nuclearfog.twidda.activity.AppSettings;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.TrendLocation;
+import org.nuclearfog.twidda.backend.model.TrendLocation;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

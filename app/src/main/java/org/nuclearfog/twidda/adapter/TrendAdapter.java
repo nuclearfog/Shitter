@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
-import org.nuclearfog.twidda.backend.items.Trend;
+import org.nuclearfog.twidda.backend.model.Trend;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

@@ -16,7 +16,7 @@ import org.nuclearfog.twidda.activity.TweetEditor;
 import org.nuclearfog.twidda.activity.UserLists;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.User;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;

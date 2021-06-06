@@ -365,7 +365,7 @@ public final class AppStyles {
      * @param drawable drawables
      * @param color    new drawable color
      */
-    private static void setDrawableColor(@Nullable Drawable drawable, int color) {
+    public static void setDrawableColor(@Nullable Drawable drawable, int color) {
         if (drawable != null) {
             drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_IN));
         }

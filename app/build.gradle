@@ -37,7 +37,7 @@ android {
 }
 
 proguardDictionaries{
-    dictionaryNames = ['build/class-dictionary', 'build/package-dictionary', 'build/obfuscation-dictionary']
+    dictionaryNames = ['show/class-dictionary', 'show/package-dictionary', 'show/obfuscation-dictionary']
     minLineLength 1 // minimum package name length
     maxLineLength 6 // maximum package name length
     linesCountInDictionary 2500 // maximum class count
@@ -60,4 +60,5 @@ dependencies {
     implementation 'com.github.nuclearfog:Tagger:2.2'
     implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4'
     implementation 'com.github.kyleduo:SwitchButton:098ded81f7'
+    implementation 'com.github.LeonardoCardoso:Android-Link-Preview:master'
 }

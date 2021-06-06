@@ -6,7 +6,7 @@ import org.nuclearfog.twidda.activity.ListEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
-import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.model.TwitterList;
 
 import java.lang.ref.WeakReference;
 
@@ -38,6 +38,8 @@ public class ListUpdater extends AsyncTask<ListHolder, Void, TwitterList> {
             return mTwitter.updateUserList(mList);
         } catch (EngineException err) {
             this.err = err;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
         return null;
     }

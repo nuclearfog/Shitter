@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.items.TrendLocation;
+import org.nuclearfog.twidda.backend.model.TrendLocation;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;

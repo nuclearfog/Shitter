@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.User;
 
 import java.util.LinkedList;
 

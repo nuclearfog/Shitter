@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.model.TwitterList;
 
 import java.util.LinkedList;
 

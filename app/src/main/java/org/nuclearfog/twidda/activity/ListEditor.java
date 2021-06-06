@@ -20,27 +20,27 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
-import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.model.TwitterList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.dialog.ProgressDialog;
+import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
 import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
 import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_EDITOR_ERROR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_EDITOR_LEAVE;
 
 /**
  * Activity for the list editor
  *
  * @author nuclearfog
  */
-public class ListEditor extends AppCompatActivity implements OnClickListener, OnDialogConfirmListener, OnProgressStopListener {
+public class ListEditor extends AppCompatActivity implements OnClickListener, OnConfirmListener, OnProgressStopListener {
 
     /**
      * Key for the list ID of the list if an existing list should be updated
@@ -67,9 +67,10 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         titleInput = findViewById(R.id.list_edit_title);
         subTitleInput = findViewById(R.id.list_edit_descr);
         visibility = findViewById(R.id.list_edit_public_sw);
-        loadingCircle = DialogBuilder.createProgress(this, this);
-        leaveDialog = DialogBuilder.create(this, LIST_EDITOR_LEAVE, this);
-        errorDialog = DialogBuilder.create(this, LIST_EDITOR_ERROR, this);
+
+        loadingCircle = new ProgressDialog(this, this);
+        leaveDialog = new ConfirmDialog(this, DialogType.LIST_EDITOR_LEAVE, this);
+        errorDialog = new ConfirmDialog(this, DialogType.LIST_EDITOR_ERROR, this);
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setEditorTheme(settings, root, background);
@@ -124,13 +125,13 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
+    public void onConfirm(DialogType type) {
         // retry updating list
-        if (type == LIST_EDITOR_ERROR) {
+        if (type == DialogType.LIST_EDITOR_ERROR) {
             updateList();
         }
         // leave editor
-        else if (type == LIST_EDITOR_LEAVE) {
+        else if (type == DialogType.LIST_EDITOR_LEAVE) {
             finish();
         }
     }
@@ -157,7 +158,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
      *
      * @param err twitter exception
      */
-    public void onError(EngineException err) {
+    public void onError(@Nullable EngineException err) {
         if (!errorDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, err);
             errorDialog.setMessage(message);

@@ -30,13 +30,15 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.dialog.ProgressDialog;
+import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 
 import java.io.File;
 
@@ -48,8 +50,6 @@ import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
 import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
 import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDITOR_ERROR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_EDITOR_LEAVE;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
@@ -58,7 +58,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES
  *
  * @author nuclearfog
  */
-public class ProfileEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnDialogConfirmListener, Callback {
+public class ProfileEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener, Callback {
 
     /**
      * key to preload user data
@@ -94,14 +94,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         loc = findViewById(R.id.edit_location);
         bio = findViewById(R.id.edit_bio);
 
-        loadingCircle = DialogBuilder.createProgress(this, this);
-        closeDialog = DialogBuilder.create(this, PROFILE_EDITOR_LEAVE, this);
-        errorDialog = DialogBuilder.create(this, PROFILE_EDITOR_ERROR, this);
+        loadingCircle = new ProgressDialog(this, this);
+        closeDialog = new ConfirmDialog(this, DialogType.PROFILE_EDITOR_LEAVE, this);
+        errorDialog = new ConfirmDialog(this, DialogType.PROFILE_EDITOR_ERROR, this);
         toolbar.setTitle(R.string.page_profile_edior);
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
-        if (!settings.getToolbarOverlap()) {
+        if (!settings.toolbarOverlapEnabled()) {
             ConstraintSet constraints = new ConstraintSet();
             constraints.clone(root);
             constraints.connect(R.id.edit_banner, ConstraintSet.TOP, R.id.editprofile_toolbar, ConstraintSet.BOTTOM);
@@ -216,10 +216,10 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == PROFILE_EDITOR_LEAVE) {
+    public void onConfirm(DialogType type) {
+        if (type == DialogType.PROFILE_EDITOR_LEAVE) {
             finish();
-        } else if (type == PROFILE_EDITOR_ERROR) {
+        } else if (type == DialogType.PROFILE_EDITOR_ERROR) {
             updateUser();
         }
     }
@@ -228,7 +228,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     @Override
     public void onSuccess() {
         // set toolbar background
-        if (settings.getToolbarOverlap()) {
+        if (settings.toolbarOverlapEnabled()) {
             AppStyles.setToolbarBackground(ProfileEditor.this, profile_banner, toolbar_background);
         }
     }

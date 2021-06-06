@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.TweetActivity;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
@@ -130,13 +130,16 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
                     db.removeFavorite(tweet);
                     break;
             }
+            return action[0];
         } catch (EngineException twException) {
             this.twException = twException;
             if (twException.resourceNotFound()) {
                 db.removeStatus(tweetId);
             }
+        } catch (Exception err) {
+            err.printStackTrace();
         }
-        return action[0];
+        return null;
     }
 
 
@@ -151,10 +154,10 @@ public class TweetAction extends AsyncTask<TweetAction.Action, Tweet, TweetActio
     @Override
     protected void onPostExecute(Action action) {
         if (callback.get() != null) {
-            if (twException != null) {
-                callback.get().onError(twException, tweetId);
-            } else {
+            if (action != null) {
                 callback.get().onAction(action, tweetId);
+            } else {
+                callback.get().onError(twException, tweetId);
             }
         }
     }

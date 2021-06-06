@@ -14,9 +14,9 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ListHolder;
-import org.nuclearfog.twidda.backend.items.TwitterList;
-import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.UserLists;
+import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.UserListFragment;
 
@@ -211,7 +211,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[4].setText(formatCreationTime(item.getCreatedAt()));
                 vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
                 vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
-                if (settings.getImageLoad() && owner.hasProfileImage()) {
+                if (settings.imagesEnabled() && owner.hasProfileImage()) {
                     String pbLink = owner.getImageLink();
                     if (!owner.hasDefaultProfileImage())
                         pbLink += settings.getImageSuffix();

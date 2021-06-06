@@ -37,13 +37,14 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.UserAction;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.Relation;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.Relation;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -78,9 +79,6 @@ import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
 import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
 import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_BLOCK;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_MUTE;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.PROFILE_UNFOLLOW;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_USER_UPDATE;
 import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
@@ -91,7 +89,7 @@ import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
  * @author nuclearfog
  */
 public class UserProfile extends AppCompatActivity implements OnClickListener, OnTagClickListener,
-        OnTabSelectedListener, OnDialogConfirmListener, Callback {
+        OnTabSelectedListener, OnConfirmListener, Callback {
 
     /**
      * Key for the user ID
@@ -175,7 +173,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         tabPages = findViewById(R.id.profile_pager);
 
         settings = GlobalSettings.getInstance(this);
-        if (!settings.getToolbarOverlap()) {
+        if (!settings.toolbarOverlapEnabled()) {
             ConstraintSet constraints = new ConstraintSet();
             constraints.clone(profileView);
             constraints.connect(R.id.profile_banner, ConstraintSet.TOP, R.id.profile_toolbar, ConstraintSet.BOTTOM);
@@ -201,9 +199,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         tabPages.setAdapter(adapter);
         tabPages.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(tabPages);
-        unfollowConfirm = DialogBuilder.create(this, PROFILE_UNFOLLOW, this);
-        blockConfirm = DialogBuilder.create(this, PROFILE_BLOCK, this);
-        muteConfirm = DialogBuilder.create(this, PROFILE_MUTE, this);
+
+        unfollowConfirm = new ConfirmDialog(this, DialogType.PROFILE_UNFOLLOW, this);
+        blockConfirm = new ConfirmDialog(this, DialogType.PROFILE_BLOCK, this);
+        muteConfirm = new ConfirmDialog(this, DialogType.PROFILE_MUTE, this);
 
         Intent i = getIntent();
         user = (User) i.getSerializableExtra(KEY_PROFILE_DATA);
@@ -518,19 +517,19 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
+    public void onConfirm(DialogType type) {
         if (user != null) {
             profileAsync = new UserAction(this, user.getId());
             // confirmed unfollowing user
-            if (type == PROFILE_UNFOLLOW) {
+            if (type == DialogType.PROFILE_UNFOLLOW) {
                 profileAsync.execute(ACTION_UNFOLLOW);
             }
             // confirmed blocking user
-            else if (type == PROFILE_BLOCK) {
+            else if (type == DialogType.PROFILE_BLOCK) {
                 profileAsync.execute(ACTION_BLOCK);
             }
             // confirmed muting user
-            else if (type == PROFILE_MUTE) {
+            else if (type == DialogType.PROFILE_MUTE) {
                 profileAsync.execute(ACTION_MUTE);
             }
         }
@@ -557,7 +556,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Override
     public void onSuccess() {
         // setup toolbar background
-        if (settings.getToolbarOverlap()) {
+        if (settings.toolbarOverlapEnabled()) {
             AppStyles.setToolbarBackground(UserProfile.this, bannerImage, toolbarBackground);
         }
     }
@@ -626,7 +625,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         } else {
             user_website.setVisibility(GONE);
         }
-        if (settings.getImageLoad()) {
+        if (settings.imagesEnabled()) {
             if (user.hasBannerImage()) {
                 String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
                 Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
@@ -689,9 +688,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
      *
      * @param err Engine Exception
      */
-    public void onError(EngineException err) {
+    public void onError(@Nullable EngineException err) {
         ErrorHandler.handleFailure(this, err);
-        if (user == null || err.resourceNotFound()) {
+        if (user == null || (err != null && err.resourceNotFound())) {
             finish();
         }
     }

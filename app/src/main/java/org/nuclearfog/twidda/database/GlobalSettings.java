@@ -9,7 +9,7 @@ import android.graphics.Typeface;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.items.TrendLocation;
+import org.nuclearfog.twidda.backend.model.TrendLocation;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.graphics.Typeface.DEFAULT;
@@ -79,6 +79,7 @@ public class GlobalSettings {
     private static final String PROXY_PASS = "proxy_pass";
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
+    private static final String LINK_PREVIEW = "link_preview";
     private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
     private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
     private static final String CUSTOM_CONSUMER_KEY_2 = "api_key2";
@@ -114,6 +115,7 @@ public class GlobalSettings {
     private boolean isProxyAuthSet;
     private boolean customAPIKey;
     private boolean toolbarOverlap;
+    private boolean linkPreview;
     private int indexFont;
     private int background_color;
     private int font_color;
@@ -290,7 +292,7 @@ public class GlobalSettings {
      *
      * @return true if enabled
      */
-    public boolean getImageLoad() {
+    public boolean imagesEnabled() {
         return loadImage;
     }
 
@@ -312,7 +314,7 @@ public class GlobalSettings {
      *
      * @return true if enabled
      */
-    public boolean getToolbarOverlap() {
+    public boolean toolbarOverlapEnabled() {
         return toolbarOverlap;
     }
 
@@ -326,6 +328,24 @@ public class GlobalSettings {
 
         Editor edit = settings.edit();
         edit.putBoolean(PROFILE_OVERLAP, enable);
+        edit.apply();
+    }
+
+    /**
+     *
+     */
+    public boolean linkPreviewEnabled() {
+        return linkPreview;
+    }
+
+    /**
+     *
+     */
+    public void setLinkPreview(boolean enable) {
+        linkPreview = enable;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(LINK_PREVIEW, enable);
         edit.apply();
     }
 
@@ -377,7 +397,7 @@ public class GlobalSettings {
      *
      * @return true if enabled
      */
-    public boolean getAnswerLoad() {
+    public boolean replyLoadingEnabled() {
         return loadAnswer;
     }
 
@@ -751,6 +771,7 @@ public class GlobalSettings {
         loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
         hqImages = settings.getBoolean(IMAGE_QUALITY, false);
         toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
+        linkPreview = settings.getBoolean(LINK_PREVIEW, true);
         customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
         api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
         api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");

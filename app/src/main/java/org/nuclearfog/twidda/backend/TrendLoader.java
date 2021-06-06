@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.Trend;
+import org.nuclearfog.twidda.backend.model.Trend;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.TrendFragment;
 
@@ -59,8 +59,10 @@ public class TrendLoader extends AsyncTask<Integer, Void, List<Trend>> {
             return trends;
         } catch (EngineException twException) {
             this.twException = twException;
-            return null;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
+        return null;
     }
 
 

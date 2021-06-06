@@ -27,12 +27,13 @@ import org.nuclearfog.twidda.backend.ListAction;
 import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.TwitterList;
+import org.nuclearfog.twidda.backend.model.TwitterList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import java.util.regex.Pattern;
 
@@ -43,8 +44,6 @@ import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
 import static org.nuclearfog.twidda.backend.ListAction.Action.UNFOLLOW;
 import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_DELETE;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_UNFOLLOW;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_UPDATE_LIST;
 import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_REMOVED;
@@ -56,7 +55,7 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_UPDATE
  * @author nuclearfog
  */
 public class ListDetail extends AppCompatActivity implements OnTabSelectedListener,
-        OnQueryTextListener, ListManagerCallback, OnDialogConfirmListener {
+        OnQueryTextListener, ListManagerCallback, OnConfirmListener {
 
     /**
      * Key to get user list object
@@ -113,8 +112,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         pager.setOffscreenPageLimit(2);
         tablayout.setupWithViewPager(pager);
         tablayout.addOnTabSelectedListener(this);
-        deleteDialog = DialogBuilder.create(this, LIST_DELETE, this);
-        unfollowDialog = DialogBuilder.create(this, LIST_UNFOLLOW, this);
+
+        deleteDialog = new ConfirmDialog(this, DialogType.LIST_DELETE, this);
+        unfollowDialog = new ConfirmDialog(this, DialogType.LIST_UNFOLLOW, this);
 
         Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
         if (data instanceof TwitterList) {
@@ -253,14 +253,14 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
+    public void onConfirm(DialogType type) {
         // delete user list
-        if (type == LIST_DELETE) {
+        if (type == DialogType.LIST_DELETE) {
             listLoaderTask = new ListAction(this, DELETE);
             listLoaderTask.execute(listId);
         }
         // unfollow user list
-        else if (type == LIST_UNFOLLOW) {
+        else if (type == DialogType.LIST_UNFOLLOW) {
             listLoaderTask = new ListAction(this, UNFOLLOW);
             listLoaderTask.execute(listId);
         }
@@ -316,7 +316,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
 
 
     @Override
-    public void onFailure(EngineException err) {
+    public void onFailure(@Nullable EngineException err) {
         ErrorHandler.handleFailure(this, err);
     }
 
@@ -360,9 +360,9 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      * @param err    error information
      * @param listId ID of the list where an error occurred
      */
-    public void onFailure(EngineException err, long listId) {
+    public void onFailure(@Nullable EngineException err, long listId) {
         ErrorHandler.handleFailure(this, err);
-        if (err.resourceNotFound()) {
+        if (err != null && err.resourceNotFound()) {
             // List does not exist
             Intent result = new Intent();
             result.putExtra(RESULT_REMOVED_LIST_ID, listId);

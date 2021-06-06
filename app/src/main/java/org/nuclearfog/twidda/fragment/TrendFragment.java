@@ -2,12 +2,14 @@ package org.nuclearfog.twidda.fragment;
 
 import android.content.Intent;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.activity.SearchPage;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.Trend;
+import org.nuclearfog.twidda.backend.model.Trend;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.util.List;
@@ -105,7 +107,7 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
      *
      * @param error Twitter exception
      */
-    public void onError(EngineException error) {
+    public void onError(@Nullable EngineException error) {
         ErrorHandler.handleFailure(requireContext(), error);
         setRefresh(false);
     }

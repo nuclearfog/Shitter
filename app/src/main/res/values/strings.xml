@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--app name-->
     <string name="app_name" translatable="false">Shitter</string>
+
+    <!-- app links and resources-->
+    <string name="app_info_twitter_link_1" translatable="false">https://support.twitter.com/articles/18311-the-twitter-rules</string>
+    <string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
+
     <string name="profile_image">Profile image</string>
     <string name="login_pin">enter PIN</string>
     <string name="login_verifier">login</string>
@@ -75,6 +81,9 @@
     <string name="editprofile_add_banner">add banner</string>
     <string name="settings_enable_hq_img">high quality</string>
     <string name="settings_app_information">For app and licensing information visit:</string>
+    <string name="settings_enable_toolbar_overlap">overlap profile banner</string>
+    <string name="settings_look">Look</string>
+    <string name="settings_toggle_link_preview">enable link preview</string>
     <string name="badge_twitter4j" translatable="false">Twitter4J Badge</string>
     <string name="item_load_more">load more</string>
     <string name="item_image_save">save image</string>
@@ -100,8 +109,6 @@
     <string name="info_list_followed">Userlist followed</string>
     <string name="info_list_unfollowed">Userlist unfollowed</string>
     <string name="descr_add_profile_image">change profile image</string>
-    <string name="app_info_twitter_link_1" translatable="false">https://support.twitter.com/articles/18311-the-twitter-rules</string>
-    <string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
     <string name="app_info_twitter_rules">The Twitter rules:</string>
     <string name="button_backward">Rewind</string>
     <string name="button_forward">Fast forward</string>
@@ -208,10 +215,12 @@
     <string name="menu_user_unfollow">unfollow</string>
     <string name="menu_user_unblock">unblock</string>
 
+    <!--dialog strings-->
     <string name="dialog_button_yes">Yes</string>
     <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
-    <string name="settings_enable_toolbar_overlap">overlap profile banner</string>
-    <string name="settings_look">Look</string>
+    <string name="dialog_link_image_preview">Link preview image</string>
+    <string name="dialog_link_close">close link preview</string>
+
 </resources>

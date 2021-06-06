@@ -9,16 +9,16 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
-import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.Relation;
-import org.nuclearfog.twidda.backend.items.Trend;
-import org.nuclearfog.twidda.backend.items.TrendLocation;
-import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.TwitterList;
-import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.MessageList;
 import org.nuclearfog.twidda.backend.lists.UserList;
 import org.nuclearfog.twidda.backend.lists.UserLists;
+import org.nuclearfog.twidda.backend.model.Message;
+import org.nuclearfog.twidda.backend.model.Relation;
+import org.nuclearfog.twidda.backend.model.Trend;
+import org.nuclearfog.twidda.backend.model.TrendLocation;
+import org.nuclearfog.twidda.backend.model.Tweet;
+import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;

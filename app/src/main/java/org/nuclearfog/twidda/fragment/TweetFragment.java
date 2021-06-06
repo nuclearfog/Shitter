@@ -11,7 +11,7 @@ import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.TweetLoader;
 import org.nuclearfog.twidda.backend.TweetLoader.ListType;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import java.util.List;
@@ -229,7 +229,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
      *
      * @param error Twitter exception
      */
-    public void onError(EngineException error) {
+    public void onError(@Nullable EngineException error) {
         ErrorHandler.handleFailure(requireContext(), error);
         adapter.disableLoading();
         setRefresh(false);
@@ -263,7 +263,7 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
                 break;
 
             case TWEET_FRAG_ANSWER:
-                if (tweetTask != null || settings.getAnswerLoad())
+                if (tweetTask != null || settings.replyLoadingEnabled())
                     listType = ListType.REPLIES;
                 else
                     listType = ListType.DB_ANS;

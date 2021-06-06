@@ -17,11 +17,12 @@ import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.Message;
 import org.nuclearfog.twidda.backend.lists.MessageList;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
+import org.nuclearfog.twidda.backend.model.Message;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -31,15 +32,13 @@ import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
 import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
 import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.MESSAGE_DELETE;
 
 /**
  * Fragment class for direct message lists
  *
  * @author nuclearfog
  */
-public class MessageFragment extends ListFragment implements OnItemSelected, OnDialogConfirmListener {
-
+public class MessageFragment extends ListFragment implements OnItemSelected, OnConfirmListener {
 
     private MessageLoader messageTask;
     private MessageAdapter adapter;
@@ -50,7 +49,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
     @Override
     protected void onCreate() {
-        deleteDialog = DialogBuilder.create(requireContext(), MESSAGE_DELETE, this);
+        deleteDialog = new ConfirmDialog(requireContext(), DialogType.MESSAGE_DELETE, this);
     }
 
 
@@ -161,8 +160,8 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnD
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == MESSAGE_DELETE) {
+    public void onConfirm(DialogType type) {
+        if (type == DialogType.MESSAGE_DELETE) {
             messageTask = new MessageLoader(this, MessageLoader.Action.DEL, null);
             messageTask.execute(deleteId);
         }

@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.Tweet;
+import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragment.TweetFragment;
 
@@ -202,6 +202,8 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
             }
         } catch (EngineException twException) {
             this.twException = twException;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
         return tweets;
     }
@@ -212,7 +214,7 @@ public class TweetLoader extends AsyncTask<Long, Void, List<Tweet>> {
         if (callback.get() != null) {
             if (tweets != null) {
                 callback.get().setData(tweets, pos);
-            } else if (twException != null) {
+            } else {
                 callback.get().onError(twException);
             }
         }

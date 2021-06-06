@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.items;
+package org.nuclearfog.twidda.backend.model;
 
 /**
  * Twitter Trend Class

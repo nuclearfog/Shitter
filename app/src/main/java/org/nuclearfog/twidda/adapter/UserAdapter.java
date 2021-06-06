@@ -14,8 +14,8 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
-import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.UserList;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -226,7 +226,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             } else {
                 userholder.lockedIcon.setVisibility(GONE);
             }
-            if (settings.getImageLoad() && user.hasProfileImage()) {
+            if (settings.imagesEnabled() && user.hasProfileImage()) {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();

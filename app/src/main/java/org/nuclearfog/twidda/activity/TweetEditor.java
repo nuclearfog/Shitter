@@ -20,12 +20,14 @@ import org.nuclearfog.twidda.backend.TweetUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnProgressStopListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.dialog.ProgressDialog;
+import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -40,15 +42,13 @@ import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
 import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_ERROR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_EDITOR_LEAVE;
 
 /**
  * Tweet editor activity. Media files and location can be attached to a tweet.
  *
  * @author nuclearfog
  */
-public class TweetEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnDialogConfirmListener {
+public class TweetEditor extends MediaActivity implements OnClickListener, OnProgressStopListener, OnConfirmListener {
 
     /**
      * type of media attached to the tweet
@@ -106,9 +106,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         previewBtn = findViewById(R.id.tweet_prev_media);
         tweetText = findViewById(R.id.tweet_input);
         locationPending = findViewById(R.id.location_progress);
-        loadingCircle = DialogBuilder.createProgress(this, this);
-        errorDialog = DialogBuilder.create(this, TWEET_EDITOR_ERROR, this);
-        closingDialog = DialogBuilder.create(this, TWEET_EDITOR_LEAVE, this);
+
+        loadingCircle = new ProgressDialog(this, this);
+        errorDialog = new ConfirmDialog(this, DialogType.TWEET_EDITOR_ERROR, this);
+        closingDialog = new ConfirmDialog(this, DialogType.TWEET_EDITOR_LEAVE, this);
 
         settings = GlobalSettings.getInstance(this);
 
@@ -278,10 +279,10 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == TWEET_EDITOR_ERROR) {
+    public void onConfirm(DialogType type) {
+        if (type == DialogType.TWEET_EDITOR_ERROR) {
             updateTweet();
-        } else if (type == TWEET_EDITOR_LEAVE) {
+        } else if (type == DialogType.TWEET_EDITOR_LEAVE) {
             finish();
         }
     }
@@ -297,7 +298,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     /**
      * Show confirmation dialog if an error occurs while sending tweet
      */
-    public void onError(EngineException error) {
+    public void onError(@Nullable EngineException error) {
         if (!errorDialog.isShowing()) {
             String message = ErrorHandler.getErrorMessage(this, error);
             errorDialog.setMessage(message);

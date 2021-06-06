@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.ProfileEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
@@ -49,6 +49,8 @@ public class UserUpdater extends AsyncTask<String, Void, User> {
             return user;
         } catch (EngineException twException) {
             this.twException = twException;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
         return null;
     }
@@ -60,7 +62,7 @@ public class UserUpdater extends AsyncTask<String, Void, User> {
         if (activity != null) {
             if (user != null) {
                 activity.onSuccess(user);
-            } else if (twException != null) {
+            } else {
                 activity.onError(twException);
             }
         }

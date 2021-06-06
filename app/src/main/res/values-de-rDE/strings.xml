@@ -196,4 +196,7 @@
     <string name="info_cant_add_gif">GIF konnte nicht hinzugefügt werden!</string>
     <string name="settings_look">Aussehen</string>
     <string name="settings_enable_toolbar_overlap">Überlappe Profilbanner</string>
+    <string name="dialog_link_image_preview">Linkvorschau Bild</string>
+    <string name="dialog_link_close">Linkvorschau schließen</string>
+    <string name="settings_toggle_link_preview">Linkvorschau aktivieren</string>
 </resources>

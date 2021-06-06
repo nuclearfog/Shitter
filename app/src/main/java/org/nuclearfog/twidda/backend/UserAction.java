@@ -5,8 +5,8 @@ import android.os.AsyncTask;
 import org.nuclearfog.twidda.activity.UserProfile;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.Relation;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.Relation;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 
 import java.lang.ref.WeakReference;
@@ -140,8 +140,10 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
             return mTwitter.getConnection(userId);
         } catch (EngineException twException) {
             this.twException = twException;
-            return null;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
+        return null;
     }
 
 
@@ -154,10 +156,10 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
 
 
     @Override
-    protected void onPostExecute(Relation properties) {
+    protected void onPostExecute(Relation relation) {
         if (callback.get() != null) {
-            if (properties != null) {
-                callback.get().onAction(properties);
+            if (relation != null) {
+                callback.get().onAction(relation);
             } else {
                 callback.get().onError(twException);
             }

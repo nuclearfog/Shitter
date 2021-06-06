@@ -66,8 +66,10 @@ public class TweetUpdater extends AsyncTask<Void, Void, Boolean> {
             return true;
         } catch (EngineException twException) {
             this.twException = twException;
-            return false;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
+        return false;
     }
 
 

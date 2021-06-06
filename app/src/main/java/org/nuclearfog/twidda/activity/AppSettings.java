@@ -36,13 +36,14 @@ import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.backend.LocationLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.items.TrendLocation;
+import org.nuclearfog.twidda.backend.model.TrendLocation;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.dialog.InfoDialog;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -52,9 +53,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
 import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.APP_LOG_OUT;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.DEL_DATABASE;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG_PROXY;
+import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 /**
  * Settings Activity class.
@@ -62,7 +61,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.WRONG
  * @author nuclearfog
  */
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
-        OnCheckedChangeListener, OnItemSelectedListener, OnDialogConfirmListener, OnColorChangedListener {
+        OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener {
 
     private enum ColorMode {
         BACKGROUND,
@@ -102,6 +101,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         CompoundButton toggleImg = findViewById(R.id.toggleImg);
         CompoundButton toggleAns = findViewById(R.id.toggleAns);
         CompoundButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
+        CompoundButton enablePreview = findViewById(R.id.settings_enable_prev);
         SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
@@ -132,6 +132,17 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
+        locationAdapter = new LocationAdapter(settings);
+        locationAdapter.addTop(settings.getTrendLocation());
+        locationSpinner.setAdapter(locationAdapter);
+        locationSpinner.setSelected(false);
+        fontAdapter = new FontAdapter(settings);
+        fontSpinner.setAdapter(fontAdapter);
+        fontSpinner.setSelection(settings.getFontIndex(), false);
+        fontSpinner.setSelected(false);
+
+        AppStyles.setTheme(settings, root);
+
         if (!settings.isLoggedIn()) {
             trend_card.setVisibility(GONE);
             user_card.setVisibility(GONE);
@@ -146,21 +157,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (!settings.isCustomApiSet()) {
             layout_key.setVisibility(GONE);
         }
-        locationAdapter = new LocationAdapter(settings);
-        locationAdapter.addTop(settings.getTrendLocation());
-        locationSpinner.setAdapter(locationAdapter);
-        locationSpinner.setSelected(false);
-        fontAdapter = new FontAdapter(settings);
-        fontSpinner.setAdapter(fontAdapter);
-        fontSpinner.setSelection(settings.getFontIndex(), false);
-        fontSpinner.setSelected(false);
-
-        AppStyles.setTheme(settings, root);
-
-        toggleImg.setChecked(settings.getImageLoad());
-        toggleAns.setChecked(settings.getAnswerLoad());
+        toggleImg.setChecked(settings.imagesEnabled());
+        toggleAns.setChecked(settings.replyLoadingEnabled());
         enableAPI.setChecked(settings.isCustomApiSet());
-        toolbarOverlap.setChecked(settings.getToolbarOverlap());
+        enablePreview.setChecked(settings.linkPreviewEnabled());
+        toolbarOverlap.setChecked(settings.toolbarOverlapEnabled());
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -171,14 +172,15 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         listSizeSelector.setProgress(settings.getListSize() / 10 - 1);
         enableProxy.setChecked(settings.isProxyEnabled());
         enableAuth.setChecked(settings.isProxyAuthSet());
-        hqImage.setEnabled(settings.getImageLoad());
+        hqImage.setEnabled(settings.imagesEnabled());
         hqImage.setChecked(settings.getImageQuality());
         setButtonColors();
 
-        connectDialog = DialogBuilder.create(this, WRONG_PROXY, this);
-        databaseDialog = DialogBuilder.create(this, DEL_DATABASE, this);
-        logoutDialog = DialogBuilder.create(this, APP_LOG_OUT, this);
-        appInfo = DialogBuilder.createInfoDialog(this);
+        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
+        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
+        databaseDialog = new ConfirmDialog(this, DialogType.DEL_DATABASE, this);
+        logoutDialog = new ConfirmDialog(this, DialogType.APP_LOG_OUT, this);
+        appInfo = new InfoDialog(this);
 
         background.setOnClickListener(this);
         fontColor.setOnClickListener(this);
@@ -191,6 +193,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         toggleImg.setOnCheckedChangeListener(this);
         toggleAns.setOnCheckedChangeListener(this);
         enableAPI.setOnCheckedChangeListener(this);
+        enablePreview.setOnCheckedChangeListener(this);
         enableProxy.setOnCheckedChangeListener(this);
         enableAuth.setOnCheckedChangeListener(this);
         hqImage.setOnCheckedChangeListener(this);
@@ -251,9 +254,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
+    public void onConfirm(DialogType type) {
         // confirm log out
-        if (type == APP_LOG_OUT) {
+        if (type == DialogType.APP_LOG_OUT) {
             settings.logout();
             TwitterEngine.resetTwitter();
             DatabaseAdapter.deleteDatabase(getApplicationContext());
@@ -261,12 +264,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             finish();
         }
         // confirm delete database
-        else if (type == DEL_DATABASE) {
+        else if (type == DialogType.DEL_DATABASE) {
             DatabaseAdapter.deleteDatabase(getApplicationContext());
             setResult(RETURN_DB_CLEARED);
         }
         // confirm leaving without saving proxy changes
-        else if (type == WRONG_PROXY) {
+        else if (type == DialogType.WRONG_PROXY) {
             // exit without saving proxy settings
             finish();
         }
@@ -391,6 +394,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         // enable toolbar overlap
         else if (c.getId() == R.id.settings_toolbar_ov) {
             settings.setToolbarOverlap(checked);
+        }
+        // enable link preview
+        else if (c.getId() == R.id.settings_enable_prev) {
+            settings.setLinkPreview(checked);
         }
         // enable proxy settings
         else if (c.getId() == R.id.settings_enable_proxy) {

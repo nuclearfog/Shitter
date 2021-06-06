@@ -47,11 +47,13 @@ public class MessageUpdater extends AsyncTask<String, Void, Boolean> {
             if (!isCancelled()) {
                 mTwitter.sendDirectMessage(param[0], param[1], mediaId);
             }
+            return true;
         } catch (EngineException twException) {
             this.twException = twException;
-            return false;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
-        return true;
+        return false;
     }
 
 

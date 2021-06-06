@@ -35,13 +35,15 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.TweetAction;
 import org.nuclearfog.twidda.backend.TweetAction.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.User;
+import org.nuclearfog.twidda.backend.model.Tweet;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.dialog.LinkDialog;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -64,7 +66,6 @@ import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.TWEET_DELETE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
@@ -76,7 +77,7 @@ import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
  * @author nuclearfog
  */
 public class TweetActivity extends AppCompatActivity implements OnClickListener,
-        OnLongClickListener, OnTagClickListener, OnDialogConfirmListener {
+        OnLongClickListener, OnTagClickListener, OnConfirmListener {
 
     /**
      * ID of the tweet to open. required
@@ -102,6 +103,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     private Button ansButton, rtwButton, favButton, replyName, tweetLocGPS, retweeter;
     private ImageView profile_img, mediaButton;
     private Toolbar toolbar;
+    private LinkDialog linkPreview;
     private Dialog deleteDialog;
 
     private GlobalSettings settings;
@@ -166,7 +168,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
-        deleteDialog = DialogBuilder.create(this, TWEET_DELETE, this);
+        deleteDialog = new ConfirmDialog(this, DialogType.TWEET_DELETE, this);
+        linkPreview = new LinkDialog(this);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         AppStyles.setTheme(settings, root);
@@ -207,6 +210,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     protected void onDestroy() {
         if (statusAsync != null && statusAsync.getStatus() == RUNNING)
             statusAsync.cancel(true);
+        linkPreview.cancel();
         super.onDestroy();
     }
 
@@ -384,8 +388,8 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == TWEET_DELETE) {
+    public void onConfirm(DialogType type) {
+        if (type == DialogType.TWEET_DELETE) {
             if (tweet != null) {
                 long tweetId = tweet.getId();
                 if (tweet.getEmbeddedTweet() != null)
@@ -425,13 +429,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             intent.putExtra(KEY_TWEET_NAME, name);
             startActivity(intent);
         } else {
-            // open link in a browser
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(tag));
-            try {
-                startActivity(intent);
-            } catch (ActivityNotFoundException err) {
-                Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+            if (settings.linkPreviewEnabled()) {
+                linkPreview.show(tag);
+            } else {
+                // open link in a browser
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(tag));
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException err) {
+                    Toast.makeText(this, R.string.error_connection_failed, LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -516,7 +524,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         }
-        if (settings.getImageLoad() && author.hasProfileImage()) {
+        if (settings.imagesEnabled() && author.hasProfileImage()) {
             String pbLink = author.getImageLink();
             if (!author.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
@@ -586,9 +594,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
      * @param error   Error information
      * @param tweetId ID of the tweet from which an error occurred
      */
-    public void onError(@NonNull EngineException error, long tweetId) {
+    public void onError(@Nullable EngineException error, long tweetId) {
         ErrorHandler.handleFailure(this, error);
-        if (error.resourceNotFound()) {
+        if (error != null && error.resourceNotFound()) {
             // Mark tweet as removed, so it can be removed from the list
             Intent returnData = new Intent();
             returnData.putExtra(INTENT_TWEET_REMOVED_ID, tweetId);

@@ -16,17 +16,17 @@ import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Type;
 import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.UserList;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder;
-import org.nuclearfog.twidda.backend.utils.DialogBuilder.OnDialogConfirmListener;
+import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.dialog.ConfirmDialog;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
-import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_REMOVE_USER;
 
 /**
  * Fragment class for lists a list of users
@@ -34,7 +34,7 @@ import static org.nuclearfog.twidda.backend.utils.DialogBuilder.DialogType.LIST_
  * @author nuclearfog
  */
 public class UserFragment extends ListFragment implements UserClickListener,
-        OnDialogConfirmListener, ListManagerCallback {
+        OnConfirmListener, ListManagerCallback {
 
     /**
      * key to set the type of user list to show
@@ -129,7 +129,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
             search = param.getString(KEY_FRAG_USER_SEARCH, "");
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
-        deleteDialog = DialogBuilder.create(requireContext(), LIST_REMOVE_USER, this);
+        deleteDialog = new ConfirmDialog(requireContext(), DialogType.LIST_REMOVE_USER, this);
     }
 
 
@@ -216,8 +216,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onConfirm(DialogBuilder.DialogType type) {
-        if (type == LIST_REMOVE_USER) {
+    public void onConfirm(DialogType type) {
+        if (type == DialogType.LIST_REMOVE_USER) {
             if (listTask == null || listTask.getStatus() != RUNNING) {
                 listTask = new ListManager(id, DEL_USER, requireContext(), this);
                 listTask.execute(deleteUserName);
@@ -234,7 +234,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    public void onFailure(EngineException err) {
+    public void onFailure(@Nullable EngineException err) {
         ErrorHandler.handleFailure(requireContext(), err);
     }
 

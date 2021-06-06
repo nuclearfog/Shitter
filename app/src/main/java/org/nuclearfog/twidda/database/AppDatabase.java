@@ -7,11 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.items.Message;
-import org.nuclearfog.twidda.backend.items.Trend;
-import org.nuclearfog.twidda.backend.items.Tweet;
-import org.nuclearfog.twidda.backend.items.User;
 import org.nuclearfog.twidda.backend.lists.MessageList;
+import org.nuclearfog.twidda.backend.model.Message;
+import org.nuclearfog.twidda.backend.model.Trend;
+import org.nuclearfog.twidda.backend.model.Tweet;
+import org.nuclearfog.twidda.backend.model.User;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -467,7 +467,7 @@ public class AppDatabase {
             int idxVol = cursor.getColumnIndexOrThrow(TrendTable.VOL);
             int idxPos = cursor.getColumnIndexOrThrow(TrendTable.INDEX);
             do {
-                // build trend
+                // show trend
                 String trendName = cursor.getString(idxName);
                 int vol = cursor.getInt(idxVol);
                 int pos = cursor.getInt(idxPos);
@@ -503,7 +503,7 @@ public class AppDatabase {
                 String message = cursor.getString(idxMessage);
                 long time = cursor.getLong(idxTime);
                 long messageId = cursor.getLong(idxId);
-                // build message
+                // show message
                 User sender = getUser(senderID, db);
                 User receiver = getUser(receiverID, db);
                 result.add(new Message(messageId, sender, receiver, time, message));
