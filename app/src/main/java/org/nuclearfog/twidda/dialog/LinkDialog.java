@@ -93,28 +93,35 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
     public void onPos(SourceContent sourceContent, boolean b) {
         loading.setVisibility(View.INVISIBLE);
         if (sourceContent.isSuccess()) {
+            // set website title
             title.setText(sourceContent.getTitle());
-        } else {
-            if (url.startsWith("https://")) {
-                title.setText(url.substring(8));
+            description.setText(sourceContent.getDescription());
+            // check for image
+            if (!sourceContent.getImages().isEmpty()) {
+                // load first image as preview
+                String link = sourceContent.getImages().get(0);
+                Picasso.get().load(link).into(preview);
             } else {
-                title.setText(url);
+                // no image preview
+                preview.setVisibility(View.GONE);
             }
-        }
-        description.setText(sourceContent.getDescription());
-        if (!sourceContent.getImages().isEmpty()) {
-            Picasso.get().load(sourceContent.getImages().get(0)).into(preview);
         } else {
-            preview.setVisibility(View.GONE);
+            // no valid title means lack of information
+            // so open link directly in browser
+            title.performClick();
+            dismiss();
         }
     }
 
 
     @Override
     public void onClick(View v) {
+        // close icon
         if (v.getId() == R.id.link_preview_close) {
             dismiss();
-        } else if (v.getId() == R.id.link_preview_title) {
+        }
+        // title
+        else if (v.getId() == R.id.link_preview_title) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             try {

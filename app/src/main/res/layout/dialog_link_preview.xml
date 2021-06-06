@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:contentDescription="@string/dialog_link_image_preview"
         app:layout_constraintDimensionRatio="1.0"
-        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintWidth_percent="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,16 +41,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="link_preview_title,link_preview_close" />
+        app:constraint_referenced_ids="link_preview_image,link_preview_title,link_preview_close" />
 
     <TextView
         android:id="@+id/link_preview_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/dialog_linkpreview_textsize_description"
-        android:maxLines="8"
+        android:maxLines="10"
+        android:scrollbars="vertical"
         android:layout_margin="@dimen/dialog_linkpreview_margin"
-        app:layout_constraintStart_toEndOf="@id/link_preview_image"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/link_preview_title_barrier"
         app:layout_constraintEnd_toEndOf="parent" />
 
