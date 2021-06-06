@@ -56,6 +56,7 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
         GlobalSettings settings = GlobalSettings.getInstance(context);
         AppStyles.setProgressColor(loading, settings.getHighlightColor());
         AppStyles.setDrawableColor(close, Color.BLACK);
+        title.setTextColor(Color.BLUE);
 
         textCrawler = new TextCrawler();
         close.setOnClickListener(this);
@@ -91,10 +92,15 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
     @Override
     public void onPos(SourceContent sourceContent, boolean b) {
         loading.setVisibility(View.INVISIBLE);
-        if (sourceContent.isSuccess())
+        if (sourceContent.isSuccess()) {
             title.setText(sourceContent.getTitle());
-        else
-            title.setText(url);
+        } else {
+            if (url.startsWith("https://")) {
+                title.setText(url.substring(8));
+            } else {
+                title.setText(url);
+            }
+        }
         description.setText(sourceContent.getDescription());
         if (!sourceContent.getImages().isEmpty()) {
             Picasso.get().load(sourceContent.getImages().get(0)).into(preview);

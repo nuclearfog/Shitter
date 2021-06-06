@@ -33,6 +33,6 @@
 -adaptclassstrings javax.management.DynamicMBean
 
 # use dictionaries to create random package names
--obfuscationdictionary build/obfuscation-dictionary.txt
--classobfuscationdictionary build/class-dictionary.txt
--packageobfuscationdictionary build/package-dictionary.txt
+-obfuscationdictionary dict/obfuscation-dictionary.txt
+-classobfuscationdictionary dict/class-dictionary.txt
+-packageobfuscationdictionary dict/package-dictionary.txt

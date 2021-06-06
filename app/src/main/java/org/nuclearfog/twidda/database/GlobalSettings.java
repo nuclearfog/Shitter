@@ -771,7 +771,7 @@ public class GlobalSettings {
         loadAnswer = settings.getBoolean(ANSWER_LOAD, false);
         hqImages = settings.getBoolean(IMAGE_QUALITY, false);
         toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
-        linkPreview = settings.getBoolean(LINK_PREVIEW, true);
+        linkPreview = settings.getBoolean(LINK_PREVIEW, false);
         customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
         api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
         api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");

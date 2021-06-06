@@ -36,11 +36,11 @@ android {
     }
 }
 
-proguardDictionaries{
-    dictionaryNames = ['show/class-dictionary', 'show/package-dictionary', 'show/obfuscation-dictionary']
+proguardDictionaries {
+    dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
     minLineLength 1 // minimum package name length
     maxLineLength 6 // maximum package name length
-    linesCountInDictionary 2500 // maximum class count
+    linesCountInDictionary 3000 // maximum class count
 }
 
 dependencies {
