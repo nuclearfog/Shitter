@@ -59,6 +59,6 @@ dependencies {
     implementation 'com.github.nuclearfog:ZoomView:1.0.2'
     implementation 'com.github.nuclearfog:Tagger:2.2'
     implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4'
-    implementation 'com.github.kyleduo:SwitchButton:098ded81f7'
+    implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
     implementation 'com.github.LeonardoCardoso:Android-Link-Preview:master'
 }

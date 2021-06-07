@@ -100,7 +100,8 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
             if (!sourceContent.getImages().isEmpty()) {
                 // load first image as preview
                 String link = sourceContent.getImages().get(0);
-                Picasso.get().load(link).into(preview);
+                if (link != null && link.startsWith("https://"))
+                    Picasso.get().load(link).into(preview);
             } else {
                 // no image preview
                 preview.setVisibility(View.GONE);
