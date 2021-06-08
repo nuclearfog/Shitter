@@ -36,8 +36,19 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime
  */
 public class MessageAdapter extends Adapter<ViewHolder> {
 
+    /**
+     * index of {@link #loadingIndex} if no index is defined
+     */
     private static final int NO_LOADING = -1;
+
+    /**
+     * view type of a message item
+     */
     private static final int TYPE_MESSAGE = 0;
+
+    /**
+     * view type of a footer item
+     */
     private static final int TYPE_FOOTER = 1;
 
     private OnItemSelected itemClickListener;

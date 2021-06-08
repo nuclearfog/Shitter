@@ -29,8 +29,8 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.LinkLoader;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.dialog.ProgressDialog;
 
-import static android.view.Window.FEATURE_NO_TITLE;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
@@ -85,15 +85,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         pager = findViewById(R.id.home_pager);
         tablayout = findViewById(R.id.home_tab);
         root = findViewById(R.id.main_layout);
-        loadingCircle = new Dialog(this, R.style.LoadingDialog);
-        View load = View.inflate(this, R.layout.item_load, null);
+        loadingCircle = new ProgressDialog(this, null);
 
         settings = GlobalSettings.getInstance(this);
         tablayout.setupWithViewPager(pager);
         pager.setOffscreenPageLimit(3);
-        loadingCircle.requestWindowFeature(FEATURE_NO_TITLE);
-        loadingCircle.setContentView(load);
-        loadingCircle.setCanceledOnTouchOutside(false);
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
         AppStyles.setTheme(settings, root);

@@ -7,6 +7,8 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import androidx.annotation.Nullable;
+
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -26,9 +28,12 @@ public class ProgressDialog extends Dialog implements OnClickListener {
     /**
      *
      */
-    public ProgressDialog(Context context, OnProgressStopListener l) {
+    public ProgressDialog(Context context, @Nullable OnProgressStopListener l) {
         super(context, R.style.LoadingDialog);
+        // setup dialog
         requestWindowFeature(FEATURE_NO_TITLE);
+        setCanceledOnTouchOutside(false);
+        setCancelable(false);
 
         setContentView(R.layout.item_load);
         ImageView cancel = findViewById(R.id.kill_button);
@@ -38,18 +43,21 @@ public class ProgressDialog extends Dialog implements OnClickListener {
         AppStyles.setProgressColor(circle, settings.getHighlightColor());
         AppStyles.setDrawableColor(cancel, settings.getIconColor());
 
-        setCancelable(false);
-        cancel.setVisibility(VISIBLE);
-        cancel.setImageResource(R.drawable.cross);
-        cancel.setOnClickListener(this);
-        this.l = l;
+        if (l != null) {
+            cancel.setVisibility(VISIBLE);
+            cancel.setImageResource(R.drawable.cross);
+            cancel.setOnClickListener(this);
+            this.l = l;
+        }
     }
 
 
     @Override
     public void onClick(View v) {
-        l.stopProgress();
-        dismiss();
+        if (l != null) {
+            l.stopProgress();
+            dismiss();
+        }
     }
 
     /**
