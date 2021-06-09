@@ -218,7 +218,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TWEET) {
-            final TweetHolder vh = new TweetHolder(parent);
+            final TweetHolder vh = new TweetHolder(parent, settings);
             vh.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -231,7 +231,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             });
             return vh;
         } else {
-            final Footer footer = new Footer(parent, false);
+            final Footer footer = new Footer(parent, settings, false);
             footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

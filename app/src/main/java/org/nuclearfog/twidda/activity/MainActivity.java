@@ -161,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         MenuItem tweet = m.findItem(R.id.action_tweet);
         MenuItem search = m.findItem(R.id.action_search);
         MenuItem setting = m.findItem(R.id.action_settings);
+        MenuItem account = m.findItem(R.id.action_account);
 
         switch (tablayout.getSelectedTabPosition()) {
             case 0:
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 search.setVisible(false);
                 tweet.setVisible(true);
                 setting.setVisible(false);
+                account.setVisible(false);
                 search.collapseActionView();
                 break;
 
@@ -176,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 search.setVisible(true);
                 tweet.setVisible(false);
                 setting.setVisible(true);
+                account.setVisible(false);
                 break;
 
             case 2:
@@ -183,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 search.setVisible(false);
                 tweet.setVisible(false);
                 setting.setVisible(true);
+                account.setVisible(true);
                 search.collapseActionView();
                 break;
         }
@@ -212,6 +216,11 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         else if (item.getItemId() == R.id.action_search) {
             SearchView searchView = (SearchView) item.getActionView();
             AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
+        }
+        // open account manager
+        else if (item.getItemId() == R.id.action_account) {
+            Intent accountManager = new Intent(this, AccountActivity.class);
+            startActivityForResult(accountManager, REQUEST_APP_LOGIN);
         }
         return super.onOptionsItemSelected(item);
     }

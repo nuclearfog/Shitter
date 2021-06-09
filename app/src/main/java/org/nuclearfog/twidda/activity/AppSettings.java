@@ -39,6 +39,7 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.TrendLocation;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.DatabaseAdapter;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -257,9 +258,13 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     public void onConfirm(DialogType type) {
         // confirm log out
         if (type == DialogType.APP_LOG_OUT) {
-            settings.logout();
+            // reset twitter singleton
             TwitterEngine.resetTwitter();
+            // remove account from database
+            // todo remove database and entry asynchronously
+            AccountDatabase.getInstance(this).removeLogin(settings.getCurrentUserId());
             DatabaseAdapter.deleteDatabase(getApplicationContext());
+            settings.logout();
             setResult(RETURN_APP_LOGOUT);
             finish();
         }

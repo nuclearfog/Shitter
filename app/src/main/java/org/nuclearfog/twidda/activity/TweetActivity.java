@@ -23,7 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.squareup.picasso.Picasso;
 
@@ -31,7 +31,6 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.TweetAction;
 import org.nuclearfog.twidda.backend.TweetAction.Action;
 import org.nuclearfog.twidda.backend.engine.EngineException;
@@ -44,6 +43,7 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.LinkDialog;
+import org.nuclearfog.twidda.fragment.TweetFragment;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -68,8 +68,12 @@ import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
 import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
+import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
 import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
+import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_ANSWER;
 
 /**
  * Tweet Activity for tweet and user information
@@ -118,7 +122,6 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
         View root = findViewById(R.id.tweet_layout);
-        ViewPager pager = findViewById(R.id.tweet_pager);
         toolbar = findViewById(R.id.tweet_toolbar);
         ansButton = findViewById(R.id.tweet_answer);
         rtwButton = findViewById(R.id.tweet_retweet);
@@ -136,6 +139,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         sensitive_media = findViewById(R.id.tweet_sensitive);
         retweeter = findViewById(R.id.tweet_retweeter_reference);
 
+        // get parameter
         Object data = getIntent().getSerializableExtra(KEY_TWEET_DATA);
         long tweetId;
         String username;
@@ -153,10 +157,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             username = getIntent().getStringExtra(KEY_TWEET_NAME);
             tweetId = getIntent().getLongExtra(KEY_TWEET_ID, -1);
         }
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        adapter.setupTweetPage(tweetId, username);
-        pager.setOffscreenPageLimit(1);
-        pager.setAdapter(adapter);
+
+        // create list fragment for tweet replies
+        Bundle param = new Bundle();
+        param.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_ANSWER);
+        param.putString(KEY_FRAG_TWEET_SEARCH, username);
+        param.putLong(KEY_FRAG_TWEET_ID, tweetId);
+
+        // insert fragment into view
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.tweet_reply_fragment, TweetFragment.class, param);
+        fragmentTransaction.commit();
 
         settings = GlobalSettings.getInstance(this);
         ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
@@ -168,11 +179,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
-        deleteDialog = new ConfirmDialog(this, DialogType.TWEET_DELETE, this);
-        linkPreview = new LinkDialog(this);
+
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         AppStyles.setTheme(settings, root);
+
+        deleteDialog = new ConfirmDialog(this, DialogType.TWEET_DELETE, this);
+        linkPreview = new LinkDialog(this);
 
         retweeter.setOnClickListener(this);
         replyName.setOnClickListener(this);

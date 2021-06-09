@@ -80,6 +80,7 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
     public void dismiss() {
         super.dismiss();
         textCrawler.cancel();
+        Picasso.get().cancelRequest(preview);
     }
 
 

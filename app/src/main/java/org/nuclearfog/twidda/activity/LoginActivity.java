@@ -30,14 +30,18 @@ import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.AccountActivity.KEY_DISABLE_SELECTOR;
+import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
 
 /**
- * Login Activity of the App
+ * Account Activity of the App
  * called from {@link MainActivity} when this app isn't logged in to twitter
  *
  * @author nuclearfog
  */
 public class LoginActivity extends AppCompatActivity implements OnClickListener {
+
+    private static final int REQUEST_ACCOUNT_SELECT = 0x384F;
 
     private Registration registerAsync;
     private GlobalSettings settings;
@@ -100,10 +104,23 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         if (item.getItemId() == R.id.login_setting) {
             Intent settings = new Intent(this, AppSettings.class);
             startActivity(settings);
+        } else if (item.getItemId() == R.id.login_select_account) {
+            Intent accountManager = new Intent(this, AccountActivity.class);
+            accountManager.putExtra(KEY_DISABLE_SELECTOR, true);
+            startActivityForResult(accountManager, REQUEST_ACCOUNT_SELECT);
         }
         return super.onOptionsItemSelected(item);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ACCOUNT_SELECT && resultCode == RET_ACCOUNT_CHANGE) {
+            // account selected, return to MainActivity
+            onSuccess();
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -117,9 +134,12 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
         }
         // verify user
         else if (v.getId() == R.id.login_verifier) {
+            // check if user clicked on PIN button
             if (registerAsync == null || registerAsync.getStatus() != FINISHED) {
                 Toast.makeText(this, R.string.info_get_link, LENGTH_LONG).show();
-            } else if (pinInput.getText() != null && pinInput.length() > 0) {
+            }
+            // check if PIN exists
+            else if (pinInput.getText() != null && pinInput.length() > 0) {
                 Toast.makeText(this, R.string.info_login_to_twitter, LENGTH_LONG).show();
                 String twitterPin = pinInput.getText().toString();
                 registerAsync = new Registration(this);

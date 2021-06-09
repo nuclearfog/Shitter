@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
 import org.nuclearfog.twidda.backend.model.Trend;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -42,12 +43,14 @@ public class TrendAdapter extends Adapter<ViewHolder> {
 
 
     private TrendClickListener itemClickListener;
+    private GlobalSettings settings;
     private List<Trend> trends = new ArrayList<>(INIT_COUNT);
 
     /**
      * @param itemClickListener Listener for item click
      */
-    public TrendAdapter(TrendClickListener itemClickListener) {
+    public TrendAdapter(GlobalSettings settings, TrendClickListener itemClickListener) {
+        this.settings = settings;
         this.itemClickListener = itemClickListener;
     }
 
@@ -91,7 +94,7 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final TrendHolder vh = new TrendHolder(parent);
+        final TrendHolder vh = new TrendHolder(parent, settings);
         vh.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

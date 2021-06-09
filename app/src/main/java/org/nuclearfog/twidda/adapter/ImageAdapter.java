@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ImageItem;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,8 @@ public class ImageAdapter extends Adapter<ViewHolder> {
 
     private OnImageClickListener itemClickListener;
 
+    private GlobalSettings settings;
+
     private List<ImageHolder> images = new LinkedList<>();
     private boolean loading = false;
     private boolean saveImg = true;
@@ -46,8 +49,9 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     /**
      * @param itemClickListener click listener
      */
-    public ImageAdapter(OnImageClickListener itemClickListener) {
+    public ImageAdapter(GlobalSettings settings, OnImageClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
+        this.settings = settings;
     }
 
     /**
@@ -111,7 +115,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
         if (viewType == PICTURE) {
-            final ImageItem item = new ImageItem(parent);
+            final ImageItem item = new ImageItem(parent, settings);
             item.preview.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -137,7 +141,7 @@ public class ImageAdapter extends Adapter<ViewHolder> {
             }
             return item;
         } else {
-            return new Footer(parent, true);
+            return new Footer(parent, settings, true);
         }
     }
 
@@ -157,16 +161,16 @@ public class ImageAdapter extends Adapter<ViewHolder> {
     public interface OnImageClickListener {
 
         /**
-         * simple click on image_add
+         * called to select an image
          *
-         * @param image selected image_add bitmap
+         * @param image selected image bitmap
          */
         void onImageClick(Bitmap image);
 
         /**
-         * long touch on image_add
+         * called to save image to storage
          *
-         * @param image selected image_add bitmap
+         * @param image selected image bitmap
          * @param index current image index
          */
         void onImageSave(Bitmap image, int index);

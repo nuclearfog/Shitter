@@ -25,9 +25,9 @@ public class Message {
      * @param sender   sender user
      * @param receiver receiver user
      */
-    public Message(DirectMessage dm, long twitterId, twitter4j.User sender, twitter4j.User receiver) {
-        this.sender = new User(sender, twitterId);
-        this.receiver = new User(receiver, twitterId);
+    public Message(DirectMessage dm, User sender, User receiver) {
+        this.sender = sender;
+        this.receiver = receiver;
         messageId = dm.getId();
         time = dm.getCreatedAt().getTime();
         setMessageText(dm);

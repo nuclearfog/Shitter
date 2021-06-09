@@ -11,7 +11,7 @@
     <string name="profile_image">Profilbild</string>
     <string name="title_settings">Einstellungen</string>
     <string name="settings_image">Bilder laden</string>
-    <string name="settings_clear_data">App Daten löschen</string>
+    <string name="settings_clear_data">Daten löschen</string>
     <string name="toolbar_userlist_retweet">Tweet retweetet von</string>
     <string name="settings_background">Hintergrund</string>
     <string name="confirm_delete_tweet">Tweet löschen?</string>
@@ -199,4 +199,6 @@
     <string name="dialog_link_image_preview">Linkvorschau Bild</string>
     <string name="dialog_link_close">Linkvorschau schließen</string>
     <string name="settings_toggle_link_preview">Linkvorschau aktivieren</string>
+    <string name="confirm_remove_account">Account aus der Liste entfernen?</string>
+    <string name="menu_switch_account">Account auswählen</string>
 </resources>

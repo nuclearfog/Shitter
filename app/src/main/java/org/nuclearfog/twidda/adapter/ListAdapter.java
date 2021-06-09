@@ -153,7 +153,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_LIST) {
-            final ListHolder itemHolder = new ListHolder(parent);
+            final ListHolder itemHolder = new ListHolder(parent, settings);
             itemHolder.profile_img.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,7 +178,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
             });
             return itemHolder;
         } else {
-            final Footer footer = new Footer(parent, false);
+            final Footer footer = new Footer(parent, settings, false);
             footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

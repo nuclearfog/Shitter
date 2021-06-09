@@ -140,7 +140,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == TYPE_MESSAGE) {
-            final MessageHolder vh = new MessageHolder(parent);
+            final MessageHolder vh = new MessageHolder(parent, settings);
             vh.buttons[0].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -170,7 +170,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
             });
             return vh;
         } else {
-            final Footer footer = new Footer(parent, false);
+            final Footer footer = new Footer(parent, settings, false);
             footer.loadBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import org.nuclearfog.twidda.fragment.ListFragment;
-import org.nuclearfog.twidda.fragment.MessageFragment;
 import org.nuclearfog.twidda.fragment.TrendFragment;
 import org.nuclearfog.twidda.fragment.TweetFragment;
 import org.nuclearfog.twidda.fragment.UserFragment;
@@ -17,7 +16,6 @@ import org.nuclearfog.twidda.fragment.UserListFragment;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_ANSWER;
 import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_FAVORS;
 import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_HOME;
 import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_LIST;
@@ -28,10 +26,7 @@ import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_SEARCH;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FOLLOWS;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FRIENDS;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_LISTS;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_RETWEET;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCR;
 import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
@@ -146,77 +141,6 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[1] = new UserFragment();
         fragments[0].setArguments(tweetSearch);
         fragments[1].setArguments(userSearch);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for tweet page to show replies of a tweet
-     *
-     * @param tweetId   ID of the tweet
-     * @param replyName screen name of the author, needed to search for answers
-     */
-    public void setupTweetPage(long tweetId, String replyName) {
-        Bundle param = new Bundle();
-        param.putInt(KEY_FRAG_TWEET_MODE, TWEET_FRAG_ANSWER);
-        param.putString(KEY_FRAG_TWEET_SEARCH, replyName);
-        param.putLong(KEY_FRAG_TWEET_ID, tweetId);
-        fragments = new ListFragment[1];
-        fragments[0] = new TweetFragment();
-        fragments[0].setArguments(param);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for a list of friends
-     *
-     * @param userId ID of the user
-     */
-    public void setupFriendsPage(long userId) {
-        Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_USER_ID, userId);
-        param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
-        fragments = new ListFragment[1];
-        fragments[0] = new UserFragment();
-        fragments[0].setArguments(param);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for a list of follower
-     *
-     * @param userId ID of the user
-     */
-    public void setupFollowerPage(long userId) {
-        Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_USER_ID, userId);
-        param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWS);
-        fragments = new ListFragment[1];
-        fragments[0] = new UserFragment();
-        fragments[0].setArguments(param);
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for a list of direct messages
-     */
-    public void setupMessagePage() {
-        fragments = new ListFragment[1];
-        fragments[0] = new MessageFragment();
-        notifyDataSetChanged();
-    }
-
-    /**
-     * setup adapter for a list of users which retweets a tweet
-     *
-     * @param tweetId ID if the tweet
-     */
-    public void setupRetweeterPage(long tweetId) {
-        Bundle param = new Bundle();
-        param.putLong(KEY_FRAG_USER_ID, tweetId);
-        param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
-        fragments = new ListFragment[1];
-        fragments[0] = new UserFragment();
-        fragments[0].setArguments(param);
         notifyDataSetChanged();
     }
 

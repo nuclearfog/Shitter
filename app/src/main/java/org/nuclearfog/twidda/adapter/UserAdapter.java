@@ -160,7 +160,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_USER) {
-            final UserHolder vh = new UserHolder(parent);
+            final UserHolder vh = new UserHolder(parent, settings);
             vh.itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -188,7 +188,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
             }
             return vh;
         } else {
-            final Footer footer = new Footer(parent, false);
+            final Footer footer = new Footer(parent, settings, false);
             footer.loadBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

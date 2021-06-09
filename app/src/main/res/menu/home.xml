@@ -22,6 +22,14 @@
         android:visible="false"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
+
+    <item
+        android:id="@+id/action_account"
+        android:icon="@drawable/switch_account"
+        android:title="@string/menu_open_home_profile"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/action_settings"
         android:icon="@drawable/setting"

@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.activity.LoginActivity;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.database.AccountDatabase;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.lang.ref.WeakReference;
 
@@ -21,25 +23,36 @@ public class Registration extends AsyncTask<String, Void, String> {
     @Nullable
     private EngineException twException;
     private WeakReference<LoginActivity> callback;
+    private AccountDatabase accountDB;
     private TwitterEngine mTwitter;
+    private GlobalSettings settings;
 
     /**
-     * Login to twitter with PIN
+     * Account to twitter with PIN
      *
-     * @param callback Activity Context
+     * @param activity Activity Context
      */
-    public Registration(LoginActivity callback) {
+    public Registration(LoginActivity activity) {
         super();
-        this.callback = new WeakReference<>(callback);
-        mTwitter = TwitterEngine.getInstance(callback);
+        this.callback = new WeakReference<>(activity);
+        mTwitter = TwitterEngine.getInstance(activity);
+        accountDB = AccountDatabase.getInstance(activity);
+        settings = GlobalSettings.getInstance(activity);
     }
 
 
     @Override
     protected String doInBackground(String... param) {
         try {
+            // check if we need to backup current session
+            if (settings.isLoggedIn() && !accountDB.exists(settings.getCurrentUserId())) {
+                String[] tokens = settings.getCurrentUserAccessToken();
+                accountDB.setLogin(settings.getCurrentUserId(), tokens[0], tokens[1]);
+            }
+            // no PIN means we need to request a token to login
             if (param.length == 0)
                 return mTwitter.request();
+            // login with pin
             mTwitter.initialize(param[0]);
             return "";
         } catch (EngineException twException) {

@@ -7,12 +7,18 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentTransaction;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.fragment.UserFragment;
+
+import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
+import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
+import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FOLLOWS;
+import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FRIENDS;
+import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_RETWEET;
 
 /**
  * Activity to show a list of twitter users
@@ -51,34 +57,52 @@ public class UserDetail extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.page_userlist);
-        View root = findViewById(R.id.user_view);
-        Toolbar toolbar = findViewById(R.id.user_toolbar);
-        ViewPager pager = findViewById(R.id.user_pager);
+        setContentView(R.layout.page_fragment);
+        View root = findViewById(R.id.fragment_root);
+        Toolbar toolbar = findViewById(R.id.fragment_toolbar);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        pager.setAdapter(adapter);
-
+        // get parameter
         Intent data = getIntent();
+        int mode = data.getIntExtra(KEY_USERDETAIL_MODE, 0);
         long id = data.getLongExtra(KEY_USERDETAIL_ID, -1);
-        switch (data.getIntExtra(KEY_USERDETAIL_MODE, 0)) {
+
+        Bundle param = new Bundle();
+
+        switch (mode) {
             case USERLIST_FRIENDS:
+                // set fragment parameter
+                param.putLong(KEY_FRAG_USER_ID, id);
+                param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FRIENDS);
+                // set toolbar title
                 toolbar.setTitle(R.string.userlist_following);
-                adapter.setupFriendsPage(id);
                 break;
 
             case USERLIST_FOLLOWER:
+                // set fragment parameter
+                param.putLong(KEY_FRAG_USER_ID, id);
+                param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FOLLOWS);
+                // set toolbar title
                 toolbar.setTitle(R.string.userlist_follower);
-                adapter.setupFollowerPage(id);
                 break;
 
             case USERLIST_RETWEETS:
+                // set fragment parameter
+                param.putLong(KEY_FRAG_USER_ID, id);
+                param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_RETWEET);
+                // set toolbar title
                 toolbar.setTitle(R.string.toolbar_userlist_retweet);
-                adapter.setupRetweeterPage(id);
                 break;
         }
+        // insert fragment into view
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, UserFragment.class, param, "");
+        fragmentTransaction.commit();
+
+        // set toolbar
         setSupportActionBar(toolbar);
+
+        // style activity
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(settings, root);
     }
 }

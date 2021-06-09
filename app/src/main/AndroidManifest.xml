@@ -121,6 +121,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
+        <activity
+            android:name=".activity.AccountActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>

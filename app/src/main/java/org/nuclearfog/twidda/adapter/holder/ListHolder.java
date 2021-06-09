@@ -28,8 +28,9 @@ public class ListHolder extends ViewHolder {
     /**
      * @param parent Parent view from adapter
      */
-    public ListHolder(ViewGroup parent) {
+    public ListHolder(ViewGroup parent, GlobalSettings settings) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false));
+        // get views
         CardView background = (CardView) itemView;
         profile_img = itemView.findViewById(R.id.list_owner_profile);
         icons[0] = itemView.findViewById(R.id.list_user_verified);
@@ -47,7 +48,7 @@ public class ListHolder extends ViewHolder {
         textViews[5] = itemView.findViewById(R.id.list_member);
         textViews[6] = itemView.findViewById(R.id.list_subscriber);
         textViews[7] = itemView.findViewById(R.id.list_action);
-
+        // set icons
         icons[0].setImageResource(R.drawable.verify);
         icons[1].setImageResource(R.drawable.lock);
         icons[2].setImageResource(R.drawable.user);
@@ -55,8 +56,7 @@ public class ListHolder extends ViewHolder {
         icons[4].setImageResource(R.drawable.calendar);
         icons[5].setImageResource(R.drawable.lock);
         icons[6].setImageResource(R.drawable.followback);
-
-        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
+        // theme views
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
             tv.setTypeface(settings.getTypeFace());

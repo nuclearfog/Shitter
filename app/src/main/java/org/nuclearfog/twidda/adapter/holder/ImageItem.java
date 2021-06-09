@@ -26,14 +26,15 @@ public class ImageItem extends ViewHolder {
     /**
      * @param parent Parent view from adapter
      */
-    public ImageItem(ViewGroup parent) {
+    public ImageItem(ViewGroup parent, GlobalSettings settings) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false));
+        // get views
         CardView cardBackground = (CardView) itemView;
         preview = itemView.findViewById(R.id.item_image_preview);
         saveButton = itemView.findViewById(R.id.item_image_save);
-
+        // set icon
         saveButton.setImageResource(R.drawable.save);
-        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
+        // theme views
         cardBackground.setCardBackgroundColor(settings.getCardColor());
         AppStyles.setButtonColor(saveButton, settings.getFontColor());
         AppStyles.setDrawableColor(saveButton, settings.getIconColor());

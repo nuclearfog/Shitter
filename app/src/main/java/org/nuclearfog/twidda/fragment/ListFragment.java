@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener;
 
@@ -130,5 +131,5 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      *
      * @return adapter for the recycler view list
      */
-    protected abstract Adapter<RecyclerView.ViewHolder> initAdapter();
+    protected abstract Adapter<? extends ViewHolder> initAdapter();
 }

@@ -274,7 +274,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tweet_pager" />
+                    app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment" />
 
                 <Button
                     android:id="@+id/tweet_retweet"
@@ -290,7 +290,7 @@
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/tweet_answer"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tweet_pager" />
+                    app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment" />
 
                 <Button
                     android:id="@+id/tweet_favorite"
@@ -306,10 +306,10 @@
                     app:layout_constraintHorizontal_weight="1"
                     app:layout_constraintStart_toEndOf="@+id/tweet_retweet"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toTopOf="@id/tweet_pager" />
+                    app:layout_constraintBottom_toTopOf="@id/tweet_reply_fragment" />
 
-                <androidx.viewpager.widget.ViewPager
-                    android:id="@+id/tweet_pager"
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/tweet_reply_fragment"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     app:layout_constraintBottom_toBottomOf="parent"

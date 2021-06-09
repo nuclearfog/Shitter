@@ -31,19 +31,19 @@ public class Footer extends ViewHolder {
      * @param parent     Parent view from adapter
      * @param horizontal true if footer orientation is horizontal
      */
-    public Footer(ViewGroup parent, boolean horizontal) {
+    public Footer(ViewGroup parent, GlobalSettings settings, boolean horizontal) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_placeholder, parent, false));
+        // get views
         CardView background = (CardView) itemView;
         loadCircle = itemView.findViewById(R.id.placeholder_loading);
         loadBtn = itemView.findViewById(R.id.placeholder_button);
-
-        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
+        // theme views
         background.setCardBackgroundColor(settings.getCardColor());
         loadBtn.setTextColor(settings.getFontColor());
         loadBtn.setTypeface(settings.getTypeFace());
         AppStyles.setButtonColor(loadBtn, settings.getFontColor());
         AppStyles.setProgressColor(loadCircle, settings.getHighlightColor());
-
+        // enable extra views
         if (horizontal) {
             loadBtn.setVisibility(INVISIBLE);
             loadCircle.setVisibility(VISIBLE);
@@ -52,6 +52,11 @@ public class Footer extends ViewHolder {
         }
     }
 
+    /**
+     * enable or disable progress circle
+     *
+     * @param enable true to enable progress, false to disable
+     */
     public void setLoading(boolean enable) {
         if (enable) {
             loadCircle.setVisibility(VISIBLE);

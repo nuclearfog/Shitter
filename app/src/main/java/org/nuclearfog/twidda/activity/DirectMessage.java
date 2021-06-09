@@ -10,12 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentTransaction;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.fragment.MessageFragment;
 
 /**
  * Activity for the direct message page of the current user
@@ -29,18 +29,16 @@ public class DirectMessage extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
-        setContentView(R.layout.page_dm);
-        Toolbar tool = findViewById(R.id.dm_toolbar);
-        View root = findViewById(R.id.dm_layout);
-        ViewPager pager = findViewById(R.id.dm_pager);
+        setContentView(R.layout.page_fragment);
+        View root = findViewById(R.id.fragment_root);
+        Toolbar tool = findViewById(R.id.fragment_toolbar);
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_container, new MessageFragment());
+        fragmentTransaction.commit();
 
         tool.setTitle(R.string.directmessage);
         setSupportActionBar(tool);
-
-        FragmentAdapter adapter = new FragmentAdapter(getSupportFragmentManager());
-        adapter.setupMessagePage();
-        pager.setOffscreenPageLimit(1);
-        pager.setAdapter(adapter);
 
         settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(settings, root);

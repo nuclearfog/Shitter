@@ -158,10 +158,10 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         play.setImageResource(R.drawable.play);
         pause.setImageResource(R.drawable.pause);
 
-        adapter = new ImageAdapter(this);
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
         AppStyles.setTheme(settings, controlPanel, settings.getCardColor());
+        adapter = new ImageAdapter(settings, this);
 
         // get intent data and type
         mediaLinks = getIntent().getStringArrayExtra(KEY_MEDIA_LINK);

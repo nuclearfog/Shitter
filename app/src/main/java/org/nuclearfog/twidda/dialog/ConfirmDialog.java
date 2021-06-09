@@ -22,6 +22,7 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
         WRONG_PROXY,
         DEL_DATABASE,
         APP_LOG_OUT,
+        REMOVE_ACCOUNT,
         TWEET_DELETE,
         TWEET_EDITOR_LEAVE,
         TWEET_EDITOR_ERROR,
@@ -142,6 +143,12 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
 
             case LIST_DELETE:
                 message = c.getString(R.string.confirm_delete_list);
+                break;
+
+            case REMOVE_ACCOUNT:
+                message = c.getString(R.string.confirm_remove_account);
+                posButton = c.getString(R.string.dialog_button_ok);
+                negButton = c.getString(R.string.dialog_button_cancel);
                 break;
         }
         setTitle(title);

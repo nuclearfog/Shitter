@@ -9,7 +9,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/profile_follow"
-        android:icon="@drawable/follow"
+        android:icon="@drawable/add_user"
         android:title="@string/menu_follow_user"
         android:visible="false"
         app:showAsAction="ifRoom" />

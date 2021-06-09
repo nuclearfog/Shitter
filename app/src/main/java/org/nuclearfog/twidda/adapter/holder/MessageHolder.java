@@ -31,8 +31,9 @@ public class MessageHolder extends ViewHolder {
     /**
      * @param parent Parent view from adapter
      */
-    public MessageHolder(ViewGroup parent) {
+    public MessageHolder(ViewGroup parent, GlobalSettings settings) {
         super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dm, parent, false));
+        // get views
         CardView background = (CardView) itemView;
         ImageView receiver_icon = itemView.findViewById(R.id.dm_receiver_icon);
         profile_img = itemView.findViewById(R.id.dm_profile_img);
@@ -45,12 +46,11 @@ public class MessageHolder extends ViewHolder {
         textViews[4] = itemView.findViewById(R.id.dm_message);
         buttons[0] = itemView.findViewById(R.id.dm_answer);
         buttons[1] = itemView.findViewById(R.id.dm_delete);
-
+        // set icons
         receiver_icon.setImageResource(R.drawable.right);
         verifiedIcon.setImageResource(R.drawable.verify);
         lockedIcon.setImageResource(R.drawable.lock);
-
-        GlobalSettings settings = GlobalSettings.getInstance(parent.getContext());
+        // theme views
         for (TextView tv : textViews) {
             tv.setTextColor(settings.getFontColor());
             tv.setTypeface(settings.getTypeFace());
@@ -64,6 +64,7 @@ public class MessageHolder extends ViewHolder {
         lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
         receiver_icon.setColorFilter(settings.getIconColor(), SRC_IN);
         background.setCardBackgroundColor(settings.getCardColor());
+        // make links clickable
         textViews[4].setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

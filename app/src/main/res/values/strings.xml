@@ -222,5 +222,8 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_link_image_preview">Link preview image</string>
     <string name="dialog_link_close">close link preview</string>
+    <string name="account_page" translatable="false">Accounts</string>
+    <string name="confirm_remove_account">Remove account from list?</string>
+    <string name="menu_switch_account">select account</string>
 
 </resources>
