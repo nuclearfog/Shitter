@@ -65,8 +65,6 @@ public class TwitterEngine {
 
     @Nullable
     private RequestToken reqToken;
-    @Nullable
-    private AccessToken aToken;
     private GlobalSettings settings;
     private AccountDatabase accountDB;
     private Twitter twitter;
@@ -80,9 +78,10 @@ public class TwitterEngine {
     /**
      * Initialize Twitter4J instance
      */
-    private void initTwitter() {
+    private void initTwitter(AccessToken aToken) {
         TLSSocketFactory.getSupportTLSifNeeded();
         ConfigurationBuilder builder = new ConfigurationBuilder();
+        // set API keys
         if (settings.isCustomApiSet()) {
             builder.setOAuthConsumerKey(settings.getConsumerKey());
             builder.setOAuthConsumerSecret(settings.getConsumerSecret());
@@ -99,13 +98,15 @@ public class TwitterEngine {
                 builder.setHttpProxyPassword(settings.getProxyPass());
             }
         }
+        // init proxy connection
+        ProxySetup.setConnection(settings);
+        // init Twitter instance
         TwitterFactory factory = new TwitterFactory(builder.build());
         if (aToken != null) {
             twitter = factory.getInstance(aToken);
         } else {
             twitter = factory.getInstance();
         }
-        ProxySetup.setConnection(settings);
     }
 
     /**
@@ -116,15 +117,33 @@ public class TwitterEngine {
      */
     public static TwitterEngine getInstance(Context context) {
         if (!mTwitter.isInitialized) {
+            mTwitter.isInitialized = true;
+            // initialize database and settings
             mTwitter.settings = GlobalSettings.getInstance(context);
             mTwitter.accountDB = AccountDatabase.getInstance(context);
+            // check if already logged in
             if (mTwitter.settings.isLoggedIn()) {
+                // init login access
                 String[] keys = mTwitter.settings.getCurrentUserAccessToken();
-                mTwitter.aToken = new AccessToken(keys[0], keys[1]);
+                AccessToken token = new AccessToken(keys[0], keys[1]);
+                mTwitter.initTwitter(token);
+            } else {
+                // init empty session
+                mTwitter.initTwitter(null);
             }
-            mTwitter.initTwitter();
-            mTwitter.isInitialized = true;
         }
+        return mTwitter;
+    }
+
+    /**
+     * get singleton instance with empty session
+     *
+     * @return TwitterEngine Instance
+     */
+    public static TwitterEngine getInstance() {
+        mTwitter.isInitialized = false;
+        // init empty session
+        mTwitter.initTwitter(null);
         return mTwitter;
     }
 
@@ -133,8 +152,6 @@ public class TwitterEngine {
      */
     public static void resetTwitter() {
         mTwitter.isInitialized = false;
-        mTwitter.reqToken = null;   // Destroy connections
-        mTwitter.aToken = null;     //
     }
 
     /**
@@ -145,8 +162,9 @@ public class TwitterEngine {
      */
     public String request() throws EngineException {
         try {
-            if (reqToken == null)
+            if (reqToken == null) {
                 reqToken = twitter.getOAuthRequestToken();
+            }
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -154,22 +172,28 @@ public class TwitterEngine {
     }
 
     /**
-     * Get Access-Token, store and initialize Twitter
+     * Get account access keys, store them and initialize Twitter login
      *
-     * @param twitterPin PIN for accessing account
+     * @param twitterPin PIN from the twitter login page, after successful login
      * @throws EngineException if pin is false or request token is null
      */
     public void initialize(String twitterPin) throws EngineException {
         try {
+            // check if corresponding request key is valid
             if (reqToken != null) {
+                // get login keys
                 AccessToken accessToken = twitter.getOAuthAccessToken(reqToken, twitterPin);
                 String key1 = accessToken.getToken();
                 String key2 = accessToken.getTokenSecret();
-                aToken = new AccessToken(key1, key2);
-                initTwitter();
+                // init twitter login
+                initTwitter(new AccessToken(key1, key2));
+                // save login to storage and database
                 settings.setConnection(key1, key2, twitter.getId());
                 accountDB.setLogin(twitter.getId(), key1, key2);
+                // request token is not needed anymore
+                reqToken = null;
             } else {
+                // request token does not exist, open login page first
                 throw new EngineException(EngineException.InternalErrorType.TOKENNOTSET);
             }
         } catch (Exception err) {

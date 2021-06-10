@@ -35,7 +35,9 @@ public class Registration extends AsyncTask<String, Void, String> {
     public Registration(LoginActivity activity) {
         super();
         this.callback = new WeakReference<>(activity);
-        mTwitter = TwitterEngine.getInstance(activity);
+        // get empty instance
+        mTwitter = TwitterEngine.getInstance();
+        // init database and storage
         accountDB = AccountDatabase.getInstance(activity);
         settings = GlobalSettings.getInstance(activity);
     }

@@ -79,7 +79,7 @@
     <string name="enter_username">enter username</string>
     <string name="profile_banner">Banner Image</string>
     <string name="editprofile_add_banner">add banner</string>
-    <string name="settings_enable_hq_img">high quality</string>
+    <string name="settings_enable_hq_img">High resolution images</string>
     <string name="settings_app_information">For app and licensing information visit:</string>
     <string name="settings_enable_toolbar_overlap">overlap profile banner</string>
     <string name="settings_look">Look</string>

@@ -165,7 +165,7 @@
     <string name="info_list_unfollowed">Liste entfolgt</string>
     <string name="info_unfollowed">entfolgt!</string>
     <string name="descr_add_profile_image">Profilbild ändern</string>
-    <string name="settings_enable_hq_img">Hohe Qualität</string>
+    <string name="settings_enable_hq_img">Bilder in hoher Auflösung</string>
     <string name="menu_app_info">Über</string>
     <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
