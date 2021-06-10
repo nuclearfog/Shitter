@@ -26,7 +26,7 @@
     <item
         android:id="@+id/action_account"
         android:icon="@drawable/switch_account"
-        android:title="@string/menu_open_home_profile"
+        android:title="@string/menu_select_account"
         android:visible="false"
         app:showAsAction="ifRoom" />
 

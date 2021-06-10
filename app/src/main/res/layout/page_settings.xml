@@ -267,7 +267,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/settings_column_margin"
-                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <com.kyleduo.switchbutton.SwitchButton
@@ -285,12 +284,19 @@
                             android:text="@string/settings_image"
                             android:textSize="@dimen/settings_textsize_small" />
 
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_image_hq_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="@dimen/settings_column_margin">
+
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/settings_image_hq"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/settings_switch_margin"
-                            android:layout_marginLeft="@dimen/settings_switch_margin"
                             android:layout_marginEnd="@dimen/settings_switch_margin"
                             android:layout_marginRight="@dimen/settings_switch_margin" />
 

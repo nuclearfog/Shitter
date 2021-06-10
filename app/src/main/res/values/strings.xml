@@ -224,6 +224,7 @@
     <string name="dialog_link_close">close link preview</string>
     <string name="account_page" translatable="false">Accounts</string>
     <string name="confirm_remove_account">Remove account from list?</string>
-    <string name="menu_switch_account">select account</string>
+    <string name="menu_select_account">select account</string>
+    <string name="menu_add_account">add account</string>
 
 </resources>

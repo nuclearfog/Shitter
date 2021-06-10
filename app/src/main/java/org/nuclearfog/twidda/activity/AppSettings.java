@@ -80,7 +80,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private FontAdapter fontAdapter;
 
     private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo;
-    private View root, layout_key, layout_proxy, layout_auth_en, layout_auth;
+    private View root, layout_hq_image, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private Button background, fontColor, popupColor, highlight, cardColor, iconColor;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
@@ -124,6 +124,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         api_key2 = findViewById(R.id.settings_custom_key2);
         list_size = findViewById(R.id.settings_list_size);
         layout_proxy = findViewById(R.id.settings_layout_proxy);
+        layout_hq_image = findViewById(R.id.settings_image_hq_layout);
         layout_auth_en = findViewById(R.id.settings_layout_auth_enable);
         layout_auth = findViewById(R.id.settings_layout_proxy_auth);
         layout_key = findViewById(R.id.settings_layout_key);
@@ -151,6 +152,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (!settings.isProxyEnabled()) {
             layout_proxy.setVisibility(GONE);
             layout_auth_en.setVisibility(GONE);
+        }
+        if (!settings.imagesEnabled()) {
+            layout_hq_image.setVisibility(GONE);
         }
         if (!settings.isProxyAuthSet()) {
             layout_auth.setVisibility(GONE);
@@ -387,6 +391,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (c.getId() == R.id.toggleImg) {
             settings.setImageLoad(checked);
             hqImage.setEnabled(checked);
+            if (checked) {
+                layout_hq_image.setVisibility(VISIBLE);
+            } else {
+                layout_hq_image.setVisibility(GONE);
+            }
         }
         // toggle automatic answer load
         else if (c.getId() == R.id.toggleAns) {
