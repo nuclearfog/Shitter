@@ -140,9 +140,12 @@ public class TwitterEngine {
      *
      * @return TwitterEngine Instance
      */
-    public static TwitterEngine getInstance() {
-        mTwitter.isInitialized = false;
+    public static TwitterEngine getEmptyInstance(Context context) {
+        // initialize storage
+        mTwitter.settings = GlobalSettings.getInstance(context);
+        mTwitter.accountDB = AccountDatabase.getInstance(context);
         // init empty session
+        mTwitter.isInitialized = false;
         mTwitter.initTwitter(null);
         return mTwitter;
     }

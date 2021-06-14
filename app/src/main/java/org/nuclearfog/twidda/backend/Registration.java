@@ -35,11 +35,10 @@ public class Registration extends AsyncTask<String, Void, String> {
     public Registration(LoginActivity activity) {
         super();
         this.callback = new WeakReference<>(activity);
-        // get empty instance
-        mTwitter = TwitterEngine.getInstance();
         // init database and storage
         accountDB = AccountDatabase.getInstance(activity);
         settings = GlobalSettings.getInstance(activity);
+        mTwitter = TwitterEngine.getEmptyInstance(activity);
     }
 
 
@@ -59,6 +58,8 @@ public class Registration extends AsyncTask<String, Void, String> {
             return "";
         } catch (EngineException twException) {
             this.twException = twException;
+        } catch (Exception err) {
+            err.printStackTrace();
         }
         return null;
     }

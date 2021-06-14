@@ -154,6 +154,11 @@ public class AppDatabase {
     private static final String MESSAGE_SELECT = MessageTable.ID + "=?";
 
     /**
+     * select direct message conversation where sender or receiver is the current user
+     */
+    private static final String CONVERSATION_SELECT = MessageTable.SENDER + "=? OR " + MessageTable.RECEIVER + "=?";
+
+    /**
      * select trends from trend table with given world ID
      */
     private static final String TREND_SELECT = TrendTable.ID + "=?";
@@ -590,10 +595,11 @@ public class AppDatabase {
      */
     public MessageList getMessages() {
         String count = Integer.toString(limit);
+        String[] args = {Long.toString(homeId), Long.toString(homeId)};
         // TODO get next cursor from database
         MessageList result = new MessageList(null, null);
         SQLiteDatabase db = getDbRead();
-        Cursor cursor = db.query(MessageTable.TABLE, null, MESSAGE_SELECT, null, null, null, MESSAGE_ORDER, count);
+        Cursor cursor = db.query(MessageTable.TABLE, null, CONVERSATION_SELECT, args, null, null, MESSAGE_ORDER, count);
         if (cursor.moveToFirst()) {
             // get indexes
             int idxSender = cursor.getColumnIndexOrThrow(MessageTable.SENDER);
@@ -611,7 +617,9 @@ public class AppDatabase {
                 // show message
                 User sender = getUser(senderID, db);
                 User receiver = getUser(receiverID, db);
-                result.add(new Message(messageId, sender, receiver, time, message));
+                if (sender != null && receiver != null) {
+                    result.add(new Message(messageId, sender, receiver, time, message));
+                }
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -789,8 +797,8 @@ public class AppDatabase {
         userRegister.put(UserRegisterTable.OWNER, homeId);
         userRegister.put(UserRegisterTable.REGISTER, flags);
 
-        db.insertWithOnConflict(UserTable.NAME, null, userColumn, mode);
         db.insertWithOnConflict(UserRegisterTable.NAME, null, userRegister, mode);
+        db.insertWithOnConflict(UserTable.NAME, null, userColumn, mode);
     }
 
 
@@ -943,14 +951,16 @@ public class AppDatabase {
      */
     private void storeMessage(Message message, SQLiteDatabase db) {
         ContentValues messageColumn = new ContentValues(5);
+        // store message information
         messageColumn.put(MessageTable.ID, message.getId());
         messageColumn.put(MessageTable.SINCE, message.getTime());
         messageColumn.put(MessageTable.SENDER, message.getSender().getId());
         messageColumn.put(MessageTable.RECEIVER, message.getReceiver().getId());
         messageColumn.put(MessageTable.MESSAGE, message.getText());
+        db.insertWithOnConflict(MessageTable.TABLE, null, messageColumn, CONFLICT_IGNORE);
+        // store user information
         storeUser(message.getSender(), db, CONFLICT_IGNORE);
         storeUser(message.getReceiver(), db, CONFLICT_IGNORE);
-        db.insertWithOnConflict(MessageTable.TABLE, null, messageColumn, CONFLICT_IGNORE);
     }
 
     /**

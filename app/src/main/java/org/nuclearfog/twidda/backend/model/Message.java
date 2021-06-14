@@ -42,7 +42,7 @@ public class Message {
      * @param time      timestamp long format
      * @param message   message text
      */
-    public Message(long messageId, User sender, User receiver, long time, String message) {
+    public Message(long messageId, @NonNull User sender, @NonNull User receiver, long time, String message) {
         this.messageId = messageId;
         this.sender = sender;
         this.receiver = receiver;

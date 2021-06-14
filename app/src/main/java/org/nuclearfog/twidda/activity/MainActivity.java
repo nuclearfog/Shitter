@@ -27,10 +27,12 @@ import com.google.android.material.tabs.TabLayout.Tab;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.LinkLoader;
+import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 
+import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
 import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
 import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_ID;
 
@@ -124,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 AppStyles.setTheme(settings, root);
                 if (returnCode == RESULT_CANCELED) {
                     finish();
+                } else if (returnCode == RET_ACCOUNT_CHANGE) {
+                    TwitterEngine.resetTwitter();
+                    adapter.notifySettingsChanged();
                 } else {
                     adapter.notifySettingsChanged();
                 }

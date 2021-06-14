@@ -16,7 +16,14 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class DatabaseAdapter {
 
-    private static final int LATEST_VERSION = 3;
+    /**
+     * database version number
+     */
+    private static final int DB_VERSION = 4;
+
+    /**
+     * database file name
+     */
     private static final String DB_NAME = "database.db";
 
     /**
@@ -95,22 +102,26 @@ public class DatabaseAdapter {
             + MessageTable.MESSAGE + " TEXT);";
 
     /**
-     *
+     * table for tweet register
      */
     private static final String TABLE_TWEET_REGISTER = "CREATE TABLE IF NOT EXISTS "
             + TweetRegisterTable.NAME + "("
-            + TweetRegisterTable.ID + " INTEGER PRIMARY KEY,"
             + TweetRegisterTable.OWNER + " INTEGER,"
-            + TweetRegisterTable.REGISTER + " INTEGER);";
+            + TweetRegisterTable.ID + " INTEGER,"
+            + TweetRegisterTable.REGISTER + " INTEGER,"
+            + "FOREIGN KEY(" + TweetRegisterTable.ID + ")"
+            + "REFERENCES " + TweetTable.NAME + "(" + TweetTable.ID + "));";
 
     /**
-     *
+     * table for user register
      */
     private static final String TABLE_USER_REGISTER = "CREATE TABLE IF NOT EXISTS "
             + UserRegisterTable.NAME + "("
-            + UserRegisterTable.ID + " INTEGER PRIMARY KEY,"
             + UserRegisterTable.OWNER + " INTEGER,"
-            + UserRegisterTable.REGISTER + " INTEGER);";
+            + UserRegisterTable.ID + " INTEGER,"
+            + UserRegisterTable.REGISTER + " INTEGER,"
+            + "FOREIGN KEY(" + UserRegisterTable.ID + ")"
+            + "REFERENCES " + UserTable.NAME + "(" + UserTable.ID + "));";
 
     /**
      * SQL query to create a table for user logins
@@ -222,6 +233,14 @@ public class DatabaseAdapter {
             db.execSQL(TABLE_TREND_ADD_VOL);
             db.setVersion(3);
         }
+        if (db.getVersion() < 4) {
+            // fix database bug
+            db.execSQL("DROP TABLE '" + TweetRegisterTable.NAME + "'");
+            db.execSQL("DROP TABLE '" + UserRegisterTable.NAME + "'");
+            db.execSQL(TABLE_TWEET_REGISTER);
+            db.execSQL(TABLE_USER_REGISTER);
+            db.setVersion(4);
+        }
     }
 
     /**
@@ -240,7 +259,7 @@ public class DatabaseAdapter {
         db.execSQL(TABLE_USER_REGISTER);
         /// Database just created? set current version
         if (db.getVersion() == 0) {
-            db.setVersion(LATEST_VERSION);
+            db.setVersion(DB_VERSION);
         }
     }
 
