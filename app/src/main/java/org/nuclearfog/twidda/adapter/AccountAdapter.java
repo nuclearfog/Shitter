@@ -90,14 +90,18 @@ public class AccountAdapter extends Adapter<LoginHolder> {
         String date = StringTools.formatCreationTime(account.getLoginDate());
         holder.date.setText(date);
         if (user != null) {
+            // set profile information
             holder.username.setText(user.getUsername());
             holder.screenname.setText(user.getScreenname());
-            String pbLink = user.getImageLink();
-            if (!user.hasDefaultProfileImage()) {
-                pbLink += settings.getImageSuffix();
+            // set profile image
+            if (settings.imagesEnabled()) {
+                String pbLink = user.getImageLink();
+                if (!user.hasDefaultProfileImage()) {
+                    pbLink += settings.getImageSuffix();
+                }
+                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                        .error(R.drawable.no_image).into(holder.profile);
             }
-            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
-                    .error(R.drawable.no_image).into(holder.profile);
         }
     }
 

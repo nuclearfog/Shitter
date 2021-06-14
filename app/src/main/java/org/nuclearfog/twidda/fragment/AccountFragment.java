@@ -5,7 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnLoginClickListener;
-import org.nuclearfog.twidda.backend.LoginLoader;
+import org.nuclearfog.twidda.backend.AccountLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.model.Account;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
@@ -29,7 +29,7 @@ import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 public class AccountFragment extends ListFragment implements OnLoginClickListener, OnConfirmListener {
 
     @Nullable
-    private LoginLoader loginTask;
+    private AccountLoader loginTask;
     private GlobalSettings settings;
     private AccountAdapter adapter;
     private AlertDialog dialog;
@@ -48,7 +48,7 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
         super.onStart();
         if (loginTask == null) {
             setRefresh(true);
-            loginTask = new LoginLoader(this);
+            loginTask = new AccountLoader(this);
             loginTask.execute();
         }
     }
@@ -65,7 +65,7 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
     @Override
     protected void onReload() {
         if (loginTask == null || loginTask.getStatus() != RUNNING)
-            loginTask = new LoginLoader(this);
+            loginTask = new AccountLoader(this);
         loginTask.execute();
     }
 
@@ -73,7 +73,7 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
     @Override
     protected void onReset() {
         adapter.clear();
-        loginTask = new LoginLoader(this);
+        loginTask = new AccountLoader(this);
         loginTask.execute();
         setRefresh(true);
     }
@@ -108,12 +108,12 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
 
     @Override
     public void onConfirm(DialogType type) {
-        loginTask = new LoginLoader(this);
+        loginTask = new AccountLoader(this);
         loginTask.execute(selection);
     }
 
     /**
-     * called from {@link LoginLoader}
+     * called from {@link AccountLoader}
      *
      * @param result login information
      */
@@ -123,7 +123,7 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
     }
 
     /**
-     * called from {@link LoginLoader} when an error occurs
+     * called from {@link AccountLoader} when an error occurs
      */
     public void onError(EngineException err) {
         ErrorHandler.handleFailure(requireContext(), err);

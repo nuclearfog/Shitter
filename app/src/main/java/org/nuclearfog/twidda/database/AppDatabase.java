@@ -82,6 +82,7 @@ public class AppDatabase {
     static final String HOME_QUERY = "SELECT * FROM " + TWEET_TABLE
             + " WHERE " + TweetRegisterTable.NAME + "." + TweetRegisterTable.REGISTER + "&" + HOM_MASK + " IS NOT 0"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
+            + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
             + " ORDER BY " + TweetTable.ID
             + " DESC LIMIT ?";
 
@@ -92,6 +93,7 @@ public class AppDatabase {
             + " WHERE " + TweetRegisterTable.NAME + "." + TweetRegisterTable.REGISTER + "&" + MEN_MASK + " IS NOT 0"
             + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCL_USR + " IS 0"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
+            + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
             + " ORDER BY " + TweetTable.ID
             + " DESC LIMIT ?";
 
@@ -101,6 +103,7 @@ public class AppDatabase {
     static final String USERTWEET_QUERY = "SELECT * FROM " + TWEET_TABLE
             + " WHERE " + TweetRegisterTable.NAME + "." + TweetRegisterTable.REGISTER + "&" + UTW_MASK + " IS NOT 0"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
+            + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
             + " AND " + TweetTable.NAME + "." + TweetTable.USER + "=?"
             + " ORDER BY " + TweetTable.ID
             + " DESC LIMIT ?";
@@ -113,6 +116,7 @@ public class AppDatabase {
             + " ON " + TweetTable.NAME + "." + TweetTable.ID + "=" + FavoriteTable.NAME + "." + FavoriteTable.TWEETID
             + " WHERE " + FavoriteTable.NAME + "." + FavoriteTable.FAVORITEDBY + "=?"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
+            + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
             + " ORDER BY " + TweetTable.ID
             + " DESC LIMIT ?";
 
@@ -120,7 +124,10 @@ public class AppDatabase {
      * SQL query to get a single tweet specified by an ID
      */
     static final String SINGLE_TWEET_QUERY = "SELECT * FROM " + TWEET_TABLE
-            + " WHERE " + TweetTable.NAME + "." + TweetTable.ID + "=? LIMIT 1";
+            + " WHERE " + TweetTable.NAME + "." + TweetTable.ID + "=?"
+            + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
+            + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
+            + " LIMIT 1";
 
     /**
      * SQL query to get replies of a tweet specified by a reply ID
@@ -128,6 +135,7 @@ public class AppDatabase {
     static final String ANSWER_QUERY = "SELECT * FROM " + TWEET_TABLE
             + " WHERE " + TweetTable.NAME + "." + TweetTable.REPLYTWEET + "=?"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.OWNER + "=?"
+            + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.OWNER + "=?"
             + " AND " + TweetRegisterTable.NAME + "." + TweetRegisterTable.REGISTER + "&" + RPL_MASK + " IS NOT 0"
             + " AND " + UserRegisterTable.NAME + "." + UserRegisterTable.REGISTER + "&" + EXCL_USR + " IS 0"
             + " ORDER BY " + TweetTable.ID + " DESC LIMIT ?";
@@ -351,7 +359,8 @@ public class AppDatabase {
      * @return tweet list
      */
     public List<Tweet> getHomeTimeline() {
-        String[] args = {Long.toString(homeId), Integer.toString(limit)};
+        String homeStr = Long.toString(homeId);
+        String[] args = {homeStr, homeStr, Integer.toString(limit)};
 
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
@@ -372,9 +381,8 @@ public class AppDatabase {
      * @return tweet list
      */
     public List<Tweet> getMentions() {
-        String[] args = {
-                Long.toString(homeId), Integer.toString(limit)
-        };
+        String homeStr = Long.toString(homeId);
+        String[] args = {homeStr, homeStr, Integer.toString(limit)};
 
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
@@ -396,10 +404,8 @@ public class AppDatabase {
      * @return Tweet list of user tweets
      */
     public List<Tweet> getUserTweets(long userID) {
-        String[] args = {
-                Long.toString(homeId), Long.toString(userID),
-                Integer.toString(limit)
-        };
+        String homeStr = Long.toString(homeId);
+        String[] args = {homeStr, homeStr, Long.toString(userID), Integer.toString(limit)};
 
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
@@ -421,10 +427,8 @@ public class AppDatabase {
      * @return favored tweets by user
      */
     public List<Tweet> getUserFavorites(long ownerID) {
-        String[] args = {
-                Long.toString(ownerID), Long.toString(homeId),
-                Integer.toString(limit)
-        };
+        String homeStr = Long.toString(homeId);
+        String[] args = {Long.toString(ownerID), homeStr, homeStr, Integer.toString(limit)};
 
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
@@ -459,7 +463,8 @@ public class AppDatabase {
      */
     @Nullable
     public Tweet getStatus(long tweetId) {
-        String[] args = {Long.toString(tweetId)};
+        String homeStr = Long.toString(homeId);
+        String[] args = {Long.toString(tweetId), homeStr, homeStr};
 
         SQLiteDatabase db = getDbRead();
         Tweet result = null;
@@ -477,10 +482,8 @@ public class AppDatabase {
      * @return list of tweet answers
      */
     public List<Tweet> getAnswers(long tweetId) {
-        String[] args = {
-                Long.toString(tweetId), Long.toString(homeId),
-                Integer.toString(limit)
-        };
+        String homeStr = Long.toString(homeId);
+        String[] args = {Long.toString(tweetId), homeStr, homeStr, Integer.toString(limit)};
 
         SQLiteDatabase db = getDbRead();
         List<Tweet> tweetList = new LinkedList<>();
@@ -529,18 +532,17 @@ public class AppDatabase {
      */
     public void removeFavorite(Tweet tweet) {
         long tweetId = tweet.getId();
-        if (tweet.getEmbeddedTweet() != null)
-            tweetId = tweet.getEmbeddedTweet().getId();
         String[] delArgs = {Long.toString(tweetId), Long.toString(homeId)};
-        String[] updateArgs = {Long.toString(tweetId), Long.toString(homeId)};
 
+        if (tweet.getEmbeddedTweet() != null) {
+            tweetId = tweet.getEmbeddedTweet().getId();
+        }
         SQLiteDatabase db = getDbWrite();
         // get tweet register
-        ContentValues status = new ContentValues(1);
-        int flags = getTweetFlags(db, tweetId) & ~FAV_MASK; // unset favorite flag
-        status.put(TweetRegisterTable.REGISTER, flags);
+        int register = getTweetRegister(db, tweetId);
+        register &= ~FAV_MASK; // unset favorite flag
         // update database
-        db.update(TweetRegisterTable.NAME, status, TWEET_REG_SELECT, updateArgs);
+        setTweetRegister(db, tweetId, register);
         db.delete(FavoriteTable.NAME, FAVORITE_SELECT, delArgs);
         commit(db);
     }
@@ -644,18 +646,14 @@ public class AppDatabase {
      * @param mute true remove user tweets from mention results
      */
     public void muteUser(long id, boolean mute) {
-        String[] args = {Long.toString(id), Long.toString(homeId)};
-
         SQLiteDatabase db = getDbWrite();
-        int flags = getUserFlags(db, id);
+        int register = getUserFlags(db, id);
         if (mute) {
-            flags |= EXCL_USR;
+            register |= EXCL_USR;
         } else {
-            flags &= ~EXCL_USR;
+            register &= ~EXCL_USR;
         }
-        ContentValues registerColumn = new ContentValues(1);
-        registerColumn.put(UserRegisterTable.REGISTER, flags);
-        db.update(UserRegisterTable.NAME, registerColumn, USER_REG_SELECT, args);
+        setUserFlags(db, id, register);
         commit(db);
     }
 
@@ -759,26 +757,25 @@ public class AppDatabase {
      * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE} or {@link SQLiteDatabase#CONFLICT_REPLACE}
      */
     private void storeUser(User user, SQLiteDatabase db, int mode) {
-        ContentValues userRegister = new ContentValues(3);
-        ContentValues userColumn = new ContentValues(13);
-        int flags = getUserFlags(db, user.getId());
+        int register = getUserFlags(db, user.getId());
         if (user.isVerified())
-            flags |= VER_MASK;
+            register |= VER_MASK;
         else
-            flags &= ~VER_MASK;
+            register &= ~VER_MASK;
         if (user.isLocked())
-            flags |= LCK_MASK;
+            register |= LCK_MASK;
         else
-            flags &= ~LCK_MASK;
+            register &= ~LCK_MASK;
         if (user.followRequested())
-            flags |= FRQ_MASK;
+            register |= FRQ_MASK;
         else
-            flags &= ~FRQ_MASK;
+            register &= ~FRQ_MASK;
         if (user.hasDefaultProfileImage())
-            flags |= DEF_IMG;
+            register |= DEF_IMG;
         else
-            flags &= ~DEF_IMG;
+            register &= ~DEF_IMG;
 
+        ContentValues userColumn = new ContentValues(13);
         userColumn.put(UserTable.ID, user.getId());
         userColumn.put(UserTable.USERNAME, user.getUsername());
         userColumn.put(UserTable.SCREENNAME, user.getScreenname());
@@ -793,12 +790,8 @@ public class AppDatabase {
         userColumn.put(UserTable.TWEETS, user.getTweetCount());
         userColumn.put(UserTable.FAVORS, user.getFavorCount());
 
-        userRegister.put(UserRegisterTable.ID, user.getId());
-        userRegister.put(UserRegisterTable.OWNER, homeId);
-        userRegister.put(UserRegisterTable.REGISTER, flags);
-
-        db.insertWithOnConflict(UserRegisterTable.NAME, null, userRegister, mode);
         db.insertWithOnConflict(UserTable.NAME, null, userColumn, mode);
+        setUserFlags(db, user.getId(), register);
     }
 
 
@@ -810,8 +803,6 @@ public class AppDatabase {
      * @param db             SQLite database
      */
     private void storeStatus(Tweet tweet, int statusRegister, SQLiteDatabase db) {
-        ContentValues register = new ContentValues(3);
-        ContentValues status = new ContentValues(16);
         User user = tweet.getUser();
         Tweet rtStat = tweet.getEmbeddedTweet();
         long rtId = -1L;
@@ -819,7 +810,7 @@ public class AppDatabase {
             storeStatus(rtStat, 0, db);
             rtId = rtStat.getId();
         }
-        statusRegister |= getTweetFlags(db, tweet.getId());
+        statusRegister |= getTweetRegister(db, tweet.getId());
         if (tweet.favored()) {
             statusRegister |= FAV_MASK;
         } else {
@@ -842,6 +833,7 @@ public class AppDatabase {
         } else if (tweet.getMediaType() == GIF) {
             statusRegister |= MEDIA_ANGIF_MASK;
         }
+        ContentValues status = new ContentValues(16);
         status.put(TweetTable.MEDIA, getMediaLinks(tweet));
         status.put(TweetTable.ID, tweet.getId());
         status.put(TweetTable.USER, user.getId());
@@ -859,13 +851,10 @@ public class AppDatabase {
         status.put(TweetTable.REPLYUSER, tweet.getReplyUserId());
         status.put(TweetTable.REPLYNAME, tweet.getReplyName());
 
-        register.put(TweetRegisterTable.ID, tweet.getId());
-        register.put(TweetRegisterTable.OWNER, homeId);
-        register.put(TweetRegisterTable.REGISTER, statusRegister);
+        db.insertWithOnConflict(TweetTable.NAME, null, status, CONFLICT_REPLACE);
 
         storeUser(user, db, CONFLICT_IGNORE);
-        db.insertWithOnConflict(TweetTable.NAME, null, status, CONFLICT_REPLACE);
-        db.insertWithOnConflict(TweetRegisterTable.NAME, null, register, CONFLICT_REPLACE);
+        setTweetRegister(db, tweet.getId(), statusRegister);
     }
 
     /**
@@ -876,13 +865,10 @@ public class AppDatabase {
      */
     private void updateStatus(Tweet tweet, SQLiteDatabase db) {
         String[] tweetIdArg = {Long.toString(tweet.getId())};
-        String[] tweetRegArg = {Long.toString(tweet.getId()), Long.toString(homeId)};
         String[] userIdArg = {Long.toString(tweet.getUser().getId())};
 
-        ContentValues tweetColumn = new ContentValues(6);
-        ContentValues tweetRegColumn = new ContentValues(3);
-        ContentValues userColumn = new ContentValues(9);
-        int register = getTweetFlags(db, tweet.getId());
+        User user = tweet.getUser();
+        int register = getTweetRegister(db, tweet.getId());
         if (tweet.retweeted())
             register |= RTW_MASK;
         else
@@ -891,6 +877,8 @@ public class AppDatabase {
             register |= FAV_MASK;
         else
             register &= ~FAV_MASK;
+
+        ContentValues tweetColumn = new ContentValues(6);
         tweetColumn.put(TweetTable.TWEET, tweet.getTweet());
         tweetColumn.put(TweetTable.RETWEET, tweet.getRetweetCount());
         tweetColumn.put(TweetTable.FAVORITE, tweet.getFavoriteCount());
@@ -898,11 +886,7 @@ public class AppDatabase {
         tweetColumn.put(TweetTable.REPLYNAME, tweet.getReplyName());
         tweetColumn.put(TweetTable.MEDIA, getMediaLinks(tweet));
 
-        tweetRegColumn.put(TweetRegisterTable.ID, tweet.getId());
-        tweetRegColumn.put(TweetRegisterTable.OWNER, homeId);
-        tweetRegColumn.put(TweetRegisterTable.REGISTER, register);
-
-        User user = tweet.getUser();
+        ContentValues userColumn = new ContentValues(9);
         userColumn.put(UserTable.USERNAME, user.getUsername());
         userColumn.put(UserTable.SCREENNAME, user.getScreenname());
         userColumn.put(UserTable.IMAGE, user.getImageLink());
@@ -914,8 +898,8 @@ public class AppDatabase {
         userColumn.put(UserTable.FOLLOWER, user.getFollower());
 
         db.update(TweetTable.NAME, tweetColumn, TWEET_SELECT, tweetIdArg);
-        db.update(TweetRegisterTable.NAME, tweetRegColumn, TWEET_REG_SELECT, tweetRegArg);
         db.update(UserTable.NAME, userColumn, USER_SELECT, userIdArg);
+        setTweetRegister(db, tweet.getId(), register);
     }
 
     /**
@@ -950,8 +934,8 @@ public class AppDatabase {
      * @param db      database instance
      */
     private void storeMessage(Message message, SQLiteDatabase db) {
-        ContentValues messageColumn = new ContentValues(5);
         // store message information
+        ContentValues messageColumn = new ContentValues(5);
         messageColumn.put(MessageTable.ID, message.getId());
         messageColumn.put(MessageTable.SINCE, message.getTime());
         messageColumn.put(MessageTable.SENDER, message.getSender().getId());
@@ -968,9 +952,9 @@ public class AppDatabase {
      *
      * @param db      database instance
      * @param tweetID ID of the tweet
-     * @return tweet flags
+     * @return tweet register
      */
-    private int getTweetFlags(SQLiteDatabase db, long tweetID) {
+    private int getTweetRegister(SQLiteDatabase db, long tweetID) {
         String[] columns = {TweetRegisterTable.REGISTER};
         String[] args = {Long.toString(tweetID), Long.toString(homeId)};
 
@@ -983,7 +967,28 @@ public class AppDatabase {
     }
 
     /**
-     * get flags of a twitter user or zero if user was not found
+     * set status register of a tweet. if an entry exists, update it
+     *
+     * @param db       database instance
+     * @param id       Tweet ID
+     * @param register tweet register
+     */
+    public void setTweetRegister(SQLiteDatabase db, long id, int register) {
+        String[] args = {Long.toString(id), Long.toString(homeId)};
+
+        ContentValues values = new ContentValues(3);
+        values.put(TweetRegisterTable.ID, id);
+        values.put(TweetRegisterTable.OWNER, homeId);
+        values.put(TweetRegisterTable.REGISTER, register);
+
+        int cnt = db.update(TweetRegisterTable.NAME, values, TWEET_REG_SELECT, args);
+        if (cnt == 0) {
+            db.insert(TweetRegisterTable.NAME, null, values);
+        }
+    }
+
+    /**
+     * get user register or zero if not found
      *
      * @param db     database instance
      * @param userID ID of the user
@@ -999,6 +1004,27 @@ public class AppDatabase {
             result = c.getInt(0);
         c.close();
         return result;
+    }
+
+    /**
+     * set user register. If entry exists, update it.
+     *
+     * @param db       database instance
+     * @param id       User ID
+     * @param register tweet register
+     */
+    public void setUserFlags(SQLiteDatabase db, long id, int register) {
+        String[] args = {Long.toString(id), Long.toString(homeId)};
+
+        ContentValues values = new ContentValues(3);
+        values.put(UserRegisterTable.ID, id);
+        values.put(UserRegisterTable.OWNER, homeId);
+        values.put(UserRegisterTable.REGISTER, register);
+
+        int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
+        if (cnt == 0) {
+            db.insert(UserRegisterTable.NAME, null, values);
+        }
     }
 
     /**

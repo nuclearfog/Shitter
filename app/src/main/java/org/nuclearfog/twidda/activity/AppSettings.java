@@ -265,9 +265,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             // reset twitter singleton
             TwitterEngine.resetTwitter();
             // remove account from database
-            // todo remove database and entry asynchronously
             AccountDatabase.getInstance(this).removeLogin(settings.getCurrentUserId());
-            DatabaseAdapter.deleteDatabase(getApplicationContext());
             settings.logout();
             setResult(RETURN_APP_LOGOUT);
             finish();

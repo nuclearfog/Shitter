@@ -127,11 +127,11 @@ public class DatabaseAdapter {
      * SQL query to create a table for user logins
      */
     private static final String TABLE_LOGINS = "CREATE TABLE IF NOT EXISTS "
-            + LoginTable.NAME + "("
-            + LoginTable.ID + " INTEGER PRIMARY KEY,"
-            + LoginTable.DATE + " INTEGER,"
-            + LoginTable.KEY1 + " TEXT,"
-            + LoginTable.KEY2 + " TEXT);";
+            + AccountTable.NAME + "("
+            + AccountTable.ID + " INTEGER PRIMARY KEY,"
+            + AccountTable.DATE + " INTEGER,"
+            + AccountTable.KEY1 + " TEXT,"
+            + AccountTable.KEY2 + " TEXT);";
 
     /**
      * index for tweet table
@@ -511,7 +511,7 @@ public class DatabaseAdapter {
     /**
      * Table for multi user login information
      */
-    public interface LoginTable {
+    public interface AccountTable {
         /**
          * SQL table name
          */

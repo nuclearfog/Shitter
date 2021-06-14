@@ -9,6 +9,7 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.Account;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AccountDatabase;
+import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragment.AccountFragment;
 
 import java.lang.ref.WeakReference;
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class LoginLoader extends AsyncTask<Account, Void, List<Account>> {
+public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
 
     @Nullable
     private EngineException err;
@@ -27,14 +28,19 @@ public class LoginLoader extends AsyncTask<Account, Void, List<Account>> {
     private TwitterEngine mTwitter;
     private WeakReference<AccountFragment> callback;
 
+    private boolean loggedIn;
+
     /**
      *
      */
-    public LoginLoader(AccountFragment fragment) {
+    public AccountLoader(AccountFragment fragment) {
         super();
         callback = new WeakReference<>(fragment);
         database = AccountDatabase.getInstance(fragment.requireContext());
         mTwitter = TwitterEngine.getInstance(fragment.requireContext());
+
+        GlobalSettings settings = GlobalSettings.getInstance(fragment.requireContext());
+        loggedIn = settings.isLoggedIn();
     }
 
 
@@ -54,10 +60,13 @@ public class LoginLoader extends AsyncTask<Account, Void, List<Account>> {
                 for (int i = 0; i < ids.length; i++) {
                     ids[i] = result.get(i).getId();
                 }
-                // get user information
-                List<User> users = mTwitter.getUsers(ids);
-                for (int i = 0; i < users.size(); i++) {
-                    result.get(i).attachUser(users.get(i));
+                // attach user information if logged in
+                if (loggedIn) {
+                    // get user information
+                    List<User> users = mTwitter.getUsers(ids);
+                    for (int i = 0; i < users.size(); i++) {
+                        result.get(i).attachUser(users.get(i));
+                    }
                 }
             }
             return result;

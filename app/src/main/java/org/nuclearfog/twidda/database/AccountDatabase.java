@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import org.nuclearfog.twidda.backend.model.Account;
-import org.nuclearfog.twidda.database.DatabaseAdapter.LoginTable;
+import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,22 +24,22 @@ public class AccountDatabase {
      * projection of the columns with fixed order
      */
     private static final String[] PROJECTION = {
-            LoginTable.ID,
-            LoginTable.KEY1,
-            LoginTable.KEY2,
-            LoginTable.DATE
+            AccountTable.ID,
+            AccountTable.KEY1,
+            AccountTable.KEY2,
+            AccountTable.DATE
     };
 
     /**
      *
      */
-    private static final String ACCOUNT_SELECTION = LoginTable.ID + "=?";
+    private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
 
     /**
      * default sort order of the entries
      * sort by date of creation, starting with the latest entry
      */
-    private static final String SORT_BY_CREATION = LoginTable.DATE + " DESC";
+    private static final String SORT_BY_CREATION = AccountTable.DATE + " DESC";
 
     /**
      * singleton instance
@@ -74,14 +74,14 @@ public class AccountDatabase {
     public void setLogin(long id, String key1, String key2) {
         ContentValues values = new ContentValues(4);
 
-        values.put(LoginTable.ID, id);
-        values.put(LoginTable.KEY1, key1);
-        values.put(LoginTable.KEY2, key2);
-        values.put(LoginTable.DATE, System.currentTimeMillis());
+        values.put(AccountTable.ID, id);
+        values.put(AccountTable.KEY1, key1);
+        values.put(AccountTable.KEY2, key2);
+        values.put(AccountTable.DATE, System.currentTimeMillis());
 
         SQLiteDatabase db = dataHelper.getDatabase();
         db.beginTransaction();
-        db.insertWithOnConflict(LoginTable.NAME, "", values, CONFLICT_REPLACE);
+        db.insertWithOnConflict(AccountTable.NAME, "", values, CONFLICT_REPLACE);
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -95,7 +95,7 @@ public class AccountDatabase {
         ArrayList<Account> result = new ArrayList<>();
 
         SQLiteDatabase db = dataHelper.getDatabase();
-        Cursor cursor = db.query(LoginTable.NAME, PROJECTION, null, null, null, null, SORT_BY_CREATION);
+        Cursor cursor = db.query(AccountTable.NAME, PROJECTION, null, null, null, null, SORT_BY_CREATION);
         if (cursor.moveToFirst()) {
             result.ensureCapacity(cursor.getCount());
             do {
@@ -120,7 +120,7 @@ public class AccountDatabase {
         String[] args = {Long.toString(id)};
 
         SQLiteDatabase db = dataHelper.getDatabase();
-        db.delete(LoginTable.NAME, ACCOUNT_SELECTION, args);
+        db.delete(AccountTable.NAME, ACCOUNT_SELECTION, args);
     }
 
     /**
@@ -132,7 +132,7 @@ public class AccountDatabase {
     public boolean exists(long id) {
         String[] args = {Long.toString(id)};
         SQLiteDatabase db = dataHelper.getDatabase();
-        Cursor cursor = db.query(LoginTable.NAME, null, ACCOUNT_SELECTION, args, null, null, null, "1");
+        Cursor cursor = db.query(AccountTable.NAME, null, ACCOUNT_SELECTION, args, null, null, null, "1");
         boolean found = cursor.moveToFirst();
         cursor.close();
         return found;
