@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.adapter.AccountAdapter;
-import org.nuclearfog.twidda.adapter.AccountAdapter.OnLoginClickListener;
+import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.AccountLoader;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.model.Account;
@@ -21,12 +21,12 @@ import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 
 /**
- * fragment class of the account manager
- * all registered accounts are listed here
+ * fragment class of the {@link org.nuclearfog.twidda.activity.AccountActivity}
+ * all registered user accounts are listed here
  *
  * @author nuclearfog
  */
-public class AccountFragment extends ListFragment implements OnLoginClickListener, OnConfirmListener {
+public class AccountFragment extends ListFragment implements OnAccountClickListener, OnConfirmListener {
 
     @Nullable
     private AccountLoader loginTask;
@@ -87,7 +87,7 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
 
 
     @Override
-    public void onLoginClick(Account account) {
+    public void onAccountClick(Account account) {
         // set new account
         String[] token = account.getKeys();
         settings.setConnection(token[0], token[1], account.getId());
@@ -98,7 +98,7 @@ public class AccountFragment extends ListFragment implements OnLoginClickListene
 
 
     @Override
-    public void onDeleteClick(Account account) {
+    public void onAccountRemove(Account account) {
         if (!dialog.isShowing()) {
             selection = account;
             dialog.show();

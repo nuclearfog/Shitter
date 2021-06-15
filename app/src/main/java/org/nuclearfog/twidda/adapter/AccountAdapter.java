@@ -33,25 +33,15 @@ public class AccountAdapter extends Adapter<LoginHolder> {
 
     private List<Account> data = new ArrayList<>();
     private GlobalSettings settings;
-    private OnLoginClickListener listener;
+    private OnAccountClickListener listener;
 
     /**
-     *
+     * @param settings app settings for theme
+     * @param listener item click listener
      */
-    public AccountAdapter(GlobalSettings settings, OnLoginClickListener l) {
+    public AccountAdapter(GlobalSettings settings, OnAccountClickListener listener) {
         this.settings = settings;
-        this.listener = l;
-    }
-
-    /**
-     * sets login data
-     *
-     * @param data list with login items
-     */
-    public void setData(List<Account> data) {
-        this.data.clear();
-        this.data.addAll(data);
-        notifyDataSetChanged();
+        this.listener = listener;
     }
 
 
@@ -65,7 +55,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
                 int position = holder.getLayoutPosition();
                 if (position != NO_POSITION) {
                     Account account = data.get(position);
-                    listener.onLoginClick(account);
+                    listener.onAccountClick(account);
                 }
             }
         });
@@ -75,7 +65,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
                 int position = holder.getLayoutPosition();
                 if (position != NO_POSITION) {
                     Account account = data.get(position);
-                    listener.onDeleteClick(account);
+                    listener.onAccountRemove(account);
                 }
             }
         });
@@ -111,7 +101,21 @@ public class AccountAdapter extends Adapter<LoginHolder> {
         return data.size();
     }
 
+    /**
+     * sets login data
+     *
+     * @param data list with login items
+     */
+    @MainThread
+    public void setData(List<Account> data) {
+        this.data.clear();
+        this.data.addAll(data);
+        notifyDataSetChanged();
+    }
 
+    /**
+     * clear adapter data
+     */
     @MainThread
     public void clear() {
         data.clear();
@@ -119,22 +123,22 @@ public class AccountAdapter extends Adapter<LoginHolder> {
     }
 
     /**
-     * click listener for an item
+     * click listener for an account item
      */
-    public interface OnLoginClickListener {
+    public interface OnAccountClickListener {
 
         /**
          * called on item select
          *
          * @param account selected account information
          */
-        void onLoginClick(Account account);
+        void onAccountClick(Account account);
 
         /**
          * called to remove item
          *
          * @param account selected account information
          */
-        void onDeleteClick(Account account);
+        void onAccountRemove(Account account);
     }
 }

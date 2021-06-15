@@ -15,17 +15,18 @@ Features:
 - fast access to tweets and userprofiles
 - customizable theme and colors
 - image/video upload & preview
+- Multi account support
 - Tweets with GPS locale
 - Twitter trends and search
 - Create, edit or follow user lists
 - Directmessage
 - Profile editor
-- Proxy server feature
-- setup own API keys
+- Proxy server
+- custom API keys
 
 Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>
 
-check <a href="https://github.com/nuclearfog/Shitter/discussions">discussions</a> for news and current problems.
+If you have any questions, feel free to open a <a href="https://github.com/nuclearfog/Shitter/discussions">discussion</a>
 
 
 Screenshots:

@@ -31,7 +31,7 @@ public class AccountDatabase {
     };
 
     /**
-     *
+     * selection for account entry
      */
     private static final String ACCOUNT_SELECTION = AccountTable.ID + "=?";
 

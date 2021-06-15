@@ -50,6 +50,7 @@
         android:textSize="@dimen/dialog_linkpreview_textsize_description"
         android:maxLines="10"
         android:scrollbars="vertical"
+        android:fadeScrollbars="false"
         android:layout_margin="@dimen/dialog_linkpreview_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/link_preview_title_barrier"

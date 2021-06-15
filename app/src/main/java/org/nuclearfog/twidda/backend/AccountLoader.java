@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * backend loader to get user information about user logins
+ * backend loader to get local accounts and user information
  *
  * @author nuclearfog
  */

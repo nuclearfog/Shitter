@@ -31,8 +31,7 @@ import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
 import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 
 /**
- * Connection Class to SQLite Database of the app
- * All tweet, user and message information are stored here
+ * SQLite database class to store and load tweets, messages, trends and user information
  *
  * @author nuclearfog
  */
@@ -130,7 +129,7 @@ public class AppDatabase {
             + " LIMIT 1";
 
     /**
-     * SQL query to get replies of a tweet specified by a reply ID
+     * SQL query to get replies of a tweet specified by a tweet ID
      */
     static final String ANSWER_QUERY = "SELECT * FROM " + TWEET_TABLE
             + " WHERE " + TweetTable.NAME + "." + TweetTable.REPLYTWEET + "=?"
@@ -192,6 +191,16 @@ public class AppDatabase {
     private static final String USER_REG_SELECT = UserRegisterTable.ID + "=? AND " + UserRegisterTable.OWNER + "=?";
 
     /**
+     * column projection for user register
+     */
+    private static final String[] USER_REG_COLUMN = {UserRegisterTable.REGISTER};
+
+    /**
+     * column projection for tweet register
+     */
+    private static final String[] TWEET_REG_COLUMN = {TweetRegisterTable.REGISTER};
+
+    /**
      * default message order by date
      */
     private static final String MESSAGE_ORDER = MessageTable.SINCE + " DESC";
@@ -205,6 +214,11 @@ public class AppDatabase {
      * limit for accessing a single row
      */
     private static final String SINGLE_ITEM = "1";
+
+    /**
+     * separator regex pattern for media links
+     */
+    private static final Pattern SEPARATOR = Pattern.compile(";");
 
     /**
      * limit of database entries
@@ -647,13 +661,13 @@ public class AppDatabase {
      */
     public void muteUser(long id, boolean mute) {
         SQLiteDatabase db = getDbWrite();
-        int register = getUserFlags(db, id);
+        int register = getUserRegister(db, id);
         if (mute) {
             register |= EXCL_USR;
         } else {
             register &= ~EXCL_USR;
         }
-        setUserFlags(db, id, register);
+        setUserRegister(db, id, register);
         commit(db);
     }
 
@@ -757,7 +771,7 @@ public class AppDatabase {
      * @param mode SQLITE mode {@link SQLiteDatabase#CONFLICT_IGNORE} or {@link SQLiteDatabase#CONFLICT_REPLACE}
      */
     private void storeUser(User user, SQLiteDatabase db, int mode) {
-        int register = getUserFlags(db, user.getId());
+        int register = getUserRegister(db, user.getId());
         if (user.isVerified())
             register |= VER_MASK;
         else
@@ -791,7 +805,7 @@ public class AppDatabase {
         userColumn.put(UserTable.FAVORS, user.getFavorCount());
 
         db.insertWithOnConflict(UserTable.NAME, null, userColumn, mode);
-        setUserFlags(db, user.getId(), register);
+        setUserRegister(db, user.getId(), register);
     }
 
 
@@ -955,10 +969,9 @@ public class AppDatabase {
      * @return tweet register
      */
     private int getTweetRegister(SQLiteDatabase db, long tweetID) {
-        String[] columns = {TweetRegisterTable.REGISTER};
         String[] args = {Long.toString(tweetID), Long.toString(homeId)};
 
-        Cursor c = db.query(TweetRegisterTable.NAME, columns, TWEET_REG_SELECT, args, null, null, null, SINGLE_ITEM);
+        Cursor c = db.query(TweetRegisterTable.NAME, TWEET_REG_COLUMN, TWEET_REG_SELECT, args, null, null, null, SINGLE_ITEM);
         int result = 0;
         if (c.moveToFirst())
             result = c.getInt(0);
@@ -983,6 +996,7 @@ public class AppDatabase {
 
         int cnt = db.update(TweetRegisterTable.NAME, values, TWEET_REG_SELECT, args);
         if (cnt == 0) {
+            // create new entry if there isn't one
             db.insert(TweetRegisterTable.NAME, null, values);
         }
     }
@@ -994,11 +1008,10 @@ public class AppDatabase {
      * @param userID ID of the user
      * @return user flags
      */
-    private int getUserFlags(SQLiteDatabase db, long userID) {
-        String[] columns = {UserRegisterTable.REGISTER};
+    private int getUserRegister(SQLiteDatabase db, long userID) {
         String[] args = {Long.toString(userID), Long.toString(homeId)};
 
-        Cursor c = db.query(UserRegisterTable.NAME, columns, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
+        Cursor c = db.query(UserRegisterTable.NAME, USER_REG_COLUMN, USER_REG_SELECT, args, null, null, null, SINGLE_ITEM);
         int result = 0;
         if (c.moveToFirst())
             result = c.getInt(0);
@@ -1013,7 +1026,7 @@ public class AppDatabase {
      * @param id       User ID
      * @param register tweet register
      */
-    public void setUserFlags(SQLiteDatabase db, long id, int register) {
+    public void setUserRegister(SQLiteDatabase db, long id, int register) {
         String[] args = {Long.toString(id), Long.toString(homeId)};
 
         ContentValues values = new ContentValues(3);
@@ -1023,6 +1036,7 @@ public class AppDatabase {
 
         int cnt = db.update(UserRegisterTable.NAME, values, USER_REG_SELECT, args);
         if (cnt == 0) {
+            // create new entry if there isn't one
             db.insert(UserRegisterTable.NAME, null, values);
         }
     }
@@ -1080,8 +1094,7 @@ public class AppDatabase {
      * @return array of media links
      */
     private String[] parseMedia(String media) {
-        Pattern splitter = Pattern.compile(";");
-        return splitter.split(media);
+        return SEPARATOR.split(media);
     }
 
     /**
