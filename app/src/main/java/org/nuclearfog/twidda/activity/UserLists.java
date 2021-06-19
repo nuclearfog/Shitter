@@ -49,7 +49,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
     private FragmentAdapter adapter;
     private GlobalSettings settings;
     private ViewPager pager;
-    private TabLayout mTab;
+    private TabLayout tabLayout;
 
     private boolean isHome = false;
 
@@ -61,20 +61,20 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         View root = findViewById(R.id.list_view);
         Toolbar toolbar = findViewById(R.id.list_toolbar);
         pager = findViewById(R.id.list_pager);
-        mTab = findViewById(R.id.list_tab);
+        tabLayout = findViewById(R.id.list_tab);
 
         toolbar.setTitle(R.string.list_appbar);
         setSupportActionBar(toolbar);
         adapter = new FragmentAdapter(getSupportFragmentManager());
-        mTab.setupWithViewPager(pager);
+        tabLayout.setupWithViewPager(pager);
 
         settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(settings, root);
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         pager.setAdapter(adapter);
-        mTab.setupWithViewPager(pager);
-        mTab.addOnTabSelectedListener(this);
+        tabLayout.setupWithViewPager(pager);
+        tabLayout.addOnTabSelectedListener(this);
 
         Intent data = getIntent();
         long ownerId = data.getLongExtra(KEY_USERLIST_OWNER_ID, -1);
@@ -82,7 +82,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         isHome = ownerId == settings.getCurrentUserId();
         adapter.setupListPage(ownerId, ownerName);
 
-        AppStyles.setTabIcons(mTab, settings, R.array.userlist_tab_icons);
+        AppStyles.setTabIcons(tabLayout, settings, R.array.userlist_tab_icons);
     }
 
 
@@ -97,7 +97,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
 
     @Override
     public void onBackPressed() {
-        if (mTab.getSelectedTabPosition() > 0) {
+        if (tabLayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
         } else {
             super.onBackPressed();

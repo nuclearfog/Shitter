@@ -14,7 +14,8 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/search_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/search_pager"

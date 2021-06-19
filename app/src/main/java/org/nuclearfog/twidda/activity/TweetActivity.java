@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -483,12 +482,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
         if (tweetUpdate.retweeted()) {
-            AppStyles.setDrawableColor(rtwButton, Color.GREEN);
+            AppStyles.setDrawableColor(rtwButton, settings.getRetweetIconColor());
         } else {
             AppStyles.setDrawableColor(rtwButton, settings.getIconColor());
         }
         if (tweetUpdate.favored()) {
-            AppStyles.setDrawableColor(favButton, Color.YELLOW);
+            AppStyles.setDrawableColor(favButton, settings.getFavoriteIconColor());
         } else {
             AppStyles.setDrawableColor(favButton, settings.getIconColor());
         }

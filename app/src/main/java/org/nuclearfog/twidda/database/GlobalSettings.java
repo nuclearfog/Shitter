@@ -72,6 +72,11 @@ public class GlobalSettings {
     private static final String POPUP_COLOR = "tweet_color";
     private static final String CARD_COLOR = "card_color";
     private static final String ICON_COLOR = "icon_color";
+    private static final String RT_COLOR = "retweet_color";
+    private static final String FV_COLOR = "favorite_color";
+    private static final String FOLLOW_COLOR = "following_color";
+    private static final String F_REQ_COLOR = "following_pending_color";
+
     private static final String INDEX_FONT = "index_font";
     private static final String LIST_SIZE = "preload";
     private static final String IMAGE_LOAD = "image_load";
@@ -111,6 +116,10 @@ public class GlobalSettings {
     private static final int DEFAULT_POPUP_COLOR = 0xff19aae8;
     private static final int DEFAULT_CARD_COLOR = 0x40000000;
     private static final int DEFAULT_ICON_COLOR = Color.WHITE;
+    private static final int DEFAULT_RT_ICON_COLOR = Color.GREEN;
+    private static final int DEFAULT_FV_ICON_COLOR = Color.YELLOW;
+    private static final int DEFAULT_FR_ICON_COLOR = Color.YELLOW;
+    private static final int DEFAULT_FW_ICON_COLOR = Color.CYAN;
     private static final int DEFAULT_LOCATION_ID = 1;
     private static final String DEFAULT_LOCATION_NAME = "Worldwide";
 
@@ -134,6 +143,10 @@ public class GlobalSettings {
     private int card_color;
     private int icon_color;
     private int popup_color;
+    private int rt_color;
+    private int fv_color;
+    private int fp_color;
+    private int fw_color;
     private int listSize;
     private long userId;
 
@@ -290,12 +303,106 @@ public class GlobalSettings {
     }
 
     /**
+     * get icon color of the favorite icon
+     *
+     * @return icon color
+     */
+    public int getFavoriteIconColor() {
+        return fv_color;
+    }
+
+    /**
+     * set icon color of the favorite icon (enabled)
+     *
+     * @param color icon color
+     */
+    public void setFavoriteIconColor(int color) {
+        fv_color = color;
+
+        Editor edit = settings.edit();
+        edit.putInt(FV_COLOR, color);
+        edit.apply();
+    }
+
+    /**
+     * get retweet icon color
+     *
+     * @return icon color
+     */
+    public int getRetweetIconColor() {
+        return rt_color;
+    }
+
+    /**
+     * set retweet icon color (enabled)
+     *
+     * @param color icon color
+     */
+    public void setRetweetIconColor(int color) {
+        rt_color = color;
+
+        Editor edit = settings.edit();
+        edit.putInt(RT_COLOR, color);
+        edit.apply();
+    }
+
+    /**
+     * get icon color of the follow button
+     *
+     * @return icon color
+     */
+    public int getFollowPendingColor() {
+        return fp_color;
+    }
+
+    /**
+     * set icon color of the follow button
+     *
+     * @param color icon color
+     */
+    public void setFollowPendingColor(int color) {
+        fp_color = color;
+
+        Editor edit = settings.edit();
+        edit.putInt(F_REQ_COLOR, color);
+        edit.apply();
+    }
+
+    /**
+     * get icon color for the follow button
+     *
+     * @return icon color
+     */
+    public int getFollowIconColor() {
+        return fw_color;
+    }
+
+    /**
+     * set icon color for the follow button
+     *
+     * @param color color value for the follow button if enabled
+     */
+    public void setFollowIconColor(int color) {
+        fv_color = color;
+
+        Editor edit = settings.edit();
+        edit.putInt(FOLLOW_COLOR, color);
+        edit.apply();
+    }
+
+    /**
      * return an array of all installed colors
      *
      * @return array of colors
      */
     public int[] getAllColors() {
-        return new int[]{background_color, font_color, popup_color, highlight_color, card_color, icon_color};
+        return new int[]{
+                background_color, font_color,
+                popup_color, highlight_color,
+                card_color, icon_color,
+                rt_color, fv_color,
+                fp_color, fw_color
+        };
     }
 
     /**
@@ -773,6 +880,10 @@ public class GlobalSettings {
         popup_color = settings.getInt(POPUP_COLOR, DEFAULT_POPUP_COLOR);
         card_color = settings.getInt(CARD_COLOR, DEFAULT_CARD_COLOR);
         icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
+        rt_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
+        fv_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
+        fp_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
+        fw_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
         indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
         isProxyEnabled = settings.getBoolean(PROXY_SET, false);

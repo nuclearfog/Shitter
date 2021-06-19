@@ -49,39 +49,23 @@
                         android:orientation="horizontal"
                         android:baselineAligned="false">
 
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/color_background"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/settings_button_color_height"
-                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_background"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            style="@style/ColorButton" />
 
-                            <Button
-                                android:id="@+id/color_background"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                                android:text="@string/settings_background"
-                                style="@style/ColorButton" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/color_font"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/settings_button_color_height"
-                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_font"
                             android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <Button
-                                android:id="@+id/color_font"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                                android:text="@string/settings_font"
-                                style="@style/ColorButton" />
-
-                        </LinearLayout>
+                            style="@style/ColorButton" />
 
                     </LinearLayout>
 
@@ -92,39 +76,23 @@
                         android:orientation="horizontal"
                         android:baselineAligned="false">
 
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/color_popup"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/settings_button_color_height"
-                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_button_popup"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            style="@style/ColorButton" />
 
-                            <Button
-                                android:id="@+id/color_popup"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                                android:text="@string/settings_button_popup"
-                                style="@style/ColorButton" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/highlight_color"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/settings_button_color_height"
-                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/highlight"
                             android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <Button
-                                android:id="@+id/highlight_color"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                                android:text="@string/highlight"
-                                style="@style/ColorButton" />
-
-                        </LinearLayout>
+                            style="@style/ColorButton" />
 
                     </LinearLayout>
 
@@ -135,39 +103,77 @@
                         android:orientation="horizontal"
                         android:baselineAligned="false">
 
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/color_card"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/settings_button_color_height"
-                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_color_card"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            style="@style/ColorButton" />
 
-                            <Button
-                                android:id="@+id/color_card"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                                android:text="@string/settings_color_card"
-                                style="@style/ColorButton" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <Button
+                            android:id="@+id/color_icon"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/settings_button_color_height"
-                            android:layout_margin="@dimen/settings_button_margin"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_icon_color"
                             android:layout_weight="1"
-                            android:orientation="vertical">
+                            style="@style/ColorButton" />
 
-                            <Button
-                                android:id="@+id/color_icon"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="@dimen/settings_button_color_edge_thickness"
-                                android:text="@string/settings_icon_color"
-                                style="@style/ColorButton" />
+                    </LinearLayout>
 
-                        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <Button
+                            android:id="@+id/color_rt"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_rt_icon_color"
+                            android:layout_weight="1"
+                            style="@style/ColorButton" />
+
+                        <Button
+                            android:id="@+id/color_fav"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_fv_icon_color"
+                            android:layout_weight="1"
+                            style="@style/ColorButton" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:baselineAligned="false">
+
+                        <Button
+                            android:id="@+id/color_f_req"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_follow_req_color"
+                            android:layout_weight="1"
+                            style="@style/ColorButton" />
+
+                        <Button
+                            android:id="@+id/color_follow"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="@dimen/settings_color_button_margin"
+                            android:text="@string/settings_follow_color"
+                            android:layout_weight="1"
+                            style="@style/ColorButton" />
 
                     </LinearLayout>
 

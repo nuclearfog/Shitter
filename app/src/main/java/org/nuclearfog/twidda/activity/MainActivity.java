@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     // Views and dialogs
     private Dialog loadingCircle;
-    private TabLayout tablayout;
+    private TabLayout tabLayout;
     private ViewPager pager;
     private View root;
 
@@ -85,12 +85,12 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         setContentView(R.layout.page_main);
         Toolbar toolbar = findViewById(R.id.home_toolbar);
         pager = findViewById(R.id.home_pager);
-        tablayout = findViewById(R.id.home_tab);
+        tabLayout = findViewById(R.id.home_tab);
         root = findViewById(R.id.main_layout);
         loadingCircle = new ProgressDialog(this, null);
 
         settings = GlobalSettings.getInstance(this);
-        tablayout.setupWithViewPager(pager);
+        tabLayout.setupWithViewPager(pager);
         pager.setOffscreenPageLimit(3);
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        tablayout.addOnTabSelectedListener(this);
+        tabLayout.addOnTabSelectedListener(this);
     }
 
 
@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
             startActivityForResult(loginIntent, REQUEST_APP_LOGIN);
         } else if (adapter.isEmpty()) {
             adapter.setupForHomePage();
-            AppStyles.setTabIcons(tablayout, settings, R.array.home_tab_icons);
+            AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
             if (getIntent().getData() != null) {
                 LinkLoader linkLoader = new LinkLoader(this);
                 linkLoader.execute(getIntent().getData());
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
             case REQUEST_APP_SETTINGS:
                 AppStyles.setTheme(settings, root);
-                AppStyles.setTabIcons(tablayout, settings, R.array.home_tab_icons);
+                AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
                 if (returnCode == RETURN_APP_LOGOUT) {
                     adapter.clear();
                     pager.setAdapter(adapter);
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         MenuItem setting = m.findItem(R.id.action_settings);
         MenuItem account = m.findItem(R.id.action_account);
 
-        switch (tablayout.getSelectedTabPosition()) {
+        switch (tabLayout.getSelectedTabPosition()) {
             case 0:
                 profile.setVisible(true);
                 search.setVisible(false);
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
 
     @Override
     public void onBackPressed() {
-        if (tablayout.getSelectedTabPosition() > 0) {
+        if (tabLayout.getSelectedTabPosition() > 0) {
             pager.setCurrentItem(0);
         } else {
             super.onBackPressed();

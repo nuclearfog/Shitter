@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Color;
 import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -285,12 +284,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             tweetItem.textViews[6].setText(formatCreationTime(tweet.getTime()));
 
             if (tweet.retweeted()) {
-                tweetItem.rtIcon.setColorFilter(Color.GREEN, SRC_IN);
+                tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
             } else {
                 tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }
             if (tweet.favored()) {
-                tweetItem.favIcon.setColorFilter(Color.YELLOW, SRC_IN);
+                tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
             } else {
                 tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }

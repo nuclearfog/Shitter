@@ -122,12 +122,12 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public static final int RETURN_PROFILE_CHANGED = 0xF5C0E570;
 
     /**
-     * background color mask for TextView backgrounds
+     * background color transparency mask for TextView backgrounds
      */
     private static final int TEXT_TRANSPARENCY = 0xafffffff;
 
     /**
-     * background color mask for toolbar background
+     * background color transparency mask for toolbar background
      */
     public static final int TOOLBAR_TRANSPARENCY = 0x5fffffff;
 
@@ -192,6 +192,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         user_bio.setLinkTextColor(settings.getHighlightColor());
         AppStyles.setTheme(settings, root);
         user_website.setTextColor(settings.getHighlightColor());
+        tabLayout.setBackgroundColor(Color.TRANSPARENT);
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -283,7 +284,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (user != null) {
             if (user.followRequested()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
-                AppStyles.setMenuItemColor(followIcon, Color.YELLOW);
+                AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
                 followIcon.setTitle(R.string.menu_follow_requested);
             }
             if (user.isLocked() && !user.isCurrentUser()) {
@@ -308,7 +309,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             if (relation.isFriend()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem listItem = m.findItem(R.id.profile_lists);
-                AppStyles.setMenuItemColor(followIcon, Color.CYAN);
+                AppStyles.setMenuItemColor(followIcon, settings.getFollowIconColor());
                 followIcon.setTitle(R.string.menu_user_unfollow);
                 listItem.setVisible(true);
             }

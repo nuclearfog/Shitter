@@ -3,7 +3,6 @@ package org.nuclearfog.twidda.activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.Menu;
@@ -64,16 +63,6 @@ import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 public class AppSettings extends AppCompatActivity implements OnClickListener, OnDismissListener, OnSeekBarChangeListener,
         OnCheckedChangeListener, OnItemSelectedListener, OnConfirmListener, OnColorChangedListener {
 
-    private enum ColorMode {
-        BACKGROUND,
-        FONTCOLOR,
-        HIGHLIGHT,
-        POPUPCOLOR,
-        ICONCOLOR,
-        CARDCOLOR,
-        NONE
-    }
-
     private GlobalSettings settings;
     private LocationLoader locationAsync;
     private LocationAdapter locationAdapter;
@@ -82,13 +71,32 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo;
     private View root, layout_hq_image, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
-    private Button background, fontColor, popupColor, highlight, cardColor, iconColor;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
     private Spinner locationSpinner;
     private TextView list_size;
+    private Button[] colorButtons = new Button[ColorMode.values().length];
 
-    private ColorMode mode = ColorMode.NONE;
+    private ColorMode mode;
     private int color = 0;
+
+    private enum ColorMode {
+        BACKGROUND(0),
+        FONTCOLOR(1),
+        POPUPCOLOR(2),
+        HIGHLIGHT(3),
+        CARDCOLOR(4),
+        ICONCOLOR(5),
+        RETWEETCOLOR(6),
+        FAVORITECOLOR(7),
+        FOLLOWPENING(8),
+        FOLLOWCOLOR(9);
+
+        final int INDEX;
+
+        ColorMode(int idx) {
+            this.INDEX = idx;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -110,12 +118,16 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         hqImage = findViewById(R.id.settings_image_hq);
         enableAPI = findViewById(R.id.settings_set_custom_keys);
         locationSpinner = findViewById(R.id.spinner_woeid);
-        background = findViewById(R.id.color_background);
-        fontColor = findViewById(R.id.color_font);
-        popupColor = findViewById(R.id.color_popup);
-        highlight = findViewById(R.id.highlight_color);
-        cardColor = findViewById(R.id.color_card);
-        iconColor = findViewById(R.id.color_icon);
+        colorButtons[ColorMode.BACKGROUND.INDEX] = findViewById(R.id.color_background);
+        colorButtons[ColorMode.FONTCOLOR.INDEX] = findViewById(R.id.color_font);
+        colorButtons[ColorMode.POPUPCOLOR.INDEX] = findViewById(R.id.color_popup);
+        colorButtons[ColorMode.HIGHLIGHT.INDEX] = findViewById(R.id.highlight_color);
+        colorButtons[ColorMode.CARDCOLOR.INDEX] = findViewById(R.id.color_card);
+        colorButtons[ColorMode.ICONCOLOR.INDEX] = findViewById(R.id.color_icon);
+        colorButtons[ColorMode.RETWEETCOLOR.INDEX] = findViewById(R.id.color_rt);
+        colorButtons[ColorMode.FAVORITECOLOR.INDEX] = findViewById(R.id.color_fav);
+        colorButtons[ColorMode.FOLLOWPENING.INDEX] = findViewById(R.id.color_f_req);
+        colorButtons[ColorMode.FOLLOWCOLOR.INDEX] = findViewById(R.id.color_follow);
         proxyAddr = findViewById(R.id.edit_proxy_address);
         proxyPort = findViewById(R.id.edit_proxy_port);
         proxyUser = findViewById(R.id.edit_proxyuser);
@@ -187,12 +199,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         logoutDialog = new ConfirmDialog(this, DialogType.APP_LOG_OUT, this);
         appInfo = new InfoDialog(this);
 
-        background.setOnClickListener(this);
-        fontColor.setOnClickListener(this);
-        popupColor.setOnClickListener(this);
-        highlight.setOnClickListener(this);
-        cardColor.setOnClickListener(this);
-        iconColor.setOnClickListener(this);
+        for (Button button : colorButtons)
+            button.setOnClickListener(this);
         logout.setOnClickListener(this);
         delButton.setOnClickListener(this);
         toggleImg.setOnCheckedChangeListener(this);
@@ -333,6 +341,30 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             color = settings.getIconColor();
             setColor(color, false);
         }
+        // set retweet icon color
+        else if (v.getId() == R.id.color_rt) {
+            mode = ColorMode.RETWEETCOLOR;
+            color = settings.getRetweetIconColor();
+            setColor(color, false);
+        }
+        // set favorite icon color
+        else if (v.getId() == R.id.color_fav) {
+            mode = ColorMode.FAVORITECOLOR;
+            color = settings.getFavoriteIconColor();
+            setColor(color, false);
+        }
+        // set follow icon color
+        else if (v.getId() == R.id.color_f_req) {
+            mode = ColorMode.FOLLOWPENING;
+            color = settings.getFollowPendingColor();
+            setColor(color, false);
+        }
+        // set follow icon color
+        else if (v.getId() == R.id.color_follow) {
+            mode = ColorMode.FOLLOWCOLOR;
+            color = settings.getFollowIconColor();
+            setColor(color, false);
+        }
     }
 
 
@@ -346,6 +378,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                     if (settings.isLoggedIn()) {
                         locationAdapter.notifyDataSetChanged();
                     }
+                    AppStyles.setTheme(settings, root);
+                    setButtonColors();
                     break;
 
                 case FONTCOLOR:
@@ -354,14 +388,18 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                     if (settings.isLoggedIn()) {
                         locationAdapter.notifyDataSetChanged();
                     }
+                    AppStyles.setTheme(settings, root);
+                    setButtonColors();
                     break;
 
                 case POPUPCOLOR:
                     settings.setPopupColor(color);
+                    AppStyles.setColorButton(colorButtons[mode.INDEX], color);
                     break;
 
                 case HIGHLIGHT:
                     settings.setHighlightColor(color);
+                    AppStyles.setColorButton(colorButtons[mode.INDEX], color);
                     break;
 
                 case CARDCOLOR:
@@ -370,15 +408,37 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                     if (settings.isLoggedIn()) {
                         locationAdapter.notifyDataSetChanged();
                     }
+                    AppStyles.setTheme(settings, root);
+                    setButtonColors();
                     break;
 
                 case ICONCOLOR:
                     settings.setIconColor(color);
                     invalidateOptionsMenu();
+                    AppStyles.setTheme(settings, root);
+                    setButtonColors();
+                    break;
+
+                case RETWEETCOLOR:
+                    settings.setRetweetIconColor(color);
+                    AppStyles.setColorButton(colorButtons[mode.INDEX], color);
+                    break;
+
+                case FAVORITECOLOR:
+                    settings.setFavoriteIconColor(color);
+                    AppStyles.setColorButton(colorButtons[mode.INDEX], color);
+                    break;
+
+                case FOLLOWPENING:
+                    settings.setFollowPendingColor(color);
+                    AppStyles.setColorButton(colorButtons[mode.INDEX], color);
+                    break;
+
+                case FOLLOWCOLOR:
+                    settings.setFollowIconColor(color);
+                    AppStyles.setColorButton(colorButtons[mode.INDEX], color);
                     break;
             }
-            AppStyles.setTheme(settings, root);
-            setButtonColors();
         }
     }
 
@@ -530,16 +590,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      * setup all color buttons color
      */
     private void setButtonColors() {
-        Button[] colorButtons = {background, fontColor, popupColor, highlight, cardColor, iconColor};
         int[] colors = settings.getAllColors();
         for (int i = 0; i < colorButtons.length; i++) {
-            // set button color
-            colorButtons[i].setBackgroundColor(colors[i]);
-            // invert font & border color
-            int invertedColor = (colors[i] | Color.BLACK) ^ 0xffffff;
-            colorButtons[i].setTextColor(invertedColor);
-            View border = (View) colorButtons[i].getParent();
-            border.setBackgroundColor(invertedColor);
+            AppStyles.setColorButton(colorButtons[i], colors[i]);
         }
     }
 

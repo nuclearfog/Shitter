@@ -3,12 +3,15 @@ package org.nuclearfog.twidda.backend.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -341,7 +344,7 @@ public final class AppStyles {
         float toolbarRatio = displaySize.x / activity.getResources().getDimension(R.dimen.profile_toolbar_height);
         Bitmap image = ((BitmapDrawable) background.getDrawable()).getBitmap();
 
-        BlurTransformation blur = new BlurTransformation(background.getContext(), 5);
+        BlurTransformation blur = new BlurTransformation(activity, 5);
         CropTransformation crop = new CropTransformation(image.getWidth(), (int) (image.getWidth() / toolbarRatio), CENTER, TOP);
 
         Bitmap result = blur.transform(crop.transform(image.copy(ARGB_8888, true)));
@@ -369,5 +372,27 @@ public final class AppStyles {
         if (drawable != null) {
             drawable.mutate().setColorFilter(new PorterDuffColorFilter(color, SRC_IN));
         }
+    }
+
+    /**
+     * set color button drawable with corner and text
+     */
+    public static void setColorButton(Button button, int color) {
+        Drawable d = button.getBackground();
+        GradientDrawable gradient;
+        Resources resources = button.getResources();
+        int width = (int) resources.getDimension(R.dimen.settings_color_button_stroke_width);
+        int invColor = (color | Color.BLACK) ^ 0xffffff;
+        if (d instanceof GradientDrawable) {
+            gradient = (GradientDrawable) d;
+        } else {
+            float radius = resources.getDimension(R.dimen.settings_color_button_corner_radius);
+            gradient = new GradientDrawable();
+            gradient.setCornerRadius(radius);
+            button.setBackground(gradient);
+        }
+        gradient.setColor(color);
+        gradient.setStroke(width, invColor);
+        button.setTextColor(invColor);
     }
 }
