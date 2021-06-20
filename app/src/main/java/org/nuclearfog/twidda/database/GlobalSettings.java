@@ -76,7 +76,6 @@ public class GlobalSettings {
     private static final String FV_COLOR = "favorite_color";
     private static final String FOLLOW_COLOR = "following_color";
     private static final String F_REQ_COLOR = "following_pending_color";
-
     private static final String INDEX_FONT = "index_font";
     private static final String LIST_SIZE = "preload";
     private static final String IMAGE_LOAD = "image_load";
@@ -136,17 +135,17 @@ public class GlobalSettings {
     private boolean customAPIKey;
     private boolean toolbarOverlap;
     private boolean linkPreview;
-    private int indexFont;
     private int background_color;
     private int font_color;
     private int highlight_color;
     private int card_color;
     private int icon_color;
     private int popup_color;
-    private int rt_color;
-    private int fv_color;
-    private int fp_color;
-    private int fw_color;
+    private int retweet_color;
+    private int favorite_color;
+    private int request_color;
+    private int follow_color;
+    private int indexFont;
     private int listSize;
     private long userId;
 
@@ -308,7 +307,7 @@ public class GlobalSettings {
      * @return icon color
      */
     public int getFavoriteIconColor() {
-        return fv_color;
+        return favorite_color;
     }
 
     /**
@@ -317,7 +316,7 @@ public class GlobalSettings {
      * @param color icon color
      */
     public void setFavoriteIconColor(int color) {
-        fv_color = color;
+        favorite_color = color;
 
         Editor edit = settings.edit();
         edit.putInt(FV_COLOR, color);
@@ -330,7 +329,7 @@ public class GlobalSettings {
      * @return icon color
      */
     public int getRetweetIconColor() {
-        return rt_color;
+        return retweet_color;
     }
 
     /**
@@ -339,7 +338,7 @@ public class GlobalSettings {
      * @param color icon color
      */
     public void setRetweetIconColor(int color) {
-        rt_color = color;
+        retweet_color = color;
 
         Editor edit = settings.edit();
         edit.putInt(RT_COLOR, color);
@@ -352,7 +351,7 @@ public class GlobalSettings {
      * @return icon color
      */
     public int getFollowPendingColor() {
-        return fp_color;
+        return request_color;
     }
 
     /**
@@ -361,7 +360,7 @@ public class GlobalSettings {
      * @param color icon color
      */
     public void setFollowPendingColor(int color) {
-        fp_color = color;
+        request_color = color;
 
         Editor edit = settings.edit();
         edit.putInt(F_REQ_COLOR, color);
@@ -374,7 +373,7 @@ public class GlobalSettings {
      * @return icon color
      */
     public int getFollowIconColor() {
-        return fw_color;
+        return follow_color;
     }
 
     /**
@@ -383,7 +382,7 @@ public class GlobalSettings {
      * @param color color value for the follow button if enabled
      */
     public void setFollowIconColor(int color) {
-        fv_color = color;
+        follow_color = color;
 
         Editor edit = settings.edit();
         edit.putInt(FOLLOW_COLOR, color);
@@ -400,8 +399,8 @@ public class GlobalSettings {
                 background_color, font_color,
                 popup_color, highlight_color,
                 card_color, icon_color,
-                rt_color, fv_color,
-                fp_color, fw_color
+                retweet_color, favorite_color,
+                request_color, follow_color
         };
     }
 
@@ -880,10 +879,10 @@ public class GlobalSettings {
         popup_color = settings.getInt(POPUP_COLOR, DEFAULT_POPUP_COLOR);
         card_color = settings.getInt(CARD_COLOR, DEFAULT_CARD_COLOR);
         icon_color = settings.getInt(ICON_COLOR, DEFAULT_ICON_COLOR);
-        rt_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
-        fv_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
-        fp_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
-        fw_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
+        retweet_color = settings.getInt(RT_COLOR, DEFAULT_RT_ICON_COLOR);
+        favorite_color = settings.getInt(FV_COLOR, DEFAULT_FV_ICON_COLOR);
+        request_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
+        follow_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
         indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
         isProxyEnabled = settings.getBoolean(PROXY_SET, false);

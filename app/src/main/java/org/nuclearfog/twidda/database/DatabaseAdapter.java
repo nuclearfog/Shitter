@@ -145,6 +145,12 @@ public class DatabaseAdapter {
     private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend"
             + " ON " + TrendTable.NAME + "(" + TrendTable.ID + ");";
 
+    private static final String INDX_TWEET_REG = "CREATE INDEX IF NOT EXISTS idx_tweet_register"
+            + " ON " + TweetRegisterTable.NAME + "(" + TweetRegisterTable.OWNER + "," + TweetRegisterTable.ID + ");";
+
+    private static final String INDX_USER_REG = "CREATE INDEX IF NOT EXISTS idx_user_register"
+            + " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.ID + ");";
+
     /**
      * update for the tweet table
      */
@@ -255,6 +261,8 @@ public class DatabaseAdapter {
         db.execSQL(TABLE_LOGINS);
         db.execSQL(INDX_TWEET);
         db.execSQL(INDX_TREND);
+        db.execSQL(INDX_TWEET_REG);
+        db.execSQL(INDX_USER_REG);
         db.execSQL(TABLE_TWEET_REGISTER);
         db.execSQL(TABLE_USER_REGISTER);
         /// Database just created? set current version

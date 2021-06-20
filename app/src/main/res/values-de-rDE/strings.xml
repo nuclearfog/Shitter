@@ -205,5 +205,5 @@
     <string name="settings_fv_icon_color">Favorit</string>
     <string name="settings_follow_req_color">Anfrage Icon</string>
     <string name="settings_follow_color">Follow Icon</string>
-    <string name="settings_enable_toolbar_overlap">Kompate Profilansicht</string>
+    <string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>
 </resources>
