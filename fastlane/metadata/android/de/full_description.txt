@@ -2,11 +2,11 @@
 <p><br><b>Features:</b></p><ul>
 <li>schneller Zugriff auf Tweets und Benutzerprofile</li>
 <li>anpassbare Farben</li>
-<li>Text-Highlighting</li>
-<li>Bild/Video Upload</li>
-<li>Bild/Video Vorschau</li>
+<li>Bild/Video Upload & Vorschau</li>
 <li>Twitter Trends</li>
 <li>Twitter Suche</li>
 <li>Direktnachrichten</li>
-<li>Twitter-Profile Editor</li>
+<li>Nutzerlisten erstellen und bearbeiten</li>
+<li>Profil Editor</li>
+<li>Multi Account Support</li>
 <li>Proxy Setup</li></ul>
