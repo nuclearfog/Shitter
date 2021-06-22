@@ -210,6 +210,7 @@
     <dimen name="dialog_linkpreview_btn_size">30sp</dimen>
     <dimen name="dialog_linkpreview_margin">4dp</dimen>
     <dimen name="dialog_linkpreview_padding">5dp</dimen>
+    <integer name="dialog_description_line_count">10</integer>
 
     <!--dimens of item_login.xml-->
     <dimen name="login_name_textsize">16sp</dimen>

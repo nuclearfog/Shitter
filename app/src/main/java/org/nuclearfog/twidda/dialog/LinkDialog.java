@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -31,12 +32,11 @@ import static android.widget.Toast.LENGTH_SHORT;
  */
 public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickListener {
 
-    private TextCrawler textCrawler;
-    private ProgressBar loading;
-
     private TextView title, description;
     private ImageView preview;
+    private ProgressBar loading;
 
+    private TextCrawler textCrawler;
     private String url;
 
     /**
@@ -44,7 +44,6 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
      */
     public LinkDialog(Context context) {
         super(context, R.style.AppInfoDialog);
-
         setContentView(R.layout.dialog_link_preview);
         ImageView close = findViewById(R.id.link_preview_close);
         loading = findViewById(R.id.link_preview_progress);
@@ -57,6 +56,7 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
         AppStyles.setProgressColor(loading, settings.getHighlightColor());
         AppStyles.setDrawableColor(close, Color.BLACK);
         title.setTextColor(Color.BLUE);
+        description.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         textCrawler = new TextCrawler();
         close.setOnClickListener(this);
@@ -70,8 +70,8 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
      */
     public void show(String url) {
         super.show();
-        if (title.getText().length() == 0)
-            textCrawler.makePreview(this, url);
+        // load preview
+        textCrawler.makePreview(this, url);
         this.url = url;
     }
 
@@ -86,6 +86,10 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
 
     @Override
     public void onPre() {
+        // reset views
+        title.setText("");
+        description.setText("");
+        preview.setImageResource(0);
         loading.setVisibility(View.VISIBLE);
     }
 

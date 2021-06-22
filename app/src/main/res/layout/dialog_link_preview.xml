@@ -48,7 +48,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="@dimen/dialog_linkpreview_textsize_description"
-        android:maxLines="10"
+        android:maxLines="@integer/dialog_description_line_count"
         android:scrollbars="vertical"
         android:fadeScrollbars="false"
         android:layout_margin="@dimen/dialog_linkpreview_margin"

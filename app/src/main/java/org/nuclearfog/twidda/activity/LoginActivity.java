@@ -41,6 +41,9 @@ import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
  */
 public class LoginActivity extends AppCompatActivity implements OnClickListener {
 
+    /**
+     * request code to open account manager
+     */
     private static final int REQUEST_ACCOUNT_SELECT = 0x384F;
 
     private Registration registerAsync;
@@ -95,6 +98,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     public boolean onCreateOptionsMenu(Menu m) {
         getMenuInflater().inflate(R.menu.login, m);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
+        m.findItem(R.id.login_select_account).setVisible(!settings.isLoggedIn());
         return super.onCreateOptionsMenu(m);
     }
 
@@ -121,6 +125,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
             onSuccess();
         }
     }
+
 
     @Override
     public void onClick(View v) {
