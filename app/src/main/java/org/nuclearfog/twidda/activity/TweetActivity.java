@@ -249,9 +249,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         if (tweet != null) {
             Tweet currentTweet = tweet;
             if (tweet.getEmbeddedTweet() != null)
-                currentTweet = tweet;
-            if (currentTweet.currentUserIsOwner())
-                m.findItem(R.id.delete_tweet).setVisible(true);
+                currentTweet = tweet.getEmbeddedTweet();
+            // enable delete option only if current user owns tweets
+            m.findItem(R.id.delete_tweet).setVisible(currentTweet.currentUserIsOwner());
         }
         return super.onPrepareOptionsMenu(m);
     }
