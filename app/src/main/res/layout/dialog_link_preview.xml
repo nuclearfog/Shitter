@@ -10,21 +10,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:contentDescription="@string/dialog_link_image_preview"
-        app:layout_constraintDimensionRatio="1.0"
-        app:layout_constraintWidth_percent="0.2"
+        android:scaleType="centerCrop"
+        app:layout_constraintDimensionRatio="2.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/link_preview_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dialog_linkpreview_margin"
-        android:maxLines="2"
-        android:textSize="@dimen/dialog_linkpreview_textsize_title"
-        app:layout_constraintStart_toEndOf="@id/link_preview_image"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/link_preview_close" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/link_preview_close"
@@ -32,16 +22,26 @@
         android:layout_height="@dimen/dialog_linkpreview_btn_size"
         android:contentDescription="@string/dialog_link_close"
         android:layout_margin="@dimen/dialog_linkpreview_margin"
-        app:layout_constraintStart_toEndOf="@id/link_preview_title"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/link_preview_title_barrier"
+        android:id="@+id/link_preview_image_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="link_preview_image,link_preview_title,link_preview_close" />
+        app:constraint_referenced_ids="link_preview_image,link_preview_close"
+        app:barrierDirection="bottom" />
+
+    <TextView
+        android:id="@+id/link_preview_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dialog_linkpreview_margin"
+        android:singleLine="true"
+        android:textSize="@dimen/dialog_linkpreview_textsize_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/link_preview_image"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/link_preview_description"
@@ -53,7 +53,7 @@
         android:fadeScrollbars="false"
         android:layout_margin="@dimen/dialog_linkpreview_margin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/link_preview_title_barrier"
+        app:layout_constraintTop_toBottomOf="@id/link_preview_title"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar

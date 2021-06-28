@@ -134,20 +134,26 @@ public class DatabaseAdapter {
             + AccountTable.KEY2 + " TEXT);";
 
     /**
-     * index for tweet table
+     * table index for tweet table
      */
     private static final String INDX_TWEET = "CREATE INDEX IF NOT EXISTS idx_tweet"
             + " ON " + TweetTable.NAME + "(" + TweetTable.USER + ");";
 
     /**
-     * index for trend table
+     * table index for trend table
      */
     private static final String INDX_TREND = "CREATE INDEX IF NOT EXISTS idx_trend"
             + " ON " + TrendTable.NAME + "(" + TrendTable.ID + ");";
 
+    /**
+     * table index for tweet register
+     */
     private static final String INDX_TWEET_REG = "CREATE INDEX IF NOT EXISTS idx_tweet_register"
             + " ON " + TweetRegisterTable.NAME + "(" + TweetRegisterTable.OWNER + "," + TweetRegisterTable.ID + ");";
 
+    /**
+     * table index for user register
+     */
     private static final String INDX_USER_REG = "CREATE INDEX IF NOT EXISTS idx_user_register"
             + " ON " + UserRegisterTable.NAME + "(" + UserRegisterTable.OWNER + "," + UserRegisterTable.ID + ");";
 

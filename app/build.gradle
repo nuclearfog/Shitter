@@ -38,8 +38,8 @@ android {
 
 proguardDictionaries {
     dictionaryNames = ['dict/class-dictionary', 'dict/package-dictionary', 'dict/obfuscation-dictionary']
-    minLineLength 1 // minimum package name length
-    maxLineLength 6 // maximum package name length
+    minLineLength 4 // minimum package name length
+    maxLineLength 8 // maximum package name length
     linesCountInDictionary 3000 // maximum class count
 }
 

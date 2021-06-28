@@ -24,6 +24,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.widget.Toast.LENGTH_SHORT;
+import static com.squareup.picasso.NetworkPolicy.NO_STORE;
 
 /**
  * dialog class to show link preview
@@ -105,8 +106,10 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
             if (!sourceContent.getImages().isEmpty()) {
                 // load first image as preview
                 String link = sourceContent.getImages().get(0);
-                if (link != null && link.startsWith("https://"))
-                    Picasso.get().load(link).into(preview);
+                if (link != null && link.startsWith("https://")) {
+                    // load image without caching
+                    Picasso.get().load(link).networkPolicy(NO_STORE).into(preview);
+                }
             } else {
                 // no image preview
                 preview.setVisibility(View.GONE);
