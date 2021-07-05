@@ -29,6 +29,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/profile_lists"
+        android:visible="false"
         android:title="@string/menu_goto_lists" />
     <item
         android:id="@+id/profile_settings"

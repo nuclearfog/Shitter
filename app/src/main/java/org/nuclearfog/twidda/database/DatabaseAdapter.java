@@ -259,18 +259,20 @@ public class DatabaseAdapter {
      * initialize tables if there aren't any
      */
     private void initTables() {
+        // create tables
         db.execSQL(TABLE_USER);
         db.execSQL(TABLE_TWEET);
         db.execSQL(TABLE_FAVORS);
         db.execSQL(TABLE_TRENDS);
         db.execSQL(TABLE_MESSAGES);
         db.execSQL(TABLE_LOGINS);
+        db.execSQL(TABLE_TWEET_REGISTER);
+        db.execSQL(TABLE_USER_REGISTER);
+        // create index
         db.execSQL(INDX_TWEET);
         db.execSQL(INDX_TREND);
         db.execSQL(INDX_TWEET_REG);
         db.execSQL(INDX_USER_REG);
-        db.execSQL(TABLE_TWEET_REGISTER);
-        db.execSQL(TABLE_USER_REGISTER);
         /// Database just created? set current version
         if (db.getVersion() == 0) {
             db.setVersion(DB_VERSION);

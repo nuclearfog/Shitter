@@ -287,9 +287,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
                 followIcon.setTitle(R.string.menu_follow_requested);
             }
-            if (user.isLocked() && !user.isCurrentUser()) {
+            if (user.isCurrentUser() || !user.isLocked()) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
-                listItem.setVisible(false);
+                listItem.setVisible(true);
             }
             if (user.isCurrentUser()) {
                 MenuItem dmIcon = m.findItem(R.id.profile_message);

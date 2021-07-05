@@ -10,8 +10,8 @@ android {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
         targetSdkVersion 30
-        versionCode 43
-        versionName '1.9.1'
+        versionCode 44
+        versionName '1.9.2'
         // limiting language support for smaller APK size
         resConfigs 'en', 'de-rDE', 'zh-rCN'
         vectorDrawables.useSupportLibrary true
@@ -53,7 +53,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    //noinspection GradleDependency
+    implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.github.open-android:Picasso-transformations:0.1.0'
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
     implementation 'com.github.nuclearfog:ZoomView:1.0.2'
