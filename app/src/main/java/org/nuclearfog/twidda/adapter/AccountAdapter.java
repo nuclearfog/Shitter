@@ -23,6 +23,9 @@ import java.util.List;
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_CREATED;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_SCR_NAME;
+import static org.nuclearfog.twidda.adapter.holder.LoginHolder.IDX_USERNAME;
 
 /**
  * adapter for {@link AccountFragment}
@@ -78,11 +81,11 @@ public class AccountAdapter extends Adapter<LoginHolder> {
         Account account = data.get(position);
         User user = account.getUser();
         String date = StringTools.formatCreationTime(account.getLoginDate());
-        holder.date.setText(date);
+        holder.text[IDX_CREATED].setText(date);
         if (user != null) {
             // set profile information
-            holder.username.setText(user.getUsername());
-            holder.screenname.setText(user.getScreenname());
+            holder.text[IDX_USERNAME].setText(user.getUsername());
+            holder.text[IDX_SCR_NAME].setText(user.getScreenname());
             // set profile image
             if (settings.imagesEnabled()) {
                 String pbLink = user.getImageLink();
@@ -92,6 +95,11 @@ public class AccountAdapter extends Adapter<LoginHolder> {
                 Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
                         .error(R.drawable.no_image).into(holder.profile);
             }
+        } else {
+            holder.profile.setImageResource(0);
+            holder.text[IDX_USERNAME].setText(R.string.account_user_unnamed);
+            holder.text[IDX_SCR_NAME].setText(R.string.account_user_id_prefix);
+            holder.text[IDX_SCR_NAME].append(Long.toString(account.getId()));
         }
     }
 

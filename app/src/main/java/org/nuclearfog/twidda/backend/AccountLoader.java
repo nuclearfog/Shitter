@@ -46,13 +46,14 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
 
     @Override
     protected List<Account> doInBackground(Account... param) {
+        List<Account> result = null;
         try {
             // remove account if parameter is set
             if (param != null && param.length > 0) {
                 database.removeLogin(param[0].getId());
             }
             // get registered users
-            List<Account> result = database.getLogins();
+            result = database.getLogins();
             // download user information
             if (!result.isEmpty()) {
                 // get all user IDs
@@ -69,13 +70,12 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
                     }
                 }
             }
-            return result;
         } catch (EngineException err) {
             this.err = err;
         } catch (Exception err) {
             err.printStackTrace();
         }
-        return null;
+        return result;
     }
 
 

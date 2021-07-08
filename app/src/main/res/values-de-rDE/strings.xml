@@ -206,4 +206,5 @@
     <string name="settings_follow_req_color">Anfrage Icon</string>
     <string name="settings_follow_color">Follow Icon</string>
     <string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>
+    <string name="account_user_unnamed">\'unbenannt\'</string>
 </resources>

@@ -212,8 +212,9 @@
     <dimen name="dialog_linkpreview_padding">5dp</dimen>
     <integer name="dialog_description_line_count">10</integer>
 
-    <!--dimens of item_login.xml-->
-    <dimen name="login_name_textsize">16sp</dimen>
+    <!--dimens of item_account.xml-->
+    <dimen name="login_name_textsize_big">14sp</dimen>
+    <dimen name="login_name_textsize">12sp</dimen>
     <dimen name="login_layout_padding">8dp</dimen>
     <dimen name="login_cross_size">36dp</dimen>
     <dimen name="login_image_size">64dp</dimen>

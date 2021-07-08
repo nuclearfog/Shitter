@@ -230,5 +230,7 @@
     <string name="confirm_remove_account">Remove account from list?</string>
     <string name="menu_select_account">select account</string>
     <string name="menu_add_account">add account</string>
+    <string name="account_user_id_prefix" translatable="false">User ID:</string>
+    <string name="account_user_unnamed">\'unnamed\'</string>
 
 </resources>

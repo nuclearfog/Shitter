@@ -32,7 +32,8 @@
             android:id="@+id/item_login_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/login_name_textsize"
+            android:singleLine="true"
+            android:textSize="@dimen/login_name_textsize_big"
             app:layout_constraintStart_toEndOf="@id/item_login_image_barrier"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_login_button_barrier" />
@@ -41,6 +42,7 @@
             android:id="@+id/item_login_screenname"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:textSize="@dimen/login_name_textsize"
             app:layout_constraintStart_toEndOf="@id/item_login_image_barrier"
             app:layout_constraintTop_toBottomOf="@id/item_login_username"
@@ -53,6 +55,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@id/item_login_image_barrier"
             app:layout_constraintTop_toBottomOf="@id/item_login_screenname"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/item_login_button_barrier" />
 
         <androidx.constraintlayout.widget.Barrier

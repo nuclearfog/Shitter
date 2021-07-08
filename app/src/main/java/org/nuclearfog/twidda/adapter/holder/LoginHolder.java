@@ -22,29 +22,31 @@ import static android.graphics.PorterDuff.Mode.SRC_IN;
  */
 public class LoginHolder extends ViewHolder {
 
+    public static final int IDX_USERNAME = 0;
+    public static final int IDX_SCR_NAME = 1;
+    public static final int IDX_CREATED = 2;
+
     public final ImageView profile;
-    public final TextView username, screenname, date;
     public final ImageButton remove;
+    public final TextView[] text = new TextView[3];
 
     /**
      *
      */
     public LoginHolder(ViewGroup parent, GlobalSettings settings) {
-        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_login, parent, false));
+        super(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account, parent, false));
         // get views
         CardView background = (CardView) itemView;
-        username = itemView.findViewById(R.id.item_login_username);
-        screenname = itemView.findViewById(R.id.item_login_screenname);
-        date = itemView.findViewById(R.id.item_login_createdAt);
+        text[IDX_USERNAME] = itemView.findViewById(R.id.item_login_username);
+        text[IDX_SCR_NAME] = itemView.findViewById(R.id.item_login_screenname);
+        text[IDX_CREATED] = itemView.findViewById(R.id.item_login_createdAt);
         remove = itemView.findViewById(R.id.item_login_remove);
         profile = itemView.findViewById(R.id.item_login_image);
         // theme views
-        screenname.setTextColor(settings.getFontColor());
-        screenname.setTypeface(settings.getTypeFace());
-        screenname.setTextColor(settings.getFontColor());
-        screenname.setTypeface(settings.getTypeFace());
-        date.setTextColor(settings.getFontColor());
-        date.setTypeface(settings.getTypeFace());
+        for (TextView tv : text) {
+            tv.setTextColor(settings.getFontColor());
+            tv.setTypeface(settings.getTypeFace());
+        }
         remove.setImageResource(R.drawable.cross);
         remove.setColorFilter(settings.getIconColor(), SRC_IN);
         background.setCardBackgroundColor(settings.getCardColor());
