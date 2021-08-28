@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.Relation;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
+import org.nuclearfog.twidda.database.ExcludeDatabase;
 
 import java.lang.ref.WeakReference;
 
@@ -60,6 +61,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     private EngineException twException;
     private WeakReference<UserProfile> callback;
     private TwitterEngine mTwitter;
+    private ExcludeDatabase excludeDb;
     private AppDatabase db;
     private long userId;
 
@@ -71,6 +73,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
+        excludeDb = ExcludeDatabase.getInstance(callback);
         db = new AppDatabase(callback);
         this.userId = userId;
     }
@@ -117,24 +120,28 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     user = mTwitter.blockUser(userId);
                     publishProgress(user);
                     db.muteUser(userId, true);
+                    excludeDb.addUser(userId);
                     break;
 
                 case ACTION_UNBLOCK:
                     user = mTwitter.unblockUser(userId);
                     publishProgress(user);
                     db.muteUser(userId, false);
+                    excludeDb.removeUser(userId);
                     break;
 
                 case ACTION_MUTE:
                     user = mTwitter.muteUser(userId);
                     publishProgress(user);
                     db.muteUser(userId, true);
+                    excludeDb.addUser(userId);
                     break;
 
                 case ACTION_UNMUTE:
                     user = mTwitter.unmuteUser(userId);
                     publishProgress(user);
                     db.muteUser(userId, false);
+                    excludeDb.removeUser(userId);
                     break;
             }
             return mTwitter.getConnection(userId);

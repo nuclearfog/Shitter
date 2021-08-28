@@ -1,5 +1,17 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.ListEditor.KEY_LIST_EDITOR_DATA;
+import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
+import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
+import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
+import static org.nuclearfog.twidda.backend.ListAction.Action.UNFOLLOW;
+import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
+import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
+import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_UPDATE_LIST;
+import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_REMOVED;
+import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_UPDATED;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,18 +48,6 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import java.util.regex.Pattern;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListEditor.KEY_LIST_EDITOR_DATA;
-import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
-import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
-import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
-import static org.nuclearfog.twidda.backend.ListAction.Action.UNFOLLOW;
-import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_UPDATE_LIST;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_REMOVED;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_UPDATED;
 
 /**
  * Activity to show an user list, members and tweets
@@ -312,6 +312,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             info = '@' + info;
         info += getString(R.string.info_user_added_to_list);
         Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
+        invalidateOptionsMenu();
     }
 
 

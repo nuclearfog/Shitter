@@ -1,5 +1,12 @@
 package org.nuclearfog.twidda.database;
 
+import static android.content.Context.MODE_PRIVATE;
+import static android.graphics.Typeface.DEFAULT;
+import static android.graphics.Typeface.MONOSPACE;
+import static android.graphics.Typeface.NORMAL;
+import static android.graphics.Typeface.SANS_SERIF;
+import static android.graphics.Typeface.SERIF;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -10,13 +17,6 @@ import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.model.TrendLocation;
-
-import static android.content.Context.MODE_PRIVATE;
-import static android.graphics.Typeface.DEFAULT;
-import static android.graphics.Typeface.MONOSPACE;
-import static android.graphics.Typeface.NORMAL;
-import static android.graphics.Typeface.SANS_SERIF;
-import static android.graphics.Typeface.SERIF;
 
 /**
  * This class manages app settings
@@ -91,6 +91,7 @@ public class GlobalSettings {
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
     private static final String LINK_PREVIEW = "link_preview";
+    private static final String FILTER_RESULTS = "filter_results";
     private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
     private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
     private static final String CUSTOM_CONSUMER_KEY_2 = "api_key2";
@@ -135,6 +136,7 @@ public class GlobalSettings {
     private boolean customAPIKey;
     private boolean toolbarOverlap;
     private boolean linkPreview;
+    private boolean filterResults;
     private int background_color;
     private int font_color;
     private int highlight_color;
@@ -449,20 +451,44 @@ public class GlobalSettings {
     }
 
     /**
-     *
+     * check if linke preview is enabled
      */
     public boolean linkPreviewEnabled() {
         return linkPreview;
     }
 
     /**
+     * enable/disable link preview
      *
+     * @param enable true enables link preview
      */
     public void setLinkPreview(boolean enable) {
         linkPreview = enable;
 
         Editor edit = settings.edit();
         edit.putBoolean(LINK_PREVIEW, enable);
+        edit.apply();
+    }
+
+    /**
+     * check if search filter is enabled
+     *
+     * @return true if search filter is enabled
+     */
+    public boolean filterResults() {
+        return filterResults;
+    }
+
+    /**
+     * enable/disable search filter
+     *
+     * @param enable true to enable search filter
+     */
+    public void setFilterResults(boolean enable) {
+        filterResults = enable;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(FILTER_RESULTS, enable);
         edit.apply();
     }
 
@@ -893,6 +919,7 @@ public class GlobalSettings {
         hqImages = settings.getBoolean(IMAGE_QUALITY, false);
         toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
         linkPreview = settings.getBoolean(LINK_PREVIEW, false);
+        filterResults = settings.getBoolean(FILTER_RESULTS, true);
         customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
         proxyHost = settings.getString(PROXY_ADDR, "");
         proxyPort = settings.getString(PROXY_PORT, "");

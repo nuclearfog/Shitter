@@ -1,13 +1,13 @@
 package org.nuclearfog.twidda.database;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.NonNull;
 
 import java.io.File;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * This class creates and manages SQLite table versions
@@ -132,6 +132,14 @@ public class DatabaseAdapter {
             + AccountTable.DATE + " INTEGER,"
             + AccountTable.KEY1 + " TEXT,"
             + AccountTable.KEY2 + " TEXT);";
+
+    /**
+     * SQL query to create user exclude table
+     */
+    private static final String TABLE_USER_EXCLUDE = "CREATE TABLE IF NOT EXISTS "
+            + UserExcludeTable.NAME + "("
+            + UserExcludeTable.OWNER + " INTEGER,"
+            + UserExcludeTable.ID + " INTEGER);";
 
     /**
      * table index for tweet table
@@ -266,6 +274,7 @@ public class DatabaseAdapter {
         db.execSQL(TABLE_TRENDS);
         db.execSQL(TABLE_MESSAGES);
         db.execSQL(TABLE_LOGINS);
+        db.execSQL(TABLE_USER_EXCLUDE);
         db.execSQL(TABLE_TWEET_REGISTER);
         db.execSQL(TABLE_USER_REGISTER);
         // create index
@@ -609,5 +618,25 @@ public class DatabaseAdapter {
          * Register with status bits
          */
         String REGISTER = "userRegister";
+    }
+
+    /**
+     *
+     */
+    public interface UserExcludeTable {
+        /**
+         *
+         */
+        String NAME = "userExclude";
+
+        /**
+         *
+         */
+        String OWNER = "listOwner";
+
+        /**
+         *
+         */
+        String ID = "userID";
     }
 }

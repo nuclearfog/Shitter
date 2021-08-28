@@ -15,4 +15,9 @@
         android:title="@string/menu_tweet"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/search_filter"
+        android:title="@string/menu_search_filter"
+        android:checkable="true" />
+
 </menu>

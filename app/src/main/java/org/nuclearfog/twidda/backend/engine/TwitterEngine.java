@@ -20,6 +20,7 @@ import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.backend.model.TwitterList;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AccountDatabase;
+import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.io.File;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import io.michaelrocks.paranoid.Obfuscate;
 import twitter4j.DirectMessage;
@@ -67,6 +70,7 @@ public class TwitterEngine {
     private RequestToken reqToken;
     private GlobalSettings settings;
     private AccountDatabase accountDB;
+    private ExcludeDatabase excludeDB;
     private Twitter twitter;
 
     private boolean isInitialized = false;
@@ -121,6 +125,7 @@ public class TwitterEngine {
             // initialize database and settings
             mTwitter.settings = GlobalSettings.getInstance(context);
             mTwitter.accountDB = AccountDatabase.getInstance(context);
+            mTwitter.excludeDB = ExcludeDatabase.getInstance(context);
             // check if already logged in
             if (mTwitter.settings.isLoggedIn()) {
                 // init login access
@@ -259,6 +264,8 @@ public class TwitterEngine {
                 q.setMaxId(maxId - 1);
             QueryResult result = twitter.search(q);
             List<Status> results = result.getTweets();
+            if (settings.filterResults())
+                return convertStatusListFiltered(results);
             return convertStatusList(results);
         } catch (Exception err) {
             throw new EngineException(err);
@@ -312,14 +319,20 @@ public class TwitterEngine {
      */
     public UserList searchUsers(String search, long cursor) throws EngineException {
         try {
+            List<User> users;
             int currentPage = 1;
             if (cursor > 0)
                 currentPage = (int) cursor;
             long prevPage = currentPage - 1;
             long nextPage = currentPage + 1;
-            List<User> users = convertUserList(twitter.searchUsers(search, currentPage));
-            if (users.size() < 20)
+            if (settings.filterResults()) {
+                users = convertUserListFiltered(twitter.searchUsers(search, currentPage));
+            } else {
+                users = convertUserList(twitter.searchUsers(search, currentPage));
+            }
+            if (users.size() < 20) {
                 nextPage = 0;
+            }
             UserList result = new UserList(prevPage, nextPage);
             result.addAll(users);
             return result;
@@ -483,6 +496,8 @@ public class TwitterEngine {
      */
     public void blockUser(String name) throws EngineException {
         try {
+            if (!name.startsWith("@"))
+                name = '@' + name;
             twitter.createBlock(name);
         } catch (Exception err) {
             throw new EngineException(err);
@@ -527,6 +542,8 @@ public class TwitterEngine {
      */
     public void muteUser(String name) throws EngineException {
         try {
+            if (!name.startsWith("@"))
+                name = '@' + name;
             twitter.createMute(name);
         } catch (Exception err) {
             throw new EngineException(err);
@@ -628,6 +645,29 @@ public class TwitterEngine {
     }
 
     /**
+     * get a list of blocked/muted user IDs
+     *
+     * @return list of user IDs
+     * @throws EngineException if twitter service is unavailable
+     */
+    public List<Long> getExcludedUserIDs() throws EngineException {
+        try {
+            IDs[] ids = new IDs[2];
+            ids[0] = twitter.getBlocksIDs();
+            ids[1] = twitter.getBlocksIDs();
+            Set<Long> idSet = new TreeSet<>();
+            for (IDs id : ids) {
+                for (long userId : id.getIDs()) {
+                    idSet.add(userId);
+                }
+            }
+            return new ArrayList<>(idSet);
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
+
+    /**
      * send tweet
      *
      * @param tweet Tweet holder
@@ -695,6 +735,8 @@ public class TwitterEngine {
                     answers.add(reply);
                 }
             }
+            if (settings.filterResults())
+                return convertStatusListFiltered(answers);
             return convertStatusList(answers);
         } catch (Exception err) {
             throw new EngineException(err);
@@ -1213,17 +1255,35 @@ public class TwitterEngine {
     }
 
     /**
-     * convert #twitter4j.User to User List
+     * convert {@link twitter4j.User} to User List
      *
      * @param users Twitter4J user List
      * @return User
      */
     private List<User> convertUserList(List<twitter4j.User> users) throws TwitterException {
+        long id = twitter.getId();
         ArrayList<User> result = new ArrayList<>();
         result.ensureCapacity(users.size());
         for (twitter4j.User user : users) {
-            User item = new User(user, twitter.getId());
-            result.add(item);
+            result.add(new User(user, id));
+        }
+        return result;
+    }
+
+    /**
+     * convert {@link twitter4j.User} to User List and filter excluded users
+     *
+     * @param users Twitter4J user List
+     * @return User
+     */
+    private List<User> convertUserListFiltered(List<twitter4j.User> users) throws TwitterException {
+        long id = twitter.getId();
+        Set<Long> exclude = excludeDB.getExcludeSet();
+        List<User> result = new LinkedList<>();
+        for (twitter4j.User user : users) {
+            if (!exclude.contains(user.getId())) {
+                result.add(new User(user, id));
+            }
         }
         return result;
     }
@@ -1246,7 +1306,7 @@ public class TwitterEngine {
     }
 
     /**
-     * convert #twitter4j.Status to Tweet List
+     * convert {@link twitter4j.Status} to Tweet List
      *
      * @param statuses Twitter4J status List
      * @return TwitterStatus
@@ -1254,8 +1314,27 @@ public class TwitterEngine {
     private List<Tweet> convertStatusList(List<Status> statuses) throws TwitterException {
         ArrayList<Tweet> result = new ArrayList<>();
         result.ensureCapacity(statuses.size());
+        long id = twitter.getId();
         for (Status status : statuses)
-            result.add(new Tweet(status, twitter.getId()));
+            result.add(new Tweet(status, id));
+        return result;
+    }
+
+    /**
+     * convert {@link twitter4j.Status} to Tweet List and filter tweet from excluded users
+     *
+     * @param statuses Twitter4J status List
+     * @return TwitterStatus
+     */
+    private List<Tweet> convertStatusListFiltered(List<Status> statuses) throws TwitterException {
+        List<Tweet> result = new LinkedList<>();
+        long id = twitter.getId();
+        Set<Long> exclude = excludeDB.getExcludeSet();
+        for (Status status : statuses) {
+            if (!exclude.contains(status.getUser().getId())) {
+                result.add(new Tweet(status, id));
+            }
+        }
         return result;
     }
 }

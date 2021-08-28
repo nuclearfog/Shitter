@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.activity;
 
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,8 +26,6 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
 
 /**
  * Twitter search Activity
@@ -88,7 +88,9 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         getMenuInflater().inflate(R.menu.search, m);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
         MenuItem searchItem = m.findItem(R.id.new_search);
+        MenuItem searchFilter = m.findItem(R.id.search_filter);
         SearchView searchView = (SearchView) searchItem.getActionView();
+        searchFilter.setChecked(settings.filterResults());
         AppStyles.setTheme(settings, searchView);
         searchView.setQueryHint(search);
         searchView.setOnQueryTextListener(this);
@@ -109,6 +111,12 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         else if (item.getItemId() == R.id.new_search) {
             SearchView searchView = (SearchView) item.getActionView();
             AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
+        }
+        // enable/disable search filter
+        else if (item.getItemId() == R.id.search_filter) {
+            boolean enable = !item.isChecked();
+            settings.setFilterResults(enable);
+            item.setChecked(enable);
         }
         return super.onOptionsItemSelected(item);
     }
