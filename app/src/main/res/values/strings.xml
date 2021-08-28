@@ -218,6 +218,7 @@
     <string name="menu_unfollow_list">unfollow list</string>
     <string name="menu_user_unfollow">unfollow</string>
     <string name="menu_user_unblock">unblock</string>
+    <string name="menu_excluded_users">Block/Mute list</string>
 
     <!--dialog strings-->
     <string name="dialog_button_yes">Yes</string>

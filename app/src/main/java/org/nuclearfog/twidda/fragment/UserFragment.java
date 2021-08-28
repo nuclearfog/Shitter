@@ -1,5 +1,10 @@
 package org.nuclearfog.twidda.fragment;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
+import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,11 +27,6 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
-import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
-import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
 
 /**
  * Fragment class for lists a list of users
@@ -96,6 +96,16 @@ public class UserFragment extends ListFragment implements UserClickListener,
      * configuration for a list of users added to a list
      */
     public static final int USER_FRAG_LISTS = 0x9A00B3A5;
+
+    /**
+     * configuration for block list
+     */
+    public static final int USER_FRAG_BLOCKS = 0x83D186AD;
+
+    /**
+     * configuration for mute list
+     */
+    public static final int USER_FRAG_MUTES = 0x5246DC35;
 
     /**
      * Request code to update user information
@@ -294,6 +304,14 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
             case USER_FRAG_LISTS:
                 listType = Type.LISTMEMBER;
+                break;
+
+            case USER_FRAG_BLOCKS:
+                listType = Type.BLOCK;
+                break;
+
+            case USER_FRAG_MUTES:
+                listType = Type.MUTE;
                 break;
         }
         userTask = new UserLoader(this, listType, id, search);

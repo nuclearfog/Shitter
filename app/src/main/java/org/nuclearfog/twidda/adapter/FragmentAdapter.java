@@ -1,18 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-
-import org.nuclearfog.twidda.fragment.ListFragment;
-import org.nuclearfog.twidda.fragment.TrendFragment;
-import org.nuclearfog.twidda.fragment.TweetFragment;
-import org.nuclearfog.twidda.fragment.UserFragment;
-import org.nuclearfog.twidda.fragment.UserListFragment;
-
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
 import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
@@ -26,7 +13,9 @@ import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_DEL_USER;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
 import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_SEARCH;
+import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_BLOCKS;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_LISTS;
+import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_MUTES;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SEARCH;
 import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCR;
 import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
@@ -34,6 +23,19 @@ import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_OWNE
 import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
 import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_OWNS;
 import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_SUBSCR_TO;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+
+import org.nuclearfog.twidda.fragment.ListFragment;
+import org.nuclearfog.twidda.fragment.TrendFragment;
+import org.nuclearfog.twidda.fragment.TweetFragment;
+import org.nuclearfog.twidda.fragment.UserFragment;
+import org.nuclearfog.twidda.fragment.UserListFragment;
 
 /**
  * Fragment adapter for ViewPager
@@ -194,6 +196,23 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
         fragments[0].setArguments(tweetParam);
         fragments[1].setArguments(userParam);
         fragments[2].setArguments(subscrParam);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * setup adapter for a page of muted / blocked users
+     */
+    public void setupMuteBlockPage() {
+        Bundle paramMute = new Bundle();
+        Bundle paramBlock = new Bundle();
+        paramMute.putInt(KEY_FRAG_USER_MODE, USER_FRAG_MUTES);
+        paramBlock.putInt(KEY_FRAG_USER_MODE, USER_FRAG_BLOCKS);
+
+        fragments = new ListFragment[2];
+        fragments[0] = new UserFragment();
+        fragments[1] = new UserFragment();
+        fragments[0].setArguments(paramMute);
+        fragments[1].setArguments(paramBlock);
         notifyDataSetChanged();
     }
 

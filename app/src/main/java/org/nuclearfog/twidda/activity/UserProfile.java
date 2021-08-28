@@ -1,5 +1,37 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.content.Intent.ACTION_VIEW;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activity.ProfileEditor.KEY_USER_DATA;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
+import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNBLOCK;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
+import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
+import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
+import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
+import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
+import static org.nuclearfog.twidda.fragment.UserFragment.KEY_USER_UPDATE;
+import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
+
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -50,38 +82,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static android.content.Intent.ACTION_VIEW;
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.activity.ProfileEditor.KEY_USER_DATA;
-import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
-import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_ID;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNBLOCK;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNFOLLOW;
-import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
-import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
-import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
-import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_USER_UPDATE;
-import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
 
 /**
  * Activity class for user profile page
@@ -294,8 +294,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             if (user.isCurrentUser()) {
                 MenuItem dmIcon = m.findItem(R.id.profile_message);
                 MenuItem setting = m.findItem(R.id.profile_settings);
+                MenuItem userExcl = m.findItem(R.id.profile_block_mute);
                 dmIcon.setVisible(true);
                 setting.setVisible(true);
+                userExcl.setVisible(true);
             } else {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem blockIcon = m.findItem(R.id.profile_block);
@@ -401,6 +403,11 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 Intent listPage = new Intent(this, UserLists.class);
                 listPage.putExtra(KEY_USERLIST_OWNER_ID, user.getId());
                 startActivity(listPage);
+            }
+            // open mute/block list
+            else if (item.getItemId() == R.id.profile_block_mute) {
+                Intent userExclude = new Intent(this, UserExclude.class);
+                startActivity(userExclude);
             }
         }
         return super.onOptionsItemSelected(item);

@@ -53,6 +53,14 @@ public class UserLoader extends AsyncTask<Long, Void, UserList> {
          * load members of an userlist
          */
         LISTMEMBER,
+        /**
+         *
+         */
+        BLOCK,
+        /**
+         *
+         */
+        MUTE,
         NONE
     }
 
@@ -102,6 +110,12 @@ public class UserLoader extends AsyncTask<Long, Void, UserList> {
 
                 case LISTMEMBER:
                     return mTwitter.getListMember(id, cursor);
+
+                case BLOCK:
+                    return mTwitter.getBlockedUsers(cursor);
+
+                case MUTE:
+                    return mTwitter.getMutedUsers(cursor);
 
             }
         } catch (EngineException twException) {

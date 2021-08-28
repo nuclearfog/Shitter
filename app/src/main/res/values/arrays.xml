@@ -18,6 +18,11 @@
         <item>@drawable/subscriber</item>
     </integer-array>
 
+    <integer-array name="user_exclude_icons">
+        <item>@drawable/mute</item>
+        <item>@drawable/block</item>
+    </integer-array>
+
     <integer-array name="profile_tab_icons">
         <item>@drawable/home</item>
         <item>@drawable/favorite</item>
