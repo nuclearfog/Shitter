@@ -1,23 +1,21 @@
 package org.nuclearfog.twidda.fragment;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
+import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
 import org.nuclearfog.twidda.backend.AccountLoader;
-import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.model.Account;
-import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import java.util.List;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
-import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 
 /**
@@ -119,14 +117,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
      */
     public void onSuccess(List<Account> result) {
         adapter.setData(result);
-        setRefresh(false);
-    }
-
-    /**
-     * called from {@link AccountLoader} when an error occurs
-     */
-    public void onError(EngineException err) {
-        ErrorHandler.handleFailure(requireContext(), err);
         setRefresh(false);
     }
 }
