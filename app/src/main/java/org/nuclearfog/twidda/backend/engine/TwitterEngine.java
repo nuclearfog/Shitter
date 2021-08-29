@@ -498,7 +498,8 @@ public class TwitterEngine {
         try {
             if (!name.startsWith("@"))
                 name = '@' + name;
-            twitter.createBlock(name);
+            twitter4j.User user = twitter.createBlock(name);
+            excludeDB.addUser(user.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -513,7 +514,9 @@ public class TwitterEngine {
      */
     public User blockUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.createBlock(UserID), twitter.getId());
+            twitter4j.User user = twitter.createBlock(UserID);
+            excludeDB.addUser(UserID);
+            return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -528,7 +531,9 @@ public class TwitterEngine {
      */
     public User unblockUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.destroyBlock(UserID), twitter.getId());
+            twitter4j.User user = twitter.destroyBlock(UserID);
+            excludeDB.removeUser(UserID);
+            return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -544,7 +549,8 @@ public class TwitterEngine {
         try {
             if (!name.startsWith("@"))
                 name = '@' + name;
-            twitter.createMute(name);
+            twitter4j.User user = twitter.createMute(name);
+            excludeDB.addUser(user.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -559,7 +565,9 @@ public class TwitterEngine {
      */
     public User muteUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.createMute(UserID), twitter.getId());
+            twitter4j.User user = twitter.createMute(UserID);
+            excludeDB.addUser(user.getId());
+            return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -574,7 +582,9 @@ public class TwitterEngine {
      */
     public User unmuteUser(long UserID) throws EngineException {
         try {
-            return new User(twitter.destroyMute(UserID), twitter.getId());
+            twitter4j.User user = twitter.destroyMute(UserID);
+            excludeDB.removeUser(user.getId());
+            return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
