@@ -68,7 +68,7 @@
         android:background="@android:color/transparent"
         android:ems="10"
         android:gravity="top"
-        android:hint="@string/userlist_enter_descr"
+        android:hint="@string/userlist_enter_description"
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toTopOf="@id/list_edit_public_sw"
         app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"

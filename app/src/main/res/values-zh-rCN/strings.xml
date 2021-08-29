@@ -49,7 +49,7 @@
     <string name="settings_connections">连接设置</string>
     <string name="settings_hint_proxy_ip">输入代理地址</string>
     <string name="proxy_port">端口</string>
-    <string name="edit_proxyuser">用户名</string>
+    <string name="edit_proxy_user">用户名</string>
     <string name="proxy_password">密码</string>
     <string name="settings_key1_hint">Consumer key</string>
     <string name="settings_key2_hint">Consumer secret</string>
@@ -58,9 +58,9 @@
     <string name="list_appbar">列表</string>
     <string name="edit_location_hint">输入位置</string>
     <string name="edit_hint_link">输入网站链接</string>
-    <string name="edit_hint_enter_descr">输入简介</string>
-    <string name="settins_font">字体设置</string>
-    <string name="page_profile_edior">编辑个人资料</string>
+    <string name="edit_description_hint">输入简介</string>
+    <string name="settings_font_style">字体设置</string>
+    <string name="page_profile_editor">编辑个人资料</string>
     <string name="delete_list">删除列表</string>
     <string name="confirm_delete_list">删除列表？</string>
     <string name="confirm_delete_message">删除消息？</string>
@@ -79,7 +79,7 @@
     <string name="login_info">只需三步即可登录</string>
     <string name="userlist_public_sel">公开</string>
     <string name="userlist_enter_title">全名</string>
-    <string name="userlist_enter_descr">描述</string>
+    <string name="userlist_enter_description">描述</string>
     <string name="userlist_create">创建列表</string>
     <string name="userlist_create_new_list">新建列表</string>
     <string name="update_list">更新列表</string>

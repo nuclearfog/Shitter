@@ -90,7 +90,7 @@
     <string name="settings_button_popup">Popup</string>
     <string name="login_pin">PIN eingeben</string>
     <string name="settings_hint_proxy_ip">Proxy IP Adresse</string>
-    <string name="edit_proxyuser">Nutzername</string>
+    <string name="edit_proxy_user">Nutzername</string>
     <string name="proxy_password">Passwort</string>
     <string name="error_dm_send">Direktnachricht konnte nicht an diesen Nutzer gesendet werden!</string>
     <string name="confirm_mute">Nutzer stummschalten?</string>
@@ -101,11 +101,11 @@
     <string name="error_token_not_set">Bitte zuerst link anklicken!</string>
     <string name="item_list_pb_desc">Profil des Listeninhabers</string>
     <string name="list_appbar">Listen</string>
-    <string name="edit_hint_enter_descr">Profilebeschreibung eingeben</string>
+    <string name="edit_description_hint">Profilebeschreibung eingeben</string>
     <string name="edit_hint_link">Link eingeben</string>
     <string name="edit_location_hint">Standortnamen eingeben</string>
-    <string name="settins_font">Schriftart</string>
-    <string name="page_profile_edior">Profil bearbeiten</string>
+    <string name="settings_font_style">Schriftart</string>
+    <string name="page_profile_editor">Profil bearbeiten</string>
     <string name="error_no_card_app">Keine Karten App gefunden!</string>
     <string name="error_no_media_app">Keine Galerie App gefunden!</string>
     <string name="delete_list">Liste löschen</string>
@@ -136,7 +136,7 @@
     <string name="info_login_to_twitter">Melde in Twitter an</string>
     <string name="userlist_public_sel">öffentlich</string>
     <string name="userlist_enter_title">Titel eingeben</string>
-    <string name="userlist_enter_descr">Beschreibung der Liste eingeben</string>
+    <string name="userlist_enter_description">Beschreibung der Liste eingeben</string>
     <string name="userlist_create">erstellen</string>
     <string name="error_list_title_empty">Titel ist leer!</string>
     <string name="info_list_updated">Liste wurde aktualisiert</string>

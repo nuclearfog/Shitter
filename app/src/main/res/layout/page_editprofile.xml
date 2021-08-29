@@ -159,7 +159,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
-                android:hint="@string/edit_hint_enter_descr"
+                android:hint="@string/edit_description_hint"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minHeight="@dimen/editprofile_bio_min_height" />

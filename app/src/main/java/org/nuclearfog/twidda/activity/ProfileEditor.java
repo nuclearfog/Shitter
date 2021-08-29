@@ -1,5 +1,14 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
+import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
+import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
+import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
+import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -43,15 +52,6 @@ import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 import java.io.File;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
-import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
-import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
-import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
-import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
 /**
  * Activity for Twitter profile editor
@@ -97,7 +97,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         loadingCircle = new ProgressDialog(this, this);
         closeDialog = new ConfirmDialog(this, DialogType.PROFILE_EDITOR_LEAVE, this);
         errorDialog = new ConfirmDialog(this, DialogType.PROFILE_EDITOR_ERROR, this);
-        toolbar.setTitle(R.string.page_profile_edior);
+        toolbar.setTitle(R.string.page_profile_editor);
         setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);

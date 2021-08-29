@@ -58,7 +58,7 @@
     <string name="settings_connections">Connection settings</string>
     <string name="settings_hint_proxy_ip">enter IP address</string>
     <string name="proxy_port">Port</string>
-    <string name="edit_proxyuser">Username</string>
+    <string name="edit_proxy_user">Username</string>
     <string name="proxy_password">Password</string>
     <string name="settings_key1_hint">Consumer key</string>
     <string name="settings_key2_hint">Consumer secret</string>
@@ -68,9 +68,9 @@
     <string name="list_appbar">Lists</string>
     <string name="edit_location_hint">enter location</string>
     <string name="edit_hint_link">enter website link</string>
-    <string name="edit_hint_enter_descr">enter profile description</string>
-    <string name="settins_font">Font style</string>
-    <string name="page_profile_edior">edit profile</string>
+    <string name="edit_description_hint">enter profile description</string>
+    <string name="settings_font_style">Font style</string>
+    <string name="page_profile_editor">edit profile</string>
     <string name="delete_list">delete List</string>
     <string name="confirm_delete_list">delete userlist?</string>
     <string name="confirm_delete_message">delete message?</string>
@@ -98,7 +98,7 @@
     <string name="login_trd_opt" translatable="false">3.</string>
     <string name="userlist_public_sel">public</string>
     <string name="userlist_enter_title">enter list title</string>
-    <string name="userlist_enter_descr">enter list description</string>
+    <string name="userlist_enter_description">enter list description</string>
     <string name="userlist_create">create userlist</string>
     <string name="userlist_create_new_list">create a new userlist</string>
     <string name="update_list">update list</string>
@@ -151,7 +151,7 @@
     <string name="info_tweet_sent">Tweet sent</string>
     <string name="info_location_pending">Location is pending, please wait.</string>
     <string name="info_refreshing_exclude_list">refreshing exclude list</string>
-    <string name="info_exclude_list_updated">exclude_list_updated!</string>
+    <string name="info_exclude_list_updated">exclude list updated!</string>
     <string name="info_error">Error</string>
 
     <!-- toast messages for error information -->
