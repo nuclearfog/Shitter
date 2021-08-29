@@ -212,4 +212,7 @@
     <string name="menu_hint_block_user">\@Name blockieren</string>
     <string name="menu_exclude_user">Nutzer ausschließen</string>
     <string name="menu_search_filter">Ergebnisse filtern</string>
+    <string name="menu_refresh_exclude">Filterliste aktualisieren</string>
+    <string name="info_refreshing_exclude_list">aktualisiere Filterliste</string>
+    <string name="info_exclude_list_updated">Filterliste aktualisiert!</string>
 </resources>

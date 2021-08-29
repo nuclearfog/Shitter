@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-public class UserExcludeLoader extends AsyncTask<UserExcludeLoader.Mode, Void, UserExcludeLoader.Mode> {
+public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
 
     public enum Mode {
         REFRESH,
@@ -31,44 +31,38 @@ public class UserExcludeLoader extends AsyncTask<UserExcludeLoader.Mode, Void, U
     private WeakReference<UserExclude> callback;
     private ExcludeDatabase excludeDatabase;
     private TwitterEngine mTwitter;
-    private String name;
+    private Mode mode;
 
 
-    public UserExcludeLoader(UserExclude callback, String name) {
+    public UserExcludeLoader(UserExclude callback, Mode mode) {
         super();
         mTwitter = TwitterEngine.getInstance(callback);
         excludeDatabase = ExcludeDatabase.getInstance(callback);
         this.callback = new WeakReference<>(callback);
-        this.name = name;
+        this.mode = mode;
     }
 
 
     @Override
-    protected Mode doInBackground(Mode... mode) {
+    protected Void doInBackground(String[] names) {
         try {
-            switch (mode[0]) {
-                case REFRESH:
-                    List<Long> ids = mTwitter.getExcludedUserIDs();
-                    excludeDatabase.setExcludeList(ids);
-                    break;
-
-                case MUTE_USER:
-                    mTwitter.muteUser(name);
-                    break;
-
-                case BLOCK_USER:
-                    mTwitter.blockUser(name);
-                    break;
+            if (mode == Mode.REFRESH) {
+                List<Long> ids = mTwitter.getExcludedUserIDs();
+                excludeDatabase.setExcludeList(ids);
+            } else if (mode == Mode.MUTE_USER) {
+                mTwitter.muteUser(names[0]);
+            } else if (mode == Mode.BLOCK_USER) {
+                mTwitter.blockUser(names[0]);
             }
         } catch (EngineException err) {
             this.err = err;
         }
-        return mode[0];
+        return null;
     }
 
 
     @Override
-    protected void onPostExecute(Mode mode) {
+    protected void onPostExecute(Void v) {
         UserExclude activity = callback.get();
         if (activity != null) {
             if (err == null) {

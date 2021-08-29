@@ -1,16 +1,17 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.backend.UserExcludeLoader.Mode.BLOCK_USER;
 import static org.nuclearfog.twidda.backend.UserExcludeLoader.Mode.MUTE_USER;
 import static org.nuclearfog.twidda.backend.UserExcludeLoader.Mode.REFRESH;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
@@ -80,6 +81,19 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
 
 
     @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_exclude_refresh) {
+            if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
+                Toast.makeText(this, R.string.info_refreshing_exclude_list, Toast.LENGTH_SHORT).show();
+                userExclTask = new UserExcludeLoader(this, REFRESH);
+                userExclTask.execute();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu m) {
         SearchView searchView = (SearchView) m.findItem(R.id.menu_exclude_user).getActionView();
         if (tablayout.getSelectedTabPosition() == 0) {
@@ -90,16 +104,6 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
             searchView.setQueryHint(hint);
         }
         return super.onPrepareOptionsMenu(m);
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (userExclTask == null) {
-            userExclTask = new UserExcludeLoader(this, "");
-            userExclTask.execute(REFRESH);
-        }
     }
 
 
@@ -127,14 +131,15 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        if (userExclTask == null || userExclTask.getStatus() != AsyncTask.Status.RUNNING) {
-            userExclTask = new UserExcludeLoader(this, query);
+        if (userExclTask == null || userExclTask.getStatus() != RUNNING) {
             if (tablayout.getSelectedTabPosition() == 0) {
-                userExclTask.execute(MUTE_USER);
+                userExclTask = new UserExcludeLoader(this, MUTE_USER);
+                userExclTask.execute(query);
                 return true;
             }
             if (tablayout.getSelectedTabPosition() == 1) {
-                userExclTask.execute(BLOCK_USER);
+                userExclTask = new UserExcludeLoader(this, BLOCK_USER);
+                userExclTask.execute(query);
                 return true;
             }
         }
@@ -160,6 +165,10 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
             case BLOCK_USER:
                 Toast.makeText(this, R.string.info_user_blocked, Toast.LENGTH_SHORT).show();
                 invalidateOptionsMenu();
+                break;
+
+            case REFRESH:
+                Toast.makeText(this, R.string.info_exclude_list_updated, Toast.LENGTH_SHORT).show();
                 break;
         }
     }
