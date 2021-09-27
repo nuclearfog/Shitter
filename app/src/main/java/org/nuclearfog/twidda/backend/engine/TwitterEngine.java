@@ -532,7 +532,6 @@ public class TwitterEngine {
     public User unblockUser(long UserID) throws EngineException {
         try {
             twitter4j.User user = twitter.destroyBlock(UserID);
-            excludeDB.removeUser(UserID);
             return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
@@ -583,7 +582,6 @@ public class TwitterEngine {
     public User unmuteUser(long UserID) throws EngineException {
         try {
             twitter4j.User user = twitter.destroyMute(UserID);
-            excludeDB.removeUser(user.getId());
             return new User(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);

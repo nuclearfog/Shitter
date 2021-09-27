@@ -74,6 +74,7 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
         MenuItem search = m.findItem(R.id.menu_exclude_user);
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setOnQueryTextListener(this);
+        AppStyles.setTheme(settings, searchView);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
         AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
@@ -108,13 +109,8 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
 
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    @Override
     public void onTabSelected(Tab tab) {
+        // reset menu
         invalidateOptionsMenu();
     }
 

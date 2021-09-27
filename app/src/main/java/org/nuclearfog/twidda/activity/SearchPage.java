@@ -45,6 +45,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     private GlobalSettings settings;
     private TabLayout tabLayout;
     private ViewPager pager;
+    private Toolbar toolbar;
 
     private String search = "";
 
@@ -53,12 +54,12 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         super.onCreate(b);
         setContentView(R.layout.page_search);
         View root = findViewById(R.id.search_layout);
-        Toolbar tool = findViewById(R.id.search_toolbar);
+        toolbar = findViewById(R.id.search_toolbar);
         tabLayout = findViewById(R.id.search_tab);
         pager = findViewById(R.id.search_pager);
 
-        tool.setTitle("");
-        setSupportActionBar(tool);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 
         settings = GlobalSettings.getInstance(this);
         adapter = new FragmentAdapter(getSupportFragmentManager());
@@ -91,9 +92,10 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         MenuItem searchFilter = m.findItem(R.id.search_filter);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchFilter.setChecked(settings.filterResults());
-        AppStyles.setTheme(settings, searchView);
         searchView.setQueryHint(search);
         searchView.setOnQueryTextListener(this);
+        AppStyles.setTheme(settings, searchView);
+        AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
 

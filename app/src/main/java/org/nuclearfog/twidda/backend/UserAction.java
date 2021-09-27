@@ -8,6 +8,7 @@ import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.Relation;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
+import org.nuclearfog.twidda.database.ExcludeDatabase;
 
 import java.lang.ref.WeakReference;
 
@@ -60,7 +61,8 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
     private EngineException twException;
     private WeakReference<UserProfile> callback;
     private TwitterEngine mTwitter;
-    private AppDatabase db;
+    private ExcludeDatabase exclDB;
+    private AppDatabase appDB;
     private long userId;
 
     /**
@@ -71,7 +73,8 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
-        db = new AppDatabase(callback);
+        exclDB = ExcludeDatabase.getInstance(callback);
+        appDB = new AppDatabase(callback);
         this.userId = userId;
     }
 
@@ -84,7 +87,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     // load user information from database
                     User user;
                     if (userId > 0) {
-                        user = db.getUser(userId);
+                        user = appDB.getUser(userId);
                         if (user != null) {
                             publishProgress(user);
                         }
@@ -94,12 +97,12 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                     // load user information from twitter
                     user = mTwitter.getUser(userId);
                     publishProgress(user);
-                    db.storeUser(user);
+                    appDB.storeUser(user);
                     // load user relations from twitter
                     Relation relation = mTwitter.getConnection(userId);
                     if (!relation.isHome()) {
                         boolean muteUser = relation.isBlocked() || relation.isMuted();
-                        db.muteUser(userId, muteUser);
+                        appDB.muteUser(userId, muteUser);
                     }
                     return relation;
 
@@ -116,26 +119,36 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                 case ACTION_BLOCK:
                     user = mTwitter.blockUser(userId);
                     publishProgress(user);
-                    db.muteUser(userId, true);
+                    appDB.muteUser(userId, true);
                     break;
 
                 case ACTION_UNBLOCK:
                     user = mTwitter.unblockUser(userId);
                     publishProgress(user);
-                    db.muteUser(userId, false);
-                    break;
+                    appDB.muteUser(userId, false);
+                    // remove from exclude list only if user is not muted
+                    relation = mTwitter.getConnection(userId);
+                    if (!relation.isMuted()) {
+                        exclDB.removeUser(userId);
+                    }
+                    return relation;
 
                 case ACTION_MUTE:
                     user = mTwitter.muteUser(userId);
                     publishProgress(user);
-                    db.muteUser(userId, true);
+                    appDB.muteUser(userId, true);
                     break;
 
                 case ACTION_UNMUTE:
                     user = mTwitter.unmuteUser(userId);
                     publishProgress(user);
-                    db.muteUser(userId, false);
-                    break;
+                    appDB.muteUser(userId, false);
+                    // remove from exclude list only if user is not blocked
+                    relation = mTwitter.getConnection(userId);
+                    if (!relation.isBlocked()) {
+                        exclDB.removeUser(userId);
+                    }
+                    return relation;
             }
             return mTwitter.getConnection(userId);
         } catch (EngineException twException) {
