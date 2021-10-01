@@ -125,10 +125,10 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                 case ACTION_UNBLOCK:
                     user = mTwitter.unblockUser(userId);
                     publishProgress(user);
-                    appDB.muteUser(userId, false);
                     // remove from exclude list only if user is not muted
                     relation = mTwitter.getConnection(userId);
                     if (!relation.isMuted()) {
+                        appDB.muteUser(userId, false);
                         exclDB.removeUser(userId);
                     }
                     return relation;
@@ -142,10 +142,10 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
                 case ACTION_UNMUTE:
                     user = mTwitter.unmuteUser(userId);
                     publishProgress(user);
-                    appDB.muteUser(userId, false);
                     // remove from exclude list only if user is not blocked
                     relation = mTwitter.getConnection(userId);
                     if (!relation.isBlocked()) {
+                        appDB.muteUser(userId, false);
                         exclDB.removeUser(userId);
                     }
                     return relation;
