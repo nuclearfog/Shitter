@@ -4,8 +4,12 @@
 
     <item
         android:id="@+id/settings_info"
-        android:icon="@drawable/info"
         android:title="@string/menu_app_info"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/settings_licenses"
+        android:title="@string/menu_licenses"
+        app:showAsAction="never" />
 
 </menu>

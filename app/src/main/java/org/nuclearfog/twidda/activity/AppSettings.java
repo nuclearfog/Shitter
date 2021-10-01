@@ -1,5 +1,12 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
+import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
+import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
+
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
@@ -44,16 +51,10 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.InfoDialog;
+import org.nuclearfog.twidda.dialog.LicenseDialog;
 
 import java.util.List;
 import java.util.regex.Matcher;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
-import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
-import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 /**
  * Settings Activity class.
@@ -68,7 +69,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private LocationAdapter locationAdapter;
     private FontAdapter fontAdapter;
 
-    private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo;
+    private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo, license;
     private View root, layout_hq_image, layout_key, layout_proxy, layout_auth_en, layout_auth;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
@@ -156,6 +157,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSpinner.setSelected(false);
 
         AppStyles.setTheme(settings, root);
+        AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
         if (!settings.isLoggedIn()) {
             trend_card.setVisibility(GONE);
@@ -198,6 +200,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         databaseDialog = new ConfirmDialog(this, DialogType.DEL_DATABASE, this);
         logoutDialog = new ConfirmDialog(this, DialogType.APP_LOG_OUT, this);
         appInfo = new InfoDialog(this);
+        license = new LicenseDialog(this);
 
         for (Button button : colorButtons)
             button.setOnClickListener(this);
@@ -260,6 +263,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (item.getItemId() == R.id.settings_info) {
             if (!appInfo.isShowing()) {
                 appInfo.show();
+            }
+        } else if (item.getItemId() == R.id.settings_licenses) {
+            if (!license.isShowing()) {
+                license.show();
             }
         }
         return super.onOptionsItemSelected(item);

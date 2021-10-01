@@ -205,6 +205,7 @@
     <string name="menu_follow_user">follow</string>
     <string name="menu_goto_lists">Userlists</string>
     <string name="menu_app_info">About</string>
+    <string name="menu_licenses">Licenses</string>
     <string name="menu_block_user">block</string>
     <string name="menu_unmute_user">unmute</string>
     <string name="menu_follow_requested">follow requested</string>
