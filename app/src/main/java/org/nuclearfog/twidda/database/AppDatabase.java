@@ -1,5 +1,18 @@
 package org.nuclearfog.twidda.database;
 
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
+import static org.nuclearfog.twidda.backend.model.Tweet.MediaType.GIF;
+import static org.nuclearfog.twidda.backend.model.Tweet.MediaType.IMAGE;
+import static org.nuclearfog.twidda.backend.model.Tweet.MediaType.VIDEO;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.TweetRegisterTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.TweetTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
+import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,19 +29,6 @@ import org.nuclearfog.twidda.backend.model.User;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE;
-import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
-import static org.nuclearfog.twidda.backend.model.Tweet.MediaType.GIF;
-import static org.nuclearfog.twidda.backend.model.Tweet.MediaType.IMAGE;
-import static org.nuclearfog.twidda.backend.model.Tweet.MediaType.VIDEO;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.FavoriteTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.MessageTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.TrendTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.TweetRegisterTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.TweetTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.UserRegisterTable;
-import static org.nuclearfog.twidda.database.DatabaseAdapter.UserTable;
 
 /**
  * SQLite database class to store and load tweets, messages, trends and user information
@@ -622,7 +622,7 @@ public class AppDatabase {
             int idxReceiver = cursor.getColumnIndexOrThrow(MessageTable.RECEIVER);
             int idxMessage = cursor.getColumnIndexOrThrow(MessageTable.MESSAGE);
             int idxTime = cursor.getColumnIndexOrThrow(MessageTable.SINCE);
-            int idxId = cursor.getColumnIndexOrThrow(MessageTable.SINCE);
+            int idxId = cursor.getColumnIndexOrThrow(MessageTable.ID);
             do {
                 // fetch message information
                 long senderID = cursor.getLong(idxSender);

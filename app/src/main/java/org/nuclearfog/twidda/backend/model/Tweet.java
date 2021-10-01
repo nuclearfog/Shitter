@@ -8,6 +8,7 @@ import java.io.Serializable;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.URLEntity;
+import twitter4j.UserMentionEntity;
 
 /**
  * Tweet class containing information about a tweet
@@ -50,6 +51,7 @@ public class Tweet implements Serializable {
     private boolean sensitiveMedia;
 
     private String[] medias = {};
+    private String userMentions = "";
     private String locationName = "";
     private String locationCoordinates = "";
     private String replyName = "";
@@ -106,7 +108,7 @@ public class Tweet implements Serializable {
      * @param tweet          tweet text
      * @param time           time long format
      * @param replyName      author's name of replied tweet
-     * @param replyUserId    quthor's ID of replied tweet
+     * @param replyUserId    author's ID of replied tweet
      * @param medias         Media links attached to tweet
      * @param source         used API of the tweet
      * @param replyID        ID of replied tweet
@@ -114,7 +116,7 @@ public class Tweet implements Serializable {
      * @param myRetweetId    ID of the current users retweeted tweet
      * @param retweeted      tweet is retweeted by current user
      * @param favored        tweet is favored by current user
-     * @param sensitiveMedia tweet contains sensitie media content
+     * @param sensitiveMedia tweet contains sensitive media content
      * @param geo            location gps coordinates
      * @param place          location full place name
      */
@@ -126,8 +128,10 @@ public class Tweet implements Serializable {
             this.tweet = tweet;
         if (source != null)
             this.source = source;
-        if (replyName != null)
+        if (replyName != null) {
             this.replyName = replyName;
+            this.userMentions = replyName;
+        }
         if (place != null)
             this.locationName = place;
         if (geo != null)
@@ -267,6 +271,15 @@ public class Tweet implements Serializable {
     }
 
     /**
+     * get user names mentioned in this tweet
+     *
+     * @return string of screen names
+     */
+    public String getMentionedUsers() {
+        return userMentions;
+    }
+
+    /**
      * check tweet media type
      *
      * @return media type or NONE if there isn't any media
@@ -387,6 +400,16 @@ public class Tweet implements Serializable {
             int end = source.lastIndexOf('<');
             if (start > 0 && end > start)
                 source = source.substring(start, end);
+        }
+        UserMentionEntity[] mentionedUsers = status.getUserMentionEntities();
+        if (mentionedUsers != null && mentionedUsers.length > 0) {
+            StringBuilder userMentions = new StringBuilder(user.getScreenname());
+            for (UserMentionEntity mention : mentionedUsers) {
+                userMentions.append(" @").append(mention.getScreenName());
+            }
+            this.userMentions = userMentions.toString();
+        } else {
+            this.userMentions = user.getScreenname();
         }
     }
 

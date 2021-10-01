@@ -1,5 +1,29 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
+import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
+import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
+import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
+import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
+import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_ANSWER;
+
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -49,30 +73,6 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
-import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_REPLYID;
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
-import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
-import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_ANSWER;
 
 /**
  * Tweet Activity for tweet and user information
@@ -307,7 +307,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 clickedTweet = tweet.getEmbeddedTweet();
             // answer to the tweet
             if (v.getId() == R.id.tweet_answer) {
-                String tweetPrefix = clickedTweet.getUser().getScreenname() + " ";
+                String tweetPrefix = clickedTweet.getMentionedUsers() + " ";
                 Intent tweetPopup = new Intent(this, TweetEditor.class);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
                 tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);

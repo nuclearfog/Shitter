@@ -1,5 +1,16 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_LONG;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -31,17 +42,6 @@ import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_LONG;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
 
 /**
  * Tweet editor activity. Media files and location can be attached to a tweet.
@@ -78,7 +78,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     /**
      * max amount of mentions in a tweet
      */
-    private static final int MAX_MENTIONS = 8;
+    private static final int MAX_MENTIONS = 10;
 
     private TweetUpdater uploaderAsync;
     private GlobalSettings settings;
