@@ -18,12 +18,13 @@ public class LicenseDialog extends Dialog {
      *
      */
     public LicenseDialog(Context context) {
-        super(context, R.style.AppInfoDialog);
+        super(context, R.style.LicenseDialog);
         setContentView(R.layout.dialog_licenses);
         LicenseView licenseView = findViewById(R.id.license_view);
         try {
             licenseView.setLicenses(R.xml.licenses);
         } catch (Exception err) {
+            err.printStackTrace();
             dismiss();
         }
     }

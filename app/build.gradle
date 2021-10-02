@@ -1,6 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'io.michaelrocks.paranoid'
-apply plugin: 'ru.cleverpumpkin.proguard-dictionaries-generator'
+plugins {
+    id 'com.android.application'
+    id 'io.michaelrocks.paranoid'
+    id 'ru.cleverpumpkin.proguard-dictionaries-generator'
+}
 
 android {
     buildToolsVersion '30.0.3'

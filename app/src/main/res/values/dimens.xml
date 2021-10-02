@@ -184,7 +184,8 @@
     <!--dimens of dialog_app_info.xml-->
     <dimen name="infopopup_text_padding">5dp</dimen>
 
-    <!--dimens of dialog_login_info.xml-->
+    <!--dimens of dialog_license.xml-->
+    <dimen name="license_textsize">8sp</dimen>
 
     <!--dimens of dialog_userlist.xml-->
     <dimen name="userlist_button_height">20dp</dimen>
