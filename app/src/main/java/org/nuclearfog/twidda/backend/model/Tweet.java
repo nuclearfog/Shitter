@@ -363,15 +363,18 @@ public class Tweet implements Serializable {
         replyID = status.getInReplyToStatusId();
         replyUserId = status.getInReplyToUserId();
         sensitiveMedia = status.isPossiblySensitive();
-
+        // add screen name of the replied user
         if (status.getInReplyToScreenName() != null)
             replyName = '@' + status.getInReplyToScreenName();
+        // add media links
         if (status.getMediaEntities() != null)
             getMedia(status.getMediaEntities());
+        // add location information
         if (status.getPlace() != null && status.getPlace().getFullName() != null)
             locationName = status.getPlace().getFullName();
         if (status.getGeoLocation() != null)
             locationCoordinates = status.getGeoLocation().getLatitude() + "," + status.getGeoLocation().getLongitude();
+        // build tweet text, expand all URLs
         if (status.getText() != null) {
             StringBuilder tweet = new StringBuilder(status.getText());
             // expand shortened links
@@ -393,7 +396,7 @@ public class Tweet implements Serializable {
             }
             this.tweet = tweet.toString();
         }
-        // remove HTML tag
+        // remove xml tag from source string
         if (status.getSource() != null) {
             source = "" + status.getSource();
             int start = source.indexOf('>') + 1;
@@ -403,7 +406,7 @@ public class Tweet implements Serializable {
         }
         // add reply mention
         StringBuilder userMentions = new StringBuilder();
-        if (user.getId() != twitterId) {
+        if (!user.isCurrentUser()) {
             // prevent self mentioning
             userMentions.append(user.getScreenname());
         }
@@ -411,8 +414,8 @@ public class Tweet implements Serializable {
         UserMentionEntity[] mentionedUsers = status.getUserMentionEntities();
         if (mentionedUsers != null && mentionedUsers.length > 0) {
             for (UserMentionEntity mention : mentionedUsers) {
-                if (mention.getId() != twitterId) {
-                    // filter out current user's screen name
+                if (mention.getId() != twitterId && userMentions.indexOf(mention.getScreenName()) < 0) {
+                    // filter out current user's screen name and duplicates
                     userMentions.append(" @").append(mention.getScreenName());
                 }
             }
