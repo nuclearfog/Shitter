@@ -401,16 +401,23 @@ public class Tweet implements Serializable {
             if (start > 0 && end > start)
                 source = source.substring(start, end);
         }
+        // add reply mention
+        StringBuilder userMentions = new StringBuilder();
+        if (user.getId() != twitterId) {
+            // prevent self mentioning
+            userMentions.append(user.getScreenname());
+        }
+        // add user mentions
         UserMentionEntity[] mentionedUsers = status.getUserMentionEntities();
         if (mentionedUsers != null && mentionedUsers.length > 0) {
-            StringBuilder userMentions = new StringBuilder(user.getScreenname());
             for (UserMentionEntity mention : mentionedUsers) {
-                userMentions.append(" @").append(mention.getScreenName());
+                if (mention.getId() != twitterId) {
+                    // filter out current user's screen name
+                    userMentions.append(" @").append(mention.getScreenName());
+                }
             }
-            this.userMentions = userMentions.toString();
-        } else {
-            this.userMentions = user.getScreenname();
         }
+        this.userMentions = userMentions.toString();
     }
 
     /**
