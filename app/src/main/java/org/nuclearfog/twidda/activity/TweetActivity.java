@@ -307,10 +307,11 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 clickedTweet = tweet.getEmbeddedTweet();
             // answer to the tweet
             if (v.getId() == R.id.tweet_answer) {
-                String tweetPrefix = clickedTweet.getMentionedUsers() + " ";
+                String tweetPrefix = clickedTweet.getMentionedUsers();
                 Intent tweetPopup = new Intent(this, TweetEditor.class);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
-                tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
+                if (!tweetPrefix.isEmpty())
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix + " ");
                 startActivity(tweetPopup);
             }
             // show user retweeting this tweet
