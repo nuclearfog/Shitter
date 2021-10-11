@@ -20,15 +20,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_list"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/mediapage_preview_margin"
-        android:layout_marginLeft="@dimen/mediapage_preview_margin"
         android:layout_marginBottom="@dimen/mediapage_preview_margin"
         android:scrollbars="horizontal"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.9"
         app:layout_constraintHeight_percent="0.2" />
 
     <VideoView
