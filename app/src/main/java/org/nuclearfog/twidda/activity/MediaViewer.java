@@ -1,5 +1,18 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
+import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
+
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,19 +58,6 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
-import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 /**
  * Media viewer activity for images and videos
@@ -139,6 +139,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         super.onCreate(b);
         setContentView(R.layout.page_media);
         RecyclerView imageList = findViewById(R.id.image_list);
+        View imageListContainer = findViewById(R.id.image_preview_list);
         controlPanel = findViewById(R.id.media_controlpanel);
         loadingCircle = findViewById(R.id.media_progress);
         zoomImage = findViewById(R.id.image_full);
@@ -171,7 +172,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
             switch (type) {
                 case MEDIAVIEWER_IMAGE:
                     zoomImage.setVisibility(VISIBLE);
-                    imageList.setVisibility(VISIBLE);
+                    imageListContainer.setVisibility(VISIBLE);
                     if (!mediaLinks[0].startsWith("http"))
                         adapter.disableSaveButton();
                     imageList.setLayoutManager(new LinearLayoutManager(this, HORIZONTAL, false));

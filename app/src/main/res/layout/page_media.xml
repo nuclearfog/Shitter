@@ -18,18 +18,25 @@
         app:max_zoom_in="10.0"
         app:max_zoom_out="0.7" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/image_list"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/image_preview_list"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/mediapage_preview_margin"
-        android:scrollbars="horizontal"
+        android:orientation="horizontal"
         android:visibility="gone"
+        android:layout_margin="@dimen/mediapage_preview_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.9"
-        app:layout_constraintHeight_percent="0.2" />
+        app:layout_constraintHeight_percent="0.2">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/image_list"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scrollbars="horizontal" />
+
+    </LinearLayout>
 
     <VideoView
         android:id="@+id/video_view"
