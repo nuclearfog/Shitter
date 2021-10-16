@@ -7,7 +7,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/nuclearfog/shitter)](https://github.com/nuclearfog/Shitter/releases/latest/download/SH1TT3R.apk)
 ![](https://img.shields.io/github/downloads/nuclearfog/Shitter/total)
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/nuclearfog/Shitter/blob/master/LICENSE)
 
 
 ## Features
@@ -44,6 +44,7 @@ If you have any questions, feel free to open a <a href="https://github.com/nucle
 - <a href="https://github.com/open-android/Picasso-transformations">Picasso Transformations</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
 - <a href="https://github.com/LeonardoCardoso/Android-Link-Preview">Android-Link-Preview</a>
+- <a href="https://github.com/LarsWerkman/LicenseView">LicenseView</a>
 - <a href="https://github.com/nuclearfog/ZoomView">ZoomView</a>
 - <a href="https://github.com/nuclearfog/Tagger">Tagger</a>
 - <a href="https://github.com/nuclearfog/LinkAndScrollMovement">LinkAndScrollMovement</a>
