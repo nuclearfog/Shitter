@@ -1,12 +1,17 @@
 package org.nuclearfog.twidda.dialog;
 
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
  * this dialog is to confirm for user action
@@ -49,7 +54,7 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
      * @param listener listener for the confirmation button
      */
     public ConfirmDialog(Context context, DialogType type, OnConfirmListener listener) {
-        super(context, R.style.ConfirmDialog);
+        super(context);
         this.type = type;
         this.listener = listener;
         build();
@@ -61,6 +66,13 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
         if (which == BUTTON_POSITIVE) {
             listener.onConfirm(type);
         }
+    }
+
+
+    @Override
+    public void show() {
+        super.show();
+        setTheme();
     }
 
     /**
@@ -155,6 +167,38 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
         setMessage(message);
         setButton(BUTTON_NEGATIVE, negButton, this);
         setButton(BUTTON_POSITIVE, posButton, this);
+    }
+
+    /**
+     *
+     */
+    private void setTheme() {
+        GlobalSettings settings = GlobalSettings.getInstance(getContext());
+        TextView message = findViewById(android.R.id.message);
+        TextView title = findViewById(android.R.id.title);
+        Button button1 = findViewById(android.R.id.button1);
+        Button button2 = findViewById(android.R.id.button2);
+
+        if (getWindow() != null) {
+            getWindow().getDecorView().setBackgroundColor(settings.getBackgroundColor());
+        }
+        if (message != null) {
+            message.setTypeface(settings.getTypeFace());
+            message.setTextColor(settings.getFontColor());
+            message.setTextSize(COMPLEX_UNIT_SP, 20);
+        }
+        if (title != null) {
+            title.setTypeface(settings.getTypeFace());
+            title.setTextColor(settings.getFontColor());
+        }
+        if (button1 != null) {
+            button1.setTypeface(settings.getTypeFace());
+            button1.setTextColor(settings.getFontColor());
+        }
+        if (button2 != null) {
+            button2.setTypeface(settings.getTypeFace());
+            button2.setTextColor(settings.getFontColor());
+        }
     }
 
     /**
