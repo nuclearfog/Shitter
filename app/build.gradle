@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    buildToolsVersion '30.0.3'
-    compileSdkVersion 30
+    compileSdkVersion 31
+    buildToolsVersion '31.0.0'
 
     defaultConfig {
         applicationId 'org.nuclearfog.twidda'
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 47
         versionName '1.10.2'
         // limiting language support for smaller APK size
@@ -60,9 +60,9 @@ dependencies {
     implementation 'com.larswerkman:LicenseView:1.1'
     implementation 'com.github.open-android:Picasso-transformations:0.1.0'
     implementation 'com.github.QuadFlask:colorpicker:0.0.15'
-    implementation 'com.github.nuclearfog:ZoomView:1.0.2'
-    implementation 'com.github.nuclearfog:Tagger:2.2'
-    implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4'
+    implementation 'com.github.nuclearfog:ZoomView:1.0.3'
+    implementation 'com.github.nuclearfog:Tagger:2.3'
+    implementation 'com.github.nuclearfog:LinkAndScrollMovement:1.4.1'
     implementation 'com.github.kyleduo:SwitchButton:2.0.3-SNAPSHOT'
     implementation 'com.github.LeonardoCardoso:Android-Link-Preview:master'
 }
