@@ -1,6 +1,21 @@
 package org.nuclearfog.twidda.activity;
 
-import android.annotation.SuppressLint;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.Intent.ACTION_PICK;
+import static android.content.Intent.EXTRA_MIME_TYPES;
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.os.Environment.DIRECTORY_PICTURES;
+import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
+import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
+import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+import static android.provider.MediaStore.Images.Media.MIME_TYPE;
+import static android.provider.MediaStore.Images.Media.RELATIVE_PATH;
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,22 +44,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static android.content.Intent.ACTION_PICK;
-import static android.content.Intent.EXTRA_MIME_TYPES;
-import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
-import static android.content.pm.PackageManager.PERMISSION_GRANTED;
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.os.Environment.DIRECTORY_PICTURES;
-import static android.provider.MediaStore.Images.Media.DATE_TAKEN;
-import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
-import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-import static android.provider.MediaStore.Images.Media.MIME_TYPE;
-import static android.provider.MediaStore.Images.Media.RELATIVE_PATH;
-import static android.widget.Toast.LENGTH_SHORT;
 
 /**
  * This activity is a superclass to all activities who need permission to take actions
@@ -138,15 +137,18 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
     public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissions.length > 0 && grantResults.length > 0) {
+            // read storage permission granted
             if (PERMISSIONS[0][0].equals(permissions[0])) {
-                if (grantResults[0] == PERMISSION_GRANTED)
+                if (grantResults[0] == PERMISSION_GRANTED) {
                     openMediaPicker(requestCode);
-            } else if (PERMISSIONS[1][0].equals(permissions[0])) {
-                if (grantResults[0] == PERMISSION_GRANTED)
-                    fetchLocation();
-                else
-                    onAttachLocation(null);
-            } else if ((PERMISSIONS[2][0].equals(permissions[0]))) {
+                }
+            }
+            // location permission granted
+            else if (PERMISSIONS[1][0].equals(permissions[0])) {
+                getLocation();
+            }
+            // Write storage permissions granted
+            else if ((PERMISSIONS[2][0].equals(permissions[0]))) {
                 if (grantResults[0] == PERMISSION_GRANTED) {
                     saveImage();
                 }
@@ -257,7 +259,13 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      */
     protected void getLocation() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(PERMISSIONS[1][0]) == PERMISSION_GRANTED) {
-            fetchLocation();
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
+                locationPending = true;
+            } else {
+                onAttachLocation(null);
+            }
         } else {
             requestPermissions(PERMISSIONS[1], REQ_CHECK_PERM);
         }
@@ -303,20 +311,6 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      */
     protected boolean isLocating() {
         return locationPending;
-    }
-
-    /**
-     * start locating
-     */
-    @SuppressLint("MissingPermission") // suppressing because of an android studio bug
-    private void fetchLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
-            locationPending = true;
-        } else {
-            onAttachLocation(null);
-        }
     }
 
     /**
