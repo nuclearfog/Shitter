@@ -118,6 +118,10 @@
     <string name="settings_fv_icon_color">Favorite</string>
     <string name="settings_follow_req_color">Request icon</string>
     <string name="settings_follow_color">Follow icon</string>
+    <string name="account_page" translatable="false">Accounts</string>
+    <string name="confirm_remove_account">Remove account from list?</string>
+    <string name="account_user_id_prefix" translatable="false">User ID:</string>
+    <string name="account_user_unnamed">\'unnamed\'</string>
 
     <!-- toast messages to inform user -->
     <string name="info_user_removed">User removed from list</string>
@@ -227,6 +231,8 @@
     <string name="menu_hint_mute_user">enter @name to mute</string>
     <string name="menu_hint_block_user">enter @name to block</string>
     <string name="menu_refresh_exclude">refresh exclude list</string>
+    <string name="menu_select_account">select account</string>
+    <string name="menu_add_account">add account</string>
 
     <!--dialog strings-->
     <string name="dialog_button_yes">Yes</string>
@@ -235,11 +241,5 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_link_image_preview">Link preview image</string>
     <string name="dialog_link_close">close link preview</string>
-    <string name="account_page" translatable="false">Accounts</string>
-    <string name="confirm_remove_account">Remove account from list?</string>
-    <string name="menu_select_account">select account</string>
-    <string name="menu_add_account">add account</string>
-    <string name="account_user_id_prefix" translatable="false">User ID:</string>
-    <string name="account_user_unnamed">\'unnamed\'</string>
 
 </resources>

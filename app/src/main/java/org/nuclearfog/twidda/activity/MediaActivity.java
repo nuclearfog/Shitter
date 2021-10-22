@@ -145,10 +145,10 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
             }
             // location permission granted
             else if (PERMISSIONS[1][0].equals(permissions[0])) {
-                getLocation();
+                getLocation(false);
             }
             // Write storage permissions granted
-            else if ((PERMISSIONS[2][0].equals(permissions[0]))) {
+            else if (PERMISSIONS[2][0].equals(permissions[0])) {
                 if (grantResults[0] == PERMISSION_GRANTED) {
                     saveImage();
                 }
@@ -256,19 +256,22 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     /**
      * Ask for GPS location
+     *
+     * @param ask set true to ask for permission
      */
-    protected void getLocation() {
+    protected void getLocation(boolean ask) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(PERMISSIONS[1][0]) == PERMISSION_GRANTED) {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             if (locationManager != null && locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 locationManager.requestSingleUpdate(LocationManager.GPS_PROVIDER, this, null);
                 locationPending = true;
-            } else {
-                onAttachLocation(null);
+                return;
             }
-        } else {
+        } else if (ask) {
             requestPermissions(PERMISSIONS[1], REQ_CHECK_PERM);
+            return;
         }
+        onAttachLocation(null);
     }
 
     /**
@@ -347,6 +350,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     /**
      * called when location information was successfully fetched
+     * it isn't safe to update views over this method
      *
      * @param location location information
      */

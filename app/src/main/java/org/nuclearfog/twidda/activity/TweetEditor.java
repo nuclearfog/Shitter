@@ -134,6 +134,19 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (isLocating()) {
+            locationPending.setVisibility(VISIBLE);
+            locationBtn.setVisibility(INVISIBLE);
+        } else {
+            locationPending.setVisibility(INVISIBLE);
+            locationBtn.setVisibility(VISIBLE);
+        }
+    }
+
+
+    @Override
     protected void onDestroy() {
         if (uploaderAsync != null && uploaderAsync.getStatus() == RUNNING)
             uploaderAsync.cancel(true);
@@ -197,7 +210,7 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         else if (v.getId() == R.id.tweet_add_location) {
             locationPending.setVisibility(VISIBLE);
             locationBtn.setVisibility(INVISIBLE);
-            getLocation();
+            getLocation(true);
         }
     }
 
@@ -209,8 +222,6 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         } else {
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         }
-        locationPending.setVisibility(INVISIBLE);
-        locationBtn.setVisibility(VISIBLE);
         this.location = location;
     }
 
