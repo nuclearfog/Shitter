@@ -14,6 +14,7 @@ import static android.provider.MediaStore.Images.Media.DISPLAY_NAME;
 import static android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 import static android.provider.MediaStore.Images.Media.MIME_TYPE;
 import static android.provider.MediaStore.Images.Media.RELATIVE_PATH;
+import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
 
 import android.content.ActivityNotFoundException;
@@ -134,24 +135,35 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
 
     @Override
-    public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public final void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (permissions.length > 0 && grantResults.length > 0) {
             // read storage permission granted
-            if (PERMISSIONS[0][0].equals(permissions[0])) {
-                if (grantResults[0] == PERMISSION_GRANTED) {
-                    openMediaPicker(requestCode);
-                }
+            if (PERMISSIONS[0][0].equals(permissions[0]) && grantResults[0] == PERMISSION_GRANTED) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        openMediaPicker(requestCode);
+                    }
+                });
             }
             // location permission granted
             else if (PERMISSIONS[1][0].equals(permissions[0])) {
-                getLocation(false);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getLocation(false);
+                    }
+                });
             }
             // Write storage permissions granted
-            else if (PERMISSIONS[2][0].equals(permissions[0])) {
-                if (grantResults[0] == PERMISSION_GRANTED) {
-                    saveImage();
-                }
+            else if (PERMISSIONS[2][0].equals(permissions[0]) && grantResults[0] == PERMISSION_GRANTED) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveImage();
+                    }
+                });
             }
         }
     }
@@ -181,15 +193,15 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
 
     @Override
     public final void onLocationChanged(@NonNull Location location) {
-        onAttachLocation(location);
         locationPending = false;
+        onAttachLocation(location);
     }
 
 
     @Override
     public final void onProviderDisabled(@NonNull String provider) {
-        onAttachLocation(null);
         locationPending = false;
+        onAttachLocation(null);
     }
 
 
@@ -239,11 +251,11 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      * called when an image was successfully saved to external storage
      */
     public void onImageSaved() {
-        Toast.makeText(getApplicationContext(), R.string.info_image_saved, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, R.string.info_image_saved, LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             // start media scanner to scan for new image
             String[] fileName = {filename};
-            MediaScannerConnection.scanFile(getApplicationContext(), fileName, null, null);
+            MediaScannerConnection.scanFile(this, fileName, null, null);
         }
     }
 
@@ -251,7 +263,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
      * called when an error occurs while storing image
      */
     public void onError() {
-        Toast.makeText(getApplicationContext(), R.string.error_image_save, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.error_image_save, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -268,6 +280,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                 return;
             }
         } else if (ask) {
+            if (shouldShowRequestPermissionRationale(PERMISSIONS[1][0]))
+                Toast.makeText(this, R.string.info_permission_location, LENGTH_LONG).show();
             requestPermissions(PERMISSIONS[1], REQ_CHECK_PERM);
             return;
         }
@@ -283,6 +297,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checkSelfPermission(PERMISSIONS[0][0]) == PERMISSION_GRANTED) {
             openMediaPicker(requestCode);
         } else {
+            if (shouldShowRequestPermissionRationale(PERMISSIONS[0][0]))
+                Toast.makeText(this, R.string.info_permission_read, LENGTH_LONG).show();
             requestPermissions(PERMISSIONS[0], requestCode);
         }
     }
@@ -303,6 +319,8 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                 || checkSelfPermission(PERMISSIONS[2][0]) == PERMISSION_GRANTED) {
             saveImage();
         } else {
+            if (shouldShowRequestPermissionRationale(PERMISSIONS[2][0]))
+                Toast.makeText(this, R.string.info_permission_write, LENGTH_LONG).show();
             requestPermissions(PERMISSIONS[2], REQUEST_STORE_IMG);
         }
     }
@@ -344,13 +362,12 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
         try {
             startActivityForResult(mediaSelect, requestCode);
         } catch (ActivityNotFoundException err) {
-            Toast.makeText(getApplicationContext(), R.string.error_no_media_app, LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_no_media_app, LENGTH_SHORT).show();
         }
     }
 
     /**
      * called when location information was successfully fetched
-     * it isn't safe to update views over this method
      *
      * @param location location information
      */

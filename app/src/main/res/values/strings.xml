@@ -156,6 +156,9 @@
     <string name="info_location_pending">Location is pending, please wait.</string>
     <string name="info_refreshing_exclude_list">refreshing exclude list</string>
     <string name="info_exclude_list_updated">exclude list updated!</string>
+    <string name="info_permission_read">Read permission needed to access images and videos</string>
+    <string name="info_permission_location">Location permission only needed to add location information to tweets.</string>
+    <string name="info_permission_write">Write permission used to store images.</string>
     <string name="info_error">Error</string>
 
     <!-- toast messages for error information -->

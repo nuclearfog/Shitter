@@ -133,7 +133,7 @@
     <string name="tweet_sensitive_media">Sensible Inhalte</string>
     <string name="login_info">3 Schritte zum Login</string>
     <string name="info_fetching_link">öffne Twitter login Seite</string>
-    <string name="info_login_to_twitter">Melde in Twitter an</string>
+    <string name="info_login_to_twitter">In Twitter einloggen</string>
     <string name="userlist_public_sel">öffentlich</string>
     <string name="userlist_enter_title">Titel eingeben</string>
     <string name="userlist_enter_description">Beschreibung der Liste eingeben</string>
@@ -216,4 +216,7 @@
     <string name="info_refreshing_exclude_list">aktualisiere Filterliste</string>
     <string name="info_exclude_list_updated">Filterliste aktualisiert!</string>
     <string name="menu_licenses">Lizenzen</string>
+    <string name="info_permission_write">Schreibrechte werden benötigt um Bilder zu speichern.</string>
+    <string name="info_permission_read">Leserechte werden benötigt um Bilder und Videos einzufügen.</string>
+    <string name="info_permission_location">Standortinformationen werden ausschließlich für Tweets verwendet.</string>
 </resources>

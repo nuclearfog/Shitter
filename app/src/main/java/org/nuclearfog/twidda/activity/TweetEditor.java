@@ -222,6 +222,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
         } else {
             Toast.makeText(this, R.string.error_gps, LENGTH_LONG).show();
         }
+        locationPending.setVisibility(INVISIBLE);
+        locationBtn.setVisibility(VISIBLE);
         this.location = location;
     }
 
