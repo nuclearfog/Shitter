@@ -1,1 +1,1 @@
-alternativer Twitter-Client
+einfacher Twitter-Client
