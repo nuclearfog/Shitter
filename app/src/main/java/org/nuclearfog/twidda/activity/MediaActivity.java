@@ -62,20 +62,15 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
             {WRITE_EXTERNAL_STORAGE}
     };
 
-    /**
-     * mime type for image files with undefined extensions
-     */
-    private static final String TYPE_IMAGE = "image/*";
-
-    /**
-     * mime type for image files with undefined extensions
-     */
-    private static final String TYPE_VIDEO = "video/*";
+    private static final String MIME_ALL_READ = "*/*";
+    private static final String MIME_IMAGE_READ = "image/*";
+    private static final String MIME_VIDEO_READ = "video/*";
+    private static final String MIME_IMAGE_WRITE = "image/jpeg";
 
     /**
      * mime types for videos and images
      */
-    private static final String[] TYPE_ALL = {TYPE_IMAGE, TYPE_VIDEO};
+    private static final String[] TYPE_ALL = {MIME_IMAGE_READ, MIME_VIDEO_READ};
 
     /**
      * Cursor mode to get the full path to the image
@@ -176,13 +171,10 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
             Cursor cursor = getContentResolver().query(intent.getData(), GET_MEDIA, null, null, null);
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndexOrThrow(GET_MEDIA[0]);
-                    if (index >= 0) {
-                        String path = cursor.getString(index);
-                        if (path != null) {
-                            onMediaFetched(reqCode, path);
-                            // todo add error handling if no media returned
-                        }
+                    String path = cursor.getString(0);
+                    if (path != null) {
+                        onMediaFetched(reqCode, path);
+                        // todo add error handling if no media returned
                     }
                 }
                 cursor.close();
@@ -233,7 +225,7 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
                     values.put(DISPLAY_NAME, filename);
                     values.put(DATE_TAKEN, System.currentTimeMillis());
                     values.put(RELATIVE_PATH, DIRECTORY_PICTURES);
-                    values.put(MIME_TYPE, "image/jpeg");
+                    values.put(MIME_TYPE, MIME_IMAGE_WRITE);
                     Uri imageUri = getContentResolver().insert(EXTERNAL_CONTENT_URI, values);
                     if (imageUri != null) {
                         OutputStream fileStream = getContentResolver().openOutputStream(imageUri);
@@ -346,18 +338,18 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
             switch (requestCode) {
                 case REQUEST_IMG_VID:
                     // pick image or video
-                    mediaSelect.setType("*/*");
+                    mediaSelect.setType(MIME_ALL_READ);
                     mediaSelect.putExtra(EXTRA_MIME_TYPES, TYPE_ALL);
                     break;
 
                 case REQUEST_IMAGE:
                 case REQUEST_PROFILE:
                 case REQUEST_BANNER:
-                    mediaSelect.setType(TYPE_IMAGE);
+                    mediaSelect.setType(MIME_IMAGE_READ);
                     break;
             }
         } else {
-            mediaSelect.setType("*/*");
+            mediaSelect.setType(MIME_ALL_READ);
         }
         try {
             startActivityForResult(mediaSelect, requestCode);

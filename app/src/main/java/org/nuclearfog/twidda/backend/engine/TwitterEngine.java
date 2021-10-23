@@ -1165,8 +1165,7 @@ public class TwitterEngine {
      */
     public long uploadImage(@NonNull String path) throws EngineException {
         try {
-            File file = new File(path);
-            UploadedMedia media = twitter.uploadMedia(file.getName(), new FileInputStream(file));
+            UploadedMedia media = twitter.uploadMedia("", new FileInputStream(path));
             return media.getMediaId();
         } catch (FileNotFoundException err) {
             throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
@@ -1184,8 +1183,7 @@ public class TwitterEngine {
      */
     public long uploadVideo(@NonNull String path) throws EngineException {
         try {
-            File file = new File(path);
-            UploadedMedia media = twitter.uploadMediaChunked(file.getName(), new FileInputStream(file));
+            UploadedMedia media = twitter.uploadMediaChunked("", new FileInputStream(path));
             return media.getMediaId();
         } catch (FileNotFoundException err) {
             throw new EngineException(EngineException.InternalErrorType.FILENOTFOUND);
