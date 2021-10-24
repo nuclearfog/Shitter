@@ -5,7 +5,6 @@ import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
 import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.adapter.AccountAdapter;
 import org.nuclearfog.twidda.adapter.AccountAdapter.OnAccountClickListener;
@@ -30,7 +29,7 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
     private AccountLoader loginTask;
     private GlobalSettings settings;
     private AccountAdapter adapter;
-    private AlertDialog dialog;
+    private ConfirmDialog dialog;
     private Account selection;
 
 

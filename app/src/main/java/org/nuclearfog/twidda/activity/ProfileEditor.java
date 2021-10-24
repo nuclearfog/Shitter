@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
@@ -71,8 +70,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
     private EditText name, link, loc, bio;
     private Button addBannerBtn;
-    private Dialog loadingCircle, closeDialog;
-    private AlertDialog errorDialog;
+    private Dialog loadingCircle;
+    private ConfirmDialog errorDialog, closeDialog;
 
     private User user;
     private String profileLink, bannerLink;

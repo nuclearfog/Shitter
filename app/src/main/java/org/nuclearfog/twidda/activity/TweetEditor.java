@@ -24,7 +24,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetUpdater;
@@ -84,8 +83,8 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private GlobalSettings settings;
 
     private ImageButton mediaBtn, previewBtn, locationBtn;
-    private AlertDialog errorDialog;
-    private Dialog loadingCircle, closingDialog;
+    private ConfirmDialog errorDialog, closingDialog;
+    private Dialog loadingCircle;
     private EditText tweetText;
     private View locationPending;
 

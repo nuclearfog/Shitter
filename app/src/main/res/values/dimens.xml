@@ -187,6 +187,14 @@
     <!--dimens of dialog_license.xml-->
     <dimen name="license_textsize">8sp</dimen>
 
+    <!--dimens of dialog_confirm.xml-->
+    <dimen name="confirm_button_margin">10dp</dimen>
+    <dimen name="confirm_text_margin">14dp</dimen>
+    <dimen name="confirm_button_padding">5dp</dimen>
+    <dimen name="confirm_button_fontsize">14sp</dimen>
+    <dimen name="confirm_message_fontsize">18sp</dimen>
+    <dimen name="confirm_title_fontsize">22sp</dimen>
+
     <!--dimens of dialog_userlist.xml-->
     <dimen name="userlist_button_height">20dp</dimen>
     <dimen name="userlist_button_padding">5dp</dimen>

@@ -1,5 +1,13 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.location.Location;
@@ -13,7 +21,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.MessageUpdater;
@@ -26,14 +33,6 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
 
 /**
  * Direct message popup activity
@@ -51,8 +50,8 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
 
     private EditText receiver, message;
     private ImageButton media, preview;
-    private Dialog loadingCircle, leaveDialog;
-    private AlertDialog errorDialog;
+    private Dialog loadingCircle;
+    private ConfirmDialog errorDialog, leaveDialog;
     @Nullable
     private String mediaPath;
 

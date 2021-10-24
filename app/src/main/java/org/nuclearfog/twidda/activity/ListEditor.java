@@ -1,5 +1,10 @@
 package org.nuclearfog.twidda.activity;
 
+import static android.os.AsyncTask.Status.RUNNING;
+import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
+import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
+import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
@@ -29,11 +33,6 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.ProgressDialog;
 import org.nuclearfog.twidda.dialog.ProgressDialog.OnProgressStopListener;
-
-import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
-import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
-import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
 
 /**
  * Activity for the list editor
@@ -51,7 +50,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     private EditText titleInput, subTitleInput;
     private CompoundButton visibility;
     private Dialog leaveDialog, loadingCircle;
-    private AlertDialog errorDialog;
+    private ConfirmDialog errorDialog;
     @Nullable
     private TwitterList userList;
 

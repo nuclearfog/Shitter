@@ -1,16 +1,14 @@
 package org.nuclearfog.twidda.dialog;
 
-import static android.util.TypedValue.COMPLEX_UNIT_SP;
-
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-
 import org.nuclearfog.twidda.R;
+import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 /**
@@ -18,7 +16,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  *
  * @author nuclearfog
  */
-public class ConfirmDialog extends AlertDialog implements OnClickListener {
+public class ConfirmDialog extends Dialog implements OnClickListener {
 
     /**
      * types of dialogs, every dialog has its own message and title
@@ -46,6 +44,9 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
         LIST_EDITOR_ERROR
     }
 
+    private TextView txtTitle, txtMessage;
+    private Button confirm, cancel;
+
     private DialogType type;
     private OnConfirmListener listener;
 
@@ -54,7 +55,22 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
      * @param listener listener for the confirmation button
      */
     public ConfirmDialog(Context context, DialogType type, OnConfirmListener listener) {
-        super(context);
+        super(context, R.style.ConfirmDialog);
+        setContentView(R.layout.dialog_confirm);
+        View root = findViewById(R.id.confirm_rootview);
+        confirm = findViewById(R.id.confirm_yes);
+        cancel = findViewById(R.id.confirm_no);
+        txtTitle = findViewById(R.id.confirm_title);
+        txtMessage = findViewById(R.id.confirm_message);
+
+        confirm.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check, 0, 0, 0);
+        cancel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cross, 0, 0, 0);
+        GlobalSettings settings = GlobalSettings.getInstance(context);
+        AppStyles.setTheme(settings, root);
+
+        confirm.setOnClickListener(this);
+        cancel.setOnClickListener(this);
+
         this.type = type;
         this.listener = listener;
         build();
@@ -62,142 +78,119 @@ public class ConfirmDialog extends AlertDialog implements OnClickListener {
 
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE) {
+    public void onClick(View v) {
+        if (v.getId() == R.id.confirm_yes) {
             listener.onConfirm(type);
+            dismiss();
+        } else if (v.getId() == R.id.confirm_no) {
+            dismiss();
         }
     }
 
-
-    @Override
-    public void show() {
-        super.show();
-        setTheme();
+    /**
+     * set message text
+     *
+     * @param message message text
+     */
+    public void setMessage(String message) {
+        txtMessage.setText(message);
     }
 
     /**
      * creates an alert dialog
      */
     private void build() {
-        Context c = getContext();
-        String posButton = c.getString(R.string.dialog_button_yes);
-        String negButton = c.getString(R.string.dialog_button_no);
-        String message = "";
-        String title = "";
-
         switch (type) {
             case MESSAGE_DELETE:
-                message = c.getString(R.string.confirm_delete_message);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_delete_message);
                 break;
 
             case WRONG_PROXY:
-                title = c.getString(R.string.info_error);
-                message = c.getString(R.string.error_wrong_connection_settings);
-                posButton = c.getString(R.string.dialog_button_cancel);
-                negButton = c.getString(R.string.confirm_back);
+                txtTitle.setText(R.string.info_error);
+                txtMessage.setText(R.string.error_wrong_connection_settings);
+                confirm.setText(R.string.dialog_button_cancel);
+                cancel.setText(R.string.confirm_back);
                 break;
 
             case DEL_DATABASE:
-                message = c.getString(R.string.confirm_delete_database);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_delete_database);
                 break;
 
             case APP_LOG_OUT:
-                message = c.getString(R.string.confirm_log_lout);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_log_lout);
                 break;
 
             case LIST_EDITOR_LEAVE:
             case PROFILE_EDITOR_LEAVE:
-                message = c.getString(R.string.confirm_discard);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_discard);
                 break;
 
             case TWEET_EDITOR_LEAVE:
-                message = c.getString(R.string.confirm_cancel_tweet);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_cancel_tweet);
                 break;
 
             case LIST_EDITOR_ERROR:
             case MESSAGE_EDITOR_ERROR:
             case TWEET_EDITOR_ERROR:
             case PROFILE_EDITOR_ERROR:
-                title = c.getString(R.string.info_error);
-                posButton = c.getString(R.string.confirm_retry_button);
-                negButton = c.getString(R.string.dialog_button_cancel);
+                txtTitle.setText(R.string.info_error);
+                confirm.setText(R.string.confirm_retry_button);
+                cancel.setText(R.string.dialog_button_cancel);
                 break;
 
             case MESSAGE_EDITOR_LEAVE:
-                message = c.getString(R.string.confirm_cancel_message);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_cancel_message);
                 break;
 
             case TWEET_DELETE:
-                message = c.getString(R.string.confirm_delete_tweet);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_delete_tweet);
                 break;
 
             case PROFILE_UNFOLLOW:
-                message = c.getString(R.string.confirm_unfollow);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_unfollow);
                 break;
 
             case PROFILE_BLOCK:
-                message = c.getString(R.string.confirm_block);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_block);
                 break;
 
             case PROFILE_MUTE:
-                message = c.getString(R.string.confirm_mute);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_mute);
                 break;
 
             case LIST_REMOVE_USER:
-                message = c.getString(R.string.confirm_remove_user_from_list);
-                posButton = c.getString(R.string.dialog_button_ok);
-                negButton = c.getString(R.string.dialog_button_cancel);
+                txtTitle.setVisibility(View.GONE);
+                txtMessage.setText(R.string.confirm_remove_user_from_list);
+                confirm.setText(R.string.dialog_button_ok);
+                cancel.setText(R.string.dialog_button_cancel);
                 break;
 
             case LIST_UNFOLLOW:
-                message = c.getString(R.string.confirm_unfollow_list);
+                txtMessage.setText(R.string.confirm_unfollow_list);
+                txtTitle.setVisibility(View.GONE);
                 break;
 
             case LIST_DELETE:
-                message = c.getString(R.string.confirm_delete_list);
+                txtMessage.setText(R.string.confirm_delete_list);
+                txtTitle.setVisibility(View.GONE);
                 break;
 
             case REMOVE_ACCOUNT:
-                message = c.getString(R.string.confirm_remove_account);
-                posButton = c.getString(R.string.dialog_button_ok);
-                negButton = c.getString(R.string.dialog_button_cancel);
+                txtMessage.setText(R.string.confirm_remove_account);
+                confirm.setText(R.string.dialog_button_ok);
+                cancel.setText(R.string.dialog_button_cancel);
+                txtTitle.setVisibility(View.GONE);
                 break;
-        }
-        setTitle(title);
-        setMessage(message);
-        setButton(BUTTON_NEGATIVE, negButton, this);
-        setButton(BUTTON_POSITIVE, posButton, this);
-    }
-
-    /**
-     *
-     */
-    private void setTheme() {
-        GlobalSettings settings = GlobalSettings.getInstance(getContext());
-        TextView message = findViewById(android.R.id.message);
-        TextView title = findViewById(android.R.id.title);
-        Button button1 = findViewById(android.R.id.button1);
-        Button button2 = findViewById(android.R.id.button2);
-
-        if (getWindow() != null) {
-            getWindow().getDecorView().setBackgroundColor(settings.getBackgroundColor());
-        }
-        if (message != null) {
-            message.setTypeface(settings.getTypeFace());
-            message.setTextColor(settings.getFontColor());
-            message.setTextSize(COMPLEX_UNIT_SP, 20);
-        }
-        if (title != null) {
-            title.setTypeface(settings.getTypeFace());
-            title.setTextColor(settings.getFontColor());
-        }
-        if (button1 != null) {
-            button1.setTypeface(settings.getTypeFace());
-            button1.setTextColor(settings.getFontColor());
-        }
-        if (button2 != null) {
-            button2.setTypeface(settings.getTypeFace());
-            button2.setTextColor(settings.getFontColor());
         }
     }
 
