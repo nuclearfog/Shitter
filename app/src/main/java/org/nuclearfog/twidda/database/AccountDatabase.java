@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.database;
 
+import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -10,8 +12,6 @@ import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE;
 
 /**
  * this database stores multi user logins
@@ -41,27 +41,14 @@ public class AccountDatabase {
      */
     private static final String SORT_BY_CREATION = AccountTable.DATE + " DESC";
 
-    /**
-     * singleton instance
-     */
-    private static final AccountDatabase INSTANCE = new AccountDatabase();
-
 
     private DatabaseAdapter dataHelper;
 
-
-    private AccountDatabase() {
-    }
-
     /**
-     * get singleton instance
-     *
-     * @return instance
+     * @param context current activity context
      */
-    public static AccountDatabase getInstance(Context context) {
-        if (INSTANCE.dataHelper == null)
-            INSTANCE.dataHelper = DatabaseAdapter.getInstance(context.getApplicationContext());
-        return INSTANCE;
+    public AccountDatabase(Context context) {
+        dataHelper = DatabaseAdapter.getInstance(context);
     }
 
     /**

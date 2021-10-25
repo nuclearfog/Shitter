@@ -34,26 +34,15 @@ public class ExcludeDatabase {
     private static final String[] LIST_ID_COL = {UserExcludeTable.ID};
 
 
-    private static final ExcludeDatabase INSTANCE = new ExcludeDatabase();
     private DatabaseAdapter dataHelper;
     private GlobalSettings settings;
 
-
-    private ExcludeDatabase() {
-    }
-
     /**
-     * get singleton instance
-     *
-     * @param context activity context
-     * @return instance of this class
+     * @param context current context
      */
-    public static ExcludeDatabase getInstance(Context context) {
-        if (INSTANCE.dataHelper == null) {
-            INSTANCE.dataHelper = DatabaseAdapter.getInstance(context.getApplicationContext());
-            INSTANCE.settings = GlobalSettings.getInstance(context);
-        }
-        return INSTANCE;
+    public ExcludeDatabase(Context context) {
+        dataHelper = DatabaseAdapter.getInstance(context);
+        settings = GlobalSettings.getInstance(context);
     }
 
     /**

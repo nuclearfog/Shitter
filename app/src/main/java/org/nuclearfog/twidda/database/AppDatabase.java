@@ -236,7 +236,7 @@ public class AppDatabase {
     private DatabaseAdapter adapter;
 
     /**
-     * initialize database
+     * @param context activity context
      */
     public AppDatabase(Context context) {
         adapter = DatabaseAdapter.getInstance(context);

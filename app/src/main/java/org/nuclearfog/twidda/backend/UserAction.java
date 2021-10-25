@@ -73,7 +73,7 @@ public class UserAction extends AsyncTask<UserAction.Action, User, Relation> {
         super();
         this.callback = new WeakReference<>(callback);
         mTwitter = TwitterEngine.getInstance(callback);
-        exclDB = ExcludeDatabase.getInstance(callback);
+        exclDB = new ExcludeDatabase(callback);
         appDB = new AppDatabase(callback);
         this.userId = userId;
     }

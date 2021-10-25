@@ -186,24 +186,24 @@ public class DatabaseAdapter {
     /**
      * singleton instance
      */
-    private static DatabaseAdapter instance;
+    private static final DatabaseAdapter INSTANCE = new DatabaseAdapter();
 
     /**
      * path to the database file
      */
-    private final File databasePath;
+    private File databasePath;
 
     /**
      * database
      */
     private SQLiteDatabase db;
 
+    private boolean isInitialized = false;
 
-    private DatabaseAdapter(Context context) {
-        databasePath = context.getDatabasePath(DB_NAME);
-        db = context.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
-        initTables();
-        updateTable();
+    /**
+     *
+     */
+    private DatabaseAdapter() {
     }
 
     /**
@@ -212,7 +212,6 @@ public class DatabaseAdapter {
      * @return SQLite database
      */
     public synchronized SQLiteDatabase getDatabase() {
-        // TODO add Multithreading safety
         if (!db.isOpen())
             db = SQLiteDatabase.openOrCreateDatabase(databasePath, null);
         return db;
@@ -225,9 +224,9 @@ public class DatabaseAdapter {
      * @return database instance
      */
     public static DatabaseAdapter getInstance(@NonNull Context context) {
-        if (instance == null)
-            instance = new DatabaseAdapter(context.getApplicationContext());
-        return instance;
+        if (!INSTANCE.isInitialized)
+            INSTANCE.init(context.getApplicationContext());
+        return INSTANCE;
     }
 
     /**
@@ -237,7 +236,20 @@ public class DatabaseAdapter {
      */
     public static void deleteDatabase(Context c) {
         SQLiteDatabase.deleteDatabase(c.getDatabasePath(DB_NAME));
-        instance = null;
+        INSTANCE.init(c.getApplicationContext());
+    }
+
+    /**
+     * initialize databases
+     *
+     * @param c application context
+     */
+    private void init(Context c) {
+        databasePath = c.getDatabasePath(DB_NAME);
+        db = c.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
+        initTables();
+        updateTable();
+        isInitialized = true;
     }
 
     /**
@@ -286,6 +298,12 @@ public class DatabaseAdapter {
         if (db.getVersion() == 0) {
             db.setVersion(DB_VERSION);
         }
+    }
+
+    @Override
+    @NonNull
+    public String toString() {
+        return databasePath.toString() + ":" + db.getVersion();
     }
 
     /**

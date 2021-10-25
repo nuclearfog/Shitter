@@ -37,7 +37,7 @@ public class UserExcludeLoader extends AsyncTask<String, Void, Void> {
     public UserExcludeLoader(UserExclude callback, Mode mode) {
         super();
         mTwitter = TwitterEngine.getInstance(callback);
-        excludeDatabase = ExcludeDatabase.getInstance(callback);
+        excludeDatabase = new ExcludeDatabase(callback);
         this.callback = new WeakReference<>(callback);
         this.mode = mode;
     }

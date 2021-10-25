@@ -124,8 +124,8 @@ public class TwitterEngine {
             mTwitter.isInitialized = true;
             // initialize database and settings
             mTwitter.settings = GlobalSettings.getInstance(context);
-            mTwitter.accountDB = AccountDatabase.getInstance(context);
-            mTwitter.excludeDB = ExcludeDatabase.getInstance(context);
+            mTwitter.accountDB = new AccountDatabase(context);
+            mTwitter.excludeDB = new ExcludeDatabase(context);
             // check if already logged in
             if (mTwitter.settings.isLoggedIn()) {
                 // init login access
@@ -148,7 +148,7 @@ public class TwitterEngine {
     public static TwitterEngine getEmptyInstance(Context context) {
         // initialize storage
         mTwitter.settings = GlobalSettings.getInstance(context);
-        mTwitter.accountDB = AccountDatabase.getInstance(context);
+        mTwitter.accountDB = new AccountDatabase(context);
         // init empty session
         mTwitter.isInitialized = false;
         mTwitter.initTwitter(null);

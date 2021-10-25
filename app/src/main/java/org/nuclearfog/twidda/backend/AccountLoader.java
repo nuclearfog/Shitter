@@ -28,7 +28,7 @@ public class AccountLoader extends AsyncTask<Account, Void, List<Account>> {
     public AccountLoader(AccountFragment fragment) {
         super();
         callback = new WeakReference<>(fragment);
-        accountDatabase = AccountDatabase.getInstance(fragment.requireContext());
+        accountDatabase = new AccountDatabase(fragment.requireContext());
         appDatabase = new AppDatabase(fragment.requireContext());
     }
 

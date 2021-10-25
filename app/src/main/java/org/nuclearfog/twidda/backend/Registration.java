@@ -36,7 +36,7 @@ public class Registration extends AsyncTask<String, Void, String> {
         super();
         this.callback = new WeakReference<>(activity);
         // init database and storage
-        accountDB = AccountDatabase.getInstance(activity);
+        accountDB = new AccountDatabase(activity);
         settings = GlobalSettings.getInstance(activity);
         mTwitter = TwitterEngine.getEmptyInstance(activity);
     }
