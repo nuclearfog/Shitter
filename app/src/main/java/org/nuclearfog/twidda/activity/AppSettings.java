@@ -288,7 +288,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         }
         // confirm delete database
         else if (type == DialogType.DEL_DATABASE) {
-            DatabaseAdapter.deleteDatabase(getApplicationContext());
+            DatabaseAdapter.deleteDatabase(this);
             setResult(RETURN_DB_CLEARED);
         }
         // confirm leaving without saving proxy changes

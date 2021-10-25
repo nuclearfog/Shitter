@@ -198,10 +198,7 @@ public class DatabaseAdapter {
      */
     private SQLiteDatabase db;
 
-    private boolean isInitialized = false;
-
     /**
-     *
      */
     private DatabaseAdapter() {
     }
@@ -224,7 +221,7 @@ public class DatabaseAdapter {
      * @return database instance
      */
     public static DatabaseAdapter getInstance(@NonNull Context context) {
-        if (!INSTANCE.isInitialized)
+        if (INSTANCE.db == null)
             INSTANCE.init(context.getApplicationContext());
         return INSTANCE;
     }
@@ -249,7 +246,6 @@ public class DatabaseAdapter {
         db = c.openOrCreateDatabase(databasePath.toString(), MODE_PRIVATE, null);
         initTables();
         updateTable();
-        isInitialized = true;
     }
 
     /**
@@ -639,21 +635,21 @@ public class DatabaseAdapter {
     }
 
     /**
-     *
+     * table for user filter list
      */
     public interface UserExcludeTable {
         /**
-         *
+         * table name
          */
         String NAME = "userExclude";
 
         /**
-         *
+         * owner ID of the list
          */
         String OWNER = "listOwner";
 
         /**
-         *
+         * user ID to filter
          */
         String ID = "userID";
     }
