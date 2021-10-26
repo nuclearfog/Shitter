@@ -6,6 +6,7 @@
     <!-- app links and resources-->
     <string name="app_info_twitter_link_1" translatable="false">https://support.twitter.com/articles/18311-the-twitter-rules</string>
     <string name="app_info_twitter_link_2" translatable="false">https://help.twitter.com/rules-and-policies/twitter-api</string>
+    <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
 
     <string name="profile_image">Profile image</string>
     <string name="login_pin">enter PIN</string>
@@ -35,20 +36,20 @@
     <string name="directmessage">Directmessage</string>
     <string name="username">Username</string>
     <string name="dm_message">Message</string>
-    <string name="confirm_cancel_message">cancel message?</string>
+    <string name="confirm_cancel_message">discard message?</string>
     <string name="settings_logout">log out</string>
     <string name="dm_answer">answer</string>
     <string name="delete_dm">delete</string>
     <string name="confirm_unfollow">unfollow user?</string>
     <string name="confirm_block">block user?</string>
     <string name="confirm_log_lout">log out?</string>
-    <string name="confirm_cancel_tweet">cancel tweet?</string>
+    <string name="confirm_cancel_tweet">discard tweet?</string>
     <string name="image_preview">Image preview</string>
     <string name="tweet_add_image">add new image</string>
-    <string name="send_tweet">send Tweet</string>
+    <string name="send_tweet">share Tweet</string>
     <string name="tweet_close">close editor</string>
     <string name="profile_link">Link</string>
-    <string name="close_dm">Close direct message</string>
+    <string name="close_dm">close direct message</string>
     <string name="profile_location">Location</string>
     <string name="profile_bio">Bio</string>
     <string name="confirm_discard">discard changes?</string>
@@ -62,7 +63,6 @@
     <string name="proxy_password">Password</string>
     <string name="settings_key1_hint">Consumer key</string>
     <string name="settings_key2_hint">Consumer secret</string>
-    <string name="settings_info_link" translatable="false">https://github.com/nuclearfog/Shitter</string>
     <string name="confirm_mute">mute user?</string>
     <string name="item_list_pb_desc">Profile of the list owner</string>
     <string name="list_appbar">Lists</string>
@@ -71,7 +71,7 @@
     <string name="edit_description_hint">enter profile description</string>
     <string name="settings_font_style">Font style</string>
     <string name="page_profile_editor">edit profile</string>
-    <string name="delete_list">delete List</string>
+    <string name="delete_list">delete userlist</string>
     <string name="confirm_delete_list">delete userlist?</string>
     <string name="confirm_delete_message">delete message?</string>
     <string name="confirm_unfollow_list">unfollow list?</string>
@@ -91,7 +91,7 @@
     <string name="settings_enable_proxy_auth">enable proxy authentication</string>
     <string name="settings_setup_custom_keys">setup custom API keys</string>
     <string name="confirm_back">back</string>
-    <string name="tweet_sensitive_media">Potentially sensitive content</string>
+    <string name="tweet_sensitive_media">sensitive content</string>
     <string name="login_info">3 steps to login</string>
     <string name="login_first_opt" translatable="false">1.</string>
     <string name="login_sec_opt" translatable="false">2.</string>
@@ -116,32 +116,32 @@
     <string name="button_share">share link</string>
     <string name="settings_rt_icon_color">Retweet</string>
     <string name="settings_fv_icon_color">Favorite</string>
-    <string name="settings_follow_req_color">Request icon</string>
-    <string name="settings_follow_color">Follow icon</string>
+    <string name="settings_follow_req_color">Follow request</string>
+    <string name="settings_follow_color">Following icon</string>
     <string name="account_page" translatable="false">Accounts</string>
-    <string name="confirm_remove_account">Remove account from list?</string>
+    <string name="confirm_remove_account">remove account from list?</string>
     <string name="account_user_id_prefix" translatable="false">User ID:</string>
     <string name="account_user_unnamed">\'unnamed\'</string>
 
     <!-- toast messages to inform user -->
     <string name="info_user_removed">User removed from list</string>
     <string name="info_adding_user_to_list">adding user to list</string>
-    <string name="info_user_added_to_list">" user added to List"</string>
+    <string name="info_user_added_to_list">"added to List"</string>
     <string name="info_list_updated">Userlist updated</string>
     <string name="info_list_created">Userlist created</string>
     <string name="info_fetching_link">redirecting to Twitter login</string>
     <string name="info_login_to_twitter">login to Twitter</string>
-    <string name="error_wrong_connection_settings">Wrong connection settings!</string>
+    <string name="error_wrong_connection_settings">wrong connection settings!</string>
     <string name="info_cant_add_video">can\'t add video</string>
     <string name="info_cant_add_gif">can\'t add GIF</string>
-    <string name="info_get_link">get Twitter PIN from browser first. Please press the first button!</string>
+    <string name="info_get_link">please open twitter login page first to get the PIN</string>
     <string name="info_gps_attached">GPS position added</string>
     <string name="info_tweet_retweeted">retweeted</string>
     <string name="info_tweet_unretweeted">Retweet removed</string>
     <string name="info_tweet_favored">Tweet added to favorites</string>
     <string name="info_tweet_unfavored">Tweet removed from favorites</string>
     <string name="info_user_muted">User muted</string>
-    <string name="info_user_unmuted">user unmuted</string>
+    <string name="info_user_unmuted">User unmuted</string>
     <string name="info_dm_send">Directmessage sent</string>
     <string name="info_image_saved">Image saved</string>
     <string name="info_clipboard">Link copied to clipboard</string>
@@ -153,10 +153,10 @@
     <string name="info_user_unblocked">unblocked</string>
     <string name="info_tweet_removed">Tweet removed</string>
     <string name="info_tweet_sent">Tweet sent</string>
-    <string name="info_location_pending">Location is pending, please wait.</string>
+    <string name="info_location_pending">requesting location, please wait</string>
     <string name="info_refreshing_exclude_list">refreshing exclude list</string>
     <string name="info_exclude_list_updated">exclude list updated!</string>
-    <string name="info_permission_read">Read permission needed to access images and videos</string>
+    <string name="info_permission_read">Read permission needed to access images and videos.</string>
     <string name="info_permission_location">Location permission only needed to add location information to tweets.</string>
     <string name="info_permission_write">Write permission used to store images.</string>
     <string name="info_error">Error</string>
@@ -164,9 +164,9 @@
     <!-- toast messages for error information -->
     <string name="error_empty_tweet">Empty tweet!</string>
     <string name="error_dm">enter username or message!</string>
-    <string name="error_not_found">Not found!</string>
+    <string name="error_not_found">not found!</string>
     <string name="error_enter_pin">enter PIN!</string>
-    <string name="error_limit_exceeded">"Rate limit exceeded! Retry after:"</string>
+    <string name="error_limit_exceeded">"Rate limit exceeded! Retry after: "</string>
     <string name="error_open_link">could not open link!</string>
     <string name="error_cant_load_video">could not play video!</string>
     <string name="error_image_loading">could not load image!</string>
@@ -177,8 +177,8 @@
     <string name="error_connection_failed">Connection failed!</string>
     <string name="error_invalid_link">Invalid link!</string>
     <string name="error_cant_copy_clipboard">can\'t copy link to clipboard!</string>
-    <string name="error_gps">could not fetch GPS data!</string>
-    <string name="error_token_not_set">Please get link first!</string>
+    <string name="error_gps">could not fetch location information!</string>
+    <string name="error_token_not_set">Please open the twitter login page first to get the PIN!</string>
     <string name="error_dm_send">can\'t send direct message to this user!</string>
     <string name="error_image_save">could not save Image</string>
     <string name="error_not_authorized">Not authorized!</string>
@@ -200,7 +200,7 @@
     <string name="error_api_key_expired">Error, API Keys expired! Please update app!</string>
     <string name="error_mention_exceed">Too much mentions!</string>
     <string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
-    <string name="error_not_defined">Not defined Error!</string>
+    <string name="error_not_defined">Not specified error!</string>
 
     <!-- menu icon strings -->
     <string name="menu_tweet">write Tweet</string>
@@ -228,7 +228,7 @@
     <string name="menu_unfollow_list">unfollow list</string>
     <string name="menu_user_unfollow">unfollow</string>
     <string name="menu_user_unblock">unblock</string>
-    <string name="menu_excluded_users">Block lists</string>
+    <string name="menu_excluded_users">Blocklists</string>
     <string name="menu_exclude_user">exclude user</string>
     <string name="menu_search_filter">filter results</string>
     <string name="menu_hint_mute_user">enter @name to mute</string>

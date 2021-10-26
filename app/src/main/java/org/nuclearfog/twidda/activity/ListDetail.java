@@ -50,7 +50,8 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import java.util.regex.Pattern;
 
 /**
- * Activity to show an user list, members and tweets
+ * This activity shows content of an user list
+ * like tweets, list member and follower
  *
  * @author nuclearfog
  */
@@ -309,7 +310,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     public void onSuccess(String[] names) {
         String info = names[0];
         if (!info.startsWith("@"))
-            info = '@' + info;
+            info = '@' + info + ' ';
         info += getString(R.string.info_user_added_to_list);
         Toast.makeText(this, info, Toast.LENGTH_SHORT).show();
         invalidateOptionsMenu();

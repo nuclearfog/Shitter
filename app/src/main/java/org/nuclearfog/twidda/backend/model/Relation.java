@@ -89,6 +89,6 @@ public class Relation {
     @NonNull
     @Override
     public String toString() {
-        return ", isFriend=" + isFriend + ", isFollower=" + isFollower;
+        return "isFriend:" + isFriend + " isFollower:" + isFollower;
     }
 }

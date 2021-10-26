@@ -91,7 +91,7 @@ public class Trend {
     public String getSearchString() {
         if (trendName.startsWith("#"))
             return trendName;
-        if (!trendName.contains("\""))
+        if (!trendName.startsWith("\"") || !trendName.endsWith("\""))
             return "\"" + trendName + "\"";
         return trendName;
     }

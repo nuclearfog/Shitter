@@ -333,6 +333,6 @@ public class User implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return username + " " + screenName;
+        return "\"" + username + "\" " + screenName;
     }
 }

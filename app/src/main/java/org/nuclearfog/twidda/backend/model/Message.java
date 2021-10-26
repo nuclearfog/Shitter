@@ -116,6 +116,6 @@ public class Message {
     @NonNull
     @Override
     public String toString() {
-        return sender.getScreenname() + " to " + receiver.getScreenname() + " " + message;
+        return "from:" + sender.getScreenname() + " to:" + receiver.getScreenname() + " msg:" + message;
     }
 }

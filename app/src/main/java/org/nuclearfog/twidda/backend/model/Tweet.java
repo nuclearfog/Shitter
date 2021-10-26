@@ -128,14 +128,14 @@ public class Tweet implements Serializable {
             this.tweet = tweet;
         if (source != null)
             this.source = source;
-        if (replyName != null) {
-            this.replyName = replyName;
-            this.userMentions = replyName;
-        }
         if (place != null)
             this.locationName = place;
         if (geo != null)
             this.locationCoordinates = geo;
+        if (replyName != null) {
+            this.replyName = replyName;
+            this.userMentions = replyName;
+        }
         this.tweetID = tweetID;
         this.user = user;
         this.retweetCount = retweetCount;
@@ -474,6 +474,6 @@ public class Tweet implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return user.getScreenname() + ": " + tweet;
+        return "from:" + user.getScreenname() + " text:" + tweet;
     }
 }

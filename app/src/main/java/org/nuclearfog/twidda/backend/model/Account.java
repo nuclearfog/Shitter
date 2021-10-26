@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.backend.model;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
@@ -78,5 +79,14 @@ public class Account {
      */
     public String[] getKeys() {
         return new String[]{key1, key2};
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (user != null)
+            return user + " date:" + loginDate;
+        return "id:" + userId + " date:" + loginDate;
     }
 }

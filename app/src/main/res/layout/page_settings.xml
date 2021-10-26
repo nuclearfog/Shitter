@@ -44,7 +44,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/settings_color_button_height"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:baselineAligned="false">
@@ -71,7 +71,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/settings_color_button_height"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:baselineAligned="false">
@@ -98,7 +98,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/settings_color_button_height"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:baselineAligned="false">
@@ -125,7 +125,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/settings_color_button_height"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:baselineAligned="false">
@@ -152,7 +152,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/settings_color_button_height"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal"
                         android:baselineAligned="false">
@@ -193,7 +193,7 @@
                     android:padding="@dimen/settings_layout_padding">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
                         android:text="@string/settings_look"

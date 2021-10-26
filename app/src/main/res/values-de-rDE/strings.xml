@@ -167,7 +167,7 @@
     <string name="descr_add_profile_image">Profilbild ändern</string>
     <string name="settings_enable_hq_img">Bilder in hoher Auflösung</string>
     <string name="menu_app_info">Über</string>
-    <string name="info_user_added_to_list">Nutzer wurde zur Liste hinzugefügt!</string>
+    <string name="info_user_added_to_list">wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
     <string name="error_not_defined">Undefinierter Fehler!</string>
     <string name="dialog_button_yes">Ja</string>
@@ -208,8 +208,8 @@
     <string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>
     <string name="account_user_unnamed">\'unbenannt\'</string>
     <string name="menu_excluded_users">Blocklisten</string>
-    <string name="menu_hint_mute_user">\@Name stummschalten</string>
-    <string name="menu_hint_block_user">\@Name blockieren</string>
+    <string name="menu_hint_mute_user">\@name stummschalten</string>
+    <string name="menu_hint_block_user">\@name blockieren</string>
     <string name="menu_exclude_user">Nutzer ausschließen</string>
     <string name="menu_search_filter">Ergebnisse filtern</string>
     <string name="menu_refresh_exclude">Filterliste aktualisieren</string>

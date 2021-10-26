@@ -140,7 +140,7 @@ public class TwitterList implements Serializable {
     @Override
     @NonNull
     public String toString() {
-        return title + " " + description;
+        return "title:" + title + " description:" + description;
     }
 
 

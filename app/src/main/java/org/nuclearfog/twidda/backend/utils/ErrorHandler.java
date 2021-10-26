@@ -55,9 +55,6 @@ public final class ErrorHandler {
                 case USER_NOT_FOUND:
                     return context.getString(R.string.error_user_not_found);
 
-                case APP_SUSPENDED:
-                    return context.getString(R.string.error_request_token);
-
                 case RESOURCE_NOT_FOUND:
                     return context.getString(R.string.error_not_found);
 
@@ -103,6 +100,7 @@ public final class ErrorHandler {
                 case ACCOUNT_UPDATE_FAILED:
                     return context.getString(R.string.error_acc_update);
 
+                case APP_SUSPENDED:
                 case ERROR_API_ACCESS_DENIED:
                     GlobalSettings settings = GlobalSettings.getInstance(context);
                     if (settings.isCustomApiSet())
