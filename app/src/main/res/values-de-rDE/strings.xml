@@ -74,7 +74,6 @@
     <string name="error_empty_name">Name leer!</string>
     <string name="confirm_discard">Änderungen verwerfen?</string>
     <string name="user_data">Nutzerdaten</string>
-    <string name="error_request_token">API Schlüssel abgelaufen, bitte App aktualisieren!</string>
     <string name="follows_you">folgt dir</string>
     <string name="error_image_save">Fehler beim Speichern!</string>
     <string name="error_not_authorized">Keine Berechtigung!</string>
@@ -170,8 +169,6 @@
     <string name="info_user_added_to_list">wurde zur Liste hinzugefügt!</string>
     <string name="error_username_format">Nutzername falsch!</string>
     <string name="error_not_defined">Undefinierter Fehler!</string>
-    <string name="dialog_button_yes">Ja</string>
-    <string name="dialog_button_no">Nein</string>
     <string name="dialog_button_cancel">Abbrechen</string>
     <string name="dialog_button_ok">OK</string>
     <string name="error_cant_reply_to_tweet">Tweet ist nicht für Antworten freigegeben!</string>

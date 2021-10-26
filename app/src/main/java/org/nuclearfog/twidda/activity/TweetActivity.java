@@ -311,7 +311,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 Intent tweetPopup = new Intent(this, TweetEditor.class);
                 tweetPopup.putExtra(KEY_TWEETPOPUP_REPLYID, clickedTweet.getId());
                 if (!tweetPrefix.isEmpty())
-                    tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix + " ");
+                    tweetPopup.putExtra(KEY_TWEETPOPUP_TEXT, tweetPrefix);
                 startActivity(tweetPopup);
             }
             // show user retweeting this tweet

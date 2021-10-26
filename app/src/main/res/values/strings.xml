@@ -183,7 +183,6 @@
     <string name="error_image_save">could not save Image</string>
     <string name="error_not_authorized">Not authorized!</string>
     <string name="error_file_format">File format not supported!</string>
-    <string name="error_request_token">API Keys are expired! please update app!</string>
     <string name="error_empty_name">Empty user name!</string>
     <string name="error_user_not_found">User not found!</string>
     <string name="error_send_dm_to_user">cannot send dm to user!</string>
@@ -238,8 +237,6 @@
     <string name="menu_add_account">add account</string>
 
     <!--dialog strings-->
-    <string name="dialog_button_yes">Yes</string>
-    <string name="dialog_button_no">No</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_link_image_preview">Link preview image</string>

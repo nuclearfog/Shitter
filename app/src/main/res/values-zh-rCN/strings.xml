@@ -150,7 +150,6 @@
     <string name="error_image_save">无法保存该图片</string>
     <string name="error_not_authorized">未取得授权！</string>
     <string name="error_file_format">不支持该文件格式！</string>
-    <string name="error_request_token">错误，API 密钥已过期！请更新应用！</string>
     <string name="error_empty_name">用户名为空！</string>
     <string name="error_user_not_found">未找到该用户！</string>
     <string name="error_send_dm_to_user">无法给用户发送消息！</string>
@@ -194,8 +193,6 @@
     <string name="menu_user_unfollow">取消关注</string>
     <string name="menu_user_unblock">取消屏蔽</string>
 
-    <string name="dialog_button_yes">是</string>
-    <string name="dialog_button_no">否</string>
     <string name="dialog_button_cancel">取消</string>
     <string name="dialog_button_ok">好的</string>
 </resources>

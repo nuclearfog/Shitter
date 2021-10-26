@@ -397,18 +397,18 @@ public class Tweet implements Serializable {
             this.tweet = tweet.toString();
         }
         // remove xml tag from source string
-        if (status.getSource() != null) {
-            source = "" + status.getSource();
+        String source = status.getSource();
+        if (source != null) {
             int start = source.indexOf('>') + 1;
             int end = source.lastIndexOf('<');
             if (start > 0 && end > start)
-                source = source.substring(start, end);
+                this.source = source.substring(start, end);
         }
         // add reply mention
-        StringBuilder userMentions = new StringBuilder();
+        StringBuilder userMentions = new StringBuilder(17 /*max screen name length*/);
         if (!user.isCurrentUser()) {
             // prevent self mentioning
-            userMentions.append(user.getScreenname());
+            userMentions.append(user.getScreenname()).append(' ');
         }
         // add user mentions
         UserMentionEntity[] mentionedUsers = status.getUserMentionEntities();
@@ -416,7 +416,7 @@ public class Tweet implements Serializable {
             for (UserMentionEntity mention : mentionedUsers) {
                 if (mention.getId() != twitterId && userMentions.indexOf(mention.getScreenName()) < 0) {
                     // filter out current user's screen name and duplicates
-                    userMentions.append(" @").append(mention.getScreenName());
+                    userMentions.append('@').append(mention.getScreenName()).append(' ');
                 }
             }
         }
@@ -436,15 +436,19 @@ public class Tweet implements Serializable {
             switch (mediaEntities[0].getType()) {
                 case PHOTO:
                     mediaType = MediaType.IMAGE;
-                    for (int i = 0; i < mediaEntities.length; i++)
+                    for (int i = 0; i < mediaEntities.length; i++) {
                         medias[i] = mediaEntities[i].getMediaURLHttps();
+                    }
                     break;
 
                 case VIDEO:
                     mediaType = MediaType.VIDEO;
                     for (MediaEntity.Variant type : mediaEntities[0].getVideoVariants()) {
-                        if (type.getContentType().equals(MEDIA_VIDEO))
+                        if (type.getContentType().equals(MEDIA_VIDEO)) {
+                            // get link with selected video format
+                            // a tweet can only have one video
                             medias[0] = type.getUrl();
+                        }
                     }
                     break;
 
