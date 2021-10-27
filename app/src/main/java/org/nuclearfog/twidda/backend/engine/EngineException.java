@@ -1,9 +1,9 @@
 package org.nuclearfog.twidda.backend.engine;
 
-import twitter4j.TwitterException;
-
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
 import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.USER_NOT_FOUND;
+
+import twitter4j.TwitterException;
 
 /**
  * Exception class for {@link TwitterEngine}
@@ -30,6 +30,7 @@ public class EngineException extends Exception {
         NO_LINK_DEFINED,
         NO_CONNECTION,
         IMAGE_NOT_LOADED,
+        REQUEST_CANCELLED,
         ACCOUNT_UPDATE_FAILED,
         ERROR_API_ACCESS_DENIED,
         ERROR_NOT_DEFINED
@@ -128,6 +129,8 @@ public class EngineException extends Exception {
                 default:
                     if (error.getStatusCode() == 401) {
                         errorType = ErrorType.NOT_AUTHORIZED;
+                    } else if (error.getStatusCode() == 408) {
+                        errorType = ErrorType.REQUEST_CANCELLED;
                     } else if (error.isCausedByNetworkIssue()) {
                         errorType = ErrorType.NO_CONNECTION;
                     } else {

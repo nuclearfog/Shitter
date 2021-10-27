@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/confirm_text_margin"
         android:textSize="@dimen/confirm_message_fontsize"
+        android:maxLines="@integer/confirm_message_max_ines"
+        android:scrollbars="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirm_title"
         app:layout_constraintBottom_toTopOf="@id/confirm_barrier"

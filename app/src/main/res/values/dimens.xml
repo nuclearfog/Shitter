@@ -195,6 +195,7 @@
     <dimen name="confirm_button_fontsize">14sp</dimen>
     <dimen name="confirm_message_fontsize">18sp</dimen>
     <dimen name="confirm_title_fontsize">22sp</dimen>
+    <integer name="confirm_message_max_ines">8</integer>
 
     <!--dimens of dialog_userlist.xml-->
     <dimen name="userlist_button_height">20dp</dimen>

@@ -100,6 +100,9 @@ public final class ErrorHandler {
                 case ACCOUNT_UPDATE_FAILED:
                     return context.getString(R.string.error_acc_update);
 
+                case REQUEST_CANCELLED:
+                    return context.getString(R.string.error_result_cancelled);
+
                 case APP_SUSPENDED:
                 case ERROR_API_ACCESS_DENIED:
                     GlobalSettings settings = GlobalSettings.getInstance(context);
