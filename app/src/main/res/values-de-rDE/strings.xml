@@ -117,7 +117,7 @@
     <string name="profile_banner">Profilbanner</string>
     <string name="editprofile_add_banner">Banner einfügen</string>
     <string name="error_invalid_link">Ungültiger Link!</string>
-    <string name="settings_app_information">App und Lizenzinformationen unter:</string>
+    <string name="settings_app_information">App Quellcode:</string>
     <string name="error_rate_limit">Zu viele Anfragen! Bitte 15 Minuten warten!</string>
     <string name="info_cant_add_video">Video konnte nicht hinzugefügt werden!</string>
     <string name="error_file_not_found">Datei nicht gefunden!</string>
