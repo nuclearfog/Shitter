@@ -35,6 +35,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.OnColorChangedListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FontAdapter;
@@ -70,9 +71,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private FontAdapter fontAdapter;
 
     private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo, license;
-    private View root, layout_hq_image, layout_key, layout_proxy, layout_auth_en, layout_auth;
+    private View root, hqImageText, enableAuthTxt;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
-    private CompoundButton enableProxy, enableAuth, hqImage, enableAPI;
+    private SwitchButton enableProxy, enableAuth, hqImage, enableAPI;
     private Spinner locationSpinner;
     private TextView list_size;
     private Button[] colorButtons = new Button[ColorMode.values().length];
@@ -108,10 +109,10 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Toolbar toolbar = findViewById(R.id.toolbar_setting);
         View trend_card = findViewById(R.id.settings_trend_card);
         View user_card = findViewById(R.id.settings_data_card);
-        CompoundButton toggleImg = findViewById(R.id.toggleImg);
-        CompoundButton toggleAns = findViewById(R.id.toggleAns);
-        CompoundButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
-        CompoundButton enablePreview = findViewById(R.id.settings_enable_prev);
+        SwitchButton toggleImg = findViewById(R.id.toggleImg);
+        SwitchButton toggleAns = findViewById(R.id.toggleAns);
+        SwitchButton toolbarOverlap = findViewById(R.id.settings_toolbar_ov);
+        SwitchButton enablePreview = findViewById(R.id.settings_enable_prev);
         SeekBar listSizeSelector = findViewById(R.id.settings_list_seek);
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
@@ -119,6 +120,8 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         hqImage = findViewById(R.id.settings_image_hq);
         enableAPI = findViewById(R.id.settings_set_custom_keys);
         locationSpinner = findViewById(R.id.spinner_woeid);
+        hqImageText = findViewById(R.id.settings_image_hq_descr);
+        enableAuthTxt = findViewById(R.id.settings_enable_auth_descr);
         colorButtons[ColorMode.BACKGROUND.INDEX] = findViewById(R.id.color_background);
         colorButtons[ColorMode.FONTCOLOR.INDEX] = findViewById(R.id.color_font);
         colorButtons[ColorMode.POPUPCOLOR.INDEX] = findViewById(R.id.color_popup);
@@ -136,11 +139,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         api_key1 = findViewById(R.id.settings_custom_key1);
         api_key2 = findViewById(R.id.settings_custom_key2);
         list_size = findViewById(R.id.settings_list_size);
-        layout_proxy = findViewById(R.id.settings_layout_proxy);
-        layout_hq_image = findViewById(R.id.settings_image_hq_layout);
-        layout_auth_en = findViewById(R.id.settings_layout_auth_enable);
-        layout_auth = findViewById(R.id.settings_layout_proxy_auth);
-        layout_key = findViewById(R.id.settings_layout_key);
         root = findViewById(R.id.settings_layout);
 
         toolbar.setTitle(R.string.title_settings);
@@ -159,28 +157,45 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         AppStyles.setTheme(settings, root);
         AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
+        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
+        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
+        databaseDialog = new ConfirmDialog(this, DialogType.DEL_DATABASE, this);
+        logoutDialog = new ConfirmDialog(this, DialogType.APP_LOG_OUT, this);
+        appInfo = new InfoDialog(this);
+        license = new LicenseDialog(this);
+
         if (!settings.isLoggedIn()) {
             trend_card.setVisibility(GONE);
             user_card.setVisibility(GONE);
         }
         if (!settings.isProxyEnabled()) {
-            layout_proxy.setVisibility(GONE);
-            layout_auth_en.setVisibility(GONE);
+            proxyAddr.setVisibility(GONE);
+            proxyPort.setVisibility(GONE);
+            proxyUser.setVisibility(GONE);
+            proxyPass.setVisibility(GONE);
+            enableAuth.setVisibility(GONE);
+            enableAuthTxt.setVisibility(GONE);
+        } else if (!settings.isProxyAuthSet()) {
+            proxyUser.setVisibility(GONE);
+            proxyPass.setVisibility(GONE);
         }
         if (!settings.imagesEnabled()) {
-            layout_hq_image.setVisibility(GONE);
-        }
-        if (!settings.isProxyAuthSet()) {
-            layout_auth.setVisibility(GONE);
+            hqImageText.setVisibility(GONE);
+            hqImage.setVisibility(GONE);
         }
         if (!settings.isCustomApiSet()) {
-            layout_key.setVisibility(GONE);
+            api_key1.setVisibility(GONE);
+            api_key2.setVisibility(GONE);
         }
-        toggleImg.setChecked(settings.imagesEnabled());
-        toggleAns.setChecked(settings.replyLoadingEnabled());
-        enableAPI.setChecked(settings.isCustomApiSet());
-        enablePreview.setChecked(settings.linkPreviewEnabled());
-        toolbarOverlap.setChecked(settings.toolbarOverlapEnabled());
+        toggleImg.setCheckedImmediately(settings.imagesEnabled());
+        toggleAns.setCheckedImmediately(settings.replyLoadingEnabled());
+        enablePreview.setCheckedImmediately(settings.linkPreviewEnabled());
+        toolbarOverlap.setCheckedImmediately(settings.toolbarOverlapEnabled());
+        enableAPI.setCheckedImmediately(settings.isCustomApiSet());
+        enableProxy.setCheckedImmediately(settings.isProxyEnabled());
+        enableAuth.setCheckedImmediately(settings.isProxyAuthSet());
+        hqImage.setCheckedImmediately(settings.imagesEnabled());
+        hqImage.setCheckedImmediately(settings.getImageQuality());
         proxyAddr.setText(settings.getProxyHost());
         proxyPort.setText(settings.getProxyPort());
         proxyUser.setText(settings.getProxyUser());
@@ -189,18 +204,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         api_key2.setText(settings.getConsumerSecret());
         list_size.setText(Integer.toString(settings.getListSize()));
         listSizeSelector.setProgress(settings.getListSize() / 10 - 1);
-        enableProxy.setChecked(settings.isProxyEnabled());
-        enableAuth.setChecked(settings.isProxyAuthSet());
-        hqImage.setEnabled(settings.imagesEnabled());
-        hqImage.setChecked(settings.getImageQuality());
         setButtonColors();
-
-        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
-        connectDialog = new ConfirmDialog(this, DialogType.WRONG_PROXY, this);
-        databaseDialog = new ConfirmDialog(this, DialogType.DEL_DATABASE, this);
-        logoutDialog = new ConfirmDialog(this, DialogType.APP_LOG_OUT, this);
-        appInfo = new InfoDialog(this);
-        license = new LicenseDialog(this);
 
         for (Button button : colorButtons)
             button.setOnClickListener(this);
@@ -456,11 +460,12 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         // toggle image loading
         if (c.getId() == R.id.toggleImg) {
             settings.setImageLoad(checked);
-            hqImage.setEnabled(checked);
             if (checked) {
-                layout_hq_image.setVisibility(VISIBLE);
+                hqImageText.setVisibility(VISIBLE);
+                hqImage.setVisibility(VISIBLE);
             } else {
-                layout_hq_image.setVisibility(GONE);
+                hqImageText.setVisibility(GONE);
+                hqImage.setVisibility(GONE);
             }
         }
         // toggle automatic answer load
@@ -482,28 +487,36 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         // enable proxy settings
         else if (c.getId() == R.id.settings_enable_proxy) {
             if (checked) {
-                layout_proxy.setVisibility(VISIBLE);
-                layout_auth_en.setVisibility(VISIBLE);
+                proxyAddr.setVisibility(VISIBLE);
+                proxyPort.setVisibility(VISIBLE);
+                enableAuth.setVisibility(VISIBLE);
+                enableAuthTxt.setVisibility(VISIBLE);
             } else {
-                layout_proxy.setVisibility(GONE);
-                layout_auth_en.setVisibility(GONE);
+                proxyAddr.setVisibility(GONE);
+                proxyPort.setVisibility(GONE);
+                enableAuthTxt.setVisibility(GONE);
+                enableAuth.setVisibility(GONE);
                 enableAuth.setChecked(false);
             }
         }
         //enable proxy authentication
         else if (c.getId() == R.id.settings_enable_auth) {
             if (checked) {
-                layout_auth.setVisibility(VISIBLE);
+                proxyUser.setVisibility(VISIBLE);
+                proxyPass.setVisibility(VISIBLE);
             } else {
-                layout_auth.setVisibility(GONE);
+                proxyUser.setVisibility(GONE);
+                proxyPass.setVisibility(GONE);
             }
         }
         // enable custom API setup
         else if (c.getId() == R.id.settings_set_custom_keys) {
             if (checked) {
-                layout_key.setVisibility(VISIBLE);
+                api_key1.setVisibility(VISIBLE);
+                api_key2.setVisibility(VISIBLE);
             } else {
-                layout_key.setVisibility(GONE);
+                api_key1.setVisibility(GONE);
+                api_key2.setVisibility(GONE);
             }
         }
     }

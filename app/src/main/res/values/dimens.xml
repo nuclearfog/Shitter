@@ -8,15 +8,15 @@
 
     <!--dimens of page_settings.xml-->
     <dimen name="settings_toolbar_height">@dimen/toolbar_height</dimen>
-    <dimen name="settings_textsize_small">12sp</dimen>
-    <dimen name="settings_info_appname_font">18sp</dimen>
-    <dimen name="settings_layout_padding">16dp</dimen>
-    <dimen name="settings_textsize">20sp</dimen>
-    <dimen name="settings_button_height">30sp</dimen>
     <dimen name="settings_color_button_height">42sp</dimen>
     <dimen name="settings_color_button_margin">2dp</dimen>
     <dimen name="settings_color_button_stroke_width">2dp</dimen>
     <dimen name="settings_color_button_corner_radius">4dp</dimen>
+    <dimen name="settings_cardview_padding">10dp</dimen>
+    <dimen name="settings_textsize">20sp</dimen>
+    <dimen name="settings_textsize_small">12sp</dimen>
+
+    <dimen name="settings_button_height">30sp</dimen>
     <dimen name="settings_button_margin">5dp</dimen>
     <dimen name="settings_switch_margin">10dp</dimen>
     <dimen name="settings_spinner_margin">10dp</dimen>
@@ -184,6 +184,7 @@
 
     <!--dimens of dialog_app_info.xml-->
     <dimen name="infopopup_text_padding">5dp</dimen>
+    <dimen name="infopopup_appname_font">18sp</dimen>
 
     <!--dimens of dialog_license.xml-->
     <dimen name="license_textsize">8sp</dimen>
@@ -195,6 +196,7 @@
     <dimen name="confirm_button_fontsize">14sp</dimen>
     <dimen name="confirm_message_fontsize">18sp</dimen>
     <dimen name="confirm_title_fontsize">22sp</dimen>
+    <dimen name="confirm_button_height">30sp</dimen>
     <integer name="confirm_message_max_ines">8</integer>
 
     <!--dimens of dialog_userlist.xml-->
