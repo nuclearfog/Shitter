@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tweet_popup"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activity.TweetEditor">
 
     <ImageView
         android:id="@+id/tweet_popup_background"
@@ -32,10 +33,10 @@
         android:hint="@string/popup_tweet_hint"
         android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        app:layout_constraintStart_toStartOf="@+id/tweet_popup_background"
-        app:layout_constraintTop_toTopOf="@+id/tweet_popup_background"
-        app:layout_constraintBottom_toTopOf="@+id/tweet_placeholder"
-        app:layout_constraintEnd_toEndOf="@+id/tweet_popup_background" />
+        app:layout_constraintStart_toStartOf="@id/tweet_popup_background"
+        app:layout_constraintTop_toTopOf="@id/tweet_popup_background"
+        app:layout_constraintBottom_toTopOf="@id/tweet_placeholder"
+        app:layout_constraintEnd_toEndOf="@id/tweet_popup_background" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/tweet_placeholder"
@@ -58,9 +59,9 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/tweet_popup_background"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/tweet_add_media" />
+        app:layout_constraintStart_toStartOf="@id/tweet_popup_background"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@id/tweet_add_media" />
 
     <ImageButton
         android:id="@+id/tweet_add_media"
@@ -74,9 +75,9 @@
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_prev_media"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/tweet_add_location" />
+        app:layout_constraintStart_toEndOf="@id/tweet_prev_media"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@id/tweet_add_location" />
 
     <ProgressBar
         android:id="@+id/location_progress"
@@ -84,10 +85,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/tweet_add_location"
-        app:layout_constraintTop_toTopOf="@+id/tweet_add_location"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_add_location"
-        app:layout_constraintEnd_toEndOf="@+id/tweet_add_location" />
+        app:layout_constraintStart_toStartOf="@id/tweet_add_location"
+        app:layout_constraintTop_toTopOf="@id/tweet_add_location"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_add_location"
+        app:layout_constraintEnd_toEndOf="@id/tweet_add_location" />
 
     <ImageButton
         android:id="@+id/tweet_add_location"
@@ -101,9 +102,9 @@
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_add_media"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/tweet_send" />
+        app:layout_constraintStart_toEndOf="@id/tweet_add_media"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@id/tweet_send" />
 
     <ImageButton
         android:id="@+id/tweet_send"
@@ -117,9 +118,9 @@
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_add_location"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/close" />
+        app:layout_constraintStart_toEndOf="@id/tweet_add_location"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_popup_background"
+        app:layout_constraintEnd_toStartOf="@id/close" />
 
     <ImageButton
         android:id="@+id/close"
@@ -133,8 +134,8 @@
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toEndOf="@+id/tweet_send"
-        app:layout_constraintBottom_toBottomOf="@+id/tweet_popup_background"
-        app:layout_constraintEnd_toEndOf="@+id/tweet_popup_background" />
+        app:layout_constraintStart_toEndOf="@id/tweet_send"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_popup_background"
+        app:layout_constraintEnd_toEndOf="@id/tweet_popup_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

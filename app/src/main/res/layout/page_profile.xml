@@ -5,7 +5,8 @@
     android:id="@+id/user_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".activity.UserProfile">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -24,30 +25,33 @@
 
                 <ImageView
                     android:id="@+id/profile_banner"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/profile_banner"
                     android:scaleType="centerCrop"
                     app:layout_constraintDimensionRatio="3.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <ImageView
                     android:id="@+id/profile_toolbar_background"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/profile_toolbar_height"
                     android:scaleType="centerCrop"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     tools:ignore="ContentDescription" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/profile_toolbar"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/profile_toolbar_height"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
                 <ImageView
                     android:id="@+id/profile_img"
@@ -160,7 +164,7 @@
 
                 <TextView
                     android:id="@+id/bio"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/profile_tv_margin"
                     android:layout_marginLeft="@dimen/profile_tv_margin"
@@ -171,9 +175,9 @@
                     android:linksClickable="true"
                     android:maxLines="@integer/profile_text_bio_lines"
                     android:scrollbars="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_bio_barrier" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_bio_barrier"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
 
                 <TextView
@@ -220,7 +224,7 @@
 
                 <TextView
                     android:id="@+id/profile_date"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/profile_tv_margin"
                     android:layout_marginLeft="@dimen/profile_tv_margin"
@@ -230,9 +234,9 @@
                     android:singleLine="true"
                     android:textSize="@dimen/profile_textsize_small"
                     android:visibility="invisible"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_date_barrier" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_date_barrier"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

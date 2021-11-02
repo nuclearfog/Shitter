@@ -34,10 +34,10 @@
         android:layout_height="@dimen/controller_button_height"
         android:contentDescription="@string/button_play_pause"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@+id/controller_play"
-        app:layout_constraintTop_toTopOf="@+id/controller_play"
-        app:layout_constraintBottom_toBottomOf="@+id/controller_play"
-        app:layout_constraintEnd_toEndOf="@+id/controller_play" />
+        app:layout_constraintStart_toStartOf="@id/controller_play"
+        app:layout_constraintTop_toTopOf="@id/controller_play"
+        app:layout_constraintBottom_toBottomOf="@id/controller_play"
+        app:layout_constraintEnd_toEndOf="@id/controller_play" />
 
     <ImageButton
         android:id="@+id/controller_forward"
@@ -78,7 +78,7 @@
         android:textSize="@dimen/controller_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/controller_progress"
-        app:layout_constraintBottom_toBottomOf="@+id/controller_progress"
+        app:layout_constraintBottom_toBottomOf="@id/controller_progress"
         app:layout_constraintEnd_toStartOf="@id/controller_progress" />
 
     <SeekBar
@@ -103,7 +103,7 @@
         android:textSize="@dimen/controller_text_size"
         app:layout_constraintStart_toEndOf="@id/controller_progress"
         app:layout_constraintTop_toTopOf="@id/controller_progress"
-        app:layout_constraintBottom_toBottomOf="@+id/controller_progress"
+        app:layout_constraintBottom_toBottomOf="@id/controller_progress"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

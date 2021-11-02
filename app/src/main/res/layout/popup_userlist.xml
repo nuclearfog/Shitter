@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/list_popup_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activity.ListEditor">
 
     <ImageView
         android:id="@+id/userlist_popup_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.85"
         app:layout_constraintHeight_percent="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.85"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -30,9 +31,9 @@
         android:singleLine="true"
         android:text="@string/userlist_create_new_list"
         android:textSize="@dimen/userlist_title_textsize"
-        app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"
-        app:layout_constraintStart_toStartOf="@+id/userlist_popup_background"
-        app:layout_constraintTop_toTopOf="@+id/userlist_popup_background" />
+        app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
+        app:layout_constraintTop_toTopOf="@id/userlist_popup_background"
+        app:layout_constraintEnd_toEndOf="@id/userlist_popup_background" />
 
     <EditText
         android:id="@+id/list_edit_title"
@@ -49,10 +50,10 @@
         android:hint="@string/userlist_enter_title"
         android:inputType="textPersonName"
         android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@+id/list_edit_descr"
-        app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"
-        app:layout_constraintStart_toStartOf="@+id/userlist_popup_background"
-        app:layout_constraintTop_toBottomOf="@+id/popup_list_title" />
+        app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
+        app:layout_constraintTop_toBottomOf="@id/popup_list_title"
+        app:layout_constraintBottom_toTopOf="@id/list_edit_descr"
+        app:layout_constraintEnd_toEndOf="@id/userlist_popup_background" />
 
     <EditText
         android:id="@+id/list_edit_descr"
@@ -70,10 +71,10 @@
         android:hint="@string/userlist_enter_description"
         android:autofillHints="@string/userlist_enter_description"
         android:inputType="textMultiLine"
+        app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
+        app:layout_constraintTop_toBottomOf="@id/list_edit_title"
         app:layout_constraintBottom_toTopOf="@id/list_edit_public_sw"
-        app:layout_constraintEnd_toEndOf="@+id/userlist_popup_background"
-        app:layout_constraintStart_toStartOf="@+id/userlist_popup_background"
-        app:layout_constraintTop_toBottomOf="@+id/list_edit_title" />
+        app:layout_constraintEnd_toEndOf="@id/userlist_popup_background" />
 
 
     <com.kyleduo.switchbutton.SwitchButton
@@ -85,10 +86,10 @@
         android:layout_marginEnd="@dimen/popup_userlist_layout_margin"
         android:layout_marginRight="@dimen/popup_userlist_layout_margin"
         android:layout_marginBottom="@dimen/popup_userlist_background_margin"
-        app:layout_constraintBottom_toBottomOf="@+id/userlist_popup_background"
-        app:layout_constraintEnd_toStartOf="@+id/userlist_switch_text"
         app:layout_constraintStart_toStartOf="@id/userlist_popup_background"
-        app:layout_constraintTop_toBottomOf="@+id/list_edit_descr" />
+        app:layout_constraintTop_toBottomOf="@id/list_edit_descr"
+        app:layout_constraintBottom_toBottomOf="@id/userlist_popup_background"
+        app:layout_constraintEnd_toStartOf="@id/userlist_switch_text" />
 
     <TextView
         android:id="@+id/userlist_switch_text"
@@ -98,11 +99,11 @@
         android:layout_marginRight="@dimen/popup_userlist_layout_margin"
         android:singleLine="true"
         android:text="@string/userlist_public_sel"
-        app:layout_constraintBottom_toBottomOf="@+id/list_edit_public_sw"
-        app:layout_constraintEnd_toStartOf="@+id/userlist_create_list"
         app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@+id/list_edit_public_sw"
-        app:layout_constraintTop_toTopOf="@+id/list_edit_public_sw" />
+        app:layout_constraintStart_toEndOf="@id/list_edit_public_sw"
+        app:layout_constraintTop_toTopOf="@id/list_edit_public_sw"
+        app:layout_constraintBottom_toBottomOf="@id/list_edit_public_sw"
+        app:layout_constraintEnd_toStartOf="@id/userlist_create_list" />
 
     <Button
         android:id="@+id/userlist_create_list"
@@ -114,10 +115,10 @@
         android:paddingLeft="@dimen/userlist_button_padding"
         android:paddingRight="@dimen/userlist_button_padding"
         android:text="@string/userlist_create"
-        app:layout_constraintBottom_toBottomOf="@+id/userlist_switch_text"
-        app:layout_constraintEnd_toEndOf="@id/userlist_popup_background"
         app:layout_constraintHorizontal_weight="3"
-        app:layout_constraintStart_toEndOf="@+id/userlist_switch_text"
-        app:layout_constraintTop_toTopOf="@+id/userlist_switch_text" />
+        app:layout_constraintStart_toEndOf="@id/userlist_switch_text"
+        app:layout_constraintTop_toTopOf="@id/userlist_switch_text"
+        app:layout_constraintBottom_toBottomOf="@id/userlist_switch_text"
+        app:layout_constraintEnd_toEndOf="@id/userlist_popup_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

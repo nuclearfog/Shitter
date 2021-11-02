@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dm_popup"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".activity.MessageEditor">
 
     <ImageView
         android:id="@+id/dm_background"
@@ -30,10 +31,10 @@
         android:importantForAutofill="no"
         android:inputType="text"
         android:singleLine="true"
-        app:layout_constraintStart_toStartOf="@+id/dm_background"
-        app:layout_constraintTop_toTopOf="@+id/dm_background"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
-        app:layout_constraintEnd_toStartOf="@+id/dm_preview" />
+        app:layout_constraintStart_toStartOf="@id/dm_background"
+        app:layout_constraintTop_toTopOf="@id/dm_background"
+        app:layout_constraintBottom_toBottomOf="@id/dm_send"
+        app:layout_constraintEnd_toStartOf="@id/dm_preview" />
 
     <ImageButton
         android:id="@+id/dm_preview"
@@ -50,9 +51,9 @@
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/dm_receiver"
-        app:layout_constraintTop_toTopOf="@+id/dm_background"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
-        app:layout_constraintEnd_toStartOf="@+id/dm_media" />
+        app:layout_constraintTop_toTopOf="@id/dm_background"
+        app:layout_constraintBottom_toBottomOf="@id/dm_send"
+        app:layout_constraintEnd_toStartOf="@id/dm_media" />
 
     <ImageButton
         android:id="@+id/dm_media"
@@ -65,10 +66,10 @@
         android:contentDescription="@string/tweet_add_image"
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintDimensionRatio="1.0"
-        app:layout_constraintStart_toEndOf="@+id/dm_preview"
-        app:layout_constraintTop_toTopOf="@+id/dm_background"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_send"
-        app:layout_constraintEnd_toStartOf="@+id/dm_send" />
+        app:layout_constraintStart_toEndOf="@id/dm_preview"
+        app:layout_constraintTop_toTopOf="@id/dm_background"
+        app:layout_constraintBottom_toBottomOf="@id/dm_send"
+        app:layout_constraintEnd_toStartOf="@id/dm_send" />
 
     <ImageButton
         android:id="@+id/dm_send"
@@ -82,8 +83,8 @@
         app:layout_constraintWidth_percent="0.1"
         app:layout_constraintDimensionRatio="1.0"
         app:layout_constraintStart_toEndOf="@id/dm_media"
-        app:layout_constraintTop_toTopOf="@+id/dm_background"
-        app:layout_constraintEnd_toEndOf="@+id/dm_background" />
+        app:layout_constraintTop_toTopOf="@id/dm_background"
+        app:layout_constraintEnd_toEndOf="@id/dm_background" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/dm_barrier"
@@ -109,9 +110,9 @@
         android:inputType="textMultiLine"
         app:layout_constraintVertical_bias="0.0"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/dm_background"
-        app:layout_constraintTop_toBottomOf="@+id/dm_barrier"
-        app:layout_constraintBottom_toBottomOf="@+id/dm_background"
-        app:layout_constraintEnd_toEndOf="@+id/dm_background" />
+        app:layout_constraintStart_toStartOf="@id/dm_background"
+        app:layout_constraintTop_toBottomOf="@id/dm_barrier"
+        app:layout_constraintBottom_toBottomOf="@id/dm_background"
+        app:layout_constraintEnd_toEndOf="@id/dm_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

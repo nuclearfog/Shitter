@@ -11,11 +11,10 @@
         android:layout_width="@dimen/tabitem_icon_size"
         android:layout_height="@dimen/tabitem_icon_size"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toTopOf="@+id/tab_text"
-        app:layout_constraintDimensionRatio=""
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tab_text"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -25,9 +24,9 @@
         android:gravity="center"
         android:singleLine="true"
         android:textSize="@dimen/tabitem_textsize"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab_icon" />
+        app:layout_constraintTop_toBottomOf="@id/tab_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

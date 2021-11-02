@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/editprofile_layout_margin"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".activity.ProfileEditor">
 
     <ImageView
         android:id="@+id/edit_banner"
@@ -21,7 +22,6 @@
 
     <Button
         android:id="@+id/edit_add_banner"
-        style="@style/FeedbackButton"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/editprofile_button_height"
         android:paddingLeft="@dimen/editprofile_button_padding"
@@ -31,7 +31,8 @@
         app:layout_constraintStart_toStartOf="@id/edit_banner"
         app:layout_constraintTop_toBottomOf="@id/editprofile_toolbar_background"
         app:layout_constraintBottom_toBottomOf="@id/edit_banner"
-        app:layout_constraintEnd_toEndOf="@id/edit_banner" />
+        app:layout_constraintEnd_toEndOf="@id/edit_banner"
+        style="@style/FeedbackButton" />
 
     <ImageView
         android:id="@+id/edit_change_banner"
