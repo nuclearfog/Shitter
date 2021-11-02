@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/CardViewStyle"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    style="@style/CardViewStyle">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,13 +14,13 @@
             android:id="@+id/item_login_image"
             android:layout_width="@dimen/login_image_size"
             android:layout_height="@dimen/login_image_size"
-            android:layout_marginEnd="@dimen/login_layout_padding"
             android:layout_marginRight="@dimen/login_layout_padding"
+            android:layout_marginEnd="@dimen/login_layout_padding"
             android:contentDescription="@string/profile_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/item_login_image_barrier" />
+            app:layout_constraintEnd_toStartOf="@id/item_login_image_barrier" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/item_login_image_barrier"
@@ -70,10 +70,10 @@
             android:id="@+id/item_login_remove"
             android:layout_width="@dimen/login_cross_size"
             android:layout_height="@dimen/login_cross_size"
-            android:layout_marginStart="@dimen/login_layout_padding"
             android:layout_marginLeft="@dimen/login_layout_padding"
+            android:layout_marginStart="@dimen/login_layout_padding"
             android:contentDescription="@string/descr_remove_user"
-            app:layout_constraintStart_toEndOf="@+id/item_login_button_barrier"
+            app:layout_constraintStart_toEndOf="@id/item_login_button_barrier"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

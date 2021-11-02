@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/page_edit"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/editprofile_layout_margin"
-    android:fitsSystemWindows="true"
     tools:context=".activity.ProfileEditor">
 
     <ImageView
@@ -15,19 +15,19 @@
         android:layout_height="0dp"
         android:contentDescription="@string/profile_banner"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="3.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="3.0" />
 
     <Button
         android:id="@+id/edit_add_banner"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/editprofile_button_height"
+        android:visibility="invisible"
         android:paddingLeft="@dimen/editprofile_button_padding"
         android:paddingRight="@dimen/editprofile_button_padding"
         android:text="@string/editprofile_add_banner"
-        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@id/edit_banner"
         app:layout_constraintTop_toBottomOf="@id/editprofile_toolbar_background"
         app:layout_constraintBottom_toBottomOf="@id/edit_banner"
@@ -66,8 +66,8 @@
         android:id="@+id/edit_pb"
         android:layout_width="@dimen/editprofile_image"
         android:layout_height="@dimen/editprofile_image"
-        android:layout_marginStart="@dimen/editprofile_profile_image_left_margin"
         android:layout_marginLeft="@dimen/editprofile_profile_image_left_margin"
+        android:layout_marginStart="@dimen/editprofile_profile_image_left_margin"
         android:contentDescription="@string/image_preview"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="@id/edit_banner"
@@ -95,11 +95,11 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/editprofile_layout_padding"
-            android:layout_marginRight="@dimen/editprofile_layout_padding"
-            android:orientation="vertical">
+            android:layout_marginRight="@dimen/editprofile_layout_padding">
 
             <TextView
                 android:layout_width="match_parent"
@@ -109,14 +109,14 @@
 
             <EditText
                 android:id="@+id/edit_name"
-                style="@style/TextInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_username"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:maxLength="@integer/editprofile_username_max_length"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/TextInput" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -126,13 +126,13 @@
 
             <EditText
                 android:id="@+id/edit_location"
-                style="@style/TextInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/edit_location_hint"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/TextInput" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -142,13 +142,13 @@
 
             <EditText
                 android:id="@+id/edit_link"
-                style="@style/TextInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/edit_hint_link"
                 android:importantForAutofill="no"
                 android:inputType="text"
-                android:singleLine="true" />
+                android:singleLine="true"
+                style="@style/TextInput" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -158,14 +158,14 @@
 
             <EditText
                 android:id="@+id/edit_bio"
-                style="@style/TextInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top"
                 android:hint="@string/edit_description_hint"
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
-                android:minHeight="@dimen/editprofile_bio_min_height" />
+                android:minHeight="@dimen/editprofile_bio_min_height"
+                style="@style/TextInput" />
 
         </LinearLayout>
 

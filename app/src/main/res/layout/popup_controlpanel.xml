@@ -17,27 +17,27 @@
 
     <ImageButton
         android:id="@+id/controller_play"
-        style="@style/RoundButton"
         android:layout_width="@dimen/controller_button_width"
         android:layout_height="@dimen/controller_button_height"
+        android:visibility="invisible"
         android:layout_marginTop="@dimen/controller_seekbar_margin"
         android:contentDescription="@string/button_play_pause"
-        android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/controller_backward"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/controller_forward" />
+        app:layout_constraintEnd_toStartOf="@id/controller_forward"
+        style="@style/RoundButton" />
 
     <ImageButton
         android:id="@+id/controller_pause"
-        style="@style/RoundButton"
         android:layout_width="@dimen/controller_button_width"
         android:layout_height="@dimen/controller_button_height"
-        android:contentDescription="@string/button_play_pause"
         android:visibility="visible"
+        android:contentDescription="@string/button_play_pause"
         app:layout_constraintStart_toStartOf="@id/controller_play"
         app:layout_constraintTop_toTopOf="@id/controller_play"
         app:layout_constraintBottom_toBottomOf="@id/controller_play"
-        app:layout_constraintEnd_toEndOf="@id/controller_play" />
+        app:layout_constraintEnd_toEndOf="@id/controller_play"
+        style="@style/RoundButton" />
 
     <ImageButton
         android:id="@+id/controller_forward"
@@ -72,8 +72,8 @@
         android:id="@+id/controller_position"
         android:layout_width="@dimen/controller_text_width"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/controller_text_margin"
         android:layout_marginLeft="@dimen/controller_text_margin"
+        android:layout_marginStart="@dimen/controller_text_margin"
         android:singleLine="true"
         android:textSize="@dimen/controller_text_size"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,8 +97,8 @@
         android:id="@+id/controller_duration"
         android:layout_width="@dimen/controller_text_width"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/controller_text_margin"
         android:layout_marginRight="@dimen/controller_text_margin"
+        android:layout_marginEnd="@dimen/controller_text_margin"
         android:singleLine="true"
         android:textSize="@dimen/controller_text_size"
         app:layout_constraintStart_toEndOf="@id/controller_progress"

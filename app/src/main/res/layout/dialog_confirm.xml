@@ -11,12 +11,12 @@
         android:id="@+id/confirm_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:singleLine="true"
         android:layout_marginLeft="@dimen/confirm_text_margin"
         android:layout_marginStart="@dimen/confirm_text_margin"
         android:layout_marginTop="@dimen/confirm_text_margin"
         android:layout_marginRight="@dimen/confirm_text_margin"
         android:layout_marginEnd="@dimen/confirm_text_margin"
+        android:singleLine="true"
         android:textSize="@dimen/confirm_title_fontsize"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,9 +28,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/confirm_text_margin"
-        android:textSize="@dimen/confirm_message_fontsize"
         android:maxLines="@integer/confirm_message_max_ines"
         android:scrollbars="vertical"
+        android:textSize="@dimen/confirm_message_fontsize"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/confirm_title"
         app:layout_constraintBottom_toTopOf="@id/confirm_barrier"
@@ -45,28 +45,28 @@
 
     <Button
         android:id="@+id/confirm_no"
-        style="@style/FeedbackButton"
         android:layout_width="0dp"
         android:layout_height="@dimen/confirm_button_height"
-        android:text="@android:string/cancel"
-        android:layout_margin="@dimen/confirm_button_margin"
-        android:textSize="@dimen/confirm_button_fontsize"
         android:padding="@dimen/confirm_button_padding"
+        android:layout_margin="@dimen/confirm_button_margin"
         android:singleLine="true"
+        android:text="@android:string/cancel"
+        android:textSize="@dimen/confirm_button_fontsize"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/confirm_yes" />
+        app:layout_constraintEnd_toStartOf="@id/confirm_yes"
+        style="@style/FeedbackButton" />
 
     <Button
         android:id="@+id/confirm_yes"
-        style="@style/FeedbackButton"
         android:layout_width="0dp"
         android:layout_height="@dimen/confirm_button_height"
-        android:text="@android:string/ok"
-        android:layout_margin="@dimen/confirm_button_margin"
-        android:textSize="@dimen/confirm_button_fontsize"
         android:padding="@dimen/confirm_button_padding"
+        android:layout_margin="@dimen/confirm_button_margin"
         android:singleLine="true"
+        android:text="@android:string/ok"
+        android:textSize="@dimen/confirm_button_fontsize"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/FeedbackButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

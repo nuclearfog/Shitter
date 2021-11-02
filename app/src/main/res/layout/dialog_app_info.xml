@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".dialog.InfoDialog">
 
     <TextView
         android:id="@+id/settings_app_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:padding="@dimen/infopopup_text_padding"
+        android:gravity="center_horizontal"
         android:text="@string/app_name"
         android:textSize="@dimen/infopopup_appname_font" />
 
@@ -30,9 +30,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
         android:autoLink="web"
         android:linksClickable="true"
-        android:padding="@dimen/infopopup_text_padding"
         android:text="@string/settings_info_link" />
 
     <TextView
@@ -44,17 +44,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
         android:autoLink="web"
         android:linksClickable="true"
-        android:padding="@dimen/infopopup_text_padding"
         android:text="@string/app_info_twitter_link_1" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
         android:autoLink="web"
         android:linksClickable="true"
-        android:padding="@dimen/infopopup_text_padding"
         android:text="@string/app_info_twitter_link_2" />
 
 </LinearLayout>

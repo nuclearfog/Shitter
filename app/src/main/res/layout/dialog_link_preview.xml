@@ -13,17 +13,17 @@
         android:layout_height="0dp"
         android:contentDescription="@string/dialog_link_image_preview"
         android:scaleType="centerCrop"
-        app:layout_constraintDimensionRatio="2.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="2.0" />
 
     <ImageView
         android:id="@+id/link_preview_close"
         android:layout_width="@dimen/dialog_linkpreview_btn_size"
         android:layout_height="@dimen/dialog_linkpreview_btn_size"
-        android:contentDescription="@string/dialog_link_close"
         android:layout_margin="@dimen/dialog_linkpreview_margin"
+        android:contentDescription="@string/dialog_link_close"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -31,8 +31,8 @@
         android:id="@+id/link_preview_image_barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="link_preview_image,link_preview_close"
-        app:barrierDirection="bottom" />
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="link_preview_image,link_preview_close" />
 
     <TextView
         android:id="@+id/link_preview_title"
@@ -49,11 +49,11 @@
         android:id="@+id/link_preview_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/dialog_linkpreview_textsize_description"
+        android:layout_margin="@dimen/dialog_linkpreview_margin"
+        android:fadeScrollbars="false"
         android:maxLines="@integer/dialog_description_line_count"
         android:scrollbars="vertical"
-        android:fadeScrollbars="false"
-        android:layout_margin="@dimen/dialog_linkpreview_margin"
+        android:textSize="@dimen/dialog_linkpreview_textsize_description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/link_preview_title"
         app:layout_constraintEnd_toEndOf="parent" />

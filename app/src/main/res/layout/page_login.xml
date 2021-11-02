@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_root"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".activity.LoginActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -21,20 +21,19 @@
         android:id="@+id/login_first_opt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/loginpage_number_padding"
         android:layout_marginRight="@dimen/loginpage_number_padding"
+        android:layout_marginEnd="@dimen/loginpage_number_padding"
         android:text="@string/login_first_opt"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_toolbar"
         app:layout_constraintBottom_toTopOf="@id/login_sec_opt"
         app:layout_constraintEnd_toStartOf="@id/login_get_link"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintVertical_weight="1" />
+        app:layout_constraintVertical_weight="1"
+        app:layout_constraintHorizontal_chainStyle="packed" />
 
     <Button
         android:id="@+id/login_get_link"
-        style="@style/FeedbackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/loginpage_button_padding"
@@ -42,59 +41,59 @@
         android:text="@string/register_link"
         android:textSize="@dimen/loginpage_textsize_button"
         app:layout_constraintStart_toEndOf="@id/login_first_opt"
-        app:layout_constraintTop_toTopOf="@+id/login_first_opt"
-        app:layout_constraintBottom_toBottomOf="@+id/login_first_opt"
+        app:layout_constraintTop_toTopOf="@id/login_first_opt"
+        app:layout_constraintBottom_toBottomOf="@id/login_first_opt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_weight="2" />
+        app:layout_constraintVertical_weight="2"
+        style="@style/FeedbackButton" />
 
     <TextView
         android:id="@+id/login_sec_opt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/loginpage_number_padding"
         android:layout_marginRight="@dimen/loginpage_number_padding"
+        android:layout_marginEnd="@dimen/loginpage_number_padding"
         android:text="@string/login_sec_opt"
         android:textSize="24sp"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/login_first_opt"
         app:layout_constraintBottom_toBottomOf="@id/login_third_opt"
         app:layout_constraintEnd_toStartOf="@id/login_enter_pin"
-        app:layout_constraintTop_toBottomOf="@id/login_first_opt" />
+        app:layout_constraintHorizontal_chainStyle="packed" />
 
     <EditText
         android:id="@+id/login_enter_pin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:autofillHints="pin"
         android:background="@android:color/transparent"
         android:drawablePadding="@dimen/loginpage_padding_drawable"
+        android:autofillHints="pin"
         android:hint="@string/login_pin"
         android:inputType="numberPassword"
         android:maxLength="@integer/loginpage_pin_max_chars"
         android:singleLine="true"
         android:textSize="@dimen/loginpage_textsize_login_key"
         app:layout_constraintStart_toEndOf="@id/login_sec_opt"
-        app:layout_constraintTop_toTopOf="@+id/login_sec_opt"
-        app:layout_constraintBottom_toBottomOf="@+id/login_sec_opt"
+        app:layout_constraintTop_toTopOf="@id/login_sec_opt"
+        app:layout_constraintBottom_toBottomOf="@id/login_sec_opt"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/login_third_opt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/loginpage_number_padding"
         android:layout_marginRight="@dimen/loginpage_number_padding"
+        android:layout_marginEnd="@dimen/loginpage_number_padding"
         android:text="@string/login_trd_opt"
         android:textSize="24sp"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/login_sec_opt"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/login_verifier" />
+        app:layout_constraintEnd_toStartOf="@id/login_verifier"
+        app:layout_constraintHorizontal_chainStyle="packed" />
 
     <Button
         android:id="@+id/login_verifier"
-        style="@style/FeedbackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/loginpage_button_padding"
@@ -102,8 +101,9 @@
         android:text="@string/login_verifier"
         android:textSize="@dimen/loginpage_textsize_button"
         app:layout_constraintStart_toEndOf="@id/login_third_opt"
-        app:layout_constraintTop_toTopOf="@+id/login_third_opt"
-        app:layout_constraintBottom_toBottomOf="@+id/login_third_opt"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/login_third_opt"
+        app:layout_constraintBottom_toBottomOf="@id/login_third_opt"
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/FeedbackButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
