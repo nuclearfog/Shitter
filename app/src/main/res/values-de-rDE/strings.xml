@@ -217,4 +217,5 @@
     <string name="info_permission_read">Leserechte werden benötigt um Bilder und Videos einzufügen.</string>
     <string name="info_permission_location">Standortinformationen werden ausschließlich für Tweets verwendet.</string>
     <string name="error_result_cancelled">Fehler, Anfrage wurde abgebrochen!</string>
+    <string name="settings_api_info">• Eine Änderung der API Schlüssel erfordert erneutes einloggen</string>
 </resources>

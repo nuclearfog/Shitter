@@ -21,6 +21,7 @@
     <string name="settings_button_popup">Popup</string>
     <string name="settings_color_card">Card color</string>
     <string name="settings_icon_color">Icon color</string>
+    <string name="settings_api_info">• changing API Keys requires re-login</string>
     <string name="highlight">Highlight</string>
     <string name="settings_list_size">List size</string>
     <string name="confirm_retry_button">retry</string>

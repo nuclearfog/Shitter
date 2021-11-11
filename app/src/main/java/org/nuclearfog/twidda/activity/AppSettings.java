@@ -71,7 +71,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private FontAdapter fontAdapter;
 
     private Dialog connectDialog, databaseDialog, logoutDialog, color_dialog_selector, appInfo, license;
-    private View root, hqImageText, enableAuthTxt;
+    private View root, hqImageText, enableAuthTxt, api_info;
     private EditText proxyAddr, proxyPort, proxyUser, proxyPass, api_key1, api_key2;
     private SwitchButton enableProxy, enableAuth, hqImage, enableAPI;
     private Spinner locationSpinner;
@@ -117,6 +117,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         Spinner fontSpinner = findViewById(R.id.spinner_font);
         enableProxy = findViewById(R.id.settings_enable_proxy);
         enableAuth = findViewById(R.id.settings_enable_auth);
+        api_info = findViewById(R.id.settings_api_info);
         hqImage = findViewById(R.id.settings_image_hq);
         enableAPI = findViewById(R.id.settings_set_custom_keys);
         locationSpinner = findViewById(R.id.spinner_woeid);
@@ -186,6 +187,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         if (!settings.isCustomApiSet()) {
             api_key1.setVisibility(GONE);
             api_key2.setVisibility(GONE);
+            api_info.setVisibility(GONE);
         }
         toggleImg.setCheckedImmediately(settings.imagesEnabled());
         toggleAns.setCheckedImmediately(settings.replyLoadingEnabled());
@@ -514,9 +516,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             if (checked) {
                 api_key1.setVisibility(VISIBLE);
                 api_key2.setVisibility(VISIBLE);
+                api_info.setVisibility(VISIBLE);
             } else {
                 api_key1.setVisibility(GONE);
                 api_key2.setVisibility(GONE);
+                api_info.setVisibility(GONE);
             }
         }
     }
@@ -618,18 +622,22 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     }
 
     /**
-     * check proxy settings and save them if they are correct
+     * check app settings if they are correct and save them
+     * wrong settings will be skipped
      *
      * @return true if settings are saved successfully
      */
     private boolean saveConnectionSettings() {
         boolean checkPassed = true;
+        // check if proxy settings are correct
         if (enableProxy.isChecked()) {
             checkPassed = proxyAddr.length() > 0 && proxyPort.length() > 0;
+            // check IP address
             if (checkPassed) {
                 Matcher ipMatch = Patterns.IP_ADDRESS.matcher(proxyAddr.getText());
                 checkPassed = ipMatch.matches();
             }
+            // check Port number
             if (checkPassed) {
                 int port = 0;
                 String portStr = proxyPort.getText().toString();
@@ -638,9 +646,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
                 }
                 checkPassed = port > 0 && port < 65536;
             }
+            // check user login
             if (enableAuth.isChecked() && checkPassed) {
                 checkPassed = proxyUser.length() > 0 && proxyPass.length() > 0;
             }
+            // save settings if correct
             if (checkPassed) {
                 String proxyAddrStr = proxyAddr.getText().toString();
                 String proxyPortStr = proxyPort.getText().toString();
@@ -653,6 +663,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         } else {
             settings.clearProxyServer();
         }
+        // check if API-keys are correct set
         if (enableAPI.isChecked()) {
             if (api_key1.length() > 0 && api_key2.length() > 0) {
                 String key1 = api_key1.getText().toString();

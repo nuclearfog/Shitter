@@ -678,7 +678,7 @@
                         android:singleLine="true"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/settings_set_custom_keys"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/settings_api_info"
                         app:layout_constraintEnd_toStartOf="@id/settings_custom_key2"
                         app:layout_constraintHorizontal_weight="1"
                         style="@style/TextInput" />
@@ -697,6 +697,16 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_weight="1"
                         style="@style/TextInput" />
+
+                    <TextView
+                        android:id="@+id/settings_api_info"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings_api_info"
+                        app:layout_constraintStart_toStartOf="@id/settings_custom_key1"
+                        app:layout_constraintTop_toBottomOf="@id/settings_custom_key1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@id/settings_custom_key2" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
