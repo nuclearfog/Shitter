@@ -135,30 +135,15 @@ public abstract class MediaActivity extends AppCompatActivity implements Locatio
         if (permissions.length > 0 && grantResults.length > 0) {
             // read storage permission granted
             if (PERMISSIONS[0][0].equals(permissions[0]) && grantResults[0] == PERMISSION_GRANTED) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        openMediaPicker(requestCode);
-                    }
-                });
+                openMediaPicker(requestCode);
             }
             // location permission granted
             else if (PERMISSIONS[1][0].equals(permissions[0])) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getLocation(false);
-                    }
-                });
+                getLocation(false);
             }
             // Write storage permissions granted
             else if (PERMISSIONS[2][0].equals(permissions[0]) && grantResults[0] == PERMISSION_GRANTED) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        saveImage();
-                    }
-                });
+                saveImage();
             }
         }
     }

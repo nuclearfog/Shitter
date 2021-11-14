@@ -93,6 +93,11 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".activity.MediaActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <activity
             android:name=".activity.DirectMessage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
