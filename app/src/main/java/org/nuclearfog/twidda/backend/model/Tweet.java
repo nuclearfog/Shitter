@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.model;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -50,7 +52,7 @@ public class Tweet implements Serializable {
     private boolean favorited;
     private boolean sensitiveMedia;
 
-    private String[] medias = {};
+    private String[] mediaLinks = {};
     private String userMentions = "";
     private String locationName = "";
     private String locationCoordinates = "";
@@ -143,7 +145,7 @@ public class Tweet implements Serializable {
         this.time = time;
         this.replyID = replyID;
         this.embedded = embedded;
-        this.medias = medias;
+        this.mediaLinks = medias;
         this.mediaType = mediaType;
         this.retweeted = retweeted;
         this.favorited = favored;
@@ -267,7 +269,7 @@ public class Tweet implements Serializable {
      * @return medias links array
      */
     public String[] getMediaLinks() {
-        return medias;
+        return mediaLinks;
     }
 
     /**
@@ -429,15 +431,23 @@ public class Tweet implements Serializable {
      * @param mediaEntities media information
      */
     private void getMedia(MediaEntity[] mediaEntities) {
-        medias = new String[mediaEntities.length];
-        if (medias.length == 0) {
+        mediaLinks = new String[mediaEntities.length];
+        if (mediaLinks.length == 0) {
             mediaType = MediaType.NONE;
         } else {
             switch (mediaEntities[0].getType()) {
                 case PHOTO:
                     mediaType = MediaType.IMAGE;
-                    for (int i = 0; i < mediaEntities.length; i++) {
-                        medias[i] = mediaEntities[i].getMediaURLHttps();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        // since twitter dropped TLS 1.1 support,
+                        // https links will not work on pre lollipop devices anymore
+                        for (int i = 0; i < mediaEntities.length; i++) {
+                            mediaLinks[i] = mediaEntities[i].getMediaURL();
+                        }
+                    } else {
+                        for (int i = 0; i < mediaEntities.length; i++) {
+                            mediaLinks[i] = mediaEntities[i].getMediaURLHttps();
+                        }
                     }
                     break;
 
@@ -447,14 +457,24 @@ public class Tweet implements Serializable {
                         if (type.getContentType().equals(MEDIA_VIDEO)) {
                             // get link with selected video format
                             // a tweet can only have one video
-                            medias[0] = type.getUrl();
+                            mediaLinks[0] = type.getUrl();
+                            // switching to http since twitter dropped TLS 1.1 support, pre lollipop
+                            // devices don't support https
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP &&
+                                mediaLinks[0].startsWith("https://")) {
+                                mediaLinks[0] = "http://" + mediaLinks[0].substring(8);
+                            }
                         }
                     }
                     break;
 
                 case ANGIF:
                     mediaType = MediaType.GIF;
-                    medias[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
+                    mediaLinks[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP &&
+                            mediaLinks[0].startsWith("https://")) {
+                        mediaLinks[0] = "http://" + mediaLinks[0].substring(8);
+                    }
                     break;
 
                 default:

@@ -151,7 +151,7 @@
                         android:layout_marginEnd="@dimen/tweet_textview_margin"
                         android:fadeScrollbars="false"
                         android:linksClickable="true"
-                        android:maxLines="@integer/tweet_test_max_lines"
+                        android:maxLines="@integer/tweet_text_max_lines"
                         android:scrollbars="vertical"
                         android:textSize="@dimen/tweet_textsize"
                         app:layout_constraintStart_toStartOf="parent"

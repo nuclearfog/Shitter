@@ -1,5 +1,7 @@
 package org.nuclearfog.twidda.backend.model;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
@@ -58,14 +60,27 @@ public class User implements Serializable {
             this.username = user.getName();
         if (user.getScreenName() != null)
             this.screenName = '@' + user.getScreenName();
-        if (user.getOriginalProfileImageURLHttps() != null)
-            this.profileImg = user.getOriginalProfileImageURLHttps();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // since twitter dropped TLS 1.1 support,
+            // https links will not work on pre lollipop devices anymore
+            if (user.getOriginalProfileImageURL() != null) {
+                this.profileImg = user.getOriginalProfileImageURL();
+            }
+            if (bannerLink != null && bannerLink.length() > 12 && bannerLink.startsWith("https://")) {
+                bannerImg = "http://" + bannerLink.substring(8, bannerLink.length() - 4);
+            }
+        } else {
+            if (user.getOriginalProfileImageURLHttps() != null) {
+                this.profileImg = user.getOriginalProfileImageURLHttps();
+            }
+            if (bannerLink != null && bannerLink.length() > 4) {
+                bannerImg = bannerLink.substring(0, bannerLink.length() - 4);
+            }
+        }
         if (user.getURLEntity().getExpandedURL() != null)
             this.link = user.getURLEntity().getExpandedURL();
         if (user.getLocation() != null)
             this.location = user.getLocation();
-        if (bannerLink != null && bannerLink.length() > 4)
-            bannerImg = bannerLink.substring(0, bannerLink.length() - 4);
         if (bio != null && !bio.isEmpty()) {
             URLEntity[] entities = user.getDescriptionURLEntities();
             StringBuilder builder = new StringBuilder(user.getDescription());

@@ -206,8 +206,9 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         muteConfirm = new ConfirmDialog(this, DialogType.PROFILE_MUTE, this);
 
         Intent i = getIntent();
-        user = (User) i.getSerializableExtra(KEY_PROFILE_DATA);
-        if (user != null) {
+        Object o = i.getSerializableExtra(KEY_PROFILE_DATA);
+        if (o instanceof User) {
+            user = (User) o;
             adapter.setupProfilePage(user.getId());
         } else {
             long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
@@ -644,6 +645,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
             } else {
                 bannerImage.setImageResource(0);
+                toolbarBackground.setImageResource(0);
             }
             if (user.hasProfileImage()) {
                 String imgLink = user.getImageLink();
