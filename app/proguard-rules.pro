@@ -1,8 +1,11 @@
--repackageclasses org.nuclearfog.twidda
+# use dictionaries to create random class/package names
+-obfuscationdictionary dict/obfuscation-dictionary.txt
+-classobfuscationdictionary dict/class-dictionary.txt
+-packageobfuscationdictionary dict/package-dictionary.txt
 
 # keep these libraries but allow obfuscating
 -dontwarn twitter4j.**
--keep,allowobfuscation class twitter4j.** {*;}
+-keep,allowobfuscation,allowoptimization class twitter4j.** {*;}
 -adaptclassstrings twitter4j.**
 
 -dontwarn javax.management.DynamicMBean
@@ -18,8 +21,3 @@
 -adaptclassstrings org.conscrypt.OpenSSLProvider
 
 -dontwarn javax.annotation.Nullable
-
-# use dictionaries to create random class/package names
--obfuscationdictionary dict/obfuscation-dictionary.txt
--classobfuscationdictionary dict/class-dictionary.txt
--packageobfuscationdictionary dict/package-dictionary.txt

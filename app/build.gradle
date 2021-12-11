@@ -25,7 +25,7 @@ android {
             multiDexEnabled false
             minifyEnabled true
             shrinkResources true
-            proguardFiles 'proguard-rules.pro'
+            proguardFile 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
