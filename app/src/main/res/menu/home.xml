@@ -6,7 +6,7 @@
         android:id="@+id/action_tweet"
         android:icon="@drawable/tweet"
         android:title="@string/menu_tweet"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_profile"
