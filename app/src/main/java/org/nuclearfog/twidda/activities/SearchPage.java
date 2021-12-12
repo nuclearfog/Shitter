@@ -1,6 +1,6 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
 
 import android.content.Intent;
 import android.graphics.Color;

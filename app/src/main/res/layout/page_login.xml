@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.LoginActivity">
+    tools:context=".activities.LoginActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/login_toolbar"

@@ -1,9 +1,13 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
+import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
 import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
+import android.os.Bundle;
+import android.view.View;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.adapter.AccountAdapter;
@@ -16,9 +20,8 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import java.util.List;
 
-
 /**
- * fragment class of the {@link org.nuclearfog.twidda.activity.AccountActivity}
+ * fragment class of the {@link org.nuclearfog.twidda.activities.AccountActivity}
  * all registered user accounts are listed here
  *
  * @author nuclearfog
@@ -34,9 +37,12 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
 
 
     @Override
-    protected void onCreate() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         dialog = new ConfirmDialog(requireContext(), DialogType.REMOVE_ACCOUNT, this);
         settings = GlobalSettings.getInstance(requireContext());
+        adapter = new AccountAdapter(requireContext(), this);
+        setAdapter(adapter);
     }
 
 
@@ -73,13 +79,6 @@ public class AccountFragment extends ListFragment implements OnAccountClickListe
         loginTask = new AccountLoader(this);
         loginTask.execute();
         setRefresh(true);
-    }
-
-
-    @Override
-    protected AccountAdapter initAdapter() {
-        adapter = new AccountAdapter(settings, this);
-        return adapter;
     }
 
 

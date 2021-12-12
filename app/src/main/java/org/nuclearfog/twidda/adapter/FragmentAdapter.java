@@ -1,28 +1,28 @@
 package org.nuclearfog.twidda.adapter;
 
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_FAVORS;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_HOME;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_LIST;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_MENT;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_SEARCH;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_TWEETS;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_DEL_USER;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_SEARCH;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_BLOCKS;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_LISTS;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_MUTES;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SEARCH;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_SUBSCR;
-import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
-import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
-import static org.nuclearfog.twidda.fragment.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
-import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_OWNS;
-import static org.nuclearfog.twidda.fragment.UserListFragment.LIST_USER_SUBSCR_TO;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_FAVORS;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_HOME;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_LIST;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_MENT;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_SEARCH;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_TWEETS;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_DEL_USER;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_ID;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_MODE;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_SEARCH;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_BLOCKS;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_LISTS;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_MUTES;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_SEARCH;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_SUBSCR;
+import static org.nuclearfog.twidda.fragments.UserListFragment.KEY_FRAG_LIST_LIST_TYPE;
+import static org.nuclearfog.twidda.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_ID;
+import static org.nuclearfog.twidda.fragments.UserListFragment.KEY_FRAG_LIST_OWNER_NAME;
+import static org.nuclearfog.twidda.fragments.UserListFragment.LIST_USER_OWNS;
+import static org.nuclearfog.twidda.fragments.UserListFragment.LIST_USER_SUBSCR_TO;
 
 import android.os.Bundle;
 
@@ -31,11 +31,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import org.nuclearfog.twidda.fragment.ListFragment;
-import org.nuclearfog.twidda.fragment.TrendFragment;
-import org.nuclearfog.twidda.fragment.TweetFragment;
-import org.nuclearfog.twidda.fragment.UserFragment;
-import org.nuclearfog.twidda.fragment.UserListFragment;
+import org.nuclearfog.twidda.fragments.ListFragment;
+import org.nuclearfog.twidda.fragments.TrendFragment;
+import org.nuclearfog.twidda.fragments.TweetFragment;
+import org.nuclearfog.twidda.fragments.UserFragment;
+import org.nuclearfog.twidda.fragments.UserListFragment;
 
 /**
  * Fragment adapter for ViewPager

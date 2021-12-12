@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.Trend;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.TrendFragment;
+import org.nuclearfog.twidda.fragments.TrendFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

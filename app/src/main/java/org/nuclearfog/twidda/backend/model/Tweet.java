@@ -438,16 +438,8 @@ public class Tweet implements Serializable {
             switch (mediaEntities[0].getType()) {
                 case PHOTO:
                     mediaType = MediaType.IMAGE;
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        // since twitter dropped TLS 1.1 support,
-                        // https links will not work on pre lollipop devices anymore
-                        for (int i = 0; i < mediaEntities.length; i++) {
-                            mediaLinks[i] = mediaEntities[i].getMediaURL();
-                        }
-                    } else {
-                        for (int i = 0; i < mediaEntities.length; i++) {
-                            mediaLinks[i] = mediaEntities[i].getMediaURLHttps();
-                        }
+                    for (int i = 0; i < mediaEntities.length; i++) {
+                        mediaLinks[i] = mediaEntities[i].getMediaURLHttps();
                     }
                     break;
 
@@ -458,12 +450,6 @@ public class Tweet implements Serializable {
                             // get link with selected video format
                             // a tweet can only have one video
                             mediaLinks[0] = type.getUrl();
-                            // switching to http since twitter dropped TLS 1.1 support, pre lollipop
-                            // devices don't support https
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP &&
-                                mediaLinks[0].startsWith("https://")) {
-                                mediaLinks[0] = "http://" + mediaLinks[0].substring(8);
-                            }
                         }
                     }
                     break;
@@ -471,10 +457,6 @@ public class Tweet implements Serializable {
                 case ANGIF:
                     mediaType = MediaType.GIF;
                     mediaLinks[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP &&
-                            mediaLinks[0].startsWith("https://")) {
-                        mediaLinks[0] = "http://" + mediaLinks[0].substring(8);
-                    }
                     break;
 
                 default:

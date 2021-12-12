@@ -19,6 +19,7 @@ import org.nuclearfog.twidda.backend.model.TrendLocation;
 import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.backend.model.TwitterList;
 import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;

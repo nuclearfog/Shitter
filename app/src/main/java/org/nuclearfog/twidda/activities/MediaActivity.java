@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;

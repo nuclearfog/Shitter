@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,13 +12,13 @@ import androidx.fragment.app.FragmentTransaction;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.UserFragment;
+import org.nuclearfog.twidda.fragments.UserFragment;
 
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_ID;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_FRAG_USER_MODE;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FOLLOWS;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_FRIENDS;
-import static org.nuclearfog.twidda.fragment.UserFragment.USER_FRAG_RETWEET;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_ID;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_MODE;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_FOLLOWS;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_FRIENDS;
+import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_RETWEET;
 
 /**
  * Activity to show a list of twitter users

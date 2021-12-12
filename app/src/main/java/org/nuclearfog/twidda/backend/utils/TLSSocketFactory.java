@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.engine;
+package org.nuclearfog.twidda.backend.utils;
 
 import android.os.Build;
 
@@ -61,7 +61,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
     /**
      *
      */
-    private TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
+    TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
         SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, null, null);
         internalSSLSocketFactory = context.getSocketFactory();

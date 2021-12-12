@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,8 +16,8 @@ import androidx.fragment.app.FragmentTransaction;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.AccountFragment;
-import org.nuclearfog.twidda.fragment.ListFragment;
+import org.nuclearfog.twidda.fragments.AccountFragment;
+import org.nuclearfog.twidda.fragments.ListFragment;
 
 
 /**

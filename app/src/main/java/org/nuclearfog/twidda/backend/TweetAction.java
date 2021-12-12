@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activity.TweetActivity;
+import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.Tweet;

@@ -1,9 +1,9 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_CHANGED;
-import static org.nuclearfog.twidda.activity.ListDetail.RET_LIST_DATA;
-import static org.nuclearfog.twidda.activity.UserLists.RET_LIST_CREATED;
+import static org.nuclearfog.twidda.activities.ListDetail.RET_LIST_CHANGED;
+import static org.nuclearfog.twidda.activities.ListDetail.RET_LIST_DATA;
+import static org.nuclearfog.twidda.activities.UserLists.RET_LIST_CREATED;
 
 import android.app.Dialog;
 import android.content.Intent;

@@ -23,7 +23,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:exported="true">
@@ -53,88 +53,88 @@
         </activity>
 
         <activity
-            android:name=".activity.SearchPage"
+            android:name=".activities.SearchPage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.UserProfile"
+            android:name=".activities.UserProfile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.TweetEditor"
+            android:name=".activities.TweetEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
         <activity
-            android:name=".activity.MessageEditor"
+            android:name=".activities.MessageEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
         <activity
-            android:name=".activity.AppSettings"
+            android:name=".activities.AppSettings"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.TweetActivity"
+            android:name=".activities.TweetActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.UserDetail"
+            android:name=".activities.UserDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name=".activities.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.MediaActivity"
+            android:name=".activities.MediaActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.DirectMessage"
+            android:name=".activities.DirectMessage"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.MediaViewer"
+            android:name=".activities.MediaViewer"
             android:screenOrientation="portrait"
             android:theme="@style/Transparency" />
 
         <activity
-            android:name=".activity.ProfileEditor"
+            android:name=".activities.ProfileEditor"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".activity.UserLists"
+            android:name=".activities.UserLists"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.ListDetail"
+            android:name=".activities.ListDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.ListEditor"
+            android:name=".activities.ListEditor"
             android:screenOrientation="portrait"
             android:theme="@style/TransparencyDim" />
 
         <activity
-            android:name=".activity.AccountActivity"
+            android:name=".activities.AccountActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".activity.UserExclude"
+            android:name=".activities.UserExclude"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 

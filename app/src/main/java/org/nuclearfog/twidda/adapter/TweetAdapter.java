@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
 import android.text.Spanned;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,7 @@ import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.TweetHolder;
 import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -38,7 +40,7 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime
  * Adapter class for tweet list
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragment.TweetFragment
+ * @see org.nuclearfog.twidda.fragments.TweetFragment
  */
 public class TweetAdapter extends Adapter<ViewHolder> {
 
@@ -70,17 +72,18 @@ public class TweetAdapter extends Adapter<ViewHolder> {
 
     private TweetClickListener itemClickListener;
     private GlobalSettings settings;
+    private Picasso picasso;
 
     private final List<Tweet> tweets = new LinkedList<>();
     private int loadingIndex = NO_LOADING;
 
     /**
-     * @param settings          App settings for theme
      * @param itemClickListener listener for item click
      */
-    public TweetAdapter(GlobalSettings settings, TweetClickListener itemClickListener) {
+    public TweetAdapter(Context context, TweetClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
-        this.settings = settings;
+        settings = GlobalSettings.getInstance(context);
+        picasso = PicassoBuilder.get(context);
     }
 
     /**
@@ -307,7 +310,7 @@ public class TweetAdapter extends Adapter<ViewHolder> {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
-                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
                         .error(R.drawable.no_image).into(tweetItem.profile);
             } else {
                 tweetItem.profile.setImageResource(0);

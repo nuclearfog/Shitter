@@ -1,12 +1,12 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
 
 import android.app.Dialog;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import android.content.Intent;
 import android.os.Bundle;

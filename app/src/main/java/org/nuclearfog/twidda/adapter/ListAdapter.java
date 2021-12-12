@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -17,8 +18,9 @@ import org.nuclearfog.twidda.adapter.holder.ListHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.backend.model.TwitterList;
 import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.UserListFragment;
+import org.nuclearfog.twidda.fragments.UserListFragment;
 
 import java.text.NumberFormat;
 
@@ -59,17 +61,18 @@ public class ListAdapter extends Adapter<ViewHolder> {
 
     private ListClickListener listener;
     private GlobalSettings settings;
+    private Picasso picasso;
 
     private UserLists data = new UserLists();
     private int loadingIndex = NO_LOADING;
 
     /**
-     * @param settings app settings for theme
      * @param listener item click listener
      */
-    public ListAdapter(GlobalSettings settings, ListClickListener listener) {
+    public ListAdapter(Context context, ListClickListener listener) {
         this.listener = listener;
-        this.settings = settings;
+        settings = GlobalSettings.getInstance(context);
+        picasso = PicassoBuilder.get(context);
     }
 
     /**
@@ -215,7 +218,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                     String pbLink = owner.getImageLink();
                     if (!owner.hasDefaultProfileImage())
                         pbLink += settings.getImageSuffix();
-                    Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(3, 0))
+                    picasso.load(pbLink).transform(new RoundedCornersTransformation(3, 0))
                             .error(R.drawable.no_image).into(vh.profile_img);
                 } else {
                     vh.profile_img.setImageResource(0);

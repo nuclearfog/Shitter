@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.lists.UserList;
-import org.nuclearfog.twidda.fragment.UserFragment;
+import org.nuclearfog.twidda.fragments.UserFragment;
 
 import java.lang.ref.WeakReference;
 

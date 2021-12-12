@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,12 +40,9 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     @Override
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle b) {
         settings = GlobalSettings.getInstance(requireContext());
-        onCreate();
 
         list = new RecyclerView(requireContext());
         list.setLayoutManager(new LinearLayoutManager(requireContext()));
-        list.setAdapter(initAdapter());
-
         reload = new SwipeRefreshLayout(requireContext());
         reload.setProgressBackgroundColorSchemeColor(settings.getHighlightColor());
         reload.setOnRefreshListener(this);
@@ -91,6 +88,17 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     }
 
     /**
+     * set list adapter
+     *
+     * @param adapter adapter for the list
+     */
+    protected void setAdapter(Adapter<? extends ViewHolder> adapter) {
+        if (list != null) {
+            list.setAdapter(adapter);
+        }
+    }
+
+    /**
      * called to reset all data
      */
     public void reset() {
@@ -112,11 +120,6 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
     }
 
     /**
-     * called to initialize sub classes
-     */
-    protected abstract void onCreate();
-
-    /**
      * called when swipe refresh is active
      */
     protected abstract void onReload();
@@ -125,11 +128,4 @@ public abstract class ListFragment extends Fragment implements OnRefreshListener
      * called to reset all data
      */
     protected abstract void onReset();
-
-    /**
-     * initialize list adapter
-     *
-     * @return adapter for the recycler view list
-     */
-    protected abstract Adapter<? extends ViewHolder> initAdapter();
 }

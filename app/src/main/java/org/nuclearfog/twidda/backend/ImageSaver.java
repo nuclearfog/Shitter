@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.activity.MediaActivity;
+import org.nuclearfog.twidda.activities.MediaActivity;
 
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;

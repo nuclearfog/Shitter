@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
 import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;

@@ -14,7 +14,7 @@ import org.nuclearfog.twidda.database.GlobalSettings;
  * Spinner Adapter for font settings
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.activity.AppSettings
+ * @see org.nuclearfog.twidda.activities.AppSettings
  */
 public class FontAdapter extends BaseAdapter {
 

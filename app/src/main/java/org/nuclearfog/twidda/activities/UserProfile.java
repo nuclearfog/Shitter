@@ -1,25 +1,25 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.content.Intent.ACTION_VIEW;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.activity.ProfileEditor.KEY_USER_DATA;
-import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FOLLOWER;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_FRIENDS;
-import static org.nuclearfog.twidda.activity.UserLists.KEY_USERLIST_OWNER_ID;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activities.ProfileEditor.KEY_USER_DATA;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FOLLOWER;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FRIENDS;
+import static org.nuclearfog.twidda.activities.UserLists.KEY_USERLIST_OWNER_ID;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_BLOCK;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_FOLLOW;
 import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_MUTE;
@@ -29,8 +29,8 @@ import static org.nuclearfog.twidda.backend.UserAction.Action.ACTION_UNMUTE;
 import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_DB;
 import static org.nuclearfog.twidda.backend.UserAction.Action.PROFILE_lOAD;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
-import static org.nuclearfog.twidda.fragment.UserFragment.KEY_USER_UPDATE;
-import static org.nuclearfog.twidda.fragment.UserFragment.RETURN_USER_UPDATED;
+import static org.nuclearfog.twidda.fragments.UserFragment.KEY_USER_UPDATE;
+import static org.nuclearfog.twidda.fragments.UserFragment.RETURN_USER_UPDATED;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -73,6 +73,7 @@ import org.nuclearfog.twidda.backend.model.Relation;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
@@ -134,6 +135,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     private FragmentAdapter adapter;
     private GlobalSettings settings;
     private UserAction profileAsync;
+    private Picasso picasso;
 
     private TextView[] tabTweetCount;
     private TextView user_location, user_createdAt, user_website, user_bio, follow_back, username, screenName;
@@ -172,6 +174,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         tabLayout = findViewById(R.id.profile_tab);
         tabPages = findViewById(R.id.profile_pager);
 
+        picasso = PicassoBuilder.get(this);
         settings = GlobalSettings.getInstance(this);
         if (!settings.toolbarOverlapEnabled()) {
             ConstraintSet constraints = new ConstraintSet();
@@ -642,7 +645,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         if (settings.imagesEnabled()) {
             if (user.hasBannerImage()) {
                 String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
-                Picasso.get().load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
+                picasso.load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
             } else {
                 bannerImage.setImageResource(0);
                 toolbarBackground.setImageResource(0);
@@ -651,7 +654,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 String imgLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     imgLink += PROFILE_IMG_HIGH_RES;
-                Picasso.get().load(imgLink).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
+                picasso.load(imgLink).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
             } else {
                 profileImage.setImageResource(0);
             }

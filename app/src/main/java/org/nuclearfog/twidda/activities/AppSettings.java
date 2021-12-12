@@ -1,10 +1,10 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activity.MainActivity.RETURN_APP_LOGOUT;
-import static org.nuclearfog.twidda.activity.MainActivity.RETURN_DB_CLEARED;
+import static org.nuclearfog.twidda.activities.MainActivity.RETURN_APP_LOGOUT;
+import static org.nuclearfog.twidda.activities.MainActivity.RETURN_DB_CLEARED;
 import static org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 
 import android.app.Dialog;

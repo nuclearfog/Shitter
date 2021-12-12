@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.activity.AppSettings;
+import org.nuclearfog.twidda.activities.AppSettings;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.TrendLocation;

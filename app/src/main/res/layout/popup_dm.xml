@@ -5,7 +5,7 @@
     android:id="@+id/dm_popup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MessageEditor">
+    tools:context=".activities.MessageEditor">
 
     <ImageView
         android:id="@+id/dm_background"

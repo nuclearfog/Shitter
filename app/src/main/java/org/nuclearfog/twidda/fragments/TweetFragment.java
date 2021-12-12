@@ -1,11 +1,13 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activity.TweetActivity;
+import org.nuclearfog.twidda.activities.TweetActivity;
 import org.nuclearfog.twidda.adapter.TweetAdapter;
 import org.nuclearfog.twidda.adapter.TweetAdapter.TweetClickListener;
 import org.nuclearfog.twidda.backend.TweetLoader;
@@ -17,7 +19,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import java.util.List;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_DATA;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_DATA;
 
 /**
  * #Fragment class for a list of tweets
@@ -117,13 +119,16 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
 
     @Override
-    protected void onCreate() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_TWEET_MODE, 0);
             id = param.getLong(KEY_FRAG_TWEET_ID, 0);
             search = param.getString(KEY_FRAG_TWEET_SEARCH, "");
         }
+        adapter = new TweetAdapter(requireContext(), this);
+        setAdapter(adapter);
     }
 
 
@@ -139,7 +144,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
 
     @Override
     protected void onReset() {
-        adapter.clear();
         load(0, 0, CLEAR_LIST);
         setRefresh(true);
     }
@@ -151,13 +155,6 @@ public class TweetFragment extends ListFragment implements TweetClickListener {
             tweetTask.cancel(true);
         }
         super.onDestroy();
-    }
-
-
-    @Override
-    protected TweetAdapter initAdapter() {
-        adapter = new TweetAdapter(settings, this);
-        return adapter;
     }
 
 

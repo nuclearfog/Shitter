@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
 import android.text.Spanned;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import org.nuclearfog.twidda.adapter.holder.MessageHolder;
 import org.nuclearfog.twidda.backend.lists.MessageList;
 import org.nuclearfog.twidda.backend.model.Message;
 import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
@@ -32,7 +34,7 @@ import static org.nuclearfog.twidda.backend.utils.StringTools.formatCreationTime
  * Adapter class for direct messages list
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragment.MessageFragment
+ * @see org.nuclearfog.twidda.fragments.MessageFragment
  */
 public class MessageAdapter extends Adapter<ViewHolder> {
 
@@ -53,17 +55,18 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
     private OnItemSelected itemClickListener;
     private GlobalSettings settings;
+    private Picasso picasso;
 
     private MessageList data = new MessageList(null, null);
     private int loadingIndex = NO_LOADING;
 
     /**
-     * @param settings          App settings for theme
      * @param itemClickListener click listener
      */
-    public MessageAdapter(GlobalSettings settings, OnItemSelected itemClickListener) {
+    public MessageAdapter(Context context, OnItemSelected itemClickListener) {
         this.itemClickListener = itemClickListener;
-        this.settings = settings;
+        settings = GlobalSettings.getInstance(context);
+        picasso = PicassoBuilder.get(context);
     }
 
     /**
@@ -217,7 +220,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                     String pbLink = sender.getImageLink();
                     if (!sender.hasDefaultProfileImage())
                         pbLink += settings.getImageSuffix();
-                    Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                    picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
                             .error(R.drawable.no_image).into(holder.profile_img);
                 } else {
                     holder.profile_img.setImageResource(0);

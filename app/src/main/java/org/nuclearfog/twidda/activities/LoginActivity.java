@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -30,8 +30,8 @@ import static android.os.AsyncTask.Status.FINISHED;
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.AccountActivity.KEY_DISABLE_SELECTOR;
-import static org.nuclearfog.twidda.activity.AccountActivity.RET_ACCOUNT_CHANGE;
+import static org.nuclearfog.twidda.activities.AccountActivity.KEY_DISABLE_SELECTOR;
+import static org.nuclearfog.twidda.activities.AccountActivity.RET_ACCOUNT_CHANGE;
 
 /**
  * Account Activity of the App

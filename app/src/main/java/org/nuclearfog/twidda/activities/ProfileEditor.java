@@ -1,11 +1,11 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_CHANGED;
-import static org.nuclearfog.twidda.activity.UserProfile.RETURN_PROFILE_DATA;
-import static org.nuclearfog.twidda.activity.UserProfile.TOOLBAR_TRANSPARENCY;
+import static org.nuclearfog.twidda.activities.UserProfile.RETURN_PROFILE_CHANGED;
+import static org.nuclearfog.twidda.activities.UserProfile.RETURN_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.UserProfile.TOOLBAR_TRANSPARENCY;
 import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
@@ -41,6 +41,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
@@ -66,6 +67,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
 
     private UserUpdater editorAsync;
     private GlobalSettings settings;
+    private Picasso picasso;
 
     private ImageView profile_image, profile_banner, toolbar_background, changeBannerBtn;
     private EditText name, link, loc, bio;
@@ -112,6 +114,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         changeImageBtn.setImageResource(R.drawable.add);
         profile_banner.setDrawingCacheEnabled(true);
         AppStyles.setTheme(settings, root);
+        picasso = PicassoBuilder.get(this);
 
         Object data = getIntent().getSerializableExtra(KEY_USER_DATA);
         if (data instanceof User) {
@@ -185,7 +188,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             File img = new File(path);
             Point displaySize = new Point();
             getWindowManager().getDefaultDisplay().getSize(displaySize);
-            Picasso.get().load(img).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
+            picasso.load(img).resize(displaySize.x, displaySize.x / 3).centerCrop(Gravity.TOP).into(profile_banner, this);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
             bannerLink = path;
@@ -297,11 +300,11 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             String pbLink = user.getImageLink();
             if (!user.hasDefaultProfileImage())
                 pbLink += PROFILE_IMG_HIGH_RES;
-            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
+            picasso.load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
         }
         if (user.hasBannerImage()) {
             String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
-            Picasso.get().load(bnLink).into(profile_banner, this);
+            picasso.load(bnLink).into(profile_banner, this);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
         } else {

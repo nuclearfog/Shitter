@@ -8,7 +8,7 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.lists.MessageList;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.MessageFragment;
+import org.nuclearfog.twidda.fragments.MessageFragment;
 
 import java.lang.ref.WeakReference;
 

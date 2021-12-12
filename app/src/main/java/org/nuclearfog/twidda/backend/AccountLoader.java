@@ -6,7 +6,7 @@ import org.nuclearfog.twidda.backend.model.Account;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.AccountFragment;
+import org.nuclearfog.twidda.fragments.AccountFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.activity.MessageEditor;
+import org.nuclearfog.twidda.activities.MessageEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 

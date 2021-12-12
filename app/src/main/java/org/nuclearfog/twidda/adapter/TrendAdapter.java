@@ -27,7 +27,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  * Adapter class for Trend list
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragment.TrendFragment
+ * @see org.nuclearfog.twidda.fragments.TrendFragment
  */
 public class TrendAdapter extends Adapter<ViewHolder> {
 

@@ -2,7 +2,7 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import org.nuclearfog.twidda.activity.ListEditor;
+import org.nuclearfog.twidda.activities.ListEditor;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.ListHolder;

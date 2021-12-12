@@ -1,19 +1,21 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.ListManager.Action.DEL_USER;
 import static org.nuclearfog.twidda.backend.UserLoader.NO_CURSOR;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.activity.UserProfile;
+import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.UserAdapter;
 import org.nuclearfog.twidda.adapter.UserAdapter.UserClickListener;
 import org.nuclearfog.twidda.backend.ListManager;
@@ -131,7 +133,8 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
 
     @Override
-    protected void onCreate() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle param = getArguments();
         if (param != null) {
             mode = param.getInt(KEY_FRAG_USER_MODE, 0);
@@ -140,6 +143,9 @@ public class UserFragment extends ListFragment implements UserClickListener,
             delUser = param.getBoolean(KEY_FRAG_DEL_USER, false);
         }
         deleteDialog = new ConfirmDialog(requireContext(), DialogType.LIST_REMOVE_USER, this);
+        adapter = new UserAdapter(requireContext(), this);
+        adapter.enableDeleteButton(delUser);
+        setAdapter(adapter);
     }
 
 
@@ -177,14 +183,6 @@ public class UserFragment extends ListFragment implements UserClickListener,
                 adapter.updateUser(update);
             }
         }
-    }
-
-
-    @Override
-    protected UserAdapter initAdapter() {
-        adapter = new UserAdapter(settings, this);
-        adapter.enableDeleteButton(delUser);
-        return adapter;
     }
 
 

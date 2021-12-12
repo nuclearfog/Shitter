@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -13,9 +14,10 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.LoginHolder;
 import org.nuclearfog.twidda.backend.model.Account;
 import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.AccountFragment;
+import org.nuclearfog.twidda.fragments.AccountFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +39,15 @@ public class AccountAdapter extends Adapter<LoginHolder> {
     private List<Account> data = new ArrayList<>();
     private GlobalSettings settings;
     private OnAccountClickListener listener;
+    private Picasso picasso;
 
     /**
-     * @param settings app settings for theme
      * @param listener item click listener
      */
-    public AccountAdapter(GlobalSettings settings, OnAccountClickListener listener) {
-        this.settings = settings;
+    public AccountAdapter(Context context, OnAccountClickListener listener) {
         this.listener = listener;
+        picasso = PicassoBuilder.get(context);
+        settings = GlobalSettings.getInstance(context);
     }
 
 
@@ -92,7 +95,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
                 if (!user.hasDefaultProfileImage()) {
                     pbLink += settings.getImageSuffix();
                 }
-                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
                         .error(R.drawable.no_image).into(holder.profile);
             }
         } else {

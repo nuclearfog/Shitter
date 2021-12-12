@@ -1,12 +1,14 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activity.ListDetail;
-import org.nuclearfog.twidda.activity.UserProfile;
+import org.nuclearfog.twidda.activities.ListDetail;
+import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;
@@ -17,8 +19,8 @@ import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListDetail.KEY_LIST_DATA;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.ListDetail.KEY_LIST_DATA;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 import static org.nuclearfog.twidda.backend.ListLoader.NO_CURSOR;
 import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_MEMBERSHIPS;
 import static org.nuclearfog.twidda.backend.ListLoader.Type.LOAD_USERLISTS;
@@ -91,13 +93,16 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
     @Override
-    protected void onCreate() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle param = getArguments();
         if (param != null) {
             id = param.getLong(KEY_FRAG_LIST_OWNER_ID, -1);
             ownerName = param.getString(KEY_FRAG_LIST_OWNER_NAME, "");
             type = param.getInt(KEY_FRAG_LIST_LIST_TYPE);
         }
+        adapter = new ListAdapter(requireContext(), this);
+        setAdapter(adapter);
     }
 
 
@@ -175,13 +180,6 @@ public class UserListFragment extends ListFragment implements ListClickListener 
             return true;
         }
         return false;
-    }
-
-
-    @Override
-    protected ListAdapter initAdapter() {
-        adapter = new ListAdapter(settings, this);
-        return adapter;
     }
 
     /**

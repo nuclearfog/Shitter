@@ -1,5 +1,6 @@
 package org.nuclearfog.twidda.adapter;
 
+import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
 import org.nuclearfog.twidda.backend.lists.UserList;
 import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.text.NumberFormat;
@@ -31,7 +33,7 @@ import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
  * Adapter class for user list
  *
  * @author nuclearfog
- * @see org.nuclearfog.twidda.fragment.UserFragment
+ * @see org.nuclearfog.twidda.fragments.UserFragment
  */
 public class UserAdapter extends Adapter<ViewHolder> {
 
@@ -57,18 +59,19 @@ public class UserAdapter extends Adapter<ViewHolder> {
 
     private UserClickListener listener;
     private GlobalSettings settings;
+    private Picasso picasso;
 
     private UserList data = new UserList();
     private int loadingIndex = NO_LOADING;
     private boolean userRemovable = false;
 
     /**
-     * @param settings  app settings
-     * @param l         click listener
+     * @param listener click listener
      */
-    public UserAdapter(GlobalSettings settings, UserClickListener l) {
-        this.listener = l;
-        this.settings = settings;
+    public UserAdapter(Context context, UserClickListener listener) {
+        this.listener = listener;
+        settings = GlobalSettings.getInstance(context);
+        picasso = PicassoBuilder.get(context);
     }
 
     /**
@@ -230,7 +233,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
                 String pbLink = user.getImageLink();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
-                Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(2, 0))
+                picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
                         .error(R.drawable.no_image).into(userholder.profileImg);
             } else {
                 userholder.profileImg.setImageResource(0);

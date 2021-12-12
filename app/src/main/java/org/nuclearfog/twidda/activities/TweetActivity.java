@@ -1,28 +1,28 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_LINK;
-import static org.nuclearfog.twidda.activity.MediaViewer.KEY_MEDIA_TYPE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_ANGIF;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_IMAGE;
-import static org.nuclearfog.twidda.activity.MediaViewer.MEDIAVIEWER_VIDEO;
-import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_REPLYID;
-import static org.nuclearfog.twidda.activity.TweetEditor.KEY_TWEETPOPUP_TEXT;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_ID;
-import static org.nuclearfog.twidda.activity.UserDetail.KEY_USERDETAIL_MODE;
-import static org.nuclearfog.twidda.activity.UserDetail.USERLIST_RETWEETS;
-import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_REMOVED_ID;
-import static org.nuclearfog.twidda.fragment.TweetFragment.INTENT_TWEET_UPDATE_DATA;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_ID;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_MODE;
-import static org.nuclearfog.twidda.fragment.TweetFragment.KEY_FRAG_TWEET_SEARCH;
-import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_NOT_FOUND;
-import static org.nuclearfog.twidda.fragment.TweetFragment.RETURN_TWEET_UPDATE;
-import static org.nuclearfog.twidda.fragment.TweetFragment.TWEET_FRAG_ANSWER;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_LINK;
+import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_ANGIF;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
+import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_VIDEO;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_REPLYID;
+import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
+import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_RETWEETS;
+import static org.nuclearfog.twidda.fragments.TweetFragment.INTENT_TWEET_REMOVED_ID;
+import static org.nuclearfog.twidda.fragments.TweetFragment.INTENT_TWEET_UPDATE_DATA;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_ID;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_MODE;
+import static org.nuclearfog.twidda.fragments.TweetFragment.KEY_FRAG_TWEET_SEARCH;
+import static org.nuclearfog.twidda.fragments.TweetFragment.RETURN_TWEET_NOT_FOUND;
+import static org.nuclearfog.twidda.fragments.TweetFragment.RETURN_TWEET_UPDATE;
+import static org.nuclearfog.twidda.fragments.TweetFragment.TWEET_FRAG_ANSWER;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -61,12 +61,13 @@ import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.backend.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.LinkDialog;
-import org.nuclearfog.twidda.fragment.TweetFragment;
+import org.nuclearfog.twidda.fragments.TweetFragment;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -111,6 +112,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
 
     private GlobalSettings settings;
     private TweetAction statusAsync;
+    private Picasso picasso;
 
     @Nullable
     private Tweet tweet;
@@ -182,6 +184,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         AppStyles.setTheme(settings, root);
+        picasso = PicassoBuilder.get(this);
 
         deleteDialog = new ConfirmDialog(this, DialogType.TWEET_DELETE, this);
         linkPreview = new LinkDialog(this);
@@ -547,7 +550,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             String pbLink = author.getImageLink();
             if (!author.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
-            Picasso.get().load(pbLink).transform(new RoundedCornersTransformation(4, 0))
+            picasso.load(pbLink).transform(new RoundedCornersTransformation(4, 0))
                     .error(R.drawable.no_image).into(profile_img);
         } else {
             profile_img.setImageResource(0);

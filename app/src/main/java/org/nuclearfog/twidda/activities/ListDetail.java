@@ -1,16 +1,16 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.ListEditor.KEY_LIST_EDITOR_DATA;
+import static org.nuclearfog.twidda.activities.ListEditor.KEY_LIST_EDITOR_DATA;
 import static org.nuclearfog.twidda.backend.ListAction.Action.DELETE;
 import static org.nuclearfog.twidda.backend.ListAction.Action.FOLLOW;
 import static org.nuclearfog.twidda.backend.ListAction.Action.LOAD;
 import static org.nuclearfog.twidda.backend.ListAction.Action.UNFOLLOW;
 import static org.nuclearfog.twidda.backend.ListManager.Action.ADD_USER;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_REMOVED_LIST_ID;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RESULT_UPDATE_LIST;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_REMOVED;
-import static org.nuclearfog.twidda.fragment.UserListFragment.RETURN_LIST_UPDATED;
+import static org.nuclearfog.twidda.fragments.UserListFragment.RESULT_REMOVED_LIST_ID;
+import static org.nuclearfog.twidda.fragments.UserListFragment.RESULT_UPDATE_LIST;
+import static org.nuclearfog.twidda.fragments.UserListFragment.RETURN_LIST_REMOVED;
+import static org.nuclearfog.twidda.fragments.UserListFragment.RETURN_LIST_UPDATED;
 
 import android.app.Dialog;
 import android.content.Intent;

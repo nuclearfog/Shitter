@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/half_transparent"
-    tools:context=".activity.MediaViewer">
+    tools:context=".activities.MediaViewer">
 
     <org.nuclearfog.zoomview.ZoomView
         android:id="@+id/image_full"

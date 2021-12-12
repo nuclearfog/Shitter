@@ -1,18 +1,21 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.activity.MessageEditor;
-import org.nuclearfog.twidda.activity.SearchPage;
-import org.nuclearfog.twidda.activity.TweetActivity;
-import org.nuclearfog.twidda.activity.UserProfile;
+import org.nuclearfog.twidda.activities.MessageEditor;
+import org.nuclearfog.twidda.activities.SearchPage;
+import org.nuclearfog.twidda.activities.TweetActivity;
+import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
@@ -26,12 +29,12 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
-import static org.nuclearfog.twidda.activity.MessageEditor.KEY_DM_PREFIX;
-import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_ID;
-import static org.nuclearfog.twidda.activity.TweetActivity.KEY_TWEET_NAME;
-import static org.nuclearfog.twidda.activity.TweetActivity.LINK_PATTERN;
-import static org.nuclearfog.twidda.activity.UserProfile.KEY_PROFILE_DATA;
+import static org.nuclearfog.twidda.activities.MessageEditor.KEY_DM_PREFIX;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_ID;
+import static org.nuclearfog.twidda.activities.TweetActivity.KEY_TWEET_NAME;
+import static org.nuclearfog.twidda.activities.TweetActivity.LINK_PATTERN;
+import static org.nuclearfog.twidda.activities.UserProfile.KEY_PROFILE_DATA;
 
 /**
  * Fragment class for direct message lists
@@ -48,8 +51,11 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
 
 
     @Override
-    protected void onCreate() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         deleteDialog = new ConfirmDialog(requireContext(), DialogType.MESSAGE_DELETE, this);
+        adapter = new MessageAdapter(requireContext(), this);
+        setAdapter(adapter);
     }
 
 
@@ -184,13 +190,6 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
      */
     public void removeItem(long id) {
         adapter.remove(id);
-    }
-
-
-    @Override
-    protected MessageAdapter initAdapter() {
-        adapter = new MessageAdapter(settings, this);
-        return adapter;
     }
 
     /**

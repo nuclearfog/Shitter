@@ -1,10 +1,13 @@
-package org.nuclearfog.twidda.fragment;
+package org.nuclearfog.twidda.fragments;
 
 import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.activity.SearchPage;
+import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
@@ -15,7 +18,7 @@ import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import java.util.List;
 
 import static android.os.AsyncTask.Status.RUNNING;
-import static org.nuclearfog.twidda.activity.SearchPage.KEY_SEARCH_QUERY;
+import static org.nuclearfog.twidda.activities.SearchPage.KEY_SEARCH_QUERY;
 
 /**
  * Fragment class for trend lists
@@ -29,7 +32,10 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
 
     @Override
-    protected void onCreate() {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        adapter = new TrendAdapter(settings, this);
+        setAdapter(adapter);
     }
 
 
@@ -45,7 +51,9 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
 
     @Override
     protected void onReset() {
-        adapter.clear();
+        if (adapter != null) {
+            adapter.clear();
+        }
         load();
         setRefresh(true);
     }
@@ -56,13 +64,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
         if (trendTask != null && trendTask.getStatus() == RUNNING)
             trendTask.cancel(true);
         super.onDestroy();
-    }
-
-
-    @Override
-    protected TrendAdapter initAdapter() {
-        adapter = new TrendAdapter(settings, this);
-        return adapter;
     }
 
 

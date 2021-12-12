@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
+import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -36,6 +37,8 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
     private TextView title, description;
     private ImageView preview;
     private ProgressBar loading;
+
+    private Picasso picasso;
 
     private TextCrawler textCrawler;
     private String url;
@@ -58,6 +61,7 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
         AppStyles.setDrawableColor(close, Color.BLACK);
         title.setTextColor(Color.BLUE);
         description.setMovementMethod(ScrollingMovementMethod.getInstance());
+        picasso = PicassoBuilder.get(context);
 
         textCrawler = new TextCrawler();
         close.setOnClickListener(this);
@@ -81,7 +85,7 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
     public void dismiss() {
         super.dismiss();
         textCrawler.cancel();
-        Picasso.get().cancelRequest(preview);
+        picasso.cancelRequest(preview);
     }
 
 
@@ -108,7 +112,7 @@ public class LinkDialog extends Dialog implements LinkPreviewCallback, OnClickLi
                 String link = sourceContent.getImages().get(0);
                 if (link != null && link.startsWith("https://")) {
                     // load image without caching
-                    Picasso.get().load(link).networkPolicy(NO_STORE).into(preview);
+                    picasso.load(link).networkPolicy(NO_STORE).into(preview);
                 }
             } else {
                 // no image preview

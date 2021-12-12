@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.activity;
+package org.nuclearfog.twidda.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
-import org.nuclearfog.twidda.fragment.MessageFragment;
+import org.nuclearfog.twidda.fragments.MessageFragment;
 
 /**
  * Activity for the direct message page of the current user

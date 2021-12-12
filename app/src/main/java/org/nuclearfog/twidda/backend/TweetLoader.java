@@ -8,12 +8,12 @@ import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.engine.TwitterEngine;
 import org.nuclearfog.twidda.backend.model.Tweet;
 import org.nuclearfog.twidda.database.AppDatabase;
-import org.nuclearfog.twidda.fragment.TweetFragment;
+import org.nuclearfog.twidda.fragments.TweetFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-import static org.nuclearfog.twidda.fragment.TweetFragment.CLEAR_LIST;
+import static org.nuclearfog.twidda.fragments.TweetFragment.CLEAR_LIST;
 
 
 /**
