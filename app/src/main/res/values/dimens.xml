@@ -91,6 +91,7 @@
     <dimen name="useritem_textview_padding">5dp</dimen>
     <dimen name="useritem_drawable_margin">5dp</dimen>
     <dimen name="useritem_button_size">36dp</dimen>
+    <dimen name="useritem_button_padding">7dp</dimen>
     <dimen name="useritem_textsize_small">12sp</dimen>
     <dimen name="useritem_icon_size">14sp</dimen>
 
@@ -131,11 +132,13 @@
     <!--dimens of popup_tweet.xml-->
     <dimen name="tweetpopup_margin_layout">10dp</dimen>
     <dimen name="tweetpopup_button_margin">7dp</dimen>
+    <dimen name="tweetpopup_button_padding">7dp</dimen>
 
     <!--dimens of popup_dm.xml-->
     <dimen name="dmpopup_margin_background">10dp</dimen>
     <dimen name="dmpopup_text_margin">5dp</dimen>
     <dimen name="dmpopup_button_margin">5dp</dimen>
+    <dimen name="dmpopup_button_padding">7dp</dimen>
 
     <!--dimen of popup_userlist.xml-->
     <dimen name="popup_userlist_background_margin">10dp</dimen>
@@ -159,21 +162,15 @@
 
     <!--dimens of item_image.xml-->
     <dimen name="imageitem_button_margin">5dp</dimen>
-    <dimen name="imageitem_drawable_padding">5dp</dimen>
+    <dimen name="imageitem_drawable_padding">7dp</dimen>
     <dimen name="imageitem_button_size">30dp</dimen>
     <dimen name="imageitem_layout_margin">2dp</dimen>
-
-    <!--dimens of item_image_load.xml-->
-
-    <!--dimens of page_userlist.xml-->
 
     <!--dimens of page_search.xml-->
     <dimen name="searchpage_toolbar_height">@dimen/toolbar_height</dimen>
 
     <!--dimens of page_main.xml-->
     <dimen name="mainpage_toolbar_height">@dimen/toolbar_height</dimen>
-
-    <!--dimens of page_listdetail.xml-->
 
     <!--dimens of page_list.xml-->
     <dimen name="listpage_toolbar_height">@dimen/toolbar_height</dimen>
@@ -227,7 +224,8 @@
     <dimen name="login_name_textsize_big">14sp</dimen>
     <dimen name="login_name_textsize">12sp</dimen>
     <dimen name="login_layout_padding">8dp</dimen>
-    <dimen name="login_cross_size">36dp</dimen>
+    <dimen name="login_button_size">36dp</dimen>
+    <dimen name="login_button_padding">7dp</dimen>
     <dimen name="login_image_size">64dp</dimen>
 
 </resources>

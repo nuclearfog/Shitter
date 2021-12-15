@@ -21,6 +21,7 @@
         android:layout_margin="@dimen/imageitem_button_margin"
         android:layout_gravity="top|end"
         android:contentDescription="@string/item_image_save"
+        android:scaleType="fitCenter"
         style="@style/RoundButton" />
 
 </androidx.cardview.widget.CardView>

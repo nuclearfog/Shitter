@@ -68,11 +68,13 @@
 
         <ImageButton
             android:id="@+id/item_login_remove"
-            android:layout_width="@dimen/login_cross_size"
-            android:layout_height="@dimen/login_cross_size"
+            android:layout_width="@dimen/login_button_size"
+            android:layout_height="@dimen/login_button_size"
+            android:padding="@dimen/login_button_padding"
             android:layout_marginLeft="@dimen/login_layout_padding"
             android:layout_marginStart="@dimen/login_layout_padding"
             android:contentDescription="@string/descr_remove_user"
+            android:scaleType="fitCenter"
             app:layout_constraintStart_toEndOf="@id/item_login_button_barrier"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
