@@ -6,7 +6,7 @@
     <string name="title_settings">设置</string>
     <string name="toolbar_userlist_retweet">转推来自</string>
     <string name="settings_background">背景颜色</string>
-    <string name="settings_font">字体颜色</string>
+    <string name="settings_text">字体颜色</string>
 
     <string name="settings_button_popup">弹窗颜色</string>
     <string name="settings_color_card">卡片颜色</string>

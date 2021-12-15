@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
@@ -139,7 +141,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         hqImageText = findViewById(R.id.settings_image_hq_descr);
         enableAuthTxt = findViewById(R.id.settings_enable_auth_descr);
         colorButtons[COLOR_BACKGROUND] = findViewById(R.id.color_background);
-        colorButtons[COLOR_TEXT] = findViewById(R.id.color_font);
+        colorButtons[COLOR_TEXT] = findViewById(R.id.color_text);
         colorButtons[COLOR_WINDOW] = findViewById(R.id.color_window);
         colorButtons[COLOR_HIGHLIGHT] = findViewById(R.id.highlight_color);
         colorButtons[COLOR_CARD] = findViewById(R.id.color_card);
@@ -175,6 +177,9 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         fontSelector.setSelected(false);
         scaleSelector.setSelected(false);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            scaleSelector.setVisibility(GONE); // scaling not supported on API < 17
+        }
         AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
 
@@ -354,7 +359,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
             setColor(color, false);
         }
         // set font color
-        else if (v.getId() == R.id.color_font) {
+        else if (v.getId() == R.id.color_text) {
             mode = COLOR_TEXT;
             color = settings.getFontColor();
             setColor(color, false);
@@ -584,9 +589,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
         else if (parent.getId() == R.id.spinner_scale) {
             settings.setScaleIndex(position);
             AppStyles.setFontStyle(root);
-            if (settings.isLoggedIn()) {
-                locationAdapter.notifyDataSetChanged();
-            }
+            Toast.makeText(this, R.string.info_restart_app_on_change, Toast.LENGTH_SHORT).show();
         }
     }
 

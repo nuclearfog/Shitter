@@ -18,7 +18,7 @@
     <string name="toolbar_userlist_retweet">Tweet retweeted by</string>
     <string name="settings_color_settings">Color settings</string>
     <string name="settings_background">Background</string>
-    <string name="settings_font">Text</string>
+    <string name="settings_text">Text</string>
     <string name="settings_button_popup">Window</string>
     <string name="settings_color_card">Cards</string>
     <string name="settings_icon_color">Icons</string>
@@ -247,5 +247,6 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_link_image_preview">Link preview image</string>
     <string name="dialog_link_close">close link preview</string>
+    <string name="info_restart_app_on_change">restarting required to apply changes</string>
 
 </resources>

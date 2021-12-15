@@ -54,7 +54,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:barrierDirection="top"
-                        app:constraint_referenced_ids="color_background,color_font" />
+                        app:constraint_referenced_ids="color_background,color_text" />
 
                     <Button
                         android:id="@+id/color_background"
@@ -65,15 +65,15 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/color_barrier"
                         app:layout_constraintBottom_toTopOf="@id/color_window"
-                        app:layout_constraintEnd_toStartOf="@id/color_font"
+                        app:layout_constraintEnd_toStartOf="@id/color_text"
                         style="@style/ColorButton" />
 
                     <Button
-                        android:id="@+id/color_font"
+                        android:id="@+id/color_text"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/settings_color_button_height"
                         android:layout_margin="@dimen/settings_color_button_margin"
-                        android:text="@string/settings_font"
+                        android:text="@string/settings_text"
                         app:layout_constraintStart_toEndOf="@id/color_background"
                         app:layout_constraintTop_toBottomOf="@id/color_barrier"
                         app:layout_constraintBottom_toTopOf="@id/highlight_color"
@@ -99,7 +99,7 @@
                         android:layout_margin="@dimen/settings_color_button_margin"
                         android:text="@string/highlight"
                         app:layout_constraintStart_toEndOf="@id/color_window"
-                        app:layout_constraintTop_toBottomOf="@id/color_font"
+                        app:layout_constraintTop_toBottomOf="@id/color_text"
                         app:layout_constraintBottom_toTopOf="@id/color_icon"
                         app:layout_constraintEnd_toEndOf="parent"
                         style="@style/ColorButton" />

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings_font">Schrift</string>
+    <string name="settings_text">Schrift</string>
     <string name="highlight">Hervorhebung</string>
     <string name="settings_list_size">Listengröße</string>
     <string name="confirm_retry_button">wiederholen</string>
@@ -220,4 +220,5 @@
     <string name="settings_color_like">Like</string>
     <string name="settings_color_fav">Favorit</string>
     <string name="settings_enable_like">\"Like\" anstatt \"Favorit\" verwenden</string>
+    <string name="info_restart_app_on_change">Neustart erforderlich um Änderungen anzuwenden</string>
 </resources>
