@@ -12,11 +12,13 @@ import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
 import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_VIDEO;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -93,10 +95,16 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
     private MediaType selectedFormat = MediaType.NONE;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
+
+    @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_tweet);
-        View root = findViewById(R.id.tweet_popup);
+        ViewGroup root = findViewById(R.id.tweet_popup);
         ImageView background = findViewById(R.id.tweet_popup_background);
         ImageButton tweetButton = findViewById(R.id.tweet_send);
         ImageButton closeButton = findViewById(R.id.close);
@@ -114,15 +122,15 @@ public class TweetEditor extends MediaActivity implements OnClickListener, OnPro
 
         Intent data = getIntent();
         String prefix = data.getStringExtra(KEY_TWEETPOPUP_TEXT);
-        if (prefix != null)
+        if (prefix != null) {
             tweetText.append(prefix);
-
+        }
         previewBtn.setImageResource(R.drawable.image);
         mediaBtn.setImageResource(R.drawable.image_add);
         locationBtn.setImageResource(R.drawable.location);
         tweetButton.setImageResource(R.drawable.tweet);
         closeButton.setImageResource(R.drawable.cross);
-        AppStyles.setEditorTheme(settings, root, background);
+        AppStyles.setEditorTheme(root, background);
 
         closeButton.setOnClickListener(this);
         tweetButton.setOnClickListener(this);

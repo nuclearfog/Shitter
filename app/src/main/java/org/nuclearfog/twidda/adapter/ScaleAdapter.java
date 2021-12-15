@@ -1,6 +1,5 @@
 package org.nuclearfog.twidda.adapter;
 
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,27 +11,18 @@ import org.nuclearfog.twidda.database.GlobalSettings;
 
 import static org.nuclearfog.twidda.database.GlobalSettings.*;
 
+import java.util.Locale;
+
 /**
- * Spinner Adapter for font settings
  *
- * @author nuclearfog
- * @see org.nuclearfog.twidda.activities.AppSettings
  */
-public class FontAdapter extends BaseAdapter {
+public class ScaleAdapter extends BaseAdapter {
 
     private GlobalSettings settings;
 
-    /**
-     * @param settings app settings for background and font color
-     */
-    public FontAdapter(GlobalSettings settings) {
+
+    public ScaleAdapter(GlobalSettings settings) {
         this.settings = settings;
-    }
-
-
-    @Override
-    public int getCount() {
-        return FONTS.length;
     }
 
 
@@ -43,8 +33,14 @@ public class FontAdapter extends BaseAdapter {
 
 
     @Override
-    public Typeface getItem(int pos) {
-        return FONTS[pos];
+    public int getCount() {
+        return SCALES.length;
+    }
+
+
+    @Override
+    public Float getItem(int pos) {
+        return SCALES[pos];
     }
 
 
@@ -56,8 +52,8 @@ public class FontAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.item_dropdown, parent, false);
         }
         textItem = view.findViewById(R.id.dropdown_textitem);
-        textItem.setText(FONT_NAMES[pos]);
-        textItem.setTypeface(FONTS[pos]);
+        textItem.setText(String.format(Locale.getDefault(),"%.1f X",SCALES[pos]));
+        textItem.setTypeface(settings.getTypeFace());
         textItem.setTextColor(settings.getFontColor());
         textItem.setBackgroundColor(settings.getCardColor());
         view.setBackgroundColor(settings.getBackgroundColor());

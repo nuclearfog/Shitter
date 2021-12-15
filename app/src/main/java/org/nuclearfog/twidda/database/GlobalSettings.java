@@ -61,6 +61,11 @@ public class GlobalSettings {
     public static final String[] FONT_NAMES = {"Default", "Monospace", "Serif", "Sans-Serif", "sans-serif-thin"};
 
     /**
+     * font scales
+     */
+    public static final float[] SCALES = {0.5f, 0.8f, 1.0f, 1.5f, 2.0f};
+
+    /**
      * singleton instance
      */
     private static final GlobalSettings ourInstance = new GlobalSettings();
@@ -77,6 +82,7 @@ public class GlobalSettings {
     private static final String FOLLOW_COLOR = "following_color";
     private static final String F_REQ_COLOR = "following_pending_color";
     private static final String INDEX_FONT = "index_font";
+    private static final String INDEX_SCALE = "index_scale";
     private static final String LIST_SIZE = "preload";
     private static final String IMAGE_LOAD = "image_load";
     private static final String IMAGE_QUALITY = "image_hq";
@@ -91,6 +97,7 @@ public class GlobalSettings {
     private static final String TREND_LOC = "location";
     private static final String TREND_ID = "world_id";
     private static final String LINK_PREVIEW = "link_preview";
+    private static final String ENABLE_LIKE = "like_enable";
     private static final String FILTER_RESULTS = "filter_results";
     private static final String CUSTOM_CONSUMER_KEY_SET = "custom_api_keys";
     private static final String CUSTOM_CONSUMER_KEY_1 = "api_key1";
@@ -106,8 +113,8 @@ public class GlobalSettings {
     private static final String APP_SETTINGS = "settings";
 
     // Default App settings
-    @IntRange(from = 0, to = 4)
     private static final int DEFAULT_FONT_INDEX = 0;
+    private static final int DEFAULT_SCALE_INDEX = 2;
     @IntRange(from = 0, to = 100)
     private static final int DEFAULT_LIST_SIZE = 20;
     private static final int DEFAULT_BACKGROUND_COLOR = 0xff0f114a;
@@ -123,6 +130,7 @@ public class GlobalSettings {
     private static final int DEFAULT_LOCATION_ID = 1;
     private static final String DEFAULT_LOCATION_NAME = "Worldwide";
 
+
     private SharedPreferences settings;
     private TrendLocation location;
     private String api_key1, api_key2;
@@ -137,6 +145,7 @@ public class GlobalSettings {
     private boolean toolbarOverlap;
     private boolean linkPreview;
     private boolean filterResults;
+    private boolean enableLike;
     private int background_color;
     private int font_color;
     private int highlight_color;
@@ -148,6 +157,7 @@ public class GlobalSettings {
     private int request_color;
     private int follow_color;
     private int indexFont;
+    private int indexScale;
     private int listSize;
     private long userId;
 
@@ -604,6 +614,38 @@ public class GlobalSettings {
     }
 
     /**
+     * get font scale
+     *
+     * @return font scale
+     */
+    public float getTextScale() {
+        return SCALES[indexScale];
+    }
+
+    /**
+     * get current index of the selected scale value
+     * @see #SCALES
+     * @return current index
+     */
+    public int getScaleIndex() {
+        return indexScale;
+    }
+
+    /**
+     * set index of the selected scale
+     *
+     * @param index index of the selected scale
+     * @see #SCALES
+     */
+    public void setScaleIndex(int index) {
+        this.indexScale = index;
+
+        Editor edit = settings.edit();
+        edit.putInt(INDEX_SCALE, index);
+        edit.apply();
+    }
+
+    /**
      * return font type
      *
      * @return font family
@@ -624,13 +666,34 @@ public class GlobalSettings {
     /**
      * set font type
      *
-     * @param indexFont index of font type in array
+     * @param index index of font type in array
      */
-    public void setFontIndex(int indexFont) {
-        this.indexFont = indexFont;
+    public void setFontIndex(int index) {
+        this.indexFont = index;
 
         Editor edit = settings.edit();
-        edit.putInt(INDEX_FONT, indexFont);
+        edit.putInt(INDEX_FONT, index);
+        edit.apply();
+    }
+
+    /**
+     * check if 'like' is used instead of 'favorite'
+     * @return
+     */
+    public boolean likeEnabled() {
+        return enableLike;
+    }
+
+    /**
+     * enable 'like' or 'favorite'
+     *
+     * @param enableLike true to enable 'like', false to enable 'favorite'
+     */
+    public void enableLike(boolean enableLike) {
+        this.enableLike = enableLike;
+
+        Editor edit = settings.edit();
+        edit.putBoolean(ENABLE_LIKE, enableLike);
         edit.apply();
     }
 
@@ -910,6 +973,7 @@ public class GlobalSettings {
         request_color = settings.getInt(F_REQ_COLOR, DEFAULT_FR_ICON_COLOR);
         follow_color = settings.getInt(FOLLOW_COLOR, DEFAULT_FW_ICON_COLOR);
         indexFont = settings.getInt(INDEX_FONT, DEFAULT_FONT_INDEX);
+        indexScale = settings.getInt(INDEX_SCALE, DEFAULT_SCALE_INDEX);
         listSize = settings.getInt(LIST_SIZE, DEFAULT_LIST_SIZE);
         isProxyEnabled = settings.getBoolean(PROXY_SET, false);
         isProxyAuthSet = settings.getBoolean(AUTH_SET, false);
@@ -920,6 +984,7 @@ public class GlobalSettings {
         toolbarOverlap = settings.getBoolean(PROFILE_OVERLAP, true);
         linkPreview = settings.getBoolean(LINK_PREVIEW, false);
         filterResults = settings.getBoolean(FILTER_RESULTS, true);
+        enableLike = settings.getBoolean(ENABLE_LIKE, false);
         customAPIKey = settings.getBoolean(CUSTOM_CONSUMER_KEY_SET, false);
         proxyHost = settings.getString(PROXY_ADDR, "");
         proxyPort = settings.getString(PROXY_PORT, "");

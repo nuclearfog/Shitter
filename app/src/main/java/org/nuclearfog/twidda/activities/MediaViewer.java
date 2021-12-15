@@ -14,6 +14,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
@@ -29,6 +30,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
@@ -126,12 +128,17 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     private ImageAdapter adapter;
     private VideoView videoView;
     private ZoomView zoomImage;
-    private View controlPanel;
+    private ViewGroup controlPanel;
 
     private String[] mediaLinks;
     private int type;
 
     private PlayStat playStat = PlayStat.IDLE;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
 
 
     @Override
@@ -161,7 +168,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
         GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setProgressColor(loadingCircle, settings.getHighlightColor());
-        AppStyles.setTheme(settings, controlPanel, settings.getCardColor());
+        AppStyles.setTheme(controlPanel, settings.getBackgroundColor());
         adapter = new ImageAdapter(settings, this);
 
         // get intent data and type

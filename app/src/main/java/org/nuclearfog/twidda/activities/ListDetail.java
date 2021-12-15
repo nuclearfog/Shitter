@@ -13,12 +13,13 @@ import static org.nuclearfog.twidda.fragments.UserListFragment.RETURN_LIST_REMOV
 import static org.nuclearfog.twidda.fragments.UserListFragment.RETURN_LIST_UPDATED;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -98,10 +99,16 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private long listId = -1;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
+
+    @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_listdetail);
-        View root = findViewById(R.id.listdetail_root);
+        ViewGroup root = findViewById(R.id.listdetail_root);
         toolbar = findViewById(R.id.listdetail_toolbar);
         tablayout = findViewById(R.id.listdetail_tab);
         pager = findViewById(R.id.listdetail_pager);
@@ -127,7 +134,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         }
 
         setSupportActionBar(toolbar);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setTabIcons(tablayout, settings, R.array.list_tab_icons);
     }
 
@@ -166,7 +173,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         MenuItem followList = m.findItem(R.id.menu_follow_list);
         MenuItem search = m.findItem(R.id.menu_list_add_user);
         SearchView searchUser = (SearchView) search.getActionView();
-        AppStyles.setTheme(settings, searchUser);
+        AppStyles.setTheme(searchUser, Color.TRANSPARENT);
         if (userList != null) {
             if (userList.isListOwner()) {
                 searchUser.setQueryHint(getString(R.string.menu_add_user));
@@ -216,7 +223,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
             // theme expanded search view
             else if (item.getItemId() == R.id.menu_list_add_user) {
                 SearchView searchView = (SearchView) item.getActionView();
-                AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
+                AppStyles.setTheme(searchView, android.R.color.transparent);
             }
         }
         return super.onOptionsItemSelected(item);

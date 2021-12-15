@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -57,7 +58,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
     public ConfirmDialog(Context context, DialogType type, OnConfirmListener listener) {
         super(context, R.style.ConfirmDialog);
         setContentView(R.layout.dialog_confirm);
-        View root = findViewById(R.id.confirm_rootview);
+        ViewGroup root = findViewById(R.id.confirm_rootview);
         confirm = findViewById(R.id.confirm_yes);
         cancel = findViewById(R.id.confirm_no);
         txtTitle = findViewById(R.id.confirm_title);
@@ -66,7 +67,7 @@ public class ConfirmDialog extends Dialog implements OnClickListener {
         confirm.setCompoundDrawablesWithIntrinsicBounds(R.drawable.check, 0, 0, 0);
         cancel.setCompoundDrawablesWithIntrinsicBounds(R.drawable.cross, 0, 0, 0);
         GlobalSettings settings = GlobalSettings.getInstance(context);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
 
         confirm.setOnClickListener(this);
         cancel.setOnClickListener(this);

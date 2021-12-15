@@ -2,12 +2,13 @@ package org.nuclearfog.twidda.activities;
 
 import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,10 +51,16 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
     private String search = "";
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
+
+    @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_search);
-        View root = findViewById(R.id.search_layout);
+        ViewGroup root = findViewById(R.id.search_layout);
         toolbar = findViewById(R.id.search_toolbar);
         tabLayout = findViewById(R.id.search_tab);
         pager = findViewById(R.id.search_pager);
@@ -70,7 +77,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         search = getIntent().getStringExtra(KEY_SEARCH_QUERY);
         adapter.setupSearchPage(search);
         AppStyles.setTabIcons(tabLayout, settings, R.array.search_tab_icons);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
     }
 
 
@@ -94,7 +101,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         searchFilter.setChecked(settings.filterResults());
         searchView.setQueryHint(search);
         searchView.setOnQueryTextListener(this);
-        AppStyles.setTheme(settings, searchView);
+        AppStyles.setTheme(searchView, Color.TRANSPARENT);
         AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);
     }
@@ -112,7 +119,7 @@ public class SearchPage extends AppCompatActivity implements OnTabSelectedListen
         // theme expanded search view
         else if (item.getItemId() == R.id.new_search) {
             SearchView searchView = (SearchView) item.getActionView();
-            AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
+            AppStyles.setTheme(searchView, Color.TRANSPARENT);
         }
         // enable/disable search filter
         else if (item.getItemId() == R.id.search_filter) {

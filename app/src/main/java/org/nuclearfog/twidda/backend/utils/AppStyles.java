@@ -3,6 +3,7 @@ package org.nuclearfog.twidda.backend.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,7 +52,7 @@ import static jp.wasabeef.picasso.transformations.CropTransformation.GravityHori
 import static jp.wasabeef.picasso.transformations.CropTransformation.GravityVertical.TOP;
 
 /**
- * Theme class to set all view styles such as text or drawable color
+ * Theme class provides methods to set view styles and colors
  *
  * @author nuclearfog
  */
@@ -63,122 +65,62 @@ public final class AppStyles {
     private static final int[][] SWITCH_STATES = {{0}};
     private GlobalSettings settings;
 
-    private AppStyles(GlobalSettings settings) {
-        this.settings = settings;
-    }
-
     /**
-     * sets view theme
-     *
-     * @param settings settings instance
-     * @param v        Root view
      */
-    public static void setTheme(GlobalSettings settings, View v) {
-        setTheme(settings, v, settings.getBackgroundColor());
+    private AppStyles(Context context) {
+        this.settings = GlobalSettings.getInstance(context);
     }
 
     /**
      * sets view theme with custom background color
      *
-     * @param settings   settings instance
-     * @param v          Root view
+     * @param root       Root view container
      * @param background custom background color
      */
-    public static void setTheme(GlobalSettings settings, View v, int background) {
-        AppStyles instance = new AppStyles(settings);
-        v.setBackgroundColor(background);
-        instance.setSubViewTheme(v);
+    public static void setTheme(ViewGroup root, int background) {
+        AppStyles instance = new AppStyles(root.getContext());
+        root.setBackgroundColor(background);
+        instance.setSubViewTheme(root);
     }
 
     /**
      * sets view theme with background color
      *
-     * @param settings   settings instance
-     * @param v          Root view
+     * @param root       Root view container
      * @param background Background image view
      */
-    public static void setEditorTheme(GlobalSettings settings, View v, ImageView background) {
-        AppStyles instance = new AppStyles(settings);
-        instance.setSubViewTheme(v);
+    public static void setEditorTheme(ViewGroup root, ImageView background) {
+        AppStyles instance = new AppStyles(root.getContext());
+        instance.setSubViewTheme(root);
         background.setImageResource(R.drawable.background);
-        setDrawableColor(background, settings.getPopupColor());
+        setDrawableColor(background, instance.settings.getPopupColor());
     }
 
     /**
-     * Set fonts type & color to all text elements in a view
+     * sets view font style
      *
-     * @param v recursive view
+     * @param root Root view container
      */
-    private void setSubViewTheme(View v) {
-        if (v instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) v;
-            for (int pos = 0; pos < group.getChildCount(); pos++) {
-                View child = group.getChildAt(pos);
-                if (child instanceof TabLayout) {
-                    TabLayout tablayout = (TabLayout) child;
-                    tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
-                } else if (child instanceof SwitchButton) {
-                    SwitchButton sw = (SwitchButton) child;
-                    int[] color = {settings.getIconColor()};
-                    sw.setTintColor(settings.getHighlightColor());
-                    sw.setThumbColor(new ColorStateList(SWITCH_STATES, color));
-                } else if (child instanceof SeekBar) {
-                    SeekBar seekBar = (SeekBar) child;
-                    setSeekBarColor(settings, seekBar);
-                } else if (child instanceof Spinner) {
-                    Spinner dropdown = (Spinner) child;
-                    setDrawableColor(dropdown.getBackground(), settings.getIconColor());
-                } else if (child instanceof TextView) {
-                    TextView tv = (TextView) child;
-                    tv.setTypeface(settings.getTypeFace());
-                    tv.setTextColor(settings.getFontColor());
-                    setDrawableColor(tv, settings.getIconColor());
-                    if (child instanceof Button) {
-                        Button btn = (Button) child;
-                        setButtonColor(btn, settings.getFontColor());
-                    } else if (child instanceof EditText) {
-                        EditText edit = (EditText) child;
-                        edit.setHintTextColor(settings.getFontColor() & HINT_TRANSPARENCY);
-                    }
-                } else if (child instanceof ImageView) {
-                    ImageView img = (ImageView) child;
-                    setDrawableColor(img.getDrawable(), settings.getIconColor());
-                    if (child instanceof ImageButton) {
-                        ImageButton btn = (ImageButton) child;
-                        setButtonColor(btn, settings.getFontColor());
-                    }
-                } else if (child instanceof ViewGroup) {
-                    if (child instanceof CardView) {
-                        CardView card = (CardView) child;
-                        card.setCardBackgroundColor(settings.getCardColor());
-                        setSubViewTheme(child);
-                    } else if (!(child instanceof ViewPager)) {
-                        setSubViewTheme(child);
-                    }
-                }
-            }
-        }
+    public static void setFontStyle(ViewGroup root) {
+        AppStyles instance = new AppStyles(root.getContext());
+        instance.setViewFont(root);
+        root.requestLayout();
     }
 
     /**
-     * Set fonts to all text elements in a view
+     * set global font scale
      *
-     * @param settings current font settings
-     * @param v        Root view containing views
+     * @param context base context
+     * @return context with new configuration
      */
-    public static void setViewFont(GlobalSettings settings, View v) {
-        if (v instanceof ViewGroup) {
-            ViewGroup group = (ViewGroup) v;
-            for (int pos = 0; pos < group.getChildCount(); pos++) {
-                View child = group.getChildAt(pos);
-                if (child instanceof ViewGroup)
-                    setViewFont(settings, child);
-                else if (child instanceof TextView) {
-                    TextView tv = (TextView) child;
-                    tv.setTypeface(settings.getTypeFace());
-                }
-            }
+    public static Context setFontScale(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            AppStyles instance = new AppStyles(context);
+            Configuration config = context.getResources().getConfiguration();
+            config.fontScale = instance.settings.getTextScale();
+            return context.createConfigurationContext(config);
         }
+        return context;
     }
 
     /**
@@ -394,5 +336,75 @@ public final class AppStyles {
         gradient.setColor(color);
         gradient.setStroke(width, invColor);
         button.setTextColor(invColor);
+    }
+
+    /**
+     * parsing all views from a sub ViewGroup recursively and set all colors and fonts
+     *
+     * @param group current ViewGroup to parse for sub views
+     */
+    private void setSubViewTheme(ViewGroup group) {
+        for (int pos = 0; pos < group.getChildCount(); pos++) {
+            View child = group.getChildAt(pos);
+            if (child instanceof TabLayout) {
+                TabLayout tablayout = (TabLayout) child;
+                tablayout.setSelectedTabIndicatorColor(settings.getHighlightColor());
+            } else if (child instanceof SwitchButton) {
+                SwitchButton sw = (SwitchButton) child;
+                int[] color = {settings.getIconColor()};
+                sw.setTintColor(settings.getHighlightColor());
+                sw.setThumbColor(new ColorStateList(SWITCH_STATES, color));
+            } else if (child instanceof SeekBar) {
+                SeekBar seekBar = (SeekBar) child;
+                setSeekBarColor(settings, seekBar);
+            } else if (child instanceof Spinner) {
+                Spinner dropdown = (Spinner) child;
+                setDrawableColor(dropdown.getBackground(), settings.getIconColor());
+            } else if (child instanceof TextView) {
+                TextView tv = (TextView) child;
+                tv.setTypeface(settings.getTypeFace());
+                tv.setTextColor(settings.getFontColor());
+                setDrawableColor(tv, settings.getIconColor());
+                if (child instanceof Button) {
+                    Button btn = (Button) child;
+                    setButtonColor(btn, settings.getFontColor());
+                } else if (child instanceof EditText) {
+                    EditText edit = (EditText) child;
+                    edit.setHintTextColor(settings.getFontColor() & HINT_TRANSPARENCY);
+                }
+            } else if (child instanceof ImageView) {
+                ImageView img = (ImageView) child;
+                setDrawableColor(img.getDrawable(), settings.getIconColor());
+                if (child instanceof ImageButton) {
+                    ImageButton btn = (ImageButton) child;
+                    setButtonColor(btn, settings.getFontColor());
+                }
+            } else if (child instanceof ViewGroup) {
+                if (child instanceof CardView) {
+                    CardView card = (CardView) child;
+                    card.setCardBackgroundColor(settings.getCardColor());
+                    setSubViewTheme(card);
+                } else if (!(child instanceof ViewPager)) {
+                    setSubViewTheme((ViewGroup) child);
+                }
+            }
+        }
+    }
+
+    /**
+     * Set fonts to all text elements in a view
+     *
+     * @param group current ViewGroup to parse for sub views
+     */
+    private void setViewFont(ViewGroup group) {
+        for (int pos = 0; pos < group.getChildCount(); pos++) {
+            View child = group.getChildAt(pos);
+            if (child instanceof ViewGroup)
+                setViewFont((ViewGroup) child);
+            else if (child instanceof TextView) {
+                TextView tv = (TextView) child;
+                tv.setTypeface(settings.getTypeFace());
+            }
+        }
     }
 }

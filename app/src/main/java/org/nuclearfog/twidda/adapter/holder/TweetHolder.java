@@ -49,7 +49,10 @@ public class TweetHolder extends ViewHolder {
         lockedIcon.setImageResource(R.drawable.lock);
         rtUser.setImageResource(R.drawable.retweet);
         rtIcon.setImageResource(R.drawable.retweet);
-        favIcon.setImageResource(R.drawable.favorite);
+        if (settings.likeEnabled())
+            favIcon.setImageResource(R.drawable.like);
+        else
+            favIcon.setImageResource(R.drawable.favorite);
         // theme views
         verifiedIcon.setColorFilter(settings.getIconColor(), SRC_IN);
         lockedIcon.setColorFilter(settings.getIconColor(), SRC_IN);

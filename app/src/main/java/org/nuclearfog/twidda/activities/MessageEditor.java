@@ -9,11 +9,13 @@ import static org.nuclearfog.twidda.activities.MediaViewer.KEY_MEDIA_TYPE;
 import static org.nuclearfog.twidda.activities.MediaViewer.MEDIAVIEWER_IMAGE;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -27,7 +29,6 @@ import org.nuclearfog.twidda.backend.MessageUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
@@ -55,12 +56,17 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
     @Nullable
     private String mediaPath;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_dm);
-        View root = findViewById(R.id.dm_popup);
+        ViewGroup root = findViewById(R.id.dm_popup);
         ImageButton send = findViewById(R.id.dm_send);
         ImageView background = findViewById(R.id.dm_background);
         media = findViewById(R.id.dm_media);
@@ -80,8 +86,7 @@ public class MessageEditor extends MediaActivity implements OnClickListener, OnC
         media.setImageResource(R.drawable.image_add);
         preview.setImageResource(R.drawable.image);
         preview.setVisibility(GONE);
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setEditorTheme(settings, root, background);
+        AppStyles.setEditorTheme(root, background);
 
         send.setOnClickListener(this);
         media.setOnClickListener(this);

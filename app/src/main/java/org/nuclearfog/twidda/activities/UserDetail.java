@@ -1,8 +1,9 @@
 package org.nuclearfog.twidda.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,12 +54,17 @@ public class UserDetail extends AppCompatActivity {
      */
     public static final int USERLIST_RETWEETS = 0x19F582E;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_fragment);
-        View root = findViewById(R.id.fragment_root);
+        ViewGroup root = findViewById(R.id.fragment_root);
         Toolbar toolbar = findViewById(R.id.fragment_toolbar);
 
         // get parameter
@@ -103,6 +109,6 @@ public class UserDetail extends AppCompatActivity {
 
         // style activity
         GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
     }
 }

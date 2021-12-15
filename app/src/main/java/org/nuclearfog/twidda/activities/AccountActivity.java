@@ -1,11 +1,13 @@
 package org.nuclearfog.twidda.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,10 +49,16 @@ public class AccountActivity extends AppCompatActivity {
 
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_fragment);
-        View root = findViewById(R.id.fragment_root);
+        ViewGroup root = findViewById(R.id.fragment_root);
         Toolbar tool = findViewById(R.id.fragment_toolbar);
         fragment = new AccountFragment();
 
@@ -62,7 +70,7 @@ public class AccountActivity extends AppCompatActivity {
         setSupportActionBar(tool);
 
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
     }
 
 

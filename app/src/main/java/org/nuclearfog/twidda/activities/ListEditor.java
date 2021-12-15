@@ -6,10 +6,12 @@ import static org.nuclearfog.twidda.activities.ListDetail.RET_LIST_DATA;
 import static org.nuclearfog.twidda.activities.UserLists.RET_LIST_CREATED;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -27,7 +29,6 @@ import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.model.TwitterList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
-import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
@@ -54,12 +55,17 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     @Nullable
     private TwitterList userList;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.popup_userlist);
-        View root = findViewById(R.id.list_popup_root);
+        ViewGroup root = findViewById(R.id.list_popup_root);
         ImageView background = findViewById(R.id.userlist_popup_background);
         Button updateButton = findViewById(R.id.userlist_create_list);
         TextView popupTitle = findViewById(R.id.popup_list_title);
@@ -71,8 +77,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         leaveDialog = new ConfirmDialog(this, DialogType.LIST_EDITOR_LEAVE, this);
         errorDialog = new ConfirmDialog(this, DialogType.LIST_EDITOR_ERROR, this);
 
-        GlobalSettings settings = GlobalSettings.getInstance(this);
-        AppStyles.setEditorTheme(settings, root, background);
+        AppStyles.setEditorTheme(root, background);
 
         Object data = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
         if (data instanceof TwitterList) {

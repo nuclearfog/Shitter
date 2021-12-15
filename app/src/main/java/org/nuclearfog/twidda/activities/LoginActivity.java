@@ -2,6 +2,7 @@ package org.nuclearfog.twidda.activities;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -50,7 +52,13 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     private GlobalSettings settings;
 
     private EditText pinInput;
-    private View root;
+    private ViewGroup root;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
@@ -75,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements OnClickListener 
     @Override
     protected void onStart() {
         super.onStart();
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
     }
 
 

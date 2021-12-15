@@ -28,6 +28,7 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -117,12 +119,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
     @Nullable
     private Tweet tweet;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_tweet);
-        View root = findViewById(R.id.tweet_layout);
+        ViewGroup root = findViewById(R.id.tweet_layout);
         toolbar = findViewById(R.id.tweet_toolbar);
         ansButton = findViewById(R.id.tweet_answer);
         rtwButton = findViewById(R.id.tweet_retweet);
@@ -173,17 +180,20 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         settings = GlobalSettings.getInstance(this);
         ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
         rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-        favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
         tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
         sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
         replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
         retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());
-
+        if (settings.likeEnabled()) {
+            favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like, 0, 0, 0);
+        } else {
+            favButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.favorite, 0, 0, 0);
+        }
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
         picasso = PicassoBuilder.get(this);
 
         deleteDialog = new ConfirmDialog(this, DialogType.TWEET_DELETE, this);
@@ -593,11 +603,17 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 break;
 
             case FAVORITE:
-                Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
+                if (settings.likeEnabled())
+                    Toast.makeText(this, R.string.info_tweet_liked, LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.info_tweet_favored, LENGTH_SHORT).show();
                 break;
 
             case UNFAVORITE:
-                Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
+                if (settings.likeEnabled())
+                    Toast.makeText(this, R.string.info_tweet_unliked, LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, R.string.info_tweet_unfavored, LENGTH_SHORT).show();
                 break;
 
             case DELETE:

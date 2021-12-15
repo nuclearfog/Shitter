@@ -5,10 +5,12 @@ import static org.nuclearfog.twidda.backend.UserExcludeLoader.Mode.BLOCK_USER;
 import static org.nuclearfog.twidda.backend.UserExcludeLoader.Mode.MUTE_USER;
 import static org.nuclearfog.twidda.backend.UserExcludeLoader.Mode.REFRESH;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,12 +45,17 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
     private Toolbar toolbar;
     private TabLayout tablayout;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInst) {
         super.onCreate(savedInst);
         setContentView(R.layout.page_user_exclude);
-        View root = findViewById(R.id.userexclude_root);
+        ViewGroup root = findViewById(R.id.userexclude_root);
         toolbar = findViewById(R.id.userexclude_toolbar);
         tablayout = findViewById(R.id.userexclude_tab);
         ViewPager pager = findViewById(R.id.userexclude_pager);
@@ -63,7 +70,7 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
         AppStyles.setTabIcons(tablayout, settings, R.array.user_exclude_icons);
     }
 
@@ -74,7 +81,7 @@ public class UserExclude extends AppCompatActivity implements OnTabSelectedListe
         MenuItem search = m.findItem(R.id.menu_exclude_user);
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setOnQueryTextListener(this);
-        AppStyles.setTheme(settings, searchView);
+        AppStyles.setTheme(searchView, Color.TRANSPARENT);
         AppStyles.setMenuIconColor(m, settings.getIconColor());
         AppStyles.setOverflowIcon(toolbar, settings.getIconColor());
         return super.onCreateOptionsMenu(m);

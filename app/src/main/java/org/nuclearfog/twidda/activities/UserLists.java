@@ -1,10 +1,12 @@
 package org.nuclearfog.twidda.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,12 +55,17 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
 
     private boolean isHome = false;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_list);
-        View root = findViewById(R.id.list_view);
+        ViewGroup root = findViewById(R.id.list_view);
         Toolbar toolbar = findViewById(R.id.list_toolbar);
         pager = findViewById(R.id.list_pager);
         tabLayout = findViewById(R.id.list_tab);
@@ -69,7 +76,7 @@ public class UserLists extends AppCompatActivity implements TabLayout.OnTabSelec
         tabLayout.setupWithViewPager(pager);
 
         settings = GlobalSettings.getInstance(this);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
         pager.setAdapter(adapter);
         pager.setOffscreenPageLimit(2);
         pager.setAdapter(adapter);

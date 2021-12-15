@@ -86,7 +86,7 @@
     <string name="proxy_port">Port</string>
     <string name="settings_connections">Verbindungseinsellungen</string>
     <string name="login_verifier">Login</string>
-    <string name="settings_button_popup">Popup</string>
+    <string name="settings_button_popup">Fenster</string>
     <string name="login_pin">PIN eingeben</string>
     <string name="settings_hint_proxy_ip">Proxy IP Adresse</string>
     <string name="edit_proxy_user">Nutzername</string>
@@ -199,7 +199,6 @@
     <string name="menu_select_account">Account auswählen</string>
     <string name="menu_add_account">Account hinzufügen</string>
     <string name="settings_rt_icon_color">Retweet</string>
-    <string name="settings_fv_icon_color">Favorit</string>
     <string name="settings_follow_req_color">Anfrage Icon</string>
     <string name="settings_follow_color">Follow Icon</string>
     <string name="settings_enable_toolbar_overlap">Kompakte Profilansicht</string>
@@ -218,4 +217,7 @@
     <string name="info_permission_location">Standortinformationen werden ausschließlich für Tweets verwendet.</string>
     <string name="error_result_cancelled">Fehler, Anfrage wurde abgebrochen!</string>
     <string name="settings_api_info">• Eine Änderung der API Schlüssel erfordert erneutes einloggen</string>
+    <string name="settings_color_like">Like</string>
+    <string name="settings_color_fav">Favorit</string>
+    <string name="settings_enable_like">\"Like\" anstatt \"Favorit\" verwenden</string>
 </resources>

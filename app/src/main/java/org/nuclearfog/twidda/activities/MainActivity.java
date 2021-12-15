@@ -1,20 +1,19 @@
 package org.nuclearfog.twidda.activities;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.SearchView.OnQueryTextListener;
 import androidx.appcompat.widget.Toolbar;
@@ -70,14 +69,13 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     private Dialog loadingCircle;
     private TabLayout tabLayout;
     private ViewPager pager;
-    private View root;
+    private ViewGroup root;
 
-    static {
-        // Enable vector drawable support for API 16 to 21
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        }
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
     }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         pager.setOffscreenPageLimit(3);
         adapter = new FragmentAdapter(getSupportFragmentManager());
         pager.setAdapter(adapter);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
 
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -123,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
     protected void onActivityResult(int reqCode, int returnCode, @Nullable Intent intent) {
         switch (reqCode) {
             case REQUEST_APP_LOGIN:
-                AppStyles.setTheme(settings, root);
+                AppStyles.setTheme(root, settings.getBackgroundColor());
                 if (returnCode == RESULT_CANCELED) {
                     finish();
                 } else if (returnCode == RET_ACCOUNT_CHANGE) {
@@ -135,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
                 break;
 
             case REQUEST_APP_SETTINGS:
-                AppStyles.setTheme(settings, root);
+                AppStyles.setTheme(root, settings.getBackgroundColor());
                 AppStyles.setTabIcons(tabLayout, settings, R.array.home_tab_icons);
                 if (returnCode == RETURN_APP_LOGOUT) {
                     adapter.clear();
@@ -220,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements OnTabSelectedList
         // theme expanded search view
         else if (item.getItemId() == R.id.action_search) {
             SearchView searchView = (SearchView) item.getActionView();
-            AppStyles.setTheme(settings, searchView, Color.TRANSPARENT);
+            AppStyles.setTheme(searchView, Color.TRANSPARENT);
         }
         // open account manager
         else if (item.getItemId() == R.id.action_account) {

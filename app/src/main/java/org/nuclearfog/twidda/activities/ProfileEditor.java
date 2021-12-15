@@ -10,6 +10,7 @@ import static org.nuclearfog.twidda.database.GlobalSettings.BANNER_IMG_MID_RES;
 import static org.nuclearfog.twidda.database.GlobalSettings.PROFILE_IMG_HIGH_RES;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -79,6 +80,12 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
     private String profileLink, bannerLink;
 
     @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_editprofile);
@@ -113,7 +120,7 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         changeBannerBtn.setImageResource(R.drawable.add);
         changeImageBtn.setImageResource(R.drawable.add);
         profile_banner.setDrawingCacheEnabled(true);
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
         picasso = PicassoBuilder.get(this);
 
         Object data = getIntent().getSerializableExtra(KEY_USER_DATA);

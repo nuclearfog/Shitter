@@ -34,6 +34,7 @@ import static org.nuclearfog.twidda.fragments.UserFragment.RETURN_USER_UPDATED;
 
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -43,6 +44,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -151,12 +153,17 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     @Nullable
     private User user;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(AppStyles.setFontScale(newBase));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.page_profile);
-        View root = findViewById(R.id.user_view);
+        ViewGroup root = findViewById(R.id.user_view);
         ConstraintLayout profileView = findViewById(R.id.profile_content);
         toolbar = profileView.findViewById(R.id.profile_toolbar);
         user_bio = profileView.findViewById(R.id.bio);
@@ -193,7 +200,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         user_bio.setMovementMethod(LinkAndScrollMovement.getInstance());
         user_bio.setLinkTextColor(settings.getHighlightColor());
-        AppStyles.setTheme(settings, root);
+        AppStyles.setTheme(root, settings.getBackgroundColor());
         user_website.setTextColor(settings.getHighlightColor());
         tabLayout.setBackgroundColor(Color.TRANSPARENT);
 
@@ -217,8 +224,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             long userId = i.getLongExtra(KEY_PROFILE_ID, 0);
             adapter.setupProfilePage(userId);
         }
-        tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
-
+        if (settings.likeEnabled())
+            tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons_like);
+        else
+            tabTweetCount = AppStyles.setTabIconsWithText(tabLayout, settings, R.array.profile_tab_icons);
         tabLayout.addOnTabSelectedListener(this);
         following.setOnClickListener(this);
         follower.setOnClickListener(this);

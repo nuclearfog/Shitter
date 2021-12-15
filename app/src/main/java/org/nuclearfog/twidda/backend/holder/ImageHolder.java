@@ -14,12 +14,12 @@ public class ImageHolder {
     /**
      * maximum height of the smallest preview in pixels
      */
-    private static final float previewHeight = 320.0f;
+    private static final float PREVIEW_HEIGHT = 320.0f;
 
     /**
      * maximum height of the image preview in pixels
      */
-    private static final float reducedHeight = 1200.0f;
+    private static final float REDUCED_HEIGHT = 1200.0f;
 
     /**
      * preview image bitmap
@@ -42,18 +42,18 @@ public class ImageHolder {
     public ImageHolder(@NonNull Bitmap fullImage) {
         this.fullImage = fullImage;
 
-        float reducedRatio = fullImage.getHeight() / reducedHeight;
-        float previewRatio = fullImage.getHeight() / previewHeight;
+        float reducedRatio = fullImage.getHeight() / REDUCED_HEIGHT;
+        float previewRatio = fullImage.getHeight() / PREVIEW_HEIGHT;
 
         if (reducedRatio > 1.0f) {
-            int height = (int) reducedHeight;
+            int height = (int) REDUCED_HEIGHT;
             int width = (int) (fullImage.getWidth() / reducedRatio);
             reducedImage = Bitmap.createScaledBitmap(fullImage, width, height, false);
         } else {
             reducedImage = fullImage;
         }
         if (previewRatio > 1.0f) {
-            int height = (int) previewHeight;
+            int height = (int) PREVIEW_HEIGHT;
             int width = (int) (fullImage.getWidth() / previewRatio);
             preview = Bitmap.createScaledBitmap(fullImage, width, height, false);
         } else {
