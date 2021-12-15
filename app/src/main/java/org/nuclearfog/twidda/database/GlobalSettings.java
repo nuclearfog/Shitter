@@ -678,7 +678,8 @@ public class GlobalSettings {
 
     /**
      * check if 'like' is used instead of 'favorite'
-     * @return
+     *
+     * @return true if 'like' should be used
      */
     public boolean likeEnabled() {
         return enableLike;

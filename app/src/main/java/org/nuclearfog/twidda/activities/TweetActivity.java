@@ -180,9 +180,9 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         settings = GlobalSettings.getInstance(this);
         ansButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.answer, 0, 0, 0);
         rtwButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
-        tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
+        tweetLocGPS.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
         sensitive_media.setCompoundDrawablesWithIntrinsicBounds(R.drawable.sensitive, 0, 0, 0);
-        replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
+        replyName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
         retweeter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.retweet, 0, 0, 0);
         tweetText.setMovementMethod(LinkAndScrollMovement.getInstance());
         tweetText.setLinkTextColor(settings.getHighlightColor());

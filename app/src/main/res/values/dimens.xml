@@ -204,7 +204,7 @@
     <dimen name="userlist_title_textsize">20sp</dimen>
 
     <!--dimens of tabitem.xml-->
-    <dimen name="tabitem_icon_size">22dp</dimen>
+    <dimen name="tabitem_icon_size">22sp</dimen>
     <dimen name="tabitem_textsize">11sp</dimen>
 
     <!--dimens of controlpanel-->

@@ -191,10 +191,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         following.setCompoundDrawablesWithIntrinsicBounds(R.drawable.following, 0, 0, 0);
         follower.setCompoundDrawablesWithIntrinsicBounds(R.drawable.follower, 0, 0, 0);
-        user_createdAt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.calendar, 0, 0, 0);
-        user_location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.userlocation, 0, 0, 0);
+        user_createdAt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.date, 0, 0, 0);
+        user_location.setCompoundDrawablesWithIntrinsicBounds(R.drawable.location, 0, 0, 0);
         user_website.setCompoundDrawablesWithIntrinsicBounds(R.drawable.link, 0, 0, 0);
-        follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.followback, 0, 0, 0);
+        follow_back.setCompoundDrawablesWithIntrinsicBounds(R.drawable.back, 0, 0, 0);
         toolbar.setBackgroundColor(settings.getBackgroundColor() & TOOLBAR_TRANSPARENCY);
         username.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
         follow_back.setBackgroundColor(settings.getBackgroundColor() & TEXT_TRANSPARENCY);
