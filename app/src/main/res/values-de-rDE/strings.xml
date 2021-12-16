@@ -103,7 +103,6 @@
     <string name="edit_description_hint">Profilebeschreibung eingeben</string>
     <string name="edit_hint_link">Link eingeben</string>
     <string name="edit_location_hint">Standortnamen eingeben</string>
-    <string name="settings_font_style">Schriftart</string>
     <string name="page_profile_editor">Profil bearbeiten</string>
     <string name="error_no_card_app">Keine Karten App gefunden!</string>
     <string name="error_no_media_app">Keine Galerie App gefunden!</string>

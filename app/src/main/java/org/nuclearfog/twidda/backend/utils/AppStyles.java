@@ -104,7 +104,6 @@ public final class AppStyles {
     public static void setFontStyle(ViewGroup root) {
         AppStyles instance = new AppStyles(root.getContext());
         instance.setViewFont(root);
-        root.requestLayout();
     }
 
     /**

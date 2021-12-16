@@ -73,7 +73,6 @@
     <string name="edit_location_hint">enter location</string>
     <string name="edit_hint_link">enter website link</string>
     <string name="edit_description_hint">enter profile description</string>
-    <string name="settings_font_style">Font style</string>
     <string name="page_profile_editor">edit profile</string>
     <string name="delete_list">delete userlist</string>
     <string name="confirm_delete_list">delete userlist?</string>

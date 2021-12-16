@@ -77,6 +77,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      * total count of all colors defined
      */
     private static final int COLOR_COUNT = 10;
+    // app colors
     private static final int COLOR_BACKGROUND = 0;
     private static final int COLOR_TEXT = 1;
     private static final int COLOR_WINDOW = 2;
@@ -87,7 +88,6 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private static final int COLOR_FAVORITE = 7;
     private static final int COLOR_FOLLOW_REQUEST = 8;
     private static final int COLOR_FOLLOWING = 9;
-
 
     private GlobalSettings settings;
     private LocationLoader locationAsync;
@@ -103,7 +103,7 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
     private ViewGroup root;
     private Button[] colorButtons = new Button[COLOR_COUNT];
 
-    @IntRange(from=0,to=COLOR_COUNT)
+    @IntRange(from=0,to=COLOR_COUNT - 1)
     private int mode = 0;
     private int color = 0;
 

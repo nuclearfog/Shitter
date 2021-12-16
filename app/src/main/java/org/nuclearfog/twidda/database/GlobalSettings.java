@@ -13,7 +13,6 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
-import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 
 import org.nuclearfog.twidda.backend.model.TrendLocation;
@@ -115,7 +114,6 @@ public class GlobalSettings {
     // Default App settings
     private static final int DEFAULT_FONT_INDEX = 0;
     private static final int DEFAULT_SCALE_INDEX = 2;
-    @IntRange(from = 0, to = 100)
     private static final int DEFAULT_LIST_SIZE = 20;
     private static final int DEFAULT_BACKGROUND_COLOR = 0xff0f114a;
     private static final int DEFAULT_HIGHLIGHT_COLOR = 0xffff00ff;

@@ -156,7 +156,7 @@ public class LinkLoader extends AsyncTask<Uri, Integer, LinkLoader.DataHolder> {
     /**
      * Holder class for information to start an activity
      */
-    class DataHolder {
+    static class DataHolder {
         @Nullable
         final Bundle data;
         final Class<? extends Activity> activity;

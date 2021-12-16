@@ -1,7 +1,5 @@
 package org.nuclearfog.twidda.backend.model;
 
-import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 

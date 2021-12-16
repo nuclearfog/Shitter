@@ -885,7 +885,7 @@ public class TwitterEngine {
                 dmList = twitter.getDirectMessages(load);
             }
             MessageList result = new MessageList(cursor, dmList.getNextCursor());
-            HashMap<Long, User> userMap = new HashMap<Long, User>();
+            HashMap<Long, User> userMap = new HashMap<>();
 
             for (DirectMessage dm : dmList) {
                 try {

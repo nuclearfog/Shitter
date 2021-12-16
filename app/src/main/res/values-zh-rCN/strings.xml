@@ -59,7 +59,6 @@
     <string name="edit_location_hint">输入位置</string>
     <string name="edit_hint_link">输入网站链接</string>
     <string name="edit_description_hint">输入简介</string>
-    <string name="settings_font_style">字体设置</string>
     <string name="page_profile_editor">编辑个人资料</string>
     <string name="delete_list">删除列表</string>
     <string name="confirm_delete_list">删除列表？</string>
