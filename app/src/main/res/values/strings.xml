@@ -248,5 +248,7 @@
     <string name="dialog_link_image_preview">Link preview image</string>
     <string name="dialog_link_close">close link preview</string>
     <string name="info_restart_app_on_change">restarting required to apply changes</string>
+    <string name="app_info_icons">svg icons from:</string>
+    <string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
 
 </resources>

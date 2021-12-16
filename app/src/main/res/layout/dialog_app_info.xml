@@ -39,6 +39,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/infopopup_text_padding"
+        android:text="@string/app_info_icons" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
+        android:autoLink="web"
+        android:linksClickable="true"
+        android:text="@string/app_info_icons_links" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/infopopup_text_padding"
         android:text="@string/app_info_twitter_rules" />
 
     <TextView

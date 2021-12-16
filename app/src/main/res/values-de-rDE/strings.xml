@@ -221,4 +221,7 @@
     <string name="settings_color_fav">Favorit</string>
     <string name="settings_enable_like">\"Like\" anstatt \"Favorit\" verwenden</string>
     <string name="info_restart_app_on_change">Neustart erforderlich um Änderungen anzuwenden</string>
+    <string name="info_tweet_liked">Tweet zu den Likes hinzugefügt</string>
+    <string name="info_tweet_unliked">Tweet aus den Likes entfernt</string>
+    <string name="app_info_icons">svg Icons von:</string>
 </resources>
