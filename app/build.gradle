@@ -34,6 +34,14 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude '/META-INF/CHANGES'
+        exclude '/META-INF/DEPENDENCIES'
+        exclude '/META-INF/README.md'
+        exclude '/META-INF/androidx.*'
+        exclude '/META-INF/com.*'
+    }
+
     paranoid {
         enabled true
     }
