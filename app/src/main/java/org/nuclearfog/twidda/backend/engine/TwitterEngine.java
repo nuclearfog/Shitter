@@ -42,6 +42,7 @@ import twitter4j.DirectMessage;
 import twitter4j.DirectMessageList;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
+import twitter4j.LikesExKt;
 import twitter4j.Location;
 import twitter4j.PagableResponseList;
 import twitter4j.Paging;
@@ -53,6 +54,8 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.UploadedMedia;
+import twitter4j.User2;
+import twitter4j.UsersResponse;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
@@ -847,7 +850,7 @@ public class TwitterEngine {
      * Get User who retweeted a Tweet
      *
      * @param tweetID Tweet ID
-     * @return List of users or empty list if no match
+     * @return List of users
      * @throws EngineException if Access is unavailable
      */
     public UserList getRetweeter(long tweetID, long cursor) throws EngineException {
@@ -867,6 +870,24 @@ public class TwitterEngine {
         }
     }
 
+    /**
+     * get user who liked a tweet
+     *
+     * @param tweetId Tweet ID
+     * @return list of users liking a tweet
+     * @throws EngineException if Access is unavailable
+     */
+    public UserList getFavoriter(long tweetId, long cursor) throws EngineException {
+        try {
+            UsersResponse response = LikesExKt.getLikingUsers(twitter, tweetId, null, null, null);
+            List<User2> users = response.getUsers();
+            UserList result = new UserList(cursor, 0);
+            result.addAll(convertUser2List(users));
+            return result;
+        } catch (TwitterException err) {
+            throw new EngineException(err);
+        }
+    }
 
     /**
      * get list of Direct Messages
@@ -1278,7 +1299,7 @@ public class TwitterEngine {
     }
 
     /**
-     * convert {@link twitter4j.User} to User List and filter excluded users
+     * convert {@link twitter4j.User} list to User List and filter excluded users
      *
      * @param users Twitter4J user List
      * @return User
@@ -1290,6 +1311,24 @@ public class TwitterEngine {
         for (twitter4j.User user : users) {
             if (!exclude.contains(user.getId())) {
                 result.add(new User(user, id));
+            }
+        }
+        return result;
+    }
+
+    /**
+     * convert {@link User2} list to user list
+     *
+     * @param users list of user from version 2
+     * @return user list
+     */
+    private List<User> convertUser2List(List<User2> users) throws TwitterException {
+        long id = twitter.getId();
+        ArrayList<User> result = new ArrayList<>();
+        result.ensureCapacity(users.size());
+        for (User2 user : users) {
+            if (user.getPublicMetrics() != null) {
+                result.add(new User(user, user.getPublicMetrics(), id));
             }
         }
         return result;

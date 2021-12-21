@@ -359,7 +359,7 @@ public class Tweet implements Serializable {
     private void setTweet(Status status, long twitterId) {
         tweetID = status.getId();
         time = status.getCreatedAt().getTime();
-        user = new User(status.getUser(), status.getUser().getId() == twitterId);
+        user = new User(status.getUser(), twitterId);
         replyID = status.getInReplyToStatusId();
         replyUserId = status.getInReplyToUserId();
         sensitiveMedia = status.isPossiblySensitive();

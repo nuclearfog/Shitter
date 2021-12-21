@@ -6,7 +6,7 @@ plugins {
 
 android {
     compileSdkVersion 31
-    buildToolsVersion '31.0.0'
+    buildToolsVersion '32.0.0'
 
     defaultConfig {
         applicationId 'org.nuclearfog.twidda'
@@ -35,6 +35,7 @@ android {
     }
 
     packagingOptions {
+        exclude '**/twitter4j.properties.template'
         exclude '/META-INF/CHANGES'
         exclude '/META-INF/DEPENDENCIES'
         exclude '/META-INF/README.md'
@@ -64,6 +65,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
+    implementation 'com.github.takke:twitter4j-v2:1.0.3'
     //noinspection GradleDependency
     implementation 'com.squareup.picasso:picasso:2.8'
     implementation 'com.larswerkman:LicenseView:1.1'

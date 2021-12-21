@@ -754,12 +754,11 @@ public class AppDatabase {
         int tCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.TWEETS));
         int fCount = cursor.getInt(cursor.getColumnIndexOrThrow(UserTable.FAVORS));
         int userRegister = cursor.getInt(cursor.getColumnIndexOrThrow(UserRegisterTable.REGISTER));
-        boolean isCurrentUser = homeId == userId;
         boolean isVerified = (userRegister & VER_MASK) != 0;
         boolean isLocked = (userRegister & LCK_MASK) != 0;
         boolean isReq = (userRegister & FRQ_MASK) != 0;
         boolean defaultImg = (userRegister & DEF_IMG) != 0;
-        return new User(userId, username, screenName, profileImg, bio, location, isCurrentUser, isVerified,
+        return new User(userId, username, screenName, profileImg, bio, location, homeId, isVerified,
                 isLocked, isReq, defaultImg, link, banner, createdAt, following, follower, tCount, fCount);
     }
 

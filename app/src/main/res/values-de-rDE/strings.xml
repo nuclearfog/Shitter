@@ -223,4 +223,7 @@
     <string name="info_tweet_liked">Tweet zu den Likes hinzugefügt</string>
     <string name="info_tweet_unliked">Tweet aus den Likes entfernt</string>
     <string name="app_info_icons">svg Icons von:</string>
+    <string name="toolbar_tweet_favoriter">Tweet favorisiert von</string>
+    <string name="toolbar_tweet_liker">Tweet gelikt von</string>
+    <string name="error_forbidden_api_access">Diese API unterstützt nicht diese Aktion!</string>
 </resources>

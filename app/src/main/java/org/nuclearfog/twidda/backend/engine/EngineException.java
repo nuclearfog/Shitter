@@ -12,36 +12,6 @@ import twitter4j.TwitterException;
  */
 public class EngineException extends Exception {
 
-    public enum ErrorType {
-        RATE_LIMIT_EX,
-        USER_NOT_FOUND,
-        APP_SUSPENDED,
-        ACCESS_TOKEN_DEAD,
-        TWEET_CANT_REPLY,
-        RESOURCE_NOT_FOUND,
-        CANT_SEND_DM,
-        NOT_AUTHORIZED,
-        TWEET_TOO_LONG,
-        DUPLICATE_TWEET,
-        NO_DM_TO_USER,
-        DM_TOO_LONG,
-        TOKEN_EXPIRED,
-        NO_MEDIA_FOUND,
-        NO_LINK_DEFINED,
-        NO_CONNECTION,
-        IMAGE_NOT_LOADED,
-        REQUEST_CANCELLED,
-        ACCOUNT_UPDATE_FAILED,
-        ERROR_API_ACCESS_DENIED,
-        ERROR_NOT_DEFINED
-    }
-
-    enum InternalErrorType {
-        FILENOTFOUND,
-        TOKENNOTSET,
-        BITMAP_FAILURE
-    }
-
     private final ErrorType errorType;
     private String msg;
     private int retryAfter;
@@ -129,6 +99,8 @@ public class EngineException extends Exception {
                 default:
                     if (error.getStatusCode() == 401) {
                         errorType = ErrorType.NOT_AUTHORIZED;
+                    } else if (error.getStatusCode() == 403) {
+                        errorType = ErrorType.REQUEST_FORBIDDEN;
                     } else if (error.getStatusCode() == 408) {
                         errorType = ErrorType.REQUEST_CANCELLED;
                     } else if (error.isCausedByNetworkIssue()) {
@@ -146,7 +118,7 @@ public class EngineException extends Exception {
     }
 
     /**
-     * Constructor for non Twitter4J errors
+     * Constructor for app errors
      *
      * @param errorCode custom error code
      */
@@ -169,6 +141,7 @@ public class EngineException extends Exception {
                 break;
         }
     }
+
 
     @Override
     public String getMessage() {
@@ -195,7 +168,6 @@ public class EngineException extends Exception {
         return errorType == RESOURCE_NOT_FOUND || errorType == USER_NOT_FOUND;
     }
 
-
     /**
      * return time to wait after unlock access in seconds
      *
@@ -203,5 +175,42 @@ public class EngineException extends Exception {
      */
     public int getTimeToWait() {
         return retryAfter;
+    }
+
+    /**
+     * enum of error types used by this class
+     */
+    public enum ErrorType {
+        RATE_LIMIT_EX,
+        USER_NOT_FOUND,
+        APP_SUSPENDED,
+        ACCESS_TOKEN_DEAD,
+        TWEET_CANT_REPLY,
+        RESOURCE_NOT_FOUND,
+        CANT_SEND_DM,
+        NOT_AUTHORIZED,
+        TWEET_TOO_LONG,
+        DUPLICATE_TWEET,
+        NO_DM_TO_USER,
+        DM_TOO_LONG,
+        TOKEN_EXPIRED,
+        NO_MEDIA_FOUND,
+        NO_LINK_DEFINED,
+        NO_CONNECTION,
+        IMAGE_NOT_LOADED,
+        REQUEST_CANCELLED,
+        REQUEST_FORBIDDEN,
+        ACCOUNT_UPDATE_FAILED,
+        ERROR_API_ACCESS_DENIED,
+        ERROR_NOT_DEFINED
+    }
+
+    /**
+     * error types only accessible by {@link TwitterEngine}
+     */
+    enum InternalErrorType {
+        FILENOTFOUND,
+        TOKENNOTSET,
+        BITMAP_FAILURE
     }
 }

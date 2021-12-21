@@ -15,7 +15,7 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
- * Enable Experimental TLS 1.2 support for devices lower than android 21
+ * Enable Experimental TLS 1.2 support for pre-Lollipop devices
  *
  * @author fkrauthan
  * @see <a href="https://gist.githubusercontent.com/fkrauthan/ac8624466a4dee4fd02f/raw/309efc30e31c96a932ab9d19bf4d73b286b00573/TLSSocketFactory.java"/>
@@ -62,7 +62,7 @@ public class TLSSocketFactory extends SSLSocketFactory {
      *
      */
     TLSSocketFactory() throws KeyManagementException, NoSuchAlgorithmException {
-        SSLContext context = SSLContext.getInstance("TLS");
+        SSLContext context = SSLContext.getInstance(TLS_1_2);
         context.init(null, null, null);
         internalSSLSocketFactory = context.getSocketFactory();
     }

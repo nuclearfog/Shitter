@@ -80,7 +80,6 @@ public class UserFragment extends ListFragment implements UserClickListener,
 
     /**
      * configuration to get a list of users favoring a tweet
-     * todo implement this function if there is an API for it
      */
     public static final int USER_FRAG_FAVORIT = 0xA7FB2BB4;
 

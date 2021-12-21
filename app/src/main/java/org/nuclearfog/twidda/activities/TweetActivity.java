@@ -14,6 +14,7 @@ import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_REPLYI
 import static org.nuclearfog.twidda.activities.TweetEditor.KEY_TWEETPOPUP_TEXT;
 import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_ID;
 import static org.nuclearfog.twidda.activities.UserDetail.KEY_USERDETAIL_MODE;
+import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_FAVORIT;
 import static org.nuclearfog.twidda.activities.UserDetail.USERLIST_RETWEETS;
 import static org.nuclearfog.twidda.fragments.TweetFragment.INTENT_TWEET_REMOVED_ID;
 import static org.nuclearfog.twidda.fragments.TweetFragment.INTENT_TWEET_UPDATE_DATA;
@@ -203,6 +204,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         replyName.setOnClickListener(this);
         ansButton.setOnClickListener(this);
         rtwButton.setOnClickListener(this);
+        favButton.setOnClickListener(this);
         rtwButton.setOnLongClickListener(this);
         favButton.setOnLongClickListener(this);
         profile_img.setOnClickListener(this);
@@ -332,6 +334,13 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 Intent userList = new Intent(this, UserDetail.class);
                 userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
                 userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_RETWEETS);
+                startActivity(userList);
+            }
+            // show user favoriting this tweet
+            else if (v.getId() == R.id.tweet_favorite) {
+                Intent userList = new Intent(this, UserDetail.class);
+                userList.putExtra(KEY_USERDETAIL_ID, clickedTweet.getId());
+                userList.putExtra(KEY_USERDETAIL_MODE, USERLIST_FAVORIT);
                 startActivity(userList);
             }
             // open profile of the tweet author

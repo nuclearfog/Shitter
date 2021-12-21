@@ -99,8 +99,7 @@ public class UserLoader extends AsyncTask<Long, Void, UserList> {
                     return mTwitter.getRetweeter(id, cursor);
 
                 case FAVORIT:
-                    // TODO not implemented in Twitter4J
-                    break;
+                    return mTwitter.getFavoriter(id, cursor);
 
                 case SEARCH:
                     return mTwitter.searchUsers(search, cursor);

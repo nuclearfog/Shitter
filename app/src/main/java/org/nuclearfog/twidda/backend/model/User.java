@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 import twitter4j.URLEntity;
+import twitter4j.User2;
 
 /**
  * Container class for a twitter user
@@ -38,19 +39,12 @@ public class User implements Serializable {
     private String profileImg = "";
     private String bannerImg = "";
 
-    /**
-     * @param user      Twitter user
-     * @param twitterId ID of the current user
-     */
-    public User(twitter4j.User user, long twitterId) {
-        this(user, user.getId() == twitterId);
-    }
 
     /**
-     * @param user          Twitter user
-     * @param isCurrentUser true if user is the authenticated user
+     * @param user        Twitter user
+     * @param twitterId   ID of the current user
      */
-    public User(twitter4j.User user, boolean isCurrentUser) {
+    public User(twitter4j.User user, long twitterId) {
         String bannerLink = user.getProfileBannerURL();
         String bio = user.getDescription();
 
@@ -85,7 +79,16 @@ public class User implements Serializable {
         favorCount = user.getFavouritesCount();
         isFollowReqSent = user.isFollowRequestSent();
         hasDefaultImage = user.isDefaultProfileImage();
-        this.isCurrentUser = isCurrentUser;
+        isCurrentUser = twitterId == userID;
+    }
+
+
+    public User(User2 user, User2.PublicMetrics metrics, long id) {
+        this(user.getId(), user.getUsername(), user.getName(), user.getProfileImageUrl(),
+                user.getDescription(), user.getLocation(), id, user.getVerified(),
+                user.getProtected(), false, true, "", "", user.getCreatedAt().getTime(),
+                metrics.getFollowingCount(), metrics.getFollowersCount(),
+                metrics.getTweetCount(), metrics.getListedCount());
     }
 
     /**
@@ -95,7 +98,7 @@ public class User implements Serializable {
      * @param profileImg      profile image link
      * @param bio             bio of the user
      * @param location        location name
-     * @param isCurrentUser   true if this user is the authenticated user
+     * @param currentId       current ID of the user
      * @param isVerified      true if user is verified
      * @param isLocked        true if users profile is locked
      * @param isFollowReqSent true if authenticated user has sent a follow request
@@ -108,7 +111,7 @@ public class User implements Serializable {
      * @param tweetCount      number of tweets of the user
      * @param favorCount      number of tweets favored by the user
      */
-    public User(long userID, String username, String screenName, String profileImg, String bio, String location, boolean isCurrentUser,
+    public User(long userID, String username, String screenName, String profileImg, String bio, String location, long currentId,
                 boolean isVerified, boolean isLocked, boolean isFollowReqSent, boolean hasDefaultImage, String link,
                 String bannerImg, long created, int following, int follower, int tweetCount, int favorCount) {
 
@@ -127,7 +130,6 @@ public class User implements Serializable {
         if (bannerImg != null)
             this.bannerImg = bannerImg;
         this.userID = userID;
-        this.isCurrentUser = isCurrentUser;
         this.isVerified = isVerified;
         this.isLocked = isLocked;
         this.created = created;
@@ -137,6 +139,7 @@ public class User implements Serializable {
         this.favorCount = favorCount;
         this.isFollowReqSent = isFollowReqSent;
         this.hasDefaultImage = hasDefaultImage;
+        isCurrentUser = currentId == userID;
     }
 
     /**

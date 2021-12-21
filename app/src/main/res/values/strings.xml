@@ -124,6 +124,8 @@
     <string name="confirm_remove_account">remove account from list?</string>
     <string name="account_user_id_prefix" translatable="false">User ID:</string>
     <string name="account_user_unnamed">\'unnamed\'</string>
+    <string name="toolbar_tweet_favoriter">User favoriting this tweet</string>
+    <string name="toolbar_tweet_liker">User liking this tweet</string>
 
     <!-- toast messages to inform user -->
     <string name="info_user_removed">User removed from list</string>
@@ -163,6 +165,7 @@
     <string name="info_permission_read">Read permission needed to access images and videos.</string>
     <string name="info_permission_location">Location permission only needed to add location information to tweets.</string>
     <string name="info_permission_write">Write permission used to store images.</string>
+    <string name="info_restart_app_on_change">restarting required to apply changes</string>
     <string name="info_error">Error</string>
 
     <!-- toast messages for error information -->
@@ -205,6 +208,7 @@
     <string name="error_result_cancelled">Error, result cancelled!</string>
     <string name="error_twitter_search">Error, search query is too long or contains illegal characters!</string>
     <string name="error_not_defined">Not specified error!</string>
+    <string name="error_forbidden_api_access">API does not support this operation!</string>
 
     <!-- menu icon strings -->
     <string name="menu_tweet">write Tweet</string>
@@ -246,7 +250,6 @@
     <string name="dialog_button_ok">OK</string>
     <string name="dialog_link_image_preview">Link preview image</string>
     <string name="dialog_link_close">close link preview</string>
-    <string name="info_restart_app_on_change">restarting required to apply changes</string>
     <string name="app_info_icons">svg icons from:</string>
     <string name="app_info_icons_links" translatable="false">www.svgrepo.com  www.entypo.com</string>
 

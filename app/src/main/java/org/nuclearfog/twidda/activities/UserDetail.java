@@ -15,11 +15,7 @@ import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragments.UserFragment;
 
-import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_ID;
-import static org.nuclearfog.twidda.fragments.UserFragment.KEY_FRAG_USER_MODE;
-import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_FOLLOWS;
-import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_FRIENDS;
-import static org.nuclearfog.twidda.fragments.UserFragment.USER_FRAG_RETWEET;
+import static org.nuclearfog.twidda.fragments.UserFragment.*;
 
 /**
  * Activity to show a list of twitter users
@@ -54,6 +50,12 @@ public class UserDetail extends AppCompatActivity {
      */
     public static final int USERLIST_RETWEETS = 0x19F582E;
 
+    /**
+     * user favoriting/liking a tweet, requires tweet ID
+     */
+    public static final int USERLIST_FAVORIT = 0x9bcc3f99;
+
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(AppStyles.setFontScale(newBase));
@@ -72,6 +74,7 @@ public class UserDetail extends AppCompatActivity {
         int mode = data.getIntExtra(KEY_USERDETAIL_MODE, 0);
         long id = data.getLongExtra(KEY_USERDETAIL_ID, -1);
 
+        GlobalSettings settings = GlobalSettings.getInstance(this);
         Bundle param = new Bundle();
 
         switch (mode) {
@@ -98,17 +101,23 @@ public class UserDetail extends AppCompatActivity {
                 // set toolbar title
                 toolbar.setTitle(R.string.toolbar_userlist_retweet);
                 break;
+
+            case USERLIST_FAVORIT:
+                // set fragment parameter
+                param.putLong(KEY_FRAG_USER_ID, id);
+                param.putInt(KEY_FRAG_USER_MODE, USER_FRAG_FAVORIT);
+                int title = settings.likeEnabled() ? R.string.toolbar_tweet_liker : R.string.toolbar_tweet_favoriter;
+                // set toolbar title
+                toolbar.setTitle(title);
+                break;
         }
         // insert fragment into view
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container, UserFragment.class, param, "");
         fragmentTransaction.commit();
-
         // set toolbar
         setSupportActionBar(toolbar);
-
         // style activity
-        GlobalSettings settings = GlobalSettings.getInstance(this);
         AppStyles.setTheme(root, settings.getBackgroundColor());
     }
 }

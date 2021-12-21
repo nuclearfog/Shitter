@@ -103,6 +103,9 @@ public final class ErrorHandler {
                 case REQUEST_CANCELLED:
                     return context.getString(R.string.error_result_cancelled);
 
+                case REQUEST_FORBIDDEN:
+                    return context.getString(R.string.error_forbidden_api_access);
+
                 case APP_SUSPENDED:
                 case ERROR_API_ACCESS_DENIED:
                     GlobalSettings settings = GlobalSettings.getInstance(context);

@@ -1,18 +1,5 @@
 package org.nuclearfog.twidda.activities;
 
-import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
-import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
-import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
-import static android.os.AsyncTask.Status.RUNNING;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
-import static android.view.View.GONE;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static android.widget.Toast.LENGTH_SHORT;
-import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
-
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +12,7 @@ import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnInfoListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +36,7 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.ImageAdapter;
 import org.nuclearfog.twidda.adapter.ImageAdapter.OnImageClickListener;
 import org.nuclearfog.twidda.backend.ImageLoader;
+import org.nuclearfog.twidda.backend.SeekbarUpdater;
 import org.nuclearfog.twidda.backend.engine.EngineException;
 import org.nuclearfog.twidda.backend.holder.ImageHolder;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
@@ -56,10 +45,18 @@ import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.zoomview.ZoomView;
 
-import java.lang.ref.WeakReference;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import static android.media.MediaPlayer.MEDIA_ERROR_UNKNOWN;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_END;
+import static android.media.MediaPlayer.MEDIA_INFO_BUFFERING_START;
+import static android.media.MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START;
+import static android.os.AsyncTask.Status.RUNNING;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static android.widget.Toast.LENGTH_SHORT;
+import static androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL;
 
 /**
  * Media viewer activity for images and videos
@@ -115,11 +112,9 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
         IDLE
     }
 
-    private WeakReference<MediaViewer> updateEvent = new WeakReference<>(this);
-    @Nullable
-    private ScheduledExecutorService progressUpdate;
     @Nullable
     private ImageLoader imageAsync;
+    private SeekbarUpdater seekUpdate;
 
     private TextView duration, position;
     private ProgressBar loadingCircle;
@@ -190,23 +185,15 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
 
                 case MEDIAVIEWER_VIDEO:
                     controlPanel.setVisibility(VISIBLE);
-                    if (!mediaLinks[0].startsWith("http"))
+                    if (mediaLinks[0].startsWith("/"))
                         share.setVisibility(GONE); // local image
-                    final Runnable seekUpdate = new Runnable() {
-                        public void run() {
-                            if (updateEvent.get() != null) {
-                                updateEvent.get().updateSeekBar();
-                            }
-                        }
-                    };
-                    progressUpdate = Executors.newScheduledThreadPool(1);
-                    progressUpdate.scheduleWithFixedDelay(new Runnable() {
-                        public void run() {
-                            if (updateEvent.get() != null) {
-                                updateEvent.get().runOnUiThread(seekUpdate);
-                            }
-                        }
-                    }, PROGRESS_UPDATE, PROGRESS_UPDATE, TimeUnit.MILLISECONDS);
+                    else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP && mediaLinks[0].startsWith("https://")) {
+                        // for any reason VideoView ignores TLS 1.2 setup, so we have to use http:// instead
+                        // todo find a solution to add TLS 1.2 support for pre lollipop devices
+                        mediaLinks[0] = "http://" + mediaLinks[0].substring(8);
+                    }
+                    seekUpdate = new SeekbarUpdater(this, PROGRESS_UPDATE);
+                    // fall through
                 case MEDIAVIEWER_ANGIF:
                     videoView.setVisibility(VISIBLE);
                     videoView.setZOrderMediaOverlay(true); // disable black background
@@ -243,8 +230,8 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     protected void onDestroy() {
         if (imageAsync != null && imageAsync.getStatus() == RUNNING)
             imageAsync.cancel(true);
-        if (progressUpdate != null)
-            progressUpdate.shutdown();
+        if (seekUpdate != null)
+            seekUpdate.shutdown();
         super.onDestroy();
     }
 
@@ -480,7 +467,7 @@ public class MediaViewer extends MediaActivity implements OnImageClickListener, 
     /**
      * updates controller panel SeekBar
      */
-    private void updateSeekBar() {
+    public void updateSeekBar() {
         int videoPos = video_progress.getProgress();
         switch (playStat) {
             case PLAY:
