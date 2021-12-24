@@ -175,7 +175,8 @@ public class TwitterEngine {
     public String request() throws EngineException {
         try {
             if (reqToken == null) {
-                reqToken = twitter.getOAuthRequestToken();
+                // request token without redirecting to the callback url
+                reqToken = twitter.getOAuthRequestToken("oob");
             }
         } catch (Exception err) {
             throw new EngineException(err);
@@ -881,8 +882,12 @@ public class TwitterEngine {
         try {
             UsersResponse response = LikesExKt.getLikingUsers(twitter, tweetId, null, null, null);
             List<User2> users = response.getUsers();
+            long[] ids = new long[users.size()];
+            for (int i = 0 ; i < ids.length ; i++)
+                ids[i] = users.get(i).getId();
+            // lookup users with Twitter4J for maximum compability
             UserList result = new UserList(cursor, 0);
-            result.addAll(convertUser2List(users));
+            result.addAll(convertUserList(twitter.lookupUsers(ids)));
             return result;
         } catch (TwitterException err) {
             throw new EngineException(err);
@@ -1311,24 +1316,6 @@ public class TwitterEngine {
         for (twitter4j.User user : users) {
             if (!exclude.contains(user.getId())) {
                 result.add(new User(user, id));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * convert {@link User2} list to user list
-     *
-     * @param users list of user from version 2
-     * @return user list
-     */
-    private List<User> convertUser2List(List<User2> users) throws TwitterException {
-        long id = twitter.getId();
-        ArrayList<User> result = new ArrayList<>();
-        result.ensureCapacity(users.size());
-        for (User2 user : users) {
-            if (user.getPublicMetrics() != null) {
-                result.add(new User(user, user.getPublicMetrics(), id));
             }
         }
         return result;

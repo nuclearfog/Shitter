@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 
 import twitter4j.URLEntity;
-import twitter4j.User2;
 
 /**
  * Container class for a twitter user
@@ -80,15 +79,6 @@ public class User implements Serializable {
         isFollowReqSent = user.isFollowRequestSent();
         hasDefaultImage = user.isDefaultProfileImage();
         isCurrentUser = twitterId == userID;
-    }
-
-
-    public User(User2 user, User2.PublicMetrics metrics, long id) {
-        this(user.getId(), user.getUsername(), user.getName(), user.getProfileImageUrl(),
-                user.getDescription(), user.getLocation(), id, user.getVerified(),
-                user.getProtected(), false, true, "", "", user.getCreatedAt().getTime(),
-                metrics.getFollowingCount(), metrics.getFollowersCount(),
-                metrics.getTweetCount(), metrics.getListedCount());
     }
 
     /**
