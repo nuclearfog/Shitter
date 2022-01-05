@@ -28,6 +28,10 @@
 
 <img src="/images/shitter_1.jpg" height="360"/> <img src="/images/shitter_2.jpg" height="360"/> <img src="/images/shitter_3.jpg" height="360"/> <img src="/images/shitter_4.jpg" height="360"/>
 
+## How to build
+
+You can import this project with Android Studio. Add your API keys to this <a href="https://github.com/nuclearfog/Shitter/blob/master/app/src/main/java/org/nuclearfog/twidda/backend/utils/Tokens.java">file</a>.
+
 ## Information
 
 Please check the Twitter rules <a href="https://support.twitter.com/articles/18311-the-twitter-rules">here</a> and <a href="https://help.twitter.com/rules-and-policies/twitter-api">here</a>
@@ -37,7 +41,7 @@ If you have any questions, feel free to open a <a href="https://github.com/nucle
 
 ## 3rd party libraries and licenses
 - <a href="https://github.com/Twitter4J/Twitter4J">Twitter4J 4.0.7</a>
-- <a href="https://github.com/square/picasso">picasso 2.71828</a>
+- <a href="https://github.com/square/picasso">picasso 2.8</a>
 - <a href="https://github.com/QuadFlask/colorpicker">QuadFlask colorpicker</a>
 - <a href="https://github.com/MichaelRocks/paranoid">String obfuscation</a>
 - <a href="https://github.com/kyleduo/SwitchButton">SwitchButton</a>
