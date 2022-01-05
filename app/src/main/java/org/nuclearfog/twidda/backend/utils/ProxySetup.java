@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.engine;
+package org.nuclearfog.twidda.backend.utils;
 
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author nuclearfog
  */
-class ProxySetup {
+public class ProxySetup {
 
     private ProxySetup() {
     }
@@ -28,7 +28,7 @@ class ProxySetup {
      *
      * @param settings App settings
      */
-    static void setConnection(GlobalSettings settings) {
+    public static void setConnection(GlobalSettings settings) {
         ProxyConnection proxyConnection;
         ProxyAuthenticator proxyLogin;
 

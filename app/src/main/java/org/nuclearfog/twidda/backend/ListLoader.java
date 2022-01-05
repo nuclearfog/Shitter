@@ -4,8 +4,8 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.lists.UserLists;
 import org.nuclearfog.twidda.fragments.UserListFragment;
 

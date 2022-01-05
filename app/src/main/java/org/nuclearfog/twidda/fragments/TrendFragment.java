@@ -11,9 +11,9 @@ import org.nuclearfog.twidda.activities.SearchPage;
 import org.nuclearfog.twidda.adapter.TrendAdapter;
 import org.nuclearfog.twidda.adapter.TrendAdapter.TrendClickListener;
 import org.nuclearfog.twidda.backend.TrendLoader;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.model.Trend;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.model.Trend;
 
 import java.util.List;
 
@@ -79,7 +79,10 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
     public void onTrendClick(Trend trend) {
         if (!isRefreshing()) {
             Intent intent = new Intent(requireContext(), SearchPage.class);
-            intent.putExtra(KEY_SEARCH_QUERY, trend.getSearchString());
+            String name = trend.getName();
+            if (!name.startsWith("\"") && !name.endsWith("\""))
+                name = "\"" + name + "\"";
+            intent.putExtra(KEY_SEARCH_QUERY, name);
             startActivity(intent);
         }
     }
@@ -118,6 +121,6 @@ public class TrendFragment extends ListFragment implements TrendClickListener {
      */
     private void load() {
         trendTask = new TrendLoader(this);
-        trendTask.execute(settings.getTrendLocation().getWoeId());
+        trendTask.execute(settings.getTrendLocation().getId());
     }
 }

@@ -7,8 +7,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import org.nuclearfog.twidda.backend.model.Account;
 import org.nuclearfog.twidda.database.DatabaseAdapter.AccountTable;
+import org.nuclearfog.twidda.model.Account;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +43,14 @@ public class AccountDatabase {
 
 
     private DatabaseAdapter dataHelper;
+    private AppDatabase database;
 
     /**
      * @param context current activity context
      */
     public AccountDatabase(Context context) {
         dataHelper = DatabaseAdapter.getInstance(context);
+        database = new AppDatabase(context);
     }
 
     /**
@@ -90,7 +92,8 @@ public class AccountDatabase {
                 String key1 = cursor.getString(1);
                 String key2 = cursor.getString(2);
                 long date = cursor.getLong(3);
-                Account account = new Account(id, date, key1, key2);
+                AccountDB account = new AccountDB(id, date, key1, key2);
+                account.addUser(database.getUser(id));
                 result.add(account);
             } while (cursor.moveToNext());
         }

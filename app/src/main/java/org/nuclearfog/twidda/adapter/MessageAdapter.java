@@ -17,9 +17,9 @@ import org.nuclearfog.tag.Tagger.OnTagClickListener;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.MessageHolder;
-import org.nuclearfog.twidda.backend.lists.MessageList;
-import org.nuclearfog.twidda.backend.model.Message;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -57,7 +57,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     private GlobalSettings settings;
     private Picasso picasso;
 
-    private MessageList data = new MessageList(null, null);
+    private Directmessages data = new Directmessages(null, null);
     private int loadingIndex = NO_LOADING;
 
     /**
@@ -75,7 +75,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
      * @param newData new message list
      */
     @MainThread
-    public void setData(MessageList newData) {
+    public void setData(Directmessages newData) {
         disableLoading();
         if (newData.isEmpty()) {
             if (!data.isEmpty() && data.peekLast() == null) {
@@ -118,7 +118,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
 
     @Override
     public long getItemId(int index) {
-        Message message = data.get(index);
+        DirectMessage message = data.get(index);
         if (message != null)
             return message.getId();
         return -1;
@@ -195,7 +195,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         if (vh instanceof MessageHolder) {
-            Message message = data.get(index);
+            DirectMessage message = data.get(index);
             if (message != null) {
                 User sender = message.getSender();
                 Spanned text = Tagger.makeTextWithLinks(message.getText(), settings.getHighlightColor(), itemClickListener);
@@ -211,13 +211,13 @@ public class MessageAdapter extends Adapter<ViewHolder> {
                 } else {
                     holder.verifiedIcon.setVisibility(GONE);
                 }
-                if (sender.isLocked()) {
+                if (sender.isProtected()) {
                     holder.lockedIcon.setVisibility(VISIBLE);
                 } else {
                     holder.lockedIcon.setVisibility(GONE);
                 }
-                if (settings.imagesEnabled() && sender.hasProfileImage()) {
-                    String pbLink = sender.getImageLink();
+                if (settings.imagesEnabled() && !sender.getImageUrl().isEmpty()) {
+                    String pbLink = sender.getImageUrl();
                     if (!sender.hasDefaultProfileImage())
                         pbLink += settings.getImageSuffix();
                     picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
@@ -263,7 +263,7 @@ public class MessageAdapter extends Adapter<ViewHolder> {
          * @param message Message information
          * @param action  what button was clicked
          */
-        void onClick(Message message, Action action);
+        void onClick(DirectMessage message, Action action);
 
         /**
          * called when the footer was clicked

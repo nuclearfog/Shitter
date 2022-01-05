@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.MainThread;
 
 import org.nuclearfog.twidda.R;
-import org.nuclearfog.twidda.backend.model.TrendLocation;
+import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.List;
 public class LocationAdapter extends BaseAdapter {
 
     private GlobalSettings settings;
-    private List<TrendLocation> data = new ArrayList<>();
+    private List<Location> data = new ArrayList<>();
 
 
     public LocationAdapter(GlobalSettings settings) {
@@ -39,7 +39,7 @@ public class LocationAdapter extends BaseAdapter {
      * @param top top item to add
      */
     @MainThread
-    public void addTop(TrendLocation top) {
+    public void addTop(Location top) {
         data.add(top);
         notifyDataSetChanged();
     }
@@ -50,7 +50,7 @@ public class LocationAdapter extends BaseAdapter {
      * @param newData item list
      */
     @MainThread
-    public void setData(List<TrendLocation> newData) {
+    public void setData(List<Location> newData) {
         data.clear();
         data.addAll(newData);
         notifyDataSetChanged();
@@ -62,7 +62,7 @@ public class LocationAdapter extends BaseAdapter {
      * @param item item to search
      * @return index of the item
      */
-    public int getPosition(TrendLocation item) {
+    public int getPosition(Location item) {
         int pos = data.indexOf(item);
         if (pos == -1) {
             return 0;
@@ -78,14 +78,14 @@ public class LocationAdapter extends BaseAdapter {
 
 
     @Override
-    public TrendLocation getItem(int pos) {
+    public Location getItem(int pos) {
         return data.get(pos);
     }
 
 
     @Override
     public long getItemId(int pos) {
-        return getItem(pos).getWoeId();
+        return getItem(pos).getId();
     }
 
 

@@ -22,7 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.Registration;
-import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;

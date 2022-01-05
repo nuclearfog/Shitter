@@ -70,9 +70,9 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.UserAction;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.model.Relation;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -300,7 +300,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 AppStyles.setMenuItemColor(followIcon, settings.getFollowPendingColor());
                 followIcon.setTitle(R.string.menu_follow_requested);
             }
-            if (user.isCurrentUser() || !user.isLocked()) {
+            if (user.isCurrentUser() || !user.isProtected()) {
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 listItem.setVisible(true);
             }
@@ -321,7 +321,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             }
         }
         if (relation != null) {
-            if (relation.isFriend()) {
+            if (relation.isFollowing()) {
                 MenuItem followIcon = m.findItem(R.id.profile_follow);
                 MenuItem listItem = m.findItem(R.id.profile_lists);
                 AppStyles.setMenuItemColor(followIcon, settings.getFollowIconColor());
@@ -364,7 +364,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             // follow / unfollow user
             else if (item.getItemId() == R.id.profile_follow) {
                 if (relation != null) {
-                    if (!relation.isFriend()) {
+                    if (!relation.isFollowing()) {
                         profileAsync = new UserAction(this, user.getId());
                         profileAsync.execute(ACTION_FOLLOW);
                     } else if (!unfollowConfirm.isShowing()) {
@@ -488,7 +488,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         // open following page
         if (v.getId() == R.id.following) {
             if (user != null && relation != null) {
-                if (!user.isLocked() || user.isCurrentUser() || relation.isFriend()) {
+                if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
                     Intent following = new Intent(this, UserDetail.class);
                     following.putExtra(KEY_USERDETAIL_ID, user.getId());
                     following.putExtra(KEY_USERDETAIL_MODE, USERLIST_FRIENDS);
@@ -499,7 +499,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         // open follower page
         else if (v.getId() == R.id.follower) {
             if (user != null && relation != null) {
-                if (!user.isLocked() || user.isCurrentUser() || relation.isFriend()) {
+                if (!user.isProtected() || user.isCurrentUser() || relation.isFollowing()) {
                     Intent follower = new Intent(this, UserDetail.class);
                     follower.putExtra(KEY_USERDETAIL_ID, user.getId());
                     follower.putExtra(KEY_USERDETAIL_MODE, USERLIST_FOLLOWER);
@@ -509,8 +509,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         // open link added to profile
         else if (v.getId() == R.id.links) {
-            if (user != null && !user.getLink().isEmpty()) {
-                String link = user.getLink();
+            if (user != null && !user.getProfileUrl().isEmpty()) {
+                String link = user.getProfileUrl();
                 Intent browserIntent = new Intent(ACTION_VIEW, Uri.parse(link));
                 try {
                     startActivity(browserIntent);
@@ -521,8 +521,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         // open profile image
         else if (v.getId() == R.id.profile_img) {
-            if (user != null && user.hasProfileImage()) {
-                String[] link = {user.getImageLink()};
+            if (user != null && !user.getImageUrl().isEmpty()) {
+                String[] link = {user.getImageUrl()};
                 Intent mediaImage = new Intent(this, MediaViewer.class);
                 mediaImage.putExtra(KEY_MEDIA_LINK, link);
                 mediaImage.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
@@ -531,8 +531,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         }
         // open banner image
         else if (v.getId() == R.id.profile_banner) {
-            if (user != null && user.hasBannerImage()) {
-                String[] link = {user.getBannerLink()};
+            if (user != null && !user.getBannerUrl().isEmpty()) {
+                String[] link = {user.getBannerUrl()};
                 Intent mediaBanner = new Intent(this, MediaViewer.class);
                 mediaBanner.putExtra(KEY_MEDIA_LINK, link);
                 mediaBanner.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
@@ -601,10 +601,10 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
     public void setUser(User user) {
         this.user = user;
         NumberFormat formatter = NumberFormat.getIntegerInstance();
-        Spanned bio = Tagger.makeTextWithLinks(user.getBio(), settings.getHighlightColor(), this);
+        Spanned bio = Tagger.makeTextWithLinks(user.getDescription(), settings.getHighlightColor(), this);
 
         tabTweetCount[0].setText(formatter.format(user.getTweetCount()));
-        tabTweetCount[1].setText(formatter.format(user.getFavorCount()));
+        tabTweetCount[1].setText(formatter.format(user.getFavoriteCount()));
         following.setText(formatter.format(user.getFollowing()));
         follower.setText(formatter.format(user.getFollower()));
         username.setText(user.getUsername());
@@ -621,7 +621,7 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         } else {
             username.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
-        if (user.isLocked()) {
+        if (user.isProtected()) {
             screenName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
             AppStyles.setDrawableColor(screenName, settings.getIconColor());
         } else {
@@ -633,14 +633,14 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
         } else {
             user_location.setVisibility(GONE);
         }
-        if (!user.getBio().isEmpty()) {
+        if (!user.getDescription().isEmpty()) {
             user_bio.setVisibility(VISIBLE);
             user_bio.setText(bio);
         } else {
             user_bio.setVisibility(GONE);
         }
-        if (!user.getLink().isEmpty()) {
-            String link = user.getLink();
+        if (!user.getProfileUrl().isEmpty()) {
+            String link = user.getProfileUrl();
             if (link.startsWith("http://"))
                 user_website.setText(link.substring(7));
             else if (link.startsWith("https://"))
@@ -652,15 +652,15 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
             user_website.setVisibility(GONE);
         }
         if (settings.imagesEnabled()) {
-            if (user.hasBannerImage()) {
-                String bannerLink = user.getBannerLink() + settings.getBannerSuffix();
+            if (!user.getBannerUrl().isEmpty()) {
+                String bannerLink = user.getBannerUrl() + settings.getBannerSuffix();
                 picasso.load(bannerLink).error(R.drawable.no_banner).into(bannerImage, this);
             } else {
                 bannerImage.setImageResource(0);
                 toolbarBackground.setImageResource(0);
             }
-            if (user.hasProfileImage()) {
-                String imgLink = user.getImageLink();
+            if (!user.getImageUrl().isEmpty()) {
+                String imgLink = user.getImageUrl();
                 if (!user.hasDefaultProfileImage())
                     imgLink += PROFILE_IMG_HIGH_RES;
                 picasso.load(imgLink).transform(new RoundedCornersTransformation(5, 0)).error(R.drawable.no_image).into(profileImage);
@@ -690,8 +690,8 @@ public class UserProfile extends AppCompatActivity implements OnClickListener, O
                 }
             }
             // check if following status changed
-            else if (relation.isFriend() != this.relation.isFriend()) {
-                if (relation.isFriend()) {
+            else if (relation.isFollowing() != this.relation.isFollowing()) {
+                if (relation.isFollowing()) {
                     Toast.makeText(this, R.string.info_followed, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, R.string.info_unfollowed, Toast.LENGTH_SHORT).show();

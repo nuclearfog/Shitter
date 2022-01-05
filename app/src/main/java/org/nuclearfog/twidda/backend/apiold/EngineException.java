@@ -1,7 +1,7 @@
-package org.nuclearfog.twidda.backend.engine;
+package org.nuclearfog.twidda.backend.apiold;
 
-import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.RESOURCE_NOT_FOUND;
-import static org.nuclearfog.twidda.backend.engine.EngineException.ErrorType.USER_NOT_FOUND;
+import static org.nuclearfog.twidda.backend.apiold.EngineException.ErrorType.RESOURCE_NOT_FOUND;
+import static org.nuclearfog.twidda.backend.apiold.EngineException.ErrorType.USER_NOT_FOUND;
 
 import twitter4j.TwitterException;
 

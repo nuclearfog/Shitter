@@ -1,8 +1,10 @@
-package org.nuclearfog.twidda.backend.model;
+package org.nuclearfog.twidda.backend.apiold;
 
 import androidx.annotation.NonNull;
 
-import twitter4j.DirectMessage;
+import org.nuclearfog.twidda.model.DirectMessage;
+import org.nuclearfog.twidda.model.User;
+
 import twitter4j.URLEntity;
 
 /**
@@ -10,7 +12,7 @@ import twitter4j.URLEntity;
  *
  * @author nuclearfog
  */
-public class Message {
+class DirectMessageV1 implements DirectMessage {
 
     private long messageId;
     private long time;
@@ -18,14 +20,8 @@ public class Message {
     private User receiver;
     private String message = "";
 
-    /**
-     * construct message object from twitter information
-     *
-     * @param dm       direct message information
-     * @param sender   sender user
-     * @param receiver receiver user
-     */
-    public Message(DirectMessage dm, User sender, User receiver) {
+
+    DirectMessageV1(twitter4j.DirectMessage dm, User sender, User receiver) {
         this.sender = sender;
         this.receiver = receiver;
         messageId = dm.getId();
@@ -33,74 +29,37 @@ public class Message {
         setMessageText(dm);
     }
 
-    /**
-     * construct message object from database information
-     *
-     * @param messageId ID of direct message
-     * @param sender    sender user
-     * @param receiver  receiver user
-     * @param time      timestamp long format
-     * @param message   message text
-     */
-    public Message(long messageId, @NonNull User sender, @NonNull User receiver, long time, String message) {
-        this.messageId = messageId;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.time = time;
-        this.message = message;
-    }
-
-    /**
-     * get message ID
-     *
-     * @return message ID
-     */
+    @Override
     public long getId() {
         return messageId;
     }
 
-    /**
-     * get sender of DM
-     *
-     * @return user
-     */
+    @Override
     public User getSender() {
         return sender;
     }
 
-    /**
-     * get receiver of DM
-     *
-     * @return user
-     */
+    @Override
     public User getReceiver() {
         return receiver;
     }
 
-    /**
-     * get Message content
-     *
-     * @return message
-     */
+    @Override
     public String getText() {
         return message;
     }
 
-    /**
-     * get time of DM
-     *
-     * @return raw time
-     */
+    @Override
     public long getTime() {
         return time;
     }
 
     /**
-     * Resolve shortened tweet links
+     * unshorten t.co URLs
      *
-     * @param message Tweet
+     * @param message direct message
      */
-    private void setMessageText(DirectMessage message) {
+    private void setMessageText(twitter4j.DirectMessage message) {
         String text = message.getText();
         if (text != null && !text.isEmpty()) {
             URLEntity[] entities = message.getURLEntities();

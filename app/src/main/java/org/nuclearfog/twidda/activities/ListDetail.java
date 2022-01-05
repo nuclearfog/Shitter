@@ -39,8 +39,8 @@ import org.nuclearfog.twidda.adapter.FragmentAdapter;
 import org.nuclearfog.twidda.backend.ListAction;
 import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -95,7 +95,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
     private Dialog unfollowDialog, deleteDialog;
 
     @Nullable
-    private TwitterList userList;
+    private UserList userList;
     private long listId = -1;
 
     @Override
@@ -125,8 +125,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         unfollowDialog = new ConfirmDialog(this, DialogType.LIST_UNFOLLOW, this);
 
         Object data = getIntent().getSerializableExtra(KEY_LIST_DATA);
-        if (data instanceof TwitterList) {
-            userList = (TwitterList) data;
+        if (data instanceof UserList) {
+            userList = (UserList) data;
             listId = userList.getId();
             toolbar.setTitle(userList.getTitle());
             toolbar.setSubtitle(userList.getDescription());
@@ -248,8 +248,8 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
         if (result != null && reqCode == REQ_LIST_CHANGE) {
             if (returnCode == RET_LIST_CHANGED) {
                 Object data = result.getSerializableExtra(RET_LIST_DATA);
-                if (data instanceof TwitterList) {
-                    userList = (TwitterList) data;
+                if (data instanceof UserList) {
+                    userList = (UserList) data;
                     toolbar.setTitle(userList.getTitle());
                     toolbar.setSubtitle(userList.getDescription());
                     invalidateOptionsMenu();
@@ -334,7 +334,7 @@ public class ListDetail extends AppCompatActivity implements OnTabSelectedListen
      *
      * @param userList TwitterList information
      */
-    public void onSuccess(TwitterList userList, ListAction.Action action) {
+    public void onSuccess(UserList userList, ListAction.Action action) {
         this.userList = userList;
         switch (action) {
             case LOAD:

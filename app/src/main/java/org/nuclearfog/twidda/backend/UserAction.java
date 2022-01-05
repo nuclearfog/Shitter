@@ -3,10 +3,10 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.UserProfile;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.model.Relation;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 

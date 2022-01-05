@@ -59,9 +59,8 @@ import org.nuclearfog.textviewtool.LinkAndScrollMovement;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.TweetAction;
 import org.nuclearfog.twidda.backend.TweetAction.Action;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.model.Tweet;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.model.Tweet;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -71,6 +70,7 @@ import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
 import org.nuclearfog.twidda.dialog.LinkDialog;
 import org.nuclearfog.twidda.fragments.TweetFragment;
+import org.nuclearfog.twidda.model.User;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -266,7 +266,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             if (tweet.getEmbeddedTweet() != null)
                 currentTweet = tweet.getEmbeddedTweet();
             // enable delete option only if current user owns tweets
-            m.findItem(R.id.delete_tweet).setVisible(currentTweet.currentUserIsOwner());
+            m.findItem(R.id.delete_tweet).setVisible(currentTweet.getUser().isCurrentUser());
         }
         return super.onPrepareOptionsMenu(m);
     }
@@ -371,15 +371,15 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
                 Intent mediaIntent = new Intent(this, MediaViewer.class);
                 mediaIntent.putExtra(KEY_MEDIA_LINK, clickedTweet.getMediaLinks());
                 switch (clickedTweet.getMediaType()) {
-                    case IMAGE:
+                    case Tweet.IMAGE:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_IMAGE);
                         break;
 
-                    case VIDEO:
+                    case Tweet.VIDEO:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_VIDEO);
                         break;
 
-                    case GIF:
+                    case Tweet.GIF:
                         mediaIntent.putExtra(KEY_MEDIA_TYPE, MEDIAVIEWER_ANGIF);
                         break;
                 }
@@ -401,7 +401,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             statusAsync = new TweetAction(this, tweet.getId());
             // retweet this tweet
             if (v.getId() == R.id.tweet_retweet) {
-                if (tweet.retweeted())
+                if (tweet.isRetweeted())
                     statusAsync.execute(Action.UNRETWEET);
                 else
                     statusAsync.execute(Action.RETWEET);
@@ -410,7 +410,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
             }
             // favorite the tweet
             else if (v.getId() == R.id.tweet_favorite) {
-                if (tweet.favored())
+                if (tweet.isFavorited())
                     statusAsync.execute(Action.UNFAVORITE);
                 else
                     statusAsync.execute(Action.FAVORITE);
@@ -504,12 +504,12 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         invalidateOptionsMenu();
 
         NumberFormat buttonNumber = NumberFormat.getIntegerInstance();
-        if (tweetUpdate.retweeted()) {
+        if (tweetUpdate.isRetweeted()) {
             AppStyles.setDrawableColor(rtwButton, settings.getRetweetIconColor());
         } else {
             AppStyles.setDrawableColor(rtwButton, settings.getIconColor());
         }
-        if (tweetUpdate.favored()) {
+        if (tweetUpdate.isFavorited()) {
             AppStyles.setDrawableColor(favButton, settings.getFavoriteIconColor());
         } else {
             AppStyles.setDrawableColor(favButton, settings.getIconColor());
@@ -520,7 +520,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         } else {
             usrName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
-        if (author.isLocked()) {
+        if (author.isProtected()) {
             scrName.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, 0, 0);
             AppStyles.setDrawableColor(scrName, settings.getIconColor());
         } else {
@@ -534,7 +534,7 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         tweet_api.setText(R.string.tweet_sent_from);
         tweet_api.append(tweetUpdate.getSource());
 
-        if (tweetUpdate.containsTweetText()) {
+        if (!tweetUpdate.getTweet().isEmpty()) {
             Spannable sTweet = Tagger.makeTextWithLinks(tweetUpdate.getTweet(), settings.getHighlightColor(), this);
             tweetText.setVisibility(VISIBLE);
             tweetText.setText(sTweet);
@@ -547,26 +547,26 @@ public class TweetActivity extends AppCompatActivity implements OnClickListener,
         } else {
             replyName.setVisibility(GONE);
         }
-        if (tweetUpdate.containsSensitiveMedia()) {
+        if (tweetUpdate.isSensitive()) {
             sensitive_media.setVisibility(VISIBLE);
         } else {
             sensitive_media.setVisibility(GONE);
         }
-        if (tweetUpdate.getMediaType() == Tweet.MediaType.NONE) {
+        if (tweetUpdate.getMediaType() == Tweet.NONE) {
             mediaButton.setVisibility(GONE);
         } else {
             mediaButton.setVisibility(VISIBLE);
-            if (tweetUpdate.getMediaType() == Tweet.MediaType.IMAGE) {
+            if (tweetUpdate.getMediaType() == Tweet.IMAGE) {
                 mediaButton.setImageResource(R.drawable.image);
-            } else if (tweetUpdate.getMediaType() == Tweet.MediaType.VIDEO) {
+            } else if (tweetUpdate.getMediaType() == Tweet.VIDEO) {
                 mediaButton.setImageResource(R.drawable.video);
             } else {
                 mediaButton.setImageResource(R.drawable.gif);
             }
             AppStyles.setDrawableColor(mediaButton, settings.getIconColor());
         }
-        if (settings.imagesEnabled() && author.hasProfileImage()) {
-            String pbLink = author.getImageLink();
+        if (settings.imagesEnabled() && !author.getImageUrl().isEmpty()) {
+            String pbLink = author.getImageUrl();
             if (!author.hasDefaultProfileImage())
                 pbLink += settings.getImageSuffix();
             picasso.load(pbLink).transform(new RoundedCornersTransformation(4, 0))

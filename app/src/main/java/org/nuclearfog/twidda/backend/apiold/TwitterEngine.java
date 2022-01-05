@@ -1,4 +1,4 @@
-package org.nuclearfog.twidda.backend.engine;
+package org.nuclearfog.twidda.backend.apiold;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,20 +9,21 @@ import androidx.annotation.Nullable;
 
 import org.nuclearfog.twidda.backend.holder.ListHolder;
 import org.nuclearfog.twidda.backend.holder.TweetHolder;
-import org.nuclearfog.twidda.backend.lists.MessageList;
-import org.nuclearfog.twidda.backend.lists.UserList;
+import org.nuclearfog.twidda.backend.lists.Directmessages;
+import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.backend.lists.UserLists;
-import org.nuclearfog.twidda.backend.model.Message;
-import org.nuclearfog.twidda.backend.model.Relation;
-import org.nuclearfog.twidda.backend.model.Trend;
-import org.nuclearfog.twidda.backend.model.TrendLocation;
-import org.nuclearfog.twidda.backend.model.Tweet;
-import org.nuclearfog.twidda.backend.model.TwitterList;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.utils.ProxySetup;
 import org.nuclearfog.twidda.backend.utils.TLSSocketFactory;
+import org.nuclearfog.twidda.backend.utils.Tokens;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.ExcludeDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Location;
+import org.nuclearfog.twidda.model.Relation;
+import org.nuclearfog.twidda.model.Trend;
+import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.UserList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,13 +38,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import io.michaelrocks.paranoid.Obfuscate;
 import twitter4j.DirectMessage;
 import twitter4j.DirectMessageList;
 import twitter4j.GeoLocation;
 import twitter4j.IDs;
 import twitter4j.LikesExKt;
-import twitter4j.Location;
 import twitter4j.PagableResponseList;
 import twitter4j.Paging;
 import twitter4j.Query;
@@ -65,7 +64,6 @@ import twitter4j.conf.ConfigurationBuilder;
  *
  * @author nuclearfog
  */
-@Obfuscate
 public class TwitterEngine {
 
     private static final TwitterEngine mTwitter = new TwitterEngine();
@@ -75,6 +73,7 @@ public class TwitterEngine {
     private GlobalSettings settings;
     private AccountDatabase accountDB;
     private ExcludeDatabase excludeDB;
+    private Tokens tokens;
     private Twitter twitter;
 
     private boolean isInitialized = false;
@@ -90,13 +89,8 @@ public class TwitterEngine {
         TLSSocketFactory.getSupportTLSifNeeded();
         ConfigurationBuilder builder = new ConfigurationBuilder();
         // set API keys
-        if (settings.isCustomApiSet()) {
-            builder.setOAuthConsumerKey(settings.getConsumerKey());
-            builder.setOAuthConsumerSecret(settings.getConsumerSecret());
-        } else {
-            builder.setOAuthConsumerKey("");
-            builder.setOAuthConsumerSecret("");
-        }
+        builder.setOAuthConsumerKey(tokens.getConsumerKey());
+        builder.setOAuthConsumerSecret(tokens.getConsumerSec());
         // Twitter4J has its own proxy settings
         if (settings.isProxyEnabled()) {
             builder.setHttpProxyHost(settings.getProxyHost());
@@ -128,6 +122,7 @@ public class TwitterEngine {
             mTwitter.isInitialized = true;
             // initialize database and settings
             mTwitter.settings = GlobalSettings.getInstance(context);
+            mTwitter.tokens = Tokens.getInstance(context);
             mTwitter.accountDB = new AccountDatabase(context);
             mTwitter.excludeDB = new ExcludeDatabase(context);
             // check if already logged in
@@ -290,7 +285,7 @@ public class TwitterEngine {
             List<Trend> result = new LinkedList<>();
             twitter4j.Trend[] trends = twitter.getPlaceTrends(woeId).getTrends();
             for (twitter4j.Trend trend : trends)
-                result.add(new Trend(trend, index++));
+                result.add(new TrendV1(trend, index++));
             return result;
         } catch (Exception err) {
             throw new EngineException(err);
@@ -303,12 +298,12 @@ public class TwitterEngine {
      * @return list of locations
      * @throws EngineException if access is unavailable
      */
-    public List<TrendLocation> getLocations() throws EngineException {
+    public List<Location> getLocations() throws EngineException {
         try {
-            List<TrendLocation> result = new LinkedList<>();
-            List<Location> locations = twitter.getAvailableTrends();
-            for (Location location : locations)
-                result.add(new TrendLocation(location));
+            List<Location> result = new LinkedList<>();
+            List<twitter4j.Location> locations = twitter.getAvailableTrends();
+            for (twitter4j.Location location : locations)
+                result.add(new LocationV1(location));
             return result;
         } catch (Exception err) {
             throw new EngineException(err);
@@ -322,7 +317,7 @@ public class TwitterEngine {
      * @return List of Users
      * @throws EngineException if access is unavailable
      */
-    public UserList searchUsers(String search, long cursor) throws EngineException {
+    public Users searchUsers(String search, long cursor) throws EngineException {
         try {
             List<User> users;
             int currentPage = 1;
@@ -338,7 +333,7 @@ public class TwitterEngine {
             if (users.size() < 20) {
                 nextPage = 0;
             }
-            UserList result = new UserList(prevPage, nextPage);
+            Users result = new Users(prevPage, nextPage);
             result.addAll(users);
             return result;
         } catch (Exception err) {
@@ -427,7 +422,7 @@ public class TwitterEngine {
      */
     public User getUser(long userId) throws EngineException {
         try {
-            return new User(twitter.showUser(userId), twitter.getId());
+            return new UserV1(twitter.showUser(userId), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -442,7 +437,7 @@ public class TwitterEngine {
      */
     public User getUser(String username) throws EngineException {
         try {
-            return new User(twitter.showUser(username), twitter.getId());
+            return new UserV1(twitter.showUser(username), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -457,7 +452,7 @@ public class TwitterEngine {
      */
     public Relation getConnection(long userId) throws EngineException {
         try {
-            return new Relation(twitter.showFriendship(twitter.getId(), userId));
+            return new RelationV1(twitter.showFriendship(twitter.getId(), userId));
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -472,7 +467,7 @@ public class TwitterEngine {
      */
     public User followUser(long userID) throws EngineException {
         try {
-            return new User(twitter.createFriendship(userID), twitter.getId());
+            return new UserV1(twitter.createFriendship(userID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -487,7 +482,7 @@ public class TwitterEngine {
      */
     public User unfollowUser(long userID) throws EngineException {
         try {
-            return new User(twitter.destroyFriendship(userID), twitter.getId());
+            return new UserV1(twitter.destroyFriendship(userID), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -521,7 +516,7 @@ public class TwitterEngine {
         try {
             twitter4j.User user = twitter.createBlock(UserID);
             excludeDB.addUser(UserID);
-            return new User(user, twitter.getId());
+            return new UserV1(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -537,7 +532,7 @@ public class TwitterEngine {
     public User unblockUser(long UserID) throws EngineException {
         try {
             twitter4j.User user = twitter.destroyBlock(UserID);
-            return new User(user, twitter.getId());
+            return new UserV1(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -571,7 +566,7 @@ public class TwitterEngine {
         try {
             twitter4j.User user = twitter.createMute(UserID);
             excludeDB.addUser(user.getId());
-            return new User(user, twitter.getId());
+            return new UserV1(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -587,7 +582,7 @@ public class TwitterEngine {
     public User unmuteUser(long UserID) throws EngineException {
         try {
             twitter4j.User user = twitter.destroyMute(UserID);
-            return new User(user, twitter.getId());
+            return new UserV1(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -600,7 +595,7 @@ public class TwitterEngine {
      * @return List of Following User with cursors
      * @throws EngineException if Access is unavailable
      */
-    public UserList getFollowing(long userId, long cursor) throws EngineException {
+    public Users getFollowing(long userId, long cursor) throws EngineException {
         try {
             PagableResponseList<twitter4j.User> list = twitter.getFriendsList(userId, cursor);
             return createUserList(list, cursor);
@@ -616,7 +611,7 @@ public class TwitterEngine {
      * @return List of Follower with cursors attached
      * @throws EngineException if Access is unavailable
      */
-    public UserList getFollower(long userId, long cursor) throws EngineException {
+    public Users getFollower(long userId, long cursor) throws EngineException {
         try {
             PagableResponseList<twitter4j.User> list = twitter.getFollowersList(userId, cursor);
             return createUserList(list, cursor);
@@ -632,7 +627,7 @@ public class TwitterEngine {
      * @return user list
      * @throws EngineException if twitter service is unavailable
      */
-    public UserList getBlockedUsers(long cursor) throws EngineException {
+    public Users getBlockedUsers(long cursor) throws EngineException {
         try {
             PagableResponseList<twitter4j.User> list = twitter.getBlocksList(cursor);
             return createUserList(list, cursor);
@@ -648,7 +643,7 @@ public class TwitterEngine {
      * @return user list
      * @throws EngineException if twitter service is unavailable
      */
-    public UserList getMutedUsers(long cursor) throws EngineException {
+    public Users getMutedUsers(long cursor) throws EngineException {
         try {
             PagableResponseList<twitter4j.User> list = twitter.getMutesList(cursor);
             return createUserList(list, cursor);
@@ -711,7 +706,7 @@ public class TwitterEngine {
     public Tweet getStatus(long tweetId) throws EngineException {
         try {
             Status tweet = twitter.showStatus(tweetId);
-            return new Tweet(tweet, twitter.getId());
+            return new TweetV1(tweet, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -784,7 +779,7 @@ public class TwitterEngine {
                 if (retweetCount > 0)
                     retweetCount--;
             }
-            return new Tweet(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(), retweetCount,
+            return new TweetV1(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(), retweetCount,
                     retweet, favoriteCount, tweet.isFavorited());
         } catch (Exception err) {
             throw new EngineException(err);
@@ -819,7 +814,7 @@ public class TwitterEngine {
                 if (favoriteCount > 0)
                     favoriteCount--;
             }
-            return new Tweet(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(),
+            return new TweetV1(tweet, twitter.getId(), tweet.getCurrentUserRetweetId(),
                     retweetCount, tweet.isRetweeted(), favoriteCount, favorite);
         } catch (Exception err) {
             throw new EngineException(err);
@@ -838,7 +833,7 @@ public class TwitterEngine {
         try {
             // Twitter API returns removed tweet with false information
             // so get the tweet first before delete
-            Tweet tweet = new Tweet(twitter.showStatus(tweetId), twitter.getId());
+            TweetV1 tweet = new TweetV1(twitter.showStatus(tweetId), twitter.getId());
             twitter.destroyStatus(tweetId);
             return tweet;
         } catch (Exception err) {
@@ -854,14 +849,14 @@ public class TwitterEngine {
      * @return List of users
      * @throws EngineException if Access is unavailable
      */
-    public UserList getRetweeter(long tweetID, long cursor) throws EngineException {
+    public Users getRetweeter(long tweetID, long cursor) throws EngineException {
         try {
             int load = settings.getListSize();
             IDs userIDs = twitter.getRetweeterIds(tweetID, load, cursor);
             long[] ids = userIDs.getIDs();
             long prevCursor = cursor > 0 ? cursor : 0;
             long nextCursor = userIDs.getNextCursor(); // fixme next cursor always zero
-            UserList result = new UserList(prevCursor, nextCursor);
+            Users result = new Users(prevCursor, nextCursor);
             if (ids.length > 0) {
                 result.addAll(convertUserList(twitter.lookupUsers(ids)));
             }
@@ -878,7 +873,7 @@ public class TwitterEngine {
      * @return list of users liking a tweet
      * @throws EngineException if Access is unavailable
      */
-    public UserList getFavoriter(long tweetId, long cursor) throws EngineException {
+    public Users getFavoriter(long tweetId, long cursor) throws EngineException {
         try {
             UsersResponse response = LikesExKt.getLikingUsers(twitter, tweetId, null, null, null);
             List<User2> users = response.getUsers();
@@ -886,7 +881,7 @@ public class TwitterEngine {
             for (int i = 0 ; i < ids.length ; i++)
                 ids[i] = users.get(i).getId();
             // lookup users with Twitter4J for maximum compability
-            UserList result = new UserList(cursor, 0);
+            Users result = new Users(cursor, 0);
             result.addAll(convertUserList(twitter.lookupUsers(ids)));
             return result;
         } catch (TwitterException err) {
@@ -901,7 +896,7 @@ public class TwitterEngine {
      * @return list of messages
      * @throws EngineException if access is unavailable
      */
-    public MessageList getMessages(@Nullable String cursor) throws EngineException {
+    public Directmessages getMessages(@Nullable String cursor) throws EngineException {
         try {
             DirectMessageList dmList;
             int load = settings.getListSize();
@@ -910,7 +905,7 @@ public class TwitterEngine {
             } else {
                 dmList = twitter.getDirectMessages(load);
             }
-            MessageList result = new MessageList(cursor, dmList.getNextCursor());
+            Directmessages result = new Directmessages(cursor, dmList.getNextCursor());
             HashMap<Long, User> userMap = new HashMap<>();
 
             for (DirectMessage dm : dmList) {
@@ -937,7 +932,7 @@ public class TwitterEngine {
                         userMap.put(dm.getRecipientId(), receiver);
                     }
                     // build message and add to list
-                    Message message = new Message(dm, sender, receiver);
+                    DirectMessageV1 message = new DirectMessageV1(dm, sender, receiver);
                     result.add(message);
                 } catch (EngineException err) {
                     // ignore messages from suspended/deleted users
@@ -1003,7 +998,7 @@ public class TwitterEngine {
             if (bannerImg != null && !bannerImg.isEmpty())
                 twitter.updateProfileBanner(new File(bannerImg));
             twitter4j.User user = twitter.updateProfile(name, url, loc, bio);
-            return new User(user, twitter.getId());
+            return new UserV1(user, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1028,7 +1023,7 @@ public class TwitterEngine {
             long nextCursor = 0;
             UserLists result = new UserLists(prevCursor, nextCursor); // todo add paging system
             for (twitter4j.UserList list : lists)
-                result.add(new TwitterList(list, twitter.getId()));
+                result.add(new UserListV1(list, twitter.getId()));
             return result;
         } catch (Exception err) {
             throw new EngineException(err);
@@ -1056,7 +1051,7 @@ public class TwitterEngine {
             long nextCursor = lists.getNextCursor();
             UserLists result = new UserLists(prevCursor, nextCursor);
             for (twitter4j.UserList list : lists)
-                result.add(new TwitterList(list, twitter.getId()));
+                result.add(new UserListV1(list, twitter.getId()));
             return result;
         } catch (Exception err) {
             throw new EngineException(err);
@@ -1070,9 +1065,9 @@ public class TwitterEngine {
      * @return list information
      * @throws EngineException if access is unavailable
      */
-    public TwitterList loadUserList(long listId) throws EngineException {
+    public UserList loadUserList(long listId) throws EngineException {
         try {
-            return new TwitterList(twitter.showUserList(listId), twitter.getId());
+            return new UserListV1(twitter.showUserList(listId), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1086,7 +1081,7 @@ public class TwitterEngine {
      * @return List information
      * @throws EngineException if access is unavailable
      */
-    public TwitterList followUserList(long listId, boolean follow) throws EngineException {
+    public UserList followUserList(long listId, boolean follow) throws EngineException {
         try {
             twitter4j.UserList list;
             if (follow) {
@@ -1094,7 +1089,7 @@ public class TwitterEngine {
             } else {
                 list = twitter.destroyUserListSubscription(listId);
             }
-            return new TwitterList(list, twitter.getId(), follow);
+            return new UserListV1(list, twitter.getId(), follow);
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1107,9 +1102,9 @@ public class TwitterEngine {
      * @return List information
      * @throws EngineException if access is unavailable
      */
-    public TwitterList deleteUserList(long listId) throws EngineException {
+    public UserList deleteUserList(long listId) throws EngineException {
         try {
-            return new TwitterList(twitter.destroyUserList(listId), twitter.getId());
+            return new UserListV1(twitter.destroyUserList(listId), twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1122,7 +1117,7 @@ public class TwitterEngine {
      * @return list of users following the list
      * @throws EngineException if access is unavailable
      */
-    public UserList getListFollower(long listId, long cursor) throws EngineException {
+    public Users getListFollower(long listId, long cursor) throws EngineException {
         try {
             PagableResponseList<twitter4j.User> users = twitter.getUserListSubscribers(listId, cursor);
             return createUserList(users, cursor);
@@ -1138,7 +1133,7 @@ public class TwitterEngine {
      * @return list of users
      * @throws EngineException if access is unavailable
      */
-    public UserList getListMember(long listId, long cursor) throws EngineException {
+    public Users getListMember(long listId, long cursor) throws EngineException {
         try {
             PagableResponseList<twitter4j.User> users = twitter.getUserListMembers(listId, cursor);
             return createUserList(users, cursor);
@@ -1225,7 +1220,7 @@ public class TwitterEngine {
      * @param list holder for list information
      * @throws EngineException if access is unavailable
      */
-    public TwitterList updateUserList(ListHolder list) throws EngineException {
+    public UserListV1 updateUserList(ListHolder list) throws EngineException {
         try {
             twitter4j.UserList result;
             if (list.exists()) {
@@ -1233,7 +1228,7 @@ public class TwitterEngine {
             } else {
                 result = twitter.createUserList(list.getTitle(), list.isPublic(), list.getDescription());
             }
-            return new TwitterList(result, twitter.getId());
+            return new UserListV1(result, twitter.getId());
         } catch (Exception err) {
             throw new EngineException(err);
         }
@@ -1277,10 +1272,10 @@ public class TwitterEngine {
      * @return user list
      * @throws TwitterException if access is unavailable
      */
-    private UserList createUserList(PagableResponseList<twitter4j.User> list, long cursor) throws TwitterException {
+    private Users createUserList(PagableResponseList<twitter4j.User> list, long cursor) throws TwitterException {
         long prevCursor = cursor > 0 ? cursor : 0;
         long nextCursor = list.getNextCursor();
-        UserList result = new UserList(prevCursor, nextCursor);
+        Users result = new Users(prevCursor, nextCursor);
         if (!list.isEmpty()) {
             result.addAll(convertUserList(list));
         }
@@ -1298,7 +1293,7 @@ public class TwitterEngine {
         ArrayList<User> result = new ArrayList<>();
         result.ensureCapacity(users.size());
         for (twitter4j.User user : users) {
-            result.add(new User(user, id));
+            result.add(new UserV1(user, id));
         }
         return result;
     }
@@ -1315,7 +1310,7 @@ public class TwitterEngine {
         List<User> result = new LinkedList<>();
         for (twitter4j.User user : users) {
             if (!exclude.contains(user.getId())) {
-                result.add(new User(user, id));
+                result.add(new UserV1(user, id));
             }
         }
         return result;
@@ -1349,7 +1344,7 @@ public class TwitterEngine {
         result.ensureCapacity(statuses.size());
         long id = twitter.getId();
         for (Status status : statuses)
-            result.add(new Tweet(status, id));
+            result.add(new TweetV1(status, id));
         return result;
     }
 
@@ -1365,7 +1360,7 @@ public class TwitterEngine {
         Set<Long> exclude = excludeDB.getExcludeSet();
         for (Status status : statuses) {
             if (!exclude.contains(status.getUser().getId())) {
-                result.add(new Tweet(status, id));
+                result.add(new TweetV1(status, id));
             }
         }
         return result;

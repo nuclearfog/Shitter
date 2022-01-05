@@ -1,15 +1,16 @@
-package org.nuclearfog.twidda.backend.model;
+package org.nuclearfog.twidda.backend.apiold;
 
 import androidx.annotation.NonNull;
 
-import java.io.Serializable;
+import org.nuclearfog.twidda.model.User;
+import org.nuclearfog.twidda.model.UserList;
 
 /**
- * Class for Twitter list information
+ * implementation of an user list
  *
  * @author nuclearfog
  */
-public class TwitterList implements Serializable {
+class UserListV1 implements UserList {
 
     private long id;
     private long createdAt;
@@ -23,15 +24,11 @@ public class TwitterList implements Serializable {
     private String title = "";
     private String description = "";
 
-    /**
-     * @param list        Twitter4J List
-     * @param homeId      ID of the authenticated user
-     * @param isFollowing authenticated user is following list
-     */
-    public TwitterList(twitter4j.UserList list, long homeId, boolean isFollowing) {
+
+    UserListV1(twitter4j.UserList list, long homeId, boolean isFollowing) {
         id = list.getId();
         createdAt = list.getCreatedAt().getTime();
-        owner = new User(list.getUser(), homeId);
+        owner = new UserV1(list.getUser(), homeId);
         isPrivate = !list.isPublic();
         memberCount = list.getMemberCount();
         subscriberCnt = list.getSubscriberCount();
@@ -42,7 +39,8 @@ public class TwitterList implements Serializable {
         this.isFollowing = isFollowing;
     }
 
-    public TwitterList(twitter4j.UserList list, long homeId) {
+
+    UserListV1(twitter4j.UserList list, long homeId) {
         this(list, homeId, list.isFollowing());
     }
 
@@ -51,6 +49,7 @@ public class TwitterList implements Serializable {
      *
      * @return List ID
      */
+    @Override
     public long getId() {
         return id;
     }
@@ -60,6 +59,7 @@ public class TwitterList implements Serializable {
      *
      * @return date long format
      */
+    @Override
     public long getCreatedAt() {
         return createdAt;
     }
@@ -69,6 +69,7 @@ public class TwitterList implements Serializable {
      *
      * @return title name
      */
+    @Override
     public String getTitle() {
         return title;
     }
@@ -78,6 +79,7 @@ public class TwitterList implements Serializable {
      *
      * @return description
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -87,6 +89,7 @@ public class TwitterList implements Serializable {
      *
      * @return twitter user
      */
+    @Override
     public User getListOwner() {
         return owner;
     }
@@ -96,6 +99,7 @@ public class TwitterList implements Serializable {
      *
      * @return true is list is private
      */
+    @Override
     public boolean isPrivate() {
         return isPrivate;
     }
@@ -105,6 +109,7 @@ public class TwitterList implements Serializable {
      *
      * @return true if current user is following
      */
+    @Override
     public boolean isFollowing() {
         return isFollowing;
     }
@@ -114,6 +119,7 @@ public class TwitterList implements Serializable {
      *
      * @return member count
      */
+    @Override
     public int getMemberCount() {
         return memberCount;
     }
@@ -123,6 +129,7 @@ public class TwitterList implements Serializable {
      *
      * @return subscriber count
      */
+    @Override
     public int getSubscriberCount() {
         return subscriberCnt;
     }
@@ -132,6 +139,7 @@ public class TwitterList implements Serializable {
      *
      * @return true if current user is owner
      */
+    @Override
     public boolean isListOwner() {
         return owner.isCurrentUser();
     }
@@ -146,8 +154,8 @@ public class TwitterList implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof TwitterList)
-            return ((TwitterList) o).id == id;
+        if (o instanceof UserListV1)
+            return ((UserListV1) o).id == id;
         return false;
     }
 }

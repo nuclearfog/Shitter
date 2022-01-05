@@ -28,7 +28,9 @@ android {
             proguardFile 'proguard-rules.pro'
         }
         debug {
-            minifyEnabled false
+            multiDexEnabled false
+            //minifyEnabled true
+            proguardFile 'proguard-debug.pro'
             applicationIdSuffix '.debug'
             versionNameSuffix '.DEBUG'
         }

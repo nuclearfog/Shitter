@@ -16,11 +16,11 @@ import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.ListHolder;
 import org.nuclearfog.twidda.backend.lists.UserLists;
-import org.nuclearfog.twidda.backend.model.TwitterList;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 import org.nuclearfog.twidda.fragments.UserListFragment;
+import org.nuclearfog.twidda.model.UserList;
 
 import java.text.NumberFormat;
 
@@ -116,7 +116,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
      * @param list updated list
      */
     @MainThread
-    public void updateItem(TwitterList list) {
+    public void updateItem(UserList list) {
         int index = data.indexOf(list);
         if (index >= 0) {
             data.set(index, list);
@@ -162,7 +162,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = itemHolder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        TwitterList item = data.get(position);
+                        UserList item = data.get(position);
                         if (item != null) {
                             listener.onProfileClick(item.getListOwner());
                         }
@@ -174,7 +174,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 public void onClick(View v) {
                     int position = itemHolder.getLayoutPosition();
                     if (position != NO_POSITION) {
-                        TwitterList list = data.get(position);
+                        UserList list = data.get(position);
                         listener.onListClick(list);
                     }
                 }
@@ -204,7 +204,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int index) {
         if (holder instanceof ListHolder) {
             ListHolder vh = (ListHolder) holder;
-            TwitterList item = data.get(index);
+            UserList item = data.get(index);
             if (item != null) {
                 User owner = item.getListOwner();
                 vh.textViews[0].setText(item.getTitle());
@@ -214,8 +214,8 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 vh.textViews[4].setText(formatCreationTime(item.getCreatedAt()));
                 vh.textViews[5].setText(NUM_FORMAT.format(item.getMemberCount()));
                 vh.textViews[6].setText(NUM_FORMAT.format(item.getSubscriberCount()));
-                if (settings.imagesEnabled() && owner.hasProfileImage()) {
-                    String pbLink = owner.getImageLink();
+                if (settings.imagesEnabled() && !owner.getImageUrl().isEmpty()) {
+                    String pbLink = owner.getImageUrl();
                     if (!owner.hasDefaultProfileImage())
                         pbLink += settings.getImageSuffix();
                     picasso.load(pbLink).transform(new RoundedCornersTransformation(3, 0))
@@ -235,7 +235,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
                 } else {
                     vh.icons[0].setVisibility(GONE);
                 }
-                if (owner.isLocked()) {
+                if (owner.isProtected()) {
                     vh.icons[1].setVisibility(VISIBLE);
                 } else {
                     vh.icons[1].setVisibility(GONE);
@@ -273,7 +273,7 @@ public class ListAdapter extends Adapter<ViewHolder> {
          *
          * @param listItem Item data and information
          */
-        void onListClick(TwitterList listItem);
+        void onListClick(UserList listItem);
 
         /**
          * called when the profile image of the owner was clicked

@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.lists.MessageList;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.database.AppDatabase;
 import org.nuclearfog.twidda.fragments.MessageFragment;
 
@@ -19,7 +19,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see MessageFragment
  */
-public class MessageLoader extends AsyncTask<Long, Void, MessageList> {
+public class MessageLoader extends AsyncTask<Long, Void, Directmessages> {
 
     /**
      * action to perform
@@ -64,13 +64,13 @@ public class MessageLoader extends AsyncTask<Long, Void, MessageList> {
 
 
     @Override
-    protected MessageList doInBackground(Long[] param) {
+    protected Directmessages doInBackground(Long[] param) {
         long messageId = 0;
         try {
             switch (action) {
                 case DB:
                     // TODO store cursor in the preferences
-                    MessageList messages = db.getMessages();
+                    Directmessages messages = db.getMessages();
                     if (messages.isEmpty()) {
                         messages = mTwitter.getMessages(null);
                         db.storeMessage(messages);
@@ -103,7 +103,7 @@ public class MessageLoader extends AsyncTask<Long, Void, MessageList> {
 
 
     @Override
-    protected void onPostExecute(@Nullable MessageList messages) {
+    protected void onPostExecute(@Nullable Directmessages messages) {
         if (callback.get() != null) {
             if (messages != null) {
                 callback.get().setData(messages);

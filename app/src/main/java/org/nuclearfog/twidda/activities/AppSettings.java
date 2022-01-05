@@ -49,9 +49,9 @@ import org.nuclearfog.twidda.adapter.FontAdapter;
 import org.nuclearfog.twidda.adapter.LocationAdapter;
 import org.nuclearfog.twidda.adapter.ScaleAdapter;
 import org.nuclearfog.twidda.backend.LocationLoader;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.model.TrendLocation;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.model.Location;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.database.AccountDatabase;
@@ -627,12 +627,11 @@ public class AppSettings extends AppCompatActivity implements OnClickListener, O
      *
      * @param data location data
      */
-    public void setLocationData(List<TrendLocation> data) {
+    public void setLocationData(List<Location> data) {
         locationAdapter.setData(data);
         int position = locationAdapter.getPosition(settings.getTrendLocation());
-        if (position > 0) {
+        if (position > 0)
             locationSpinner.setSelection(position, false);
-        }
         locationSpinner.setOnItemSelectedListener(this);
     }
 

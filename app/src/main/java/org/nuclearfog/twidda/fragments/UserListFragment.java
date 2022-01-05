@@ -12,11 +12,11 @@ import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.ListAdapter;
 import org.nuclearfog.twidda.adapter.ListAdapter.ListClickListener;
 import org.nuclearfog.twidda.backend.ListLoader;
-import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.lists.UserLists;
-import org.nuclearfog.twidda.backend.model.TwitterList;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
+import org.nuclearfog.twidda.model.UserList;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static org.nuclearfog.twidda.activities.ListDetail.KEY_LIST_DATA;
@@ -140,8 +140,8 @@ public class UserListFragment extends ListFragment implements ListClickListener 
                 adapter.removeItem(removedListId);
             } else if (resultCode == RETURN_LIST_UPDATED) {
                 Object result = data.getSerializableExtra(RESULT_UPDATE_LIST);
-                if (result instanceof TwitterList) {
-                    TwitterList update = (TwitterList) result;
+                if (result instanceof UserList) {
+                    UserList update = (UserList) result;
                     adapter.updateItem(update);
                 }
             }
@@ -158,7 +158,7 @@ public class UserListFragment extends ListFragment implements ListClickListener 
 
 
     @Override
-    public void onListClick(TwitterList listItem) {
+    public void onListClick(UserList listItem) {
         Intent listIntent = new Intent(requireContext(), ListDetail.class);
         listIntent.putExtra(KEY_LIST_DATA, listItem);
         startActivityForResult(listIntent, REQUEST_OPEN_LIST);

@@ -17,8 +17,8 @@ import org.nuclearfog.tag.Tagger;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.TweetHolder;
-import org.nuclearfog.twidda.backend.model.Tweet;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -277,12 +277,12 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             tweetItem.textViews[4].setText(NUM_FORMAT.format(tweet.getFavoriteCount()));
             tweetItem.textViews[6].setText(formatCreationTime(tweet.getTime()));
 
-            if (tweet.retweeted()) {
+            if (tweet.isRetweeted()) {
                 tweetItem.rtIcon.setColorFilter(settings.getRetweetIconColor(), SRC_IN);
             } else {
                 tweetItem.rtIcon.setColorFilter(settings.getIconColor(), SRC_IN);
             }
-            if (tweet.favored()) {
+            if (tweet.isFavorited()) {
                 tweetItem.favIcon.setColorFilter(settings.getFavoriteIconColor(), SRC_IN);
             } else {
                 tweetItem.favIcon.setColorFilter(settings.getIconColor(), SRC_IN);
@@ -292,13 +292,13 @@ public class TweetAdapter extends Adapter<ViewHolder> {
             } else {
                 tweetItem.verifiedIcon.setVisibility(GONE);
             }
-            if (user.isLocked()) {
+            if (user.isProtected()) {
                 tweetItem.lockedIcon.setVisibility(VISIBLE);
             } else {
                 tweetItem.lockedIcon.setVisibility(GONE);
             }
-            if (settings.imagesEnabled() && user.hasProfileImage()) {
-                String pbLink = user.getImageLink();
+            if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
+                String pbLink = user.getImageUrl();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
                 picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))

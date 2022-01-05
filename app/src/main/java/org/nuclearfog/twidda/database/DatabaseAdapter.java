@@ -52,7 +52,7 @@ public class DatabaseAdapter {
             + TweetTable.NAME + "("
             + TweetTable.ID + " INTEGER PRIMARY KEY,"
             + TweetTable.USER + " INTEGER,"
-            + TweetTable.RETWEETID + " INTEGER,"
+            + TweetTable.EMBEDDED + " INTEGER,"
             + TweetTable.REPLYTWEET + " INTEGER,"
             + TweetTable.RETWEETUSER + " INTEGER,"
             + TweetTable.REPLYNAME + " TEXT,"
@@ -94,11 +94,11 @@ public class DatabaseAdapter {
      * SQL query to create a table for message information
      */
     private static final String TABLE_MESSAGES = "CREATE TABLE IF NOT EXISTS "
-            + MessageTable.TABLE + "("
+            + MessageTable.NAME + "("
             + MessageTable.ID + " INTEGER PRIMARY KEY,"
             + MessageTable.SINCE + " INTEGER,"
-            + MessageTable.SENDER + " INTEGER,"
-            + MessageTable.RECEIVER + " INTEGER,"
+            + MessageTable.FROM + " INTEGER,"
+            + MessageTable.TO + " INTEGER,"
             + MessageTable.MESSAGE + " TEXT);";
 
     /**
@@ -312,6 +312,10 @@ public class DatabaseAdapter {
          */
         String NAME = "user";
 
+        String ALIAS_1 = "user1";
+
+        String ALIAS_2 = "user2";
+
         /**
          * ID of the user
          */
@@ -455,7 +459,7 @@ public class DatabaseAdapter {
         /**
          * ID of the embedded (retweeted) status
          */
-        String RETWEETID = "retweetID";
+        String EMBEDDED = "retweetID";
 
         /**
          * ID of the
@@ -519,7 +523,7 @@ public class DatabaseAdapter {
         /**
          * table name
          */
-        String TABLE = "message";
+        String NAME = "message";
 
         /**
          * ID of the message
@@ -534,12 +538,12 @@ public class DatabaseAdapter {
         /**
          * User ID of the sender
          */
-        String SENDER = "senderID";
+        String FROM = "senderID";
 
         /**
          * User ID of the receiver
          */
-        String RECEIVER = "receiverID";
+        String TO = "receiverID";
 
         /**
          * message text
@@ -617,6 +621,10 @@ public class DatabaseAdapter {
          * SQL table name
          */
         String NAME = "userFlags";
+
+        String ALIAS_1 = "userFlags1";
+
+        String ALIAS_2 = "userFlags2";
 
         /**
          * ID of the user this register references to

@@ -15,7 +15,7 @@ import android.graphics.Typeface;
 
 import androidx.annotation.NonNull;
 
-import org.nuclearfog.twidda.backend.model.TrendLocation;
+import org.nuclearfog.twidda.model.Location;
 
 /**
  * This class manages app settings
@@ -130,7 +130,7 @@ public class GlobalSettings {
 
 
     private SharedPreferences settings;
-    private TrendLocation location;
+    private Location location;
     private String api_key1, api_key2;
     private String auth_key1, auth_key2;
     private boolean loadImage;
@@ -570,7 +570,7 @@ public class GlobalSettings {
      *
      * @return saved location information
      */
-    public TrendLocation getTrendLocation() {
+    public Location getTrendLocation() {
         return location;
     }
 
@@ -579,11 +579,11 @@ public class GlobalSettings {
      *
      * @param location location information
      */
-    public void setTrendLocation(TrendLocation location) {
+    public void setTrendLocation(Location location) {
         this.location = location;
 
         Editor edit = settings.edit();
-        edit.putInt(TREND_ID, location.getWoeId());
+        edit.putInt(TREND_ID, location.getId());
         edit.putString(TREND_LOC, location.getName());
         edit.apply();
     }
@@ -894,16 +894,25 @@ public class GlobalSettings {
      * @param userId User ID
      */
     public void setConnection(String key1, String key2, long userId) {
-        loggedIn = true;
+        setConnection(key1, key2);
+        setUserId(userId);
+    }
+
+    public void setConnection(String key1, String key2) {
         this.auth_key1 = key1;
         this.auth_key2 = key2;
-        this.userId = userId;
-
+        loggedIn = true;
         Editor e = settings.edit();
-        e.putBoolean(LOGGED_IN, true);
-        e.putLong(CURRENT_ID, userId);
         e.putString(CURRENT_AUTH_KEY1, key1);
         e.putString(CURRENT_AUTH_KEY2, key2);
+        e.putBoolean(LOGGED_IN, true);
+        e.apply();
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+        Editor e = settings.edit();
+        e.putLong(CURRENT_ID, userId);
         e.apply();
     }
 
@@ -991,7 +1000,7 @@ public class GlobalSettings {
         proxyPass = settings.getString(PROXY_PASS, "");
         String place = settings.getString(TREND_LOC, DEFAULT_LOCATION_NAME);
         int woeId = settings.getInt(TREND_ID, DEFAULT_LOCATION_ID);
-        location = new TrendLocation(place, woeId);
+        location = new LocationDB(place, woeId);
 
         api_key1 = settings.getString(CUSTOM_CONSUMER_KEY_1, "");
         api_key2 = settings.getString(CUSTOM_CONSUMER_KEY_2, "");

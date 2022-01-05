@@ -2,11 +2,8 @@ package org.nuclearfog.twidda.backend;
 
 import android.os.AsyncTask;
 
-import androidx.annotation.Nullable;
-
 import org.nuclearfog.twidda.activities.LoginActivity;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.api.TwitterImpl;
 import org.nuclearfog.twidda.database.AccountDatabase;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -20,11 +17,9 @@ import java.lang.ref.WeakReference;
  */
 public class Registration extends AsyncTask<String, Void, String> {
 
-    @Nullable
-    private EngineException twException;
     private WeakReference<LoginActivity> callback;
     private AccountDatabase accountDB;
-    private TwitterEngine mTwitter;
+    private TwitterImpl twitter;
     private GlobalSettings settings;
 
     /**
@@ -38,7 +33,7 @@ public class Registration extends AsyncTask<String, Void, String> {
         // init database and storage
         accountDB = new AccountDatabase(activity);
         settings = GlobalSettings.getInstance(activity);
-        mTwitter = TwitterEngine.getEmptyInstance(activity);
+        twitter = TwitterImpl.get(activity);
     }
 
 
@@ -51,13 +46,12 @@ public class Registration extends AsyncTask<String, Void, String> {
                 accountDB.setLogin(settings.getCurrentUserId(), tokens[0], tokens[1]);
             }
             // no PIN means we need to request a token to login
-            if (param.length == 0)
-                return mTwitter.request();
+            if (param.length == 0) {
+                return twitter.getRequestURL();
+            }
             // login with pin
-            mTwitter.initialize(param[0]);
+            twitter.login(param[0]);
             return "";
-        } catch (EngineException twException) {
-            this.twException = twException;
         } catch (Exception err) {
             err.printStackTrace();
         }
@@ -74,8 +68,6 @@ public class Registration extends AsyncTask<String, Void, String> {
                 } else {
                     callback.get().onSuccess();
                 }
-            } else if (twException != null) {
-                callback.get().onError(twException);
             }
         }
     }

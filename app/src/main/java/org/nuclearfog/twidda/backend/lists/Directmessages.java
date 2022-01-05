@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.model.Message;
+import org.nuclearfog.twidda.model.DirectMessage;
 
 import java.util.LinkedList;
 
@@ -12,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class MessageList extends LinkedList<Message> {
+public class Directmessages extends LinkedList<DirectMessage> {
 
     private String prevCursor, nextCursor;
 
@@ -20,7 +20,7 @@ public class MessageList extends LinkedList<Message> {
      * @param prevCursor cursor to a previous list
      * @param nextCursor cursor to a next list
      */
-    public MessageList(String prevCursor, String nextCursor) {
+    public Directmessages(String prevCursor, String nextCursor) {
         super();
         this.prevCursor = prevCursor;
         this.nextCursor = nextCursor;
@@ -28,7 +28,7 @@ public class MessageList extends LinkedList<Message> {
 
     @Override
     @Nullable
-    public Message get(int index) {
+    public DirectMessage get(int index) {
         return super.get(index);
     }
 
@@ -37,7 +37,7 @@ public class MessageList extends LinkedList<Message> {
      *
      * @param list new list
      */
-    public void replaceAll(MessageList list) {
+    public void replaceAll(Directmessages list) {
         super.clear();
         super.addAll(list);
         prevCursor = list.prevCursor;
@@ -50,7 +50,7 @@ public class MessageList extends LinkedList<Message> {
      * @param list  new list
      * @param index Index of the sub list
      */
-    public void addAt(MessageList list, int index) {
+    public void addAt(Directmessages list, int index) {
         super.addAll(index, list);
         nextCursor = list.nextCursor;
     }
@@ -63,7 +63,7 @@ public class MessageList extends LinkedList<Message> {
      */
     public int removeItem(long id) {
         for (int index = 0; index < size(); index++) {
-            Message item = get(index);
+            DirectMessage item = get(index);
             if (item != null && item.getId() == id) {
                 remove(index);
                 return index;

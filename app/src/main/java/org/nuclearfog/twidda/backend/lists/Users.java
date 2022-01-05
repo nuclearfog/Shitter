@@ -3,7 +3,8 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.model.User;
+
+import org.nuclearfog.twidda.model.User;
 
 import java.util.LinkedList;
 
@@ -12,12 +13,12 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class UserList extends LinkedList<User> {
+public class Users extends LinkedList<User> {
 
     private long prevCursor = 0;
     private long nextCursor = 0;
 
-    public UserList() {
+    public Users() {
         super();
     }
 
@@ -27,7 +28,7 @@ public class UserList extends LinkedList<User> {
      * @param prevCursor previous cursor of the list
      * @param nextCursor next cursor of the list
      */
-    public UserList(long prevCursor, long nextCursor) {
+    public Users(long prevCursor, long nextCursor) {
         super();
         this.prevCursor = prevCursor;
         this.nextCursor = nextCursor;
@@ -88,7 +89,7 @@ public class UserList extends LinkedList<User> {
      *
      * @param list new list
      */
-    public void replace(UserList list) {
+    public void replace(Users list) {
         super.clear();
         super.addAll(list);
         prevCursor = list.prevCursor;
@@ -101,7 +102,7 @@ public class UserList extends LinkedList<User> {
      * @param list  new sublist
      * @param index index of the sub list
      */
-    public void addAt(UserList list, int index) {
+    public void addAt(Users list, int index) {
         super.addAll(index, list);
         nextCursor = list.nextCursor;
     }

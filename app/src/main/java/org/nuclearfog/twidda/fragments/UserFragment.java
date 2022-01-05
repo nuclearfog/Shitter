@@ -22,9 +22,9 @@ import org.nuclearfog.twidda.backend.ListManager;
 import org.nuclearfog.twidda.backend.ListManager.ListManagerCallback;
 import org.nuclearfog.twidda.backend.UserLoader;
 import org.nuclearfog.twidda.backend.UserLoader.Type;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.lists.UserList;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
@@ -250,7 +250,7 @@ public class UserFragment extends ListFragment implements UserClickListener,
      *
      * @param data list of twitter users
      */
-    public void setData(UserList data) {
+    public void setData(Users data) {
         adapter.setData(data);
         setRefresh(false);
     }

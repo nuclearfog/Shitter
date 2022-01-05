@@ -19,13 +19,13 @@ import org.nuclearfog.twidda.activities.UserProfile;
 import org.nuclearfog.twidda.adapter.MessageAdapter;
 import org.nuclearfog.twidda.adapter.MessageAdapter.OnItemSelected;
 import org.nuclearfog.twidda.backend.MessageLoader;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.lists.MessageList;
-import org.nuclearfog.twidda.backend.model.Message;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.lists.Directmessages;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.DialogType;
 import org.nuclearfog.twidda.dialog.ConfirmDialog.OnConfirmListener;
+import org.nuclearfog.twidda.model.DirectMessage;
 
 import static android.os.AsyncTask.Status.RUNNING;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -129,7 +129,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
 
 
     @Override
-    public void onClick(Message message, Action action) {
+    public void onClick(DirectMessage message, Action action) {
         if (!isRefreshing()) {
             switch (action) {
                 case ANSWER:
@@ -178,7 +178,7 @@ public class MessageFragment extends ListFragment implements OnItemSelected, OnC
      *
      * @param data list of direct messages
      */
-    public void setData(MessageList data) {
+    public void setData(Directmessages data) {
         adapter.setData(data);
         setRefresh(false);
     }

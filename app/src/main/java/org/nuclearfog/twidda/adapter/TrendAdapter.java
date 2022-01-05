@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.TrendHolder;
-import org.nuclearfog.twidda.backend.model.Trend;
 import org.nuclearfog.twidda.database.GlobalSettings;
+import org.nuclearfog.twidda.model.Trend;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -112,11 +112,11 @@ public class TrendAdapter extends Adapter<ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder vh, int index) {
         TrendHolder holder = (TrendHolder) vh;
         Trend trend = trends.get(index);
-        holder.textViews[0].setText(trend.getRankStr());
+        holder.textViews[0].setText(trend.getRank() + ".");
         holder.textViews[1].setText(trend.getName());
-        if (trend.hasRangeInfo()) {
+        if (trend.getPopularity() > 0) {
             Resources resources = holder.textViews[2].getContext().getResources();
-            String trendVol = NUM_FORMAT.format(trend.getRange()) + " " + resources.getString(R.string.trend_range);
+            String trendVol = NUM_FORMAT.format(trend.getPopularity()) + " " + resources.getString(R.string.trend_range);
             holder.textViews[2].setText(trendVol);
             holder.textViews[2].setVisibility(VISIBLE);
         } else {

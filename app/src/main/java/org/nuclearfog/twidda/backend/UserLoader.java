@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.lists.UserList;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.backend.lists.Users;
 import org.nuclearfog.twidda.fragments.UserFragment;
 
 import java.lang.ref.WeakReference;
@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * @author nuclearfog
  * @see UserFragment
  */
-public class UserLoader extends AsyncTask<Long, Void, UserList> {
+public class UserLoader extends AsyncTask<Long, Void, Users> {
 
     public static final long NO_CURSOR = -1;
 
@@ -85,7 +85,7 @@ public class UserLoader extends AsyncTask<Long, Void, UserList> {
 
 
     @Override
-    protected UserList doInBackground(Long[] param) {
+    protected Users doInBackground(Long[] param) {
         try {
             long cursor = param[0];
             switch (type) {
@@ -125,7 +125,7 @@ public class UserLoader extends AsyncTask<Long, Void, UserList> {
 
 
     @Override
-    protected void onPostExecute(UserList users) {
+    protected void onPostExecute(Users users) {
         if (callback.get() != null) {
             if (users != null) {
                 callback.get().setData(users);

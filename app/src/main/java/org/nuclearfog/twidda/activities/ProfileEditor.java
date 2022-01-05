@@ -38,8 +38,8 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.UserUpdater;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
@@ -148,8 +148,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
         String userLink = link.getText().toString();
         String userLoc = loc.getText().toString();
         String userBio = bio.getText().toString();
-        if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getLink())
-                && userLoc.equals(user.getLocation()) && userBio.equals(user.getBio())
+        if (user != null && username.equals(user.getUsername()) && userLink.equals(user.getProfileUrl())
+                && userLoc.equals(user.getLocation()) && userBio.equals(user.getDescription())
                 && profileLink == null && bannerLink == null) {
             finish();
         } else if (username.isEmpty() && userLink.isEmpty() && userLoc.isEmpty() && userBio.isEmpty()) {
@@ -303,14 +303,14 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
      * Set current user's information
      */
     private void setUser() {
-        if (user.hasProfileImage()) {
-            String pbLink = user.getImageLink();
+        if (!user.getImageUrl().isEmpty()) {
+            String pbLink = user.getImageUrl();
             if (!user.hasDefaultProfileImage())
                 pbLink += PROFILE_IMG_HIGH_RES;
             picasso.load(pbLink).transform(new RoundedCornersTransformation(5, 0)).into(profile_image);
         }
-        if (user.hasBannerImage()) {
-            String bnLink = user.getBannerLink() + BANNER_IMG_MID_RES;
+        if (!user.getBannerUrl().isEmpty()) {
+            String bnLink = user.getBannerUrl() + BANNER_IMG_MID_RES;
             picasso.load(bnLink).into(profile_banner, this);
             addBannerBtn.setVisibility(INVISIBLE);
             changeBannerBtn.setVisibility(VISIBLE);
@@ -319,8 +319,8 @@ public class ProfileEditor extends MediaActivity implements OnClickListener, OnP
             changeBannerBtn.setVisibility(INVISIBLE);
         }
         name.setText(user.getUsername());
-        link.setText(user.getLink());
+        link.setText(user.getProfileUrl());
         loc.setText(user.getLocation());
-        bio.setText(user.getBio());
+        bio.setText(user.getDescription());
     }
 }

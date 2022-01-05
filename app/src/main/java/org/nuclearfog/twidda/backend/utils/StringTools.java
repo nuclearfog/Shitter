@@ -1,7 +1,20 @@
 package org.nuclearfog.twidda.backend.utils;
 
+import static org.nuclearfog.twidda.backend.api.TwitterImpl.HASH;
+
+import android.util.Base64;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
+
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * this class creates time strings
@@ -87,5 +100,108 @@ public final class StringTools {
             }
         }
         return result;
+    }
+
+    /**
+     * get current timestamp in seconds
+     *
+     * @return timestamp string
+     */
+    public static String getTimestamp() {
+        return Long.toString(new Date().getTime() / 1000);
+    }
+
+    /**
+     * create random string
+     *
+     * @return random percentaged string
+     */
+    public static String getRandomString() {
+        String rand = UUID.randomUUID().toString();
+        return new String(Base64.encode(rand.getBytes(), Base64.NO_PADDING | Base64.NO_WRAP));
+    }
+
+    /**
+     * convert to percentage string
+     *
+     * @param value string to convert
+     * @return percentage string
+     */
+    public static String encode(String value) {
+        try {
+            value = URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // ignore
+        }
+        StringBuilder buffer = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char focus = value.charAt(i);
+            switch(focus) {
+                case '*':
+                    buffer.append("%2A");
+                    break;
+
+                case '+':
+                    buffer.append("%20");
+                    break;
+
+                case '%':
+                    if ((i + 1) < value.length() && value.charAt(i + 1) == '7' && value.charAt(i + 2) == 'E') {
+                        buffer.append('~');
+                        i += 2;
+                        break;
+                    }
+
+                default:
+                    buffer.append(focus);
+                    break;
+            }
+        }
+        return buffer.toString();
+    }
+
+    /**
+     * sign GET API request
+     *
+     * @param endpoint API endpoint
+     * @param param API parameter to sign
+     * @param keyString key used to sign
+     * @return sign string
+     */
+    public static String signGet(String endpoint, String param, String keyString) {
+        String input = "GET&" + encode(endpoint) + "&" + encode(param);
+        return encode(computeSignature(input, keyString));
+    }
+
+    /**
+     * sign POST API request
+     *
+     * @param endpoint API endpoint
+     * @param param API parameter to sign
+     * @param keyString key used to sign
+     * @return sign string
+     */
+    public static String signPost(String endpoint, String param, String keyString) {
+        String input = "POST&" + encode(endpoint) + "&" + encode(param);
+        return encode(computeSignature(input, keyString));
+    }
+
+    /**
+     * calculate sign string
+     *
+     * @param baseString string to sign
+     * @param keyString key used for sign
+     * @return sign string
+     */
+    private static String computeSignature(String baseString, String keyString) {
+        try {
+            SecretKey secretKey = new SecretKeySpec(keyString.getBytes(), HASH);
+            Mac mac = Mac.getInstance(HASH);
+            mac.init(secretKey);
+            return new String(Base64.encode(mac.doFinal(baseString.getBytes()), Base64.DEFAULT)).trim();
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

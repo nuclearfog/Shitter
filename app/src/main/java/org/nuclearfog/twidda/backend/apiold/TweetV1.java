@@ -1,9 +1,10 @@
-package org.nuclearfog.twidda.backend.model;
+package org.nuclearfog.twidda.backend.apiold;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.Serializable;
+import org.nuclearfog.twidda.model.Tweet;
+import org.nuclearfog.twidda.model.User;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
@@ -11,45 +12,28 @@ import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 
 /**
- * Tweet class containing information about a tweet
+ * Tweet implementation for Twitter4J
  *
  * @author nuclearfog
  */
-public class Tweet implements Serializable {
+class TweetV1 implements Tweet {
 
-    /**
-     * type of media attached to the tweet
-     */
-    public enum MediaType {
-        IMAGE,
-        VIDEO,
-        GIF,
-        NONE
-    }
-
-    private static final String PHOTO = "photo";
-    private static final String VIDEO = "video";
-    private static final String ANGIF = "animated_gif";
-    private static final String MEDIA_VIDEO = "video/mp4";
+    private static final String MIME_PHOTO = "photo";
+    private static final String MIME_VIDEO = "video";
+    private static final String MIME_ANGIF = "animated_gif";
+    private static final String MIME_V_MP4 = "video/mp4";
 
     private long tweetID;
     private long time;
-
-    private User user;
     @Nullable
-    private Tweet embedded;
-    private MediaType mediaType;
-
-    private long replyID;
+    private TweetV1 embedded;
+    private User user;
+    private long replyId;
     private long replyUserId;
-
+    private long myRetweetId;
     private int retweetCount;
     private int favoriteCount;
-    private long myRetweetId;
-    private boolean retweeted;
-    private boolean favorited;
-    private boolean sensitiveMedia;
-
+    private int mediaType;
     private String[] mediaLinks = {};
     private String userMentions = "";
     private String locationName = "";
@@ -57,15 +41,18 @@ public class Tweet implements Serializable {
     private String replyName = "";
     private String tweet = "";
     private String source = "";
+    private boolean retweeted;
+    private boolean favorited;
+    private boolean sensitiveMedia;
 
     /**
      * @param status    tweet
      * @param twitterId ID of the current user
      */
-    public Tweet(Status status, long twitterId) {
+    TweetV1(Status status, long twitterId) {
         if (status.getRetweetedStatus() != null) {
             Status retweet = status.getRetweetedStatus();
-            embedded = new Tweet(retweet, twitterId);
+            embedded = new TweetV1(retweet, twitterId);
             this.retweetCount = retweet.getRetweetCount();
             this.favoriteCount = retweet.getFavoriteCount();
         } else {
@@ -85,10 +72,10 @@ public class Tweet implements Serializable {
      * @param favoriteCount set favor count
      * @param favored       set if tweet is favored by current user
      */
-    public Tweet(Status status, long twitterId, long myRetweetId, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
+    TweetV1(Status status, long twitterId, long myRetweetId, int retweetCount, boolean retweeted, int favoriteCount, boolean favored) {
         if (status.getRetweetedStatus() != null) {
             Status retweet = status.getRetweetedStatus();
-            embedded = new Tweet(retweet, twitterId, myRetweetId, retweetCount, retweeted, favoriteCount, favored);
+            embedded = new TweetV1(retweet, twitterId, myRetweetId, retweetCount, retweeted, favoriteCount, favored);
         }
         this.retweetCount = retweetCount;
         this.favoriteCount = favoriteCount;
@@ -98,257 +85,120 @@ public class Tweet implements Serializable {
         setTweet(status, tweetID);
     }
 
-    /**
-     * Tweet constructor for database tweets
-     *
-     * @param tweetID        unique id of tweet
-     * @param retweetCount   number of retweets
-     * @param favoriteCount  number of favors
-     * @param user           tweet author
-     * @param tweet          tweet text
-     * @param time           time long format
-     * @param replyName      author's name of replied tweet
-     * @param replyUserId    author's ID of replied tweet
-     * @param medias         Media links attached to tweet
-     * @param source         used API of the tweet
-     * @param replyID        ID of replied tweet
-     * @param embedded       quoted tweet
-     * @param myRetweetId    ID of the current users retweeted tweet
-     * @param retweeted      tweet is retweeted by current user
-     * @param favored        tweet is favored by current user
-     * @param sensitiveMedia tweet contains sensitive media content
-     * @param geo            location gps coordinates
-     * @param place          location full place name
-     */
-    public Tweet(long tweetID, int retweetCount, int favoriteCount, User user, String tweet, long time, String replyName,
-                 long replyUserId, String[] medias, MediaType mediaType, String source, long replyID, @Nullable Tweet embedded,
-                 long myRetweetId, boolean retweeted, boolean favored, boolean sensitiveMedia, String place, String geo) {
-
-        if (tweet != null)
-            this.tweet = tweet;
-        if (source != null)
-            this.source = source;
-        if (place != null)
-            this.locationName = place;
-        if (geo != null)
-            this.locationCoordinates = geo;
-        if (replyName != null) {
-            this.replyName = replyName;
-            this.userMentions = replyName;
-        }
-        this.tweetID = tweetID;
-        this.user = user;
-        this.retweetCount = retweetCount;
-        this.favoriteCount = favoriteCount;
-        this.time = time;
-        this.replyID = replyID;
-        this.embedded = embedded;
-        this.mediaLinks = medias;
-        this.mediaType = mediaType;
-        this.retweeted = retweeted;
-        this.favorited = favored;
-        this.sensitiveMedia = sensitiveMedia;
-        this.myRetweetId = myRetweetId;
-        this.replyUserId = replyUserId;
-    }
-
-    /**
-     * Tweet ID
-     *
-     * @return tweetID
-     */
+    @Override
     public long getId() {
         return tweetID;
     }
 
-    /**
-     * Tweet Content
-     *
-     * @return tweet text
-     */
+    @Override
     public String getTweet() {
         return tweet;
     }
 
-    /**
-     * get author
-     *
-     * @return tweet owner
-     */
+    @Override
     public User getUser() {
         return user;
     }
 
-    /**
-     * get time
-     *
-     * @return raw time
-     */
+    @Override
     public long getTime() {
         return time;
     }
 
-    /**
-     * get used tweet api
-     *
-     * @return api name
-     */
+    @Override
     public String getSource() {
         return source;
     }
 
-    /**
-     * get embedded Tweet
-     *
-     * @return tweet retweeted by this tweet
-     */
     @Nullable
+    @Override
     public Tweet getEmbeddedTweet() {
         return embedded;
     }
 
-    /**
-     * name of replied user
-     *
-     * @return username
-     */
+    @Override
     public String getReplyName() {
         return replyName;
     }
 
-    /**
-     * ID of replied user
-     *
-     * @return user Id
-     */
+    @Override
     public long getReplyUserId() {
         return replyUserId;
     }
 
-    /**
-     * ID of replied tweet
-     *
-     * @return tweet id
-     */
+    @Override
     public long getReplyId() {
-        return replyID;
+        return replyId;
     }
 
-    /**
-     * ID of my retweet
-     *
-     * @return tweet ID
-     */
+    @Override
     public long getMyRetweetId() {
         return myRetweetId;
     }
 
-    /**
-     * get number of retweets
-     *
-     * @return retweet count
-     */
+    @Override
     public int getRetweetCount() {
         return retweetCount;
     }
 
-    /**
-     * get number of favors
-     *
-     * @return favor count
-     */
+    @Override
     public int getFavoriteCount() {
         return favoriteCount;
     }
 
-    /**
-     * get medias links of tweet
-     *
-     * @return medias links array
-     */
+    @Override
     public String[] getMediaLinks() {
         return mediaLinks;
     }
 
-    /**
-     * get user names mentioned in this tweet
-     *
-     * @return string of screen names
-     */
+    @Override
     public String getMentionedUsers() {
         return userMentions;
     }
 
-    /**
-     * check tweet media type
-     *
-     * @return media type or NONE if there isn't any media
-     */
-    public MediaType getMediaType() {
+    @Override
+    public int getMediaType() {
         return mediaType;
     }
 
-    /**
-     * check if tweet contains text
-     *
-     * @return true if text is set
-     */
-    public boolean containsTweetText() {
-        return !tweet.trim().isEmpty();
-    }
-
-    /**
-     * check if tweet contains sensitive media
-     *
-     * @return true if media has sensitive conent
-     */
-    public boolean containsSensitiveMedia() {
+    @Override
+    public boolean isSensitive() {
         return sensitiveMedia;
     }
 
-    /**
-     * is tweet retweeted by me
-     *
-     * @return if status is retweeted
-     */
-    public boolean retweeted() {
+    @Override
+    public boolean isRetweeted() {
         return retweeted;
     }
 
-    /**
-     * is tweet favored by me
-     *
-     * @return if status is favored
-     */
-    public boolean favored() {
+    @Override
+    public boolean isFavorited() {
         return favorited;
     }
 
-    /**
-     * check if Tweet is owned by the current user
-     *
-     * @return true if current user is author of the Tweet
-     */
-    public boolean currentUserIsOwner() {
-        return user.isCurrentUser();
-    }
-
-    /**
-     * get location of tweet if any
-     *
-     * @return full location name
-     */
+    @Override
     public String getLocationName() {
         return locationName;
     }
 
-    /**
-     * get location coordinate
-     *
-     * @return latitude and longitude
-     */
+    @Override
     public String getLocationCoordinates() {
         return locationCoordinates;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object instanceof TweetV1) {
+            TweetV1 tweet = (TweetV1) object;
+            return tweet.tweetID == tweetID;
+        }
+        return false;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "from:" + user.getScreenname() + " text:" + tweet;
     }
 
     /**
@@ -359,8 +209,8 @@ public class Tweet implements Serializable {
     private void setTweet(Status status, long twitterId) {
         tweetID = status.getId();
         time = status.getCreatedAt().getTime();
-        user = new User(status.getUser(), twitterId);
-        replyID = status.getInReplyToStatusId();
+        user = new UserV1(status.getUser(), twitterId);
+        replyId = status.getInReplyToStatusId();
         replyUserId = status.getInReplyToUserId();
         sensitiveMedia = status.isPossiblySensitive();
         // add screen name of the replied user
@@ -431,20 +281,20 @@ public class Tweet implements Serializable {
     private void getMedia(MediaEntity[] mediaEntities) {
         mediaLinks = new String[mediaEntities.length];
         if (mediaLinks.length == 0) {
-            mediaType = MediaType.NONE;
+            mediaType = NONE;
         } else {
             switch (mediaEntities[0].getType()) {
-                case PHOTO:
-                    mediaType = MediaType.IMAGE;
+                case MIME_PHOTO:
+                    mediaType = IMAGE;
                     for (int i = 0; i < mediaEntities.length; i++) {
                         mediaLinks[i] = mediaEntities[i].getMediaURLHttps();
                     }
                     break;
 
-                case VIDEO:
-                    mediaType = MediaType.VIDEO;
+                case MIME_VIDEO:
+                    mediaType = VIDEO;
                     for (MediaEntity.Variant type : mediaEntities[0].getVideoVariants()) {
-                        if (type.getContentType().equals(MEDIA_VIDEO)) {
+                        if (type.getContentType().equals(MIME_V_MP4)) {
                             // get link with selected video format
                             // a tweet can only have one video
                             mediaLinks[0] = type.getUrl();
@@ -452,32 +302,15 @@ public class Tweet implements Serializable {
                     }
                     break;
 
-                case ANGIF:
-                    mediaType = MediaType.GIF;
+                case MIME_ANGIF:
+                    mediaType = GIF;
                     mediaLinks[0] = mediaEntities[0].getVideoVariants()[0].getUrl();
                     break;
 
                 default:
-                    mediaType = MediaType.NONE;
+                    mediaType = NONE;
                     break;
             }
         }
-    }
-
-
-    @Override
-    public boolean equals(Object object) {
-        if (object instanceof Tweet) {
-            Tweet tweet = (Tweet) object;
-            return tweet.tweetID == tweetID;
-        }
-        return false;
-    }
-
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "from:" + user.getScreenname() + " text:" + tweet;
     }
 }

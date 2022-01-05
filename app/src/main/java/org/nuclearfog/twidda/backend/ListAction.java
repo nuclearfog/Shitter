@@ -3,9 +3,9 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.ListDetail;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
-import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
+import org.nuclearfog.twidda.model.UserList;
 
 import java.lang.ref.WeakReference;
 
@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListAction extends AsyncTask<Long, Void, TwitterList> {
+public class ListAction extends AsyncTask<Long, Void, UserList> {
 
     /**
      * Actions to perform
@@ -58,7 +58,7 @@ public class ListAction extends AsyncTask<Long, Void, TwitterList> {
 
 
     @Override
-    protected TwitterList doInBackground(Long... ids) {
+    protected UserList doInBackground(Long... ids) {
         try {
             long listId = ids[0];
             switch (action) {
@@ -85,7 +85,7 @@ public class ListAction extends AsyncTask<Long, Void, TwitterList> {
 
 
     @Override
-    protected void onPostExecute(TwitterList userList) {
+    protected void onPostExecute(UserList userList) {
         ListDetail callback = this.callback.get();
         if (callback != null) {
             if (userList != null) {

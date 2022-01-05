@@ -1,14 +1,17 @@
-package org.nuclearfog.twidda.backend.model;
+package org.nuclearfog.twidda.database;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.User;
 
 /**
  * container class for user login information
  *
  * @author nuclearfog
  */
-public class Account {
+class AccountDB implements Account {
 
     /**
      * id of the user
@@ -28,59 +31,33 @@ public class Account {
     private User user;
 
 
-    public Account(long userId, long loginDate, String key1, String key2) {
+    AccountDB(long userId, long loginDate, String key1, String key2) {
         this.userId = userId;
         this.loginDate = loginDate;
         this.key1 = key1;
         this.key2 = key2;
     }
 
-    /**
-     * get ID of the user
-     *
-     * @return user ID
-     */
+    @Override
     public long getId() {
         return userId;
     }
 
-    /**
-     * get date of creation
-     *
-     * @return date as long
-     */
+    @Override
     public long getLoginDate() {
         return loginDate;
     }
 
-    /**
-     * get attached user information
-     *
-     * @return user
-     */
     @Nullable
+    @Override
     public User getUser() {
         return user;
     }
 
-    /**
-     * attach user information
-     *
-     * @param user user
-     */
-    public void attachUser(User user) {
-        this.user = user;
-    }
-
-    /**
-     * get access tokens
-     *
-     * @return array with two access tokens
-     */
+    @Override
     public String[] getKeys() {
         return new String[]{key1, key2};
     }
-
 
     @NonNull
     @Override
@@ -88,5 +65,14 @@ public class Account {
         if (user != null)
             return user + " date:" + loginDate;
         return "id:" + userId + " date:" + loginDate;
+    }
+
+    /**
+     * attach user information
+     *
+     * @param user user associated with this account
+     */
+    void addUser(@Nullable User user) {
+        this.user = user;
     }
 }

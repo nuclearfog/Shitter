@@ -3,10 +3,10 @@ package org.nuclearfog.twidda.backend;
 import android.os.AsyncTask;
 
 import org.nuclearfog.twidda.activities.ListEditor;
-import org.nuclearfog.twidda.backend.engine.EngineException;
-import org.nuclearfog.twidda.backend.engine.TwitterEngine;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
+import org.nuclearfog.twidda.backend.apiold.TwitterEngine;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
-import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.model.UserList;
 
 import java.lang.ref.WeakReference;
 
@@ -16,7 +16,7 @@ import java.lang.ref.WeakReference;
  *
  * @author nuclearfog
  */
-public class ListUpdater extends AsyncTask<ListHolder, Void, TwitterList> {
+public class ListUpdater extends AsyncTask<ListHolder, Void, UserList> {
 
 
     private EngineException err;
@@ -32,7 +32,7 @@ public class ListUpdater extends AsyncTask<ListHolder, Void, TwitterList> {
 
 
     @Override
-    protected TwitterList doInBackground(ListHolder... listHolders) {
+    protected UserList doInBackground(ListHolder... listHolders) {
         try {
             ListHolder mList = listHolders[0];
             return mTwitter.updateUserList(mList);
@@ -46,7 +46,7 @@ public class ListUpdater extends AsyncTask<ListHolder, Void, TwitterList> {
 
 
     @Override
-    protected void onPostExecute(TwitterList result) {
+    protected void onPostExecute(UserList result) {
         if (callback.get() != null) {
             if (result != null) {
                 callback.get().onSuccess(result);

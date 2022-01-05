@@ -12,8 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.LoginHolder;
-import org.nuclearfog.twidda.backend.model.Account;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.model.Account;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.backend.utils.StringTools;
 import org.nuclearfog.twidda.database.GlobalSettings;
@@ -91,7 +91,7 @@ public class AccountAdapter extends Adapter<LoginHolder> {
             holder.text[IDX_SCR_NAME].setText(user.getScreenname());
             // set profile image
             if (settings.imagesEnabled()) {
-                String pbLink = user.getImageLink();
+                String pbLink = user.getImageUrl();
                 if (!user.hasDefaultProfileImage()) {
                     pbLink += settings.getImageSuffix();
                 }

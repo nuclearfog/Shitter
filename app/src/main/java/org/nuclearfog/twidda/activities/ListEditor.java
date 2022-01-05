@@ -24,9 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.backend.ListUpdater;
-import org.nuclearfog.twidda.backend.engine.EngineException;
+import org.nuclearfog.twidda.backend.apiold.EngineException;
 import org.nuclearfog.twidda.backend.holder.ListHolder;
-import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.model.UserList;
 import org.nuclearfog.twidda.backend.utils.AppStyles;
 import org.nuclearfog.twidda.backend.utils.ErrorHandler;
 import org.nuclearfog.twidda.dialog.ConfirmDialog;
@@ -53,7 +53,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     private Dialog leaveDialog, loadingCircle;
     private ConfirmDialog errorDialog;
     @Nullable
-    private TwitterList userList;
+    private UserList userList;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -80,8 +80,8 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
         AppStyles.setEditorTheme(root, background);
 
         Object data = getIntent().getSerializableExtra(KEY_LIST_EDITOR_DATA);
-        if (data instanceof TwitterList) {
-            userList = (TwitterList) data;
+        if (data instanceof UserList) {
+            userList = (UserList) data;
             titleInput.setText(userList.getTitle());
             subTitleInput.setText(userList.getDescription());
             visibility.setChecked(!userList.isPrivate());
@@ -143,7 +143,7 @@ public class ListEditor extends AppCompatActivity implements OnClickListener, On
     /**
      * called when a list was updated successfully
      */
-    public void onSuccess(TwitterList result) {
+    public void onSuccess(UserList result) {
         if (userList != null) {
             Toast.makeText(this, R.string.info_list_updated, Toast.LENGTH_SHORT).show();
             Intent data = new Intent();

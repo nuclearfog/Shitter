@@ -3,7 +3,7 @@ package org.nuclearfog.twidda.backend.lists;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.nuclearfog.twidda.backend.model.TwitterList;
+import org.nuclearfog.twidda.model.UserList;
 
 import java.util.LinkedList;
 
@@ -12,7 +12,7 @@ import java.util.LinkedList;
  *
  * @author nuclearfog
  */
-public class UserLists extends LinkedList<TwitterList> {
+public class UserLists extends LinkedList<UserList> {
 
     private long prevCursor, nextCursor;
 
@@ -36,7 +36,7 @@ public class UserLists extends LinkedList<TwitterList> {
 
     @Nullable
     @Override
-    public TwitterList get(int index) {
+    public UserList get(int index) {
         return super.get(index);
     }
 
@@ -87,7 +87,7 @@ public class UserLists extends LinkedList<TwitterList> {
      */
     public int removeItem(long id) {
         for (int index = 0; index < size(); index++) {
-            TwitterList item = get(index);
+            UserList item = get(index);
             if (item != null && item.getId() == id) {
                 remove(index);
                 return index;

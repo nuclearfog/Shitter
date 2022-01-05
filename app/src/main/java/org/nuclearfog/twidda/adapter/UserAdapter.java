@@ -15,8 +15,8 @@ import com.squareup.picasso.Picasso;
 import org.nuclearfog.twidda.R;
 import org.nuclearfog.twidda.adapter.holder.Footer;
 import org.nuclearfog.twidda.adapter.holder.UserHolder;
-import org.nuclearfog.twidda.backend.lists.UserList;
-import org.nuclearfog.twidda.backend.model.User;
+import org.nuclearfog.twidda.backend.lists.Users;
+import org.nuclearfog.twidda.model.User;
 import org.nuclearfog.twidda.backend.utils.PicassoBuilder;
 import org.nuclearfog.twidda.database.GlobalSettings;
 
@@ -61,7 +61,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
     private GlobalSettings settings;
     private Picasso picasso;
 
-    private UserList data = new UserList();
+    private Users data = new Users();
     private int loadingIndex = NO_LOADING;
     private boolean userRemovable = false;
 
@@ -80,7 +80,7 @@ public class UserAdapter extends Adapter<ViewHolder> {
      * @param newData new userlist
      */
     @MainThread
-    public void setData(@NonNull UserList newData) {
+    public void setData(@NonNull Users newData) {
         disableLoading();
         if (newData.isEmpty()) {
             if (!data.isEmpty() && data.peekLast() == null) {
@@ -224,13 +224,13 @@ public class UserAdapter extends Adapter<ViewHolder> {
             } else {
                 userholder.verifyIcon.setVisibility(GONE);
             }
-            if (user.isLocked()) {
+            if (user.isProtected()) {
                 userholder.lockedIcon.setVisibility(VISIBLE);
             } else {
                 userholder.lockedIcon.setVisibility(GONE);
             }
-            if (settings.imagesEnabled() && user.hasProfileImage()) {
-                String pbLink = user.getImageLink();
+            if (settings.imagesEnabled() && !user.getImageUrl().isEmpty()) {
+                String pbLink = user.getImageUrl();
                 if (!user.hasDefaultProfileImage())
                     pbLink += settings.getImageSuffix();
                 picasso.load(pbLink).transform(new RoundedCornersTransformation(2, 0))
